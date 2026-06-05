@@ -1,3 +1,4 @@
+use crate::resonator::ResonatorVocabulary;
 use crate::Hypervector;
 use scraper::{Html, Selector};
 use std::collections::HashSet;
@@ -27,6 +28,12 @@ pub struct VSAForager {
     /// intent I = A ⊕ P.  Updated externally by the AutonomyDrive loop.
     /// When `None`, the forager falls back to raw-intent scoring.
     pub target_parameter: Arc<RwLock<Option<Hypervector>>>,
+
+    // ── Dynamic vocabulary learning ───────────────────────────────
+    /// Shared vocabulary reference.  When `Some`, the forager dynamically
+    /// registers novel multi-word terms from mission-critical scraped
+    /// content, letting the ontology grow from observation.
+    pub vocab: Option<Arc<RwLock<ResonatorVocabulary>>>,
 }
 
 impl VSAForager {
@@ -43,6 +50,7 @@ impl VSAForager {
             crawl_speed_ms,
             brain: None,
             target_parameter: Arc::new(RwLock::new(None)),
+            vocab: None,
         }
     }
 
@@ -189,6 +197,23 @@ impl VSAForager {
                         "priority".to_string(),
                         "mission_critical".to_string(),
                     );
+
+                    // ── Dynamic vocabulary learning ─────────────
+                    // Extract novel content words from the high-value
+                    // sentence and register them so the ontology grows
+                    // from observation.
+                    if let Some(ref vocab_arc) = self.vocab {
+                        let mut vocab_guard = vocab_arc.write().await;
+                        for word in sentence.split_whitespace() {
+                            let clean = word.trim_matches(|c: char| c.is_ascii_punctuation());
+                            if clean.len() >= 4
+                                && !clean.chars().all(|c| c.is_ascii_digit())
+                            {
+                                vocab_guard.learn_term(clean);
+                            }
+                        }
+                    }
+
                     // Also log it as a high-value finding
                     let label = format!("CRITICAL: {}", sentence);
                     brain_guard.add_transient_fact(fact_vector, &label, metadata);
@@ -282,10 +307,16 @@ impl VSAForager {
         Ok((next_url, min_distance, scored_count))
     }
 
-    /// Evaluate the semantic resonance of a text string against the
-    /// current target parameter vector using Hamming similarity.
+    /// Evaluate semantic resonance using **TF-IDF weighted bundling**.
+    ///
+    /// Instead of a flat `encode_sentence` (which gives equal weight to every
+    /// word including stop-words), this method bundles word n-gram vectors
+    /// weighted by approximate inverse document frequency.
+    ///
+    /// Content words ("breach", "crisis") get 3× the influence of function
+    /// words ("the", "is"), making the resonance threshold of 0.75
+    /// semantically meaningful rather than noise-driven.
     fn compute_resonance(&self, text: &str) -> f64 {
-        // If no target parameter is set, resonance is neutral (0.5)
         let target_guard = self.target_parameter.try_read().ok();
         let target = match target_guard {
             Some(ref g) => g.as_ref().copied(),
@@ -294,11 +325,63 @@ impl VSAForager {
 
         match target {
             Some(param) => {
-                let text_hv = Hypervector::encode_sentence(text);
-                1.0 - text_hv.normalized_hamming_distance(&param)
+                let weighted_hv = Self::encode_text_weighted(text);
+                1.0 - weighted_hv.normalized_hamming_distance(&param)
             }
             None => 0.5,
         }
+    }
+
+    /// TF-IDF weighted sentence encoder.
+    ///
+    /// Splits text into words, applies position-preserving rotation,
+    /// and bundles content words with 3× the copies of function words
+    /// so the majority-rule bit consensus reflects semantically
+    /// significant terms rather than grammatical noise.
+    fn encode_text_weighted(text: &str) -> Hypervector {
+        let words: Vec<&str> = text
+            .split_whitespace()
+            .map(|w| w.trim_matches(|c: char| c.is_ascii_punctuation()))
+            .filter(|w| !w.is_empty() && w.len() > 1)
+            .collect();
+
+        if words.is_empty() {
+            return Hypervector::new_zero();
+        }
+
+        // Approximate stop-word list — function words that carry little
+        // semantic content in isolation.  In production this would be
+        // a proper IDF table built from the forager's crawl corpus.
+        const STOP_WORDS: &[&str] = &[
+            "the", "is", "and", "are", "was", "were", "has", "have",
+            "had", "will", "would", "could", "should", "may", "might",
+            "this", "that", "these", "those", "what", "which", "where",
+            "when", "who", "whom", "how", "all", "each", "every",
+            "some", "any", "no", "not", "but", "or", "if", "then",
+            "else", "than", "as", "at", "by", "for", "from", "in",
+            "into", "of", "on", "to", "with", "about", "upon", "its",
+            "it", "an", "be", "been", "being", "do", "does", "did",
+            "doing", "can", "just", "also", "very", "too", "so",
+        ];
+
+        let mut word_vectors: Vec<Hypervector> = Vec::with_capacity(words.len() * 3);
+
+        for (i, word) in words.iter().enumerate() {
+            let word_hv = Hypervector::encode_text_ngram(word, 3);
+            // Position permutation preserves word order contribution
+            let rotated = word_hv.rotate_left(i * 7);
+
+            // Content words get 3 copies → 3× vote in majority bundling
+            let is_stop = STOP_WORDS.contains(&word.to_lowercase().as_str());
+            let copies = if is_stop { 1 } else { 3 };
+
+            for _ in 0..copies {
+                word_vectors.push(rotated);
+            }
+        }
+
+        let refs: Vec<&Hypervector> = word_vectors.iter().collect();
+        Hypervector::bundle(&refs)
     }
 
     /// Continuous run loop for the forager

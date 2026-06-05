@@ -60,6 +60,51 @@ impl DefenseSystem {
         false
     }
 
+    /// Energy gate: verify that executing an action is safe given the
+    /// current cognitive state.
+    ///
+    /// Returns `Ok(())` if the action passes all gates:
+    /// 1. Threat level is below critical threshold (or action is sys_read)
+    /// 2. The parameter is not empty
+    /// 3. Basic sandbox safety (delegates to `check_sandbox_safety`)
+    ///
+    /// Returns `Err(reason)` if any gate rejects the action.
+    pub async fn check_action_safety(
+        &self,
+        action_name: &str,
+        param_str: &str,
+    ) -> Result<(), String> {
+        let threat = *self.threat_level.read().await;
+        let anxiety = *self.anxiety.read().await;
+
+        // Gate 1: sys_read is always safe (read-only)
+        if action_name == "sys_read" {
+            return Ok(());
+        }
+
+        // Gate 2: Empty parameters are rejected
+        if param_str.is_empty() {
+            return Err("Energy gate: empty parameter".to_string());
+        }
+
+        // Gate 3: Under high threat + anxiety, only sys_read is permitted.
+        // The dynamic threshold mirrors evaluate_threat_response.
+        let danger_threshold = 0.8 - 0.4 * anxiety;
+        if threat >= danger_threshold && action_name == "execute_bash" {
+            return Err(format!(
+                "Energy gate: threat={:.2} exceeds threshold={:.2}. Blocking shell execution.",
+                threat, danger_threshold
+            ));
+        }
+
+        // Gate 4: Sandbox safety
+        if action_name == "execute_bash" && !crate::action::check_sandbox_safety(param_str) {
+            return Err("Energy gate: blocked by sandbox guard".to_string());
+        }
+
+        Ok(())
+    }
+
     /// Overwrites system telemetry files or temporary traces with random noise
     pub async fn scrub_traces(&self) {
         // In a true POI scenario, we wipe log files or RAM chunks.

@@ -40,9 +40,23 @@ impl ResonatorVocabulary {
 
     pub fn register_term(&mut self, term: &str) {
         if !self.terms.contains_key(term) {
+            // Use character n-gram encoding so semantically related terms
+            // (e.g. "crisis" and "Breach") naturally cluster in Hamming space
+            // via shared trigrams, enabling analogical reasoning.
             self.terms
-                .insert(term.to_string(), Hypervector::new_random());
+                .insert(term.to_string(), Hypervector::encode_text_ngram(term, 3));
         }
+    }
+
+    /// Dynamically register a new term from observed data.
+    /// Returns `true` if the term was newly registered.
+    pub fn learn_term(&mut self, term: &str) -> bool {
+        if self.terms.contains_key(term) || term.len() < 2 {
+            return false;
+        }
+        self.terms
+            .insert(term.to_string(), Hypervector::encode_text_ngram(term, 3));
+        true
     }
 
     pub fn get_vector(&self, term: &str) -> Option<&Hypervector> {

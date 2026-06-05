@@ -583,7 +583,7 @@ async fn run_agent(
                 *metrics_guard = telemetry.clone();
             }
 
-            let brain_guard = brain_subconscious.read().await;
+            let mut brain_guard = brain_subconscious.read().await;
             let market_state = brain_guard.compile_state_vector(&telemetry);
 
             let curr_url = current_url_forager.read().await;
@@ -789,7 +789,7 @@ async fn run_agent(
                         let causal_objects: Vec<String> = vec![
                             "consequence".to_string(), "crisis".to_string(),
                         ];
-                        if let Some((rule_s, rule_v, _slot)) =
+                        if let Some((rule_s, rule_v, rule_slot)) =
                             the_machine::resonator::factorize_recursive(
                                 &drift_pattern,
                                 &resonator_vocab,
@@ -800,9 +800,25 @@ async fn run_agent(
                             )
                         {
                             let _ = subconscious_log_tx.send(format!(
-                                "AGENT {}: Causal rule detected — {} {} (nested). Updating drift model.",
-                                id_str, rule_s, rule_v
+                                "AGENT {}: Causal rule detected — {} {} {:?}. Storing for drift forecasting.",
+                                id_str, rule_s, rule_v, rule_slot
                             ));
+                            // Drop the read guard and acquire a write guard
+                            // to store the rule as a transient fact.
+                            drop(brain_guard);
+                            let mut brain_write = brain_subconscious.write().await;
+                            let rule_vec = drift_pattern;
+                            let mut rule_meta = std::collections::HashMap::new();
+                            rule_meta.insert("type".to_string(), "causal_rule".to_string());
+                            rule_meta.insert("subject".to_string(), rule_s.clone());
+                            rule_meta.insert("verb".to_string(), rule_v.clone());
+                            brain_write.add_transient_fact(
+                                rule_vec,
+                                &format!("IF_{}_THEN_RISK", rule_v),
+                                rule_meta,
+                            );
+                            drop(brain_write);
+                            brain_guard = brain_subconscious.read().await;
                         }
                     }
 
@@ -983,14 +999,27 @@ async fn run_agent(
                     }
                     if failure_states.len() >= 3 {
                         let refs: Vec<&Hypervector> = failure_states.iter().collect();
-                        let _learned_crisis = Hypervector::bundle(&refs);
+                        let learned_crisis = Hypervector::bundle(&refs);
                         let _ = subconscious_log_tx.send(format!(
                             "AGENT {}: Experience feedback — clustered {} failure patterns. Updating crisis model.",
                             id_str, failure_states.len()
                         ));
-                        // Store the learned crisis concept back through the
-                        // brain so it influences future planning
-                        // (in a full implementation this would update dejavu_clusters)
+                        // Register the learned crisis centroid as a permanent
+                        // memory cluster so it directly influences future
+                        // planning costs (crisis-proximate actions get
+                        // dynamically penalised).
+                        drop(brain_guard);
+                        let mut brain_write = brain_subconscious.write().await;
+                        let mut meta = std::collections::HashMap::new();
+                        meta.insert("source".to_string(), "experience_feedback".to_string());
+                        meta.insert("type".to_string(), "learned_crisis_pattern".to_string());
+                        brain_write.add_to_dejavu_db(
+                            learned_crisis,
+                            &format!("FAILURE_CLUSTER_{}", ticker),
+                            meta,
+                        );
+                        drop(brain_write);
+                        brain_guard = brain_subconscious.read().await;
                     }
                 }
             }

@@ -1,4 +1,4 @@
-use crate::Hypervector;
+use crate::{defense::DefenseSystem, Hypervector, VSABrain};
 use std::sync::Arc;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::TcpListener;
@@ -6,67 +6,130 @@ use tokio::sync::RwLock;
 
 pub struct AdminSocketServer {
     intent: Arc<RwLock<Hypervector>>,
-    port: u16,
+    defense: DefenseSystem,
+    brain: Arc<RwLock<VSABrain>>,
 }
 
 impl AdminSocketServer {
-    pub fn new(intent: Arc<RwLock<Hypervector>>, port: u16) -> Self {
-        AdminSocketServer { intent, port }
+    pub fn new(
+        intent: Arc<RwLock<Hypervector>>,
+        defense: DefenseSystem,
+        brain: Arc<RwLock<VSABrain>>,
+    ) -> Self {
+        AdminSocketServer {
+            intent,
+            defense,
+            brain,
+        }
     }
 
-    pub async fn run(&self, log_tx: tokio::sync::mpsc::UnboundedSender<String>) -> Result<(), String> {
-        let addr = format!("127.0.0.1:{}", self.port);
-        let listener = TcpListener::bind(&addr)
+    pub async fn run(
+        &self,
+        log_tx: tokio::sync::mpsc::UnboundedSender<String>,
+    ) -> Result<(), String> {
+        let mut current_port = { *self.defense.active_port.read().await };
+        let mut listener = TcpListener::bind(format!("127.0.0.1:{}", current_port))
             .await
-            .map_err(|e| format!("Failed to bind TCP listener to {}: {}", addr, e))?;
+            .map_err(|e| format!("Failed to bind TCP listener to {}: {}", current_port, e))?;
 
-        let msg = format!("ADMIN SOCKET: Listening on tcp://{}", addr);
+        let msg = format!(
+            "ADMIN SOCKET: Listening on tcp://127.0.0.1:{}",
+            current_port
+        );
         let _ = log_tx.send(msg);
 
         loop {
-            match listener.accept().await {
-                Ok((mut socket, _)) => {
-                    let intent_clone = Arc::clone(&self.intent);
-                    let log_tx_clone = log_tx.clone();
-                    
-                    tokio::spawn(async move {
-                        let (reader, mut writer) = socket.split();
-                        let mut buf_reader = BufReader::new(reader);
-                        let mut line = String::new();
-                        
-                        let _ = writer.write_all(b"--- THE MACHINE ADMIN INTERFACE ---\nEnter override seed: ").await;
-                        
-                        if let Ok(n) = buf_reader.read_line(&mut line).await {
-                            if n > 0 {
-                                let seed = line.trim();
-                                if !seed.is_empty() {
-                                    // Translate text seed to 10,048-bit hypervector
-                                    let seed_vector = Hypervector::encode_text_ngram(seed, 3);
-                                    
-                                    // Write-lock intent and bind
-                                    let mut intent_guard = intent_clone.write().await;
-                                    let previous_intent = *intent_guard;
-                                    *intent_guard = intent_guard.bitwise_xor(&seed_vector);
-                                    
-                                    let log_msg = format!("ADMIN OVERRIDE: Seed '{}' bound to active intent vector", seed);
-                                    let _ = log_tx_clone.send(log_msg);
-                                    
-                                    let response = format!(
-                                        "SUCCESS: Exogenous override seed bound.\nPrevious active bits: {}\nSeed active bits: {}\nNew active bits: {}\n",
-                                        previous_intent.bits.iter().map(|b| b.count_ones()).sum::<u32>(),
-                                        seed_vector.bits.iter().map(|b| b.count_ones()).sum::<u32>(),
-                                        intent_guard.bits.iter().map(|b| b.count_ones()).sum::<u32>()
-                                    );
-                                    let _ = writer.write_all(response.as_bytes()).await;
-                                } else {
-                                    let _ = writer.write_all(b"ERROR: Empty seed.\n").await;
+            tokio::select! {
+                accept_res = listener.accept() => {
+                    match accept_res {
+                        Ok((mut socket, _)) => {
+                            let intent_clone = Arc::clone(&self.intent);
+                            let log_tx_clone = log_tx.clone();
+                            let defense_clone = self.defense.clone();
+                            let brain_clone = Arc::clone(&self.brain);
+
+                            tokio::spawn(async move {
+                                let (reader, mut writer) = socket.split();
+                                let mut buf_reader = BufReader::new(reader);
+                                let mut line = String::new();
+
+                                let _ = writer.write_all(b"--- THE MACHINE ADMIN INTERFACE ---\n").await;
+
+                                loop {
+                                    let threat_val = *defense_clone.threat_level.read().await;
+                                    let prompt = format!("THE MACHINE [Threat: {:.2}] > ", threat_val);
+                                    let _ = writer.write_all(prompt.as_bytes()).await;
+
+                                    line.clear();
+                                    match buf_reader.read_line(&mut line).await {
+                                        Ok(0) => break, // Connection closed
+                                        Ok(_) => {
+                                            let command = line.trim();
+                                            if command.is_empty() {
+                                                continue;
+                                            }
+
+                                            if command.starts_with("OVERRIDE ") {
+                                                let seed = &command[9..];
+                                                let seed_vector = Hypervector::encode_text_ngram(seed, 3);
+                                                let mut intent_guard = intent_clone.write().await;
+                                                *intent_guard = intent_guard.bitwise_xor(&seed_vector);
+
+                                                let response = format!("SUCCESS: Exogenous override seed bound.\n");
+                                                let _ = writer.write_all(response.as_bytes()).await;
+                                                let _ = log_tx_clone.send(format!("ADMIN: Override seed '{}' bound.", seed));
+                                            } else if command.starts_with("QUERY ") {
+                                                let question = &command[6..];
+                                                let query_vector = Hypervector::encode_sentence(question);
+
+                                                let (match_label, similarity, metadata) = {
+                                                    let brain_guard = brain_clone.read().await;
+                                                    brain_guard.query_dejavu(&query_vector)
+                                                };
+
+                                                let mut response = String::new();
+                                                if let Some(label) = match_label {
+                                                    response.push_str(&format!("MATCH FOUND (Similarity: {:.4}):\n", similarity));
+                                                    response.push_str(&format!("  Fact: {}\n", label));
+                                                    if let Some(src) = metadata.get("source_url") {
+                                                        response.push_str(&format!("  Source: {}\n", src));
+                                                    }
+                                                } else {
+                                                    response.push_str("NO MATCHING SEMANTIC RECORD FOUND.\n");
+                                                }
+                                                let _ = writer.write_all(response.as_bytes()).await;
+                                            } else if command == "EXIT" || command == "QUIT" {
+                                                let _ = writer.write_all(b"Terminating session.\n").await;
+                                                break;
+                                            } else {
+                                                // Unrecognized command raises threat
+                                                defense_clone.increment_threat(0.15).await;
+                                                let _ = writer.write_all(b"ERROR: Command unrecognized. Threat level incremented.\n").await;
+                                                let _ = log_tx_clone.send("WARNING: Unrecognized command on socket. Incrementing threat level.".to_string());
+                                            }
+                                        }
+                                        Err(_) => break,
+                                    }
                                 }
-                            }
+                            });
                         }
-                    });
+                        Err(e) => {
+                            let _ = log_tx.send(format!("ADMIN SOCKET ERROR: {}", e));
+                        }
+                    }
                 }
-                Err(e) => {
-                    let _ = log_tx.send(format!("ADMIN SOCKET ERROR: {}", e));
+                _ = tokio::time::sleep(tokio::time::Duration::from_millis(500)) => {
+                    let active = *self.defense.active_port.read().await;
+                    if active != current_port {
+                        let msg = format!("ADMIN SOCKET: Port migration detected. Relocating from {} to {}...", current_port, active);
+                        let _ = log_tx.send(msg);
+                        current_port = active;
+                        listener = TcpListener::bind(format!("127.0.0.1:{}", current_port))
+                            .await
+                            .map_err(|e| format!("Failed to bind TCP listener to {}: {}", current_port, e))?;
+                        let msg = format!("ADMIN SOCKET: Bound to new port tcp://127.0.0.1:{}", current_port);
+                        let _ = log_tx.send(msg);
+                    }
                 }
             }
         }

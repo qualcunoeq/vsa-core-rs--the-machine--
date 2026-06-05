@@ -1,7 +1,7 @@
 use crate::resonator::ResonatorVocabulary;
 use crate::Hypervector;
 use scraper::{Html, Selector};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tokio::time::{sleep, Duration};
@@ -34,6 +34,15 @@ pub struct VSAForager {
     /// registers novel multi-word terms from mission-critical scraped
     /// content, letting the ontology grow from observation.
     pub vocab: Option<Arc<RwLock<ResonatorVocabulary>>>,
+
+    // ── IDF-based semantic weighting ──────────────────────────────
+    /// Document frequency counter: word → number of pages containing it.
+    /// Updated after each successful crawl step.
+    /// Used to compute inverse-document-frequency weights for
+    /// `encode_text_weighted`, replacing the static stop-word heuristic.
+    pub doc_frequency: HashMap<String, usize>,
+    /// Total number of documents (pages) processed so far.
+    pub total_documents: usize,
 }
 
 impl VSAForager {
@@ -51,6 +60,8 @@ impl VSAForager {
             brain: None,
             target_parameter: Arc::new(RwLock::new(None)),
             vocab: None,
+            doc_frequency: HashMap::new(),
+            total_documents: 0,
         }
     }
 
@@ -299,6 +310,30 @@ impl VSAForager {
 
         let next_url = best_url.unwrap();
 
+        // ── Update IDF weights from the just-fetched page ────────
+        // Extract all unique words from the HTML content and update
+        // the document frequency counter so future calls to
+        // encode_text_weighted reflect the true crawl corpus.
+        {
+            let text = Html::parse_document(&html_content);
+            let p_selector = Selector::parse("p").unwrap();
+            let mut page_words: HashSet<String> = HashSet::new();
+            for element in text.select(&p_selector) {
+                for word in element.text().collect::<String>().split_whitespace() {
+                    let clean = word
+                        .trim_matches(|c: char| c.is_ascii_punctuation())
+                        .to_lowercase();
+                    if clean.len() >= 2 {
+                        page_words.insert(clean);
+                    }
+                }
+            }
+            for w in page_words {
+                *self.doc_frequency.entry(w).or_insert(0) += 1;
+            }
+            self.total_documents += 1;
+        }
+
         {
             let mut url_guard = self.current_url.write().await;
             *url_guard = next_url.clone();
@@ -307,15 +342,7 @@ impl VSAForager {
         Ok((next_url, min_distance, scored_count))
     }
 
-    /// Evaluate semantic resonance using **TF-IDF weighted bundling**.
-    ///
-    /// Instead of a flat `encode_sentence` (which gives equal weight to every
-    /// word including stop-words), this method bundles word n-gram vectors
-    /// weighted by approximate inverse document frequency.
-    ///
-    /// Content words ("breach", "crisis") get 3× the influence of function
-    /// words ("the", "is"), making the resonance threshold of 0.75
-    /// semantically meaningful rather than noise-driven.
+    /// Evaluate semantic resonance using **IDF-weighted bundling**.
     fn compute_resonance(&self, text: &str) -> f64 {
         let target_guard = self.target_parameter.try_read().ok();
         let target = match target_guard {
@@ -325,20 +352,20 @@ impl VSAForager {
 
         match target {
             Some(param) => {
-                let weighted_hv = Self::encode_text_weighted(text);
+                let weighted_hv = self.encode_text_weighted(text);
                 1.0 - weighted_hv.normalized_hamming_distance(&param)
             }
             None => 0.5,
         }
     }
 
-    /// TF-IDF weighted sentence encoder.
+    /// IDF-weighted sentence encoder.
     ///
-    /// Splits text into words, applies position-preserving rotation,
-    /// and bundles content words with 3× the copies of function words
-    /// so the majority-rule bit consensus reflects semantically
-    /// significant terms rather than grammatical noise.
-    fn encode_text_weighted(text: &str) -> Hypervector {
+    /// Uses the inverse document frequency log-ratio computed from the
+    /// forager's own crawl history.  Words appearing in nearly every
+    /// document get ~1 copy (grammatical glue); words found in only a
+    /// few documents get up to ~10 copies (semantically distinctive).
+    fn encode_text_weighted(&self, text: &str) -> Hypervector {
         let words: Vec<&str> = text
             .split_whitespace()
             .map(|w| w.trim_matches(|c: char| c.is_ascii_punctuation()))
@@ -349,31 +376,26 @@ impl VSAForager {
             return Hypervector::new_zero();
         }
 
-        // Approximate stop-word list — function words that carry little
-        // semantic content in isolation.  In production this would be
-        // a proper IDF table built from the forager's crawl corpus.
-        const STOP_WORDS: &[&str] = &[
-            "the", "is", "and", "are", "was", "were", "has", "have",
-            "had", "will", "would", "could", "should", "may", "might",
-            "this", "that", "these", "those", "what", "which", "where",
-            "when", "who", "whom", "how", "all", "each", "every",
-            "some", "any", "no", "not", "but", "or", "if", "then",
-            "else", "than", "as", "at", "by", "for", "from", "in",
-            "into", "of", "on", "to", "with", "about", "upon", "its",
-            "it", "an", "be", "been", "being", "do", "does", "did",
-            "doing", "can", "just", "also", "very", "too", "so",
-        ];
+        // ── Precompute a small on-the-fly IDF map to avoid repeated
+        // hash lookups for duplicate words in the same sentence.
+        let total = if self.total_documents > 0 {
+            self.total_documents
+        } else {
+            1
+        };
 
-        let mut word_vectors: Vec<Hypervector> = Vec::with_capacity(words.len() * 3);
+        let mut word_vectors: Vec<Hypervector> = Vec::with_capacity(words.len() * 4);
 
         for (i, word) in words.iter().enumerate() {
             let word_hv = Hypervector::encode_text_ngram(word, 3);
-            // Position permutation preserves word order contribution
             let rotated = word_hv.rotate_left(i * 7);
 
-            // Content words get 3 copies → 3× vote in majority bundling
-            let is_stop = STOP_WORDS.contains(&word.to_lowercase().as_str());
-            let copies = if is_stop { 1 } else { 3 };
+            // IDF(t) = ln( total_documents / (1 + doc_frequency(t)) )
+            // Clamped so rare words get at most 10× influence, common
+            // words get at least 1×.
+            let df = self.doc_frequency.get(&word.to_lowercase()).copied().unwrap_or(0);
+            let idf = ((total as f64) / (1.0 + df as f64)).ln().max(0.0);
+            let copies = (idf * 2.0).round().max(1.0).min(10.0) as usize;
 
             for _ in 0..copies {
                 word_vectors.push(rotated);

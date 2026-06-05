@@ -330,6 +330,15 @@ pub struct DejavuEntry {
 pub struct MemoryCluster {
     pub centroid: Hypervector,
     pub entries: Vec<DejavuEntry>,
+    /// Accumulated reinforcement across access events.
+    /// Decayed each tick by `decay_permanent_clusters`.
+    /// When this drops below threshold the cluster is pruned.
+    #[serde(default)]
+    pub reverberation: f64,
+    /// Last brain tick at which this cluster was accessed.
+    /// Used to detect staleness for demotion.
+    #[serde(default)]
+    pub last_reinforced_tick: usize,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
@@ -499,6 +508,10 @@ impl VSABrain {
                     .map(|e| &e.vector)
                     .collect();
                 self.dejavu_clusters[idx].centroid = Hypervector::bundle(&refs);
+                // Reinforce: successful access boosts reverberation
+                self.dejavu_clusters[idx].reverberation =
+                    (self.dejavu_clusters[idx].reverberation + 0.2).min(1.0);
+                self.dejavu_clusters[idx].last_reinforced_tick = self.tick_counter;
                 return;
             }
         }
@@ -507,6 +520,42 @@ impl VSABrain {
         self.dejavu_clusters.push(MemoryCluster {
             centroid: vector,
             entries: vec![entry],
+            reverberation: 1.0,
+            last_reinforced_tick: self.tick_counter,
+        });
+    }
+
+    /// Collect centroids from permanent clusters whose entries bear
+    /// the `learned_crisis_pattern` metadata tag.  These are injected
+    /// into the crisis_concepts slice before every planning call so
+    /// that experience feedback actually affects future action costs.
+    pub fn collect_learned_crisis_concepts(&self) -> Vec<Hypervector> {
+        let mut concepts = Vec::new();
+        for cluster in &self.dejavu_clusters {
+            for entry in &cluster.entries {
+                if entry.metadata.get("type") == Some(&"learned_crisis_pattern".to_string()) {
+                    concepts.push(cluster.centroid);
+                    break;  // one centroid per cluster regardless of how many entries match
+                }
+            }
+        }
+        concepts
+    }
+
+    /// Periodically decay all permanent clusters.
+    /// Clusters whose reverberation drops below `theta_retain` are removed
+    /// (demoted from planning influence).  This prevents old crisis patterns
+    /// from permanently distorting the cost landscape after the regime passes.
+    pub fn decay_permanent_clusters(&mut self, lambda: f64, theta_retain: f64) {
+        for cluster in self.dejavu_clusters.iter_mut() {
+            cluster.reverberation *= lambda;
+        }
+        // Remove clusters that have both decayed below threshold AND
+        // haven't been reinforced in the last 50 ticks (avoid flapping).
+        let now = self.tick_counter;
+        self.dejavu_clusters.retain(|c| {
+            c.reverberation >= theta_retain
+                || now.saturating_sub(c.last_reinforced_tick) <= 50
         });
     }
 
@@ -639,12 +688,16 @@ impl VSABrain {
                                 self.dejavu_clusters.push(MemoryCluster {
                                     centroid: cluster.centroid,
                                     entries: cluster.entries.clone(),
+                                    reverberation: cluster.reverberation,
+                                    last_reinforced_tick: self.tick_counter,
                                 });
                             }
                         } else {
                             self.dejavu_clusters.push(MemoryCluster {
                                 centroid: cluster.centroid,
                                 entries: cluster.entries.clone(),
+                                reverberation: cluster.reverberation,
+                                last_reinforced_tick: self.tick_counter,
                             });
                         }
                     } else if sim < 0.52 {
@@ -654,6 +707,8 @@ impl VSABrain {
                         self.dejavu_clusters.push(MemoryCluster {
                             centroid: cluster.centroid,
                             entries: cluster.entries.clone(),
+                            reverberation: cluster.reverberation,
+                            last_reinforced_tick: self.tick_counter,
                         });
                     }
                 }

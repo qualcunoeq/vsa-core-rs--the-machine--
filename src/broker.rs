@@ -197,6 +197,8 @@ impl NeocortexBroker {
                     clusters.push(MemoryCluster {
                         centroid: vector,
                         entries: vec![entry],
+                        reverberation: 1.0,
+                        last_reinforced_tick: 0,
                     });
                 }
                 let _ = log_tx.send(format!(
@@ -330,7 +332,12 @@ impl NeocortexBroker {
         let mut clusters = self.dejavu_clusters.write().await;
 
         if clusters.is_empty() {
-            let new_cluster = MemoryCluster { centroid, entries };
+            let new_cluster = MemoryCluster {
+                centroid,
+                entries,
+                reverberation: 1.0,
+                last_reinforced_tick: 0,
+            };
             clusters.push(new_cluster.clone());
             let today_str = chrono::Utc::now().format("%Y-%m-%d").to_string();
             let _ = self
@@ -379,7 +386,12 @@ impl NeocortexBroker {
             // Discard noise
         } else {
             // Fission
-            let new_cluster = MemoryCluster { centroid, entries };
+            let new_cluster = MemoryCluster {
+                centroid,
+                entries,
+                reverberation: 1.0,
+                last_reinforced_tick: 0,
+            };
             clusters.push(new_cluster.clone());
             let new_idx = clusters.len() - 1;
 

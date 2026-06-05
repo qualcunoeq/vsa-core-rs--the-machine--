@@ -98,6 +98,86 @@ impl ResonatorVocabulary {
         }
         (best_term, best_sim)
     }
+
+    /// Prune redundant vocabulary terms by clustering similar vectors.
+    ///
+    /// Every new `learn_term` registration slightly shifts the geometry of
+    /// the whole cleanup projection (nearest-neighbour search over all terms).
+    /// Over time the Hamming neighbourhoods get denser and disambiguation
+    /// degrades.  This method merges terms whose n-gram vectors are within
+    /// `theta_sim` (default 0.70) of each other, keeping only the most
+    /// representative term per cluster (the one closest to the centroid).
+    ///
+    /// Returns the number of pruned terms.
+    pub fn prune_vocabulary(&mut self, theta_sim: f64) -> usize {
+        let terms: Vec<(String, Hypervector)> = self.terms.iter()
+            .map(|(k, v)| (k.clone(), *v))
+            .collect();
+
+        if terms.len() < 3 {
+            return 0; // nothing to prune
+        }
+
+        // Greedy agglomerative clustering
+        let mut keep: Vec<bool> = vec![true; terms.len()];
+
+        for i in 0..terms.len() {
+            if !keep[i] {
+                continue;
+            }
+            // Build a cluster around terms[i]
+            let mut cluster_indices = vec![i];
+
+            for j in (i + 1)..terms.len() {
+                if !keep[j] {
+                    continue;
+                }
+                let sim = 1.0 - terms[i].1.normalized_hamming_distance(&terms[j].1);
+                if sim >= theta_sim {
+                    cluster_indices.push(j);
+                }
+            }
+
+            if cluster_indices.len() <= 1 {
+                continue; // no duplicates found
+            }
+
+            // Compute cluster centroid (bundle of all members)
+            let refs: Vec<&Hypervector> = cluster_indices.iter()
+                .map(|&idx| &terms[idx].1)
+                .collect();
+            let centroid = Hypervector::bundle(&refs);
+
+            // Pick the term closest to the centroid as the representative
+            let mut best_idx = cluster_indices[0];
+            let mut best_sim = -1.0;
+            for &idx in &cluster_indices {
+                let sim = 1.0 - terms[idx].1.normalized_hamming_distance(&centroid);
+                if sim > best_sim {
+                    best_sim = sim;
+                    best_idx = idx;
+                }
+            }
+
+            // Mark all cluster members as "remove" except the best
+            for &idx in &cluster_indices {
+                if idx != best_idx {
+                    keep[idx] = false;
+                }
+            }
+        }
+
+        // Remove pruned terms from the map
+        let mut pruned = 0;
+        for (idx, (term, _)) in terms.iter().enumerate() {
+            if !keep[idx] {
+                self.terms.remove(term);
+                pruned += 1;
+            }
+        }
+
+        pruned
+    }
 }
 
 // ─── Rotation utilities ───────────────────────────────────────────────────

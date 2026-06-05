@@ -504,9 +504,10 @@ async fn run_agent(
             let network_mod = the_machine::sensory::NetworkTrafficModality::new("network");
             let _v_network = network_mod.encode();
 
-            // Decay working memory and extract consolidated records
+            // Decay working memory, permanent clusters, and extract consolidated records
             let consolidated = {
                 let mut brain_guard = brain_subconscious.write().await;
+                brain_guard.decay_permanent_clusters(0.98, 0.15);
                 let results = brain_guard.decay_transient_clusters_distributed(0.95, 5.0, 0.35);
                 let anxiety_val = brain_guard.anxiety;
                 *defense_subconscious.anxiety.write().await = anxiety_val;
@@ -554,6 +555,19 @@ async fn run_agent(
                     id_str
                 ));
                 defense_subconscious.scrub_traces().await;
+            }
+
+            // ── Periodically prune redundant vocabulary terms ────────
+            // Every 30 ticks, cluster similar n-gram vectors and remove
+            // near-duplicates so the cleanup projection stays sparse.
+            if ticker % 30 == 0 {
+                let pruned = resonator_vocab.prune_vocabulary(0.70);
+                if pruned > 0 {
+                    let _ = subconscious_log_tx.send(format!(
+                        "AGENT {}: Pruned {} redundant vocabulary terms (θ=0.70).",
+                        id_str, pruned
+                    ));
+                }
             }
 
             let mut telemetry = HashMap::new();
@@ -682,6 +696,13 @@ async fn run_agent(
                 .unwrap_or(c_crisis);
             let crisis_sim = 1.0 - current_world_state.normalized_hamming_distance(&crisis_memory);
 
+            // ── Inject learned crisis clusters into planning ─────────
+            // Build a combined crisis_concepts slice that includes both
+            // the statically-registered c_crisis vector AND any centroids
+            // learned from experience feedback.
+            let mut crisis_concepts = vec![c_crisis];
+            crisis_concepts.extend(brain_guard.collect_learned_crisis_concepts());
+
             if should_pivot {
                 let mut drive_guard = active_drive_subconscious.write().await;
                 let mut intent_guard = intent_subconscious.write().await;
@@ -691,7 +712,7 @@ async fn run_agent(
                     &dissonance, &resonator_vocab, &action_registry,
                     &auto_subjects, &auto_verbs, &auto_objects, 30,
                     &current_world_state, &c_normal, &drift_seq,
-                    &[c_crisis], regime_volatility, &exps,
+                    &crisis_concepts, regime_volatility, &exps,
                 ) {
                     *drive_guard = label;
                     *intent_guard = corrective_intent;
@@ -719,7 +740,7 @@ async fn run_agent(
                     &phantom, &resonator_vocab, &action_registry,
                     &auto_subjects, &auto_verbs, &auto_objects, 30,
                     &current_world_state, &c_normal, &drift_seq,
-                    &[c_crisis], regime_volatility, &exps,
+                    &crisis_concepts, regime_volatility, &exps,
                 ) {
                     *drive_guard = label;
                     *intent_guard = corrective_intent;
@@ -760,7 +781,7 @@ async fn run_agent(
                 let threat_horizon = the_machine::planning::simulate_threat_trajectory(
                     &current_world_state,
                     &forecast,
-                    &[c_crisis],
+                    &crisis_concepts,
                     0.80,
                 );
 
@@ -832,7 +853,7 @@ async fn run_agent(
                         &action_registry,
                         &resonator_vocab,
                         2,
-                        &[c_crisis],
+                        &crisis_concepts,
                         regime_volatility,
                         &exps,
                     ) {

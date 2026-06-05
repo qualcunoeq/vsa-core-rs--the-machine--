@@ -82,7 +82,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let shared_states = Arc::new(RwLock::new(HashMap::<String, AgentState>::new()));
                 let shared_states_clone = Arc::clone(&shared_states);
 
-                run_agent(id, role, port, url, 9050, Some(shared_states_clone), log_tx).await?;
+                run_agent(id, role, port, url, 9050, "HAROLD_FINCH_API_KEY_SECRET", Some(shared_states_clone), log_tx).await?;
 
                 // Draw standalone agent HUD
                 println!("\x1B[2J\x1B[1;1H"); // clear screen
@@ -175,6 +175,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 9001,
                 "https://news.ycombinator.com",
                 9050,
+                "HAROLD_FINCH_API_KEY_SECRET",
                 Some(shared_states_a1),
                 log_tx_a1,
             )
@@ -190,6 +191,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 9002,
                 "https://news.ycombinator.com/from?site=espressif.com",
                 9050,
+                "HAROLD_FINCH_API_KEY_SECRET",
                 Some(shared_states_a2),
                 log_tx_a2,
             )
@@ -205,6 +207,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 9003,
                 "https://finance.yahoo.com",
                 9050,
+                "HAROLD_FINCH_API_KEY_SECRET",
                 Some(shared_states_a3),
                 log_tx_a3,
             )
@@ -295,6 +298,7 @@ async fn run_agent(
     admin_port: u16,
     start_url: &str,
     broker_port: u16,
+    key_str: &str,
     shared_states: Option<Arc<RwLock<HashMap<String, AgentState>>>>,
     log_tx: mpsc::UnboundedSender<String>,
 ) -> Result<(), Box<dyn std::error::Error>> {
@@ -314,10 +318,10 @@ async fn run_agent(
     };
     {
         let mut writer_guard = writer.lock().await;
-        NeocortexBroker::write_msg(&mut writer_guard, &handshake).await?;
+        NeocortexBroker::write_msg(&mut writer_guard, &handshake, key_str).await?;
     }
 
-    let initial_clusters = match NeocortexBroker::read_msg(&mut reader).await? {
+    let initial_clusters = match NeocortexBroker::read_msg(&mut reader, key_str).await? {
         Some(HiveMessage::HandshakeResponse { permanent_clusters }) => permanent_clusters,
         _ => return Err(format!("Agent {} handshake failed", id).into()),
     };
@@ -355,11 +359,12 @@ async fn run_agent(
     let intent_recv = Arc::clone(&active_intent);
     let id_str = id.to_string();
     let log_tx_recv = log_tx.clone();
+    let key_str_recv = key_str.to_string();
 
     tokio::spawn(async move {
         let mut reader = reader;
         loop {
-            match NeocortexBroker::read_msg(&mut reader).await {
+            match NeocortexBroker::read_msg(&mut reader, &key_str_recv).await {
                 Ok(Some(HiveMessage::SyncUpdate {
                     is_new_cluster,
                     cluster_index,
@@ -449,6 +454,7 @@ async fn run_agent(
     let active_drive_subconscious = Arc::clone(&shared_active_drive);
     let id_str = id.to_string();
     let role_str = role_name.to_string();
+    let key_str_subconscious = key_str.to_string();
 
     tokio::spawn(async move {
         let action_registry = the_machine::action::ActionRegistry::new();
@@ -465,6 +471,13 @@ async fn run_agent(
             std::collections::VecDeque::new();
         let mut active_drift;
         let history_limit = 5;
+
+        let mut stable_error = 0.5;
+        let mut nominal_error = 0.5;
+        let mut volatile_error = 0.5;
+        let mut pred_stable: Option<Hypervector> = None;
+        let mut pred_nominal: Option<Hypervector> = None;
+        let mut pred_volatile: Option<Hypervector> = None;
 
         let mut ticker = 0;
         let mut sent_lockdown = false;
@@ -516,7 +529,7 @@ async fn run_agent(
                     agent_anxiety: anxiety_for_broker,
                 };
                 let mut writer_guard = writer_clone.lock().await;
-                let _ = NeocortexBroker::write_msg(&mut writer_guard, &request).await;
+                let _ = NeocortexBroker::write_msg(&mut writer_guard, &request, &key_str_subconscious).await;
             }
 
             // Watchdog Panic Lockdown Check
@@ -531,7 +544,7 @@ async fn run_agent(
                     attacker_info: format!("Agent {} Admin Breach", id_str),
                 };
                 let mut writer_guard = writer_clone.lock().await;
-                let _ = NeocortexBroker::write_msg(&mut writer_guard, &request).await;
+                let _ = NeocortexBroker::write_msg(&mut writer_guard, &request, &key_str_subconscious).await;
             }
 
             let port_rotated = defense_subconscious.evaluate_threat_response().await;
@@ -590,6 +603,17 @@ async fn run_agent(
 
             let current_world_state =
                 Hypervector::bundle(&[&bound_market, &bound_news, &bound_infra]);
+
+            if let (Some(p_s), Some(p_n), Some(p_v)) = (pred_stable, pred_nominal, pred_volatile) {
+                let err_s = current_world_state.normalized_hamming_distance(&p_s);
+                let err_n = current_world_state.normalized_hamming_distance(&p_n);
+                let err_v = current_world_state.normalized_hamming_distance(&p_v);
+
+                stable_error = stable_error * 0.8 + err_s * 0.2;
+                nominal_error = nominal_error * 0.8 + err_n * 0.2;
+                volatile_error = volatile_error * 0.8 + err_v * 0.2;
+            }
+
             {
                 let mut ws_guard = world_state_subconscious.write().await;
                 *ws_guard = current_world_state;
@@ -721,6 +745,9 @@ async fn run_agent(
                     drift_var,
                     5,
                     3,
+                    stable_error,
+                    nominal_error,
+                    volatile_error,
                 );
                 let threat_horizon = the_machine::planning::simulate_threat_trajectory(
                     &current_world_state,
@@ -748,6 +775,11 @@ async fn run_agent(
                     // Normalise drift variance to a regime volatility index [0, 1]
                     let regime_volatility = (drift_var / 0.5).min(1.0);
 
+                    let exps = {
+                        let brain_read = brain_subconscious.read().await;
+                        brain_read.experiences.clone()
+                    };
+
                     if let Some(trajectory) = the_machine::planning::find_optimal_trajectory(
                         &current_world_state,
                         &c_normal,
@@ -757,6 +789,7 @@ async fn run_agent(
                         2,
                         &[c_crisis],
                         regime_volatility,
+                        &exps,
                     ) {
                         let _ = subconscious_log_tx.send(format!(
                             "AGENT {}: Corrective plan formulated. Steps: {}, Cost: {:.2}",
@@ -778,6 +811,22 @@ async fn run_agent(
                                 step_param_hv,
                                 &resonator_vocab,
                             );
+
+                            let v_outcome = Hypervector::encode_text_ngram(
+                                if exec_res.is_ok() { "SUCCESS" } else { "FAILURE" },
+                                3
+                            );
+                            if let Some(act_hv) = action_registry.get_action_vector(&step.action) {
+                                let experience_hv = act_hv
+                                    .bitwise_xor(step_param_hv)
+                                    .bitwise_xor(&current_world_state)
+                                    .bitwise_xor(&v_outcome);
+                                {
+                                    let mut brain_write = brain_subconscious.write().await;
+                                    brain_write.experiences.push(experience_hv);
+                                }
+                            }
+
                             match exec_res {
                                 Ok(stdout) => {
                                     let _ = subconscious_log_tx.send(format!(
@@ -846,6 +895,20 @@ async fn run_agent(
             if recent_actions.len() > history_limit {
                 recent_actions.pop_front();
             }
+
+            let current_deltas_vec: Vec<Hypervector> = recent_deltas.iter().cloned().collect();
+            let nominal_drift = the_machine::planning::bundle_weighted_ewma(&current_deltas_vec, 3);
+            let mut reversed = current_deltas_vec.clone();
+            reversed.reverse();
+            let stable_drift = the_machine::planning::bundle_weighted_ewma(&reversed, 3);
+            let newest_delta = current_deltas_vec.last().copied().unwrap_or(nominal_drift);
+            let amp_refs: Vec<&Hypervector> =
+                std::iter::repeat(&newest_delta).take(5).chain(std::iter::once(&nominal_drift)).collect();
+            let volatile_drift = Hypervector::bundle(&amp_refs);
+
+            pred_stable = Some(current_world_state.rotate_left(13).bitwise_xor(&accumulated_action).bitwise_xor(&stable_drift));
+            pred_nominal = Some(current_world_state.rotate_left(13).bitwise_xor(&accumulated_action).bitwise_xor(&nominal_drift));
+            pred_volatile = Some(current_world_state.rotate_left(13).bitwise_xor(&accumulated_action).bitwise_xor(&volatile_drift));
 
             // Sync stats to shared dashboard state
             if let Some(ref states) = shared_states {

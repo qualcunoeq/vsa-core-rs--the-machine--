@@ -30,6 +30,7 @@ impl ResonatorVocabulary {
             "Market", "News", "Infra",
             "hosts", "ledger", "read", "write", "execute", "panic", "sync",
             "What", "is", "the", "crisis", "breached", "server", "admin",
+            "IF_RULE", "CAUSE_RULE", "THEN_RULE", "consequence",
         ];
         for term in baseline {
             vocab.register_term(term);
@@ -324,6 +325,105 @@ fn inject_noise(
     }
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub enum RecursiveSlot {
+    Term(String),
+    Nested(Box<(String, String, RecursiveSlot)>),
+}
+
+fn factorize_recursive_internal(
+    thought_vector: &Hypervector,
+    vocab: &ResonatorVocabulary,
+    subjects: &[String],
+    verbs: &[String],
+    objects: &[String],
+    max_iterations: usize,
+    depth: usize,
+) -> Option<(String, String, RecursiveSlot)> {
+    if depth > 3 {
+        return None;
+    }
+    if vocab.terms.is_empty() || subjects.is_empty() || verbs.is_empty() || objects.is_empty() {
+        return None;
+    }
+
+    // Try all pairs of Subject and Verb
+    for s_str in subjects {
+        let s_vec = match vocab.get_vector(s_str) {
+            Some(v) => v,
+            None => continue,
+        };
+        for v_str in verbs {
+            let v_vec = match vocab.get_vector(v_str) {
+                Some(v) => v,
+                None => continue,
+            };
+
+            let s_rot13 = s_vec.rotate_left(1 * 13);
+            let v_rot26 = v_vec.rotate_left(2 * 13);
+            let o_est_raw = rotate_right(
+                &thought_vector.bitwise_xor(&s_rot13).bitwise_xor(&v_rot26),
+                3 * 13,
+            );
+
+            // 1. Check if the estimated object slot matches a flat vocabulary term
+            let (o_str, o_sim) = vocab.cleanup_subset(&o_est_raw, objects);
+            if o_sim >= MIN_RECONSTRUCTION_ENERGY {
+                return Some((s_str.clone(), v_str.clone(), RecursiveSlot::Term(o_str)));
+            }
+
+            // 2. Try nested factorization of the object slot recursively
+            if let Some((sub_s, sub_v, sub_slot)) = factorize_recursive_internal(
+                &o_est_raw,
+                vocab,
+                subjects,
+                verbs,
+                objects,
+                max_iterations,
+                depth + 1,
+            ) {
+                if let RecursiveSlot::Term(ref s) = sub_slot {
+                    if s.is_empty() {
+                        continue;
+                    }
+                }
+                return Some((
+                    s_str.clone(),
+                    v_str.clone(),
+                    RecursiveSlot::Nested(Box::new((sub_s, sub_v, sub_slot))),
+                ));
+            }
+        }
+    }
+
+    None
+}
+
+/// Factorises a potentially nested thought vector.
+///
+/// 1. Try all Subject and Verb pairs in the vocabulary.
+/// 2. Estimate Object vector via unbinding: O_est = rotate_right(T ⊕ ρ₁₃(S) ⊕ ρ₂₆(V), 39).
+/// 3. Check if O_est is close to a single term. If similarity ≥ 0.65, return RecursiveSlot::Term.
+/// 4. Otherwise, recursively factorize O_est as a sub-thought SVO and return RecursiveSlot::Nested.
+pub fn factorize_recursive(
+    thought_vector: &Hypervector,
+    vocab: &ResonatorVocabulary,
+    subjects: &[String],
+    verbs: &[String],
+    objects: &[String],
+    max_iterations: usize,
+) -> Option<(String, String, RecursiveSlot)> {
+    factorize_recursive_internal(
+        thought_vector,
+        vocab,
+        subjects,
+        verbs,
+        objects,
+        max_iterations,
+        0,
+    )
+}
+
 // ─── Tests ────────────────────────────────────────────────────────────────
 
 #[cfg(test)]
@@ -464,5 +564,52 @@ mod tests {
         let shifted = v.rotate_left(13);
         let unshifted = rotate_right(&shifted, 13);
         assert_eq!(v, unshifted);
+    }
+
+    #[test]
+    fn test_recursive_factorization_nested() {
+        let mut vocab = make_vocab();
+        vocab.register_term("IF_RULE");
+        vocab.register_term("Breach");
+
+        let s_hv = vocab.get_vector("IF_RULE").unwrap();
+        let v_hv = vocab.get_vector("Breach").unwrap();
+        
+        // Nested Object: "Finch write ledger"
+        let sub_s = vocab.get_vector("Finch").unwrap();
+        let sub_v = vocab.get_vector("write").unwrap();
+        let sub_o = vocab.get_vector("ledger").unwrap();
+        let sub_t = encode_svo(sub_s, sub_v, sub_o);
+
+        // Nested Thought: "IF_RULE Breach (Finch write ledger)"
+        let t = encode_svo(s_hv, v_hv, &sub_t);
+
+        let subjects = vec![
+            "IF_RULE".to_string(),
+            "Finch".to_string(),
+            "Agent-1".to_string(),
+        ];
+        let verbs = vec!["Breach".to_string(), "write".to_string(), "read".to_string()];
+        let objects = vec![
+            "ledger".to_string(),
+            "hosts".to_string(),
+            "server".to_string(),
+        ];
+
+        let res = factorize_recursive(&t, &vocab, &subjects, &verbs, &objects, 30);
+        assert!(res.is_some(), "Recursive resonator should resolve nested thought");
+        let (s, v, o_slot) = res.unwrap();
+        assert_eq!(s, "IF_RULE");
+        assert_eq!(v, "Breach");
+        
+        match o_slot {
+            RecursiveSlot::Nested(boxed) => {
+                let (sub_s_res, sub_v_res, sub_o_slot) = *boxed;
+                assert_eq!(sub_s_res, "Finch");
+                assert_eq!(sub_v_res, "write");
+                assert_eq!(sub_o_slot, RecursiveSlot::Term("ledger".to_string()));
+            }
+            _ => panic!("Expected Nested slot"),
+        }
     }
 }

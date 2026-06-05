@@ -168,6 +168,7 @@ pub fn find_optimal_trajectory(
     max_depth: usize,
     crisis_concepts: &[Hypervector],
     regime_volatility: f64,
+    experiences: &[Hypervector],
 ) -> Option<PlanningTrajectory> {
     if vocab.terms.is_empty() {
         return None;
@@ -189,6 +190,14 @@ pub fn find_optimal_trajectory(
             });
         }
     }
+
+    // Prepare experience bundle if available
+    let exp_bundle = if !experiences.is_empty() {
+        let refs: Vec<&Hypervector> = experiences.iter().collect();
+        Some(Hypervector::bundle(&refs))
+    } else {
+        None
+    };
 
     // Queue for search tree traversal: (current_state, steps_taken, cumulative_cost)
     let mut queue: Vec<(Hypervector, Vec<PlanningStep>, f64)> =
@@ -223,7 +232,7 @@ pub fn find_optimal_trajectory(
                     Some(p) => p,
                     None => continue, // unknown action — skip
                 };
-                let step_cost = calculate_dynamic_cost(
+                let mut step_cost = calculate_dynamic_cost(
                     profile,
                     &next_state,
                     crisis_concepts,
@@ -231,6 +240,23 @@ pub fn find_optimal_trajectory(
                     THETA_SAFE,
                     regime_volatility,
                 );
+
+                // ── VSA Outcome-Vector Learning Penalty ────────────────
+                if let Some(ref exp_b) = exp_bundle {
+                    let a_vec = profile.vector;
+                    let p_vec = step.step_vector.bitwise_xor(&a_vec);
+                    let o_est = exp_b.bitwise_xor(&a_vec).bitwise_xor(&p_vec).bitwise_xor(&curr_state);
+
+                    let v_success = Hypervector::encode_text_ngram("SUCCESS", 3);
+                    let v_failure = Hypervector::encode_text_ngram("FAILURE", 3);
+                    let sim_success = 1.0 - o_est.normalized_hamming_distance(&v_success);
+                    let sim_failure = 1.0 - o_est.normalized_hamming_distance(&v_failure);
+
+                    if sim_failure > sim_success && sim_failure > 0.55 {
+                        let penalty = (sim_failure - sim_success) * 0.5;
+                        step_cost += penalty;
+                    }
+                }
 
                 let next_cost = cum_cost + step_cost;
                 let mut next_steps = steps.clone();
@@ -381,12 +407,16 @@ pub fn drift_variance(deltas: &[Hypervector]) -> f64 {
     total_dist / pairs as f64
 }
 
-/// Build a probabilistic `DriftForecast` from the recent-delta history.
+/// Build a probabilistic `DriftForecast` from the recent-delta history,
+/// adjusting Bayesian Model Averaging weights based on historical regime errors.
 pub fn build_drift_forecast(
     deltas: &[Hypervector],
     variance: f64,
     horizon: usize,
     half_life: usize,
+    stable_err: f64,
+    nominal_err: f64,
+    volatile_err: f64,
 ) -> DriftForecast {
     let mut forecast = DriftForecast::new();
 
@@ -417,11 +447,28 @@ pub fn build_drift_forecast(
         std::iter::repeat(&newest).take(5).chain(std::iter::once(&nominal)).collect();
     let volatile_drift = Hypervector::bundle(&amp_refs);
 
-    // Weights spread proportional to uncertainty
+    // Weights spread proportional to uncertainty (prior)
     let uncertainty = (variance - 0.38) / 0.12;
-    let stable_weight = 0.15 + uncertainty * 0.25;
-    let volatile_weight = 0.15 + uncertainty * 0.25;
-    let nominal_weight = 1.0 - stable_weight - volatile_weight;
+    let prior_stable = 0.15 + uncertainty * 0.25;
+    let prior_volatile = 0.15 + uncertainty * 0.25;
+    let prior_nominal = (1.0 - prior_stable - prior_volatile).max(0.0);
+
+    // Performance-based scaling factor (posterior scaling)
+    let perf_stable = 1.0 / (stable_err + 0.05);
+    let perf_nominal = 1.0 / (nominal_err + 0.05);
+    let perf_volatile = 1.0 / (volatile_err + 0.05);
+
+    let mut stable_weight = prior_stable * perf_stable;
+    let mut nominal_weight = prior_nominal * perf_nominal;
+    let mut volatile_weight = prior_volatile * perf_volatile;
+
+    // Normalise
+    let total_w = stable_weight + nominal_weight + volatile_weight;
+    if total_w > 0.0 {
+        stable_weight /= total_w;
+        nominal_weight /= total_w;
+        volatile_weight /= total_w;
+    }
 
     let stable_seq = vec![stable_drift; horizon];
     let nominal_seq = vec![nominal; horizon];
@@ -580,7 +627,7 @@ mod tests {
         let v = Hypervector::new_random();
         let deltas = vec![v, v, v, v, v];
         let var = drift_variance(&deltas);
-        let forecast = build_drift_forecast(&deltas, var, 10, 3);
+        let forecast = build_drift_forecast(&deltas, var, 10, 3, 0.5, 0.5, 0.5);
         assert_eq!(forecast.regimes.len(), 1);
         assert_eq!(forecast.regimes[0].label, "nominal");
     }
@@ -594,7 +641,7 @@ mod tests {
         let d5 = Hypervector::new_random();
         let deltas = vec![d1, d2, d3, d4, d5];
         let var = drift_variance(&deltas);
-        let forecast = build_drift_forecast(&deltas, var, 10, 3);
+        let forecast = build_drift_forecast(&deltas, var, 10, 3, 0.5, 0.5, 0.5);
         assert_eq!(forecast.regimes.len(), 3);
         let total: f64 = forecast.regimes.iter().map(|r| r.weight).sum();
         assert!((total - 1.0).abs() < 0.001);
@@ -680,7 +727,7 @@ mod tests {
         let drift_seq = vec![e_world; 2];
         let traj_opt = find_optimal_trajectory(
             &s0, &goal_state, &drift_seq, &reg, &vocab, 2,
-            &[], 0.0, // no crisis concepts → static costs
+            &[], 0.0, &[], // no crisis concepts → static costs
         );
         assert!(traj_opt.is_some(), "Should find a valid trajectory");
 
@@ -708,7 +755,7 @@ mod tests {
         let drift_seq = vec![e_world; 2];
         let traj_opt = find_optimal_trajectory(
             &s0, &goal, &drift_seq, &reg, &vocab, 2,
-            &[], 0.0,
+            &[], 0.0, &[],
         );
         assert!(traj_opt.is_some());
 
@@ -716,5 +763,41 @@ mod tests {
         assert_eq!(traj.steps.len(), 1);
         assert_eq!(traj.steps[0].action, "execute_bash");
         assert_eq!(traj.steps[0].parameter, "cargo check");
+    }
+
+    #[test]
+    fn test_outcome_learning_penalises_failures() {
+        let reg = ActionRegistry::new();
+        let mut vocab = ResonatorVocabulary::new();
+        vocab.register_term("hosts");
+
+        let s0 = Hypervector::new_random();
+        let e_world = Hypervector::new_zero();
+
+        let act_read = reg.get_action_vector("sys_read").unwrap();
+        let param_hosts = vocab.get_vector("hosts").unwrap();
+        let step = act_read.bitwise_xor(param_hosts);
+        let goal = s0.rotate_left(13).bitwise_xor(&step).bitwise_xor(&e_world);
+
+        let drift_seq = vec![e_world; 1];
+        let traj_neutral = find_optimal_trajectory(
+            &s0, &goal, &drift_seq, &reg, &vocab, 1,
+            &[], 0.0, &[],
+        ).unwrap();
+
+        let v_failure = Hypervector::encode_text_ngram("FAILURE", 3);
+        let exp = act_read.bitwise_xor(param_hosts).bitwise_xor(&s0).bitwise_xor(&v_failure);
+        
+        let traj_penalised = find_optimal_trajectory(
+            &s0, &goal, &drift_seq, &reg, &vocab, 1,
+            &[], 0.0, &[exp],
+        ).unwrap();
+
+        assert!(
+            traj_penalised.cumulative_cost > traj_neutral.cumulative_cost,
+            "Cost should increase due to failure penalty: neutral={}, penalised={}",
+            traj_neutral.cumulative_cost,
+            traj_penalised.cumulative_cost
+        );
     }
 }

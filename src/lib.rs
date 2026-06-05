@@ -383,6 +383,7 @@ pub struct VSABrain {
     pub threshold: f64,
     pub tick_counter: usize,
     pub anxiety: f64,
+    pub experiences: Vec<Hypervector>,
 }
 
 impl VSABrain {
@@ -395,6 +396,7 @@ impl VSABrain {
             threshold,
             tick_counter: 0,
             anxiety: 0.0,
+            experiences: Vec::new(),
         }
     }
 
@@ -1092,11 +1094,11 @@ mod tests {
             agent_id: "agent_test_1".to_string(),
             role: "News".to_string(),
         };
-        NeocortexBroker::write_msg(&mut writer, &handshake)
+        NeocortexBroker::write_msg(&mut writer, &handshake, "test_secret_key")
             .await
             .unwrap();
 
-        match NeocortexBroker::read_msg(&mut reader)
+        match NeocortexBroker::read_msg(&mut reader, "test_secret_key")
             .await
             .unwrap()
             .unwrap()
@@ -1118,11 +1120,11 @@ mod tests {
             entries: vec![entry],
             agent_anxiety: 0.0,
         };
-        NeocortexBroker::write_msg(&mut writer, &consolidate)
+        NeocortexBroker::write_msg(&mut writer, &consolidate, "test_secret_key")
             .await
             .unwrap();
 
-        match NeocortexBroker::read_msg(&mut reader)
+        match NeocortexBroker::read_msg(&mut reader, "test_secret_key")
             .await
             .unwrap()
             .unwrap()
@@ -1191,12 +1193,12 @@ mod tests {
         };
         {
             let mut writer_guard = writer.lock().await;
-            NeocortexBroker::write_msg(&mut writer_guard, &handshake)
+            NeocortexBroker::write_msg(&mut writer_guard, &handshake, "test_secret_key")
                 .await
                 .unwrap();
         }
 
-        let initial_clusters = match NeocortexBroker::read_msg(&mut reader)
+        let initial_clusters = match NeocortexBroker::read_msg(&mut reader, "test_secret_key")
             .await
             .unwrap()
             .unwrap()
@@ -1222,7 +1224,7 @@ mod tests {
         tokio::spawn(async move {
             let mut reader = reader;
             loop {
-                match NeocortexBroker::read_msg(&mut reader).await {
+                match NeocortexBroker::read_msg(&mut reader, "test_secret_key").await {
                     Ok(Some(HiveMessage::PanicLockdown { .. })) => {
                         *lr_clone.write().await = true;
 
@@ -1267,7 +1269,7 @@ mod tests {
                         attacker_info: "Mock Attack".to_string(),
                     };
                     let mut writer_guard = writer_subconscious.lock().await;
-                    let _ = NeocortexBroker::write_msg(&mut writer_guard, &request).await;
+                    let _ = NeocortexBroker::write_msg(&mut writer_guard, &request, "test_secret_key").await;
                 }
             }
         });
@@ -1459,7 +1461,7 @@ mod tests {
 
         // Run planning solver with zero-drift sequence
         let drift_seq = vec![Hypervector::new_zero(); 2];
-        let traj_opt = find_optimal_trajectory(&s0, &goal_state, &drift_seq, &reg, &vocab, 2, &[], 0.0);
+        let traj_opt = find_optimal_trajectory(&s0, &goal_state, &drift_seq, &reg, &vocab, 2, &[], 0.0, &[]);
         assert!(traj_opt.is_some(), "Should find a valid trajectory");
 
         let traj = traj_opt.unwrap();
@@ -1495,7 +1497,7 @@ mod tests {
         let goal = s0.rotate_left(13).bitwise_xor(&step_read);
 
         let drift_seq = vec![Hypervector::new_zero(); 1];
-        let traj = find_optimal_trajectory(&s0, &goal, &drift_seq, &reg, &vocab, 1, &[], 0.0).unwrap();
+        let traj = find_optimal_trajectory(&s0, &goal, &drift_seq, &reg, &vocab, 1, &[], 0.0, &[]).unwrap();
         assert_eq!(traj.steps.len(), 1);
         assert_eq!(traj.steps[0].action, "sys_read");
     }
@@ -1543,14 +1545,14 @@ mod tests {
 
         // Test pathfinder on goal_correct: should ONLY find [step1, step2] in order
         let traj_correct =
-            find_optimal_trajectory(&s0, &goal_correct, &drift_seq, &reg, &vocab, 2, &[], 0.0).unwrap();
+            find_optimal_trajectory(&s0, &goal_correct, &drift_seq, &reg, &vocab, 2, &[], 0.0, &[]).unwrap();
         assert_eq!(traj_correct.steps.len(), 2);
         assert_eq!(traj_correct.steps[0].action, "sys_read");
         assert_eq!(traj_correct.steps[1].action, "execute_bash");
 
         // Test pathfinder on goal_inverted: should ONLY find [step2, step1] in order
         let traj_inverted =
-            find_optimal_trajectory(&s0, &goal_inverted, &drift_seq, &reg, &vocab, 2, &[], 0.0).unwrap();
+            find_optimal_trajectory(&s0, &goal_inverted, &drift_seq, &reg, &vocab, 2, &[], 0.0, &[]).unwrap();
         assert_eq!(traj_inverted.steps.len(), 2);
         assert_eq!(traj_inverted.steps[0].action, "execute_bash");
         assert_eq!(traj_inverted.steps[1].action, "sys_read");
@@ -1589,7 +1591,7 @@ mod tests {
 
         // 3. Run pathfinder targeting s_stable under e_world drift
         let drift_seq = vec![e_world; 1];
-        let traj = find_optimal_trajectory(&s0, &s_stable, &drift_seq, &reg, &vocab, 1, &[c_crisis], 0.0).unwrap();
+        let traj = find_optimal_trajectory(&s0, &s_stable, &drift_seq, &reg, &vocab, 1, &[c_crisis], 0.0, &[]).unwrap();
         assert_eq!(traj.steps.len(), 1);
         assert_eq!(traj.steps[0].action, "sys_read");
         assert_eq!(traj.steps[0].parameter, "hosts");

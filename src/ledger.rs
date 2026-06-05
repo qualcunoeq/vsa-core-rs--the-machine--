@@ -321,6 +321,7 @@ mod tests {
     fn test_ledger_compaction() {
         std::fs::create_dir_all("data").unwrap();
         let temp_file = "data/temp_test_compaction.bin";
+        let _ = std::fs::remove_file(temp_file);
         let static_key = "test_compaction_key";
         let ledger = LongTermLedger::new(static_key, temp_file);
         let state = Hypervector::new_random();

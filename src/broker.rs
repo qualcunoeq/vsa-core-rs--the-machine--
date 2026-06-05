@@ -4,6 +4,33 @@ use std::sync::Arc;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
 use tokio::sync::{Mutex, RwLock};
+use rand::Rng;
+use sha2::{Digest, Sha256};
+use hmac::{Hmac, Mac};
+
+type HmacSha256 = Hmac<Sha256>;
+
+fn encrypt_decrypt_payload(data: &[u8], key_str: &str, salt: &[u8; 16]) -> Vec<u8> {
+    let mut hasher = Sha256::new();
+    hasher.update(key_str.as_bytes());
+    hasher.update(salt);
+    let key = hasher.finalize();
+
+    let mut keystream = Vec::new();
+    let mut counter = 0u32;
+    while keystream.len() < data.len() {
+        let mut hmac = HmacSha256::new_from_slice(&key).unwrap();
+        hmac.update(&counter.to_be_bytes());
+        let block = hmac.finalize().into_bytes();
+        keystream.extend_from_slice(&block);
+        counter += 1;
+    }
+
+    data.iter()
+        .zip(keystream.iter())
+        .map(|(a, b)| a ^ b)
+        .collect()
+}
 
 // ─── Consensus constants ───────────────────────────────────────────────────
 
@@ -55,31 +82,46 @@ impl NeocortexBroker {
         }
     }
 
-    /// Helper function to write a HiveMessage to an agent stream
+    /// Helper function to write a HiveMessage to an agent stream securely
     pub async fn write_msg(
         writer: &mut tokio::net::tcp::OwnedWriteHalf,
         msg: &HiveMessage,
+        key_str: &str,
     ) -> Result<(), std::io::Error> {
         let json_bytes = serde_json::to_vec(msg)
             .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
-        let len = json_bytes.len() as u32;
+        let mut salt = [0u8; 16];
+        rand::thread_rng().fill(&mut salt);
+        let encrypted_bytes = encrypt_decrypt_payload(&json_bytes, key_str, &salt);
+        let mut packed = Vec::with_capacity(16 + encrypted_bytes.len());
+        packed.extend_from_slice(&salt);
+        packed.extend_from_slice(&encrypted_bytes);
+        let len = packed.len() as u32;
         writer.write_all(&len.to_be_bytes()).await?;
-        writer.write_all(&json_bytes).await?;
+        writer.write_all(&packed).await?;
         Ok(())
     }
 
-    /// Helper function to read a HiveMessage from an agent stream
+    /// Helper function to read a HiveMessage from an agent stream securely
     pub async fn read_msg(
         reader: &mut tokio::net::tcp::OwnedReadHalf,
+        key_str: &str,
     ) -> Result<Option<HiveMessage>, std::io::Error> {
         let mut len_bytes = [0u8; 4];
         if let Err(_) = reader.read_exact(&mut len_bytes).await {
             return Ok(None); // Connection closed
         }
         let len = u32::from_be_bytes(len_bytes) as usize;
+        if len < 16 {
+            return Err(std::io::Error::new(std::io::ErrorKind::InvalidData, "Payload too short to contain salt"));
+        }
         let mut buf = vec![0u8; len];
         reader.read_exact(&mut buf).await?;
-        let msg: HiveMessage = serde_json::from_slice(&buf)
+        let mut salt = [0u8; 16];
+        salt.copy_from_slice(&buf[0..16]);
+        let ciphertext = &buf[16..];
+        let decrypted_bytes = encrypt_decrypt_payload(ciphertext, key_str, &salt);
+        let msg: HiveMessage = serde_json::from_slice(&decrypted_bytes)
             .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
         Ok(Some(msg))
     }
@@ -90,7 +132,7 @@ impl NeocortexBroker {
         let mut disconnected_indices = Vec::new();
 
         for (idx, client) in clients_guard.iter_mut().enumerate() {
-            if let Err(_) = Self::write_msg(client, msg).await {
+            if let Err(_) = Self::write_msg(client, msg, &self.key).await {
                 disconnected_indices.push(idx);
             }
         }
@@ -444,7 +486,7 @@ impl NeocortexBroker {
                 let mut writer = writer;
 
                 // 1. Process Handshake
-                let (agent_id, _agent_role) = match Self::read_msg(&mut reader).await {
+                let (agent_id, _agent_role) = match Self::read_msg(&mut reader, &broker_clone.key).await {
                     Ok(Some(HiveMessage::HandshakeRequest { agent_id: id, role })) => {
                         let _ = log_tx_clone
                             .send(format!("BROKER: Connection from Agent {} ({})", id, role));
@@ -456,7 +498,7 @@ impl NeocortexBroker {
                         let response = HiveMessage::HandshakeResponse {
                             permanent_clusters: current_clusters,
                         };
-                        if let Err(_) = Self::write_msg(&mut writer, &response).await {
+                        if let Err(_) = Self::write_msg(&mut writer, &response, &broker_clone.key).await {
                             return;
                         }
                         (id, role)
@@ -476,7 +518,7 @@ impl NeocortexBroker {
 
                 // 2. Receive commands loop
                 loop {
-                    match Self::read_msg(&mut reader).await {
+                    match Self::read_msg(&mut reader, &broker_clone.key).await {
                         Ok(Some(HiveMessage::ConsolidateRequest {
                             centroid,
                             entries,

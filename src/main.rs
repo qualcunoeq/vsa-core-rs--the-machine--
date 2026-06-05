@@ -408,6 +408,11 @@ async fn run_agent(
 
     // 5. Spawn Crawler Loop
     let mut forager = VSAForager::new(initial_intent, start_url.to_string(), 1500);
+    // Share the semantic target parameter so the subconscious loop can
+    // update it whenever a structured corrective intent is formulated.
+    let forager_target_parameter: Arc<RwLock<Option<Hypervector>>> =
+        Arc::new(RwLock::new(None));
+    forager.target_parameter = Arc::clone(&forager_target_parameter);
     forager.intent = Arc::clone(&active_intent);
     forager.current_url = Arc::clone(&shared_current_url);
     forager.brain = Some(Arc::clone(&brain_shared));
@@ -440,6 +445,7 @@ async fn run_agent(
     let writer_clone = Arc::clone(&writer);
     let current_url_forager = Arc::clone(&shared_current_url);
     let metrics_clone = Arc::clone(&shared_metrics);
+    let forager_target = Arc::clone(&forager_target_parameter);
     let active_drive_subconscious = Arc::clone(&shared_active_drive);
     let id_str = id.to_string();
     let role_str = role_name.to_string();
@@ -457,7 +463,7 @@ async fn run_agent(
             std::collections::VecDeque::new();
         let mut recent_deltas: std::collections::VecDeque<Hypervector> =
             std::collections::VecDeque::new();
-        let mut active_drift = Hypervector::new_zero();
+        let mut active_drift;
         let history_limit = 5;
 
         let mut ticker = 0;
@@ -494,13 +500,21 @@ async fn run_agent(
                 results
             };
 
-            // Send consolidated items to Broker
+            // Send consolidated items to Broker with current anxiety level
+            let anxiety_for_broker = {
+                let d = defense_subconscious.anxiety.read().await;
+                *d
+            };
             for (centroid, entries) in consolidated {
                 let _ = subconscious_log_tx.send(format!(
-                    "AGENT {}: Submitting consolidation request to Broker.",
-                    id_str
+                    "AGENT {}: Submitting consolidation request to Broker (anxiety={:.2}).",
+                    id_str, anxiety_for_broker
                 ));
-                let request = HiveMessage::ConsolidateRequest { centroid, entries };
+                let request = HiveMessage::ConsolidateRequest {
+                    centroid,
+                    entries,
+                    agent_anxiety: anxiety_for_broker,
+                };
                 let mut writer_guard = writer_clone.lock().await;
                 let _ = NeocortexBroker::write_msg(&mut writer_guard, &request).await;
             }
@@ -606,6 +620,14 @@ async fn run_agent(
                 AutonomyDrive::calculate_dissonance(&current_world_state, &historical_baseline);
             let should_pivot = drive.evaluates_necessity_to_pivot(&dissonance);
 
+            // SVO candidate lists for semantic intent formulation
+            let auto_subjects: Vec<String> =
+                the_machine::autonomy::DEFAULT_SUBJECTS.iter().map(|s| s.to_string()).collect();
+            let auto_verbs: Vec<String> =
+                the_machine::autonomy::DEFAULT_VERBS.iter().map(|v| v.to_string()).collect();
+            let auto_objects: Vec<String> =
+                the_machine::autonomy::DEFAULT_OBJECTS.iter().map(|o| o.to_string()).collect();
+
             let crisis_memory = brain_guard
                 .dejavu_clusters
                 .first()
@@ -615,46 +637,126 @@ async fn run_agent(
 
             if should_pivot {
                 let mut drive_guard = active_drive_subconscious.write().await;
-                *drive_guard = "Subconscious (Dissonance Pivot)".to_string();
                 let mut intent_guard = intent_subconscious.write().await;
-                *intent_guard = dissonance;
+
+                // Attempt to parse dissonance semantically and formulate corrective intent
+                let chosen_intent = if let Some((corrective_intent, label)) = drive.formulate_intent(
+                    &dissonance,
+                    &resonator_vocab,
+                    &action_registry,
+                    &auto_subjects,
+                    &auto_verbs,
+                    &auto_objects,
+                    30,
+                ) {
+                    *drive_guard = label;
+                    *intent_guard = corrective_intent;
+                    corrective_intent
+                } else {
+                    *drive_guard =
+                        "Subconscious (Dissonance Pivot — fallback)".to_string();
+                    *intent_guard = dissonance;
+                    dissonance
+                };
+
+                // Update the forager's semantic target parameter
+                if let Some((_name, param_hv)) =
+                    action_registry.decode_intent(&chosen_intent, &resonator_vocab)
+                {
+                    *forager_target.write().await = Some(param_hv);
+                }
             } else if crisis_sim > 0.55 {
                 let mut drive_guard = active_drive_subconscious.write().await;
-                *drive_guard = "Subconscious (Phantom Pain)".to_string();
                 let mut intent_guard = intent_subconscious.write().await;
-                *intent_guard = current_world_state.bitwise_xor(&crisis_memory);
+
+                // Phantom pain: try parsing the offset from crisis memory
+                let phantom = current_world_state.bitwise_xor(&crisis_memory);
+                let chosen_intent = if let Some((corrective_intent, label)) = drive.formulate_intent(
+                    &phantom,
+                    &resonator_vocab,
+                    &action_registry,
+                    &auto_subjects,
+                    &auto_verbs,
+                    &auto_objects,
+                    30,
+                ) {
+                    *drive_guard = label;
+                    *intent_guard = corrective_intent;
+                    corrective_intent
+                } else {
+                    *drive_guard =
+                        "Subconscious (Phantom Pain — fallback)".to_string();
+                    *intent_guard = phantom;
+                    phantom
+                };
+
+                // Update the forager's semantic target parameter
+                if let Some((_name, param_hv)) =
+                    action_registry.decode_intent(&chosen_intent, &resonator_vocab)
+                {
+                    *forager_target.write().await = Some(param_hv);
+                }
             } else {
                 let mut drive_guard = active_drive_subconscious.write().await;
                 *drive_guard = "Autonomous / Idle Search".to_string();
             }
 
+            // ── Regime-adaptive drift tracking (EWMA + variance) ─────
+            let deltas_vec: Vec<Hypervector> = recent_deltas.iter().cloned().collect();
+            let drift_var = if deltas_vec.len() >= 2 {
+                the_machine::planning::drift_variance(&deltas_vec)
+            } else {
+                0.0
+            };
+            active_drift = the_machine::planning::bundle_weighted_ewma(&deltas_vec, 3);
+
             // Dynamic threat forecasting and planning
             if ticker % 15 == 0 {
                 let _ = subconscious_log_tx.send(format!(
-                    "AGENT {}: Simulating threat trajectory using active environmental drift.",
-                    id_str
+                    "AGENT {}: Simulating threat trajectory using regime-adaptive environmental drift (variance={:.3}).",
+                    id_str, drift_var
                 ));
+                let forecast = the_machine::planning::build_drift_forecast(
+                    &deltas_vec,
+                    drift_var,
+                    5,
+                    3,
+                );
                 let threat_horizon = the_machine::planning::simulate_threat_trajectory(
                     &current_world_state,
-                    &active_drift,
-                    5,
+                    &forecast,
                     &[c_crisis],
                     0.80,
                 );
 
-                if let Some(steps_away) = threat_horizon {
+                if let Some(expected_steps) = threat_horizon {
                     let _ = subconscious_log_tx.send(format!(
-                        "AGENT {}: FORECAST ALERT! High threat state (Crisis) predicted in {} steps. Generating dynamic corrective intent.",
-                        id_str, steps_away
+                        "AGENT {}: FORECAST ALERT! High threat state (Crisis) predicted in {:.1} steps (BMA). Generating dynamic corrective intent.",
+                        id_str, expected_steps
                     ));
+
+                    // Build a drift sequence for the planning solver
+                    let mut drift_seq: Vec<Hypervector> = Vec::with_capacity(2);
+                    for i in 0..2 {
+                        drift_seq.push(
+                            deltas_vec.get(deltas_vec.len().saturating_sub(2).wrapping_add(i))
+                                .copied()
+                                .unwrap_or(active_drift)
+                        );
+                    }
+
+                    // Normalise drift variance to a regime volatility index [0, 1]
+                    let regime_volatility = (drift_var / 0.5).min(1.0);
 
                     if let Some(trajectory) = the_machine::planning::find_optimal_trajectory(
                         &current_world_state,
                         &c_normal,
-                        &active_drift,
+                        &drift_seq,
                         &action_registry,
                         &resonator_vocab,
                         2,
+                        &[c_crisis],
+                        regime_volatility,
                     ) {
                         let _ = subconscious_log_tx.send(format!(
                             "AGENT {}: Corrective plan formulated. Steps: {}, Cost: {:.2}",
@@ -744,13 +846,6 @@ async fn run_agent(
             if recent_actions.len() > history_limit {
                 recent_actions.pop_front();
             }
-
-            active_drift = if recent_deltas.is_empty() {
-                Hypervector::new_zero()
-            } else {
-                let refs: Vec<&Hypervector> = recent_deltas.iter().collect();
-                Hypervector::bundle(&refs)
-            };
 
             // Sync stats to shared dashboard state
             if let Some(ref states) = shared_states {

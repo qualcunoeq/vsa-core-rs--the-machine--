@@ -344,6 +344,9 @@ pub enum HiveMessage {
     ConsolidateRequest {
         centroid: Hypervector,
         entries: Vec<DejavuEntry>,
+        /// Current cognitive anxiety of the submitting agent [0, 1].
+        /// Used by the broker for anxiety-weighted consensus bundling.
+        agent_anxiety: f64,
     },
     SyncUpdate {
         is_new_cluster: bool,
@@ -352,6 +355,15 @@ pub enum HiveMessage {
     },
     PanicLockdown {
         attacker_info: String,
+    },
+    /// Broadcast by the broker when consensus between agents falls below
+    /// the structural coherence threshold.  Forces all agents to rotate
+    /// active intents and re-sample the environment.
+    DissonanceAlert {
+        /// Average pairwise similarity across agent submissions
+        consensus_similarity: f64,
+        /// Number of active agents that contributed to the consensus check
+        agent_count: usize,
     },
 }
 
@@ -1104,6 +1116,7 @@ mod tests {
         let consolidate = HiveMessage::ConsolidateRequest {
             centroid,
             entries: vec![entry],
+            agent_anxiety: 0.0,
         };
         NeocortexBroker::write_msg(&mut writer, &consolidate)
             .await
@@ -1333,10 +1346,15 @@ mod tests {
 
         let res = factorize_svo(&t, &vocab, &subjects, &verbs, &objects, 30);
         assert!(res.is_some(), "Resonator should resolve the thought vector");
-        let (s, v, o) = res.unwrap();
+        let (s, v, o, energy) = res.unwrap();
         assert_eq!(s, "Finch");
         assert_eq!(v, "write");
         assert_eq!(o, "ledger");
+        assert!(
+            energy >= 0.65,
+            "Reconstruction energy should pass hallucination filter: {}",
+            energy
+        );
     }
 
     #[test]
@@ -1383,6 +1401,7 @@ mod tests {
         use crate::action::{execute_action, ActionRegistry};
         use crate::resonator::ResonatorVocabulary;
 
+        std::fs::create_dir_all("data").unwrap();
         let reg = ActionRegistry::new();
         let mut vocab = ResonatorVocabulary::new();
         vocab.register_term("sys_write");
@@ -1424,7 +1443,6 @@ mod tests {
         vocab.register_term("cargo check");
 
         let s0 = Hypervector::new_random();
-        let e_world = Hypervector::new_zero();
 
         // Target: We want to execute "sys_read" on "hosts" (Step 1) and "execute_bash" on "cargo check" (Step 2)
         let act1_hv = reg.get_action_vector("sys_read").unwrap();
@@ -1435,12 +1453,13 @@ mod tests {
         let param2_hv = vocab.get_vector("cargo check").unwrap();
         let step2 = act2_hv.bitwise_xor(param2_hv);
 
-        // Goal state: S2 = \rho(\rho(S0) ^ step1) ^ step2
+        // Goal state: S2 = \rho(\rho(S0) ^ step1) ^ step2  (zero drift assumed)
         let s1 = s0.rotate_left(13).bitwise_xor(&step1);
         let goal_state = s1.rotate_left(13).bitwise_xor(&step2);
 
-        // Run planning solver
-        let traj_opt = find_optimal_trajectory(&s0, &goal_state, &e_world, &reg, &vocab, 2);
+        // Run planning solver with zero-drift sequence
+        let drift_seq = vec![Hypervector::new_zero(); 2];
+        let traj_opt = find_optimal_trajectory(&s0, &goal_state, &drift_seq, &reg, &vocab, 2, &[], 0.0);
         assert!(traj_opt.is_some(), "Should find a valid trajectory");
 
         let traj = traj_opt.unwrap();
@@ -1468,7 +1487,6 @@ mod tests {
         vocab.register_term("cargo check");
 
         let s0 = Hypervector::new_random();
-        let e_world = Hypervector::new_zero();
 
         let act_read = reg.get_action_vector("sys_read").unwrap();
         let param_hosts = vocab.get_vector("hosts").unwrap();
@@ -1476,7 +1494,8 @@ mod tests {
 
         let goal = s0.rotate_left(13).bitwise_xor(&step_read);
 
-        let traj = find_optimal_trajectory(&s0, &goal, &e_world, &reg, &vocab, 1).unwrap();
+        let drift_seq = vec![Hypervector::new_zero(); 1];
+        let traj = find_optimal_trajectory(&s0, &goal, &drift_seq, &reg, &vocab, 1, &[], 0.0).unwrap();
         assert_eq!(traj.steps.len(), 1);
         assert_eq!(traj.steps[0].action, "sys_read");
     }
@@ -1493,7 +1512,6 @@ mod tests {
         vocab.register_term("cargo check");
 
         let s0 = Hypervector::new_random();
-        let e_world = Hypervector::new_zero();
 
         let act1_hv = reg.get_action_vector("sys_read").unwrap();
         let param1_hv = vocab.get_vector("hosts").unwrap();
@@ -1521,16 +1539,18 @@ mod tests {
         let diff = goal_correct.normalized_hamming_distance(&goal_inverted);
         assert!(diff > 0.40, "Ordered states must be orthogonal: {}", diff);
 
+        let drift_seq = vec![Hypervector::new_zero(); 2];
+
         // Test pathfinder on goal_correct: should ONLY find [step1, step2] in order
         let traj_correct =
-            find_optimal_trajectory(&s0, &goal_correct, &e_world, &reg, &vocab, 2).unwrap();
+            find_optimal_trajectory(&s0, &goal_correct, &drift_seq, &reg, &vocab, 2, &[], 0.0).unwrap();
         assert_eq!(traj_correct.steps.len(), 2);
         assert_eq!(traj_correct.steps[0].action, "sys_read");
         assert_eq!(traj_correct.steps[1].action, "execute_bash");
 
         // Test pathfinder on goal_inverted: should ONLY find [step2, step1] in order
         let traj_inverted =
-            find_optimal_trajectory(&s0, &goal_inverted, &e_world, &reg, &vocab, 2).unwrap();
+            find_optimal_trajectory(&s0, &goal_inverted, &drift_seq, &reg, &vocab, 2, &[], 0.0).unwrap();
         assert_eq!(traj_inverted.steps.len(), 2);
         assert_eq!(traj_inverted.steps[0].action, "execute_bash");
         assert_eq!(traj_inverted.steps[1].action, "sys_read");
@@ -1539,7 +1559,7 @@ mod tests {
     #[test]
     fn test_threat_forecasting_and_correction() {
         use crate::action::ActionRegistry;
-        use crate::planning::{find_optimal_trajectory, simulate_threat_trajectory};
+        use crate::planning::{find_optimal_trajectory, simulate_threat_trajectory, DriftForecast};
         use crate::resonator::ResonatorVocabulary;
 
         let reg = ActionRegistry::new();
@@ -1553,8 +1573,10 @@ mod tests {
         let e_world = c_crisis.bitwise_xor(&s0.rotate_left(13));
 
         // 1. Forecaster checks active threat and detects crisis prediction at step 1
-        let horizon = simulate_threat_trajectory(&s0, &e_world, 3, &[c_crisis], 0.80);
-        assert_eq!(horizon, Some(1), "Threat forecaster should detect crisis");
+        let mut forecast = DriftForecast::new();
+        forecast.add_regime("test", 1.0, vec![e_world, e_world, e_world]);
+        let horizon = simulate_threat_trajectory(&s0, &forecast, &[c_crisis], 0.80);
+        assert_eq!(horizon, Some(1.0), "Threat forecaster should detect crisis");
 
         // 2. We want a corrective action that steers the state from c_crisis to s_stable
         // S1_correct = \rho(S0) ^ A_c ^ E_world = c_crisis ^ A_c \approx s_stable
@@ -1566,7 +1588,8 @@ mod tests {
         vocab.terms.insert("hosts".to_string(), param_vector);
 
         // 3. Run pathfinder targeting s_stable under e_world drift
-        let traj = find_optimal_trajectory(&s0, &s_stable, &e_world, &reg, &vocab, 1).unwrap();
+        let drift_seq = vec![e_world; 1];
+        let traj = find_optimal_trajectory(&s0, &s_stable, &drift_seq, &reg, &vocab, 1, &[c_crisis], 0.0).unwrap();
         assert_eq!(traj.steps.len(), 1);
         assert_eq!(traj.steps[0].action, "sys_read");
         assert_eq!(traj.steps[0].parameter, "hosts");

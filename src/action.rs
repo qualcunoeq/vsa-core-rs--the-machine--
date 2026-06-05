@@ -4,8 +4,25 @@ use std::collections::HashMap;
 use std::fs;
 use std::process::Command;
 
+/// Risk profile for an action, analogous to a financial beta.
+///
+/// * `base_cost` — nominal execution cost in a neutral environment
+/// * `risk_beta` — sensitivity to environmental volatility / crisis proximity
+///
+/// | Action        | Base Cost | β   | Rationale                         |
+/// |---------------|-----------|-----|-----------------------------------|
+/// | `sys_read`    | 0.05      | 0.1 | Safe in any regime                |
+/// | `sys_write`   | 0.10      | 0.5 | Moderate risk if system unstable  |
+/// | `execute_bash`| 0.25      | 1.5 | High risk; penalised near crisis  |
+#[derive(Clone, Debug)]
+pub struct ActionProfile {
+    pub vector: Hypervector,
+    pub base_cost: f64,
+    pub risk_beta: f64,
+}
+
 pub struct ActionRegistry {
-    pub actions: HashMap<String, Hypervector>,
+    pub actions: HashMap<String, ActionProfile>,
 }
 
 impl ActionRegistry {
@@ -15,20 +32,36 @@ impl ActionRegistry {
         };
         reg.actions.insert(
             "sys_read".to_string(),
-            Hypervector::encode_text_ngram("sys_read", 3),
+            ActionProfile {
+                vector: Hypervector::encode_text_ngram("sys_read", 3),
+                base_cost: 0.05,
+                risk_beta: 0.1,
+            },
         );
         reg.actions.insert(
             "sys_write".to_string(),
-            Hypervector::encode_text_ngram("sys_write", 3),
+            ActionProfile {
+                vector: Hypervector::encode_text_ngram("sys_write", 3),
+                base_cost: 0.10,
+                risk_beta: 0.5,
+            },
         );
         reg.actions.insert(
             "execute_bash".to_string(),
-            Hypervector::encode_text_ngram("execute_bash", 3),
+            ActionProfile {
+                vector: Hypervector::encode_text_ngram("execute_bash", 3),
+                base_cost: 0.25,
+                risk_beta: 1.5,
+            },
         );
         reg
     }
 
     pub fn get_action_vector(&self, name: &str) -> Option<&Hypervector> {
+        self.actions.get(name).map(|p| &p.vector)
+    }
+
+    pub fn get_profile(&self, name: &str) -> Option<&ActionProfile> {
         self.actions.get(name)
     }
 
@@ -42,9 +75,9 @@ impl ActionRegistry {
         let mut best_action = None;
         let mut best_sim = -1.0;
 
-        for (name, action_hv) in &self.actions {
+        for (name, profile) in &self.actions {
             // Unbind the action from intent to estimate parameter: Param = Intent ^ H_action
-            let param_estimate = intent.bitwise_xor(action_hv);
+            let param_estimate = intent.bitwise_xor(&profile.vector);
             // Cleanup check: verify if the parameter exists with high similarity in the vocabulary
             let (_, sim) = parameter_vocab.cleanup(&param_estimate);
             if sim > best_sim {
@@ -54,8 +87,8 @@ impl ActionRegistry {
         }
 
         if let Some(ref name) = best_action {
-            let action_hv = self.actions.get(name).unwrap();
-            let param = intent.bitwise_xor(action_hv);
+            let profile = self.actions.get(name).unwrap();
+            let param = intent.bitwise_xor(&profile.vector);
             return Some((name.clone(), param));
         }
         None

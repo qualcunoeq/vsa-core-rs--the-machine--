@@ -169,6 +169,81 @@ impl LongTermLedger {
 
         Ok(results)
     }
+
+    // ─── Ledger Compaction Protocol (The "Sleep Cycle") ──────────────────
+
+    /// Agglomerative clustering + majority-rule re-bundling.
+    ///
+    /// 1. Loads all decrypted records.
+    /// 2. Groups vectors whose pairwise similarity ≥ `SIMILARITY_THRESHOLD`.
+    /// 3. Collapses each cluster into a single centroid via bit-parallel
+    ///    majority bundling.
+    /// 4. Rewrites the binary file with only the compacted centroids.
+    ///
+    /// Returns the number of records *removed* (original − compacted),
+    /// or an error if decryption fails or the file cannot be rewritten.
+    pub fn compact_ledger(
+        &self,
+        state_vector: &Hypervector,
+        similarity_threshold: f64,
+    ) -> Result<usize, String> {
+        // 1. Load all decrypted records
+        let records = self.load_records(state_vector)?;
+        let original_count = records.len();
+        if original_count == 0 {
+            return Ok(0);
+        }
+
+        // 2. Agglomerative clustering (greedy single-link)
+        //    Each cluster is represented by its first element's centroid.
+        let mut clusters: Vec<Vec<Hypervector>> = Vec::new();
+
+        for (_, vector) in &records {
+            let mut assigned = false;
+            for cluster in &mut clusters {
+                let centroid = &cluster[0];
+                let sim = 1.0 - vector.normalized_hamming_distance(centroid);
+                if sim >= similarity_threshold {
+                    cluster.push(vector.clone());
+                    assigned = true;
+                    break;
+                }
+            }
+            if !assigned {
+                clusters.push(vec![vector.clone()]);
+            }
+        }
+
+        // 3. Majority-rule re-bundling within each cluster
+        let compacted: Vec<Hypervector> = clusters
+            .iter()
+            .map(|cluster| {
+                if cluster.len() <= 1 {
+                    return cluster[0];
+                }
+                let refs: Vec<&Hypervector> = cluster.iter().collect();
+                Hypervector::bundle(&refs)
+            })
+            .collect();
+
+        // 4. Cryptographic rewrite
+        let today_str = chrono::Utc::now().format("%Y-%m-%d").to_string();
+
+        // Remove old file
+        let path = std::path::Path::new(&self.file_path);
+        if path.exists() {
+            std::fs::remove_file(path)
+                .map_err(|e| format!("Failed to remove old ledger: {}", e))?;
+        }
+
+        // Write compacted records
+        for vector in &compacted {
+            self.append_record(&today_str, vector, state_vector)?;
+        }
+
+        let removed = original_count - compacted.len();
+        Ok(removed)
+    }
 }
 
 // Add these to Hypervector in lib.rs or locally
@@ -207,6 +282,7 @@ mod tests {
 
     #[test]
     fn test_state_based_encryption() {
+        std::fs::create_dir_all("data").unwrap();
         let temp_file = "data/temp_test_ledger.bin";
         let static_key = "test_finch_key";
         let ledger = LongTermLedger::new(static_key, temp_file);
@@ -239,5 +315,42 @@ mod tests {
 
         // Clean up temp file
         let _ = fs::remove_file(temp_file);
+    }
+
+    #[test]
+    fn test_ledger_compaction() {
+        std::fs::create_dir_all("data").unwrap();
+        let temp_file = "data/temp_test_compaction.bin";
+        let static_key = "test_compaction_key";
+        let ledger = LongTermLedger::new(static_key, temp_file);
+        let state = Hypervector::new_random();
+
+        // Write 5 distinct records
+        let v1 = Hypervector::new_random();
+        let v2 = Hypervector::new_random();
+        let v3 = Hypervector::new_random();
+        let v4 = Hypervector::new_random();
+        let v5 = Hypervector::new_random();
+        ledger.append_record("2026-06-01", &v1, &state).unwrap();
+        ledger.append_record("2026-06-02", &v2, &state).unwrap();
+        ledger.append_record("2026-06-03", &v3, &state).unwrap();
+        ledger.append_record("2026-06-04", &v4, &state).unwrap();
+        ledger.append_record("2026-06-05", &v5, &state).unwrap();
+        assert_eq!(ledger.load_records(&state).unwrap().len(), 5);
+
+        // Compact with threshold 0.99 (no merging — all distinct)
+        let removed = ledger.compact_ledger(&state, 0.99).unwrap();
+        assert_eq!(removed, 0);
+        assert_eq!(ledger.load_records(&state).unwrap().len(), 5);
+
+        // Add a near-duplicate of v1 and compact at 0.70
+        ledger.append_record("2026-06-06", &v1, &state).unwrap();
+        assert_eq!(ledger.load_records(&state).unwrap().len(), 6);
+
+        let removed = ledger.compact_ledger(&state, 0.70).unwrap();
+        assert!(removed >= 1, "Should have merged the duplicate: removed={}", removed);
+        assert_eq!(ledger.load_records(&state).unwrap().len(), 5);
+
+        let _ = std::fs::remove_file(temp_file);
     }
 }

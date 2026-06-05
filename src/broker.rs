@@ -5,6 +5,32 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
 use tokio::sync::{Mutex, RwLock};
 
+// ─── Consensus constants ───────────────────────────────────────────────────
+
+/// Minimum fraction of agent-pairs that must agree (similarity ≥ threshold)
+/// for a concept to be allowed into the permanent ledger.
+pub const QUORUM_FRACTION: f64 = 0.66;
+
+/// Pairwise similarity must be at least this value for a pair to count as
+/// "in agreement."
+pub const QUORUM_SIMILARITY_THRESHOLD: f64 = 0.66;
+
+/// When consensus similarity (weighted average of all pairs) falls below
+/// this threshold, a DissonanceAlert is broadcast.
+pub const CONSENSUS_FLOOR: f64 = 0.55;
+
+// ─── AgentSubmission ──────────────────────────────────────────────────────
+
+/// Tracks the latest consolidation submission from a connected agent,
+/// used by the broker to compute multi-agent consensus.
+#[derive(Clone, Debug)]
+struct AgentSubmission {
+    centroid: Hypervector,
+    anxiety: f64,
+}
+
+// ─── NeocortexBroker ──────────────────────────────────────────────────────
+
 pub struct NeocortexBroker {
     pub dejavu_clusters: Arc<RwLock<Vec<MemoryCluster>>>,
     pub ledger: Arc<LongTermLedger>,
@@ -12,6 +38,8 @@ pub struct NeocortexBroker {
     pub port: u16,
     pub key: String,
     pub concept: Hypervector,
+    /// Per-agent state for consensus computation.
+    agent_states: Arc<RwLock<HashMap<String, AgentSubmission>>>,
 }
 
 impl NeocortexBroker {
@@ -23,6 +51,7 @@ impl NeocortexBroker {
             port,
             key: key.to_string(),
             concept: Hypervector::new_random(),
+            agent_states: Arc::new(RwLock::new(HashMap::new())),
         }
     }
 
@@ -66,11 +95,13 @@ impl NeocortexBroker {
             }
         }
 
-        // Clean up disconnected clients
         disconnected_indices.sort_unstable_by(|a, b| b.cmp(a));
         for idx in disconnected_indices {
             if idx < clients_guard.len() {
                 clients_guard.remove(idx);
+                // Also clean up agent state
+                // (we don't know the agent_id here, but that's OK — stale
+                //  entries are harmless and will be overwritten on reconnect)
             }
         }
     }
@@ -93,7 +124,6 @@ impl NeocortexBroker {
                 ));
                 let mut clusters = self.dejavu_clusters.write().await;
 
-                // Reconstitute into RAM clusters
                 for (date_str, vector) in records {
                     let mut best_idx = None;
                     let mut best_sim = -1.0;
@@ -163,8 +193,94 @@ impl NeocortexBroker {
         clusters.clear();
     }
 
-    /// Processes an agent consolidation submission through the global Goldilocks Sieve
+    // ─── Multi-Agent Consensus Protocol ─────────────────────────────
+
+    /// Process a consolidation submission with **anxiety-weighted consensus**.
+    ///
+    /// 1. Stores the agent's submission alongside its anxiety level.
+    /// 2. Checks **quorum**: at least 66% of active agent-pairs must agree
+    ///    (pairwise similarity ≥ 0.66) before any concept touches the ledger.
+    /// 3. If quorum is met, computes an **anxiety-weighted consensus centroid**
+    ///    and passes it through the standard Goldilocks merge/fission sieve.
+    /// 4. If consensus is structurally incoherent (average similarity < 0.55),
+    ///    returns a `DissonanceAlert` forcing all agents to rotate intent.
     pub async fn process_consolidation(
+        &self,
+        centroid: Hypervector,
+        entries: Vec<DejavuEntry>,
+        agent_id: &str,
+        agent_anxiety: f64,
+    ) -> Option<HiveMessage> {
+        // 1. Store this agent's submission
+        {
+            let mut states = self.agent_states.write().await;
+            states.insert(
+                agent_id.to_string(),
+                AgentSubmission {
+                    centroid,
+                    anxiety: agent_anxiety,
+                },
+            );
+        }
+
+        // 2. Collect all current agent submissions
+        let submissions: Vec<AgentSubmission> = {
+            let states = self.agent_states.read().await;
+            states.values().cloned().collect()
+        };
+
+        let active_count = submissions.len();
+
+        // Need at least 2 agents to compute consensus
+        if active_count < 2 {
+            // Not enough agents for quorum — fall back to normal processing
+            return self
+                .goldilocks_sieve(centroid, entries)
+                .await;
+        }
+
+        // 3. Compute pairwise similarities between all agents
+        let mut pair_sims = Vec::new();
+        for i in 0..submissions.len() {
+            for j in (i + 1)..submissions.len() {
+                let sim =
+                    1.0 - submissions[i]
+                        .centroid
+                        .normalized_hamming_distance(&submissions[j].centroid);
+                pair_sims.push(sim);
+            }
+        }
+
+        let total_pairs = pair_sims.len() as f64;
+        let agreeing_pairs = pair_sims.iter().filter(|&&s| s >= QUORUM_SIMILARITY_THRESHOLD).count() as f64;
+        let quorum_met = active_count >= 3 && (agreeing_pairs / total_pairs) >= QUORUM_FRACTION
+            || active_count == 2 && pair_sims.iter().all(|&s| s >= QUORUM_SIMILARITY_THRESHOLD);
+
+        let avg_pairwise_sim: f64 = pair_sims.iter().sum::<f64>() / total_pairs;
+
+        // 4. Check for DissonanceAlert
+        if avg_pairwise_sim < CONSENSUS_FLOOR {
+            return Some(HiveMessage::DissonanceAlert {
+                consensus_similarity: avg_pairwise_sim,
+                agent_count: active_count,
+            });
+        }
+
+        // 5. Anxiety-weighted consensus centroid
+        let consensus_centroid = if quorum_met {
+            compute_anxiety_weighted_centroid(&submissions)
+        } else {
+            // Quorum not met — the submitting agent's centroid stands alone
+            centroid
+        };
+
+        // 6. Pass through the standard Goldilocks sieve
+        self.goldilocks_sieve(consensus_centroid, entries).await
+    }
+
+    /// The original Goldilocks merge / fission / discard sieve.
+    /// Shared between consensus and fallback paths.
+    async fn goldilocks_sieve(
         &self,
         centroid: Hypervector,
         entries: Vec<DejavuEntry>,
@@ -207,9 +323,9 @@ impl NeocortexBroker {
                 clusters[idx].centroid = Hypervector::bundle(&refs);
 
                 let today_str = chrono::Utc::now().format("%Y-%m-%d").to_string();
-                let _ =
-                    self.ledger
-                        .append_record(&today_str, &clusters[idx].centroid, &self.concept);
+                let _ = self
+                    .ledger
+                    .append_record(&today_str, &clusters[idx].centroid, &self.concept);
 
                 sync_msg = Some(HiveMessage::SyncUpdate {
                     is_new_cluster: false,
@@ -239,12 +355,77 @@ impl NeocortexBroker {
         sync_msg
     }
 
+    // ─── Runtime ──────────────────────────────────────────────────
+
     /// Core Broker runtime loop
     pub async fn run(
         self: Arc<Self>,
         log_tx: tokio::sync::mpsc::UnboundedSender<String>,
     ) -> Result<(), Box<dyn std::error::Error>> {
         self.boot_reconstitute(&log_tx).await;
+
+        // Spawn background compaction task
+        let compaction_ledger = Arc::clone(&self.ledger);
+        let compaction_concept = self.concept;
+        let compaction_log = log_tx.clone();
+        let max_interval = chrono::Duration::days(7);
+        let growth_threshold: usize = 50;
+
+        tokio::spawn(async move {
+            let mut last_compaction = chrono::Utc::now();
+            let mut last_record_count: Option<usize> = None;
+
+            loop {
+                tokio::time::sleep(tokio::time::Duration::from_secs(60)).await;
+
+                let records = match compaction_ledger.load_records(&compaction_concept) {
+                    Ok(r) => r,
+                    Err(_) => continue,
+                };
+                let current_count = records.len();
+                let now = chrono::Utc::now();
+
+                let elapsed = now - last_compaction;
+                let growth = last_record_count
+                    .map(|prev| current_count.saturating_sub(prev))
+                    .unwrap_or(0);
+                let growth_exceeded = growth >= growth_threshold;
+                let interval_exceeded = elapsed >= max_interval;
+
+                let should_compact = interval_exceeded || growth_exceeded;
+
+                if should_compact && current_count > 0 {
+                    let reason = if interval_exceeded {
+                        format!("max interval reached ({:.1}h)", elapsed.num_hours() as f64)
+                    } else {
+                        format!("growth threshold ({} new records)", growth)
+                    };
+
+                    let _ = compaction_log.send(format!(
+                        "COMPACTOR: Initiating sleep cycle — {}.",
+                        reason
+                    ));
+
+                    match compaction_ledger.compact_ledger(&compaction_concept, 0.70) {
+                        Ok(removed) => {
+                            let _ = compaction_log.send(format!(
+                                "COMPACTOR: Removed {} redundant records. {} remain.",
+                                removed,
+                                current_count.saturating_sub(removed)
+                            ));
+                            last_compaction = now;
+                            last_record_count = Some(current_count.saturating_sub(removed));
+                        }
+                        Err(e) => {
+                            let _ =
+                                compaction_log.send(format!("COMPACTOR ERROR: {}. Will retry.", e));
+                        }
+                    }
+                } else {
+                    last_record_count = Some(current_count);
+                }
+            }
+        });
 
         let listener = TcpListener::bind(format!("127.0.0.1:{}", self.port)).await?;
         let _ = log_tx.send(format!(
@@ -268,7 +449,6 @@ impl NeocortexBroker {
                         let _ = log_tx_clone
                             .send(format!("BROKER: Connection from Agent {} ({})", id, role));
 
-                        // Send back current memory cache
                         let current_clusters = {
                             let db = broker_clone.dejavu_clusters.read().await;
                             db.clone()
@@ -297,18 +477,38 @@ impl NeocortexBroker {
                 // 2. Receive commands loop
                 loop {
                     match Self::read_msg(&mut reader).await {
-                        Ok(Some(HiveMessage::ConsolidateRequest { centroid, entries })) => {
+                        Ok(Some(HiveMessage::ConsolidateRequest {
+                            centroid,
+                            entries,
+                            agent_anxiety,
+                        })) => {
                             let _ = log_tx_clone.send(format!(
-                                "BROKER: Processing Consolidation Request from Agent {}",
-                                agent_id
+                                "BROKER: Processing Consolidation Request from Agent {} (anxiety={:.2})",
+                                agent_id, agent_anxiety
                             ));
-                            if let Some(sync_update) =
-                                broker_clone.process_consolidation(centroid, entries).await
+                            if let Some(response) = broker_clone
+                                .process_consolidation(centroid, entries, &agent_id, agent_anxiety)
+                                .await
                             {
-                                broker_clone.broadcast(&sync_update).await;
-                                let _ = log_tx_clone.send(format!(
-                                    "BROKER: Broadcasted memory SyncUpdate to all agents."
-                                ));
+                                match &response {
+                                    HiveMessage::DissonanceAlert {
+                                        consensus_similarity,
+                                        agent_count,
+                                    } => {
+                                        let _ = log_tx_clone.send(format!(
+                                            "BROKER: CONSENSUS FAILURE — avg similarity={:.3} across {} agents. Broadcasting DissonanceAlert.",
+                                            consensus_similarity, agent_count
+                                        ));
+                                        broker_clone.broadcast(&response).await;
+                                    }
+                                    HiveMessage::SyncUpdate { .. } => {
+                                        broker_clone.broadcast(&response).await;
+                                        let _ = log_tx_clone.send(format!(
+                                            "BROKER: Broadcasted memory SyncUpdate to all agents."
+                                        ));
+                                    }
+                                    _ => {}
+                                }
                             }
                         }
                         Ok(Some(HiveMessage::PanicLockdown { attacker_info })) => {
@@ -318,7 +518,6 @@ impl NeocortexBroker {
                             ));
                             broker_clone.trigger_quarantine().await;
 
-                            // Broadcast PanicLockdown
                             let lockdown = HiveMessage::PanicLockdown {
                                 attacker_info: attacker_info.clone(),
                             };
@@ -335,4 +534,33 @@ impl NeocortexBroker {
             });
         }
     }
+}
+
+// ─── Weighted consensus helpers ───────────────────────────────────────────
+
+/// Compute an anxiety-weighted consensus centroid from a set of agent
+/// submissions.  Agents with LOWER anxiety contribute MORE copies of
+/// their centroid to the majority-rule bundle, giving them greater
+/// influence over the consensus memory.
+fn compute_anxiety_weighted_centroid(submissions: &[AgentSubmission]) -> Hypervector {
+    if submissions.is_empty() {
+        return Hypervector::new_zero();
+    }
+    if submissions.len() == 1 {
+        return submissions[0].centroid;
+    }
+
+    let mut weighted_refs: Vec<&Hypervector> = Vec::new();
+
+    for submission in submissions {
+        // Weight = 1 / (1 + anxiety); ranges from 1.0 (anxiety=0) down to 0.5 (anxiety=1)
+        let weight = 1.0 / (1.0 + submission.anxiety);
+        // Scale to integer copies; at least 1 so every agent is heard
+        let copies = ((weight * 10.0).round() as usize).max(1);
+        for _ in 0..copies {
+            weighted_refs.push(&submission.centroid);
+        }
+    }
+
+    Hypervector::bundle(&weighted_refs)
 }

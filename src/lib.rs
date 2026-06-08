@@ -1,12 +1,18 @@
 use rand::Rng;
 use std::collections::HashMap;
 
+use crate::hnsw::HnswIndex;
+
 pub mod action;
 pub mod autonomy;
 pub mod broker;
 pub mod defense;
 pub mod forager;
+pub mod fpe;
+pub mod graph;
+pub mod hnsw;
 pub mod ledger;
+pub mod observer;
 pub mod planning;
 pub mod resonator;
 pub mod sensory;
@@ -393,6 +399,11 @@ pub struct VSABrain {
     pub tick_counter: usize,
     pub anxiety: f64,
     pub experiences: Vec<Hypervector>,
+    /// HNSW spatial index for O(log n) memory retrieval.
+    /// Rebuilt when stale (incremental rebuild on tick boundaries).
+    hnsw_index: Option<HnswIndex>,
+    /// Tracks the cluster count at last HNSW rebuild
+    hnsw_last_rebuild_count: usize,
 }
 
 impl VSABrain {
@@ -406,6 +417,8 @@ impl VSABrain {
             tick_counter: 0,
             anxiety: 0.0,
             experiences: Vec::new(),
+            hnsw_index: None,
+            hnsw_last_rebuild_count: 0,
         }
     }
 
@@ -965,6 +978,88 @@ impl VSABrain {
         } else {
             (None, min_dist)
         }
+    }
+
+    // ─── HNSW-Accelerated Spatial Index ──────────────────────────────
+
+    /// Rebuild the HNSW index from the current permanent clusters.
+    /// Uses the centroid of each cluster as the indexed vector.
+    /// Maps HNSW entry index → cluster index for result translation.
+    pub fn rebuild_hnsw_index(&mut self) {
+        if self.dejavu_clusters.is_empty() {
+            self.hnsw_index = None;
+            self.hnsw_last_rebuild_count = 0;
+            return;
+        }
+
+        let mut index = HnswIndex::with_config(crate::hnsw::HnswConfig {
+            use_heuristic: true,
+            ..crate::hnsw::HnswConfig::default()
+        });
+
+        let mut cluster_indices: Vec<usize> = Vec::new();
+
+        for (ci, cluster) in self.dejavu_clusters.iter().enumerate() {
+            let hv = &cluster.centroid;
+            let idx = index.insert(&hv.bits);
+            // HNSW assigns sequential indices matching our insert order
+            // Map HNSW index → cluster index
+            cluster_indices.push(ci);
+        }
+
+        self.hnsw_index = Some(index);
+        self.hnsw_last_rebuild_count = self.dejavu_clusters.len();
+    }
+
+    /// Ensure the HNSW index is fresh. Rebuilds if clusters have changed.
+    pub fn ensure_hnsw_index(&mut self) {
+        let needs_rebuild = match self.hnsw_index {
+            Some(_) => self.hnsw_last_rebuild_count != self.dejavu_clusters.len(),
+            None => !self.dejavu_clusters.is_empty(),
+        };
+        if needs_rebuild {
+            self.rebuild_hnsw_index();
+        }
+    }
+
+    /// Query using HNSW-accelerated nearest-neighbor search.
+    /// Falls back to linear scan if index is unavailable.
+    pub fn query_dejavu_hnsw(
+        &mut self,
+        vector: &Hypervector,
+        ef: usize,
+    ) -> (Option<String>, f64, HashMap<String, String>) {
+        self.ensure_hnsw_index();
+
+        if let Some(ref index) = self.hnsw_index {
+            let result = index.search_by_hypervector(vector, ef);
+            if !result.is_empty() {
+                let (hnsw_idx, dist) = result.closest().unwrap();
+                if hnsw_idx < self.dejavu_clusters.len() {
+                    let cluster = &self.dejavu_clusters[hnsw_idx];
+                    // Search within the best cluster's entries
+                    let mut best_label = None;
+                    let mut best_sim = -1.0;
+                    let mut best_meta = HashMap::new();
+
+                    for entry in &cluster.entries {
+                        let sim = 1.0 - vector.normalized_hamming_distance(&entry.vector);
+                        if sim > best_sim {
+                            best_sim = sim;
+                            best_label = Some(entry.label.clone());
+                            best_meta = entry.metadata.clone();
+                        }
+                    }
+
+                    if best_sim > 0.0 {
+                        return (best_label, best_sim, best_meta);
+                    }
+                }
+            }
+        }
+
+        // Fallback to linear scan
+        self.query_dejavu(vector)
     }
 
     pub fn decode_variable(

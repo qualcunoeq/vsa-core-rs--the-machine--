@@ -257,9 +257,9 @@ impl ToolRegistry {
         // Rather than n-gram (which clusters similar names), we use a
         // seeded random approach for maximum orthogonality between tools.
         let seed: u64 = tool_id.bytes().fold(0u64, |acc, b| acc.wrapping_mul(31).wrapping_add(b as u64));
-        let mut bits = [0u64; 157];
+        let mut bits = [0u64; crate::U64_BLOCKS];
         let mut x = seed;
-        for i in 0..157 {
+        for i in 0..crate::U64_BLOCKS {
             x = x.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
             bits[i] = x;
         }

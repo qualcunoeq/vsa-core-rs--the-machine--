@@ -10,8 +10,10 @@ pub mod autonomy;
 pub mod bridge;
 pub mod broker;
 pub mod code_bridge;
+pub mod compression;
 pub mod defense;
 pub mod forager;
+pub mod hnsw;
 pub mod ledger;
 pub mod nlp;
 pub mod planning;
@@ -470,6 +472,16 @@ pub struct DejavuEntry {
     /// XOR with the owning cluster's current centroid.
     #[serde(default)]
     pub delta_encoded: bool,
+    /// ██ FIX v2.6 (Layer 2): Entry weight for age-weighted merging ██
+    /// Number of original observations this entry represents.
+    /// Normal entries have weight = 1.  Merged entries have weight > 1
+    /// and participate proportionally in centroid computation.
+    #[serde(default)]
+    pub weight: u32,
+    /// ██ FIX v2.6 (Layer 2): Tick when this entry was created ██
+    /// Used by merge_entries to partition entries into age cohorts.
+    #[serde(default)]
+    pub creation_tick: u64,
 }
 
 impl DejavuEntry {
@@ -500,6 +512,25 @@ impl DejavuEntry {
             label,
             metadata,
             delta_encoded,
+            weight: 1,
+            creation_tick: 0,
+        }
+    }
+
+    /// Create a merged entry with explicit weight and tick provenance.
+    pub fn new_merged(
+        vector: Hypervector,
+        label: String,
+        weight: u32,
+        creation_tick: u64,
+    ) -> Self {
+        DejavuEntry {
+            vector,
+            label,
+            metadata: HashMap::new(),
+            delta_encoded: false,
+            weight,
+            creation_tick,
         }
     }
 }
@@ -723,6 +754,35 @@ impl MemoryCluster {
                 }
             }
         }
+    }
+
+    /// ██ FIX v2.6 (Layer 2): Rebuild accumulator from entries with weights ██
+    ///
+    /// This is the correct recomputation after entry merging.  Each entry
+    /// contributes `weight` observations to the accumulator.  The centroid
+    /// is then recomputed from the rebuilt accumulator.
+    ///
+    /// This is O(entries × D) so it's only called when merging triggers.
+    /// It replaces `ensure_accumulator()` semantics — after this call the
+    /// accumulator exactly reflects all stored entries.
+    pub fn rebuild_accumulator_from_entries(&mut self) {
+        let mut new_acc = vec![0u32; HD_DIMENSION];
+        let mut new_total_weight: u32 = 0;
+
+        for entry in &self.entries {
+            let vec = entry.reconstruct(&self.anchor);
+            let w = entry.weight.max(1);
+            new_total_weight = new_total_weight.saturating_add(w);
+            for (i, acc) in new_acc.iter_mut().enumerate() {
+                let word = vec.bits[i / 64];
+                let bit = ((word >> (i % 64)) & 1) as u32;
+                *acc = acc.saturating_add(bit * w);
+            }
+        }
+
+        self.accumulator = new_acc;
+        self.total_weight = new_total_weight.max(1);
+        self.recompute_centroid();
     }
 
     /// Record an access (read or write) at the given tick.

@@ -1499,7 +1499,7 @@ impl AnalogicalIndex {
 ///
 /// The correct order in the agent's subconscious loop is:
 ///
-/// ```
+/// ```ignore
 /// 1. Sensory input → encode → insert into AnalogicalIndex (as observation)
 /// 2. materializable_predictions() → create provisional MemoryClusters
 /// 3. CausalChainReasoner runs on updated cluster state
@@ -3472,7 +3472,9 @@ impl CausalRuleAbductor {
 /// Given two primary frames P₁ and P₂ with known high weights, and a third
 /// frame P₃ with unknown weight, the MetaIndex can infer:
 ///
-///     w(P₃) = w₁ ⊕ w₂ ⊕ w_pred
+/// ```text
+/// w(P₃) = w₁ ⊕ w₂ ⊕ w_pred
+/// ```
 ///
 /// where the analogy maps the structural relationship between P₁ and P₂
 /// into the weight space. This is genuine reasoning about the system's own
@@ -4238,10 +4240,10 @@ pub enum ReasoningEvent {
 ///
 /// ## The three-level architecture
 ///
-/// ```
-/// Object-level:    PrimaryIndex  — frames about the world
-/// Meta-level:      MetaIndex     — frames about frames (epistemic)
-/// Process-level:   ProcessIndex  — frames about reasoning operations
+/// ```ignore
+/// Object-level:    PrimaryIndex  - frames about the world
+/// Meta-level:      MetaIndex     - frames about frames (epistemic)
+/// Process-level:   ProcessIndex  - frames about reasoning operations
 /// ```
 ///
 /// Each level uses the same AnalogicalIndex machinery. Each level

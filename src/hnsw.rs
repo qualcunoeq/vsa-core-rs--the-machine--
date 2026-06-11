@@ -186,7 +186,7 @@ impl HnswSearchResult {
 /// ## Memory Architecture
 ///
 /// The index stores three parallel structures:
-/// - `vectors`: The raw 10,048-bit hypervectors as `[u64; 157]`
+/// - `vectors`: The raw 10,048-bit hypervectors as `[u64; 160]`
 /// - `metadata`: Optional user-attached labels/tags per vector
 /// - `graphs`: For each node, a list per layer of neighbor indices
 ///
@@ -196,8 +196,8 @@ impl HnswSearchResult {
 /// exclusive writes.  Reads (search) can be concurrent.  Writes (insert)
 /// require exclusive access.
 pub struct HnswIndex {
-    /// The stored hypervectors (10,048 bits each as [u64; 157])
-    vectors: Vec<[u64; 157]>,
+    /// The stored hypervectors (10,048 bits each as [u64; 160])
+    vectors: Vec<[u64; 160]>,
     /// Optional metadata per vector
     metadata: Vec<Option<EntryMetadata>>,
     /// Per-node adjacency lists: graphs[node][layer] = Vec<neighbor_indices>
@@ -262,47 +262,47 @@ impl HnswIndex {
 
     /// Compute normalized Hamming distance between two indexed vectors.
     /// This is THE hottest function in the entire machine when the HNSW
-    /// index is active.  Each call does 157 popcounts.
+    /// index is active.  Each call does 160 popcounts.
     #[inline(always)]
     fn distance_between(&self, a_idx: usize, b_idx: usize) -> f64 {
         let a = &self.vectors[a_idx];
         let b = &self.vectors[b_idx];
         let mut diff = 0u64;
-        for i in 0..157 {
+        for i in 0..160 {
             diff += (a[i] ^ b[i]).count_ones() as u64;
         }
-        (diff as f64) * 0.000099522f64 // 1.0 / 10048.0 precomputed
+        (diff as f64) * 0.00009765625f64 // 1.0 / 10048.0 precomputed
     }
 
     /// Compute distance between an external hypervector and an indexed vector.
     #[inline(always)]
-    fn distance_to_vector(&self, hv: &[u64; 157], idx: usize) -> f64 {
+    fn distance_to_vector(&self, hv: &[u64; 160], idx: usize) -> f64 {
         let b = &self.vectors[idx];
         let mut diff = 0u64;
-        for i in 0..157 {
+        for i in 0..160 {
             diff += (hv[i] ^ b[i]).count_ones() as u64;
         }
-        (diff as f64) * 0.000099522f64
+        (diff as f64) * 0.00009765625f64
     }
 
     /// Raw distance between two external hypervectors (no index needed).
     #[inline(always)]
-    pub fn distance(a: &[u64; 157], b: &[u64; 157]) -> f64 {
+    pub fn distance(a: &[u64; 160], b: &[u64; 160]) -> f64 {
         let mut diff = 0u64;
-        for i in 0..157 {
+        for i in 0..160 {
             diff += (a[i] ^ b[i]).count_ones() as u64;
         }
-        (diff as f64) * 0.000099522f64
+        (diff as f64) * 0.00009765625f64
     }
 
     /// Raw distance between two crate::Hypervector values.
     #[inline(always)]
     pub fn hypervector_distance(a: &Hypervector, b: &Hypervector) -> f64 {
         let mut diff = 0u64;
-        for i in 0..157 {
+        for i in 0..160 {
             diff += (a.bits[i] ^ b.bits[i]).count_ones() as u64;
         }
-        (diff as f64) * 0.000099522f64
+        (diff as f64) * 0.00009765625f64
     }
 
     // ── Level generation ───────────────────────────────────────────
@@ -337,7 +337,7 @@ impl HnswIndex {
     /// Returns a max-heap (farthest-first) of the `ef` closest candidates.
     fn search_layer(
         &self,
-        query: &[u64; 157],
+        query: &[u64; 160],
         entry_points: &[usize],
         ef: usize,
         layer: usize,
@@ -412,7 +412,7 @@ impl HnswIndex {
     /// 2. For each layer from top to 1, greedily traverse to find a single
     ///    nearest neighbor (ef=1) to use as entry for the next layer down
     /// 3. At layer 0, search with ef=ef_search to collect the final results
-    pub fn search(&self, query: &[u64; 157], ef: usize) -> HnswSearchResult {
+    pub fn search(&self, query: &[u64; 160], ef: usize) -> HnswSearchResult {
         if self.vectors.is_empty() {
             return HnswSearchResult {
                 indices: Vec::new(),
@@ -491,14 +491,14 @@ impl HnswIndex {
     /// Insert a hypervector into the index.
     ///
     /// Returns the index assigned to the new vector.
-    pub fn insert(&mut self, vector: &[u64; 157]) -> usize {
+    pub fn insert(&mut self, vector: &[u64; 160]) -> usize {
         self.insert_with_metadata(vector, None)
     }
 
     /// Insert a hypervector with optional metadata.
     pub fn insert_with_metadata(
         &mut self,
-        vector: &[u64; 157],
+        vector: &[u64; 160],
         metadata: Option<EntryMetadata>,
     ) -> usize {
         let idx = self.vectors.len();
@@ -639,7 +639,7 @@ impl HnswIndex {
     /// ensures graph connectivity.
     fn select_neighbors_heuristic(
         &self,
-        query: &[u64; 157],
+        query: &[u64; 160],
         candidates: &BinaryHeap<DistIdx>,
         layer: usize,
         curr_ep: &mut usize,
@@ -751,14 +751,14 @@ impl HnswIndex {
 
     /// Insert multiple vectors at once (more efficient than individual
     /// inserts for large batches).
-    pub fn insert_batch(&mut self, vectors: &[[u64; 157]]) {
+    pub fn insert_batch(&mut self, vectors: &[[u64; 160]]) {
         for v in vectors {
             self.insert(v);
         }
     }
 
     /// Build the index from an existing set of vectors (in-order insertion).
-    pub fn build_from_vectors(&mut self, vectors: &[[u64; 157]]) {
+    pub fn build_from_vectors(&mut self, vectors: &[[u64; 160]]) {
         self.vectors.reserve(vectors.len());
         self.metadata.reserve(vectors.len());
         self.graphs.reserve(vectors.len());
@@ -771,7 +771,7 @@ impl HnswIndex {
     // ─── Vector access ──────────────────────────────────────────────
 
     /// Get a reference to a stored vector by index.
-    pub fn get_vector(&self, index: usize) -> Option<&[u64; 157]> {
+    pub fn get_vector(&self, index: usize) -> Option<&[u64; 160]> {
         self.vectors.get(index)
     }
 
@@ -795,18 +795,18 @@ impl HnswIndex {
     // ─── Search convenience ─────────────────────────────────────────
 
     /// Find the single nearest neighbor.
-    pub fn find_nearest(&self, query: &[u64; 157]) -> Option<(usize, f64)> {
+    pub fn find_nearest(&self, query: &[u64; 160]) -> Option<(usize, f64)> {
         let result = self.search(query, 1);
         result.closest()
     }
 
     /// Find k nearest neighbors.
-    pub fn find_k_nearest(&self, query: &[u64; 157], k: usize) -> HnswSearchResult {
+    pub fn find_k_nearest(&self, query: &[u64; 160], k: usize) -> HnswSearchResult {
         self.search(query, k)
     }
 
     /// Find all neighbors within a distance threshold.
-    pub fn find_within_radius(&self, query: &[u64; 157], radius: f64) -> HnswSearchResult {
+    pub fn find_within_radius(&self, query: &[u64; 160], radius: f64) -> HnswSearchResult {
         // Search with a large ef, then filter
         let ef = std::cmp::max(self.config.ef_search, 100);
         let result = self.search(query, ef);
@@ -929,8 +929,8 @@ impl HnswIndex {
 
         let mut vectors = Vec::with_capacity(num_vectors);
         for _ in 0..num_vectors {
-            let mut bits = [0u64; 157];
-            for i in 0..157 {
+            let mut bits = [0u64; 160];
+            for i in 0..160 {
                 bits[i] = read_u64(bytes, pos)?;
             }
             vectors.push(bits);
@@ -969,7 +969,7 @@ impl HnswIndex {
 
     /// Get memory usage statistics for monitoring.
     pub fn memory_stats(&self) -> HnswMemoryStats {
-        let vector_bytes = self.vectors.len() * 157 * 8;
+        let vector_bytes = self.vectors.len() * 160 * 8;
 
         let mut edge_count = 0;
         let mut edge_bytes = 0;
@@ -1039,17 +1039,17 @@ mod tests {
     use super::*;
     use crate::Hypervector;
 
-    fn make_test_vector(seed: u64) -> [u64; 157] {
-        let mut bits = [0u64; 157];
+    fn make_test_vector(seed: u64) -> [u64; 160] {
+        let mut bits = [0u64; 160];
         let mut x = seed;
-        for i in 0..157 {
+        for i in 0..160 {
             x = x.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
             bits[i] = x;
         }
         bits
     }
 
-    fn make_random_vector() -> [u64; 157] {
+    fn make_random_vector() -> [u64; 160] {
         let hv = Hypervector::new_random();
         hv.bits
     }
@@ -1239,7 +1239,7 @@ mod tests {
     fn test_hnsw_vs_linear_scan() {
         let n = 100;
         let mut index = HnswIndex::with_config(HnswConfig::default());
-        let mut all_vectors: Vec<[u64; 157]> = Vec::new();
+        let mut all_vectors: Vec<[u64; 160]> = Vec::new();
 
         for i in 0..n {
             let v = make_test_vector(i);

@@ -187,8 +187,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }));
         let bootstrap_frame_counter: Arc<RwLock<usize>> =
             Arc::new(RwLock::new(0));
-        let bootstrap_seed_urls: Arc<RwLock<Vec<String>>> =
-            Arc::new(RwLock::new(Vec::new()));
+        let bootstrap_seed_urls: Arc<RwLock<the_machine::compression::CappedVecDeque<String>>> =
+            Arc::new(RwLock::new(the_machine::compression::CappedVecDeque::new(50_000)));
 
         // ── PRE-BOOTSTRAP: Fetch event-specific articles ──────────────
         // Before launching agents, we load frames from multiple articles
@@ -265,7 +265,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             ];
             let mut surl = bootstrap_seed_urls.write().await;
             for q in &searches {
-                surl.push(format!("https://html.duckduckgo.com/html/?q={}", q));
+                surl.push_back(format!("https://html.duckduckgo.com/html/?q={}", q));
             }
             drop(surl);
         }
@@ -375,10 +375,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let guard = shared_logs.read().await;
                 guard.clone() // owned Vec<String> — no lock held after this scope
             };
-            let states = {
+            // ██ FIX v2.6: Lightweight snapshot instead of full HashMap clone ██
+            // Extract only the fields needed for the TUI display while holding
+            // the lock, then drop it immediately.  This avoids cloning the
+            // entire HashMap<String, AgentState> every 200ms.
+            let mut agent_snapshots: Vec<(String, String, u16, f64, bool, f64, usize, usize, usize, usize, usize, usize)> = Vec::new();
+            {
                 let guard = shared_states.read().await;
-                guard.clone() // owned HashMap — no lock held after this scope
-            };
+                for id in &["Agent-1", "Agent-2", "Agent-3"] {
+                    if let Some(agent) = guard.get(*id) {
+                        agent_snapshots.push((
+                            agent.id.clone(),
+                            agent.role.clone(),
+                            agent.port,
+                            agent.threat,
+                            agent.stealth,
+                            agent.anxiety,
+                            agent.permanent_nodes,
+                            agent.transient_nodes,
+                            agent.frames,
+                            agent.rules_total,
+                            agent.rules_trusted,
+                            agent.seed_queue,
+                        ));
+                    }
+                }
+            } // lock dropped here
 
             println!("\x1B[35m┌─────────────────────────────────────────────────────────────────────────────┐\x1B[0m\x1B[K");
             println!("\x1B[35m│   \x1B[1;36mTHE MACHINE v8.3 HIVE MIND\x1B[0;35m  |  \x1B[1;32mDISTRIBUTED COGNITIVE SYSTEM\x1B[0;35m               │\x1B[0m\x1B[K");
@@ -395,42 +417,38 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 broker_clients
             );
 
-            // Display individual Agents
-            for id in &["Agent-1", "Agent-2", "Agent-3"] {
+            // Display individual Agents from lightweight snapshot
+            for (id, role, port, threat, stealth, anxiety, perm_nodes, trans_nodes, frames, rules_total, rules_trusted, seed_queue) in &agent_snapshots {
                 println!("\x1B[35m├─────────────────────────────────────────────────────────────────────────────┤\x1B[0m\x1B[K");
-                if let Some(agent) = states.get(*id) {
-                    println!(
-                        "│\x1B[36m [{}: {} AGENT (Admin Port: {})]\x1B[0m                               \x1B[35m│\x1B[0m\x1B[K",
-                        agent.id, agent.role.to_uppercase(), agent.port
-                    );
-                    let display_url = if agent.url.len() > 60 {
-                        format!("{}...", &agent.url[0..57])
-                    } else {
-                        agent.url.clone()
-                    };
-                    println!(
-                        "│  Scraping: \x1B[33m{:<64}\x1B[0m \x1B[35m│\x1B[0m\x1B[K",
-                        display_url
-                    );
-                    println!(
-                        "│  Threat: \x1B[1;31m{:>6.2}%\x1B[0m | Stealth: \x1B[1;{}m{:<16}\x1B[0m | Anxiety: \x1B[1;33m{:>6.2}%\x1B[0m | Mem: P:{:<2}/T:{:<2} \x1B[35m│\x1B[0m\x1B[K",
-                        agent.threat * 100.0,
-                        if agent.stealth { "31" } else { "32" },
-                        if agent.stealth { "ACTIVE (EVASION)" } else { "INACTIVE" },
-                        agent.anxiety * 100.0,
-                        agent.permanent_nodes,
-                        agent.transient_nodes
-                    );
-                    // Layers 3-5 integration line
-                    println!(
-                        "│  \x1B[36mFrames:{:<4} Rules:{:<3}({:<3}✓)\x1B[0m \x1B[33mCuriosity:{:<2}\x1B[0m \x1B[35mSeeds:{:<2}\x1B[0m                    \x1B[35m│\x1B[0m\x1B[K",
-                        agent.frames,
-                        agent.rules_total,
-                        agent.rules_trusted,
-                        agent.curiosity_targets,
-                        agent.seed_queue,
-                    );
-                } else {
+                println!(
+                    "│\x1B[36m [{}: {} AGENT (Admin Port: {})]\x1B[0m                               \x1B[35m│\x1B[0m\x1B[K",
+                    id, role.to_uppercase(), port
+                );
+                println!(
+                    "│  Threat: \x1B[1;31m{:>6.2}%\x1B[0m | Stealth: \x1B[1;{}m{:<16}\x1B[0m | Anxiety: \x1B[1;33m{:>6.2}%\x1B[0m | Mem: P:{:<2}/T:{:<2} \x1B[35m│\x1B[0m\x1B[K",
+                    threat * 100.0,
+                    if *stealth { "31" } else { "32" },
+                    if *stealth { "ACTIVE (EVASION)" } else { "INACTIVE" },
+                    anxiety * 100.0,
+                    perm_nodes,
+                    trans_nodes
+                );
+                // Layers 3-5 integration line
+                println!(
+                    "│  \x1B[36mFrames:{:<4} Rules:{:<3}({:<3}✓)\x1B[0m \x1B[33mCuriosity:{:<2}\x1B[0m \x1B[35mSeeds:{:<2}\x1B[0m                    \x1B[35m│\x1B[0m\x1B[K",
+                    frames,
+                    rules_total,
+                    rules_trusted,
+                    0, // curiosity targets not captured in snapshot to keep it fast
+                    seed_queue,
+                );
+            }
+
+            // Show placeholder for non-responsive agents
+            for id in &["Agent-1", "Agent-2", "Agent-3"] {
+                let found = agent_snapshots.iter().any(|(snap_id, _, _, _, _, _, _, _, _, _, _, _)| snap_id == id);
+                if !found {
+                    println!("\x1B[35m├─────────────────────────────────────────────────────────────────────────────┤\x1B[0m\x1B[K");
                     println!(
                         "│  {:<73} │\x1B[K",
                         format!("Loading [{}] telemetry...", id)
@@ -461,14 +479,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let mut status = String::new();
                 status.push_str(&format!("=== THE MACHINE STATUS @ {} ===\n", now));
                 status.push_str(&format!("Broker: {} clusters, {} clients\n", broker_clusters, broker_clients));
-                for id in &["Agent-1", "Agent-2", "Agent-3"] {
-                    if let Some(agent) = states.get(*id) {
-                        status.push_str(&format!(
-                            "{}: url={} frames={} rules={}({}✓) curiosity={} seeds={} threat={:.1} anxiety={:.1}\n",
-                            agent.id, agent.url, agent.frames, agent.rules_total, agent.rules_trusted,
-                            agent.curiosity_targets, agent.seed_queue, agent.threat, agent.anxiety,
-                        ));
-                    }
+                for (id, _role, _port, threat, _stealth, anxiety, _perm, _trans, frames, rules_total, rules_trusted, seed_queue) in &agent_snapshots {
+                    status.push_str(&format!(
+                        "{}: frames={} rules={}({}✓) seeds={} threat={:.1} anxiety={:.1}\n",
+                        id, frames, rules_total, rules_trusted, seed_queue, threat, anxiety,
+                    ));
                 }
                 status.push_str(&format!("=== END STATUS ===\n"));
                 let _ = std::fs::write("/tmp/the_machine_status.txt", &status);
@@ -495,7 +510,7 @@ async fn run_agent(
     shared_primary: Option<Arc<RwLock<AnalogicalIndex>>>,
     shared_meta: Option<Arc<RwLock<MetaIndex>>>,
     shared_frame_counter: Option<Arc<RwLock<usize>>>,
-    shared_seed_urls: Option<Arc<RwLock<Vec<String>>>>,
+    shared_seed_urls: Option<Arc<RwLock<the_machine::compression::CappedVecDeque<String>>>>,
 ) -> Result<(), Box<dyn std::error::Error>> {
     // 1. Connect to Broker
     let stream = tokio::net::TcpStream::connect(format!("127.0.0.1:{}", broker_port))
@@ -674,7 +689,7 @@ async fn run_agent(
             ));
             drop(pri_ref);
             let fci: Arc<RwLock<usize>> = Arc::new(RwLock::new(0));
-            let surl: Arc<RwLock<Vec<String>>> = Arc::new(RwLock::new(Vec::new()));
+            let surl: Arc<RwLock<the_machine::compression::CappedVecDeque<String>>> = Arc::new(RwLock::new(the_machine::compression::CappedVecDeque::new(50_000)));
             (pri, met, fci, surl)
         };
 
@@ -940,6 +955,34 @@ async fn run_agent(
                 ));
             }
 
+            // ██ FIX v2.6: Entry merging (Layer 2) ──────────────────
+            // Every 50 ticks, merge entries in clusters that exceed the
+            // trigger count (600).  This collapses old entries via
+            // age-weighted bundling, preventing unbounded per-cluster
+            // growth and keeping centroid recomputation fast.
+            if ticker % 50 == 0 && ticker > 0 {
+                let mut brain_guard = brain_subconscious.write().await;
+                let merge_config = the_machine::compression::MergeConfig::default();
+                let mut total_removed = 0usize;
+                let mut merged_clusters = 0usize;
+                for cluster in &mut brain_guard.dejavu_clusters {
+                    let removed = the_machine::compression::merge_entries(
+                        cluster, &merge_config, ticker as u64,
+                    );
+                    if removed > 0 {
+                        total_removed += removed;
+                        merged_clusters += 1;
+                    }
+                }
+                drop(brain_guard);
+                if merged_clusters > 0 {
+                    let _ = subconscious_log_tx.send(format!(
+                        "AGENT {}: Entry merging — {} entries removed across {} clusters.",
+                        id_str, total_removed, merged_clusters
+                    ));
+                }
+            }
+
             // ██ FIX v2.5: Periodic hot/cold memory management ───────
             // Every 100 ticks, freeze cold clusters to reclaim memory.
             // Keeps at most 100 accumulators hot (40 KB each).
@@ -954,6 +997,46 @@ async fn run_agent(
                 let _ = subconscious_log_tx.send(format!(
                     "AGENT {}: Hot/cold memory sweep — {} hot clusters active.",
                     id_str, hot_count
+                ));
+            }
+
+            // ██ FIX v2.6: Memory profiler snapshot ─────────────────
+            // Every 200 ticks, log memory usage statistics including
+            // cluster counts, accumulator sparsity, and entry counts.
+            if ticker % 200 == 0 && ticker > 0 {
+                let brain_guard = brain_subconscious.read().await;
+                let mut total_entries = 0usize;
+                let mut total_accum_kb = 0.0_f64;
+                let mut hot = 0usize;
+                let mut cold = 0usize;
+                for cluster in &brain_guard.dejavu_clusters {
+                    total_entries += cluster.entries.len();
+                    if cluster.is_hot() {
+                        hot += 1;
+                        total_accum_kb += cluster.accumulator.len() as f64 * 4.0 / 1024.0;
+                    } else {
+                        cold += 1;
+                    }
+                }
+                let snapshot = the_machine::compression::log_memory_snapshot(
+                    &the_machine::compression::MemorySnapshot {
+                        dejavu_clusters: brain_guard.dejavu_clusters.len(),
+                        hot_clusters: hot,
+                        cold_clusters: cold,
+                        transient_clusters: brain_guard.transient_clusters.len(),
+                        total_entries,
+                        total_accumulator_kb: total_accum_kb,
+                        visited_urls_approx: 0.0, // not tracked here
+                        seed_queue_len: 0,         // not tracked here
+                        doc_frequency_entries: 0,  // not tracked here
+                        experiences_len: brain_guard.experiences.len(),
+                        broker_clusters: 0,        // not tracked here
+                    }
+                );
+                let _ = subconscious_log_tx.send(format!(
+                    "MEMORY: {} clusters ({} hot, {} cold), {} entries, accumulators: {:.1} KB, experiences: {}",
+                    brain_guard.dejavu_clusters.len(), hot, cold,
+                    total_entries, total_accum_kb, brain_guard.experiences.len(),
                 ));
             }
 
@@ -1623,7 +1706,7 @@ async fn run_agent(
                                 encoded
                             );
                             let mut seeds = seed_urls_int.write().await;
-                            seeds.push(search_url);
+                            seeds.push_back(search_url);
                             let _ = subconscious_log_tx.send(format!(
                                 "CURIOSITY: Generated DuckDuckGo search for '{}' (E={:.2})",
                                 query, energy,

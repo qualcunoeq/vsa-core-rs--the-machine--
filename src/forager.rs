@@ -2,6 +2,7 @@ use crate::resonator::ResonatorVocabulary;
 use crate::Hypervector;
 use crate::analogy::{self, RoleDictionary, ROLE_AGENT, ROLE_ACTION, ROLE_PATIENT,
     AnalogicalIndex, MetaIndex};
+use crate::compression::{CountingBloomFilter, CappedVecDeque};
 use scraper::{Html, Selector};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
@@ -20,7 +21,7 @@ use tokio::time::{sleep, Duration};
 pub struct VSAForager {
     pub intent: Arc<RwLock<Hypervector>>,
     pub current_url: Arc<RwLock<String>>,
-    pub visited: HashSet<String>,
+    pub visited: CountingBloomFilter,
     pub client: reqwest::Client,
     pub crawl_speed_ms: u64,
     pub brain: Option<Arc<RwLock<crate::VSABrain>>>,
@@ -59,7 +60,8 @@ pub struct VSAForager {
     /// When the forager reaches a dead end, it pops a seed URL from
     /// this queue and starts crawling from there.  The agent loop
     /// pushes DuckDuckGo search URLs (decoded from curiosity targets).
-    pub seed_urls: Arc<RwLock<Vec<String>>>,
+    /// Bounded by CappedVecDeque at max 50K entries.
+    pub seed_urls: Arc<RwLock<CappedVecDeque<String>>>,
 }
 
 impl VSAForager {
@@ -67,7 +69,7 @@ impl VSAForager {
         VSAForager {
             intent: Arc::new(RwLock::new(initial_intent)),
             current_url: Arc::new(RwLock::new(start_url)),
-            visited: HashSet::new(),
+            visited: CountingBloomFilter::default_large(),
             client: reqwest::Client::builder()
                 .timeout(Duration::from_secs(15))
                 .user_agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
@@ -82,7 +84,7 @@ impl VSAForager {
             primary: None,
             meta: None,
             frame_counter: None,
-            seed_urls: Arc::new(RwLock::new(Vec::new())),
+            seed_urls: Arc::new(RwLock::new(CappedVecDeque::new(50_000))),
         }
     }
 
@@ -136,7 +138,7 @@ impl VSAForager {
             url_guard.clone()
         };
 
-        self.visited.insert(url.clone());
+        self.visited.insert(&url);
 
         // Fetch URL content
         let response = self
@@ -326,7 +328,7 @@ impl VSAForager {
         let mut scored_count = 0;
 
         for (resolved_url, anchor_text) in candidates {
-            if self.visited.contains(&resolved_url) {
+            if self.visited.maybe_contains(&resolved_url) {
                 continue;
             }
 
@@ -347,9 +349,9 @@ impl VSAForager {
             // ── Check for curiosity-driven seed URLs ────────────
             let seeds = self.seed_urls.read().await;
             if !seeds.is_empty() {
-                let seed = seeds[0].clone();
+                let seed = seeds.get(0).cloned().unwrap_or_default();
                 drop(seeds);
-                self.seed_urls.write().await.remove(0);
+                self.seed_urls.write().await.pop_front();
                 self.visited.clear();
                 *self.current_url.write().await = seed.clone();
                 return Ok((seed, 0.0, 0));
@@ -582,9 +584,9 @@ impl VSAForager {
                     // Otherwise we'd retry the same failing URL forever.
                     let seeds = guard.seed_urls.read().await;
                     if !seeds.is_empty() {
-                        let seed = seeds[0].clone();
+                        let seed = seeds.get(0).cloned().unwrap_or_default();
                         drop(seeds);
-                        guard.seed_urls.write().await.remove(0);
+                        guard.seed_urls.write().await.pop_front();
                         guard.visited.clear();
                         *guard.current_url.write().await = seed.clone();
                         let _ = log_tx.send(format!("CRAWLER: Failover to seed URL: {}", seed));

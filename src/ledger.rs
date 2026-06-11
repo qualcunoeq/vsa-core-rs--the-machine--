@@ -26,7 +26,7 @@ impl LongTermLedger {
         let mut password = self.secret_key.clone();
         password.extend_from_slice(&state_vector.to_bytes());
         let rounds = 1000;
-        let key_len = 32; // AES-256 equivalent key size
+        let key_len = 32;
 
         let mut result = Vec::with_capacity(key_len);
         let mut block_num = 1u32;
@@ -71,8 +71,10 @@ impl LongTermLedger {
             .collect()
     }
 
-    /// Appends a new hypervector record to the binary ledger
-    /// Record size: Date (10 bytes) + Salt (16 bytes) + Ciphertext (1254 bytes) = 1280 bytes
+    /// ██ UPGRADE v2.0: 1280-byte payload for D=10240 ██
+    ///
+    /// Record size: Date (10 bytes) + Salt (16 bytes) + Ciphertext (1284 bytes) = 1310 bytes
+    /// Ciphertext = Magic (4 bytes) + Payload (1280 bytes = 160 × u64)
     pub fn append_record(
         &self,
         date_str: &str,
@@ -83,11 +85,11 @@ impl LongTermLedger {
             return Err("Date string must be exactly 10 characters (YYYY-MM-DD)".to_string());
         }
 
-        // 1. Serialize vector to 1250 bytes and prepend 4 magic bytes
-        let raw_bytes = vector.to_bytes_1250();
-        let mut payload = vec![0u8; 1254];
+        // 1. Serialize vector to 1280 bytes and prepend 4 magic bytes
+        let raw_bytes = vector.to_bytes();
+        let mut payload = vec![0u8; 1284];
         payload[0..4].copy_from_slice(&[0xDE, 0xAD, 0xC0, 0xDE]);
-        payload[4..1254].copy_from_slice(&raw_bytes);
+        payload[4..1284].copy_from_slice(&raw_bytes);
 
         // 2. Generate random salt (16 bytes)
         let mut rng = rand::thread_rng();
@@ -98,8 +100,8 @@ impl LongTermLedger {
         let derived_key = self.derive_key(state_vector, &salt);
         let ciphertext = self.encrypt_decrypt_xor(&payload, &derived_key);
 
-        // 4. Assemble the 1280-byte record
-        let mut record = Vec::with_capacity(1280);
+        // 4. Assemble the 1310-byte record
+        let mut record = Vec::with_capacity(1310);
         record.extend_from_slice(date_str.as_bytes());
         record.extend_from_slice(&salt);
         record.extend_from_slice(&ciphertext);
@@ -131,7 +133,7 @@ impl LongTermLedger {
         let mut file = File::open(path).map_err(|e| format!("Failed to open ledger: {}", e))?;
 
         let mut results = Vec::new();
-        let record_len = 1280;
+        let record_len = 1310;
         let mut buffer = vec![0u8; record_len];
 
         loop {
@@ -150,7 +152,7 @@ impl LongTermLedger {
             let date_str = String::from_utf8_lossy(date_bytes).into_owned();
 
             let salt = &buffer[10..26];
-            let ciphertext = &buffer[26..1280];
+            let ciphertext = &buffer[26..1310];
 
             let derived_key = self.derive_key(state_vector, salt);
             let decrypted_payload = self.encrypt_decrypt_xor(ciphertext, &derived_key);
@@ -160,9 +162,9 @@ impl LongTermLedger {
                 return Err("DECRYPTION_FAILED_SECURITY_LOCK".to_string());
             }
 
-            let mut hv_bytes = [0u8; 1250];
-            hv_bytes.copy_from_slice(&decrypted_payload[4..1254]);
-            let vector = Hypervector::from_bytes_1250(&hv_bytes);
+            let mut hv_bytes = [0u8; 1280];
+            hv_bytes.copy_from_slice(&decrypted_payload[4..1284]);
+            let vector = Hypervector::from_bytes(&hv_bytes);
 
             results.push((date_str, vector));
         }
@@ -195,7 +197,6 @@ impl LongTermLedger {
         }
 
         // 2. Agglomerative clustering (greedy single-link)
-        //    Each cluster is represented by its first element's centroid.
         let mut clusters: Vec<Vec<Hypervector>> = Vec::new();
 
         for (_, vector) in &records {
@@ -229,49 +230,18 @@ impl LongTermLedger {
         // 4. Cryptographic rewrite
         let today_str = chrono::Utc::now().format("%Y-%m-%d").to_string();
 
-        // Remove old file
         let path = std::path::Path::new(&self.file_path);
         if path.exists() {
             std::fs::remove_file(path)
                 .map_err(|e| format!("Failed to remove old ledger: {}", e))?;
         }
 
-        // Write compacted records
         for vector in &compacted {
             self.append_record(&today_str, vector, state_vector)?;
         }
 
         let removed = original_count - compacted.len();
         Ok(removed)
-    }
-}
-
-// Add these to Hypervector in lib.rs or locally
-impl Hypervector {
-    pub fn to_bytes_1250(&self) -> [u8; 1250] {
-        let mut bytes = [0u8; 1250];
-        for i in 0..156 {
-            let block_bytes = self.bits[i].to_le_bytes();
-            bytes[i * 8..(i + 1) * 8].copy_from_slice(&block_bytes);
-        }
-        let last_bytes = self.bits[156].to_le_bytes();
-        bytes[1248] = last_bytes[0];
-        bytes[1249] = last_bytes[1];
-        bytes
-    }
-
-    pub fn from_bytes_1250(bytes: &[u8; 1250]) -> Self {
-        let mut bits = [0u64; 157];
-        for i in 0..156 {
-            let mut block_bytes = [0u8; 8];
-            block_bytes.copy_from_slice(&bytes[i * 8..(i + 1) * 8]);
-            bits[i] = u64::from_le_bytes(block_bytes);
-        }
-        let mut last_bytes = [0u8; 8];
-        last_bytes[0] = bytes[1248];
-        last_bytes[1] = bytes[1249];
-        bits[156] = u64::from_le_bytes(last_bytes);
-        Hypervector { bits }
     }
 }
 
@@ -291,11 +261,9 @@ mod tests {
         let wrong_state = Hypervector::new_random();
         let record_vector = Hypervector::new_random();
 
-        // Append record using test_state
         let append_res = ledger.append_record("2026-06-04", &record_vector, &test_state);
         assert!(append_res.is_ok());
 
-        // Try to load with the correct state vector
         let load_res = ledger.load_records(&test_state);
         assert!(load_res.is_ok());
         let records = load_res.unwrap();
@@ -305,7 +273,6 @@ mod tests {
         let dist = records[0].1.normalized_hamming_distance(&record_vector);
         assert!(dist < 0.01);
 
-        // Try to load with wrong state vector -> should fail with DECRYPTION_FAILED_SECURITY_LOCK error
         let load_wrong_res = ledger.load_records(&wrong_state);
         assert!(load_wrong_res.is_err());
         assert_eq!(
@@ -313,7 +280,6 @@ mod tests {
             "DECRYPTION_FAILED_SECURITY_LOCK"
         );
 
-        // Clean up temp file
         let _ = fs::remove_file(temp_file);
     }
 
@@ -326,7 +292,6 @@ mod tests {
         let ledger = LongTermLedger::new(static_key, temp_file);
         let state = Hypervector::new_random();
 
-        // Write 5 distinct records
         let v1 = Hypervector::new_random();
         let v2 = Hypervector::new_random();
         let v3 = Hypervector::new_random();
@@ -339,12 +304,10 @@ mod tests {
         ledger.append_record("2026-06-05", &v5, &state).unwrap();
         assert_eq!(ledger.load_records(&state).unwrap().len(), 5);
 
-        // Compact with threshold 0.99 (no merging — all distinct)
         let removed = ledger.compact_ledger(&state, 0.99).unwrap();
         assert_eq!(removed, 0);
         assert_eq!(ledger.load_records(&state).unwrap().len(), 5);
 
-        // Add a near-duplicate of v1 and compact at 0.70
         ledger.append_record("2026-06-06", &v1, &state).unwrap();
         assert_eq!(ledger.load_records(&state).unwrap().len(), 6);
 

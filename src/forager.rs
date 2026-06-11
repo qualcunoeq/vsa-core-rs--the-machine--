@@ -1,5 +1,7 @@
 use crate::resonator::ResonatorVocabulary;
 use crate::Hypervector;
+use crate::analogy::{self, RoleDictionary, ROLE_AGENT, ROLE_ACTION, ROLE_PATIENT,
+    AnalogicalIndex, MetaIndex};
 use scraper::{Html, Selector};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
@@ -43,6 +45,21 @@ pub struct VSAForager {
     pub doc_frequency: HashMap<String, usize>,
     /// Total number of documents (pages) processed so far.
     pub total_documents: usize,
+
+    // ── Layers 3–5 integration: SVO frame store ────────────────────
+    /// Shared AnalogicalIndex — stores SVO frames from scraped text.
+    pub primary: Option<Arc<RwLock<AnalogicalIndex>>>,
+    /// Shared MetaIndex — epistemic tracking and curiosity.
+    pub meta: Option<Arc<RwLock<MetaIndex>>>,
+    /// Monotonic frame counter for label generation.
+    pub frame_counter: Option<Arc<RwLock<usize>>>,
+
+    // ── Curiosity-driven search queue ──────────────────────────────
+    /// Queue of seed URLs for curiosity-driven exploration.
+    /// When the forager reaches a dead end, it pops a seed URL from
+    /// this queue and starts crawling from there.  The agent loop
+    /// pushes DuckDuckGo search URLs (decoded from curiosity targets).
+    pub seed_urls: Arc<RwLock<Vec<String>>>,
 }
 
 impl VSAForager {
@@ -52,8 +69,8 @@ impl VSAForager {
             current_url: Arc::new(RwLock::new(start_url)),
             visited: HashSet::new(),
             client: reqwest::Client::builder()
-                .timeout(Duration::from_secs(5))
-                .user_agent("The-Machine-VSA-Forager/1.0")
+                .timeout(Duration::from_secs(15))
+                .user_agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                 .build()
                 .unwrap(),
             crawl_speed_ms,
@@ -62,6 +79,10 @@ impl VSAForager {
             vocab: None,
             doc_frequency: HashMap::new(),
             total_documents: 0,
+            primary: None,
+            meta: None,
+            frame_counter: None,
+            seed_urls: Arc::new(RwLock::new(Vec::new())),
         }
     }
 
@@ -148,6 +169,25 @@ impl VSAForager {
             }
             paragraphs
         };
+
+        // ── LAYERS 3-5 INTEGRATION: Extract SVO frames from scraped text ──
+        // Bridge the gap: scraped text → SVO triples → AnalogicalIndex frames.
+        if let Some(ref primary_arc) = self.primary {
+            if let Some(ref meta_arc) = self.meta {
+                if let Some(ref fc_arc) = self.frame_counter {
+                    let combined_text = paragraphs.join(" ");
+                    if combined_text.len() > 30 {
+                        let _result = crate::bridge::ingest_text(
+                            &combined_text,
+                            &mut *primary_arc.write().await,
+                            &mut *meta_arc.write().await,
+                            0.05,
+                            &mut *fc_arc.write().await,
+                        );
+                    }
+                }
+            }
+        }
 
         let mut sentences: Vec<(String, f64)> = Vec::new(); // (text, resonance)
         for p in paragraphs {
@@ -304,6 +344,16 @@ impl VSAForager {
         }
 
         if best_url.is_none() {
+            // ── Check for curiosity-driven seed URLs ────────────
+            let seeds = self.seed_urls.read().await;
+            if !seeds.is_empty() {
+                let seed = seeds[0].clone();
+                drop(seeds);
+                self.seed_urls.write().await.remove(0);
+                self.visited.clear();
+                *self.current_url.write().await = seed.clone();
+                return Ok((seed, 0.0, 0));
+            }
             self.visited.clear();
             return Err("Dead end or all links visited. Resetting crawl history.".to_string());
         }
@@ -406,6 +456,96 @@ impl VSAForager {
         Hypervector::bundle(&refs)
     }
 
+    /// Convert a curiosity target hypervector into a structured forager intent.
+    ///
+    /// The bridge from the epistemic self-model (MetaIndex) to the perception
+    /// system (VSAForager). Given a curiosity target HV (which represents a
+    /// concept the system believes should exist but hasn't observed):
+    ///
+    /// 1. Factorize the target against the forager's vocabulary using the
+    ///    resonator, recovering (subject, verb, object) strings
+    /// 2. If factorizable → set a structured intent with a param P for the
+    ///    object, enabling semantic link scoring
+    /// 3. If not factorizable → set intent to the raw target HV (lower
+    ///    confidence, broader match)
+    /// 4. Returns `true` if the target was factorizable (high-confidence
+    ///    intent), `false` if fallback to raw intent
+    ///
+    /// ## Why the bridge is hard
+    ///
+    /// A curiosity target that doesn't factorize cleanly is a genuine gap —
+    /// something the system knows should exist but cannot articulate. The
+    /// fallback to raw intent is a best-effort: the forager will score links
+    /// against the unfactorized vector, which may produce broad but shallow
+    /// matches. This is the closest approximation to "curiosity about the
+    /// inexpressible" the architecture currently supports.
+    pub fn set_curiosity_intent(
+        &self,
+        target_hv: &Hypervector,
+        roles: &RoleDictionary,
+        vocab: &ResonatorVocabulary,
+        subj_candidates: &[String],
+        verb_candidates: &[String],
+        obj_candidates: &[String],
+    ) -> bool {
+        // Attempt to factorize the target into known terms
+        let factorization = analogy::factorize_triple(
+            target_hv,
+            roles,
+            vocab,
+            subj_candidates,
+            verb_candidates,
+            obj_candidates,
+            30,
+        );
+
+        match factorization {
+            Some((subj_str, verb_str, obj_str, energy)) if energy >= 0.65 => {
+                // High-confidence factorization — set structured intent.
+                // Intent I = A ⊕ P where A = verb, P = object.
+                // The forager scores links against P.
+                let subj_hv = vocab.get_vector(&subj_str)
+                    .cloned()
+                    .unwrap_or_else(|| Hypervector::encode_text_ngram(&subj_str, 3));
+                let verb_hv = vocab.get_vector(&verb_str)
+                    .cloned()
+                    .unwrap_or_else(|| Hypervector::encode_text_ngram(&verb_str, 3));
+                let obj_hv = vocab.get_vector(&obj_str)
+                    .cloned()
+                    .unwrap_or_else(|| Hypervector::encode_text_ngram(&obj_str, 3));
+
+                let intent_hv = roles.bind_triple(&subj_hv, &verb_hv, &obj_hv);
+
+                // Set both the composite intent and the target parameter
+                {
+                    let mut intent_guard = self.intent.blocking_write();
+                    *intent_guard = intent_hv;
+                }
+                {
+                    let mut param_guard = self.target_parameter.blocking_write();
+                    *param_guard = Some(obj_hv);
+                }
+
+                true
+            }
+            _ => {
+                // Not factorizable — fallback to raw intent.
+                // The forager will score links against the unfactorized
+                // vector. This is better than nothing but less precise.
+                {
+                    let mut intent_guard = self.intent.blocking_write();
+                    *intent_guard = *target_hv;
+                }
+                {
+                    let mut param_guard = self.target_parameter.blocking_write();
+                    *param_guard = None; // fall back to raw intent scoring
+                }
+
+                false
+            }
+        }
+    }
+
     /// Continuous run loop for the forager
     pub async fn run_loop(
         forager_arc: Arc<tokio::sync::Mutex<Self>>,
@@ -438,6 +578,24 @@ impl VSAForager {
                 Err(e) => {
                     let log_msg = format!("CRAWLER WARN: {}", e);
                     let _ = log_tx.send(log_msg);
+                    // Try to pop from seed queue or skip to next unvisited link.
+                    // Otherwise we'd retry the same failing URL forever.
+                    let seeds = guard.seed_urls.read().await;
+                    if !seeds.is_empty() {
+                        let seed = seeds[0].clone();
+                        drop(seeds);
+                        guard.seed_urls.write().await.remove(0);
+                        guard.visited.clear();
+                        *guard.current_url.write().await = seed.clone();
+                        let _ = log_tx.send(format!("CRAWLER: Failover to seed URL: {}", seed));
+                    } else {
+                        drop(seeds);
+                        // Clear visited so the forager tries a different link
+                        // (the current URL is still in visited, but clearing
+                        // the set lets us retry other links on the same page).
+                        guard.visited.clear();
+                        let _ = log_tx.send("CRAWLER: Cleared visited set — will retry with fresh links.".to_string());
+                    }
                     sleep(Duration::from_secs(2)).await;
                 }
             }

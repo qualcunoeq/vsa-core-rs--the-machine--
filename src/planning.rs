@@ -375,18 +375,93 @@ pub fn bundle_weighted_ewma(deltas: &[Hypervector], half_life: usize) -> Hyperve
     }
 
     let n = deltas.len();
-    let mut weighted_refs: Vec<&Hypervector> = Vec::with_capacity(n * 4);
+    let mut weights: Vec<f64> = Vec::with_capacity(n);
 
-    for (i, hv) in deltas.iter().enumerate() {
-        let age = (n - 1 - i) as f64; // 0 = newest
+    for (i, _) in deltas.iter().enumerate() {
+        let age = (n - 1 - i) as f64;
         let raw_weight = (-age * std::f64::consts::LN_2 / half_life as f64).exp();
-        let copies = (raw_weight * 8.0).round().max(1.0) as usize;
-        for _ in 0..copies {
-            weighted_refs.push(hv);
-        }
+        weights.push(raw_weight);
     }
 
-    Hypervector::bundle(&weighted_refs)
+    let refs: Vec<&Hypervector> = deltas.iter().collect();
+    Hypervector::bundle_weighted(&refs, &weights)
+}
+
+/// ██ FIX v2.5: Adaptive drift noise filtering (Kalman-like cleanup) ██
+///
+/// Before a drift vector enters the regime forecaster, we pass it through
+/// an auto-associative cleanup against the recent drift history itself.
+/// This filters out bit-rot from inexact state extraction:
+///
+///   Δ̂_t = clean(Δ_t, {Δ_{t-N}, ..., Δ_{t-1}})
+///
+/// **Adaptive thresholding:** Unlike the v2.0 fixed threshold of 0.45,
+/// the FIX v2.5 version computes a variance-adaptive threshold:
+///
+///   τ = τ₀ + α · σ_history
+///
+/// where τ₀ = 0.40 is the base threshold, σ_history is the pairwise
+/// variance of the history deltas, and α = 2.0 scales the adaptation.
+///
+/// When the environment is inherently volatile (high σ), the filter
+/// loosens to avoid suppressing genuine regime shifts.  When stable
+/// (low σ), it tightens to aggressively reject outlier noise.
+///
+/// Additionally uses a **smoothstep blending** curve instead of a hard
+/// cut, for a smooth transition between keep and suppress regimes.
+///
+/// `history` should be 3–5 most recent delta vectors.
+pub fn filter_drift_noise(delta: &Hypervector, history: &[Hypervector]) -> Hypervector {
+    if history.len() < 2 {
+        // Need at least 2 history entries for meaningful variance + consensus
+        return *delta;
+    }
+
+    // Compute the consensus bundle of recent history
+    let refs: Vec<&Hypervector> = history.iter().collect();
+    let consensus = Hypervector::bundle(&refs);
+
+    // How far is the new delta from the consensus?
+    let distance = delta.normalized_hamming_distance(&consensus);
+
+    // ██ Adaptive threshold based on history variance ██
+    // High variance → higher threshold (more tolerant, regime shift possible)
+    // Low variance → lower threshold (tighter filtering, outlier suppression)
+    let hist_var = drift_variance(history);
+    let base_threshold: f64 = 0.40;
+    let adaptive_threshold = base_threshold + 2.0 * hist_var;
+    // Clamp to sensible range
+    let adaptive_threshold = adaptive_threshold.clamp(0.30, 0.55);
+
+    // Three-regime filter based on distance relative to adaptive threshold
+    if distance <= adaptive_threshold * 0.8 {
+        // Well within the noise band — pass through unchanged
+        *delta
+    } else if distance >= adaptive_threshold * 1.5 {
+        // Extreme outlier — suppress nearly entirely
+        // Heavy consensus bias (7:1 ratio)
+        let copies_delta = 1usize;
+        let copies_consensus = 7usize;
+        let mut weighted: Vec<&Hypervector> = Vec::with_capacity(copies_delta + copies_consensus);
+        for _ in 0..copies_delta { weighted.push(delta); }
+        for _ in 0..copies_consensus { weighted.push(&consensus); }
+        Hypervector::bundle(&weighted)
+    } else {
+        // Transition zone — smoothstep blending
+        // t = 0 at lower bound, t = 1 at upper bound
+        let t = (distance - adaptive_threshold * 0.8) / (adaptive_threshold * 0.7);
+        let t = t.min(1.0);
+        // Smoothstep: 3t² - 2t³ — gives a smoother transition than linear
+        let delta_weight = t * t * (3.0 - 2.0 * t);
+        let cons_weight = 1.0 - delta_weight;
+
+        let copies_delta = (delta_weight * 4.0).round().max(1.0) as usize;
+        let copies_consensus = (cons_weight * 4.0).round().max(1.0) as usize;
+        let mut weighted: Vec<&Hypervector> = Vec::with_capacity(copies_delta + copies_consensus);
+        for _ in 0..copies_delta { weighted.push(delta); }
+        for _ in 0..copies_consensus { weighted.push(&consensus); }
+        Hypervector::bundle(&weighted)
+    }
 }
 
 /// Compute the average pairwise normalised Hamming distance across a set of
@@ -409,6 +484,8 @@ pub fn drift_variance(deltas: &[Hypervector]) -> f64 {
 
 /// Build a probabilistic `DriftForecast` from the recent-delta history,
 /// adjusting Bayesian Model Averaging weights based on historical regime errors.
+///
+/// ██ UPGRADE v2.0: Applies drift noise filtering before regime analysis ██
 pub fn build_drift_forecast(
     deltas: &[Hypervector],
     variance: f64,
@@ -426,7 +503,17 @@ pub fn build_drift_forecast(
         return forecast;
     }
 
-    let nominal = bundle_weighted_ewma(deltas, half_life);
+    // ██ Filter each delta against its own history ██
+    let filtered_deltas: Vec<Hypervector> = deltas.iter().enumerate().map(|(i, d)| {
+        let history: Vec<Hypervector> = deltas.iter()
+            .take(i)
+            .cloned()
+            .collect();
+        filter_drift_noise(d, &history)
+    }).collect();
+
+    // Use filtered deltas for all downstream computation
+    let nominal = bundle_weighted_ewma(&filtered_deltas, half_life);
 
     if variance <= 0.38 {
         let seq = vec![nominal; horizon];
@@ -437,12 +524,12 @@ pub fn build_drift_forecast(
     // ── High variance (regime shift detected): multi-regime BMA ──
 
     // Stable regime: bundle with old-delta bias (reverse EWMA)
-    let mut reversed: Vec<Hypervector> = deltas.to_vec();
+    let mut reversed: Vec<Hypervector> = filtered_deltas.clone();
     reversed.reverse();
     let stable_drift = bundle_weighted_ewma(&reversed, half_life);
 
-    // Volatile regime: amplify the most recent delta
-    let newest = deltas.last().copied().unwrap_or(nominal);
+    // Volatile regime: amplify the most recent filtered delta
+    let newest = filtered_deltas.last().copied().unwrap_or(nominal);
     let amp_refs: Vec<&Hypervector> =
         std::iter::repeat(&newest).take(5).chain(std::iter::once(&nominal)).collect();
     let volatile_drift = Hypervector::bundle(&amp_refs);

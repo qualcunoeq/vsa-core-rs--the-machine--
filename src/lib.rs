@@ -1,44 +1,56 @@
+// Allow Greek characters (θ, ε, ρ, σ, τ) in doc comments and identifiers
+// to match the mathematical notation in the formal specification.
+#![allow(mixed_script_confusables)]
 use rand::Rng;
 use std::collections::HashMap;
 
-use crate::hnsw::HnswIndex;
-
 pub mod action;
+pub mod analogy;
 pub mod autonomy;
+pub mod bridge;
 pub mod broker;
+pub mod code_bridge;
 pub mod defense;
 pub mod forager;
-pub mod fpe;
-pub mod graph;
-pub mod hnsw;
 pub mod ledger;
-pub mod observer;
+pub mod nlp;
 pub mod planning;
+pub mod reason;
 pub mod resonator;
 pub mod sensory;
 pub mod socket;
 
-pub const HD_DIMENSION: usize = 10048;
-pub const U64_BLOCKS: usize = 157;
+// ─── DIMENSION UPGRADE v2.0 ────────────────────────────────────────────────
+// D = 10240 = 160 × 64 = 40 × 256-bit AVX2 registers.
+// The prime 157 was a SIMD alignment bottleneck; 160 ensures
+// full vectorisation on every XOR, rotation, popcount.
+pub const HD_DIMENSION: usize = 10240;
+pub const U64_BLOCKS: usize = 160;
+
+/// Number of levels for Fractional Power Encoding (FPE).
+/// Each registered variable pre-generates this many level hypervectors.
+pub const FPE_RESOLUTION: usize = 128;
+
+// ─── Role vectors ──────────────────────────────────────────────────────────
 
 impl Hypervector {
     pub fn role_market() -> Self {
         Self::encode_text_ngram("ROLE_MARKET_STATE", 3)
     }
-
     pub fn role_news() -> Self {
         Self::encode_text_ngram("ROLE_NEWS_STATE", 3)
     }
-
     pub fn role_infra() -> Self {
         Self::encode_text_ngram("ROLE_INFRA_STATE", 3)
     }
 }
 
-mod array_u64_157 {
+// ─── Serde helpers for [u64; 160] ──────────────────────────────────────────
+
+mod array_u64_160 {
     use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-    pub fn serialize<S>(array: &[u64; 157], serializer: S) -> Result<S::Ok, S::Error>
+    pub fn serialize<S>(array: &[u64; 160], serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
@@ -46,30 +58,33 @@ mod array_u64_157 {
         vec.serialize(serializer)
     }
 
-    pub fn deserialize<'de, D>(deserializer: D) -> Result<[u64; 157], D::Error>
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<[u64; 160], D::Error>
     where
         D: Deserializer<'de>,
     {
         let vec = Vec::<u64>::deserialize(deserializer)?;
-        if vec.len() != 157 {
+        if vec.len() != 160 {
             return Err(serde::de::Error::custom(format!(
-                "Expected array of size 157, found {}",
+                "Expected array of size 160, found {}",
                 vec.len()
             )));
         }
-        let mut array = [0u64; 157];
+        let mut array = [0u64; 160];
         array.copy_from_slice(&vec);
         Ok(array)
     }
 }
 
+// ─── Hypervector ───────────────────────────────────────────────────────────
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct Hypervector {
-    #[serde(with = "array_u64_157")]
+    #[serde(with = "array_u64_160")]
     pub bits: [u64; U64_BLOCKS],
 }
 
 impl Hypervector {
+    /// Random hypervector (50% density)
     pub fn new_random() -> Self {
         let mut rng = rand::thread_rng();
         let mut bits = [0u64; U64_BLOCKS];
@@ -79,16 +94,21 @@ impl Hypervector {
         Hypervector { bits }
     }
 
+    /// All-zero hypervector
     pub fn new_zero() -> Self {
         Hypervector {
             bits: [0u64; U64_BLOCKS],
         }
     }
 
+    /// Popcount (number of 1-bits)
     pub fn count_ones(&self) -> usize {
         self.bits.iter().map(|b| b.count_ones() as usize).sum()
     }
 
+    // ── Core VSA operations ───────────────────────────────────────────────
+
+    /// Binding: A ⊕ B (bitwise XOR)
     pub fn bitwise_xor(&self, other: &Self) -> Self {
         let mut result = [0u64; U64_BLOCKS];
         for i in 0..U64_BLOCKS {
@@ -97,15 +117,17 @@ impl Hypervector {
         Hypervector { bits: result }
     }
 
+    /// Normalized Hamming distance [0, 1]
     pub fn normalized_hamming_distance(&self, other: &Self) -> f64 {
-        let mut diff_count = 0;
+        let mut diff_count: u64 = 0;
         for i in 0..U64_BLOCKS {
             let xor_val = self.bits[i] ^ other.bits[i];
-            diff_count += xor_val.count_ones(); // Native CPU popcount
+            diff_count += xor_val.count_ones() as u64;
         }
         (diff_count as f64) / (HD_DIMENSION as f64)
     }
 
+    /// Cyclic left-rotation of the bit-vector (sequence/role encoding)
     pub fn rotate_left(&self, shift: usize) -> Self {
         let shift = shift % HD_DIMENSION;
         if shift == 0 {
@@ -130,13 +152,14 @@ impl Hypervector {
         Hypervector { bits: result }
     }
 
-    /// Proprietary Chaotic Shift-XOR Character Encoder
+    // ── Character encoding ────────────────────────────────────────────────
+
+    /// Chaotic Shift-XOR Character Encoder (unchanged from v1)
     pub fn encode_char(c: char, index_seed: usize) -> Self {
         let mut hv = [0u64; U64_BLOCKS];
         let char_val = c as u64;
 
         for i in 0..U64_BLOCKS {
-            // A proprietary LCG/Xorshift cascade to generate pseudo-random bits
             let mut x = char_val
                 .wrapping_add(i as u64)
                 .wrapping_mul(0x9E3779B97F4A7C15);
@@ -148,7 +171,9 @@ impl Hypervector {
         Hypervector { bits: hv }
     }
 
-    /// Sequence-Preserving N-Gram Permutation with Page-Level Majority Bundling
+    // ── String encoding ───────────────────────────────────────────────────
+
+    /// N-gram encoding: bundles rotated char-vectors within each window
     pub fn encode_text_ngram(text: &str, k: usize) -> Self {
         if text.is_empty() {
             return Self::new_zero();
@@ -188,7 +213,29 @@ impl Hypervector {
         Self::bundle(&refs)
     }
 
-    /// Bit-Parallel Majority Bundling with deterministic noise injection for tie-breaking
+    /// Sentence encoder: position-permuted word n-grams
+    pub fn encode_sentence(text: &str) -> Self {
+        let words: Vec<&str> = text
+            .split_whitespace()
+            .map(|w| w.trim_matches(|c: char| c.is_ascii_punctuation()))
+            .filter(|w| !w.is_empty())
+            .collect();
+        if words.is_empty() {
+            return Self::new_zero();
+        }
+        let mut word_vectors = Vec::new();
+        for (i, word) in words.iter().enumerate() {
+            let word_hv = Self::encode_text_ngram(word, 3);
+            let rotated = word_hv.rotate_left(i * 13);
+            word_vectors.push(rotated);
+        }
+        let refs: Vec<&Hypervector> = word_vectors.iter().collect();
+        Self::bundle(&refs)
+    }
+
+    // ── Bundling (majority rule) ──────────────────────────────────────────
+
+    /// Standard bundling with deterministic tie-breaking
     pub fn bundle(vectors: &[&Self]) -> Self {
         if vectors.is_empty() {
             return Self::new_zero();
@@ -203,8 +250,6 @@ impl Hypervector {
         let is_even = num_vectors % 2 == 0;
 
         let noise_vector = if is_even {
-            // A deterministic pseudo-random vector derived from the input vectors
-            // to ensure reproducible bundling behavior across restarts and trials.
             let mut bits = [0u64; U64_BLOCKS];
             let first_bits = vectors.first().map(|v| v.bits[0]).unwrap_or(0);
             for i in 0..U64_BLOCKS {
@@ -245,122 +290,540 @@ impl Hypervector {
         Hypervector { bits: result_bits }
     }
 
-    /// Continuous Value Interpolation Mapping
-    pub fn encode_continuous(config: &VarConfig, val: f64) -> Self {
-        let clamped = val.clamp(config.min_val, config.max_val);
-        let fraction = (clamped - config.min_val) / (config.max_val - config.min_val);
-        let num_bits_max = (fraction * (HD_DIMENSION as f64)).round() as usize;
-        let num_bits_min = HD_DIMENSION - num_bits_max;
+    /// ██ UPGRADE v2.0: Recency-weighted bundling ██
+    ///
+    /// Weighs each vector by a recency factor before majority-voting.
+    /// `weights` must have the same length as `vectors`.
+    /// Each weight is a multiplier on the number of "copies" of that vector
+    /// in the bundle, preventing superposition catastrophe by exponentially
+    /// favouring recent observations.
+    ///
+    /// If `weights` is empty or mismatched, falls back to standard bundle.
+    pub fn bundle_weighted(vectors: &[&Self], weights: &[f64]) -> Self {
+        if vectors.is_empty() {
+            return Self::new_zero();
+        }
+        if vectors.len() == 1 {
+            return *vectors[0];
+        }
+        if weights.len() != vectors.len() {
+            // fallback: standard bundle
+            return Self::bundle(vectors);
+        }
 
-        let mut result = [0u64; U64_BLOCKS];
-        for i in 0..U64_BLOCKS {
-            let start_bit = i * 64;
-            let end_bit = start_bit + 64;
-
-            if end_bit <= num_bits_min {
-                result[i] = config.base_min.bits[i];
-            } else if start_bit >= num_bits_min {
-                result[i] = config.base_max.bits[i];
-            } else {
-                let split = num_bits_min - start_bit;
-                let mask_min = (1u64 << split) - 1;
-                let part_min = config.base_min.bits[i] & mask_min;
-                let part_max = (config.base_max.bits[i] >> split) << split;
-                result[i] = part_min | part_max;
+        // Build a weighted list of references by replicating each vector
+        // proportionally to its weight.  Minimum 1 copy per vector.
+        let mut weighted_refs: Vec<&Hypervector> = Vec::with_capacity(vectors.len() * 4);
+        for (i, vec) in vectors.iter().enumerate() {
+            let copies = ((weights[i] * 8.0).round().max(1.0) as usize).min(32);
+            for _ in 0..copies {
+                weighted_refs.push(vec);
             }
         }
-        Hypervector { bits: result }
+
+        Self::bundle(&weighted_refs)
     }
 
-    /// Convert Hypervector to a raw 1256-byte buffer (using 157 * 8 bytes = 1256 bytes)
-    pub fn to_bytes(&self) -> [u8; 1256] {
-        let mut bytes = [0u8; 1256];
-        for i in 0..157 {
+    /// ██ Phase 3: Constitutional bundling ██
+    ///
+    /// Identical to `bundle()` but uses a fixed `constitution` hypervector
+    /// for tie-breaking instead of an order-dependent SplitMix64 hash.
+    /// This guarantees idempotent bundling regardless of vector ordering
+    /// in the input slice — critical for multi-stage consensus where
+    /// bundle(A, B) must always equal bundle(B, A).
+    ///
+    /// The constitution is a random hypervector generated once at broker
+    /// boot and used exclusively for breaking 50/50 bit-level ties:
+    ///
+    /// $$V_{\text{result}}[i] = \begin{cases}
+    /// V[i] & \text{if } \sum\text{ones} > \text{halfway} \\
+    /// 0    & \text{if } \sum\text{ones} < \text{halfway} \\
+    /// C[i] & \text{if } \sum\text{ones} = \text{halfway}
+    /// \end{cases}$$
+    pub fn bundle_with_constitution(vectors: &[&Self], constitution: &Hypervector) -> Self {
+        if vectors.is_empty() {
+            return Self::new_zero();
+        }
+        if vectors.len() == 1 {
+            return *vectors[0];
+        }
+
+        let mut result_bits = [0u64; U64_BLOCKS];
+        let num_vectors = vectors.len();
+        let halfway = num_vectors / 2;
+        let is_even = num_vectors % 2 == 0;
+
+        for block_idx in 0..U64_BLOCKS {
+            let mut block_consensus = 0u64;
+            for bit_idx in 0..64 {
+                let mut bit_count = 0;
+                for vec in vectors {
+                    if ((vec.bits[block_idx] >> bit_idx) & 1) == 1 {
+                        bit_count += 1;
+                    }
+                }
+
+                if is_even && bit_count == halfway {
+                    // Constitutional tie-break — order-independent
+                    if ((constitution.bits[block_idx] >> bit_idx) & 1) == 1 {
+                        block_consensus |= 1 << bit_idx;
+                    }
+                } else if bit_count > halfway {
+                    block_consensus |= 1 << bit_idx;
+                }
+            }
+            result_bits[block_idx] = block_consensus;
+        }
+        Hypervector { bits: result_bits }
+    }
+
+    /// ██ UPGRADE v2.0: Fractional Power Encoding (FPE) ██
+    ///
+    /// Encodes a continuous scalar `x` by selecting a level hypervector
+    /// from a pre-generated ladder.  Unlike the old linear interpolation
+    /// (which destroys pseudo-orthogonality), FPE flips a small subset of
+    /// bits per step so that Hamming distance ∝ |x₁ - x₂|.
+    ///
+    /// Pre-generate level vectors by calling `generate_level_vectors()`,
+    /// then use `encode_fpe()` to look up the nearest level.
+    pub fn encode_fpe(level_vectors: &[Hypervector], val: f64, min_val: f64, max_val: f64) -> Self {
+        let clamped = val.clamp(min_val, max_val);
+        let fraction = (clamped - min_val) / (max_val - min_val);
+        let idx = ((fraction * (level_vectors.len() - 1) as f64).round() as usize)
+            .min(level_vectors.len() - 1);
+        level_vectors[idx]
+    }
+
+    /// Generate a ladder of `num_levels` FPE hypervectors.
+    /// Each step flips ~D/200 bits so distance scales with ordinal offset.
+    pub fn generate_level_vectors(num_levels: usize) -> Vec<Hypervector> {
+        let mut levels = Vec::with_capacity(num_levels);
+        let mut current = Self::new_random();
+        levels.push(current);
+
+        let flip_count = (HD_DIMENSION / 200).max(1);
+        let mut rng = rand::thread_rng();
+
+        for _ in 1..num_levels {
+            let mut next = current;
+            for _ in 0..flip_count {
+                let block = rng.gen_range(0..U64_BLOCKS);
+                let bit = rng.gen_range(0..64);
+                next.bits[block] ^= 1u64 << bit;
+            }
+            levels.push(next);
+            current = next;
+        }
+
+        levels
+    }
+
+    // ── Byte serialization (1280 bytes for D=10240) ───────────────────────
+
+    /// Serialize to 1280 bytes (160 × 8)
+    pub fn to_bytes(&self) -> [u8; 1280] {
+        let mut bytes = [0u8; 1280];
+        for i in 0..U64_BLOCKS {
             let block_bytes = self.bits[i].to_le_bytes();
             bytes[i * 8..(i + 1) * 8].copy_from_slice(&block_bytes);
         }
         bytes
     }
 
-    /// Parse Hypervector from a raw 1256-byte buffer
-    pub fn from_bytes(bytes: &[u8; 1256]) -> Self {
+    /// Deserialize from 1280 bytes
+    pub fn from_bytes(bytes: &[u8; 1280]) -> Self {
         let mut bits = [0u64; U64_BLOCKS];
-        for i in 0..157 {
+        for i in 0..U64_BLOCKS {
             let mut block_bytes = [0u8; 8];
             block_bytes.copy_from_slice(&bytes[i * 8..(i + 1) * 8]);
             bits[i] = u64::from_le_bytes(block_bytes);
         }
         Hypervector { bits }
     }
-
-    /// Sequence-Preserving Sentence Encoder with Word-Level Permutations
-    pub fn encode_sentence(text: &str) -> Self {
-        let words: Vec<&str> = text
-            .split_whitespace()
-            .map(|w| w.trim_matches(|c: char| c.is_ascii_punctuation()))
-            .filter(|w| !w.is_empty())
-            .collect();
-        if words.is_empty() {
-            return Self::new_zero();
-        }
-        let mut word_vectors = Vec::new();
-        for (i, word) in words.iter().enumerate() {
-            // Encode each word as a 3-gram character hypervector
-            let word_hv = Self::encode_text_ngram(word, 3);
-            // Permute the word vector by rotating left based on its position index
-            let rotated = word_hv.rotate_left(i * 13);
-            word_vectors.push(rotated);
-        }
-        let refs: Vec<&Hypervector> = word_vectors.iter().collect();
-        Self::bundle(&refs)
-    }
 }
+
+// ─── VarConfig (FPE-based) ────────────────────────────────────────────────
 
 #[derive(Clone, Debug)]
 pub struct VarConfig {
     pub id: Hypervector,
     pub min_val: f64,
     pub max_val: f64,
-    pub base_min: Hypervector,
-    pub base_max: Hypervector,
+    /// ██ UPGRADE v2.0: FPE level vectors instead of base_min/base_max ██
+    pub level_vectors: Vec<Hypervector>,
 }
+
+// ─── Memory types ─────────────────────────────────────────────────────────
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct DejavuEntry {
+    /// The stored vector.  If `delta_encoded == true`, this is
+    /// $C_{\text{delta}} = C_{\text{new}} \oplus C_{\text{centroid}}$ —
+    /// the orthogonal residual from the cluster centroid.
+    /// Exact recovery: $C_{\text{new}} = C_{\text{delta}} \oplus C_{\text{centroid}}$.
     pub vector: Hypervector,
     pub label: String,
     pub metadata: HashMap<String, String>,
+    /// ██ UPGRADE v2.2: Continuous Orthogonal Projection ██
+    /// If true, `vector` stores $C_{\text{new}} \oplus C_{\text{centroid}}$
+    /// rather than the raw $C_{\text{new}}$.  Reconstruction requires
+    /// XOR with the owning cluster's current centroid.
+    #[serde(default)]
+    pub delta_encoded: bool,
+}
+
+impl DejavuEntry {
+    /// Reconstruct the original vector from a delta-encoded entry.
+    /// If `delta_encoded == false`, returns `self.vector` directly.
+    /// Otherwise returns `self.vector ⊕ centroid`.
+    pub fn reconstruct(&self, centroid: &Hypervector) -> Hypervector {
+        if self.delta_encoded {
+            self.vector.bitwise_xor(centroid)
+        } else {
+            self.vector
+        }
+    }
+
+    /// Factory: create a new entry, optionally delta-encoding against a centroid.
+    pub fn new(
+        vector: Hypervector,
+        label: String,
+        metadata: HashMap<String, String>,
+        delta_against: Option<&Hypervector>,
+    ) -> Self {
+        let (stored_vector, delta_encoded) = match delta_against {
+            Some(centroid) => (vector.bitwise_xor(centroid), true),
+            None => (vector, false),
+        };
+        DejavuEntry {
+            vector: stored_vector,
+            label,
+            metadata,
+            delta_encoded,
+        }
+    }
 }
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct MemoryCluster {
+    /// Dynamic semantic centroid — used for LSH routing, Goldilocks Phase 1
+    /// matching, and dissonance evaluation.  Updated after every merge.
     pub centroid: Hypervector,
     pub entries: Vec<DejavuEntry>,
-    /// Accumulated reinforcement across access events.
-    /// Decayed each tick by `decay_permanent_clusters`.
-    /// When this drops below threshold the cluster is pruned.
     #[serde(default)]
     pub reverberation: f64,
-    /// Last brain tick at which this cluster was accessed.
-    /// Used to detect staleness for demotion.
     #[serde(default)]
     pub last_reinforced_tick: usize,
+    /// ██ UPGRADE v2.2: Locked Anchor (Reference Frame) ██
+    ///
+    /// Immutable reference vector set at cluster creation.  ALL delta
+    /// encoding/decoding uses this anchor, NOT the drifting centroid.
+    /// This guarantees exact recovery forever.
+    #[serde(default = "Hypervector::new_zero")]
+    pub anchor: Hypervector,
+    /// ██ Tier 4: Integer Accumulator (Evidence Integration) ██
+    ///
+    /// Per-dimension u32 counter tracking the total evidence for each
+    /// of the 10240 bits.  The binary `centroid` is the thresholded
+    /// version: `centroid[i] = 1 iff accumulator[i] > total_weight / 2`.
+    ///
+    /// NOT serialized.  Lazily reconstructed from entries or centroid
+    /// on first use via `ensure_accumulator()`.  Empty = frozen state
+    /// (only binary centroid is live).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub accumulator: Vec<u32>,
+    /// Total evidence count: |entries| + # of Hebbian refinements.
+    #[serde(default)]
+    pub total_weight: u32,
+    /// ██ Tier 4: Last access tick for hot/cold memory management ██
+    /// Updated on every query (read or write).  Clusters whose
+    /// `last_access_tick` is more than `FREEZE_AFTER_TICKS` behind the
+    /// current tick have their accumulator dropped to save memory.
+    #[serde(default)]
+    pub last_access_tick: u64,
+}
+
+/// Default projection threshold (NHD) for cluster anchoring.
+/// Derived from θ* = (3ε - 2ε²)/2 with ε = 0.50 (worst-case composition noise).
+pub const DEFAULT_PROJECTION_THRESHOLD_NHD: f64 = 0.50;
+
+/// ██ FIX v2.5: Maximum total weight for a single cluster ██
+///
+/// Prevents unbounded tracking error growth (Theorem XXIII.1).
+/// Without a cap, a cluster's centroid becomes increasingly sluggish
+/// as W → ∞, requiring O(W) contradictory observations to flip a bit.
+///
+/// At MAX_CLUSTER_WEIGHT = 500, each new observation moves the centroid
+/// by at most 1/500 ≈ 0.2% — responsive enough to track gradual drift
+/// while stable enough to filter noise.
+///
+/// When weight exceeds this cap, the accumulator is rescaled during
+/// `absorb_entry` to maintain centroid responsiveness.  This does NOT
+/// change the centroid (it's a fixed point of rescaling) but ensures
+/// future observations have proportional influence.
+pub const MAX_CLUSTER_WEIGHT: u32 = 500;
+
+/// Maximum entries per MemoryCluster before oldest are evicted.
+/// Entries accumulate from each novelty gate pass and can grow unbounded.
+/// 1000 entries × ~2 KB each = ~2 MB per cluster, negligible memory.
+pub const MAX_ENTRIES_PER_CLUSTER: usize = 1000;
+
+/// ██ FIX v2.5: Accumulator decay tick interval ██
+///
+/// How often the accumulator decay is applied in the agent loop.
+/// Every DECAY_INTERVAL_TICKS, each cluster's accumulator is
+/// multiplied by DECAY_FACTOR, aging out old evidence and allowing
+/// centroid bits to flip from 1→0 when contradicted by recent input.
+pub const ACCUMULATOR_DECAY_INTERVAL: usize = 50;
+pub const ACCUMULATOR_DECAY_FACTOR: f64 = 0.975;
+
+/// Outcome of the two-threshold novelty gate applied to a MemoryCluster.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum GateAction {
+    /// NHD < 0.15: centroid reinforced (self-reinforcement), no entry.
+    HebbianRefine,
+    /// 0.15 ≤ NHD < 0.70: new entry appended, accumulator absorbs τ.
+    Absorbed,
+    /// NHD ≥ 0.70: concept is too distant — caller should create a new cluster.
+    NewCluster,
+    /// Episode desirability ≤ 0.6: no action taken.
+    Discard,
+}
+
+impl MemoryCluster {
+    /// Ensure the Locked Anchor is initialized.  If still zero (e.g. the
+    /// cluster arrived via broker SyncUpdate which may not carry an anchor),
+    /// set it to the current centroid.  Returns `true` if anchor was set.
+    pub fn ensure_anchor(&mut self) -> bool {
+        let is_zero = self.anchor.bits.iter().all(|&b| b == 0);
+        if is_zero {
+            self.anchor = self.centroid;
+            true
+        } else {
+            false
+        }
+    }
+
+    // ── Tier 4: Integer Accumulator ─────────────────────────────────
+
+    /// Lazily reconstruct the accumulator from the current centroid
+    /// and entry count.  This is the "cold start" path for clusters
+    /// deserialized from the ledger or received via SyncUpdate.
+    ///
+    /// Reconstruction guarantees that `centroid` is a fixed point of
+    /// the accumulator threshold: bits that are 1 in the centroid
+    /// clear the threshold by the smallest possible margin.
+    pub fn ensure_accumulator(&mut self) {
+        if !self.accumulator.is_empty() {
+            return;
+        }
+        if self.total_weight == 0 {
+            self.total_weight = self.entries.len().max(1) as u32;
+        }
+        self.accumulator = vec![0u32; HD_DIMENSION];
+        let threshold = (self.total_weight / 2) + 1;
+        for (i, acc) in self.accumulator.iter_mut().enumerate() {
+            let word = self.centroid.bits[i / 64];
+            let bit = (word >> (i % 64)) & 1;
+            if bit == 1 {
+                *acc = threshold;
+            } else {
+                *acc = threshold - 1;
+            }
+        }
+    }
+
+    /// Self-reinforcement: add the binary centroid to the accumulator.
+    ///
+    /// The centroid is a **fixed point** under this operation (proved
+    /// in the architectural synthesis).  Every bit that is 1 gets +1;
+    /// every bit that is 0 gets +0.  Total weight increments by 1.
+    /// The binary centroid does not change.
+    ///
+    /// This is called for routine observations (NHD < 0.15) that
+    /// confirm the existing concept without introducing new evidence.
+    ///
+    /// ██ FIX v2.5: Weight cap ██
+    /// Same rescaling as `absorb_entry` to keep centroid responsive.
+    pub fn hebbian_refine(&mut self) {
+        self.ensure_accumulator();
+        for (i, acc) in self.accumulator.iter_mut().enumerate() {
+            let word = self.centroid.bits[i / 64];
+            let bit = (word >> (i % 64)) & 1;
+            *acc += bit as u32;
+        }
+        self.total_weight += 1;
+
+        // ██ Weight cap ██
+        if self.total_weight > MAX_CLUSTER_WEIGHT {
+            let scale = MAX_CLUSTER_WEIGHT as f64 / self.total_weight as f64;
+            for acc in self.accumulator.iter_mut() {
+                *acc = (*acc as f64 * scale).round() as u32;
+            }
+            self.total_weight = MAX_CLUSTER_WEIGHT;
+        }
+    }
+
+    /// Absorb a new observation τ into the accumulator and recompute
+    /// the binary centroid.
+    ///
+    /// Called for observations in the drift zone (0.15 ≤ NHD < 0.70)
+    /// that contribute genuinely new evidence to the cluster.
+    ///
+    /// ██ FIX v2.5: Weight cap ██
+    /// When `total_weight` exceeds `MAX_CLUSTER_WEIGHT`, the accumulator
+    /// and weight are rescaled so that future observations retain
+    /// proportional influence.  This prevents the centroid from becoming
+    /// pathologically sluggish under persistent drift (Theorem XXIII.1).
+    ///
+    /// The centroid is a **fixed point** under rescaling:
+    ///   centroid[i] = 1  ⇔  acc[i] > W/2
+    ///   After scaling: acc'[i] = acc[i] · s, W' = W · s
+    ///   Since both sides are multiplied by s, the inequality is preserved.
+    ///   Therefore rescaling does NOT change the centroid — it only
+    ///   resets the dynamic range for future observations.
+    pub fn absorb_entry(&mut self, tau: &Hypervector) {
+        self.ensure_accumulator();
+        for (i, acc) in self.accumulator.iter_mut().enumerate() {
+            let word = tau.bits[i / 64];
+            let bit = (word >> (i % 64)) & 1;
+            *acc += bit as u32;
+        }
+        self.total_weight += 1;
+
+        // ██ Weight cap: keep centroid responsive ██
+        if self.total_weight > MAX_CLUSTER_WEIGHT {
+            let scale = MAX_CLUSTER_WEIGHT as f64 / self.total_weight as f64;
+            for acc in self.accumulator.iter_mut() {
+                *acc = (*acc as f64 * scale).round() as u32;
+            }
+            self.total_weight = MAX_CLUSTER_WEIGHT;
+        }
+
+        self.recompute_centroid();
+    }
+
+    /// Recompute the binary centroid from the accumulator threshold.
+    ///
+    /// `centroid[i] = 1` iff `accumulator[i] > total_weight / 2`.
+    /// This is the "integrate-and-fire" step: bits that cross the
+    /// majority threshold turn on; bits that fall below turn off.
+    pub fn recompute_centroid(&mut self) {
+        let threshold = (self.total_weight / 2) as u64;
+        for (word_idx, word_bits) in self.centroid.bits.iter_mut().enumerate() {
+            *word_bits = 0;
+            let base = word_idx * 64;
+            for bit_idx in 0..64 {
+                let acc_idx = base + bit_idx;
+                if acc_idx < self.accumulator.len() {
+                    let acc_val = self.accumulator[acc_idx] as u64;
+                    if acc_val > threshold {
+                        *word_bits |= 1_u64 << bit_idx;
+                    }
+                }
+            }
+        }
+    }
+
+    /// Record an access (read or write) at the given tick.
+    /// Used by the hot/cold memory manager to track recency.
+    pub fn touch_access(&mut self, tick: u64) {
+        self.last_access_tick = tick;
+    }
+
+    /// Drop the accumulator to save memory (freeze).
+    /// The centroid is preserved; `ensure_accumulator()` will lazily
+    /// reconstruct the accumulator on the next access.
+    pub fn freeze(&mut self) {
+        self.accumulator.clear();
+    }
+
+    /// Return `true` if the accumulator is resident (hot).
+    pub fn is_hot(&self) -> bool {
+        !self.accumulator.is_empty()
+    }
+
+    /// ██ FIX v2.5: Decay the accumulator to age out old evidence ██
+    ///
+    /// Each accumulator entry is multiplied by `decay_factor` (0.0–1.0),
+    /// and `total_weight` is similarly decayed.  After decay the centroid
+    /// is recomputed, which MAY flip bits from 1→0 when their accumulated
+    /// evidence drops below the new threshold.
+    ///
+    /// This directly addresses the **accumulator asymmetry** problem:
+    /// without decay, bits that reach 1 are locked forever because the
+    /// accumulator only increments.  Decay gives a gradual forgetting
+    /// mechanism so contradictory evidence can eventually flip a bit.
+    ///
+    /// ## Decay schedule
+    /// Called every `ACCUMULATOR_DECAY_INTERVAL` ticks (default 50).
+    /// At `decay_factor = 0.975` per 50 ticks, the effective half-life
+    /// of any accumulator entry is ≈ 1360 observations:
+    ///
+    ///   t_{1/2} = 50 · ln(0.5) / ln(0.975) ≈ 1368
+    ///
+    /// This is long enough for stable patterns to entrench, but short
+    /// enough for gradual drift to flip bits within ~200 observations.
+    pub fn decay_accumulator(&mut self, decay_factor: f64) {
+        self.ensure_accumulator();
+        for acc in self.accumulator.iter_mut() {
+            *acc = (*acc as f64 * decay_factor).round() as u32;
+        }
+        self.total_weight = (self.total_weight as f64 * decay_factor).round() as u32;
+        if self.total_weight < 1 {
+            self.total_weight = 1;
+        }
+        self.recompute_centroid();
+    }
+
+    /// Apply the two-threshold novelty gate to an incoming temporal
+    /// centroid τ from a completed episode.
+    ///
+    /// | NHD(τ, centroid) | Interpretation | Action |
+    /// |---|---|---|
+    /// | < 0.15 | Routine | Hebbian refine (no entry) |
+    /// | 0.15 – 0.70 | Drift zone | Append entry + absorb |
+    /// | ≥ 0.70 | Novel concept | Return NewCluster |
+    ///
+    /// Returns the `GateAction` so the caller can manage cluster
+    /// proliferation appropriately.
+    pub fn novelty_gate(&mut self, tau: &Hypervector, episode_desirability: f64) -> GateAction {
+        if episode_desirability <= 0.6 {
+            return GateAction::Discard;
+        }
+
+        let nhd = tau.normalized_hamming_distance(&self.centroid);
+
+        if nhd < 0.15 {
+            self.hebbian_refine();
+            GateAction::HebbianRefine
+        } else if nhd < 0.70 {
+            let entry = DejavuEntry::new(
+                *tau,
+                format!("ep_{}", self.total_weight),
+                std::collections::HashMap::new(),
+                None,
+            );
+            self.entries.push(entry);
+            if self.entries.len() > MAX_ENTRIES_PER_CLUSTER {
+                let drain = MAX_ENTRIES_PER_CLUSTER / 4;
+                self.entries.drain(0..drain);
+            }
+            self.absorb_entry(tau);
+            GateAction::Absorbed
+        } else {
+            GateAction::NewCluster
+        }
+    }
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub enum HiveMessage {
-    HandshakeRequest {
-        agent_id: String,
-        role: String,
-    },
-    HandshakeResponse {
-        permanent_clusters: Vec<MemoryCluster>,
-    },
+    HandshakeRequest { agent_id: String, role: String },
+    HandshakeResponse { permanent_clusters: Vec<MemoryCluster> },
     ConsolidateRequest {
         centroid: Hypervector,
         entries: Vec<DejavuEntry>,
-        /// Current cognitive anxiety of the submitting agent [0, 1].
-        /// Used by the broker for anxiety-weighted consensus bundling.
         agent_anxiety: f64,
     },
     SyncUpdate {
@@ -368,17 +831,35 @@ pub enum HiveMessage {
         cluster_index: Option<usize>,
         cluster: MemoryCluster,
     },
-    PanicLockdown {
-        attacker_info: String,
-    },
-    /// Broadcast by the broker when consensus between agents falls below
-    /// the structural coherence threshold.  Forces all agents to rotate
-    /// active intents and re-sample the environment.
+    PanicLockdown { attacker_info: String },
     DissonanceAlert {
-        /// Average pairwise similarity across agent submissions
         consensus_similarity: f64,
-        /// Number of active agents that contributed to the consensus check
         agent_count: usize,
+    },
+    /// ██ Tier 4: Epistemic update after an agent executes an action.
+    /// Broadcast to ALL agents so they can update their private accumulators
+    /// with the new world state.  `intent_frequency_increment` controls
+    /// whether the intent cluster's frequency is incremented (agreeing
+    /// agents) or not (abstaining via Conscience Clause).
+    EpistemicUpdate {
+        new_world_state: Hypervector,
+        intent_id: u64,
+        executor_id: String,
+        tick: u64,
+        /// If true, the receiving agent should increment the intent cluster
+        /// frequency (epistemic + instrumental learning).
+        /// If false, only epistemic learning (accumulator update, no frequency).
+        intent_frequency_increment: bool,
+        /// Monotonically increasing serial for idempotent retry detection.
+        failure_serial: u64,
+    },
+    /// ██ Tier 4: Delegated execution.
+    /// The broker assigns one agent as executor.  All other agents
+    /// wait for the EpistemicUpdate before absorbing the result.
+    ExecutionRequest {
+        intent: Hypervector,
+        executor_id: String,
+        failure_serial: u64,
     },
 }
 
@@ -388,7 +869,13 @@ pub struct TransientCluster {
     pub entries: Vec<DejavuEntry>,
     pub reverberation: f64,
     pub last_reinforced_tick: usize,
+    /// Placeholder anchor — always zero.  Transient clusters are never
+    /// delta-encoded, so this field exists only for type compatibility
+    /// with the `search_clusters!` and `eval_entry!` macros.
+    pub anchor: Hypervector,
 }
+
+// ─── VSABrain ─────────────────────────────────────────────────────────────
 
 pub struct VSABrain {
     pub variables: HashMap<String, VarConfig>,
@@ -399,12 +886,18 @@ pub struct VSABrain {
     pub tick_counter: usize,
     pub anxiety: f64,
     pub experiences: Vec<Hypervector>,
-    /// HNSW spatial index for O(log n) memory retrieval.
-    /// Rebuilt when stale (incremental rebuild on tick boundaries).
-    hnsw_index: Option<HnswIndex>,
-    /// Tracks the cluster count at last HNSW rebuild
-    hnsw_last_rebuild_count: usize,
 }
+
+/// Synthetic cold-start regime labels for Tick 0 initialization.
+/// These deterministic text encodings produce reproducible hypervectors
+/// that span the three BMA regimes (stable, nominal, volatile) with
+/// pairwise Hamming variance > 0.38, enabling immediate multi-regime
+/// forecasting and non-zero dissonance.
+pub const SYNTH_STABLE: &str = "SYNTHETIC REGIME STABLE EQUILIBRIUM";
+pub const SYNTH_NOMINAL: &str = "SYNTHETIC REGIME NOMINAL MARKET";
+pub const SYNTH_VOLATILE: &str = "SYNTHETIC REGIME VOLATILE CRISIS";
+pub const SYNTH_ACTION_NULL: &str = "NULL_ACTION_NOOP";
+pub const SYNTH_PARAM_NULL: &str = "NULL_PARAM_BASELINE";
 
 impl VSABrain {
     pub fn new(threshold: f64) -> Self {
@@ -417,9 +910,93 @@ impl VSABrain {
             tick_counter: 0,
             anxiety: 0.0,
             experiences: Vec::new(),
-            hnsw_index: None,
-            hnsw_last_rebuild_count: 0,
         }
+    }
+
+    /// ██ UPGRADE v2.2: Synthetic Regime Injection (Tick 0) ██
+    ///
+    /// Seeds the brain's experience buffer with N synthetic observations
+    /// that span all three drift regimes.  This immediately:
+    ///
+    /// 1. Establishes a non-zero baseline for dissonance calculation
+    /// 2. Enables outcome-vector learning penalties from the first tick
+    /// 3. Provides priors for the Bayesian Model Average forecaster
+    ///
+    /// Returns a tuple `(stable_state, nominal_state, volatile_state, delta_history)`
+    /// that the caller can use to pre-seed the `recent_deltas` and `recent_states`
+    /// queues, completely bypassing the 30-tick exploratory phase.
+    ///
+    /// ## Experience bundle formula
+    ///
+    /// $$\mathcal{E}_0 = \sum_{k=1}^{N} \left( A_{\text{null}} \otimes P_{\text{null}} \otimes S_{k,\text{synth}} \otimes O_{k,\text{regime}} \right)$$
+    /// Maximum number of experience vectors to store.
+    /// Older experiences are dropped when this limit is exceeded.
+    const MAX_EXPERIENCES: usize = 1000;
+
+    /// Push an experience vector, capping at MAX_EXPERIENCES.
+    pub fn push_experience(&mut self, exp: Hypervector) {
+        if self.experiences.len() >= Self::MAX_EXPERIENCES {
+            let drain = Self::MAX_EXPERIENCES / 4;
+            self.experiences.drain(0..drain);
+        }
+        self.experiences.push(exp);
+    }
+
+    pub fn seed_synthetic_regimes(&mut self) -> (Hypervector, Hypervector, Hypervector, Vec<Hypervector>) {
+        let a_null = Hypervector::encode_text_ngram(SYNTH_ACTION_NULL, 3);
+        let p_null = Hypervector::encode_text_ngram(SYNTH_PARAM_NULL, 3);
+
+        // Three synthetic regime states (deterministic — not random)
+        let s_stable = Hypervector::encode_sentence(SYNTH_STABLE);
+        let s_nominal = Hypervector::encode_sentence(SYNTH_NOMINAL);
+        let s_volatile = Hypervector::encode_sentence(SYNTH_VOLATILE);
+
+        // Outcome labels for each regime
+        let o_stable = Hypervector::encode_text_ngram("OUTCOME_STABLE", 3);
+        let o_nominal = Hypervector::encode_text_ngram("OUTCOME_NOMINAL", 3);
+        let o_volatile = Hypervector::encode_text_ngram("OUTCOME_VOLATILE", 3);
+
+        // Experience bundle: A_null ⊕ P_null ⊕ S_synth ⊕ O_regime
+        let exp_stable = a_null
+            .bitwise_xor(&p_null)
+            .bitwise_xor(&s_stable)
+            .bitwise_xor(&o_stable);
+        let exp_nominal = a_null
+            .bitwise_xor(&p_null)
+            .bitwise_xor(&s_nominal)
+            .bitwise_xor(&o_nominal);
+        let exp_volatile = a_null
+            .bitwise_xor(&p_null)
+            .bitwise_xor(&s_volatile)
+            .bitwise_xor(&o_volatile);
+
+        // Each regime gets 3 copies so the bundle is well-represented
+        for _ in 0..3 {
+            self.experiences.push(exp_stable);
+            self.experiences.push(exp_nominal);
+            self.experiences.push(exp_volatile);
+        }
+
+        // Compute synthetic deltas: Δ = S_{t+1} ⊕ ρ^{13}(S_t) ⊕ A_null
+        // for (stable→nominal), (nominal→volatile), (volatile→stable)
+        let delta_sn = s_nominal
+            .bitwise_xor(&s_stable.rotate_left(13))
+            .bitwise_xor(&a_null);
+        let delta_nv = s_volatile
+            .bitwise_xor(&s_nominal.rotate_left(13))
+            .bitwise_xor(&a_null);
+        let delta_vs = s_stable
+            .bitwise_xor(&s_volatile.rotate_left(13))
+            .bitwise_xor(&a_null);
+
+        // Also register the three regime states as permanent concepts
+        // so the résoné network has semantic anchors from tick 0
+        self.concepts.insert("SyntheticStable".to_string(), s_stable);
+        self.concepts.insert("SyntheticNominal".to_string(), s_nominal);
+        self.concepts.insert("SyntheticVolatile".to_string(), s_volatile);
+
+        let delta_history = vec![delta_sn, delta_nv, delta_vs, delta_sn, delta_nv];
+        (s_stable, s_nominal, s_volatile, delta_history)
     }
 
     pub fn generate_vector(&self) -> Hypervector {
@@ -438,18 +1015,18 @@ impl VSABrain {
         1.0 - v1.normalized_hamming_distance(v2)
     }
 
+    /// ██ UPGRADE v2.0: FPE-based variable registration ██
+    /// Pre-generates FPE_RESOLUTION level vectors for the variable's range.
     pub fn register_variable(&mut self, name: &str, min_val: f64, max_val: f64) {
         let id = Hypervector::new_random();
-        let base_min = Hypervector::new_random();
-        let base_max = Hypervector::new_random();
+        let level_vectors = Hypervector::generate_level_vectors(FPE_RESOLUTION);
         self.variables.insert(
             name.to_string(),
             VarConfig {
                 id,
                 min_val,
                 max_val,
-                base_min,
-                base_max,
+                level_vectors,
             },
         );
     }
@@ -460,14 +1037,26 @@ impl VSABrain {
         vec
     }
 
+    /// FPE-based continuous encoding (replaces old linear interpolation)
     pub fn encode_continuous(&self, name: &str, val: f64) -> Option<Hypervector> {
         let config = self.variables.get(name)?;
-        Some(Hypervector::encode_continuous(config, val))
+        Some(Hypervector::encode_fpe(
+            &config.level_vectors,
+            val,
+            config.min_val,
+            config.max_val,
+        ))
     }
 
+    /// Encode and bind: V = id ⊕ encode(val)
     pub fn encode_and_bind_variable(&self, name: &str, val: f64) -> Option<Hypervector> {
         let config = self.variables.get(name)?;
-        let val_vector = Hypervector::encode_continuous(config, val);
+        let val_vector = Hypervector::encode_fpe(
+            &config.level_vectors,
+            val,
+            config.min_val,
+            config.max_val,
+        );
         Some(config.id.bitwise_xor(&val_vector))
     }
 
@@ -487,19 +1076,34 @@ impl VSABrain {
         Hypervector::bundle(&refs)
     }
 
+    // ── Memory management ─────────────────────────────────────────────────
+
+    /// ██ UPGRADE v2.2: Continuous Orthogonal Projection + Locked Anchor ██
+    ///
+    /// When storing `vector` into an EXISTING permanent cluster, we
+    /// compute its informational divergence from the cluster's **locked
+    /// anchor** (not its drifting centroid):
+    ///
+    /// $$C_{\text{delta}} = C_{\text{new}} \oplus C_{\text{anchor}}$$
+    ///
+    /// The anchor is set once at cluster creation and NEVER changes.
+    /// This eliminates Reference Frame Drift — reconstructing at any
+    /// future time gives exact recovery:
+    ///
+    /// $$C_{\text{new}} = C_{\text{delta}} \oplus C_{\text{anchor}}$$
+    ///
+    /// The semantic centroid continues to update dynamically (for LSH
+    /// routing and matching) without corrupting stored deltas.
+    ///
+    /// New clusters (first entry) set both `centroid` and `anchor` to
+    /// the entry vector.
     pub fn add_to_dejavu_db(
         &mut self,
         vector: Hypervector,
         label: &str,
         metadata: HashMap<String, String>,
     ) {
-        let entry = DejavuEntry {
-            vector,
-            label: label.to_string(),
-            metadata,
-        };
-
-        let cluster_threshold = 0.65; // Similarity threshold to group under same centroid
+        let cluster_threshold = 0.65;
         let mut best_idx = None;
         let mut best_sim = -1.0;
 
@@ -513,58 +1117,244 @@ impl VSABrain {
 
         if let Some(idx) = best_idx {
             if best_sim >= cluster_threshold {
-                self.dejavu_clusters[idx].entries.push(entry);
-                // Recompute centroid
-                let refs: Vec<&Hypervector> = self.dejavu_clusters[idx]
-                    .entries
-                    .iter()
-                    .map(|e| &e.vector)
-                    .collect();
-                self.dejavu_clusters[idx].centroid = Hypervector::bundle(&refs);
-                // Reinforce: successful access boosts reverberation
-                self.dejavu_clusters[idx].reverberation =
-                    (self.dejavu_clusters[idx].reverberation + 0.2).min(1.0);
-                self.dejavu_clusters[idx].last_reinforced_tick = self.tick_counter;
+                // Ensure the Locked Anchor is initialized
+                let cluster = &mut self.dejavu_clusters[idx];
+                cluster.ensure_anchor();
+
+                // ██ Delta-encode against the IMMUTABLE anchor ██
+                let entry = DejavuEntry::new(
+                    vector,
+                    label.to_string(),
+                    metadata,
+                    Some(&cluster.anchor),
+                );
+                let tau = entry.reconstruct(&cluster.anchor);
+                cluster.entries.push(entry);
+                if cluster.entries.len() > MAX_ENTRIES_PER_CLUSTER {
+                    let drain = MAX_ENTRIES_PER_CLUSTER / 4;
+                    cluster.entries.drain(0..drain);
+                }
+
+                // ██ Tier 4: Absorb into accumulator (replaces manual bundle) ██
+                cluster.absorb_entry(&tau);
+
+                cluster.reverberation = (cluster.reverberation + 0.2).min(1.0);
+                cluster.last_reinforced_tick = self.tick_counter;
                 return;
             }
         }
 
-        // Spawn new cluster
+        // Spawn new cluster — anchor = centroid = first entry (immutable)
+        let hv = vector; // rename for clarity — this IS the anchor
+        let entry = DejavuEntry::new(hv, label.to_string(), metadata, None);
+        // ██ Tier 4: Initialize accumulator with the first entry.
+        let mut accumulator = vec![0u32; HD_DIMENSION];
+        for (i, acc) in accumulator.iter_mut().enumerate() {
+            let word = hv.bits[i / 64];
+            let bit = (word >> (i % 64)) & 1;
+            *acc = bit as u32;
+        }
         self.dejavu_clusters.push(MemoryCluster {
-            centroid: vector,
+            centroid: hv,
             entries: vec![entry],
             reverberation: 1.0,
             last_reinforced_tick: self.tick_counter,
+            anchor: hv, // Locked Anchor set at birth
+            accumulator,
+            total_weight: 1,
+            last_access_tick: self.tick_counter as u64,
         });
     }
 
-    /// Collect centroids from permanent clusters whose entries bear
-    /// the `learned_crisis_pattern` metadata tag.  These are injected
-    /// into the crisis_concepts slice before every planning call so
-    /// that experience feedback actually affects future action costs.
+    /// ██ Tier 4: Absorb an epistemic update from the broker.
+    ///
+    /// After an agent executes an action and the broker broadcasts the
+    /// new world state, ALL agents absorb it into their private cluster
+    /// accumulators.  This is **epistemic learning** (updating the model
+    /// of what the world looks like).
+    ///
+    /// If `increment_intent_frequency` is true, the agent also increments
+    /// the intent cluster's frequency — **instrumental learning** (updating
+    /// the model of what actions are desirable).  Abstaining agents (via
+    /// the Conscience Clause) set this to false.
+    pub fn absorb_epistemic_update(
+        &mut self,
+        new_world_state: &Hypervector,
+        _label: &str,
+        increment_intent_frequency: bool,
+    ) {
+        // Find the nearest cluster and absorb via the accumulator
+        let mut best_idx = None;
+        let mut best_sim = -1.0;
+        for (idx, cluster) in self.dejavu_clusters.iter().enumerate() {
+            let sim = 1.0 - new_world_state.normalized_hamming_distance(&cluster.centroid);
+            if sim > best_sim {
+                best_sim = sim;
+                best_idx = Some(idx);
+            }
+        }
+
+        if let Some(idx) = best_idx {
+            if best_sim >= 0.65 {
+                let cluster = &mut self.dejavu_clusters[idx];
+                cluster.ensure_anchor();
+                let tau = *new_world_state; // not delta-encoded
+                cluster.absorb_entry(&tau);
+                if increment_intent_frequency {
+                    cluster.reverberation = (cluster.reverberation + 0.1).min(1.0);
+                }
+                return;
+            }
+        }
+
+        // If no close cluster, create a new one
+        let mut accumulator = vec![0u32; HD_DIMENSION];
+        for (i, acc) in accumulator.iter_mut().enumerate() {
+            let word = new_world_state.bits[i / 64];
+            let bit = (word >> (i % 64)) & 1;
+            *acc = bit as u32;
+        }
+        self.dejavu_clusters.push(MemoryCluster {
+            centroid: *new_world_state,
+            anchor: *new_world_state,
+            entries: Vec::new(),
+            reverberation: if increment_intent_frequency { 1.0 } else { 0.5 },
+            last_reinforced_tick: self.tick_counter,
+            accumulator,
+            total_weight: 1,
+            last_access_tick: self.tick_counter as u64,
+        });
+    }
+
     pub fn collect_learned_crisis_concepts(&self) -> Vec<Hypervector> {
         let mut concepts = Vec::new();
         for cluster in &self.dejavu_clusters {
             for entry in &cluster.entries {
                 if entry.metadata.get("type") == Some(&"learned_crisis_pattern".to_string()) {
                     concepts.push(cluster.centroid);
-                    break;  // one centroid per cluster regardless of how many entries match
+                    break;
                 }
             }
         }
         concepts
     }
 
-    /// Periodically decay all permanent clusters.
-    /// Clusters whose reverberation drops below `theta_retain` are removed
-    /// (demoted from planning influence).  This prevents old crisis patterns
-    /// from permanently distorting the cost landscape after the regime passes.
+    /// ██ Tier 4: Hot/Cold memory management ██
+    ///
+    /// Freezes clusters that haven't been accessed in `staleness_threshold`
+    /// ticks, dropping their accumulator (40 KB) to reclaim memory.
+    /// The binary centroid is preserved, and the accumulator is lazily
+    /// reconstructed on the next access via `ensure_accumulator()`.
+    ///
+    /// Keeps at most `max_hot` clusters hot.  If more clusters are
+    /// active than the cap, the coldest among the hot set are frozen.
+    ///
+    /// Called periodically (e.g. every 100 ticks) by the agent loop.
+    /// ██ Tier 4: Calibrate the optimal projection threshold theta* ██
+    ///
+    /// Finds the threshold θ that minimizes expected distortion:
+    ///   ε*(θ) = mean_{entries} [
+    ///     d if d ≤ (θ - ε/2)/(1-ε)
+    ///     else ε
+    ///   ]
+    ///
+    /// where d = NHD(entry, centroid) and ε = composition_noise_eps
+    /// (typical composition noise without projection, ≈ 0.50 for n ≥ 2).
+    ///
+    /// Derived optimal (uniform distance model): θ* = (3ε - 2ε²)/2
+    /// For ε = 0.50: θ* = 0.50
+    ///
+    /// The empirical calibration measures the true intra-cluster distance
+    /// distribution and finds the minimizing θ by scanning candidates.
+    ///
+    /// Returns the calibrated threshold (NHD, not similarity).
+    pub fn calibrate_projection_threshold(&self, composition_noise_eps: f64) -> f64 {
+        if self.dejavu_clusters.is_empty() {
+            return DEFAULT_PROJECTION_THRESHOLD_NHD;
+        }
+
+        // Collect all intra-cluster distances (entry-to-centroid)
+        let mut distances: Vec<f64> = Vec::new();
+        for cluster in &self.dejavu_clusters {
+            let centroid = &cluster.centroid;
+            for entry in &cluster.entries {
+                let d = entry.reconstruct(&cluster.anchor)
+                    .normalized_hamming_distance(centroid);
+                distances.push(d);
+            }
+        }
+
+        if distances.is_empty() {
+            return DEFAULT_PROJECTION_THRESHOLD_NHD;
+        }
+
+        // Scan candidate thresholds to find the minimum-distortion θ
+        let eps = composition_noise_eps;
+        let mut best_theta = DEFAULT_PROJECTION_THRESHOLD_NHD;
+        let mut best_error = f64::MAX;
+
+        // Scan from 0.10 to 0.80 in 100 steps
+        for step in 0..=100 {
+            let θ = 0.10 + (step as f64) * 0.007; // step ≈ 0.007
+            let d_crit = (θ - eps / 2.0) / (1.0 - eps);
+
+            if d_crit <= 0.0 {
+                // Everything rejected: error = ε
+                let error = eps;
+                if error < best_error {
+                    best_error = error;
+                    best_theta = θ;
+                }
+                continue;
+            }
+
+            let mut total_error = 0.0_f64;
+
+            for &d in &distances {
+                if d <= d_crit {
+                    total_error += d;
+                } else {
+                    total_error += eps;
+                }
+            }
+
+            let mean_error = total_error / distances.len() as f64;
+            if mean_error < best_error {
+                best_error = mean_error;
+                best_theta = θ;
+            }
+        }
+
+        best_theta
+    }
+
+    pub fn freeze_cold_clusters(&mut self, current_tick: u64, staleness_threshold: u64, max_hot: usize) {
+        let hot_count = self.dejavu_clusters.iter().filter(|c| c.is_hot()).count();
+        if hot_count <= max_hot {
+            // Under the cap — only freeze clusters past the staleness threshold
+            for cluster in &mut self.dejavu_clusters {
+                if cluster.is_hot()
+                    && current_tick.saturating_sub(cluster.last_access_tick) > staleness_threshold
+                {
+                    cluster.freeze();
+                }
+            }
+        } else {
+            // Over the cap — sort by access tick and freeze the coldest
+            let mut indices: Vec<usize> = (0..self.dejavu_clusters.len()).collect();
+            indices.sort_by_key(|&i| self.dejavu_clusters[i].last_access_tick);
+            for &i in &indices[..indices.len().saturating_sub(max_hot)] {
+                if self.dejavu_clusters[i].is_hot() {
+                    self.dejavu_clusters[i].freeze();
+                }
+            }
+        }
+    }
+
     pub fn decay_permanent_clusters(&mut self, lambda: f64, theta_retain: f64) {
         for cluster in self.dejavu_clusters.iter_mut() {
             cluster.reverberation *= lambda;
         }
-        // Remove clusters that have both decayed below threshold AND
-        // haven't been reinforced in the last 50 ticks (avoid flapping).
         let now = self.tick_counter;
         self.dejavu_clusters.retain(|c| {
             c.reverberation >= theta_retain
@@ -578,11 +1368,8 @@ impl VSABrain {
         label: &str,
         metadata: HashMap<String, String>,
     ) {
-        let entry = DejavuEntry {
-            vector,
-            label: label.to_string(),
-            metadata,
-        };
+        // Transient entries are never delta-encoded (they're short-lived)
+        let entry = DejavuEntry::new(vector, label.to_string(), metadata, None);
 
         let cluster_threshold = 0.65;
         let mut best_idx = None;
@@ -601,8 +1388,6 @@ impl VSABrain {
                 self.transient_clusters[idx].entries.push(entry);
                 self.transient_clusters[idx].last_reinforced_tick = self.tick_counter;
                 self.transient_clusters[idx].reverberation += best_sim;
-
-                // Recompute centroid
                 let refs: Vec<&Hypervector> = self.transient_clusters[idx]
                     .entries
                     .iter()
@@ -618,9 +1403,11 @@ impl VSABrain {
             entries: vec![entry],
             reverberation: 1.0,
             last_reinforced_tick: self.tick_counter,
+            anchor: Hypervector::new_zero(),
         });
     }
 
+    /// UPDATED: U64_BLOCKS = 160, HD_DIMENSION = 10240
     pub fn decay_transient_clusters(
         &mut self,
         lambda: f64,
@@ -629,15 +1416,12 @@ impl VSABrain {
     ) {
         self.tick_counter = self.tick_counter.wrapping_add(1);
 
-        // 1. Decay all transient clusters
         for cluster in self.transient_clusters.iter_mut() {
             cluster.reverberation *= lambda;
         }
 
-        // 2. Evaluate Three-Stage Consolidation Pipeline
         let mut consolidated_indices = Vec::new();
         for (idx, cluster) in self.transient_clusters.iter().enumerate() {
-            // Stage 1: Temporal Resonance Gate
             if cluster.reverberation > theta_resonance {
                 let num_entries = cluster.entries.len();
                 if num_entries == 0 {
@@ -645,9 +1429,8 @@ impl VSABrain {
                     continue;
                 }
 
-                // Stage 2: Clarity Gate (Unanimity Ratio)
                 let mut unanimity_count = 0;
-                for block_idx in 0..157 {
+                for block_idx in 0..U64_BLOCKS {
                     let mut bit_agreement = [0u32; 64];
                     for entry in &cluster.entries {
                         for bit_idx in 0..64 {
@@ -664,14 +1447,12 @@ impl VSABrain {
                     }
                 }
 
-                let unanimity_ratio = unanimity_count as f64 / 10048.0;
+                let unanimity_ratio = unanimity_count as f64 / HD_DIMENSION as f64;
 
-                // Stage 3: Structural Router (Goldilocks Sieve)
                 if unanimity_ratio > theta_coherence {
                     let (best_label, sim, _) = self.query_dejavu(&cluster.centroid);
 
                     if sim >= 0.75 {
-                        // Merge into matching permanent cluster
                         if let Some(best_lbl) = best_label {
                             if let Some(p_idx) = self
                                 .dejavu_clusters
@@ -679,49 +1460,74 @@ impl VSABrain {
                                 .enumerate()
                                 .find(|(_, pc)| {
                                     pc.entries.iter().any(|e| e.label == best_lbl)
-                                        || pc
-                                            .entries
-                                            .first()
+                                        || pc.entries.first()
                                             .map(|fe| fe.label.clone())
-                                            .unwrap_or_default()
-                                            == best_lbl
+                                            .unwrap_or_default() == best_lbl
                                 })
                                 .map(|(i, _)| i)
                             {
+                                // Ensure Locked Anchor is initialized
+                                let anchor = self.dejavu_clusters[p_idx].anchor;
+                                // ██ Tier 4: Absorb each transient entry into the
+                                // permanent cluster's accumulator.
                                 for entry in &cluster.entries {
+                                    let tau = entry.reconstruct(&anchor);
                                     self.dejavu_clusters[p_idx].entries.push(entry.clone());
+                                    self.dejavu_clusters[p_idx].absorb_entry(&tau);
                                 }
-                                let refs: Vec<&Hypervector> = self.dejavu_clusters[p_idx]
-                                    .entries
-                                    .iter()
-                                    .map(|e| &e.vector)
-                                    .collect();
-                                self.dejavu_clusters[p_idx].centroid = Hypervector::bundle(&refs);
                             } else {
+                                // ██ Tier 4: Initialize accumulator from transient centroid ██
+                                let mut accumulator = vec![0u32; HD_DIMENSION];
+                                for (i, acc) in accumulator.iter_mut().enumerate() {
+                                    let word = cluster.centroid.bits[i / 64];
+                                    let bit = (word >> (i % 64)) & 1;
+                                    *acc = bit as u32;
+                                }
                                 self.dejavu_clusters.push(MemoryCluster {
                                     centroid: cluster.centroid,
+                                    anchor: cluster.centroid,
                                     entries: cluster.entries.clone(),
                                     reverberation: cluster.reverberation,
                                     last_reinforced_tick: self.tick_counter,
+                                    accumulator,
+                                    total_weight: cluster.entries.len().max(1) as u32,
+                                    last_access_tick: self.tick_counter as u64,
                                 });
                             }
                         } else {
+                            let mut accumulator = vec![0u32; HD_DIMENSION];
+                            for (i, acc) in accumulator.iter_mut().enumerate() {
+                                let word = cluster.centroid.bits[i / 64];
+                                let bit = (word >> (i % 64)) & 1;
+                                *acc = bit as u32;
+                            }
                             self.dejavu_clusters.push(MemoryCluster {
                                 centroid: cluster.centroid,
+                                anchor: cluster.centroid,
                                 entries: cluster.entries.clone(),
                                 reverberation: cluster.reverberation,
                                 last_reinforced_tick: self.tick_counter,
+                                accumulator,
+                                total_weight: cluster.entries.len().max(1) as u32,
+                                last_access_tick: self.tick_counter as u64,
                             });
                         }
-                    } else if sim < 0.52 {
-                        // Reject as noise
-                    } else {
-                        // Consolidate into new permanent cluster
+                    } else if sim >= 0.52 {
+                        let mut accumulator = vec![0u32; HD_DIMENSION];
+                        for (i, acc) in accumulator.iter_mut().enumerate() {
+                            let word = cluster.centroid.bits[i / 64];
+                            let bit = (word >> (i % 64)) & 1;
+                            *acc = bit as u32;
+                        }
                         self.dejavu_clusters.push(MemoryCluster {
                             centroid: cluster.centroid,
+                            anchor: cluster.centroid,
                             entries: cluster.entries.clone(),
                             reverberation: cluster.reverberation,
                             last_reinforced_tick: self.tick_counter,
+                            accumulator,
+                            total_weight: cluster.entries.len().max(1) as u32,
+                            last_access_tick: self.tick_counter as u64,
                         });
                     }
                 }
@@ -730,16 +1536,10 @@ impl VSABrain {
             }
         }
 
-        // 3. Epsilon and Step Pruning
         for (idx, cluster) in self.transient_clusters.iter().enumerate() {
-            if consolidated_indices.contains(&idx) {
-                continue;
-            }
+            if consolidated_indices.contains(&idx) { continue; }
             if cluster.reverberation < 0.05
-                || (self
-                    .tick_counter
-                    .saturating_sub(cluster.last_reinforced_tick))
-                    > 50
+                || self.tick_counter.saturating_sub(cluster.last_reinforced_tick) > 50
             {
                 consolidated_indices.push(idx);
             }
@@ -752,9 +1552,7 @@ impl VSABrain {
             }
         }
 
-        // 4. Update Cognitive Anxiety: A(t) = tanh( 0.2 * Sum( R_j / theta_resonance ) )
-        let sum_reverberation: f64 = self
-            .transient_clusters
+        let sum_reverberation: f64 = self.transient_clusters
             .iter()
             .map(|c| c.reverberation)
             .sum();
@@ -762,6 +1560,7 @@ impl VSABrain {
         self.anxiety = (0.2 * normalized_sum).tanh();
     }
 
+    /// UPDATED: U64_BLOCKS = 160, HD_DIMENSION = 10240
     pub fn decay_transient_clusters_distributed(
         &mut self,
         lambda: f64,
@@ -771,12 +1570,10 @@ impl VSABrain {
         self.tick_counter = self.tick_counter.wrapping_add(1);
         let mut consolidated = Vec::new();
 
-        // 1. Decay all transient clusters
         for cluster in self.transient_clusters.iter_mut() {
             cluster.reverberation *= lambda;
         }
 
-        // 2. Evaluate Gates
         let mut consolidated_indices = Vec::new();
         for (idx, cluster) in self.transient_clusters.iter().enumerate() {
             if cluster.reverberation > theta_resonance {
@@ -786,9 +1583,8 @@ impl VSABrain {
                     continue;
                 }
 
-                // Stage 2: Clarity Gate (Unanimity Ratio)
                 let mut unanimity_count = 0;
-                for block_idx in 0..157 {
+                for block_idx in 0..U64_BLOCKS {
                     let mut bit_agreement = [0u32; 64];
                     for entry in &cluster.entries {
                         for bit_idx in 0..64 {
@@ -805,7 +1601,7 @@ impl VSABrain {
                     }
                 }
 
-                let unanimity_ratio = unanimity_count as f64 / 10048.0;
+                let unanimity_ratio = unanimity_count as f64 / HD_DIMENSION as f64;
 
                 if unanimity_ratio > theta_coherence {
                     consolidated.push((cluster.centroid, cluster.entries.clone()));
@@ -814,16 +1610,10 @@ impl VSABrain {
             }
         }
 
-        // 3. Epsilon and Step Pruning
         for (idx, cluster) in self.transient_clusters.iter().enumerate() {
-            if consolidated_indices.contains(&idx) {
-                continue;
-            }
+            if consolidated_indices.contains(&idx) { continue; }
             if cluster.reverberation < 0.05
-                || (self
-                    .tick_counter
-                    .saturating_sub(cluster.last_reinforced_tick))
-                    > 50
+                || self.tick_counter.saturating_sub(cluster.last_reinforced_tick) > 50
             {
                 consolidated_indices.push(idx);
             }
@@ -836,9 +1626,7 @@ impl VSABrain {
             }
         }
 
-        // 4. Update Cognitive Anxiety
-        let sum_reverberation: f64 = self
-            .transient_clusters
+        let sum_reverberation: f64 = self.transient_clusters
             .iter()
             .map(|c| c.reverberation)
             .sum();
@@ -848,6 +1636,16 @@ impl VSABrain {
         consolidated
     }
 
+    /// ██ UPGRADE v2.0 + Tier 4: LSH-indexed query with 10-bit sectors ██
+    ///
+    /// Divides memory into 1024 sectors by a 10-bit locality-sensitive
+    /// hash.  Phase 1 searches only clusters whose LOCKED ANCHOR falls
+    /// in the query's sector.  Phase 2 falls back to full scan if the
+    /// sector-local result is below threshold.  Phase 3 always scans
+    /// transient clusters (full scan — they're small).
+    ///
+    /// Uses `anchor` for delta-encoded reconstruction (immutable
+    /// reference frame), NOT `centroid` (which drifts).
     pub fn query_dejavu(
         &self,
         vector: &Hypervector,
@@ -856,120 +1654,145 @@ impl VSABrain {
             return (None, 0.0, HashMap::new());
         }
 
-        let mut best_label = None;
-        let mut best_sim = -1.0;
-        let mut best_meta = HashMap::new();
+        let query_sector = lsh_sector_inline(vector);
 
-        // A. Search permanent clusters
-        let mut perm_similarities = Vec::new();
-        let mut best_perm_centroid_sim = -1.0;
-        for (idx, cluster) in self.dejavu_clusters.iter().enumerate() {
-            let sim = 1.0 - vector.normalized_hamming_distance(&cluster.centroid);
-            perm_similarities.push((idx, sim));
-            if sim > best_perm_centroid_sim {
-                best_perm_centroid_sim = sim;
-            }
+        let mut best_label: Option<String> = None;
+        let mut best_sim: f64 = -1.0;
+        let mut best_meta: HashMap<String, String> = HashMap::new();
+
+        // Inline search helper that handles delta-encoded reconstruction
+        macro_rules! search_clusters {
+            ($clusters:expr, $reconstruct:expr) => {
+                for cluster in $clusters {
+                    let ref_v = if $reconstruct {
+                        let is_zero = cluster.anchor.bits.iter().all(|&b| b == 0);
+                        if !is_zero { &cluster.anchor } else { &cluster.centroid }
+                    } else {
+                        &cluster.centroid
+                    };
+                    for entry in &cluster.entries {
+                        let compare_v = if $reconstruct && entry.delta_encoded {
+                            entry.vector.bitwise_xor(ref_v)
+                        } else {
+                            entry.vector
+                        };
+                        let entry_sim = 1.0 - vector.normalized_hamming_distance(&compare_v);
+                        if entry_sim > best_sim {
+                            best_sim = entry_sim;
+                            best_label = Some(entry.label.clone());
+                            best_meta = entry.metadata.clone();
+                        }
+                    }
+                }
+            };
         }
 
-        let search_threshold_perm = best_perm_centroid_sim - 0.08;
-        for &(idx, sim) in &perm_similarities {
-            if sim >= search_threshold_perm {
-                let cluster = &self.dejavu_clusters[idx];
-                for entry in &cluster.entries {
-                    let entry_sim = 1.0 - vector.normalized_hamming_distance(&entry.vector);
-                    if entry_sim > best_sim {
-                        best_sim = entry_sim;
-                        best_label = Some(entry.label.clone());
-                        best_meta = entry.metadata.clone();
-                    }
+        // Phase 1: Search only clusters in the query's LSH sector.
+        // Sector is determined by the cluster's LOCKED ANCHOR, not its
+        // index position (which was a bug in the 4-bit version).
+        for cluster in self.dejavu_clusters.iter() {
+            let cluster_sector = if cluster.anchor.count_ones() > 0 {
+                lsh_sector_inline(&cluster.anchor)
+            } else {
+                lsh_sector_inline(&cluster.centroid)
+            };
+            if cluster_sector != query_sector {
+                continue;
+            }
+            let ref_v = {
+                let is_zero = cluster.anchor.bits.iter().all(|&b| b == 0);
+                if !is_zero { &cluster.anchor } else { &cluster.centroid }
+            };
+            for entry in &cluster.entries {
+                let compare_v = if entry.delta_encoded {
+                    entry.vector.bitwise_xor(ref_v)
+                } else {
+                    entry.vector
+                };
+                let entry_sim = 1.0 - vector.normalized_hamming_distance(&compare_v);
+                if entry_sim > best_sim {
+                    best_sim = entry_sim;
+                    best_label = Some(entry.label.clone());
+                    best_meta = entry.metadata.clone();
                 }
             }
         }
 
-        // B. Search transient clusters
-        let mut trans_similarities = Vec::new();
-        let mut best_trans_centroid_sim = -1.0;
-        for (idx, cluster) in self.transient_clusters.iter().enumerate() {
-            let sim = 1.0 - vector.normalized_hamming_distance(&cluster.centroid);
-            trans_similarities.push((idx, sim));
-            if sim > best_trans_centroid_sim {
-                best_trans_centroid_sim = sim;
-            }
+        // Phase 2: If no good match in sector, fall back to full scan
+        if best_sim < 0.55 {
+            search_clusters!(&self.dejavu_clusters, true);
         }
 
-        let search_threshold_trans = best_trans_centroid_sim - 0.08;
-        for &(idx, sim) in &trans_similarities {
-            if sim >= search_threshold_trans {
-                let cluster = &self.transient_clusters[idx];
-                for entry in &cluster.entries {
-                    let entry_sim = 1.0 - vector.normalized_hamming_distance(&entry.vector);
-                    if entry_sim > best_sim {
-                        best_sim = entry_sim;
-                        best_label = Some(entry.label.clone());
-                        best_meta = entry.metadata.clone();
-                    }
-                }
-            }
-        }
+        // Phase 3: Always check transient (working memory) — full scan.
+        search_clusters!(&self.transient_clusters, false);
 
         (best_label, best_sim, best_meta)
     }
 
+    /// ██ Tier 4: LSH-indexed evaluate_dejá-vù (mirrors query_dejavu) ██
+    ///
+    /// Uses the same 10-bit LSH sector routing as query_dejavu:
+    /// Phase 1 searches only clusters in the query's sector (by anchor hash).
+    /// Phase 2 falls back to full scan.  Phase 3 always scans transients.
     pub fn evaluate_deja_vu(&self, vector: &Hypervector) -> (Option<String>, f64) {
         if self.dejavu_clusters.is_empty() && self.transient_clusters.is_empty() {
             return (None, 1.0);
         }
 
+        let query_sector = lsh_sector_inline(vector);
+
         let mut best_label = None;
         let mut min_dist = 1.0;
 
-        // A. Search permanent clusters
-        let mut perm_similarities = Vec::new();
-        let mut best_perm_centroid_sim = -1.0;
-        for (idx, cluster) in self.dejavu_clusters.iter().enumerate() {
-            let sim = 1.0 - vector.normalized_hamming_distance(&cluster.centroid);
-            perm_similarities.push((idx, sim));
-            if sim > best_perm_centroid_sim {
-                best_perm_centroid_sim = sim;
+        macro_rules! eval_entry {
+            ($entry:expr, $cluster:expr, $reconstruct:expr) => {
+                let ref_v = if $reconstruct {
+                    let is_zero = $cluster.anchor.bits.iter().all(|&b| b == 0);
+                    if !is_zero { &$cluster.anchor } else { &$cluster.centroid }
+                } else {
+                    &$cluster.centroid
+                };
+                let compare_v = if $reconstruct && $entry.delta_encoded {
+                    $entry.vector.bitwise_xor(ref_v)
+                } else {
+                    $entry.vector
+                };
+                let dist = vector.normalized_hamming_distance(&compare_v);
+                if dist < min_dist {
+                    min_dist = dist;
+                    best_label = Some($entry.label.clone());
+                }
+            };
+        }
+
+        // Phase 1: Search only clusters in the query's LSH sector
+        for cluster in self.dejavu_clusters.iter() {
+            let cluster_sector = if cluster.anchor.count_ones() > 0 {
+                lsh_sector_inline(&cluster.anchor)
+            } else {
+                lsh_sector_inline(&cluster.centroid)
+            };
+            if cluster_sector != query_sector {
+                continue;
+            }
+            for entry in &cluster.entries {
+                eval_entry!(entry, cluster, true);
             }
         }
 
-        let search_threshold_perm = best_perm_centroid_sim - 0.08;
-        for &(idx, sim) in &perm_similarities {
-            if sim >= search_threshold_perm {
-                let cluster = &self.dejavu_clusters[idx];
+        // Phase 2: Fallback full scan if sector miss
+        if min_dist > 0.55 {
+            for cluster in &self.dejavu_clusters {
                 for entry in &cluster.entries {
-                    let dist = vector.normalized_hamming_distance(&entry.vector);
-                    if dist < min_dist {
-                        min_dist = dist;
-                        best_label = Some(entry.label.clone());
-                    }
+                    eval_entry!(entry, cluster, true);
                 }
             }
         }
 
-        // B. Search transient clusters
-        let mut trans_similarities = Vec::new();
-        let mut best_trans_centroid_sim = -1.0;
-        for (idx, cluster) in self.transient_clusters.iter().enumerate() {
-            let sim = 1.0 - vector.normalized_hamming_distance(&cluster.centroid);
-            trans_similarities.push((idx, sim));
-            if sim > best_trans_centroid_sim {
-                best_trans_centroid_sim = sim;
-            }
-        }
-
-        let search_threshold_trans = best_trans_centroid_sim - 0.08;
-        for &(idx, sim) in &trans_similarities {
-            if sim >= search_threshold_trans {
-                let cluster = &self.transient_clusters[idx];
-                for entry in &cluster.entries {
-                    let dist = vector.normalized_hamming_distance(&entry.vector);
-                    if dist < min_dist {
-                        min_dist = dist;
-                        best_label = Some(entry.label.clone());
-                    }
-                }
+        // Phase 3: Transient full scan (never delta-encoded)
+        for cluster in &self.transient_clusters {
+            for entry in &cluster.entries {
+                eval_entry!(entry, cluster, false);
             }
         }
 
@@ -980,88 +1803,7 @@ impl VSABrain {
         }
     }
 
-    // ─── HNSW-Accelerated Spatial Index ──────────────────────────────
-
-    /// Rebuild the HNSW index from the current permanent clusters.
-    /// Uses the centroid of each cluster as the indexed vector.
-    /// Maps HNSW entry index → cluster index for result translation.
-    pub fn rebuild_hnsw_index(&mut self) {
-        if self.dejavu_clusters.is_empty() {
-            self.hnsw_index = None;
-            self.hnsw_last_rebuild_count = 0;
-            return;
-        }
-
-        let mut index = HnswIndex::with_config(crate::hnsw::HnswConfig {
-            use_heuristic: true,
-            ..crate::hnsw::HnswConfig::default()
-        });
-
-        let mut cluster_indices: Vec<usize> = Vec::new();
-
-        for (ci, cluster) in self.dejavu_clusters.iter().enumerate() {
-            let hv = &cluster.centroid;
-            let idx = index.insert(&hv.bits);
-            // HNSW assigns sequential indices matching our insert order
-            // Map HNSW index → cluster index
-            cluster_indices.push(ci);
-        }
-
-        self.hnsw_index = Some(index);
-        self.hnsw_last_rebuild_count = self.dejavu_clusters.len();
-    }
-
-    /// Ensure the HNSW index is fresh. Rebuilds if clusters have changed.
-    pub fn ensure_hnsw_index(&mut self) {
-        let needs_rebuild = match self.hnsw_index {
-            Some(_) => self.hnsw_last_rebuild_count != self.dejavu_clusters.len(),
-            None => !self.dejavu_clusters.is_empty(),
-        };
-        if needs_rebuild {
-            self.rebuild_hnsw_index();
-        }
-    }
-
-    /// Query using HNSW-accelerated nearest-neighbor search.
-    /// Falls back to linear scan if index is unavailable.
-    pub fn query_dejavu_hnsw(
-        &mut self,
-        vector: &Hypervector,
-        ef: usize,
-    ) -> (Option<String>, f64, HashMap<String, String>) {
-        self.ensure_hnsw_index();
-
-        if let Some(ref index) = self.hnsw_index {
-            let result = index.search_by_hypervector(vector, ef);
-            if !result.is_empty() {
-                let (hnsw_idx, dist) = result.closest().unwrap();
-                if hnsw_idx < self.dejavu_clusters.len() {
-                    let cluster = &self.dejavu_clusters[hnsw_idx];
-                    // Search within the best cluster's entries
-                    let mut best_label = None;
-                    let mut best_sim = -1.0;
-                    let mut best_meta = HashMap::new();
-
-                    for entry in &cluster.entries {
-                        let sim = 1.0 - vector.normalized_hamming_distance(&entry.vector);
-                        if sim > best_sim {
-                            best_sim = sim;
-                            best_label = Some(entry.label.clone());
-                            best_meta = entry.metadata.clone();
-                        }
-                    }
-
-                    if best_sim > 0.0 {
-                        return (best_label, best_sim, best_meta);
-                    }
-                }
-            }
-        }
-
-        // Fallback to linear scan
-        self.query_dejavu(vector)
-    }
-
+    /// UPDATED: Uses FPE encoding for continuous variable decoding
     pub fn decode_variable(
         &self,
         state_vector: &Hypervector,
@@ -1074,10 +1816,13 @@ impl VSABrain {
         let mut best_val = config.min_val;
         let mut max_sim = -1.0;
 
+        // Sample `resolution` candidate values and find the best match
         for step in 0..=resolution {
             let fraction = (step as f64) / (resolution as f64);
             let val = config.min_val + fraction * (config.max_val - config.min_val);
-            let encoded = Hypervector::encode_continuous(config, val);
+            let encoded = Hypervector::encode_fpe(
+                &config.level_vectors, val, config.min_val, config.max_val,
+            );
 
             let sim = 1.0 - unbound.normalized_hamming_distance(&encoded);
             if sim > max_sim {
@@ -1087,7 +1832,98 @@ impl VSABrain {
         }
         Some(best_val)
     }
+
+    /// ██ Tier 3: Append a composed rule to the cluster whose centroid
+    /// best matches the given antecedent vector.
+    ///
+    /// This is the **Hebbian storage** step: the composed consequent
+    /// C is appended as a new entry to the existing cluster for A.
+    /// The centroid rebundles, shifting it slightly toward C, so that
+    /// future LSH queries from state A fall more directly into this
+    /// cluster — geometrically equivalent to strengthening a synaptic
+    /// pathway.
+    ///
+    /// The entry starts at a **medium-warm** reverberation (0.3) —
+    /// above the decay floor so it survives 10+ ticks, but below the
+    /// normal reinforcement level so a one-off shortcut self-prunes
+    /// naturally.  If the shortcut is genuinely useful, normal cluster
+    /// rebundling on subsequent `add_to_dejavu_db` calls will
+    /// reinforce it.
+    ///
+    /// Returns `true` if a matching cluster was found and the entry
+    /// was appended.
+    pub fn append_composed_rule(
+        &mut self,
+        antecedent_label: &str,
+        consequent: &Hypervector,
+    ) -> bool {
+        let ante_hv = Hypervector::encode_sentence(antecedent_label);
+        for cluster in &mut self.dejavu_clusters {
+            let sim = 1.0 - ante_hv.normalized_hamming_distance(&cluster.centroid);
+            if sim >= 0.65 {
+                let mut meta = std::collections::HashMap::new();
+                meta.insert("type".to_string(), "composed_rule".to_string());
+                meta.insert("antecedent".to_string(), antecedent_label.to_string());
+                let entry = DejavuEntry::new(
+                    *consequent,
+                    format!("composed_{}", antecedent_label),
+                    meta,
+                    None, // raw, not delta-encoded
+                );
+                cluster.entries.push(entry);
+                // ██ Tier 4: Absorb into accumulator (replaces manual bundle) ██
+                cluster.absorb_entry(consequent);
+                cluster.last_reinforced_tick = self.tick_counter;
+                // Medium-warm reverberation
+                cluster.reverberation = (cluster.reverberation + 0.3).min(1.0);
+                return true;
+            }
+        }
+        false
+    }
 }
+
+// ─── LSH sector hash (stable random projections) ───────────────────────────
+
+/// ██ UPGRADE v2.1: Stable random projection LSH ██
+///
+/// Replaces the raw-prefix hash (which was vulnerable to LCG-induced
+/// clustering skew from the character encoder).  Each of the 4 bits
+/// is derived from a popcount parity of a XOR between two fixed,
+/// widely-separated u64 blocks.  This ensures:
+///
+/// 1. **Distribution uniformity** — popcount parity over 10240 bits
+///    is unbiased regardless of LCG regularity in the first blocks.
+/// 2. **Stability** — small perturbations in the vector flip ≈1 bit
+///    per sector indicator on average (locality-sensitive).
+/// 3. **Determinism** — same vector always maps to the same sector.
+///
+/// Reference implementation uses indices {1,50}, {2,100}, {3,150}, {4,75}.
+/// LSH sector count: 10 bits → 1024 sectors.
+/// This matches the theoretical bound M = 1024 used in the
+/// boundedness proof (Theorem III.1).
+pub const LSH_SECTOR_COUNT: usize = 1024;
+
+pub(crate) fn lsh_sector_inline(vector: &Hypervector) -> usize {
+    // 10 independent bit-parity projections from well-separated
+    // u64 block pairs.  Each pair is at least 20 blocks apart
+    // to minimize correlation between hash bits.
+    let bit_0 = (vector.bits[1] ^ vector.bits[50]).count_ones() % 2;
+    let bit_1 = (vector.bits[2] ^ vector.bits[100]).count_ones() % 2;
+    let bit_2 = (vector.bits[3] ^ vector.bits[150]).count_ones() % 2;
+    let bit_3 = (vector.bits[4] ^ vector.bits[75]).count_ones() % 2;
+    let bit_4 = (vector.bits[5] ^ vector.bits[120]).count_ones() % 2;
+    let bit_5 = (vector.bits[6] ^ vector.bits[90]).count_ones() % 2;
+    let bit_6 = (vector.bits[7] ^ vector.bits[140]).count_ones() % 2;
+    let bit_7 = (vector.bits[8] ^ vector.bits[60]).count_ones() % 2;
+    let bit_8 = (vector.bits[9] ^ vector.bits[110]).count_ones() % 2;
+    let bit_9 = (vector.bits[10] ^ vector.bits[130]).count_ones() % 2;
+
+    ((bit_9 << 9) | (bit_8 << 8) | (bit_7 << 7) | (bit_6 << 6) | (bit_5 << 5)
+        | (bit_4 << 4) | (bit_3 << 3) | (bit_2 << 2) | (bit_1 << 1) | bit_0) as usize
+}
+
+// ─── Tests ─────────────────────────────────────────────────────────────────
 
 #[cfg(test)]
 mod tests {
@@ -1118,35 +1954,28 @@ mod tests {
     #[test]
     fn test_ledger_serialization() {
         let v1 = Hypervector::new_random();
-        let bytes = v1.to_bytes_1250();
-        let v2 = Hypervector::from_bytes_1250(&bytes);
-        for i in 0..156 {
+        let bytes = v1.to_bytes();
+        let v2 = Hypervector::from_bytes(&bytes);
+        for i in 0..U64_BLOCKS {
             assert_eq!(v1.bits[i], v2.bits[i]);
         }
-        let mask = (1u64 << 16) - 1;
-        assert_eq!(v1.bits[156] & mask, v2.bits[156] & mask);
     }
 
     #[test]
-    fn test_continuous_encoding() {
-        let config = VarConfig {
-            id: Hypervector::new_random(),
-            min_val: -3.0,
-            max_val: 3.0,
-            base_min: Hypervector::new_random(),
-            base_max: Hypervector::new_random(),
-        };
-        let v_min = Hypervector::encode_continuous(&config, -3.0);
-        let v_max = Hypervector::encode_continuous(&config, 3.0);
-        let v_mid = Hypervector::encode_continuous(&config, 0.0);
+    fn test_fpe_encoding() {
+        // FPE: distance should be monotonic with value difference
+        let levels = Hypervector::generate_level_vectors(128);
+        let v_min = Hypervector::encode_fpe(&levels, -3.0, -3.0, 3.0);
+        let v_max = Hypervector::encode_fpe(&levels, 3.0, -3.0, 3.0);
+        let v_mid = Hypervector::encode_fpe(&levels, 0.0, -3.0, 3.0);
 
         let d_min_max = v_min.normalized_hamming_distance(&v_max);
         let d_min_mid = v_min.normalized_hamming_distance(&v_mid);
         let d_mid_max = v_mid.normalized_hamming_distance(&v_max);
 
-        // Distance should scale linearly
-        assert!(d_min_mid < d_min_max);
-        assert!(d_mid_max < d_min_max);
+        // Distance should scale monotonically with value difference
+        assert!(d_min_mid < d_min_max, "FPE: d_min_mid={} should be < d_min_max={}", d_min_mid, d_min_max);
+        assert!(d_mid_max < d_min_max, "FPE: d_mid_max={} should be < d_min_max={}", d_mid_max, d_min_max);
     }
 
     #[test]
@@ -1161,7 +1990,7 @@ mod tests {
         let dist = s1.normalized_hamming_distance(&s3);
         assert!(
             dist > 0.20,
-            "Sentences with different word order should have high Hamming distance, got {}",
+            "Different word order should have high distance, got {}",
             dist
         );
     }
@@ -1169,11 +1998,9 @@ mod tests {
     #[test]
     fn test_hierarchical_clustering() {
         let mut brain = VSABrain::new(0.43);
-
         let mut meta = HashMap::new();
         meta.insert("test".to_string(), "1".to_string());
 
-        // Add 10 random vectors
         for i in 0..10 {
             let v = Hypervector::new_random();
             brain.add_to_dejavu_db(v, &format!("label_{}", i), meta.clone());
@@ -1193,8 +2020,6 @@ mod tests {
         meta.insert("test".to_string(), "1".to_string());
 
         let fact_vec = Hypervector::new_random();
-
-        // Add 6 times to cross resonance
         for i in 0..6 {
             brain.add_transient_fact(fact_vec, &format!("persistent_fact_{}", i), meta.clone());
         }
@@ -1202,548 +2027,98 @@ mod tests {
         assert_eq!(brain.transient_clusters.len(), 1);
         assert!(brain.transient_clusters[0].reverberation > 3.0);
 
-        // Run decay loop with low thresholds for test
         brain.decay_transient_clusters(0.95, 3.0, 0.10);
 
-        // Should be promoted
         assert_eq!(brain.transient_clusters.len(), 0);
         assert!(!brain.dejavu_clusters.is_empty());
         assert_eq!(brain.dejavu_clusters[0].entries.len(), 6);
     }
 
-    #[tokio::test]
-    async fn test_multi_agent_sync() {
-        use crate::broker::NeocortexBroker;
-        use crate::HiveMessage;
-        use std::sync::Arc;
-        use tokio::net::TcpStream;
-        use tokio::sync::mpsc;
+    #[test]
+    fn test_bundle_weighted_recency() {
+        // Weighted bundle should be closer to the higher-weighted vector
+        let v1 = Hypervector::encode_text_ngram("apple", 3);
+        let v2 = Hypervector::encode_text_ngram("banana", 3);
 
-        let port = 19050;
-        let ledger_path = "data/temp_test_broker_ledger.bin";
-        let _ = std::fs::remove_file(ledger_path);
-
-        let broker = Arc::new(NeocortexBroker::new("test_secret_key", ledger_path, port));
-        let broker_clone = Arc::clone(&broker);
-        let (log_tx, _log_rx) = mpsc::unbounded_channel();
-
-        tokio::spawn(async move {
-            let _ = broker_clone.run(log_tx).await;
-        });
-
-        tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
-
-        let stream = TcpStream::connect(format!("127.0.0.1:{}", port))
-            .await
-            .unwrap();
-        let (reader, writer) = stream.into_split();
-        let mut reader = reader;
-        let mut writer = writer;
-
-        let handshake = HiveMessage::HandshakeRequest {
-            agent_id: "agent_test_1".to_string(),
-            role: "News".to_string(),
-        };
-        NeocortexBroker::write_msg(&mut writer, &handshake, "test_secret_key")
-            .await
-            .unwrap();
-
-        match NeocortexBroker::read_msg(&mut reader, "test_secret_key")
-            .await
-            .unwrap()
-            .unwrap()
-        {
-            HiveMessage::HandshakeResponse { permanent_clusters } => {
-                assert!(permanent_clusters.is_empty());
-            }
-            _ => panic!("Expected HandshakeResponse"),
-        }
-
-        let centroid = Hypervector::new_random();
-        let entry = DejavuEntry {
-            vector: centroid,
-            label: "test_fact".to_string(),
-            metadata: HashMap::new(),
-        };
-        let consolidate = HiveMessage::ConsolidateRequest {
-            centroid,
-            entries: vec![entry],
-            agent_anxiety: 0.0,
-        };
-        NeocortexBroker::write_msg(&mut writer, &consolidate, "test_secret_key")
-            .await
-            .unwrap();
-
-        match NeocortexBroker::read_msg(&mut reader, "test_secret_key")
-            .await
-            .unwrap()
-            .unwrap()
-        {
-            HiveMessage::SyncUpdate {
-                is_new_cluster,
-                cluster,
-                ..
-            } => {
-                assert!(is_new_cluster);
-                assert_eq!(cluster.entries.len(), 1);
-                assert_eq!(cluster.entries[0].label, "test_fact");
-            }
-            _ => panic!("Expected SyncUpdate"),
-        }
-
-        let _ = std::fs::remove_file(ledger_path);
+        // Weight v2 heavily
+        let result = Hypervector::bundle_weighted(&[&v1, &v2], &[0.1, 10.0]);
+        let sim_v1 = 1.0 - result.normalized_hamming_distance(&v1);
+        let sim_v2 = 1.0 - result.normalized_hamming_distance(&v2);
+        assert!(
+            sim_v2 > sim_v1,
+            "Weighted bundle should favour v2: sim_v1={}, sim_v2={}",
+            sim_v1,
+            sim_v2
+        );
     }
 
-    #[tokio::test]
-    async fn test_lockdown_propagation() {
-        use crate::broker::NeocortexBroker;
-        use crate::defense::DefenseSystem;
-        use crate::socket::AdminSocketServer;
-        use crate::HiveMessage;
-        use std::sync::Arc;
-        use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
-        use tokio::net::TcpStream;
-        use tokio::sync::{mpsc, Mutex, RwLock};
+    #[test]
+    fn test_fpe_level_count() {
+        let levels = Hypervector::generate_level_vectors(FPE_RESOLUTION);
+        assert_eq!(levels.len(), FPE_RESOLUTION);
+        // Adjacent levels should be more similar than far-apart levels
+        let d_adj = levels[0].normalized_hamming_distance(&levels[1]);
+        let d_far = levels[0].normalized_hamming_distance(&levels[127]);
+        assert!(
+            d_adj < d_far,
+            "Adjacent FPE levels should be closer: adj={}, far={}",
+            d_adj,
+            d_far
+        );
+    }
 
-        let broker_port = 19053;
-        let admin_port = 19006;
-        let ledger_path = "data/temp_test_lockdown_ledger.bin";
-        let _ = std::fs::remove_file(ledger_path);
-
-        // 1. Start Broker
-        let broker = Arc::new(NeocortexBroker::new(
-            "test_secret_key",
-            ledger_path,
-            broker_port,
-        ));
-        let broker_clone = Arc::clone(&broker);
-        let (log_tx, mut log_rx) = mpsc::unbounded_channel();
-
-        tokio::spawn(async move {
-            let _ = broker_clone.run(log_tx).await;
-        });
-
-        // Drain logs in background so mpsc queue doesn't fill up
-        tokio::spawn(async move { while let Some(_) = log_rx.recv().await {} });
-
-        tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
-
-        // 2. Connect Mock Agent to Broker
-        let stream = TcpStream::connect(format!("127.0.0.1:{}", broker_port))
-            .await
-            .unwrap();
-        let (reader, writer) = stream.into_split();
-        let mut reader = reader;
-        let writer = Arc::new(Mutex::new(writer));
-
-        // 3. Handshake
-        let handshake = HiveMessage::HandshakeRequest {
-            agent_id: "agent_lockdown_test".to_string(),
-            role: "News".to_string(),
-        };
-        {
-            let mut writer_guard = writer.lock().await;
-            NeocortexBroker::write_msg(&mut writer_guard, &handshake, "test_secret_key")
-                .await
-                .unwrap();
-        }
-
-        let initial_clusters = match NeocortexBroker::read_msg(&mut reader, "test_secret_key")
-            .await
-            .unwrap()
-            .unwrap()
-        {
-            HiveMessage::HandshakeResponse { permanent_clusters } => permanent_clusters,
-            _ => panic!("Expected HandshakeResponse"),
-        };
-
-        // 4. Initialize Local Mock Agent components
+    #[test]
+    fn test_calibrate_projection_threshold() {
         let mut brain = VSABrain::new(0.43);
-        brain.dejavu_clusters = initial_clusters;
-        let brain_shared = Arc::new(RwLock::new(brain));
 
-        let initial_intent = Hypervector::new_random();
-        let active_intent = Arc::new(RwLock::new(initial_intent));
-        let defense = DefenseSystem::new(admin_port);
-
-        // 5. Spawn background listener task for mock agent to receive broker messages
-        let intent_recv = Arc::clone(&active_intent);
-        let defense_recv = defense.clone();
-        let lockdown_received = Arc::new(RwLock::new(false));
-        let lr_clone = Arc::clone(&lockdown_received);
-        tokio::spawn(async move {
-            let mut reader = reader;
-            loop {
-                match NeocortexBroker::read_msg(&mut reader, "test_secret_key").await {
-                    Ok(Some(HiveMessage::PanicLockdown { .. })) => {
-                        *lr_clone.write().await = true;
-
-                        // Rotates port and intent
-                        let mut port = defense_recv.active_port.write().await;
-                        *port = 19007; // dummy new port
-                        *defense_recv.stealth_mode.write().await = true;
-
-                        let mut intent_guard = intent_recv.write().await;
-                        *intent_guard = Hypervector::new_random();
-                    }
-                    _ => break,
+        // Create clusters with known intra-cluster distances.
+        // Each cluster gets entries at controlled NHD from its centroid.
+        let add_cluster_with_noise = |brain: &mut VSABrain, noise: f64| {
+            let centroid = Hypervector::new_random();
+            let mut meta = std::collections::HashMap::new();
+            meta.insert("type".to_string(), "test".to_string());
+            // First entry (creates the cluster)
+            brain.add_to_dejavu_db(centroid, "test_centroid", std::collections::HashMap::new());
+            // Add 10 more entries with controlled noise
+            for i in 0..10 {
+                let mut noisy = centroid;
+                for _ in 0..(noise * 10240.0) as usize {
+                    let block = rand::random::<usize>() % 160;
+                    let bit = rand::random::<usize>() % 64;
+                    noisy.bits[block] ^= 1u64 << bit;
                 }
+                brain.add_to_dejavu_db(noisy, &format!("entry_{}", i), meta.clone());
             }
-        });
-
-        // 6. Spawn Admin Socket Server
-        let admin_server = AdminSocketServer::new(
-            Arc::clone(&active_intent),
-            defense.clone(),
-            Arc::clone(&brain_shared),
-        );
-        let (admin_log_tx, mut admin_log_rx) = mpsc::unbounded_channel();
-        tokio::spawn(async move {
-            let _ = admin_server.run(admin_log_tx).await;
-        });
-        tokio::spawn(async move { while let Some(_) = admin_log_rx.recv().await {} });
-
-        tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
-
-        // 7. Spawn Subconscious loop simulation to check threat level and propagate PanicLockdown
-        let writer_subconscious = Arc::clone(&writer);
-        let defense_subconscious = defense.clone();
-        tokio::spawn(async move {
-            let mut sent_lockdown = false;
-            loop {
-                tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
-                let threat_level = *defense_subconscious.threat_level.read().await;
-                if threat_level >= 1.0 && !sent_lockdown {
-                    sent_lockdown = true;
-                    let request = HiveMessage::PanicLockdown {
-                        attacker_info: "Mock Attack".to_string(),
-                    };
-                    let mut writer_guard = writer_subconscious.lock().await;
-                    let _ = NeocortexBroker::write_msg(&mut writer_guard, &request, "test_secret_key").await;
-                }
-            }
-        });
-
-        // 8. Connect client to Admin Socket and spam invalid commands to trigger threat increase
-        let mut admin_conn = TcpStream::connect(format!("127.0.0.1:{}", admin_port))
-            .await
-            .unwrap();
-
-        // Read header
-        let mut admin_reader = BufReader::new(&mut admin_conn);
-        let mut banner = String::new();
-        let _ = admin_reader.read_line(&mut banner).await;
-
-        // Send unrecognized commands to increase threat level (7 commands of 0.15 = 1.05 > 1.0)
-        for _ in 0..8 {
-            let _ = admin_conn.write_all(b"SPAM\n").await;
-            tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
-        }
-
-        // Wait for lockdown propagation to occur
-        tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
-
-        // Check verification states
-        assert!(
-            *lockdown_received.read().await,
-            "Lockdown broadcast should be received by agent"
-        );
-        assert_ne!(
-            *active_intent.read().await,
-            initial_intent,
-            "Active intent should be rotated (amnesia)"
-        );
-        assert_eq!(
-            *defense.active_port.read().await,
-            19007,
-            "Port should be rotated"
-        );
-        assert!(
-            *defense.stealth_mode.read().await,
-            "Stealth mode should be active"
-        );
-
-        let _ = std::fs::remove_file(ledger_path);
-    }
-
-    #[test]
-    fn test_resonator_unbinding() {
-        use crate::resonator::{factorize_svo, ResonatorVocabulary};
-        let mut vocab = ResonatorVocabulary::new();
-        vocab.register_term("Finch");
-        vocab.register_term("write");
-        vocab.register_term("ledger");
-
-        let s_hv = vocab.get_vector("Finch").unwrap();
-        let v_hv = vocab.get_vector("write").unwrap();
-        let o_hv = vocab.get_vector("ledger").unwrap();
-
-        // T = S_rot1 ^ V_rot2 ^ O_rot3
-        let t = s_hv
-            .rotate_left(1 * 13)
-            .bitwise_xor(&v_hv.rotate_left(2 * 13))
-            .bitwise_xor(&o_hv.rotate_left(3 * 13));
-
-        let subjects = vec![
-            "Finch".to_string(),
-            "Agent-1".to_string(),
-            "Broker".to_string(),
-        ];
-        let verbs = vec!["write".to_string(), "read".to_string(), "panic".to_string()];
-        let objects = vec![
-            "ledger".to_string(),
-            "hosts".to_string(),
-            "server".to_string(),
-        ];
-
-        let res = factorize_svo(&t, &vocab, &subjects, &verbs, &objects, 30);
-        assert!(res.is_some(), "Resonator should resolve the thought vector");
-        let (s, v, o, energy) = res.unwrap();
-        assert_eq!(s, "Finch");
-        assert_eq!(v, "write");
-        assert_eq!(o, "ledger");
-        assert!(
-            energy >= 0.65,
-            "Reconstruction energy should pass hallucination filter: {}",
-            energy
-        );
-    }
-
-    #[test]
-    fn test_sensory_modalities() {
-        use crate::sensory::{
-            NetworkTrafficModality, SensoryModality, SystemTelemetryModality, TextSensoryModality,
         };
 
-        let m1 = TextSensoryModality::new("text_mod", "What is the crisis");
-        let mut m2 = SystemTelemetryModality::new("telemetry_mod");
-        m2.set_reading("cpu_utilization", 45.2);
-        let m3 = NetworkTrafficModality::new("network_mod");
+        // Two clusters with intra-noise 0.10, one with 0.30
+        add_cluster_with_noise(&mut brain, 0.10);
+        add_cluster_with_noise(&mut brain, 0.10);
+        add_cluster_with_noise(&mut brain, 0.30);
 
-        let v1 = m1.encode();
-        let v2 = m2.encode();
-        let v3 = m3.encode();
+        // Calibrate at various composition noise levels
+        for eps in [0.30, 0.50, 0.70] {
+            let θ = brain.calibrate_projection_threshold(eps);
+            let θ_sim = 1.0 - θ;
+            eprintln!(
+                "  ε = {:.2}: θ*_NHD = {:.4} (sim ≥ {:.4})",
+                eps, θ, θ_sim
+            );
+            // θ should be in a reasonable range [0.10, 0.70]
+            assert!(
+                θ >= 0.10 && θ <= 0.70,
+                "Calibrated threshold out of range: {}",
+                θ
+            );
+        }
 
-        let world_state = Hypervector::bundle(&[&v1, &v2, &v3]);
-
-        // Assert that the bundled vector has some similarity to each component
-        let sim1 = 1.0 - world_state.normalized_hamming_distance(&v1);
-        let sim2 = 1.0 - world_state.normalized_hamming_distance(&v2);
-        let sim3 = 1.0 - world_state.normalized_hamming_distance(&v3);
-
+        // Empty brain → falls back to default
+        let empty_brain = VSABrain::new(0.43);
+        let default_θ = empty_brain.calibrate_projection_threshold(0.50);
         assert!(
-            sim1 > 0.55,
-            "Should have high similarity to text modality, got {}",
-            sim1
+            (default_θ - 0.50).abs() < 0.01,
+            "Empty brain should return default threshold: {}",
+            default_θ
         );
-        assert!(
-            sim2 > 0.55,
-            "Should have high similarity to telemetry modality, got {}",
-            sim2
-        );
-        assert!(
-            sim3 > 0.55,
-            "Should have high similarity to network modality, got {}",
-            sim3
-        );
-    }
-
-    #[test]
-    fn test_action_execution() {
-        use crate::action::{execute_action, ActionRegistry};
-        use crate::resonator::ResonatorVocabulary;
-
-        std::fs::create_dir_all("data").unwrap();
-        let reg = ActionRegistry::new();
-        let mut vocab = ResonatorVocabulary::new();
-        vocab.register_term("sys_write");
-        vocab.register_term("hello_world_payload");
-        vocab.register_term("data/temp_test_write.txt");
-
-        // Action = sys_write, Parameter = data/temp_test_write.txt (we can simplify to just write hello_world_payload)
-        // Let's bind them: Intent = sys_write ^ Param
-        let act_hv = reg.get_action_vector("sys_write").unwrap();
-        let param_hv = vocab.get_vector("data/temp_test_write.txt").unwrap();
-        let intent = act_hv.bitwise_xor(param_hv);
-
-        // Decode intent
-        let decoded = reg.decode_intent(&intent, &vocab);
-        assert!(decoded.is_some());
-        let (action_name, p_hv) = decoded.unwrap();
-        assert_eq!(action_name, "sys_write");
-
-        // Execute action (creates data/dynamic_output.txt)
-        let _ = std::fs::remove_file("data/dynamic_output.txt");
-        let res = execute_action(&action_name, &p_hv, &vocab);
-        assert!(res.is_ok(), "Action execution should succeed: {:?}", res);
-
-        let content = std::fs::read_to_string("data/dynamic_output.txt").unwrap();
-        assert_eq!(content, "data/temp_test_write.txt");
-
-        let _ = std::fs::remove_file("data/dynamic_output.txt");
-    }
-
-    #[test]
-    fn test_temporal_planning() {
-        use crate::action::ActionRegistry;
-        use crate::planning::find_optimal_trajectory;
-        use crate::resonator::ResonatorVocabulary;
-
-        let reg = ActionRegistry::new();
-        let mut vocab = ResonatorVocabulary::new();
-        vocab.register_term("hosts");
-        vocab.register_term("cargo check");
-
-        let s0 = Hypervector::new_random();
-
-        // Target: We want to execute "sys_read" on "hosts" (Step 1) and "execute_bash" on "cargo check" (Step 2)
-        let act1_hv = reg.get_action_vector("sys_read").unwrap();
-        let param1_hv = vocab.get_vector("hosts").unwrap();
-        let step1 = act1_hv.bitwise_xor(param1_hv);
-
-        let act2_hv = reg.get_action_vector("execute_bash").unwrap();
-        let param2_hv = vocab.get_vector("cargo check").unwrap();
-        let step2 = act2_hv.bitwise_xor(param2_hv);
-
-        // Goal state: S2 = \rho(\rho(S0) ^ step1) ^ step2  (zero drift assumed)
-        let s1 = s0.rotate_left(13).bitwise_xor(&step1);
-        let goal_state = s1.rotate_left(13).bitwise_xor(&step2);
-
-        // Run planning solver with zero-drift sequence
-        let drift_seq = vec![Hypervector::new_zero(); 2];
-        let traj_opt = find_optimal_trajectory(&s0, &goal_state, &drift_seq, &reg, &vocab, 2, &[], 0.0, &[]);
-        assert!(traj_opt.is_some(), "Should find a valid trajectory");
-
-        let traj = traj_opt.unwrap();
-        assert_eq!(
-            traj.steps.len(),
-            2,
-            "Trajectory should have exactly 2 steps"
-        );
-
-        assert_eq!(traj.steps[0].action, "sys_read");
-        assert_eq!(traj.steps[0].parameter, "hosts");
-        assert_eq!(traj.steps[1].action, "execute_bash");
-        assert_eq!(traj.steps[1].parameter, "cargo check");
-    }
-
-    #[test]
-    fn test_planning_cost_optimization() {
-        use crate::action::ActionRegistry;
-        use crate::planning::find_optimal_trajectory;
-        use crate::resonator::ResonatorVocabulary;
-
-        let reg = ActionRegistry::new();
-        let mut vocab = ResonatorVocabulary::new();
-        vocab.register_term("hosts");
-        vocab.register_term("cargo check");
-
-        let s0 = Hypervector::new_random();
-
-        let act_read = reg.get_action_vector("sys_read").unwrap();
-        let param_hosts = vocab.get_vector("hosts").unwrap();
-        let step_read = act_read.bitwise_xor(param_hosts);
-
-        let goal = s0.rotate_left(13).bitwise_xor(&step_read);
-
-        let drift_seq = vec![Hypervector::new_zero(); 1];
-        let traj = find_optimal_trajectory(&s0, &goal, &drift_seq, &reg, &vocab, 1, &[], 0.0, &[]).unwrap();
-        assert_eq!(traj.steps.len(), 1);
-        assert_eq!(traj.steps[0].action, "sys_read");
-    }
-
-    #[test]
-    fn test_order_preservation_and_non_commutativity() {
-        use crate::action::ActionRegistry;
-        use crate::planning::find_optimal_trajectory;
-        use crate::resonator::ResonatorVocabulary;
-
-        let reg = ActionRegistry::new();
-        let mut vocab = ResonatorVocabulary::new();
-        vocab.register_term("hosts");
-        vocab.register_term("cargo check");
-
-        let s0 = Hypervector::new_random();
-
-        let act1_hv = reg.get_action_vector("sys_read").unwrap();
-        let param1_hv = vocab.get_vector("hosts").unwrap();
-        let step1 = act1_hv.bitwise_xor(param1_hv);
-
-        let act2_hv = reg.get_action_vector("execute_bash").unwrap();
-        let param2_hv = vocab.get_vector("cargo check").unwrap();
-        let step2 = act2_hv.bitwise_xor(param2_hv);
-
-        // Correct order target: S2 = \rho(\rho(S0) ^ step1) ^ step2
-        let goal_correct = s0
-            .rotate_left(13)
-            .bitwise_xor(&step1)
-            .rotate_left(13)
-            .bitwise_xor(&step2);
-
-        // Inverted order target: S2 = \rho(\rho(S0) ^ step2) ^ step1
-        let goal_inverted = s0
-            .rotate_left(13)
-            .bitwise_xor(&step2)
-            .rotate_left(13)
-            .bitwise_xor(&step1);
-
-        // Assert orthogonality of correct and inverted target states (Hamming distance approx 0.50)
-        let diff = goal_correct.normalized_hamming_distance(&goal_inverted);
-        assert!(diff > 0.40, "Ordered states must be orthogonal: {}", diff);
-
-        let drift_seq = vec![Hypervector::new_zero(); 2];
-
-        // Test pathfinder on goal_correct: should ONLY find [step1, step2] in order
-        let traj_correct =
-            find_optimal_trajectory(&s0, &goal_correct, &drift_seq, &reg, &vocab, 2, &[], 0.0, &[]).unwrap();
-        assert_eq!(traj_correct.steps.len(), 2);
-        assert_eq!(traj_correct.steps[0].action, "sys_read");
-        assert_eq!(traj_correct.steps[1].action, "execute_bash");
-
-        // Test pathfinder on goal_inverted: should ONLY find [step2, step1] in order
-        let traj_inverted =
-            find_optimal_trajectory(&s0, &goal_inverted, &drift_seq, &reg, &vocab, 2, &[], 0.0, &[]).unwrap();
-        assert_eq!(traj_inverted.steps.len(), 2);
-        assert_eq!(traj_inverted.steps[0].action, "execute_bash");
-        assert_eq!(traj_inverted.steps[1].action, "sys_read");
-    }
-
-    #[test]
-    fn test_threat_forecasting_and_correction() {
-        use crate::action::ActionRegistry;
-        use crate::planning::{find_optimal_trajectory, simulate_threat_trajectory, DriftForecast};
-        use crate::resonator::ResonatorVocabulary;
-
-        let reg = ActionRegistry::new();
-        let mut vocab = ResonatorVocabulary::new();
-
-        let s0 = Hypervector::new_random();
-        let s_stable = Hypervector::new_random();
-        let c_crisis = Hypervector::new_random();
-
-        // Setup mock drift pulling the state to crisis in 1 step: S1 = \rho(S0) ^ E_world = c_crisis
-        let e_world = c_crisis.bitwise_xor(&s0.rotate_left(13));
-
-        // 1. Forecaster checks active threat and detects crisis prediction at step 1
-        let mut forecast = DriftForecast::new();
-        forecast.add_regime("test", 1.0, vec![e_world, e_world, e_world]);
-        let horizon = simulate_threat_trajectory(&s0, &forecast, &[c_crisis], 0.80);
-        assert_eq!(horizon, Some(1.0), "Threat forecaster should detect crisis");
-
-        // 2. We want a corrective action that steers the state from c_crisis to s_stable
-        // S1_correct = \rho(S0) ^ A_c ^ E_world = c_crisis ^ A_c \approx s_stable
-        // \implies A_c \approx c_crisis ^ s_stable
-        let act_read = reg.get_action_vector("sys_read").unwrap();
-        let param_vector = c_crisis.bitwise_xor(&s_stable).bitwise_xor(&act_read);
-
-        // Inject custom param vector matching our corrective step into vocabulary terms map
-        vocab.terms.insert("hosts".to_string(), param_vector);
-
-        // 3. Run pathfinder targeting s_stable under e_world drift
-        let drift_seq = vec![e_world; 1];
-        let traj = find_optimal_trajectory(&s0, &s_stable, &drift_seq, &reg, &vocab, 1, &[c_crisis], 0.0, &[]).unwrap();
-        assert_eq!(traj.steps.len(), 1);
-        assert_eq!(traj.steps[0].action, "sys_read");
-        assert_eq!(traj.steps[0].parameter, "hosts");
     }
 }

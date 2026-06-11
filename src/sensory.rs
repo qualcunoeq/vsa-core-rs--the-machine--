@@ -1,4 +1,4 @@
-use crate::{Hypervector, VarConfig};
+use crate::{Hypervector, VarConfig, FPE_RESOLUTION};
 use std::collections::HashMap;
 
 pub trait SensoryModality: Send + Sync {
@@ -30,6 +30,7 @@ impl SensoryModality for TextSensoryModality {
     }
 }
 
+/// ██ UPGRADE v2.0: FPE-based telemetry modality ██
 pub struct SystemTelemetryModality {
     pub name: String,
     pub variables: HashMap<String, VarConfig>,
@@ -39,15 +40,14 @@ pub struct SystemTelemetryModality {
 impl SystemTelemetryModality {
     pub fn new(name: &str) -> Self {
         let mut variables = HashMap::new();
-        // Register CPU (0 to 100)
+        // Register CPU (0 to 100) with FPE levels
         variables.insert(
             "cpu_utilization".to_string(),
             VarConfig {
                 id: Hypervector::new_random(),
                 min_val: 0.0,
                 max_val: 100.0,
-                base_min: Hypervector::new_random(),
-                base_max: Hypervector::new_random(),
+                level_vectors: Hypervector::generate_level_vectors(FPE_RESOLUTION),
             },
         );
         // Register RAM Free (0 to 64GB)
@@ -57,8 +57,7 @@ impl SystemTelemetryModality {
                 id: Hypervector::new_random(),
                 min_val: 0.0,
                 max_val: 64.0,
-                base_min: Hypervector::new_random(),
-                base_max: Hypervector::new_random(),
+                level_vectors: Hypervector::generate_level_vectors(FPE_RESOLUTION),
             },
         );
 
@@ -79,7 +78,9 @@ impl SensoryModality for SystemTelemetryModality {
         let mut bound_vectors = Vec::new();
         for (key, config) in &self.variables {
             let val = self.readings.get(key).cloned().unwrap_or(config.min_val);
-            let encoded_val = Hypervector::encode_continuous(config, val);
+            let encoded_val = Hypervector::encode_fpe(
+                &config.level_vectors, val, config.min_val, config.max_val,
+            );
             bound_vectors.push(config.id.bitwise_xor(&encoded_val));
         }
         let refs: Vec<&Hypervector> = bound_vectors.iter().collect();
@@ -91,6 +92,7 @@ impl SensoryModality for SystemTelemetryModality {
     }
 }
 
+/// ██ UPGRADE v2.0: FPE-based network modality ██
 pub struct NetworkTrafficModality {
     pub name: String,
     pub active_connections: usize,
@@ -109,15 +111,13 @@ impl NetworkTrafficModality {
                 id: Hypervector::new_random(),
                 min_val: 0.0,
                 max_val: 1000.0,
-                base_min: Hypervector::new_random(),
-                base_max: Hypervector::new_random(),
+                level_vectors: Hypervector::generate_level_vectors(FPE_RESOLUTION),
             },
             bw_config: VarConfig {
                 id: Hypervector::new_random(),
                 min_val: 0.0,
                 max_val: 10000.0,
-                base_min: Hypervector::new_random(),
-                base_max: Hypervector::new_random(),
+                level_vectors: Hypervector::generate_level_vectors(FPE_RESOLUTION),
             },
         }
     }
@@ -125,11 +125,20 @@ impl NetworkTrafficModality {
 
 impl SensoryModality for NetworkTrafficModality {
     fn encode(&self) -> Hypervector {
-        let conn_vec =
-            Hypervector::encode_continuous(&self.conn_config, self.active_connections as f64);
+        let conn_vec = Hypervector::encode_fpe(
+            &self.conn_config.level_vectors,
+            self.active_connections as f64,
+            self.conn_config.min_val,
+            self.conn_config.max_val,
+        );
         let bound_conn = self.conn_config.id.bitwise_xor(&conn_vec);
 
-        let bw_vec = Hypervector::encode_continuous(&self.bw_config, self.bandwidth_mbps);
+        let bw_vec = Hypervector::encode_fpe(
+            &self.bw_config.level_vectors,
+            self.bandwidth_mbps,
+            self.bw_config.min_val,
+            self.bw_config.max_val,
+        );
         let bound_bw = self.bw_config.id.bitwise_xor(&bw_vec);
 
         Hypervector::bundle(&[&bound_conn, &bound_bw])

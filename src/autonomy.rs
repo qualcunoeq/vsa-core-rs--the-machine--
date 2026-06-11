@@ -1,7 +1,7 @@
 use crate::action::ActionRegistry;
 use crate::planning::find_optimal_trajectory;
 use crate::resonator::{factorize_svo, ResonatorVocabulary};
-use crate::Hypervector;
+use crate::{Hypervector, HD_DIMENSION};
 
 // ─── Default SVO candidate lists ──────────────────────────────────────────
 
@@ -40,7 +40,7 @@ impl AutonomyDrive {
 
     pub fn evaluates_necessity_to_pivot(&self, dissonance: &Hypervector) -> bool {
         let set_bits = dissonance.count_ones();
-        let normalized_dist = set_bits as f64 / 10048.0;
+        let normalized_dist = set_bits as f64 / HD_DIMENSION as f64;
         normalized_dist > self.dissonance_threshold && normalized_dist < 0.55
     }
 

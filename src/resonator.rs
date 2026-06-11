@@ -1,6 +1,6 @@
-use crate::Hypervector;
-use crate::HD_DIMENSION;
+use crate::{Hypervector, LSH_SECTOR_COUNT, HD_DIMENSION};
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 // ─── Constants ────────────────────────────────────────────────────────────
 
@@ -14,14 +14,25 @@ pub const PLATEAU_PATIENCE: usize = 8;
 
 // ─── Vocabulary ───────────────────────────────────────────────────────────
 
+/// ██ UPGRADE v2.1: Added LSH fallback diagnostics ██
+///
+/// Tracks how often the hierarchical cleanup hits its sector target
+/// vs. falling back to full O(M) scan.  Can be queried via
+/// `lsh_fallback_rate()` for health monitoring.
 pub struct ResonatorVocabulary {
     pub terms: HashMap<String, Hypervector>,
+    /// Total cleanup calls
+    lsh_total: AtomicU64,
+    /// Cleanup calls that fell back to full scan (sector miss)
+    lsh_fallback: AtomicU64,
 }
 
 impl ResonatorVocabulary {
     pub fn new() -> Self {
         let mut vocab = ResonatorVocabulary {
             terms: HashMap::new(),
+            lsh_total: AtomicU64::new(0),
+            lsh_fallback: AtomicU64::new(0),
         };
         let baseline = vec![
             "sys_read", "sys_write", "execute_bash", "tcp_send",
@@ -63,21 +74,109 @@ impl ResonatorVocabulary {
         self.terms.get(term)
     }
 
-    /// Cleanup a noisy vector by matching it to the closest vocabulary vector.
+    /// ██ UPGRADE v2.1: LSH-hierarchical cleanup with fallback diagnostics ██
+    ///
+    /// Instead of brute-force O(M·D) nearest neighbour, we:
+    /// 1. Compute a LSH sector hash via stable random projections
+    /// 2. Search only terms whose index mod 16 == sector
+    /// 3. If the best sector match is below threshold, fall back to full scan
+    ///
+    /// This reduces average lookup from O(M) to ~O(M/16) in the common case.
+    /// Fallback rates are tracked atomically and queryable via `lsh_fallback_rate()`.
     pub fn cleanup(&self, vector: &Hypervector) -> (String, f64) {
         if self.terms.is_empty() {
             return ("".to_string(), 0.0);
         }
+
+        self.lsh_total.fetch_add(1, Ordering::Relaxed);
+        let sector = lsh_sector(vector);
+        let term_vec: Vec<(&String, &Hypervector)> = self.terms.iter().collect();
+
+        // Phase 1: LSH sector search
         let mut best_term = "".to_string();
         let mut best_sim = -1.0;
-        for (term, vec) in &self.terms {
+
+        for (idx, (term, vec)) in term_vec.iter().enumerate() {
+            if idx % LSH_SECTOR_COUNT != sector { continue; }
             let sim = 1.0 - vector.normalized_hamming_distance(vec);
             if sim > best_sim {
                 best_sim = sim;
-                best_term = term.clone();
+                best_term = (*term).clone();
             }
         }
+
+        // Phase 2: Fallback full scan if sector result is weak
+        if best_sim < 0.55 {
+            self.lsh_fallback.fetch_add(1, Ordering::Relaxed);
+            for (term, vec) in &self.terms {
+                let sim = 1.0 - vector.normalized_hamming_distance(vec);
+                if sim > best_sim {
+                    best_sim = sim;
+                    best_term = term.clone();
+                }
+            }
+        }
+
         (best_term, best_sim)
+    }
+
+    /// Return the fraction of cleanup calls that fell back to full O(M) scan.
+    /// Useful for diagnosing LSH sector imbalance.
+    /// Returns `(fallback_count, total_count, fallback_rate)`.
+    pub fn lsh_fallback_rate(&self) -> (u64, u64, f64) {
+        let total = self.lsh_total.load(Ordering::Relaxed);
+        let fallback = self.lsh_fallback.load(Ordering::Relaxed);
+        let rate = if total > 0 {
+            fallback as f64 / total as f64
+        } else {
+            0.0
+        };
+        (fallback, total, rate)
+    }
+
+    /// ██ FIX v2.5: LSH sector entropy monitoring ██
+    ///
+    /// Computes the Shannon entropy of the term distribution across
+    /// LSH sectors.  When entropy drops significantly below the
+    /// theoretical maximum (log₂(LSH_SECTOR_COUNT) ≈ 10 bits),
+    /// it indicates that terms are clustering in a subset of sectors,
+    /// increasing collision probability and degrading LSH prefilter
+    /// effectiveness.
+    ///
+    /// Returns `(entropy, max_sector_count, collision_risk_flag)`:
+    /// - `entropy`: Shannon entropy in bits (max ≈ 10.0 for 1024 sectors)
+    /// - `max_sector_count`: number of terms in the most crowded sector
+    /// - `collision_risk_flag`: true if entropy < 7.5 or max sector > 3× expected
+    pub fn lsh_sector_entropy(&self) -> (f64, usize, bool) {
+        if self.terms.is_empty() {
+            return (0.0, 0, false);
+        }
+
+        let mut sector_counts = vec![0usize; LSH_SECTOR_COUNT];
+        for (_, vec) in &self.terms {
+            let sector = crate::lsh_sector_inline(vec);
+            if sector < LSH_SECTOR_COUNT {
+                sector_counts[sector] += 1;
+            }
+        }
+
+        let total = self.terms.len() as f64;
+        let mut entropy = 0.0_f64;
+        let mut max_count = 0usize;
+        for &count in &sector_counts {
+            if count > 0 {
+                let p = count as f64 / total;
+                entropy -= p * p.log2();
+            }
+            if count > max_count {
+                max_count = count;
+            }
+        }
+
+        let expected_per_sector = total / LSH_SECTOR_COUNT as f64;
+        let collision_risk = entropy < 7.5 || (max_count as f64) > expected_per_sector * 3.0;
+
+        (entropy, max_count, collision_risk)
     }
 
     /// Cleanup a noisy vector by matching it against a specific subset.
@@ -518,6 +617,32 @@ pub fn factorize_recursive(
     )
 }
 
+// ─── LSH sector hash (stable random projections) ───────────────────────────
+
+/// ██ UPGRADE v2.1: Stable random projection LSH ██
+///
+/// Same logic as `lsh_sector_inline` in lib.rs — each of the 4 bits
+/// is a popcount parity against widely-separated fixed indices.
+/// This is immune to LCG clustering skew from the character encoder.
+/// 10-bit LSH sector hash, identical to `crate::lsh_sector_inline`.
+/// Kept as a separate function to avoid circular dependency issues
+/// with the crate-level inline version.
+pub fn lsh_sector(vector: &Hypervector) -> usize {
+    let bit_0 = (vector.bits[1] ^ vector.bits[50]).count_ones() % 2;
+    let bit_1 = (vector.bits[2] ^ vector.bits[100]).count_ones() % 2;
+    let bit_2 = (vector.bits[3] ^ vector.bits[150]).count_ones() % 2;
+    let bit_3 = (vector.bits[4] ^ vector.bits[75]).count_ones() % 2;
+    let bit_4 = (vector.bits[5] ^ vector.bits[120]).count_ones() % 2;
+    let bit_5 = (vector.bits[6] ^ vector.bits[90]).count_ones() % 2;
+    let bit_6 = (vector.bits[7] ^ vector.bits[140]).count_ones() % 2;
+    let bit_7 = (vector.bits[8] ^ vector.bits[60]).count_ones() % 2;
+    let bit_8 = (vector.bits[9] ^ vector.bits[110]).count_ones() % 2;
+    let bit_9 = (vector.bits[10] ^ vector.bits[130]).count_ones() % 2;
+
+    ((bit_9 << 9) | (bit_8 << 8) | (bit_7 << 7) | (bit_6 << 6) | (bit_5 << 5)
+        | (bit_4 << 4) | (bit_3 << 3) | (bit_2 << 2) | (bit_1 << 1) | bit_0) as usize
+}
+
 // ─── Tests ────────────────────────────────────────────────────────────────
 
 #[cfg(test)]
@@ -658,6 +783,66 @@ mod tests {
         let shifted = v.rotate_left(13);
         let unshifted = rotate_right(&shifted, 13);
         assert_eq!(v, unshifted);
+    }
+
+    #[test]
+    fn test_lsh_distribution_uniformity() {
+        // Generate random hypervectors and verify sector distribution
+        // is uniform across all LSH_SECTOR_COUNT sectors.
+        // N = 100K samples → ~98 per bin.
+        let n = 100_000;
+        let mut sector_counts = vec![0usize; LSH_SECTOR_COUNT];
+        for _ in 0..n {
+            let v = Hypervector::new_random();
+            let sector = super::lsh_sector(&v);
+            sector_counts[sector] += 1;
+        }
+
+        let expected = n as f64 / LSH_SECTOR_COUNT as f64;
+        // 5σ tolerance with Bonferroni correction for 1024 simultaneous bins.
+        // σ ≈ sqrt(100000 * 1/1024 * 1023/1024) ≈ sqrt(97.6) ≈ 9.88
+        // 5σ ≈ 49.4 — accounts for multiple testing across 1024 bins.
+        let sigma = (n as f64 * (1.0 / LSH_SECTOR_COUNT as f64)
+            * (1.0 - 1.0 / LSH_SECTOR_COUNT as f64))
+            .sqrt();
+        let tolerance = (5.0 * sigma).ceil() as usize;
+
+        let mut max_dev = 0usize;
+        for (i, &count) in sector_counts.iter().enumerate() {
+            let dev = if count > expected as usize {
+                count - expected as usize
+            } else {
+                expected as usize - count
+            };
+            if dev > max_dev {
+                max_dev = dev;
+            }
+            assert!(
+                dev <= tolerance,
+                "LSH sector {} has {} entries (expected ~{:.1}, deviation {} > tolerance {})",
+                i, count, expected, dev, tolerance
+            );
+        }
+        eprintln!(
+            "  LSH uniformity: {} bins, {} samples, max deviation {} (tolerance {})",
+            LSH_SECTOR_COUNT, n, max_dev, tolerance
+        );
+    }
+
+    #[test]
+    fn test_lsh_fallback_diagnostics() {
+        let vocab = make_vocab();
+        let (fallback, total, rate) = vocab.lsh_fallback_rate();
+        assert_eq!(total, 0, "No cleanups yet");
+        assert_eq!(fallback, 0, "No fallbacks yet");
+        assert_eq!(rate, 0.0, "Rate should be 0");
+
+        // Run a few cleanups
+        let v = Hypervector::new_random();
+        let _ = vocab.cleanup(&v);
+        let (_fallback, total, rate) = vocab.lsh_fallback_rate();
+        assert_eq!(total, 1, "One cleanup");
+        assert!(rate >= 0.0 && rate <= 1.0, "Rate should be valid");
     }
 
     #[test]

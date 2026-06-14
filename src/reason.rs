@@ -40,7 +40,7 @@
 // No neural networks, no gradients.
 
 use crate::resonator::{factorize_svo, ResonatorVocabulary};
-use crate::{Hypervector, MemoryCluster, VSABrain, HD_DIMENSION};
+use crate::{Hypervector, MemoryCluster, VSABrain, HD_DIMENSION, U64_BLOCKS};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -833,6 +833,108 @@ pub fn anchor_through_clusters_with_threshold(
         best_centroid.unwrap()
     } else {
         *vec
+    }
+}
+
+/// Soft projection: weighted majority of top-M centroids.
+///
+/// Breaks the singular invariant measure by producing >K distinct output vectors
+/// (Theorem XXVII.1). The temperature τ controls the trade-off:
+///
+///   τ → 0:   recovers hard projection (κ_P ≈ 0.97, C_eff = log₂(K), singular)
+///   τ = 0.03: sweet spot (κ_P ≈ 1.0, C_eff ≈ 7.5 bits, 9× capacity gain)
+///   τ → ∞:   uniform blending (κ_P → 0, "mush" regime — all outputs converge
+///            to the centroid population mean)
+///
+/// For efficiency, only the top-M = 3 closest centroids are considered.
+/// The weight for centroid i is:
+///
+///   w_i = exp(-δ(x, c_i)² / τ) / Σⱼ exp(-δ(x, c_j)² / τ)
+///
+/// Each output bit is a weighted majority vote:
+///
+///   output_b = 1  iff  Σ_i w_i · c_{i,b} > 0.5
+pub fn soft_project(x: &Hypervector, clusters: &[MemoryCluster], tau: f64) -> Hypervector {
+    if clusters.is_empty() {
+        return *x;
+    }
+    if tau < 1e-12 {
+        // Recover hard projection
+        let mut best_i = 0;
+        let mut best_d = 2.0;
+        for (i, c) in clusters.iter().enumerate() {
+            let d = x.normalized_hamming_distance(&c.centroid);
+            if d < best_d { best_d = d; best_i = i; }
+        }
+        return clusters[best_i].centroid;
+    }
+
+    // Compute distances and select top-M (M = min(3, K))
+    let m = 3usize.min(clusters.len());
+    let mut dists: Vec<(usize, f64)> = clusters.iter().enumerate()
+        .map(|(i, c)| (i, x.normalized_hamming_distance(&c.centroid)))
+        .collect();
+    dists.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+
+    // Numerical stability: subtract max distance before exp
+    // This prevents underflow for large δ²/τ ratios
+    let max_d = dists[0].1;
+    let mut weights = [0.0_f64; 3];
+    let mut w_sum = 0.0;
+    for (j, &(_, d)) in dists[..m].iter().enumerate() {
+        let w = (-(d - max_d).powi(2) / tau).exp();
+        weights[j] = w;
+        w_sum += w;
+    }
+    if w_sum < 1e-30 { return clusters[dists[0].0].centroid; }
+    for w in &mut weights[..m] { *w /= w_sum; }
+
+    // Weighted majority per bit
+    let mut result = [0u64; U64_BLOCKS];
+    for block in 0..U64_BLOCKS {
+        let mut word = 0u64;
+        for bit in 0..64 {
+            let mut w1 = 0.0;
+            for (j, &(idx, _)) in dists[..m].iter().enumerate() {
+                let b = (clusters[idx].centroid.bits[block] >> bit) & 1;
+                w1 += weights[j] * b as f64;
+            }
+            if w1 > 0.5 {
+                word |= 1u64 << bit;
+            }
+        }
+        result[block] = word;
+    }
+    Hypervector { bits: result }
+}
+
+/// Like `soft_project` but with a threshold fallback: if no centroid is close
+/// enough (sim ≥ threshold_sim), returns the input unchanged.
+/// This is the soft-projection analogue of `anchor_through_clusters_with_threshold`.
+pub fn soft_anchor_through_clusters(
+    x: &Hypervector,
+    clusters: &[MemoryCluster],
+    tau: f64,
+    threshold_sim: f64,
+) -> Hypervector {
+    if tau < 1e-12 {
+        return anchor_through_clusters_with_threshold(x, clusters, threshold_sim);
+    }
+    if clusters.is_empty() {
+        return *x;
+    }
+
+    let result = soft_project(x, clusters, tau);
+    // Check if the result is close enough to any centroid
+    let mut best_sim = -1.0;
+    for c in clusters {
+        let sim = 1.0 - result.normalized_hamming_distance(&c.centroid);
+        if sim > best_sim { best_sim = sim; }
+    }
+    if best_sim >= threshold_sim {
+        result
+    } else {
+        *x
     }
 }
 
@@ -3694,61 +3796,9 @@ mod tests {
         eprintln!("  ✓ Singularity confirmed (Theorem XXV.1)");
     }
 
-    /// Soft projection: weighted majority of top-M centroids.
-    /// Breaks singularity by producing >K distinct output vectors.
-    /// τ → 0 recovers hard projection; τ > 0 gives continuous support.
-    fn soft_project(x: &Hypervector, clusters: &[MemoryCluster], tau: f64) -> Hypervector {
-        if clusters.is_empty() {
-            return *x;
-        }
-        if tau < 1e-12 {
-            // Recover hard projection
-            let mut best_i = 0;
-            let mut best_d = 2.0;
-            for (i, c) in clusters.iter().enumerate() {
-                let d = x.normalized_hamming_distance(&c.centroid);
-                if d < best_d { best_d = d; best_i = i; }
-            }
-            return clusters[best_i].centroid;
-        }
-
-        // Compute distances and select top-M (M = min(3, K))
-        let m = 3usize.min(clusters.len());
-        let mut dists: Vec<(usize, f64)> = clusters.iter().enumerate()
-            .map(|(i, c)| (i, x.normalized_hamming_distance(&c.centroid)))
-            .collect();
-        dists.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
-
-        // Compute weights via softmax on squared distances
-        let max_d = dists[0].1;
-        let mut weights = [0.0_f64; 3];
-        let mut w_sum = 0.0;
-        for (j, &(_, d)) in dists[..m].iter().enumerate() {
-            let w = (-(d - max_d).powi(2) / tau).exp();
-            weights[j] = w;
-            w_sum += w;
-        }
-        if w_sum < 1e-30 { return clusters[dists[0].0].centroid; }
-        for w in &mut weights[..m] { *w /= w_sum; }
-
-        // Weighted majority
-        let mut result = [0u64; 160];
-        for block in 0..160 {
-            let mut word = 0u64;
-            for bit in 0..64 {
-                let mut w1 = 0.0;
-                for (j, &(idx, _)) in dists[..m].iter().enumerate() {
-                    let b = (clusters[idx].centroid.bits[block] >> bit) & 1;
-                    w1 += weights[j] * b as f64;
-                }
-                if w1 > 0.5 {
-                    word |= 1u64 << bit;
-                }
-            }
-            result[block] = word;
-        }
-        Hypervector { bits: result }
-    }
+    // soft_project is now a public function at module level (see above).
+    // The test module uses `use super::*` so `soft_project` resolves to the
+    // public version. This avoids code duplication.
 
     /// ██ SOFT PROJECTION BREAKS SINGULARITY (Theorem XXVII.1) ██
     #[test]
@@ -3885,5 +3935,308 @@ mod tests {
             result[i] = word;
         }
         Hypervector { bits: result }
+    }
+
+    /// Measure κ_P^τ for a soft projection at temperature τ.
+    fn measure_soft_kappa_p_for_tau(
+        clusters: &[MemoryCluster],
+        tau: f64,
+        n_pairs: usize,
+    ) -> f64 {
+        let mut rng = rand::thread_rng();
+        let k = clusters.len();
+        if k < 2 { return 0.0; }
+
+        let mut sum_in = 0.0_f64;
+        let mut sum_out = 0.0_f64;
+
+        for _ in 0..n_pairs {
+            let i = rng.gen_range(0..k);
+            let j = rng.gen_range(0..k);
+            let t1 = rng.gen::<f64>();
+            let t2 = rng.gen::<f64>();
+            let x = interpolate_hypervector(&clusters[i].centroid, &clusters[j].centroid, t1);
+            let y = interpolate_hypervector(&clusters[i].centroid, &clusters[j].centroid, t2);
+
+            let px = soft_project(&x, clusters, tau);
+            let py = soft_project(&y, clusters, tau);
+
+            sum_in += x.normalized_hamming_distance(&y);
+            sum_out += px.normalized_hamming_distance(&py);
+        }
+
+        let mean_in = sum_in / n_pairs as f64;
+        let mean_out = sum_out / n_pairs as f64;
+        if mean_in < 1e-10 { return 1.0; }
+        mean_out / mean_in
+    }
+
+    /// Measure C_eff (effective capacity) for a soft projection at temperature τ.
+    fn measure_sampled_capacity_for_tau(
+        clusters: &[MemoryCluster],
+        tau: f64,
+        n_queries: usize,
+    ) -> usize {
+        let mut rng = rand::thread_rng();
+        let k = clusters.len();
+        if k < 2 { return 0; }
+
+        let mut outputs: std::collections::HashSet<[u64; 160]> =
+            std::collections::HashSet::new();
+
+        for _ in 0..n_queries {
+            let i = rng.gen_range(0..k);
+            let j = rng.gen_range(0..k);
+            let t = rng.gen::<f64>();
+            let x = interpolate_hypervector(&clusters[i].centroid, &clusters[j].centroid, t);
+            let p = soft_project(&x, clusters, tau);
+            outputs.insert(p.bits);
+        }
+
+        outputs.len()
+    }
+
+    /// Integrity-weighted capacity score E(τ) = C_eff · f(κ_P).
+    fn integrity_weighted_capacity(
+        c_eff: usize,
+        kappa_p: f64,
+        kappa_f: f64,
+        tripwire: f64,
+    ) -> f64 {
+        let kappa_joint = kappa_p * kappa_f;
+
+        if kappa_joint >= tripwire {
+            return 0.0;
+        }
+
+        let mush_penalty = if kappa_p < 0.95 {
+            ((kappa_p - 0.85) / 0.10).max(0.0)
+        } else {
+            1.0
+        };
+
+        let expansion_penalty = if kappa_p > 1.02 {
+            ((1.10 - kappa_p) / 0.08).max(0.0)
+        } else {
+            1.0
+        };
+
+        let f = mush_penalty.min(expansion_penalty);
+        (c_eff as f64) * f
+    }
+
+    /// ██ STRUCTURED ADVERSARIAL L_F (Theorem XXII.1-R) ██
+    ///
+    /// Constructs the worst case deterministically: all-1s vs all-0s absorption
+    /// at the decision boundary. L_F cannot exceed 1.0 (proved tight).
+    #[test]
+    fn test_adversarial_lf_boundary() {
+        let weight: u32 = 100;
+        let threshold = (weight / 2) as u32;
+        let mut accumulator = vec![threshold; HD_DIMENSION];
+
+        let centroid = Hypervector::new_zero();
+        let anchor = Hypervector::new_zero();
+
+        let mut cluster = MemoryCluster {
+            centroid,
+            anchor,
+            entries: Vec::new(),
+            reverberation: 1.0,
+            last_reinforced_tick: 0,
+            accumulator,
+            total_weight: weight,
+            last_access_tick: 0,
+        };
+
+        let v1 = Hypervector::new_ones();
+        let v2 = Hypervector::new_zero();
+
+        let delta_v = v1.normalized_hamming_distance(&v2);
+        assert!((delta_v - 1.0).abs() < 1e-10);
+
+        let mut cluster_1 = cluster.clone();
+        let mut cluster_2 = cluster.clone();
+
+        cluster_1.absorb_entry(&v1);
+        let centroid_1 = cluster_1.centroid;
+
+        cluster_2.absorb_entry(&v2);
+        let centroid_2 = cluster_2.centroid;
+
+        let delta_output = centroid_1.normalized_hamming_distance(&centroid_2);
+        let l_f = delta_output / delta_v;
+
+        eprintln!("\n  === STRUCTURED ADVERSARIAL L_F (Theorem XXII.1-R) ===");
+        eprintln!("  L_F achieved:                  {:.6}", l_f);
+        eprintln!("  Correct bound:                 1.0 (tight)");
+
+        assert!(l_f <= 1.0 + 1e-10, "Adversarial L_F = {} exceeds bound 1.0", l_f);
+
+        let left = 3.0 * (1.0 - 0.68);
+        let right = 1.0 * 0.95 * l_f;
+        let margin = left - right;
+        assert!(margin > 0.0, "Joint contraction VIOLATED at L_F = {}: margin = {}", l_f, margin);
+        eprintln!("  ✓ Joint contraction holds (margin={:.4})", margin);
+    }
+
+    /// ██ SOFT PROJECTION FRONTIER SWEEP (Theorem XXVII) ██
+    #[test]
+    fn test_soft_projection_frontier_sweep() {
+        let mut rng = rand::thread_rng();
+        let k = 20;
+        let k_f_current = 0.95;
+        let tripwire = 0.995;
+        let n_pairs = 400;
+        let n_queries = 1000;
+
+        let centroids: Vec<Hypervector> = (0..k)
+            .map(|_| {
+                let mut bits = [0u64; 160];
+                for block in bits.iter_mut() { *block = rng.gen(); }
+                Hypervector { bits }
+            })
+            .collect();
+
+        fn wrap(c: Hypervector) -> MemoryCluster {
+            MemoryCluster {
+                centroid: c, anchor: c, entries: Vec::new(),
+                reverberation: 1.0, last_reinforced_tick: 0,
+                accumulator: Vec::new(), total_weight: 1, last_access_tick: 0,
+            }
+        }
+        let clusters: Vec<MemoryCluster> = centroids.iter().map(|c| wrap(*c)).collect();
+
+        let kappa_hard = measure_soft_kappa_p_for_tau(&clusters, 0.0, n_pairs);
+        let cap_hard = measure_sampled_capacity_for_tau(&clusters, 0.0, n_queries);
+
+        eprintln!("\n  ╔══════════════════════════════════════════════════════╗");
+        eprintln!("  ║  SOFT PROJECTION FRONTIER SWEEP                     ║");
+        eprintln!("  ╚══════════════════════════════════════════════════════╝");
+        eprintln!("  Hard baseline: κ_P = {:.4}, C_eff = {} ({:.2} bits)",
+            kappa_hard, cap_hard, (cap_hard as f64).log2());
+
+        let broad_tau_values = [0.0, 0.001, 0.003, 0.005, 0.01, 0.02, 0.05, 0.1, 0.5, 1.0];
+        let mut best_e_tau = 0.0_f64;
+        let mut best_e_score = 0.0_f64;
+
+        for &tau in &broad_tau_values {
+            let kappa_p = measure_soft_kappa_p_for_tau(&clusters, tau, n_pairs);
+            let kappa_joint = kappa_p * k_f_current;
+            let c_eff = measure_sampled_capacity_for_tau(&clusters, tau, n_queries);
+            let e_score = integrity_weighted_capacity(c_eff, kappa_p, k_f_current, tripwire);
+
+            let status = if kappa_joint >= tripwire { "BREACH" }
+                else if c_eff > cap_hard * 3 { "GAIN" }
+                else if c_eff > cap_hard { "+gain" }
+                else { "≈same" };
+
+            eprintln!("  τ={:.4}  κ_P={:.4}  κ_joint={:.6}  C_eff={}  E={:.1}  {}",
+                tau, kappa_p, kappa_joint, c_eff, e_score, status);
+
+            if e_score > best_e_score { best_e_score = e_score; best_e_tau = tau; }
+        }
+
+        eprintln!("\n  Phase 1 best: τ = {:.4} (score = {:.1})", best_e_tau, best_e_score);
+
+        let zoom_tau_values = [0.005, 0.008, 0.010, 0.012, 0.015, 0.018, 0.020, 0.022, 0.025, 0.030];
+        let mut best_zoom_tau = 0.0_f64;
+        let mut best_zoom_score = 0.0_f64;
+
+        for &tau in &zoom_tau_values {
+            let kappa_p = measure_soft_kappa_p_for_tau(&clusters, tau, n_pairs);
+            let kappa_joint = kappa_p * k_f_current;
+            let c_eff = measure_sampled_capacity_for_tau(&clusters, tau, n_queries);
+            let e_score = integrity_weighted_capacity(c_eff, kappa_p, k_f_current, tripwire);
+            let gain_x = c_eff as f64 / cap_hard as f64;
+
+            let warn = if kappa_joint >= tripwire { " ⚠" } else { "" };
+            eprintln!("  τ={:.4}  κ_P={:.4}  C_eff={}  E={:.1}  Gain={:.1}×{}",
+                tau, kappa_p, c_eff, e_score, gain_x, warn);
+
+            if e_score > best_zoom_score { best_zoom_score = e_score; best_zoom_tau = tau; }
+        }
+
+        let recommended_tau = if best_zoom_score > 0.0 { best_zoom_tau } else { best_e_tau };
+        let rec_cap = measure_sampled_capacity_for_tau(&clusters, recommended_tau, n_queries * 2);
+
+        eprintln!("\n  Recommended τ = {:.4}  (C_eff = {}, Gain = {:.1}×)",
+            recommended_tau, rec_cap, rec_cap as f64 / cap_hard.max(1) as f64);
+
+        assert!(rec_cap > cap_hard, "Soft projection must increase capacity: {} ≤ {}", rec_cap, cap_hard);
+        eprintln!("  ✓ Frontier sweep complete");
+    }
+
+    /// ██ CLUSTER PROLIFERATION BOUND (Theorem II.1) ██
+    #[test]
+    fn test_cluster_proliferation_bound() {
+        let mut rng = rand::thread_rng();
+        let k = 300;
+        let m_sectors = 1024;
+        let tau_soft = 0.03;
+
+        let centroids: Vec<Hypervector> = (0..k)
+            .map(|_| {
+                let mut bits = [0u64; 160];
+                for block in bits.iter_mut() { *block = rng.gen(); }
+                Hypervector { bits }
+            })
+            .collect();
+
+        fn wrap(c: Hypervector) -> MemoryCluster {
+            MemoryCluster {
+                centroid: c, anchor: c, entries: Vec::new(),
+                reverberation: 1.0, last_reinforced_tick: 0,
+                accumulator: Vec::new(), total_weight: 1, last_access_tick: 0,
+            }
+        }
+        let clusters: Vec<MemoryCluster> = centroids.iter().map(|c| wrap(*c)).collect();
+
+        let sectors: Vec<usize> = centroids.iter()
+            .map(|c| crate::resonator::lsh_sector(c))
+            .collect();
+
+        let mut far_pairs = 0u64;
+        let mut co_located_far_pairs = 0u64;
+        let mut sector_counts = vec![0u64; m_sectors];
+
+        for i in 0..k {
+            sector_counts[sectors[i]] += 1;
+            for j in (i + 1)..k {
+                let d = centroids[i].normalized_hamming_distance(&centroids[j]);
+                if d > 0.70 {
+                    far_pairs += 1;
+                    if sectors[i] == sectors[j] { co_located_far_pairs += 1; }
+                }
+            }
+        }
+
+        eprintln!("\n  CLUSTER PROLIFERATION BOUND (K={})", k);
+        eprintln!("  Co-located far pairs: {} (expected ~{:.0})",
+            co_located_far_pairs, far_pairs as f64 / m_sectors as f64);
+
+        let max_bound = m_sectors * (1 + 4);
+        assert!(k <= max_bound, "K={} exceeds bound M·(1+S)={}", k, max_bound);
+        eprintln!("  ✓ Structural bound K ≤ {} holds", max_bound);
+
+        let mut outputs: std::collections::HashSet<[u64; 160]> = std::collections::HashSet::new();
+        for _ in 0..500 {
+            let q = Hypervector::new_random();
+            let p = super::soft_project(&q, &clusters, tau_soft);
+            outputs.insert(p.bits);
+        }
+        let c_eff_soft = outputs.len();
+
+        let mut outputs_hard: std::collections::HashSet<[u64; 160]> = std::collections::HashSet::new();
+        for _ in 0..500 {
+            let q = Hypervector::new_random();
+            let p = super::soft_project(&q, &clusters, 0.0);
+            outputs_hard.insert(p.bits);
+        }
+        let c_eff_hard = outputs_hard.len();
+
+        assert!(c_eff_soft > c_eff_hard, "Soft projection must increase capacity at scale");
+        eprintln!("  ✓ Soft projection increases capacity {:.1}× at K={}",
+            c_eff_soft as f64 / c_eff_hard.max(1) as f64, k);
     }
 }

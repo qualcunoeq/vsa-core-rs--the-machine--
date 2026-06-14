@@ -103,6 +103,13 @@ impl Hypervector {
         }
     }
 
+    /// All-ones hypervector (every bit = 1)
+    pub fn new_ones() -> Self {
+        Hypervector {
+            bits: [!0u64; U64_BLOCKS],
+        }
+    }
+
     /// Popcount (number of 1-bits)
     pub fn count_ones(&self) -> usize {
         self.bits.iter().map(|b| b.count_ones() as usize).sum()
@@ -696,7 +703,13 @@ impl MemoryCluster {
     }
 
     /// Absorb a new observation τ into the accumulator and recompute
-    /// the binary centroid.
+    /// the binary centroid. Returns (centroid_shift, input_distance) for
+    /// joint contraction telemetry (κ_F measurement).
+    ///
+    ///   centroid_shift = δ(centroid_before, centroid_after)
+    ///   input_distance = δ(centroid_before, τ)
+    ///
+    /// Callers that don't need telemetry can ignore the return value.
     ///
     /// Called for observations in the drift zone (0.15 ≤ NHD < 0.70)
     /// that contribute genuinely new evidence to the cluster.
@@ -713,7 +726,9 @@ impl MemoryCluster {
     ///   Since both sides are multiplied by s, the inequality is preserved.
     ///   Therefore rescaling does NOT change the centroid — it only
     ///   resets the dynamic range for future observations.
-    pub fn absorb_entry(&mut self, tau: &Hypervector) {
+    pub fn absorb_entry(&mut self, tau: &Hypervector) -> (f64, f64) {
+        let centroid_before = self.centroid;
+        let input_dist = centroid_before.normalized_hamming_distance(tau);
         self.ensure_accumulator();
         for (i, acc) in self.accumulator.iter_mut().enumerate() {
             let word = tau.bits[i / 64];
@@ -732,6 +747,9 @@ impl MemoryCluster {
         }
 
         self.recompute_centroid();
+
+        let centroid_shift = centroid_before.normalized_hamming_distance(&self.centroid);
+        (centroid_shift, input_dist)
     }
 
     /// Recompute the binary centroid from the accumulator threshold.
@@ -946,6 +964,8 @@ pub struct VSABrain {
     pub tick_counter: usize,
     pub anxiety: f64,
     pub experiences: Vec<Hypervector>,
+    /// Joint contraction telemetry for runtime κ_P and κ_F monitoring.
+    pub contraction_telemetry: ContractionTelemetry,
 }
 
 /// Synthetic cold-start regime labels for Tick 0 initialization.
@@ -970,6 +990,7 @@ impl VSABrain {
             tick_counter: 0,
             anxiety: 0.0,
             experiences: Vec::new(),
+            contraction_telemetry: ContractionTelemetry::new(),
         }
     }
 
@@ -1981,6 +2002,100 @@ pub(crate) fn lsh_sector_inline(vector: &Hypervector) -> usize {
 
     ((bit_9 << 9) | (bit_8 << 8) | (bit_7 << 7) | (bit_6 << 6) | (bit_5 << 5)
         | (bit_4 << 4) | (bit_3 << 3) | (bit_2 << 2) | (bit_1 << 1) | bit_0) as usize
+}
+
+// ─── Contraction Telemetry ──────────────────────────────────────────────────
+
+#[derive(Clone, Debug)]
+pub struct ContractionTelemetry {
+    /// κ_P samples (projection contraction)
+    pub kappa_p_samples: Vec<f64>,
+    pub kappa_p_mean: f64,
+    pub kappa_p_count: u64,
+
+    /// κ_F samples (manifold contraction)
+    pub kappa_f_samples: Vec<f64>,
+    pub kappa_f_mean: f64,
+    pub kappa_f_count: u64,
+
+    /// Joint product tracking
+    pub kappa_joint: f64,
+    pub kappa_joint_max: f64,
+
+    /// Tripwire state
+    pub tripwire_triggered: bool,
+    pub last_tripwire_tick: u64,
+
+    /// Configuration
+    pub max_samples: usize,
+    pub tripwire_threshold: f64,
+    pub critical_threshold: f64,
+}
+
+impl ContractionTelemetry {
+    pub fn new() -> Self {
+        ContractionTelemetry {
+            kappa_p_samples: Vec::with_capacity(1000),
+            kappa_p_mean: 0.0,
+            kappa_p_count: 0,
+            kappa_f_samples: Vec::with_capacity(1000),
+            kappa_f_mean: 0.0,
+            kappa_f_count: 0,
+            kappa_joint: 0.0,
+            kappa_joint_max: 0.0,
+            tripwire_triggered: false,
+            last_tripwire_tick: 0,
+            max_samples: 1000,
+            tripwire_threshold: 0.995,
+            critical_threshold: 1.001,
+        }
+    }
+
+    /// Record a κ_P sample from a projection event.
+    pub fn record_kappa_p(&mut self, d_before: f64, d_after: f64) {
+        if d_before < 1e-12 { return; }
+        let k = d_after / d_before;
+        self.kappa_p_samples.push(k);
+        if self.kappa_p_samples.len() > self.max_samples {
+            self.kappa_p_samples.remove(0);
+        }
+        self.kappa_p_mean = self.kappa_p_samples.iter().sum::<f64>() / self.kappa_p_samples.len() as f64;
+        self.kappa_p_count += 1;
+        self.update_joint();
+    }
+
+    /// Record a κ_F sample from a manifold contraction event.
+    pub fn record_kappa_f(&mut self, d_before: f64, d_after: f64) {
+        if d_before < 1e-12 { return; }
+        let k = d_after / d_before;
+        self.kappa_f_samples.push(k);
+        if self.kappa_f_samples.len() > self.max_samples {
+            self.kappa_f_samples.remove(0);
+        }
+        self.kappa_f_mean = self.kappa_f_samples.iter().sum::<f64>() / self.kappa_f_samples.len() as f64;
+        self.kappa_f_count += 1;
+        self.update_joint();
+    }
+
+    fn update_joint(&mut self) {
+        self.kappa_joint = self.kappa_p_mean * self.kappa_f_mean;
+        if self.kappa_joint > self.kappa_joint_max {
+            self.kappa_joint_max = self.kappa_joint;
+        }
+        if self.kappa_joint >= self.tripwire_threshold {
+            self.tripwire_triggered = true;
+        }
+    }
+
+    /// Check if joint contraction has breached the tripwire.
+    pub fn is_breached(&self) -> bool {
+        self.tripwire_triggered
+    }
+
+    /// Check if joint contraction has reached critical level (structural divergence).
+    pub fn is_critical(&self) -> bool {
+        self.kappa_joint >= self.critical_threshold
+    }
 }
 
 // ─── Tests ─────────────────────────────────────────────────────────────────

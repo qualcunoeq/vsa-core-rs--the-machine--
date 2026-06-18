@@ -1,8 +1,8 @@
+use crate::compression::{CountingBloomFilter, CappedVecDeque};
 use crate::resonator::ResonatorVocabulary;
 use crate::Hypervector;
 use crate::analogy::{self, RoleDictionary, ROLE_AGENT, ROLE_ACTION, ROLE_PATIENT,
     AnalogicalIndex, MetaIndex};
-use crate::compression::{CountingBloomFilter, CappedVecDeque};
 use scraper::{Html, Selector};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
@@ -21,6 +21,9 @@ use tokio::time::{sleep, Duration};
 pub struct VSAForager {
     pub intent: Arc<RwLock<Hypervector>>,
     pub current_url: Arc<RwLock<String>>,
+    /// ██ FIX v2.6: Replaced HashSet<String> with fixed-memory Bloom filter ██
+    /// Uses ~4 MB regardless of how many URLs are visited.
+    /// ~0.1% false positive rate for ~1M URLs.
     pub visited: CountingBloomFilter,
     pub client: reqwest::Client,
     pub crawl_speed_ms: u64,
@@ -60,11 +63,20 @@ pub struct VSAForager {
     /// When the forager reaches a dead end, it pops a seed URL from
     /// this queue and starts crawling from there.  The agent loop
     /// pushes DuckDuckGo search URLs (decoded from curiosity targets).
-    /// Bounded by CappedVecDeque at max 50K entries.
+    /// ██ FIX v2.6: Capped at MAX_SEED_URLS to prevent unbounded growth.
     pub seed_urls: Arc<RwLock<CappedVecDeque<String>>>,
 }
 
 impl VSAForager {
+    /// Maximum number of seed URLs to queue before evicting oldest.
+    const MAX_SEED_URLS: usize = 50_000;
+
+    /// ██ FIX v2.6: Decay interval for doc_frequency (every 200 documents) ██
+    const DOC_FREQ_DECAY_INTERVAL: usize = 200;
+
+    /// ██ FIX v2.6: Minimum doc frequency to retain after decay ██
+    const DOC_FREQ_MIN_RETAIN: usize = 2;
+
     pub fn new(initial_intent: Hypervector, start_url: String, crawl_speed_ms: u64) -> Self {
         VSAForager {
             intent: Arc::new(RwLock::new(initial_intent)),
@@ -84,7 +96,7 @@ impl VSAForager {
             primary: None,
             meta: None,
             frame_counter: None,
-            seed_urls: Arc::new(RwLock::new(CappedVecDeque::new(50_000))),
+            seed_urls: Arc::new(RwLock::new(CappedVecDeque::new(Self::MAX_SEED_URLS))),
         }
     }
 
@@ -384,6 +396,19 @@ impl VSAForager {
                 *self.doc_frequency.entry(w).or_insert(0) += 1;
             }
             self.total_documents += 1;
+
+            // ██ FIX v2.6: Periodic doc_frequency decay ██
+            // Every DOC_FREQ_DECAY_INTERVAL documents, apply exponential
+            // decay to all entries and evict those below the retain threshold.
+            // This prevents unbounded growth of the HashMap.
+            if self.total_documents % Self::DOC_FREQ_DECAY_INTERVAL == 0 {
+                let decay_factor: f64 = 0.85; // gentle decay
+                self.doc_frequency.retain(|_, count| {
+                    let new_count = (*count as f64 * decay_factor).round() as usize;
+                    *count = new_count;
+                    new_count >= Self::DOC_FREQ_MIN_RETAIN
+                });
+            }
         }
 
         {

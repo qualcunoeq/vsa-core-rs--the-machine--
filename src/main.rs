@@ -375,32 +375,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let guard = shared_logs.read().await;
                 guard.clone() // owned Vec<String> — no lock held after this scope
             };
-            // ██ FIX v2.6: Lightweight snapshot instead of full HashMap clone ██
-            // Extract only the fields needed for the TUI display while holding
-            // the lock, then drop it immediately.  This avoids cloning the
-            // entire HashMap<String, AgentState> every 200ms.
-            let mut agent_snapshots: Vec<(String, String, u16, f64, bool, f64, usize, usize, usize, usize, usize, usize)> = Vec::new();
-            {
+            let states = {
                 let guard = shared_states.read().await;
-                for id in &["Agent-1", "Agent-2", "Agent-3"] {
-                    if let Some(agent) = guard.get(*id) {
-                        agent_snapshots.push((
-                            agent.id.clone(),
-                            agent.role.clone(),
-                            agent.port,
-                            agent.threat,
-                            agent.stealth,
-                            agent.anxiety,
-                            agent.permanent_nodes,
-                            agent.transient_nodes,
-                            agent.frames,
-                            agent.rules_total,
-                            agent.rules_trusted,
-                            agent.seed_queue,
-                        ));
-                    }
-                }
-            } // lock dropped here
+                guard.clone() // owned HashMap — no lock held after this scope
+            };
 
             println!("\x1B[35m┌─────────────────────────────────────────────────────────────────────────────┐\x1B[0m\x1B[K");
             println!("\x1B[35m│   \x1B[1;36mTHE MACHINE v8.3 HIVE MIND\x1B[0;35m  |  \x1B[1;32mDISTRIBUTED COGNITIVE SYSTEM\x1B[0;35m               │\x1B[0m\x1B[K");
@@ -417,38 +395,42 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 broker_clients
             );
 
-            // Display individual Agents from lightweight snapshot
-            for (id, role, port, threat, stealth, anxiety, perm_nodes, trans_nodes, frames, rules_total, rules_trusted, seed_queue) in &agent_snapshots {
-                println!("\x1B[35m├─────────────────────────────────────────────────────────────────────────────┤\x1B[0m\x1B[K");
-                println!(
-                    "│\x1B[36m [{}: {} AGENT (Admin Port: {})]\x1B[0m                               \x1B[35m│\x1B[0m\x1B[K",
-                    id, role.to_uppercase(), port
-                );
-                println!(
-                    "│  Threat: \x1B[1;31m{:>6.2}%\x1B[0m | Stealth: \x1B[1;{}m{:<16}\x1B[0m | Anxiety: \x1B[1;33m{:>6.2}%\x1B[0m | Mem: P:{:<2}/T:{:<2} \x1B[35m│\x1B[0m\x1B[K",
-                    threat * 100.0,
-                    if *stealth { "31" } else { "32" },
-                    if *stealth { "ACTIVE (EVASION)" } else { "INACTIVE" },
-                    anxiety * 100.0,
-                    perm_nodes,
-                    trans_nodes
-                );
-                // Layers 3-5 integration line
-                println!(
-                    "│  \x1B[36mFrames:{:<4} Rules:{:<3}({:<3}✓)\x1B[0m \x1B[33mCuriosity:{:<2}\x1B[0m \x1B[35mSeeds:{:<2}\x1B[0m                    \x1B[35m│\x1B[0m\x1B[K",
-                    frames,
-                    rules_total,
-                    rules_trusted,
-                    0, // curiosity targets not captured in snapshot to keep it fast
-                    seed_queue,
-                );
-            }
-
-            // Show placeholder for non-responsive agents
+            // Display individual Agents
             for id in &["Agent-1", "Agent-2", "Agent-3"] {
-                let found = agent_snapshots.iter().any(|(snap_id, _, _, _, _, _, _, _, _, _, _, _)| snap_id == id);
-                if !found {
-                    println!("\x1B[35m├─────────────────────────────────────────────────────────────────────────────┤\x1B[0m\x1B[K");
+                println!("\x1B[35m├─────────────────────────────────────────────────────────────────────────────┤\x1B[0m\x1B[K");
+                if let Some(agent) = states.get(*id) {
+                    println!(
+                        "│\x1B[36m [{}: {} AGENT (Admin Port: {})]\x1B[0m                               \x1B[35m│\x1B[0m\x1B[K",
+                        agent.id, agent.role.to_uppercase(), agent.port
+                    );
+                    let display_url = if agent.url.len() > 60 {
+                        format!("{}...", &agent.url[0..57])
+                    } else {
+                        agent.url.clone()
+                    };
+                    println!(
+                        "│  Scraping: \x1B[33m{:<64}\x1B[0m \x1B[35m│\x1B[0m\x1B[K",
+                        display_url
+                    );
+                    println!(
+                        "│  Threat: \x1B[1;31m{:>6.2}%\x1B[0m | Stealth: \x1B[1;{}m{:<16}\x1B[0m | Anxiety: \x1B[1;33m{:>6.2}%\x1B[0m | Mem: P:{:<2}/T:{:<2} \x1B[35m│\x1B[0m\x1B[K",
+                        agent.threat * 100.0,
+                        if agent.stealth { "31" } else { "32" },
+                        if agent.stealth { "ACTIVE (EVASION)" } else { "INACTIVE" },
+                        agent.anxiety * 100.0,
+                        agent.permanent_nodes,
+                        agent.transient_nodes
+                    );
+                    // Layers 3-5 integration line
+                    println!(
+                        "│  \x1B[36mFrames:{:<4} Rules:{:<3}({:<3}✓)\x1B[0m \x1B[33mCuriosity:{:<2}\x1B[0m \x1B[35mSeeds:{:<2}\x1B[0m                    \x1B[35m│\x1B[0m\x1B[K",
+                        agent.frames,
+                        agent.rules_total,
+                        agent.rules_trusted,
+                        agent.curiosity_targets,
+                        agent.seed_queue,
+                    );
+                } else {
                     println!(
                         "│  {:<73} │\x1B[K",
                         format!("Loading [{}] telemetry...", id)
@@ -479,11 +461,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let mut status = String::new();
                 status.push_str(&format!("=== THE MACHINE STATUS @ {} ===\n", now));
                 status.push_str(&format!("Broker: {} clusters, {} clients\n", broker_clusters, broker_clients));
-                for (id, _role, _port, threat, _stealth, anxiety, _perm, _trans, frames, rules_total, rules_trusted, seed_queue) in &agent_snapshots {
-                    status.push_str(&format!(
-                        "{}: frames={} rules={}({}✓) seeds={} threat={:.1} anxiety={:.1}\n",
-                        id, frames, rules_total, rules_trusted, seed_queue, threat, anxiety,
-                    ));
+                for id in &["Agent-1", "Agent-2", "Agent-3"] {
+                    if let Some(agent) = states.get(*id) {
+                        status.push_str(&format!(
+                            "{}: url={} frames={} rules={}({}✓) curiosity={} seeds={} threat={:.1} anxiety={:.1}\n",
+                            agent.id, agent.url, agent.frames, agent.rules_total, agent.rules_trusted,
+                            agent.curiosity_targets, agent.seed_queue, agent.threat, agent.anxiety,
+                        ));
+                    }
                 }
                 status.push_str(&format!("=== END STATUS ===\n"));
                 let _ = std::fs::write("/tmp/the_machine_status.txt", &status);
@@ -689,7 +674,8 @@ async fn run_agent(
             ));
             drop(pri_ref);
             let fci: Arc<RwLock<usize>> = Arc::new(RwLock::new(0));
-            let surl: Arc<RwLock<the_machine::compression::CappedVecDeque<String>>> = Arc::new(RwLock::new(the_machine::compression::CappedVecDeque::new(50_000)));
+            let surl: Arc<RwLock<the_machine::compression::CappedVecDeque<String>>> =
+                Arc::new(RwLock::new(the_machine::compression::CappedVecDeque::new(50_000)));
             (pri, met, fci, surl)
         };
 
@@ -840,10 +826,88 @@ async fn run_agent(
         let mut ticks_since_dt: usize = 99; // start aged-out so Tier 1 is free initially
         let mut ticker = 0;
         let mut sent_lockdown = false;
+
+        // ██ DRIFT: Homeostatic regulator + cognitive mode (ported from timeless-hayoka/infj-bot) ██
+        let mut homeostasis = the_machine::drift::HomeostaticRegulator::new(50);
+        let mut current_mode = the_machine::drift::CognitiveMode::Quiet;
+
         loop {
             sleep(Duration::from_secs(2)).await;
             ticker += 1;
             ticks_since_dt = ticks_since_dt.saturating_add(1);
+
+            // ██ FIX v2.6: Memory profiler tick (every 250 ticks ≈ 500s) ██
+            if ticker % 250 == 0 {
+                let bg = brain_subconscious.read().await;
+                let hot = bg.dejavu_clusters.iter().filter(|c| c.is_hot()).count();
+                let cold = bg.dejavu_clusters.len().saturating_sub(hot);
+                let total_entries: usize = bg.dejavu_clusters.iter()
+                    .map(|c| c.entries.len()).sum();
+                let accum_kb = hot as f64 * 40.96;
+                let exp_len = bg.experiences.len();
+                let trans_len = bg.transient_clusters.len();
+                drop(bg);
+                the_machine::compression::log_memory_snapshot(
+                    &the_machine::compression::MemorySnapshot {
+                        dejavu_clusters: brain_subconscious.read().await.dejavu_clusters.len(),
+                        hot_clusters: hot,
+                        cold_clusters: cold,
+                        transient_clusters: trans_len,
+                        total_entries,
+                        total_accumulator_kb: accum_kb,
+                        visited_urls_approx: 0.0,
+                        seed_queue_len: 0,
+                        doc_frequency_entries: 0,
+                        experiences_len: exp_len,
+                        broker_clusters: 0,
+                    }
+                );
+            }
+
+            // ██ DRIFT: Homeostasis tick + cognitive mode update (ported from timeless-hayoka/infj-bot) ██
+            {
+                // Read brain signals for homeostasis
+                let bg = brain_subconscious.read().await;
+                let coherence = 1.0 - bg.anxiety; // anxiety → coherence inverse
+                let cluster_count = bg.dejavu_clusters.len() as f64 / 100.0;
+                let growth_signal = (cluster_count).min(1.0);
+                let has_memory = bg.dejavu_clusters.len() > 5;
+                let autonomy_signal = if *active_drive_subconscious.read().await == "Subconscious" {
+                    0.7
+                } else {
+                    0.3
+                };
+                drop(bg);
+
+                // Feed signals into homeostasis
+                homeostasis.tick(&[
+                    (the_machine::drift::Need::Energy, 1.0 - *defense_subconscious.threat_level.read().await),
+                    (the_machine::drift::Need::Coherence, coherence),
+                    (the_machine::drift::Need::Growth, growth_signal),
+                    (the_machine::drift::Need::Autonomy, autonomy_signal),
+                    (the_machine::drift::Need::Integration, coherence * 0.8 + 0.2),
+                    (the_machine::drift::Need::Connection, 0.6),
+                    (the_machine::drift::Need::Integrity, 0.8),
+                ], true, 1);
+
+                // Compute cognitive mode from brain state
+                let in_coherence = coherence > 0.6;
+                let is_novel = ticker < 50 || ticker % 100 < 20;
+                current_mode = the_machine::drift::CognitiveMode::from_bits(
+                    has_memory, !in_coherence, is_novel,
+                );
+            }
+
+            // Apply homeostatic regulation every 25 ticks
+            if ticker > 0 && ticker % 25 == 0 {
+                let params = homeostasis.regulate();
+                let _ = subconscious_log_tx.send(format!(
+                    "DRIFT: {} | mode={} | {}",
+                    homeostasis.summary(),
+                    current_mode.label(),
+                    params.skip_non_essential as u8,
+                ));
+            }
 
             let mut current_tick_actions = Vec::new();
 
@@ -955,19 +1019,18 @@ async fn run_agent(
                 ));
             }
 
-            // ██ FIX v2.6: Entry merging (Layer 2) ──────────────────
-            // Every 50 ticks, merge entries in clusters that exceed the
-            // trigger count (600).  This collapses old entries via
-            // age-weighted bundling, preventing unbounded per-cluster
-            // growth and keeping centroid recomputation fast.
-            if ticker % 50 == 0 && ticker > 0 {
+            // ██ FIX v2.6 (Layer 2): Periodic entry merging ──────────
+            // Every 50 ticks, merge old entries in clusters that exceed
+            // the trigger count.  This prevents unbounded entry growth
+            // while preserving semantic coherence.
+            if ticker % 50 == 0 {
+                let config = the_machine::compression::MergeConfig::default();
                 let mut brain_guard = brain_subconscious.write().await;
-                let merge_config = the_machine::compression::MergeConfig::default();
                 let mut total_removed = 0usize;
                 let mut merged_clusters = 0usize;
                 for cluster in &mut brain_guard.dejavu_clusters {
                     let removed = the_machine::compression::merge_entries(
-                        cluster, &merge_config, ticker as u64,
+                        cluster, &config, ticker as u64,
                     );
                     if removed > 0 {
                         total_removed += removed;
@@ -977,8 +1040,8 @@ async fn run_agent(
                 drop(brain_guard);
                 if merged_clusters > 0 {
                     let _ = subconscious_log_tx.send(format!(
-                        "AGENT {}: Entry merging — {} entries removed across {} clusters.",
-                        id_str, total_removed, merged_clusters
+                        "AGENT {}: Entry merging: {} clusters merged, {} entries removed.",
+                        id_str, merged_clusters, total_removed
                     ));
                 }
             }
@@ -1000,43 +1063,37 @@ async fn run_agent(
                 ));
             }
 
-            // ██ FIX v2.6: Memory profiler snapshot ─────────────────
-            // Every 200 ticks, log memory usage statistics including
-            // cluster counts, accumulator sparsity, and entry counts.
-            if ticker % 200 == 0 && ticker > 0 {
-                let brain_guard = brain_subconscious.read().await;
-                let mut total_entries = 0usize;
-                let mut total_accum_kb = 0.0_f64;
-                let mut hot = 0usize;
-                let mut cold = 0usize;
-                for cluster in &brain_guard.dejavu_clusters {
-                    total_entries += cluster.entries.len();
-                    if cluster.is_hot() {
-                        hot += 1;
-                        total_accum_kb += cluster.accumulator.len() as f64 * 4.0 / 1024.0;
-                    } else {
-                        cold += 1;
-                    }
+            // ██ Joint Contraction Telemetry (Theorem XXII.1-R) ██
+            // Every 50 ticks, measure κ_P (projection contraction) via random
+            // pairs, check the joint κ = κ_P · κ_F against the tripwire.
+            // The theoretical margin is 0.010 at L_F = 1.0 (worst case).
+            if ticker % 50 == 0 {
+                let mut brain_guard = brain_subconscious.write().await;
+                
+                // Measure κ_P from random pair projections
+                brain_guard.measure_kappa_p(20);
+                let kp = brain_guard.contraction_telemetry.kappa_p_mean;
+                let kf = brain_guard.contraction_telemetry.kappa_f_mean;
+                let kj = brain_guard.contraction_telemetry.kappa_joint;
+                
+                // Check tripwire
+                if let Some(warning) = brain_guard.contraction_telemetry
+                    .check_tripwire(ticker as u64)
+                {
+                    let _ = subconscious_log_tx.send(format!(
+                        "AGENT {}: CONTRACTION TELEMETRY — {}",
+                        id_str, warning
+                    ));
                 }
-                let snapshot = the_machine::compression::log_memory_snapshot(
-                    &the_machine::compression::MemorySnapshot {
-                        dejavu_clusters: brain_guard.dejavu_clusters.len(),
-                        hot_clusters: hot,
-                        cold_clusters: cold,
-                        transient_clusters: brain_guard.transient_clusters.len(),
-                        total_entries,
-                        total_accumulator_kb: total_accum_kb,
-                        visited_urls_approx: 0.0, // not tracked here
-                        seed_queue_len: 0,         // not tracked here
-                        doc_frequency_entries: 0,  // not tracked here
-                        experiences_len: brain_guard.experiences.len(),
-                        broker_clusters: 0,        // not tracked here
-                    }
-                );
+                
+                // Log periodic status
+                let n_p = brain_guard.contraction_telemetry.kappa_p_count;
+                let n_f = brain_guard.contraction_telemetry.kappa_f_count;
+                drop(brain_guard);
+                
                 let _ = subconscious_log_tx.send(format!(
-                    "MEMORY: {} clusters ({} hot, {} cold), {} entries, accumulators: {:.1} KB, experiences: {}",
-                    brain_guard.dejavu_clusters.len(), hot, cold,
-                    total_entries, total_accum_kb, brain_guard.experiences.len(),
+                    "AGENT {}: CONTRACTION TELEMETRY — κ_P={:.4} (n={}), κ_F={:.4} (n={}), κ={:.6}",
+                    id_str, kp, n_p, kf, n_f, kj
                 ));
             }
 

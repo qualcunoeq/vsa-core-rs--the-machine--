@@ -239,6 +239,10 @@ pub struct NeocortexBroker {
     /// ██ Tier 4: Execution state ██
     /// Monotonically increasing serial number for idempotent retries.
     failure_serial: Arc<RwLock<u64>>,
+    /// ██ DRIFT: DCP Consensus Engine ██
+    /// In-process consensus protocol for agent proposals, votes,
+    /// and weighted-majority resolution.
+    pub dcp_consensus: Arc<tokio::sync::RwLock<crate::drift::ConsensusEngine>>,
 }
 
 impl NeocortexBroker {
@@ -291,6 +295,9 @@ impl NeocortexBroker {
             constitution,
             sector_index: Arc::new(RwLock::new(HashMap::new())),
             failure_serial: Arc::new(RwLock::new(0)),
+            dcp_consensus: Arc::new(tokio::sync::RwLock::new(
+                crate::drift::ConsensusEngine::new(100, 2)
+            )),
         }
     }
 

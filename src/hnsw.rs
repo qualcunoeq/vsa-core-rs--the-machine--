@@ -219,6 +219,24 @@ pub struct EntryMetadata {
     pub source: String,
     pub timestamp: i64,
     pub extra: std::collections::HashMap<String, String>,
+    /// ██ DRIFT: Tick when this entry was created (for DMU decay) ██
+    pub creation_tick: u64,
+    /// ██ DRIFT: How many times this entry has been retrieved ██
+    pub retrieval_count: u32,
+}
+
+impl EntryMetadata {
+    /// Create basic metadata with default DMU tracking fields.
+    pub fn new(label: &str, source: &str, timestamp: i64, creation_tick: u64) -> Self {
+        EntryMetadata {
+            label: label.to_string(),
+            source: source.to_string(),
+            timestamp,
+            extra: std::collections::HashMap::new(),
+            creation_tick,
+            retrieval_count: 0,
+        }
+    }
 }
 
 impl HnswIndex {
@@ -271,7 +289,7 @@ impl HnswIndex {
         for i in 0..160 {
             diff += (a[i] ^ b[i]).count_ones() as u64;
         }
-        (diff as f64) * 0.00009765625f64 // 1.0 / 10048.0 precomputed
+        (diff as f64) * 0.00009765625f64 // 1.0 / 10240.0 precomputed
     }
 
     /// Compute distance between an external hypervector and an indexed vector.
@@ -805,6 +823,66 @@ impl HnswIndex {
         self.search(query, k)
     }
 
+    /// ██ DRIFT: Search with DMU re-ranking (ported from timeless-hayoka/infj-bot).
+    ///
+    /// Runs a standard HNSW search, then re-ranks the top `ef` results
+    /// using the DRIFT Memory Utility score (time-decay × reinforcement
+    /// × contextual salience).  The DMU score replaces raw distance for
+    /// the final ordering.
+    ///
+    /// * `current_tick` — the agent's current tick counter
+    /// * `salience` — contextual salience [0, 1] from query-time projection
+    /// * `dmu_params` — DMU scoring parameters
+    pub fn search_with_dmu(
+        &self,
+        query: &[u64; 160],
+        ef: usize,
+        current_tick: u64,
+        salience: f64,
+        dmu_params: &crate::drift::DmuParams,
+    ) -> HnswSearchResult {
+        // Standard HNSW search first
+        let base = self.search(query, ef);
+        if base.is_empty() {
+            return base;
+        }
+
+        // Build (index, dmu_score) pairs
+        let mut scored: Vec<(usize, f64)> = base.indices.iter().map(|&idx| {
+            let dist = self.distance_to_vector(query, idx);
+            let age = current_tick.saturating_sub(
+                self.metadata.get(idx)
+                    .and_then(|m| m.as_ref())
+                    .map(|m| m.creation_tick)
+                    .unwrap_or(0)
+            );
+            let retrievals = self.metadata.get(idx)
+                .and_then(|m| m.as_ref())
+                .map(|m| m.retrieval_count)
+                .unwrap_or(0);
+            let score = crate::drift::dmu_score(dist, age, retrievals, salience, dmu_params);
+            (idx, score)
+        }).collect();
+
+        // Sort by DMU score descending
+        scored.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+
+        let indices: Vec<usize> = scored.iter().map(|(i, _)| *i).collect();
+        let distances: Vec<f64> = scored.iter().map(|(_, s)| 1.0 - s).collect();
+
+        HnswSearchResult { indices, distances }
+    }
+
+    /// ██ DRIFT: Retrieve a vector by index, incrementing its retrieval count.
+    /// Returns `None` if the index is out of range.
+    pub fn retrieve(&mut self, index: usize) -> Option<Hypervector> {
+        let hv = self.get_hypervector(index)?;
+        if let Some(Some(meta)) = self.metadata.get_mut(index) {
+            meta.retrieval_count = meta.retrieval_count.saturating_add(1);
+        }
+        Some(hv)
+    }
+
     /// Find all neighbors within a distance threshold.
     pub fn find_within_radius(&self, query: &[u64; 160], radius: f64) -> HnswSearchResult {
         // Search with a large ef, then filter
@@ -1168,6 +1246,8 @@ mod tests {
             source: "unit_test".to_string(),
             timestamp: 1234567890,
             extra: std::collections::HashMap::new(),
+            creation_tick: 0,
+            retrieval_count: 0,
         };
 
         let idx = index.insert_with_metadata(&v, Some(meta));

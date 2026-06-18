@@ -4,7 +4,9 @@
 use rand::Rng;
 use std::collections::HashMap;
 
+pub mod abstractor;
 pub mod action;
+pub mod bond_feeder;
 pub mod analogy;
 pub mod autonomy;
 pub mod bridge;
@@ -12,15 +14,19 @@ pub mod broker;
 pub mod code_bridge;
 pub mod compression;
 pub mod defense;
+pub mod drift;
 pub mod forager;
+pub mod hierarchy;
 pub mod hnsw;
 pub mod ledger;
 pub mod nlp;
 pub mod planning;
+pub mod predictive;
 pub mod reason;
 pub mod resonator;
 pub mod sensory;
 pub mod socket;
+pub mod temporal;
 
 // ─── DIMENSION UPGRADE v2.0 ────────────────────────────────────────────────
 // D = 10240 = 160 × 64 = 40 × 256-bit AVX2 registers.
@@ -703,13 +709,7 @@ impl MemoryCluster {
     }
 
     /// Absorb a new observation τ into the accumulator and recompute
-    /// the binary centroid. Returns (centroid_shift, input_distance) for
-    /// joint contraction telemetry (κ_F measurement).
-    ///
-    ///   centroid_shift = δ(centroid_before, centroid_after)
-    ///   input_distance = δ(centroid_before, τ)
-    ///
-    /// Callers that don't need telemetry can ignore the return value.
+    /// the binary centroid.
     ///
     /// Called for observations in the drift zone (0.15 ≤ NHD < 0.70)
     /// that contribute genuinely new evidence to the cluster.
@@ -726,9 +726,18 @@ impl MemoryCluster {
     ///   Since both sides are multiplied by s, the inequality is preserved.
     ///   Therefore rescaling does NOT change the centroid — it only
     ///   resets the dynamic range for future observations.
+    /// Absorb a new observation τ into the accumulator and recompute
+    /// the binary centroid. Returns (centroid_shift, input_distance) for
+    /// joint contraction telemetry (κ_F measurement).
+    ///
+    ///   centroid_shift = δ(centroid_before, centroid_after)
+    ///   input_distance = δ(centroid_before, τ)
+    ///
+    /// Callers that don't need telemetry can ignore the return value.
     pub fn absorb_entry(&mut self, tau: &Hypervector) -> (f64, f64) {
         let centroid_before = self.centroid;
         let input_dist = centroid_before.normalized_hamming_distance(tau);
+
         self.ensure_accumulator();
         for (i, acc) in self.accumulator.iter_mut().enumerate() {
             let word = tau.bits[i / 64];
@@ -747,7 +756,6 @@ impl MemoryCluster {
         }
 
         self.recompute_centroid();
-
         let centroid_shift = centroid_before.normalized_hamming_distance(&self.centroid);
         (centroid_shift, input_dist)
     }
@@ -772,6 +780,12 @@ impl MemoryCluster {
                 }
             }
         }
+    }
+
+    /// Record an access (read or write) at the given tick.
+    /// Used by the hot/cold memory manager to track recency.
+    pub fn touch_access(&mut self, tick: u64) {
+        self.last_access_tick = tick;
     }
 
     /// ██ FIX v2.6 (Layer 2): Rebuild accumulator from entries with weights ██
@@ -801,12 +815,6 @@ impl MemoryCluster {
         self.accumulator = new_acc;
         self.total_weight = new_total_weight.max(1);
         self.recompute_centroid();
-    }
-
-    /// Record an access (read or write) at the given tick.
-    /// Used by the hot/cold memory manager to track recency.
-    pub fn touch_access(&mut self, tick: u64) {
-        self.last_access_tick = tick;
     }
 
     /// Drop the accumulator to save memory (freeze).
@@ -951,6 +959,18 @@ pub struct TransientCluster {
     /// delta-encoded, so this field exists only for type compatibility
     /// with the `search_clusters!` and `eval_entry!` macros.
     pub anchor: Hypervector,
+    /// ██ FIX v2.6: Hot/cold management for transient clusters ██
+    /// Tracks the last tick this cluster was accessed (read or write).
+    /// Used by `freeze_cold_transient_clusters` to reclaim memory
+    /// from idle transient clusters by dropping their entry vectors.
+    /// The centroid is preserved (it's small: 1,280 bytes), but the
+    /// entries (which can grow to ~2 MB) are dropped.
+    pub last_access_tick: u64,
+    /// ██ FIX v2.6: Whether this transient cluster is "frozen" ██
+    /// Frozen transient clusters have their entries dropped but
+    /// preserve their centroid for matching.  New entries can
+    /// "thaw" the cluster on access.
+    pub frozen: bool,
 }
 
 // ─── VSABrain ─────────────────────────────────────────────────────────────
@@ -966,6 +986,14 @@ pub struct VSABrain {
     pub experiences: Vec<Hypervector>,
     /// Joint contraction telemetry for runtime κ_P and κ_F monitoring.
     pub contraction_telemetry: ContractionTelemetry,
+    /// Soft projection temperature τ.
+    /// 0.0 = hard projection (default, backward compatible).
+    /// 0.03 = sweet spot (9× capacity gain, κ_P ≈ 1.0, empirically calibrated).
+    pub soft_projection_tau: f64,
+    /// ██ FIX v2.6 (Layer 3): Cold storage for frozen clusters ██
+    /// When a cluster is frozen, its entries and accumulator are serialized
+    /// and stored here.  On write access, the cluster is thawed.
+    pub cold_storage: crate::compression::ColdStorageManager,
 }
 
 /// Synthetic cold-start regime labels for Tick 0 initialization.
@@ -991,6 +1019,8 @@ impl VSABrain {
             anxiety: 0.0,
             experiences: Vec::new(),
             contraction_telemetry: ContractionTelemetry::new(),
+            soft_projection_tau: 0.0, // default: hard projection (backward compatible)
+            cold_storage: crate::compression::ColdStorageManager::new(),
         }
     }
 
@@ -1198,6 +1228,17 @@ impl VSABrain {
 
         if let Some(idx) = best_idx {
             if best_sim >= cluster_threshold {
+                // ██ FIX v2.6 (Layer 3): Thaw from cold storage on write access ██
+                if self.cold_storage.contains(idx) {
+                    if let Some(data) = self.cold_storage.take(idx) {
+                        if let Some(thawed) = crate::compression::deserialize_cold_cluster(&data) {
+                            let cluster = &mut self.dejavu_clusters[idx];
+                            cluster.entries = thawed.entries;
+                            cluster.accumulator = thawed.accumulator;
+                            cluster.total_weight = thawed.total_weight;
+                        }
+                    }
+                }
                 // Ensure the Locked Anchor is initialized
                 let cluster = &mut self.dejavu_clusters[idx];
                 cluster.ensure_anchor();
@@ -1277,10 +1318,23 @@ impl VSABrain {
 
         if let Some(idx) = best_idx {
             if best_sim >= 0.65 {
+                // ██ FIX v2.6 (Layer 3): Thaw from cold storage on epistemic update ██
+                if self.cold_storage.contains(idx) {
+                    if let Some(data) = self.cold_storage.take(idx) {
+                        if let Some(thawed) = crate::compression::deserialize_cold_cluster(&data) {
+                            let cluster = &mut self.dejavu_clusters[idx];
+                            cluster.entries = thawed.entries;
+                            cluster.accumulator = thawed.accumulator;
+                            cluster.total_weight = thawed.total_weight;
+                        }
+                    }
+                }
                 let cluster = &mut self.dejavu_clusters[idx];
                 cluster.ensure_anchor();
                 let tau = *new_world_state; // not delta-encoded
-                cluster.absorb_entry(&tau);
+                let (centroid_shift, input_dist) = cluster.absorb_entry(&tau);
+                // Record κ_F telemetry
+                self.contraction_telemetry.record_kappa_f(centroid_shift, input_dist);
                 if increment_intent_frequency {
                     cluster.reverberation = (cluster.reverberation + 0.1).min(1.0);
                 }
@@ -1348,6 +1402,46 @@ impl VSABrain {
     /// The empirical calibration measures the true intra-cluster distance
     /// distribution and finds the minimizing θ by scanning candidates.
     ///
+    /// Project a vector through the cluster manifold using the current
+    /// soft projection temperature setting.
+    ///
+    /// When soft_projection_tau = 0 (default), this is equivalent to the
+    /// hard nearest-centroid projection (anchor_through_clusters).
+    /// When tau > 0, uses the weighted-majority soft projection that
+    /// breaks the singular invariant measure (Theorem XXVII.1).
+    pub fn project_through_clusters(&self, x: &Hypervector) -> Hypervector {
+        crate::reason::soft_project(x, &self.dejavu_clusters, self.soft_projection_tau)
+    }
+
+    /// Measure empirical κ_P (projection contraction) by sampling random
+    /// pairs from the cluster set and projecting them through nearest-centroid.
+    ///
+    /// κ_P = mean(δ(P(x), P(y)) / δ(x, y))
+    ///
+    /// Respects the current soft_projection_tau setting.
+    /// Called periodically by the agent loop for joint contraction monitoring.
+    pub fn measure_kappa_p(&mut self, n_pairs: usize) {
+        use rand::Rng;
+        let mut rng = rand::thread_rng();
+        let clusters = &self.dejavu_clusters;
+        if clusters.len() < 2 {
+            return;
+        }
+        let tau = self.soft_projection_tau;
+
+        for _ in 0..n_pairs {
+            let x = Hypervector::new_random();
+            let y = Hypervector::new_random();
+            let d_before = x.normalized_hamming_distance(&y);
+
+            let px = crate::reason::soft_project(&x, clusters, tau);
+            let py = crate::reason::soft_project(&y, clusters, tau);
+            let d_after = px.normalized_hamming_distance(&py);
+
+            self.contraction_telemetry.record_kappa_p(d_before, d_after);
+        }
+    }
+
     /// Returns the calibrated threshold (NHD, not similarity).
     pub fn calibrate_projection_threshold(&self, composition_noise_eps: f64) -> f64 {
         if self.dejavu_clusters.is_empty() {
@@ -1413,11 +1507,16 @@ impl VSABrain {
         let hot_count = self.dejavu_clusters.iter().filter(|c| c.is_hot()).count();
         if hot_count <= max_hot {
             // Under the cap — only freeze clusters past the staleness threshold
-            for cluster in &mut self.dejavu_clusters {
+            for (idx, cluster) in self.dejavu_clusters.iter_mut().enumerate() {
                 if cluster.is_hot()
                     && current_tick.saturating_sub(cluster.last_access_tick) > staleness_threshold
                 {
-                    cluster.freeze();
+                    // ██ FIX v2.6 (Layer 3): serialize to cold storage before freezing ██
+                    let serialized = crate::compression::serialize_cold_cluster(cluster);
+                    cluster.entries.clear();
+                    cluster.entries.shrink_to_fit();
+                    cluster.accumulator.clear();
+                    self.cold_storage.store(idx, serialized);
                 }
             }
         } else {
@@ -1426,7 +1525,11 @@ impl VSABrain {
             indices.sort_by_key(|&i| self.dejavu_clusters[i].last_access_tick);
             for &i in &indices[..indices.len().saturating_sub(max_hot)] {
                 if self.dejavu_clusters[i].is_hot() {
-                    self.dejavu_clusters[i].freeze();
+                    let serialized = crate::compression::serialize_cold_cluster(&self.dejavu_clusters[i]);
+                    self.dejavu_clusters[i].entries.clear();
+                    self.dejavu_clusters[i].entries.shrink_to_fit();
+                    self.dejavu_clusters[i].accumulator.clear();
+                    self.cold_storage.store(i, serialized);
                 }
             }
         }
@@ -1466,15 +1569,19 @@ impl VSABrain {
 
         if let Some(idx) = best_idx {
             if best_sim >= cluster_threshold {
-                self.transient_clusters[idx].entries.push(entry);
-                self.transient_clusters[idx].last_reinforced_tick = self.tick_counter;
-                self.transient_clusters[idx].reverberation += best_sim;
-                let refs: Vec<&Hypervector> = self.transient_clusters[idx]
+                // ██ FIX v2.6: Thaw frozen cluster and update access tick ██
+                let cluster = &mut self.transient_clusters[idx];
+                cluster.frozen = false;
+                cluster.last_access_tick = self.tick_counter as u64;
+                cluster.entries.push(entry);
+                cluster.last_reinforced_tick = self.tick_counter;
+                cluster.reverberation += best_sim;
+                let refs: Vec<&Hypervector> = cluster
                     .entries
                     .iter()
                     .map(|e| &e.vector)
                     .collect();
-                self.transient_clusters[idx].centroid = Hypervector::bundle(&refs);
+                cluster.centroid = Hypervector::bundle(&refs);
                 return;
             }
         }
@@ -1485,7 +1592,53 @@ impl VSABrain {
             reverberation: 1.0,
             last_reinforced_tick: self.tick_counter,
             anchor: Hypervector::new_zero(),
+            last_access_tick: self.tick_counter as u64,
+            frozen: false,
         });
+    }
+
+    /// ██ FIX v2.6: Freeze cold transient clusters ██
+    ///
+    /// Transient clusters whose entries are accumulating without recent
+    /// access have their entry vectors dropped (frozen).  The centroid
+    /// is preserved so they can still match queries.  On the next
+    /// `add_transient_fact` that matches, the cluster is automatically
+    /// thawed.
+    ///
+    /// This mirrors the hot/cold management of `dejavu_clusters` but
+    /// is simpler: instead of accumulators, we drop the entries Vec
+    /// (which is the main memory cost for transients).
+    pub fn freeze_cold_transient_clusters(&mut self, current_tick: u64, staleness_threshold: u64) {
+        for cluster in &mut self.transient_clusters {
+            if !cluster.frozen
+                && current_tick.saturating_sub(cluster.last_access_tick) > staleness_threshold
+            {
+                cluster.frozen = true;
+                cluster.entries.clear();
+                cluster.entries.shrink_to_fit();
+            }
+        }
+    }
+
+    /// ██ FIX v2.6: Combined freeze-cold + decay for transient clusters ██
+    /// Called from the agent subconscious loop.  Freezes cold transients,
+    /// then runs the regular decay/consolidation on unfrozen clusters.
+    ///
+    /// Use this in place of calling `freeze_cold_transient_clusters`
+    /// and `decay_transient_clusters_distributed` separately.
+    pub fn freeze_and_decay_transients(
+        &mut self,
+        current_tick: u64,
+        staleness_threshold: u64,
+        lambda: f64,
+        theta_resonance: f64,
+        theta_coherence: f64,
+    ) -> Vec<(Hypervector, Vec<DejavuEntry>)> {
+        // Step 1: Freeze cold transient clusters
+        self.freeze_cold_transient_clusters(current_tick, staleness_threshold);
+
+        // Step 3: Run the standard decay
+        self.decay_transient_clusters_distributed(lambda, theta_resonance, theta_coherence)
     }
 
     /// UPDATED: U64_BLOCKS = 160, HD_DIMENSION = 10240
@@ -2004,32 +2157,57 @@ pub(crate) fn lsh_sector_inline(vector: &Hypervector) -> usize {
         | (bit_4 << 4) | (bit_3 << 3) | (bit_2 << 2) | (bit_1 << 1) | bit_0) as usize
 }
 
-// ─── Contraction Telemetry ──────────────────────────────────────────────────
+// ─── Tests ─────────────────────────────────────────────────────────────────
+
+// ═══════════════════════════════════════════════════════════════════════════
+// JOINT CONTRACTION TELEMETRY (Theorem XXII.1-R runtime monitoring)
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// Tracks empirical κ_P (projection contraction) and κ_F (manifold contraction)
+// to ensure the joint product κ = κ_P · κ_F stays below 1.0.
+// The theoretical margin is 0.010 at L_F = 1.0 (worst case).
+//
+// κ_P measurement:
+//   Samples pairs of (pre-projection, post-projection) states from the
+//   anchor_through_clusters pipeline. For each pair (x, y):
+//     κ_P_sample = δ(P(x), P(y)) / δ(x, y)
+//   κ_P = rolling mean of samples.
+//
+// κ_F measurement:
+//   Per cluster absorption:
+//     centroid_shift = δ(centroid_before, centroid_after)
+//     input_distance = δ(centroid_before, input)
+//     κ_F_sample = 1.0 - centroid_shift / max(input_distance, 1e-10)
+//   κ_F = rolling mean of samples.
+//
+// Tripwire:
+//   If κ = κ_P · κ_F ≥ 0.995: log WARNING (approaching instability)
+//   If κ ≥ 1.001: log CRITICAL (structural divergence detected)
 
 #[derive(Clone, Debug)]
 pub struct ContractionTelemetry {
-    /// κ_P samples (projection contraction)
+    // κ_P samples (projection contraction)
     pub kappa_p_samples: Vec<f64>,
     pub kappa_p_mean: f64,
     pub kappa_p_count: u64,
 
-    /// κ_F samples (manifold contraction)
+    // κ_F samples (manifold contraction)
     pub kappa_f_samples: Vec<f64>,
     pub kappa_f_mean: f64,
     pub kappa_f_count: u64,
 
-    /// Joint product tracking
+    // Joint product tracking
     pub kappa_joint: f64,
     pub kappa_joint_max: f64,
 
-    /// Tripwire state
+    // Tripwire state
     pub tripwire_triggered: bool,
     pub last_tripwire_tick: u64,
 
-    /// Configuration
-    pub max_samples: usize,
-    pub tripwire_threshold: f64,
-    pub critical_threshold: f64,
+    // Configuration
+    pub max_samples: usize,          // rolling window size
+    pub tripwire_threshold: f64,     // default 0.995
+    pub critical_threshold: f64,     // default 1.001
 }
 
 impl ContractionTelemetry {
@@ -2052,27 +2230,34 @@ impl ContractionTelemetry {
     }
 
     /// Record a κ_P sample from a projection event.
+    /// `d_before` = δ(x, y) before projection, `d_after` = δ(P(x), P(y)) after.
     pub fn record_kappa_p(&mut self, d_before: f64, d_after: f64) {
-        if d_before < 1e-12 { return; }
-        let k = d_after / d_before;
-        self.kappa_p_samples.push(k);
+        if d_before < 1e-10 {
+            return; // skip degenerate pairs
+        }
+        let sample = (d_after / d_before).min(2.0).max(0.0);
+        self.kappa_p_samples.push(sample);
         if self.kappa_p_samples.len() > self.max_samples {
             self.kappa_p_samples.remove(0);
         }
-        self.kappa_p_mean = self.kappa_p_samples.iter().sum::<f64>() / self.kappa_p_samples.len() as f64;
+        self.kappa_p_mean = self.kappa_p_samples.iter().sum::<f64>()
+            / self.kappa_p_samples.len() as f64;
         self.kappa_p_count += 1;
         self.update_joint();
     }
 
-    /// Record a κ_F sample from a manifold contraction event.
-    pub fn record_kappa_f(&mut self, d_before: f64, d_after: f64) {
-        if d_before < 1e-12 { return; }
-        let k = d_after / d_before;
-        self.kappa_f_samples.push(k);
+    /// Record a κ_F sample from an absorption event.
+    /// `centroid_shift` = δ(c_before, c_after), `input_dist` = δ(c_before, input).
+    pub fn record_kappa_f(&mut self, centroid_shift: f64, input_dist: f64) {
+        let denom = input_dist.max(1e-10);
+        // κ_F_sample = 1 - shift/input_dist → fraction of input NOT absorbed
+        let sample = (1.0 - centroid_shift / denom).min(2.0).max(-1.0);
+        self.kappa_f_samples.push(sample);
         if self.kappa_f_samples.len() > self.max_samples {
             self.kappa_f_samples.remove(0);
         }
-        self.kappa_f_mean = self.kappa_f_samples.iter().sum::<f64>() / self.kappa_f_samples.len() as f64;
+        self.kappa_f_mean = self.kappa_f_samples.iter().sum::<f64>()
+            / self.kappa_f_samples.len() as f64;
         self.kappa_f_count += 1;
         self.update_joint();
     }
@@ -2082,23 +2267,49 @@ impl ContractionTelemetry {
         if self.kappa_joint > self.kappa_joint_max {
             self.kappa_joint_max = self.kappa_joint;
         }
-        if self.kappa_joint >= self.tripwire_threshold {
-            self.tripwire_triggered = true;
+    }
+
+    /// Check the tripwire. Returns a diagnostic string if breached, None otherwise.
+    pub fn check_tripwire(&mut self, tick: u64) -> Option<String> {
+        if self.kappa_p_count < 10 || self.kappa_f_count < 10 {
+            return None; // not enough data
         }
+
+        if self.kappa_joint >= self.critical_threshold && !self.tripwire_triggered {
+            self.tripwire_triggered = true;
+            self.last_tripwire_tick = tick;
+            return Some(format!(
+                "CRITICAL: Joint contraction κ = {:.6} ≥ {:.3}! \
+                 (κ_P={:.4}, κ_F={:.4}, samples: P={}, F={}) \
+                 System may be structurally diverging!",
+                self.kappa_joint, self.critical_threshold,
+                self.kappa_p_mean, self.kappa_f_mean,
+                self.kappa_p_count, self.kappa_f_count,
+            ));
+        }
+
+        if self.kappa_joint >= self.tripwire_threshold {
+            return Some(format!(
+                "WARNING: Joint contraction κ = {:.6} approaching threshold {:.3}. \
+                 (κ_P={:.4}, κ_F={:.4})",
+                self.kappa_joint, self.tripwire_threshold,
+                self.kappa_p_mean, self.kappa_f_mean,
+            ));
+        }
+
+        None
     }
 
-    /// Check if joint contraction has breached the tripwire.
-    pub fn is_breached(&self) -> bool {
-        self.tripwire_triggered
-    }
-
-    /// Check if joint contraction has reached critical level (structural divergence).
-    pub fn is_critical(&self) -> bool {
-        self.kappa_joint >= self.critical_threshold
+    /// Generate a summary report string.
+    pub fn report(&self) -> String {
+        format!(
+            "κ_P={:.4} (n={}), κ_F={:.4} (n={}), κ={:.6}, κ_max={:.6}",
+            self.kappa_p_mean, self.kappa_p_count,
+            self.kappa_f_mean, self.kappa_f_count,
+            self.kappa_joint, self.kappa_joint_max,
+        )
     }
 }
-
-// ─── Tests ─────────────────────────────────────────────────────────────────
 
 #[cfg(test)]
 mod tests {

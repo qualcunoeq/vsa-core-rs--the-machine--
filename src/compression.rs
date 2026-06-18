@@ -2,6 +2,9 @@
 //
 // Addresses the unbounded RAM growth in "The Machine" VSA system.
 //
+// Ported from the enhanced-memory branch of the-machine-enhanced-memory-handling
+// by **qualcunoeq** (https://github.com/qualcunoeq/the-machine-enhanced-memory-handling).
+//
 // ## Strategy
 //
 // | Layer | Problem | Solution |
@@ -878,7 +881,7 @@ pub fn encode_entry(entry: &DejavuEntry, centroid: &Hypervector) -> EncodedEntry
         }
         // Choose optimal k based on mean gap
         let mean_gap = if set_bits > 1 {
-            (HD_DIMENSION as f64 / set_bits as f64)
+            HD_DIMENSION as f64 / set_bits as f64
         } else {
             HD_DIMENSION as f64
         };
@@ -900,7 +903,7 @@ pub fn decode_entry(
     weight: u32,
     creation_tick: u64,
 ) -> DejavuEntry {
-    match encoded {
+    let mut entry = match encoded {
         EncodedEntry::Raw(vec) => {
             DejavuEntry::new(*vec, label.to_string(), HashMap::new(), None)
         }
@@ -918,7 +921,10 @@ pub fn decode_entry(
             let original = centroid.bitwise_xor(&delta_hv);
             DejavuEntry::new(original, label.to_string(), HashMap::new(), None)
         }
-    }
+    };
+    entry.weight = weight.max(1);
+    entry.creation_tick = creation_tick;
+    entry
 }
 
 // ─── Cold Cluster Serialization ───────────────────────────────────────────
@@ -929,35 +935,8 @@ const COLD_CLUSTER_VERSION: u32 = 1;
 
 /// Serialize a MemoryCluster into a compact binary representation.
 ///
-/// Format:
-///   u32: magic (0x4D414348)
-///   u32: version (1)
-///   u16: num_entries
-///
-///   // Centroid (always raw)
-///   [u8; 1280]: centroid bytes
-///
-///   // Accumulator (sparse encoded — your existing format)
-///   u32: total_weight
-///   u32: num_accumulator_entries (0 if frozen/no accumulator)
-///   for each accumulator entry:
-///     u16: index
-///     u32: value
-///
-///   // Entries
-///   for each entry:
-///     u32: weight
-///     u64: creation_tick
-///     u8:  encoding_tag (0 = Raw, 1 = Delta+GR)
-///     if Raw:
-///       [u8; 1280]: hypervector bytes
-///     if Delta+GR:
-///       u16: gr_data_len
-///       [u8; gr_data_len]: gr_encoded_data
-/// Serialize a MemoryCluster into a compact binary representation.
-///
-/// Format:
-/// ```text
+/// Format (not valid Rust — illustrative only):
+/// ```ignore
 /// u32: magic (0x4D414348 "MACH")
 /// u32: version (1)
 /// u16: num_entries
@@ -1229,7 +1208,6 @@ pub fn estimate_serialized_entry_size(entry: &DejavuEntry, centroid: &Hypervecto
             HD_DIMENSION as f64
         };
         let k = ((mean_gap * std::f64::consts::LN_2).log2().round() as u32).max(1).min(8);
-        let m = 1u32 << k;
         // Average bits per gap: unary(~log2(gap)) + k + 1 (terminator)
         let avg_bits_per_gap = (mean_gap.log2().ceil() as u32 + k + 1) as f64;
         let total_bits = set_bits as f64 * avg_bits_per_gap;

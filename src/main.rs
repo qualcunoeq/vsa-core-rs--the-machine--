@@ -1,7 +1,8 @@
 use the_machine::{
     analogy::{AnalogicalIndex, MetaIndex, RoleDictionary},
     autonomy::AutonomyDrive, broker::NeocortexBroker, forager::VSAForager,
-    reason::DeepThought, sensory::SensoryModality, socket::AdminSocketServer,
+    reason::DeepThought, self_model::{SelfModel, HomeostaticProfile},
+    sensory::SensoryModality, socket::AdminSocketServer,
     HiveMessage, Hypervector, VSABrain,
 };
 
@@ -830,6 +831,7 @@ async fn run_agent(
         // ██ DRIFT: Homeostatic regulator + cognitive mode (ported from timeless-hayoka/infj-bot) ██
         let mut homeostasis = the_machine::drift::HomeostaticRegulator::new(50);
         let mut current_mode = the_machine::drift::CognitiveMode::Quiet;
+        let mut self_model = SelfModel::new();
 
         loop {
             sleep(Duration::from_secs(2)).await;
@@ -1777,6 +1779,30 @@ async fn run_agent(
                 // Periodic delta cache pressure relief every 25 ticks.
                 if ticker % 25 == 0 {
                     primary_int.write().await.delta_cache_slim();
+                }
+            }
+
+            // ── SELF-MODEL: Integrate all module states into unified identity ──
+            {
+                let profile = HomeostaticProfile::from_homeostasis(&homeostasis);
+                let l2_focus = historical_baseline; // last cluster centroid ≈ attention focus
+                let global_error = (stable_error + nominal_error + volatile_error) / 3.0;
+
+                self_model.tick(global_error, profile, current_mode, l2_focus);
+
+                // Periodic self-model diagnostics
+                if ticker % 25 == 0 {
+                    let _ = subconscious_log_tx.send(format!(
+                        "AGENT {}: {}", id_str, self_model.report()
+                    ));
+
+                    let stability = self_model.identity_stability();
+                    if stability > 0.20 {
+                        let _ = subconscious_log_tx.send(format!(
+                            "AGENT {}: ⚠ COGNITIVE SHOCK — identity stability={:.4}",
+                            id_str, stability
+                        ));
+                    }
                 }
             }
 

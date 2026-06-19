@@ -7,6 +7,7 @@ use std::collections::HashMap;
 pub mod abstractor;
 pub mod action;
 pub mod bond_feeder;
+pub mod self_model;
 pub mod analogy;
 pub mod autonomy;
 pub mod bridge;

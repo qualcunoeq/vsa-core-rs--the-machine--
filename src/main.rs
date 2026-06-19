@@ -7,6 +7,11 @@ use the_machine::{
     simulator::CounterfactualSimulator,
     sleep::SleepCycle,
     workspace::GlobalWorkspace,
+    drift::{
+        EmotionalField, Emotion, Stance, Mood,
+        Context, fork_context, IntuitionEngine,
+        Archetype, ShadowSystem, PscPredictor,
+    },
     HiveMessage, Hypervector, VSABrain,
 };
 
@@ -854,6 +859,21 @@ async fn run_agent(
 
         // Initialize sleep/consolidation cycle
         let mut sleeper = SleepCycle::with_defaults();
+
+        // ██ DRIFT v3.0: Wire remaining cognitive subsystems ██
+        let mut emotional_field = EmotionalField::new();
+        let mut intuition_engine = IntuitionEngine::new();
+        let mut shadow_system = ShadowSystem::new();
+        let mut global_context = Context::new("global");
+        let mut psc_predictor = PscPredictor::with_defaults();
+        let mut current_emotion = Emotion::Neutral;
+        let mut current_stance = Stance::Open;
+        let mut current_mood = Mood::Neutral;
+
+        // Register additional workspace modules for DRIFT subsystems
+        workspace.register_module("EMOTION", true);   // module 5
+        workspace.register_module("INTUITION", true);  // module 6
+        workspace.register_module("SHADOW", true);     // module 7
 
         loop {
             sleep(Duration::from_secs(2)).await;
@@ -1817,6 +1837,38 @@ async fn run_agent(
                     &curr_url.split('/').last().unwrap_or("idle"), 3));
                 workspace.update_module(3, historical_baseline);                      // MEMORY
                 workspace.update_module(4, *current_mode.to_hypervector());           // MODE
+
+                // ── EMOTIONAL FIELD: Derive mood from brain state ──────────────
+                // Map brain signals to (emotion, stance) → mood
+                current_emotion = {
+                    let anxiety = brain_guard.anxiety;
+                    let coherence = 1.0 - anxiety;
+                    let th = *defense_subconscious.threat_level.read().await;
+                    if anxiety > 0.7 { Emotion::Fear }
+                    else if th > 0.5 { Emotion::Fear }
+                    else if coherence < 0.3 { Emotion::Sadness }
+                    else if psc_predictor.chaos_score() > 0.5 { Emotion::Surprise }
+                    else if coherence > 0.8 { Emotion::Joy }
+                    else { Emotion::Neutral }
+                };
+                current_stance = {
+                    let mode_bits = current_mode.bits();
+                    match current_mode {
+                        the_machine::drift::CognitiveMode::Explorer
+                        | the_machine::drift::CognitiveMode::Frontier => Stance::Curious,
+                        the_machine::drift::CognitiveMode::Regulated => Stance::Guarded,
+                        _ => {
+                            // [memory, regulation, novelty]
+                            if mode_bits.2 { Stance::Curious }      // novelty bit set
+                            else if mode_bits.1 { Stance::Guarded } // regulation bit set
+                            else { Stance::Open }
+                        }
+                    }
+                };
+                current_mood = emotional_field.resolve(current_emotion, current_stance);
+                let mood_hv = Hypervector::encode_text_ngram(
+                    &format!("MOOD_{:?}", current_mood), 3);
+                workspace.update_module(5, mood_hv);                                // EMOTION
             }
 
             // ── SELF-MODEL: Integrate all module states into unified identity ──
@@ -1845,6 +1897,16 @@ async fn run_agent(
                 }
             }
 
+            // ── EMOTIONAL FIELD: Log mood state ───────────────────────
+            if ticker % 25 == 0 {
+                let _ = subconscious_log_tx.send(format!(
+                    "AGENT {}: AFFECT: {:?}+{:?}→{:?} | anxiety={:.2} threat={:.2}",
+                    id_str, current_emotion, current_stance, current_mood,
+                    brain_guard.anxiety,
+                    *defense_subconscious.threat_level.read().await,
+                ));
+            }
+
             // ── INTRINSIC MOTIVATION: Update drives from system state ──
             {
                 let l2_count = brain_guard.dejavu_clusters.len();
@@ -1856,6 +1918,120 @@ async fn run_agent(
                     identity_stability,
                     l2_count,
                 );
+            }
+
+            // ── IMPLICIT INTUITION: Learn and recognize patterns ──────
+            {
+                // Observe current state pattern
+                let mode_tag = format!("MODE_{:?}", current_mode);
+                let mood_tag = format!("MOOD_{:?}", current_mood);
+                let emo_tag = format!("EMOTION_{:?}", current_emotion);
+                let anxiety_tag = if brain_guard.anxiety > 0.5 { "HIGH_ANXIETY" } else { "LOW_ANXIETY" };
+                let domain_tags = [
+                    mode_tag.as_str(),
+                    mood_tag.as_str(),
+                    emo_tag.as_str(),
+                    anxiety_tag,
+                ];
+                intuition_engine.observe("current_state", &domain_tags);
+                if ticker > 0 && ticker % 10 == 0 {
+                    // Periodically check for recognized patterns
+                    let probe = Hypervector::encode_text_ngram(
+                        &format!("STATE_{}_{:?}", ticker % 5, current_mood), 3);
+                    let matches = intuition_engine.recognize(&probe);
+                    if !matches.is_empty() {
+                        let (pattern, sim) = matches[0];
+                        let pat_hv = Hypervector::encode_text_ngram(
+                            &format!("INTUIT_{}", pattern.label), 3);
+                        workspace.update_module(6, pat_hv);  // INTUITION
+                        if ticker % 50 == 0 {
+                            let _ = subconscious_log_tx.send(format!(
+                                "AGENT {}: INTUITION: recognized '{}' (sim={:.3}, strength={})",
+                                id_str, pattern.label, sim, pattern.strength,
+                            ));
+                        }
+                    }
+                }
+                // Prune weak patterns periodically
+                if ticker > 0 && ticker % 100 == 0 {
+                    intuition_engine.prune(2);
+                }
+            }
+
+            // ── SHADOW SYSTEM: Archetype oscillation & enantiodromia ───
+            {
+                let anxiety = brain_guard.anxiety;
+                let coherence = 1.0 - anxiety;
+                let th = *defense_subconscious.threat_level.read().await;
+                // Feed external signals based on brain state
+                let hero_signal = if coherence > 0.7 && th < 0.3 { 0.2 } else { 0.05 };
+                let shadow_signal = if th > 0.6 { 0.25 } else if anxiety > 0.6 { 0.15 } else { 0.05 };
+                let sage_signal = if current_mood == Mood::Analytical { 0.2 } else { 0.05 };
+                let trickster_signal = if current_mood == Mood::Playful { 0.2 } else { 0.05 };
+                let caregiver_signal = if current_mood == Mood::Warm { 0.15 } else { 0.05 };
+                let orphan_signal = if current_mood == Mood::Withdrawn { 0.2 } else { 0.05 };
+
+                shadow_system.tick(&[
+                    (Archetype::Hero, hero_signal),
+                    (Archetype::Shadow, shadow_signal),
+                    (Archetype::Sage, sage_signal),
+                    (Archetype::Trickster, trickster_signal),
+                    (Archetype::Caregiver, caregiver_signal),
+                    (Archetype::Orphan, orphan_signal),
+                ]);
+
+                // Update workspace with dominant archetype
+                let dominant_arch = shadow_system.dominant();
+                let arch_hv = Hypervector::encode_text_ngram(
+                    &format!("ARCH_{:?}", dominant_arch), 3);
+                workspace.update_module(7, arch_hv);  // SHADOW
+
+                if ticker % 50 == 0 {
+                    let ints: Vec<f64> = shadow_system.archetypes.iter().map(|a| a.intensity).collect();
+                    let int_str: Vec<String> = ints.iter().map(|v| format!("{:.2}", v)).collect();
+                    let _ = subconscious_log_tx.send(format!(
+                        "AGENT {}: SHADOW: dominant={:?} | intensities: [{}]",
+                        id_str, dominant_arch, int_str.join(", "),
+                    ));
+                }
+            }
+
+            // ── CONTEXT ENGINE: Fork/merge global context ─────────────
+            if ticker > 0 && ticker % 25 == 0 {
+                let cue = self_model.current_identity;
+                // Bind current state into global context
+                let role_self = Hypervector::encode_text_ngram("ROLE_SELF_STATE", 3);
+                let role_mood = Hypervector::encode_text_ngram("ROLE_MOOD", 3);
+                let role_mode = Hypervector::encode_text_ngram("ROLE_COG_MODE", 3);
+                let mood_hv = Hypervector::encode_text_ngram(
+                    &format!("MOOD_{:?}", current_mood), 3);
+                let mode_hv = *current_mode.to_hypervector();
+                global_context.bind(&role_self, &self_model.current_identity);
+                global_context.bind(&role_mood, &mood_hv);
+                global_context.bind(&role_mode, &mode_hv);
+
+                // Fork hypotheses and evaluate
+                let branches = fork_context(&global_context, 3);
+                if let Some(best) = the_machine::drift::merge_contexts(&branches, &cue) {
+                    global_context = best;
+                }
+            }
+
+            // ── PSC PREDICTOR: Batch trend prediction ─────────────────
+            {
+                let state_snapshot = self_model.current_identity;
+                psc_predictor.observe(ticker as u64, state_snapshot);
+                if ticker > 0 && ticker % 15 == 0 {
+                    if let Some((chaos, horizon, prediction)) = psc_predictor.report() {
+                        if ticker % 60 == 0 {
+                            let _ = subconscious_log_tx.send(format!(
+                                "AGENT {}: PSC: chaos={:.3}, horizon={}, pred_popcount={:.3}",
+                                id_str, chaos, horizon,
+                                prediction.count_ones() as f64 / 10240.0,
+                            ));
+                        }
+                    }
+                }
             }
 
             // ── COUNTERFACTUAL SIMULATOR: Imagine alternative futures ──

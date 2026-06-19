@@ -33,6 +33,11 @@ pub mod socket;
 pub mod temporal;
 pub mod workspace;
 
+// CUDA-accelerated parallel centroid projection (feature gated).
+// Enable with: cargo build --features cuda
+#[cfg(feature = "cuda")]
+pub mod cuda_projector;
+
 // ─── DIMENSION UPGRADE v2.0 ────────────────────────────────────────────────
 // D = 10240 = 160 × 64 = 40 × 256-bit AVX2 registers.
 // The prime 157 was a SIMD alignment bottleneck; 160 ensures

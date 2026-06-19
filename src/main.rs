@@ -11,6 +11,7 @@ use the_machine::{
         EmotionalField, Emotion, Stance, Mood,
         Context, fork_context, IntuitionEngine,
         Archetype, ShadowSystem, PscPredictor,
+        ConsensusEngine, DcpRole, DcpMessage,
     },
     HiveMessage, Hypervector, VSABrain,
 };
@@ -870,10 +871,15 @@ async fn run_agent(
         let mut current_stance = Stance::Open;
         let mut current_mood = Mood::Neutral;
 
+        // ██ DRIFT v3.1: DCP Consensus for multi-agent decision-making ██
+        let mut dcp_engine = ConsensusEngine::new(50, 2);
+        let mut dcp_resolution: Option<(u64, Hypervector)> = None;  // (thread_id, resolved_hv)
+
         // Register additional workspace modules for DRIFT subsystems
         workspace.register_module("EMOTION", true);   // module 5
         workspace.register_module("INTUITION", true);  // module 6
         workspace.register_module("SHADOW", true);     // module 7
+        workspace.register_module("CONSENSUS", true);  // module 8
 
         loop {
             sleep(Duration::from_secs(2)).await;
@@ -2014,6 +2020,58 @@ async fn run_agent(
                 let branches = fork_context(&global_context, 3);
                 if let Some(best) = the_machine::drift::merge_contexts(&branches, &cue) {
                     global_context = best;
+                }
+            }
+
+            // ── DCP CONSENSUS: Propose → vote → resolve on current state ──
+            {
+                // Every 20 ticks: propose the current cognitive state
+                if ticker > 0 && ticker % 20 == 0 {
+                    // Build a proposal HV from the agent's current state
+                    let mood_tag = format!("MOOD_{:?}", current_mood);
+                    let arch_tag = format!("ARCH_{:?}", shadow_system.dominant());
+                    let mode_tag = format!("MODE_{:?}", current_mode);
+                    let proposal_hv = Hypervector::bundle(&[
+                        &Hypervector::encode_text_ngram(&mood_tag, 3),
+                        &Hypervector::encode_text_ngram(&arch_tag, 3),
+                        &Hypervector::encode_text_ngram(&mode_tag, 3),
+                    ]);
+
+                    let msg = DcpMessage::new(
+                        format!("agent_{}", role_str),
+                        DcpRole::Primary,
+                        proposal_hv,
+                        0.9,                    // priority
+                        ticker as u64,           // message_id
+                        ticker as u64,           // timestamp/tick
+                    );
+                    let tid = dcp_engine.propose(msg, ticker as u64);
+
+                    // Self-vote as Critic and Backup (simulated multi-agent)
+                    dcp_engine.vote(tid, "critic_self", DcpRole::Critic, proposal_hv);
+                    dcp_engine.vote(tid, "backup_self", DcpRole::Backup, proposal_hv);
+
+                    // Try to resolve immediately (min_voters = 2, we have 3 voters)
+                    if let Some(resolved) = dcp_engine.try_resolve(tid) {
+                        dcp_resolution = Some((tid, resolved));
+                        let _ = subconscious_log_tx.send(format!(
+                            "AGENT {}: DCP CONSENSUS: thread={} resolved",
+                            id_str, tid,
+                        ));
+                    }
+                }
+
+                // GC expired threads every 50 ticks
+                if ticker > 0 && ticker % 50 == 0 {
+                    dcp_engine.expire_old(ticker as u64);
+                }
+
+                // Update workspace with the latest resolution
+                if let Some((_tid, ref resolution)) = dcp_resolution {
+                    workspace.update_module(8, *resolution);  // CONSENSUS
+                } else {
+                    // If no consensus yet, use current identity as default
+                    workspace.update_module(8, self_model.current_identity);
                 }
             }
 

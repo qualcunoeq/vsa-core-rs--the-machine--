@@ -3,6 +3,7 @@ use the_machine::{
     autonomy::AutonomyDrive, broker::NeocortexBroker, forager::VSAForager,
     reason::DeepThought, self_model::{SelfModel, HomeostaticProfile},
     sensory::SensoryModality, socket::AdminSocketServer,
+    simulator::CounterfactualSimulator,
     workspace::GlobalWorkspace,
     HiveMessage, Hypervector, VSABrain,
 };
@@ -841,6 +842,10 @@ async fn run_agent(
         workspace.register_module("FORAGER", true);
         workspace.register_module("MEMORY", true);
         workspace.register_module("MODE", true);
+
+        // Initialize counterfactual simulator with default action set
+        let mut sim = CounterfactualSimulator::with_defaults();
+        sim.register_default_actions();
 
         loop {
             sleep(Duration::from_secs(2)).await;
@@ -1831,6 +1836,29 @@ async fn run_agent(
                     ));
                 }
             }
+
+            // ── COUNTERFACTUAL SIMULATOR: Imagine alternative futures ──
+            let sim_report = sim.evaluate(
+                &self_model.current_identity,
+                self_model.homeostasis.overall_deficit,
+                self_model.global_error,
+                &workspace.global_broadcast,
+            );
+            if ticker % 25 == 0 {
+                let _ = subconscious_log_tx.send(format!(
+                    "AGENT {}: SIM: best action={} (score={:.4})",
+                    id_str, sim_report.best_action.label,
+                    sim_report.best_outcome.total_score,
+                ));
+                // Log the ranked outcomes
+                for (i, o) in sim_report.ranked_outcomes.iter().take(3).enumerate() {
+                    let _ = subconscious_log_tx.send(format!(
+                        "AGENT {}: SIM:   {}. {} — score={:.4}",
+                        id_str, i + 1, o.action_label, o.total_score,
+                    ));
+                }
+            }
+
             // The winning broadcast is available as workspace.global_broadcast
             // Modules can query it on the next tick for context.
 

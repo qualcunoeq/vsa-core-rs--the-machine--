@@ -1,0 +1,5 @@
+# Enable native CPU features (AVX-512, AVX2, etc.) for Hypervector ops.
+# This machine runs on x86_64 with avx512f, avx512bw, avx512vl, avx512dq.
+# Binary becomes non-portable — run only on same or superset CPU.
+[build]
+rustflags = ["-C", "target-cpu=native"]

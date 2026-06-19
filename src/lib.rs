@@ -121,33 +121,98 @@ impl Hypervector {
         }
     }
 
-    /// Popcount (number of 1-bits)
+    /// Popcount (number of 1-bits).
+    /// Scalar popcount on each u64 is optimal without avx512_vpopcntdq.
     pub fn count_ones(&self) -> usize {
         self.bits.iter().map(|b| b.count_ones() as usize).sum()
+    }
+
+    // ── HW-Accelerated VSA Operations (AVX-512) ──────────────────────────
+    // The CPU is confirmed to have avx512f, avx512bw, avx512vl, etc.
+    // These methods use 512-bit SIMD to process 8× u64 in parallel.
+
+    /// AVX-512 XOR: processes 8 u64 blocks per instruction.
+    #[cfg(target_feature = "avx512f")]
+    fn avx512_xor(a: &[u64; U64_BLOCKS], b: &[u64; U64_BLOCKS], out: &mut [u64; U64_BLOCKS]) {
+        use core::arch::x86_64::*;
+        unsafe {
+            let chunks = U64_BLOCKS / 8;
+            for i in 0..chunks {
+                let a_ptr = &a[i * 8] as *const u64 as *const __m512i;
+                let b_ptr = &b[i * 8] as *const u64 as *const __m512i;
+                let a_reg = _mm512_loadu_si512(a_ptr);
+                let b_reg = _mm512_loadu_si512(b_ptr);
+                let r = _mm512_xor_si512(a_reg, b_reg);
+                let out_ptr = &mut out[i * 8] as *mut u64 as *mut __m512i;
+                _mm512_storeu_si512(out_ptr, r);
+            }
+        }
+    }
+
+    /// AVX-512 XOR + scalar popcount: process 8 blocks at a time.
+    #[cfg(target_feature = "avx512f")]
+    fn avx512_xor_popcount(a: &[u64; U64_BLOCKS], b: &[u64; U64_BLOCKS]) -> u64 {
+        use core::arch::x86_64::*;
+        unsafe {
+            let mut total = 0u64;
+            let chunks = U64_BLOCKS / 8;
+            for i in 0..chunks {
+                let a_ptr = &a[i * 8] as *const u64 as *const __m512i;
+                let b_ptr = &b[i * 8] as *const u64 as *const __m512i;
+                let a_reg = _mm512_loadu_si512(a_ptr);
+                let b_reg = _mm512_loadu_si512(b_ptr);
+                let xored = _mm512_xor_si512(a_reg, b_reg);
+                let lanes: [u64; 8] = core::mem::transmute(xored);
+                for lane in &lanes {
+                    total += lane.count_ones() as u64;
+                }
+            }
+            total
+        }
     }
 
     // ── Core VSA operations ───────────────────────────────────────────────
 
     /// Binding: A ⊕ B (bitwise XOR)
     pub fn bitwise_xor(&self, other: &Self) -> Self {
-        let mut result = [0u64; U64_BLOCKS];
-        for i in 0..U64_BLOCKS {
-            result[i] = self.bits[i] ^ other.bits[i];
+        #[cfg(target_feature = "avx512f")]
+        {
+            let mut result = [0u64; U64_BLOCKS];
+            Self::avx512_xor(&self.bits, &other.bits, &mut result);
+            return Hypervector { bits: result };
         }
-        Hypervector { bits: result }
+        #[cfg(not(target_feature = "avx512f"))]
+        {
+            let mut result = [0u64; U64_BLOCKS];
+            for i in 0..U64_BLOCKS {
+                result[i] = self.bits[i] ^ other.bits[i];
+            }
+            Hypervector { bits: result }
+        }
     }
 
     /// Normalized Hamming distance [0, 1]
     pub fn normalized_hamming_distance(&self, other: &Self) -> f64 {
-        let mut diff_count: u64 = 0;
-        for i in 0..U64_BLOCKS {
-            let xor_val = self.bits[i] ^ other.bits[i];
-            diff_count += xor_val.count_ones() as u64;
+        #[cfg(target_feature = "avx512f")]
+        {
+            let diff_count = Self::avx512_xor_popcount(&self.bits, &other.bits);
+            return (diff_count as f64) / (HD_DIMENSION as f64);
         }
-        (diff_count as f64) / (HD_DIMENSION as f64)
+        #[cfg(not(target_feature = "avx512f"))]
+        {
+            let mut diff_count: u64 = 0;
+            for i in 0..U64_BLOCKS {
+                let xor_val = self.bits[i] ^ other.bits[i];
+                diff_count += xor_val.count_ones() as u64;
+            }
+            (diff_count as f64) / (HD_DIMENSION as f64)
+        }
     }
 
     /// Cyclic left-rotation of the bit-vector (sequence/role encoding)
+    /// Note: AVX-512 not used here because the cross-64-bit carry
+    /// makes SIMD rotation complex.  The scalar loop is already fast
+    /// (160 iterations, no function calls).
     pub fn rotate_left(&self, shift: usize) -> Self {
         let shift = shift % HD_DIMENSION;
         if shift == 0 {

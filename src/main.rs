@@ -3,6 +3,7 @@ use the_machine::{
     autonomy::AutonomyDrive, broker::NeocortexBroker, forager::VSAForager,
     reason::DeepThought, self_model::{SelfModel, HomeostaticProfile},
     sensory::SensoryModality, socket::AdminSocketServer,
+    drives::IntrinsicMotivation,
     simulator::CounterfactualSimulator,
     sleep::SleepCycle,
     workspace::GlobalWorkspace,
@@ -847,6 +848,9 @@ async fn run_agent(
         // Initialize counterfactual simulator with default action set
         let mut sim = CounterfactualSimulator::with_defaults();
         sim.register_default_actions();
+
+        // Initialize intrinsic motivation system
+        let mut drives = IntrinsicMotivation::new();
 
         // Initialize sleep/consolidation cycle
         let mut sleeper = SleepCycle::with_defaults();
@@ -1841,17 +1845,33 @@ async fn run_agent(
                 }
             }
 
+            // ── INTRINSIC MOTIVATION: Update drives from system state ──
+            {
+                let l2_count = brain_guard.dejavu_clusters.len();
+                let identity_stability = self_model.identity_stability();
+                drives.update(
+                    self_model.global_error,
+                    self_model.global_error.min(0.05), // approximate min_error
+                    self_model.homeostasis.overall_deficit,
+                    identity_stability,
+                    l2_count,
+                );
+            }
+
             // ── COUNTERFACTUAL SIMULATOR: Imagine alternative futures ──
-            let sim_report = sim.evaluate(
+            let drive_weights = drives.effective_weights(&[0.30, 0.30, 0.20, 0.20]);
+            let sim_report = sim.evaluate_driven(
                 &self_model.current_identity,
                 self_model.homeostasis.overall_deficit,
                 self_model.global_error,
                 &workspace.global_broadcast,
+                &drive_weights,
             );
             if ticker % 25 == 0 {
                 let _ = subconscious_log_tx.send(format!(
-                    "AGENT {}: SIM: best action={} (score={:.4})",
-                    id_str, sim_report.best_action.label,
+                    "AGENT {}: {} | SIM: best={} (score={:.4})",
+                    id_str, drives.report(),
+                    sim_report.best_action.label,
                     sim_report.best_outcome.total_score,
                 ));
                 // Log the ranked outcomes
@@ -1888,6 +1908,16 @@ async fn run_agent(
                         id_str, reason, transitions.len(),
                         narrative.narrative_vector.count_ones() as f64 / 10240.0 * 100.0,
                     ));
+
+                    // Sleep-phase drive adjustment: boost the most starved drive
+                    let starved = drives.starved_drive();
+                    drives.adjust_multipliers(starved, 0.15);
+                    drives.reset_cumulative();
+                    let _ = subconscious_log_tx.send(format!(
+                        "AGENT {}: SLEEP: boosted {:?} multiplier (+0.15)",
+                        id_str, starved,
+                    ));
+
                     sleeper.last_sleep_tick = sleeper.tick;
                     sleeper.total_sleep_cycles += 1;
                 }

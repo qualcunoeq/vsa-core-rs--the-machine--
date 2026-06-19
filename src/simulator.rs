@@ -390,6 +390,150 @@ impl CounterfactualSimulator {
         }
     }
 
+    /// Run a simulation round with dynamic weights (e.g., from drives).
+    ///
+    /// Identical to `evaluate()` but uses the provided `weights` array
+    /// instead of `self.weights`.  Use this when the IntrinsicMotivation
+    /// system has modulated the weights.
+    pub fn evaluate_driven(
+        &self,
+        current_identity: &Hypervector,
+        homeostatic_deficit: f64,
+        prediction_error: f64,
+        global_broadcast: &Hypervector,
+        weights: &[f64; 4],
+    ) -> SimulationReport {
+        // Store original weights, temporarily override, then restore
+        let original = self.weights;
+
+        // Can't mutate self.weights since we have &self, so we need
+        // to modify simulate_action to accept weights.  Create a
+        // temporary struct with the new weights using unsafe to
+        // transmute... OR just make evaluate_with_weights a standalone.
+        //
+        // Simpler approach: use a second code path that passes weights
+        // through to a weighted version of simulate_action.
+        self.evaluate_with_weights_internal(
+            current_identity, homeostatic_deficit, prediction_error,
+            global_broadcast, weights,
+        )
+    }
+
+    /// Internal: evaluate with explicit weights array.
+    fn evaluate_with_weights_internal(
+        &self,
+        current_identity: &Hypervector,
+        homeostatic_deficit: f64,
+        prediction_error: f64,
+        global_broadcast: &Hypervector,
+        weights: &[f64; 4],
+    ) -> SimulationReport {
+        if self.actions.is_empty() {
+            return SimulationReport {
+                best_action: ActionProposal::new(0, "NONE", Hypervector::new_zero(), 0.0, 0.0, 0.0),
+                best_outcome: SimulatedOutcome {
+                    action_id: 0,
+                    action_label: "NONE".to_string(),
+                    simulated_states: Vec::new(),
+                    simulated_deficits: Vec::new(),
+                    simulated_errors: Vec::new(),
+                    identity_shifts: Vec::new(),
+                    step_scores: Vec::new(),
+                    total_score: 0.0,
+                },
+                ranked_outcomes: Vec::new(),
+                actions_evaluated: 0,
+                rollout_depth: self.rollout_depth,
+                total_simulations: self.total_simulations,
+            };
+        }
+
+        let mut outcomes: Vec<SimulatedOutcome> = Vec::with_capacity(self.actions.len());
+
+        for action in &self.actions {
+            let outcome = self.simulate_action_weighted(
+                action,
+                current_identity,
+                homeostatic_deficit,
+                prediction_error,
+                global_broadcast,
+                weights,
+            );
+            outcomes.push(outcome);
+        }
+
+        outcomes.sort_by(|a, b| a.total_score.partial_cmp(&b.total_score).unwrap());
+        let best_outcome = outcomes.first().cloned().unwrap();
+        let best_action = self.actions.iter()
+            .find(|a| a.id == best_outcome.action_id)
+            .cloned()
+            .unwrap();
+
+        SimulationReport {
+            best_action,
+            best_outcome,
+            ranked_outcomes: outcomes,
+            actions_evaluated: self.actions.len(),
+            rollout_depth: self.rollout_depth,
+            total_simulations: self.total_simulations,
+        }
+    }
+
+    /// Simulate a single action with explicit weights.
+    fn simulate_action_weighted(
+        &self,
+        action: &ActionProposal,
+        current_identity: &Hypervector,
+        homeostatic_deficit: f64,
+        prediction_error: f64,
+        global_broadcast: &Hypervector,
+        weights: &[f64; 4],
+    ) -> SimulatedOutcome {
+        let mut states = Vec::with_capacity(self.rollout_depth);
+        let mut deficits = Vec::with_capacity(self.rollout_depth);
+        let mut errors = Vec::with_capacity(self.rollout_depth);
+        let mut shifts = Vec::with_capacity(self.rollout_depth);
+        let mut scores = Vec::with_capacity(self.rollout_depth);
+
+        let ground = current_identity.bitwise_xor(global_broadcast);
+        let mut sim_state = ground;
+        let mut cum_deficit = homeostatic_deficit;
+        let mut cum_error = prediction_error;
+
+        for step in 0..self.rollout_depth {
+            sim_state = sim_state.bitwise_xor(&action.effect_vector);
+            cum_deficit = (cum_deficit + action.deficit_delta).clamp(0.0, 1.0);
+            cum_error = (cum_error + action.error_delta).clamp(0.0, 1.0);
+            let identity_shift = current_identity.normalized_hamming_distance(&sim_state);
+            let decay = self.uncertainty_decay.powi(step as i32);
+
+            let step_score = decay * (
+                weights[0] * cum_deficit +
+                weights[1] * cum_error +
+                weights[2] * identity_shift +
+                weights[3] * action.cost
+            );
+
+            states.push(sim_state);
+            deficits.push(cum_deficit);
+            errors.push(cum_error);
+            shifts.push(identity_shift);
+            scores.push(step_score);
+        }
+
+        let total_score: f64 = scores.iter().sum();
+        SimulatedOutcome {
+            action_id: action.id,
+            action_label: action.label.clone(),
+            simulated_states: states,
+            simulated_deficits: deficits,
+            simulated_errors: errors,
+            identity_shifts: shifts,
+            step_scores: scores,
+            total_score,
+        }
+    }
+
     // ═════════════════════════════════════════════════════════════════════
     // SINGLE ACTION SIMULATION
     // ═════════════════════════════════════════════════════════════════════

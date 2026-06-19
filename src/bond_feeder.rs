@@ -446,21 +446,46 @@ impl MarketCrucible {
             return report;
         }
 
-        // Step 2: Seed hierarchy with first 20 state vectors
-        let n_seed = 20.min(self.reader.count());
-        for i in 0..n_seed {
-            if let Some(state) = self.reader.get_state(i) {
-                if i < self.hierarchy.levels[0].capacity {
-                    self.hierarchy.levels[0].centroids.push(state.encoded);
-                    self.hierarchy.levels[0].activations.push(0.0);
-                }
+        // Step 2: Seed hierarchy with centroids from ALL sources (not just first 20
+        // states, which are all daily features).  Balanced seeding ensures the
+        // manifold covers all three data modalities (daily features, FOMC text,
+        // macro surprises), giving each source a fair set of representative
+        // centroids for clean projection and community detection.
+        let max_seeds_per_source = 7.min(self.reader.count() / 3);
+        let mut seeded_indices = Vec::new();
+        for source in &[DataSource::DailyFeatures, DataSource::FomcMinutes, DataSource::MacroSurprises] {
+            let mut seeded = 0;
+            for (idx, state) in self.reader.states.iter().enumerate() {
+                if state.source != *source { continue; }
+                if seeded >= max_seeds_per_source { break; }
+                if self.hierarchy.levels[0].centroids.len() >= self.hierarchy.levels[0].capacity { break; }
+                self.hierarchy.levels[0].centroids.push(state.encoded);
+                self.hierarchy.levels[0].activations.push(0.0);
+                seeded_indices.push(idx);
+                seeded += 1;
+            }
+        }
+        // If any source has fewer than max_seeds_per_source, top off with extra
+        // states from any remaining source to ensure we have at least 20 centroids
+        while self.hierarchy.levels[0].centroids.len() < 20
+            && self.hierarchy.levels[0].centroids.len() < self.hierarchy.levels[0].capacity
+        {
+            for (idx, state) in self.reader.states.iter().enumerate() {
+                if seeded_indices.contains(&idx) { continue; }
+                if self.hierarchy.levels[0].centroids.len() >= self.hierarchy.levels[0].capacity { break; }
+                self.hierarchy.levels[0].centroids.push(state.encoded);
+                self.hierarchy.levels[0].activations.push(0.0);
+                seeded_indices.push(idx);
             }
         }
         report.centroids_seeded = self.hierarchy.levels[0].centroids.len();
-        eprintln!("  ✅ Seeded {} L1 centroids", report.centroids_seeded);
+        eprintln!("  ✅ Seeded {} L1 centroids ({} per source from daily/FOMC/macro)",
+            report.centroids_seeded, max_seeds_per_source);
 
         // Step 3: Feed ALL states through the cognitive pipeline
-        for i in n_seed..self.reader.count() {
+        // (skip the ones already used as centroid seeds)
+        for i in 0..self.reader.count() {
+            if seeded_indices.contains(&i) { continue; }
             if let Some(state) = self.reader.get_state(i) {
                 let state_vec = state.encoded;
 

@@ -7,6 +7,10 @@ edition = "2021"
 name = "the_machine"
 path = "src/main.rs"
 
+[[bin]]
+name = "bond_pipeline"
+path = "src/bin/bond_pipeline.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

@@ -28,6 +28,7 @@ pub mod resonator;
 pub mod sensory;
 pub mod socket;
 pub mod temporal;
+pub mod workspace;
 
 // ─── DIMENSION UPGRADE v2.0 ────────────────────────────────────────────────
 // D = 10240 = 160 × 64 = 40 × 256-bit AVX2 registers.

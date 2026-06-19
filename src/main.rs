@@ -3,6 +3,7 @@ use the_machine::{
     autonomy::AutonomyDrive, broker::NeocortexBroker, forager::VSAForager,
     reason::DeepThought, self_model::{SelfModel, HomeostaticProfile},
     sensory::SensoryModality, socket::AdminSocketServer,
+    workspace::GlobalWorkspace,
     HiveMessage, Hypervector, VSABrain,
 };
 
@@ -832,6 +833,14 @@ async fn run_agent(
         let mut homeostasis = the_machine::drift::HomeostaticRegulator::new(50);
         let mut current_mode = the_machine::drift::CognitiveMode::Quiet;
         let mut self_model = SelfModel::new();
+        let mut workspace = GlobalWorkspace::with_defaults();
+
+        // Register live modules into the Global Workspace
+        workspace.register_module("HOMEOSTASIS", true);
+        workspace.register_module("PREDICTIVE", true);
+        workspace.register_module("FORAGER", true);
+        workspace.register_module("MEMORY", true);
+        workspace.register_module("MODE", true);
 
         loop {
             sleep(Duration::from_secs(2)).await;
@@ -1782,29 +1791,48 @@ async fn run_agent(
                 }
             }
 
+            // ── GLOBAL WORKSPACE: Feed module states ─────────────────────
+            {
+                let profile = HomeostaticProfile::from_homeostasis(&homeostasis);
+                let global_error = (stable_error + nominal_error + volatile_error) / 3.0;
+                let error_hv = Hypervector::encode_text_ngram(
+                    &format!("BLENDED_ERR_{}", (global_error * 10.0).round() as usize), 3);
+
+                workspace.update_module(0, profile.encode());                         // HOMEOSTASIS
+                workspace.update_module(1, error_hv);                                 // PREDICTIVE
+                workspace.update_module(2, Hypervector::encode_text_ngram(            // FORAGER
+                    &curr_url.split('/').last().unwrap_or("idle"), 3));
+                workspace.update_module(3, historical_baseline);                      // MEMORY
+                workspace.update_module(4, *current_mode.to_hypervector());           // MODE
+            }
+
             // ── SELF-MODEL: Integrate all module states into unified identity ──
             {
                 let profile = HomeostaticProfile::from_homeostasis(&homeostasis);
-                let l2_focus = historical_baseline; // last cluster centroid ≈ attention focus
+                let l2_focus = historical_baseline;
                 let global_error = (stable_error + nominal_error + volatile_error) / 3.0;
-
                 self_model.tick(global_error, profile, current_mode, l2_focus);
+            }
 
-                // Periodic self-model diagnostics
-                if ticker % 25 == 0 {
+            // ── WORKSPACE: Evaluate attention with Self_t as query ─────
+            let attention_report = workspace.evaluate_attention(&self_model.current_identity);
+            if ticker % 25 == 0 {
+                let _ = subconscious_log_tx.send(format!(
+                    "AGENT {}: {} | winner={} (sim={:.3})",
+                    id_str, workspace.report(),
+                    attention_report.winner_label, attention_report.winner_similarity,
+                ));
+
+                let stability = self_model.identity_stability();
+                if stability > 0.20 {
                     let _ = subconscious_log_tx.send(format!(
-                        "AGENT {}: {}", id_str, self_model.report()
+                        "AGENT {}: ⚠ COGNITIVE SHOCK — identity stability={:.4}",
+                        id_str, stability
                     ));
-
-                    let stability = self_model.identity_stability();
-                    if stability > 0.20 {
-                        let _ = subconscious_log_tx.send(format!(
-                            "AGENT {}: ⚠ COGNITIVE SHOCK — identity stability={:.4}",
-                            id_str, stability
-                        ));
-                    }
                 }
             }
+            // The winning broadcast is available as workspace.global_broadcast
+            // Modules can query it on the next tick for context.
 
             // Sync stats to shared dashboard state
             if let Some(ref states) = shared_states {

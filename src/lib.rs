@@ -27,6 +27,7 @@ pub mod reason;
 pub mod resonator;
 pub mod sensory;
 pub mod simulator;
+pub mod sleep;
 pub mod socket;
 pub mod temporal;
 pub mod workspace;

@@ -4,6 +4,7 @@ use the_machine::{
     reason::DeepThought, self_model::{SelfModel, HomeostaticProfile},
     sensory::SensoryModality, socket::AdminSocketServer,
     simulator::CounterfactualSimulator,
+    sleep::SleepCycle,
     workspace::GlobalWorkspace,
     HiveMessage, Hypervector, VSABrain,
 };
@@ -846,6 +847,9 @@ async fn run_agent(
         // Initialize counterfactual simulator with default action set
         let mut sim = CounterfactualSimulator::with_defaults();
         sim.register_default_actions();
+
+        // Initialize sleep/consolidation cycle
+        let mut sleeper = SleepCycle::with_defaults();
 
         loop {
             sleep(Duration::from_secs(2)).await;
@@ -1856,6 +1860,36 @@ async fn run_agent(
                         "AGENT {}: SIM:   {}. {} — score={:.4}",
                         id_str, i + 1, o.action_label, o.total_score,
                     ));
+                }
+            }
+
+            // ── SLEEP / CONSOLIDATION CHECK ─────────────────────────────
+            {
+                // Record current tick
+                sleeper.tick = ticker as u64;
+
+                // Check energy from homeostasis
+                let energy = homeostasis.needs.get(&the_machine::drift::Need::Energy)
+                    .map(|s| s.current).unwrap_or(0.5);
+                let integration = homeostasis.needs.get(&the_machine::drift::Need::Integration)
+                    .map(|s| s.current).unwrap_or(0.5);
+                let min_error = self_model.global_error.min(0.05);
+
+                let (should_sleep_now, reason) = sleeper.should_sleep(
+                    energy, integration, min_error, self_model.global_error,
+                    workspace.is_idle(),
+                );
+
+                if should_sleep_now && !sleeper.sleeping {
+                    // Run Phase 1+2: replay trajectory + narrative
+                    let (transitions, narrative) = sleeper.phase1_replay(&self_model.trajectory);
+                    let _ = subconscious_log_tx.send(format!(
+                        "AGENT {}: SLEEP: triggered by {} — {} transitions, narrative pop={:.1}%",
+                        id_str, reason, transitions.len(),
+                        narrative.narrative_vector.count_ones() as f64 / 10240.0 * 100.0,
+                    ));
+                    sleeper.last_sleep_tick = sleeper.tick;
+                    sleeper.total_sleep_cycles += 1;
                 }
             }
 

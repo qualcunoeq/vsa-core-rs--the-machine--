@@ -41,7 +41,7 @@ pub struct SvoTriple {
 // ─── Verb lemmatization table ───────────────────────────────────────────────
 
 /// Map inflected verb forms to their lemma (base form).
-fn verb_lemma(word: &str) -> String {
+pub fn verb_lemma(word: &str) -> String {
     let lower = word.to_lowercase();
     // Common irregular verbs
     match lower.as_str() {
@@ -89,6 +89,12 @@ fn verb_lemma(word: &str) -> String {
         "executes" | "executed" | "executing" => "execute".to_string(),
         // feed
         "feeds" | "fed" | "feeding" => "feed".to_string(),
+        // rise
+        "rises" | "rose" | "risen" | "rising" => "rise".to_string(),
+        // fall
+        "falls" | "fell" | "fallen" | "falling" => "fall".to_string(),
+        // grow
+        "grows" | "grew" | "grown" | "growing" => "grow".to_string(),
         // Regular -ies → -y
         _ if lower.ends_with("ies") && lower.len() > 4 => {
             // "carries" → "carry", "studies" → "study"
@@ -1194,6 +1200,8 @@ mod tests {
         assert_eq!(verb_lemma("wrote"), "write");
         assert_eq!(verb_lemma("raises"), "raise");
         assert_eq!(verb_lemma("causes"), "cause");
+        assert_eq!(verb_lemma("rose"), "rise");
+        assert_eq!(verb_lemma("rises"), "rise");
         assert_eq!(verb_lemma("is"), "be");
         assert_eq!(verb_lemma("was"), "be");
         assert_eq!(verb_lemma("has"), "have");

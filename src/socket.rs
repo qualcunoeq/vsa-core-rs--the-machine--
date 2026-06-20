@@ -1,4 +1,5 @@
 use crate::{defense::DefenseSystem, Hypervector, VSABrain};
+use crate::qa::QaEngine;
 use std::sync::Arc;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::TcpListener;
@@ -8,6 +9,7 @@ pub struct AdminSocketServer {
     intent: Arc<RwLock<Hypervector>>,
     defense: DefenseSystem,
     brain: Arc<RwLock<VSABrain>>,
+    qa: Arc<RwLock<QaEngine>>,
 }
 
 impl AdminSocketServer {
@@ -15,12 +17,9 @@ impl AdminSocketServer {
         intent: Arc<RwLock<Hypervector>>,
         defense: DefenseSystem,
         brain: Arc<RwLock<VSABrain>>,
+        qa: Arc<RwLock<QaEngine>>,
     ) -> Self {
-        AdminSocketServer {
-            intent,
-            defense,
-            brain,
-        }
+        AdminSocketServer { intent, defense, brain, qa }
     }
 
     pub async fn run(
@@ -47,6 +46,7 @@ impl AdminSocketServer {
                             let log_tx_clone = log_tx.clone();
                             let defense_clone = self.defense.clone();
                             let brain_clone = Arc::clone(&self.brain);
+                            let qa_clone = Arc::clone(&self.qa);
 
                             tokio::spawn(async move {
                                 let (reader, mut writer) = socket.split();
@@ -54,6 +54,7 @@ impl AdminSocketServer {
                                 let mut line = String::new();
 
                                 let _ = writer.write_all(b"--- THE MACHINE ADMIN INTERFACE ---\n").await;
+                                let _ = writer.write_all(b"Commands: OVERRIDE <seed>, QUERY <text>, ASK <question>, EXIT\n").await;
 
                                 loop {
                                     let threat_val = *defense_clone.threat_level.read().await;
@@ -62,12 +63,10 @@ impl AdminSocketServer {
 
                                     line.clear();
                                     match buf_reader.read_line(&mut line).await {
-                                        Ok(0) => break, // Connection closed
+                                        Ok(0) => break,
                                         Ok(_) => {
                                             let command = line.trim();
-                                            if command.is_empty() {
-                                                continue;
-                                            }
+                                            if command.is_empty() { continue; }
 
                                             if command.starts_with("OVERRIDE ") {
                                                 let seed = &command[9..];
@@ -78,6 +77,7 @@ impl AdminSocketServer {
                                                 let response = format!("SUCCESS: Exogenous override seed bound.\n");
                                                 let _ = writer.write_all(response.as_bytes()).await;
                                                 let _ = log_tx_clone.send(format!("ADMIN: Override seed '{}' bound.", seed));
+
                                             } else if command.starts_with("QUERY ") {
                                                 let question = &command[6..];
                                                 let query_vector = Hypervector::encode_sentence(question);
@@ -98,11 +98,43 @@ impl AdminSocketServer {
                                                     response.push_str("NO MATCHING SEMANTIC RECORD FOUND.\n");
                                                 }
                                                 let _ = writer.write_all(response.as_bytes()).await;
+
+                                            } else if command.starts_with("ASK ") {
+                                                let question = &command[4..];
+                                                let answer = {
+                                                    let qa_guard = qa_clone.read().await;
+                                                    qa_guard.answer_combined(question)
+                                                };
+                                                let response = format!("ANSWER: {}\n", answer);
+                                                let _ = writer.write_all(response.as_bytes()).await;
+                                                let _ = log_tx_clone.send(format!("ADMIN: ASK '{}' → '{}'", question, answer));
+
+                                            } else if command.starts_with("STORE ") {
+                                                let fact = &command[6..];
+                                                // Store a fact from raw text
+                                                let triples = crate::nlp::extract_svo(fact);
+                                                if triples.is_empty() {
+                                                    let _ = writer.write_all(b"ERROR: Could not extract any facts from that text.\n").await;
+                                                } else {
+                                                    let mut qa_guard = qa_clone.write().await;
+                                                    qa_guard.store_triples(&triples, "admin_socket");
+                                                    let response = format!("STORED: {} fact(s) from '{}'\n", triples.len(), fact);
+                                                    let _ = writer.write_all(response.as_bytes()).await;
+                                                    let _ = log_tx_clone.send(format!("ADMIN: STORE '{}' ({} triples)", fact, triples.len()));
+                                                }
+
+                                            } else if command == "FACTS" {
+                                                let count = {
+                                                    let qa_guard = qa_clone.read().await;
+                                                    qa_guard.fact_count()
+                                                };
+                                                let response = format!("FACTS: {} facts in memory.\n", count);
+                                                let _ = writer.write_all(response.as_bytes()).await;
+
                                             } else if command == "EXIT" || command == "QUIT" {
                                                 let _ = writer.write_all(b"Terminating session.\n").await;
                                                 break;
                                             } else {
-                                                // Unrecognized command raises threat
                                                 defense_clone.increment_threat(0.15).await;
                                                 let _ = writer.write_all(b"ERROR: Command unrecognized. Threat level incremented.\n").await;
                                                 let _ = log_tx_clone.send("WARNING: Unrecognized command on socket. Incrementing threat level.".to_string());

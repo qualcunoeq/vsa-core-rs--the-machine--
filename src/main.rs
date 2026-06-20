@@ -714,10 +714,18 @@ async fn run_agent(
     });
 
     // 6. Spawn TCP Admin Socket override server
+    let qa_engine = Arc::new(RwLock::new(the_machine::qa::QaEngine::new()));
+    {
+        // Seed initial facts from bootstrap data
+        let mut qa_w = qa_engine.write().await;
+        qa_w.store_fact("the_fed", "raise", "rates", "The Fed raised rates.");
+        qa_w.store_fact("inflation", "rise", "above expectations", "Inflation rose above expectations.");
+    }
     let admin_server = AdminSocketServer::new(
         Arc::clone(&active_intent),
         defense.clone(),
         Arc::clone(&brain_shared),
+        Arc::clone(&qa_engine),
     );
     let admin_log_tx = log_tx.clone();
     tokio::spawn(async move {
@@ -871,6 +879,13 @@ async fn run_agent(
         let mut current_stance = Stance::Open;
         let mut current_mood = Mood::Neutral;
 
+        // Initialize VSA n-gram chain for state transition prediction
+        let mut ngram_chain = the_machine::narrative::NgramChain::bigram();
+        ngram_chain.register_states(&[
+            "quiet", "companion", "regulated", "explorer",
+            "task", "resonant", "frontier", "full_council",
+        ]);
+
         // ██ DRIFT v3.1: DCP Consensus for multi-agent decision-making ██
         let mut dcp_engine = ConsensusEngine::new(50, 2);
         let mut dcp_resolution: Option<(u64, Hypervector)> = None;  // (thread_id, resolved_hv)
@@ -943,9 +958,17 @@ async fn run_agent(
                 // Compute cognitive mode from brain state
                 let in_coherence = coherence > 0.6;
                 let is_novel = ticker < 50 || ticker % 100 < 20;
+                let prev_mode = current_mode;
                 current_mode = the_machine::drift::CognitiveMode::from_bits(
                     has_memory, !in_coherence, is_novel,
                 );
+                // Observe mode transition for n-gram chain
+                if current_mode != prev_mode {
+                    ngram_chain.observe(
+                        &prev_mode.label().to_lowercase(),
+                        &current_mode.label().to_lowercase(),
+                    );
+                }
             }
 
             // Apply homeostatic regulation every 25 ticks
@@ -2002,6 +2025,46 @@ async fn run_agent(
                 }
             }
 
+            // ── NARRATIVE GENERATOR: Full state-aware narrative ──────────
+            if ticker % 25 == 0 {
+                let dominant_arch_val = shadow_system.dominant();
+                // Build the full SystemState for rich narrative generation
+                let narrative = {
+                    use the_machine::narrative::{NarrativeGenerator, SystemState};
+                    let generator = NarrativeGenerator::new();
+                    let state = SystemState {
+                        self_model: &self_model,
+                        attention: &attention_report,
+                        workspace: &workspace,
+                        drives: &drives,
+                        dominant_archetype: Some(dominant_arch_val),
+                        emotion: Some(current_emotion),
+                        stance: Some(current_stance),
+                        mood: Some(current_mood),
+                        sleep_narrative: None,
+                        sleep_transitions: 0,
+                        sleep_l3_formed: 0,
+                        is_first_tick: ticker == 0,
+                        tick: ticker as u64,
+                        is_sleeping: sleeper.sleeping,
+                        sleep_reason: None,
+                    };
+                    generator.generate(&state)
+                };
+                let _ = subconscious_log_tx.send(format!(
+                    "AGENT {}: 📖 {}", id_str, narrative
+                ));
+
+                // Add n-gram chain prediction
+                let current_mode_label = current_mode.label().to_lowercase();
+                if let Some(prediction) = ngram_chain.predict(&current_mode_label) {
+                    let _ = subconscious_log_tx.send(format!(
+                        "AGENT {}: 🔮 I predict I will transition to {} next.",
+                        id_str, prediction
+                    ));
+                }
+            }
+
             // ── CONTEXT ENGINE: Fork/merge global context ─────────────
             if ticker > 0 && ticker % 25 == 0 {
                 let cue = self_model.current_identity;
@@ -2142,6 +2205,18 @@ async fn run_agent(
                         id_str, reason, transitions.len(),
                         narrative.narrative_vector.count_ones() as f64 / 10240.0 * 100.0,
                     ));
+
+                    // Generate a natural-language sleep narrative
+                    {
+                        let sleep_story = format!(
+                            "I am tired. I need to sleep and consolidate what I have learned. \
+                             I have {} significant transitions to process.",
+                            transitions.len(),
+                        );
+                        let _ = subconscious_log_tx.send(format!(
+                            "AGENT {}: 📖 {}", id_str, sleep_story
+                        ));
+                    }
 
                     // Sleep-phase drive adjustment: boost the most starved drive
                     let starved = drives.starved_drive();

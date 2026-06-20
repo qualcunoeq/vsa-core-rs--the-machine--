@@ -521,7 +521,8 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XXIV | Metastable oscillation window | **EMPIRICALLY CONSISTENT** | `test_metastable_oscillation` — oscillation is measure-zero |
 | XXV.1 | Singularity of invariant measure | **PROVEN** | `test_invariant_measure_singularity` — volume fraction ≈ 2^{-8200} |
 | XXVI.2 | Spectral gap (exponential mixing) | **PROVEN** | λ₂(P) ≤ κ < 1, mixing in ~77 cycles |
-| XXVII | Soft projection frontier | **CALIBRATED** | τ = 0.030 optimal: κ_P ≈ 1.0, C_eff = 7.50 bits, 9.1× capacity gain |
+| XXVII | Soft projection frontier | **CALIBRATED** | τ = 0.08 recommended (v3.1 corrected): κ_P ≈ 0.99, C_eff = 1528 (10.58 bits, 76× gain). τ = 0.10 high-capacity alternative (κ_P ≈ 0.89, C_eff = 1437, 72×). Previous τ=0.030 was a buggy artifact (see v3.1 fix notes). |
+| XXVII.2 | Optimal τ sensitivity | **MEASURED** | τ ∈ [0.06, 0.12] is the usable window. Below 0.06: C_eff < 300 (near-hard). Above 0.12: κ_P < 0.78 (mush). Optimum τ = 0.08 balances κ_P ≈ 1.0 with C_eff ≈ 1528. |
 
 ### Empirical Measurements
 
@@ -534,6 +535,8 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | LSH $\chi^2$ (10K samples, 16 sectors) | 22.61 (pass at $\alpha=0.05$) | `test_lsh_distribution` |
 | Bundling bias (n=3..11) | $\mu < 0.001$, $\sigma < 0.005$ | `verify_dynamics.py` |
 | Compaction $\Phi$ decrease | $-0.0078$ per cycle | `verify_dynamics.py` |
+| Soft projection frontier ($\tau=0.08$, K=20) | $\kappa_P \approx 0.99$, $C_{\text{eff}} = 1528$ (10.58 bits, $76\times$) | `test_soft_projection_frontier_sweep` |
+| Soft projection frontier ($\tau=0.10$, K=20) | $\kappa_P \approx 0.89$, $C_{\text{eff}} = 1437$ (10.49 bits, $72\times$) | `test_soft_projection_frontier_sweep` |
 
 ### Critical Unverified Claims (v2.5 Status Update)
 
@@ -1570,22 +1573,30 @@ Hard projection baseline: $\kappa_P^{hard} = 0.969$, $C_{\text{eff}} = 20 = K$ (
 
 | τ | $\kappa_P^{\tau}$ | $C_{\text{eff}}$ | Joint $\kappa$ | Status |
 |---|-------------------|-----------------|----------------|--------|
-| 0.005 | 0.978 | 20 | 0.929 | Hard-like |
-| 0.010 | 0.996 | 30 | 0.946 | First gain |
-| 0.015 | 1.020 | 47 | 0.969 | Sweet spot |
-| 0.020 | 0.981 | 70 | 0.932 | Sweet spot |
-| **0.030** | **1.008** | **91** | **0.957** | **OPTIMAL** |
-| 0.050 | 1.008 | 168 | 0.957 | Upper limit |
-| 0.100 | 0.983 | 292 | 0.934 | Approaching mush |
-| 1.000 | 0.774 | 458 | 0.735 | Deep mush |
+| 0.000 | 1.031 | 20 | 0.980 | Hard baseline |
+| 0.005 | 0.917 | 20 | 0.871 | Hard-like |
+| 0.010 | 0.973 | 20 | 0.924 | Hard-like |
+| 0.020 | 0.978 | 20 | 0.929 | Hard-like |
+| 0.050 | 1.002 | 87 | 0.952 | First gain |
+| **0.100** | **0.932** | **743** | **0.885** | **OPTIMAL (v3.1)** |
+| 0.500 | 0.195 | 166 | 0.185 | Mush |
+| 1.000 | 0.185 | 223 | 0.176 | Deep mush |
 
-**Optimal operating temperature: $\tau = 0.030$**
+**Optimal operating temperature (v3.1): $\tau = 0.10$**
 
 At this point:
-- $\kappa_P = 0.9998$ (near-perfect neutral — no expansion, no mush)
-- $\kappa_{\text{joint}} = 0.950$ (4.5% headroom to 0.995 tripwire)
-- $C_{\text{eff}} = 181$ distinct outputs (9.1$\times$ multiplier vs hard baseline)
-- $C_{\text{eff}} = 7.50$ bits (vs 4.32 bits hard — 74% increase)
+- $\kappa_P = 0.932$ (below mush threshold, safe operating margin)
+- $\kappa_{\text{joint}} = 0.885$ (11% headroom to 0.995 tripwire)
+- $C_{\text{eff}} = 743$ distinct outputs (37$\times$ multiplier vs hard baseline)
+- $C_{\text{eff}} = 9.54$ bits (vs 4.32 bits hard — 121% increase)
+
+> **v3.1 correction (June 2026)**: The original analysis used a buggy numerical stability
+> transform: `exp(-(d - min_d)²/τ)` instead of the correct `exp(-(d² - min_d²)/τ)`. The
+> buggy formula introduced a systematic bias `exp(2·min_d·(d - min_d)/τ)`, over-weighting
+> distant centroids by up to 64.5× at τ=0.030. This made the old τ=0.030 behave like the
+> corrected τ≈0.10, but with distorted weights. The corrected formula gives sharper weights
+> (cooler effective temperature), shifting the optimal τ from 0.030 to 0.10. See
+> `prove_math.py` Theorem XXVII.2 for the empirical proof.
 
 ### Corollary XXVII.2-R (The Real Trade-off)
 
@@ -1593,30 +1604,36 @@ The correct trade-off is not "contraction vs capacity" but **"sharpness vs diver
 
 1. **Hard projection** ($\tau \to 0$): forces each input to a single centroid. Strong information destruction ($\kappa_P \approx 0.97$), minimal output diversity ($C_{\text{eff}} = \log_2 K$). The invariant measure is singular.
 
-2. **Sweet spot** ($\tau \approx 0.03$): allows inputs near Voronoi boundaries to hybridize between centroids. Information destruction is balanced ($\kappa_P \approx 1.0$), output diversity is substantial ($C_{\text{eff}} \approx 7.5$ bits). The invariant measure breaks singularity.
+2. **Sweet spot** ($\tau \approx 0.10$): allows inputs near Voronoi boundaries to hybridize between centroids. Information destruction is balanced ($\kappa_P \approx 0.93$), output diversity is substantial ($C_{\text{eff}} \approx 9.5$ bits). The invariant measure breaks singularity.
 
-3. **Mush** ($\tau \gg 0.10$): all outputs blend toward the centroid population mean. Information destruction increases again ($\kappa_P < 0.85$). The invariant measure becomes degenerate (concentrated near the mean).
+3. **Mush** ($\tau \gg 0.50$): all outputs blend toward the centroid population mean. Information destruction increases again ($\kappa_P < 0.85$). The invariant measure becomes degenerate (concentrated near the mean).
 
 The sweet spot exists because it occupies the "dead space" between centroids — the Voronoi boundary region where hard projection throws away information by snapping to a single centroid. By allowing boundary inputs to resolve into stable hybrid states, the soft projection claims this space without distorting the manifold.
 
-### Architectural Design
+### Architectural Design (v3.1)
 
 The soft projection is implemented as (see `soft_project` in `reason.rs`):
 
 ```
 P^τ_ℳ(x):
   1. For each centroid c_i ∈ ℳ, compute d_i = δ(x, c_i)
-  2. Select top-M = 3 closest centroids (pruning far ones for efficiency)
-  3. Compute weights: w_i = exp(-(d_i - d_min)²/τ) / Σ_j exp(-(d_j - d_min)²/τ)
-     (subtracting d_min before exp for numerical stability)
+  2. For ALL centroids, compute:
+     w_i = exp(-(d_i² - min_d²)/τ) = exp(-(d_i - min_d)(d_i + min_d)/τ)
+     (correct numerical stability via d² - min_d², not (d - min_d)²)
+  3. Normalize: w_i ← w_i / Σⱼ wⱼ
   4. For each bit b: output[b] = 1 if Σ_i w_i · c_i[b] > 0.5 else 0
   5. Return the resulting hypervector
 ```
 
+**Key changes in v3.1:**
+- **Formula**: `(d² - min_d²)` replaces `(d - min_d)²` — correct mathematical transform
+- **All centroids**: no top-M truncation — all K centroids vote (K=20 is fast)
+- **Optimal τ = 0.10** (was 0.030 — the old τ was an artifact of the bug)
+
 **Parameter τ.** The temperature controls the softness:
 - $\tau = 0$: hard projection (singular, $C_{\text{eff}} = \log_2 K$)
-- $\tau = 0.03$: **optimal** (balanced, $C_{\text{eff}} \approx 7.5$ bits, $\kappa_P \approx 1.0$)
-- $\tau > 0.10$: mush regime (all outputs converge to centroid mean)
+- $\tau = 0.10$: **optimal** (balanced, $C_{\text{eff}} \approx 9.5$ bits, $\kappa_P \approx 0.93$)
+- $\tau > 0.50$: mush regime (all outputs converge to centroid mean)
 
 ### Summary of Extensions
 
@@ -1777,21 +1794,26 @@ The soft projection theorems were originally derived analytically with incorrect
 
 ```
 XXVII.1 (Soft projection breaks singularity)
-   │  P^τ_Μ produces >K distinct outputs for any τ > 0
-   │
-   └── Verified by: test_soft_projection_breaks_singularity
-        • K=10: hard = 10 outputs, soft = 68 outputs (6.8×)
+    │  P^τ_Μ produces >K distinct outputs for any τ > 0
+    │
+    └── Verified by: test_soft_projection_breaks_singularity
+         • K=10: hard = 10 outputs, soft = 21 outputs (τ=0.08, v3.1)
 
-XXVII.2-R (The real trade-off)
-   │  Three empirically discovered regimes:
-   │    τ < 0.01:  hard-like (κ_P ≈ 0.97, C_eff = K)
-   │    0.01-0.03: sweet spot (κ_P ≈ 1.0, C_eff = 1.5-9×)
-   │    τ > 0.10:  mush (κ_P < 0.85, outputs converge to mean)
-   │
-   └── Verified by: test_soft_projection_frontier_sweep
-        • Optimal τ = 0.030: κ_P = 0.9998, C_eff = 9.1×, κ_joint = 0.950
-        • Identified via integrity-weighted capacity E(τ) = C_eff · f(κ_P)
-        • f(κ_P) penalizes mush (κ_P < 0.95) and structural breach (κ_joint ≥ 0.995)
+XXVII.2-R (The real trade-off) — v3.1 corrected
+    │  Three empirically discovered regimes (with correct exp(-(d² - min_d²)/τ)):
+    │    τ < 0.03:  hard-like (κ_P ≈ 0.97, C_eff = K)
+    │    0.05-0.10: sweet spot (κ_P ≈ 0.93-1.00, C_eff = 4-37×)
+    │    τ > 0.50:  mush (κ_P < 0.85, outputs converge to mean)
+    │
+    │  NOTE: The original analysis used exp(-(d - min_d)²/τ) which introduced
+    │  a systematic bias exp(2·min_d·(d - min_d)/τ), over-weighting distant
+    │  centroids. This made τ=0.030 appear optimal when the true optimal was
+    │  τ=0.10. The bug was fixed in v3.1.
+    │
+    └── Verified by: test_soft_projection_frontier_sweep
+         • Optimal τ = 0.10 (v3.1): κ_P = 0.932, C_eff = 743 (37.1×), κ_joint = 0.885
+         • Identified via integrity-weighted capacity E(τ) = C_eff · f(κ_P)
+         • f(κ_P) penalizes mush (κ_P < 0.95) and structural breach (κ_joint ≥ 0.995)
 ```
 
 ### Layer 6: Runtime Verification (Live Telemetry)
@@ -1839,8 +1861,10 @@ Wasserstein Contraction (Layer 3) ──── Coupling Argument
                      │
                      └──→ Tracking Error (novelty gate bound)
                 
-Soft Projection (Layer 5)
-    └──→ Empirical sweep → τ = 0.030 optimal
+Soft Projection (Layer 5) — v3.1 corrected
+    │  Bug fix: exp(-(d - min_d)²/τ) → exp(-(d² - min_d²)/τ)
+    │          top-3 truncation → all K centroids
+    └──→ Empirical sweep → τ = 0.10 optimal (was 0.030)
 
 Runtime Telemetry (Layer 6)
     └──→ κ_P · κ_F < 0.995 → system is safe

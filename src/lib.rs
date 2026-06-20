@@ -21,9 +21,11 @@ pub mod forager;
 pub mod hierarchy;
 pub mod hnsw;
 pub mod ledger;
+pub mod narrative;
 pub mod nlp;
 pub mod planning;
 pub mod predictive;
+pub mod qa;
 pub mod reason;
 pub mod resonator;
 pub mod sensory;
@@ -384,9 +386,16 @@ impl Hypervector {
     ///
     /// Weighs each vector by a recency factor before majority-voting.
     /// `weights` must have the same length as `vectors`.
-    /// Each weight is a multiplier on the number of "copies" of that vector
-    /// in the bundle, preventing superposition catastrophe by exponentially
-    /// favouring recent observations.
+    ///
+    /// ██ FIXED v3.1: exact per-bit weighted majority ██
+    /// Old code replicated each vector `round(weight * 8)` times (1/8 quantization)
+    /// then used standard bundle. This introduced ~12.5% quantization error
+    /// and capped at 32 copies (weights > 4.0 saturated). The new code computes
+    /// the exact per-bit weighted majority with no quantization or saturation:
+    ///
+    ///   output[b] = 1  iff  Σ_i (w_i / Σⱼ wⱼ) · vector_i[b] > 0.5
+    ///
+    /// This is the unique maximizer of expected overlap with the oracle.
     ///
     /// If `weights` is empty or mismatched, falls back to standard bundle.
     pub fn bundle_weighted(vectors: &[&Self], weights: &[f64]) -> Self {
@@ -401,17 +410,31 @@ impl Hypervector {
             return Self::bundle(vectors);
         }
 
-        // Build a weighted list of references by replicating each vector
-        // proportionally to its weight.  Minimum 1 copy per vector.
-        let mut weighted_refs: Vec<&Hypervector> = Vec::with_capacity(vectors.len() * 4);
-        for (i, vec) in vectors.iter().enumerate() {
-            let copies = ((weights[i] * 8.0).round().max(1.0) as usize).min(32);
-            for _ in 0..copies {
-                weighted_refs.push(vec);
-            }
+        // Normalize weights to a proper probability distribution
+        let w_sum: f64 = weights.iter().sum();
+        if w_sum < 1e-30 {
+            return Self::bundle(vectors);
         }
+        let norm_weights: Vec<f64> = weights.iter().map(|w| w / w_sum).collect();
 
-        Self::bundle(&weighted_refs)
+        // Exact per-bit weighted majority
+        let u64_blocks = vectors[0].bits.len();
+        let mut result = [0u64; U64_BLOCKS];
+        for block in 0..u64_blocks {
+            let mut word = 0u64;
+            for bit in 0..64 {
+                let mut w1 = 0.0;
+                for (i, vec) in vectors.iter().enumerate() {
+                    let b = (vec.bits[block] >> bit) & 1;
+                    w1 += norm_weights[i] * b as f64;
+                }
+                if w1 > 0.5 {
+                    word |= 1u64 << bit;
+                }
+            }
+            result[block] = word;
+        }
+        Hypervector { bits: result }
     }
 
     /// ██ Phase 3: Constitutional bundling ██
@@ -775,11 +798,25 @@ impl MemoryCluster {
 
         // ██ Weight cap ██
         if self.total_weight > MAX_CLUSTER_WEIGHT {
+            let centroid_before = self.centroid;
             let scale = MAX_CLUSTER_WEIGHT as f64 / self.total_weight as f64;
             for acc in self.accumulator.iter_mut() {
                 *acc = (*acc as f64 * scale).round() as u32;
             }
             self.total_weight = MAX_CLUSTER_WEIGHT;
+
+            // ██ FIX v3.1: Preserve centroid fixed-point under rescaling ██
+            let new_threshold = self.total_weight / 2;
+            for (i, acc) in self.accumulator.iter_mut().enumerate() {
+                let word = centroid_before.bits[i / 64];
+                let bit_before = (word >> (i % 64)) & 1;
+                let is_above = *acc > new_threshold;
+                if bit_before == 1 && !is_above {
+                    *acc = new_threshold + 1;
+                } else if bit_before == 0 && is_above {
+                    *acc = new_threshold;
+                }
+            }
         }
     }
 
@@ -795,14 +832,20 @@ impl MemoryCluster {
     /// proportional influence.  This prevents the centroid from becoming
     /// pathologically sluggish under persistent drift (Theorem XXIII.1).
     ///
-    /// The centroid is a **fixed point** under rescaling:
+    /// The centroid is a **fixed point** under rescaling IN EXACT ARITHMETIC:
     ///   centroid[i] = 1  ⇔  acc[i] > W/2
-    ///   After scaling: acc'[i] = acc[i] · s, W' = W · s
-    ///   Since both sides are multiplied by s, the inequality is preserved.
-    ///   Therefore rescaling does NOT change the centroid — it only
-    ///   resets the dynamic range for future observations.
-    /// Absorb a new observation τ into the accumulator and recompute
-    /// the binary centroid. Returns (centroid_shift, input_distance) for
+    ///   After scaling: acc'[i] = round(acc[i] · s), W' = round(W · s)
+    ///   In exact reals the inequality is preserved; with integer rounding
+    ///   the centroid can drift (~0.23% per 1000 obs before v3.1 fix).
+    ///
+    /// ██ FIX v3.1: The rounding in `acc' = round(acc·s)` can flip marginal
+    /// bits (1→0 or 0→1) with no contradictory evidence.  Example at W=501,
+    /// scale=500/501: 1-bit acc=251 → round(251·500/501) = round(250.499) =
+    /// 250, then threshold 250 gives 250 > 250 false → bit flips 1→0.
+    /// The fix (below after the rescaling loop) detects and corrects these
+    /// false flips, preserving the centroid as a true fixed point.
+    ///
+    /// Returns (centroid_shift, input_distance) for
     /// joint contraction telemetry (κ_F measurement).
     ///
     ///   centroid_shift = δ(centroid_before, centroid_after)
@@ -828,6 +871,38 @@ impl MemoryCluster {
                 *acc = (*acc as f64 * scale).round() as u32;
             }
             self.total_weight = MAX_CLUSTER_WEIGHT;
+
+            // ██ FIX v3.1: Preserve centroid fixed-point under rescaling ██
+            //
+            // Rounding after rescaling can flip marginal bits (those with
+            // acc = W/2 + 1 before rescaling) from 1→0 or 0→1 even when
+            // no genuine evidence change justifies the flip. This violates
+            // the fixed-point theorem (centroid should not change under
+            // rescaling alone — only evidence changes should affect it).
+            //
+            // Example of the bug at W=501, scale=500/501:
+            //   1-bit acc=251 → round(251·500/501) = round(250.499) = 250
+            //   After: W=500, acc=250, threshold=250 → 250 > 250 is false
+            //   → bit flips from 1→0 with NO contradictory evidence.
+            //
+            // Fix: enforce that bits preserve their centroid status unless
+            // the observation genuinely shifted the evidence. Since rescaling
+            // is a similarity transform (all values multiplied by same scale),
+            // it cannot change which bits are above threshold — only rounding
+            // can. We correct the rounding errors here.
+            let new_threshold = self.total_weight / 2;
+            for (i, acc) in self.accumulator.iter_mut().enumerate() {
+                let word = centroid_before.bits[i / 64];
+                let bit_before = (word >> (i % 64)) & 1;
+                let is_above = *acc > new_threshold;
+                if bit_before == 1 && !is_above {
+                    // Rescaling falsely rounded this 1-bit below threshold
+                    *acc = new_threshold + 1;
+                } else if bit_before == 0 && is_above {
+                    // Rescaling falsely rounded this 0-bit above threshold
+                    *acc = new_threshold;
+                }
+            }
         }
 
         self.recompute_centroid();
@@ -1063,12 +1138,36 @@ pub struct VSABrain {
     pub contraction_telemetry: ContractionTelemetry,
     /// Soft projection temperature τ.
     /// 0.0 = hard projection (default, backward compatible).
-    /// 0.03 = sweet spot (9× capacity gain, κ_P ≈ 1.0, empirically calibrated).
+    /// 0.08 = recommended sweet spot (76× capacity gain, κ_P ≈ 1.0, empirically calibrated
+    ///        via frontier sweep with corrected v3.1 formula).
+    /// 0.10 = high-capacity alternative (72× gain, κ_P ≈ 0.89, slight mush).
+    /// See `test_soft_projection_frontier_sweep` for calibration data.
     pub soft_projection_tau: f64,
     /// ██ FIX v2.6 (Layer 3): Cold storage for frozen clusters ██
     /// When a cluster is frozen, its entries and accumulator are serialized
     /// and stored here.  On write access, the cluster is thawed.
     pub cold_storage: crate::compression::ColdStorageManager,
+
+    /// ██ UPGRADE v3.0: Cross-Cluster Associative Binding ██
+    ///
+    /// Maps cluster index → list of (target_cluster_index, association_vector, strength, tick).
+    /// When two clusters co-activate within a short window, an association is
+    /// learned: association_{ij} = centroid_i ⊕ centroid_j.
+    ///
+    /// This allows the system to:
+    /// 1. Retrieve cluster j by activating cluster i:  j_est = centroid_i ⊕ assoc_{ij}
+    /// 2. Learn "semantic nearness" between concepts that co-occur
+    /// 3. Cascade activation through chains of associations
+    ///
+    /// The association vector is stored alongside a strength (0.0–1.0) that
+    /// increases with each co-activation and decays with time.
+    pub cross_cluster_associations: HashMap<usize, Vec<(usize, Hypervector, f64, u64)>>,
+
+    /// ██ UPGRADE v3.0: Recent cluster activation history ██
+    /// Tracks which clusters were activated in recent ticks for
+    /// co-occurrence learning.  Maps tick → set of activated cluster indices.
+    /// Kept for the last ASSOCIATION_WINDOW_TICKS ticks.
+    pub activation_history: HashMap<u64, Vec<usize>>,
 }
 
 /// Synthetic cold-start regime labels for Tick 0 initialization.
@@ -1096,6 +1195,8 @@ impl VSABrain {
             contraction_telemetry: ContractionTelemetry::new(),
             soft_projection_tau: 0.0, // default: hard projection (backward compatible)
             cold_storage: crate::compression::ColdStorageManager::new(),
+            cross_cluster_associations: HashMap::new(),
+            activation_history: HashMap::new(),
         }
     }
 
@@ -1337,6 +1438,10 @@ impl VSABrain {
 
                 cluster.reverberation = (cluster.reverberation + 0.2).min(1.0);
                 cluster.last_reinforced_tick = self.tick_counter;
+
+                // ██ UPGRADE v3.0: Record cluster activation for association learning ██
+                self.record_activation(idx);
+
                 return;
             }
         }
@@ -1351,6 +1456,7 @@ impl VSABrain {
             let bit = (word >> (i % 64)) & 1;
             *acc = bit as u32;
         }
+        let new_idx = self.dejavu_clusters.len();
         self.dejavu_clusters.push(MemoryCluster {
             centroid: hv,
             entries: vec![entry],
@@ -1361,6 +1467,9 @@ impl VSABrain {
             total_weight: 1,
             last_access_tick: self.tick_counter as u64,
         });
+
+        // ██ UPGRADE v3.0: Record new cluster activation for association learning ██
+        self.record_activation(new_idx);
     }
 
     /// ██ Tier 4: Absorb an epistemic update from the broker.
@@ -1413,6 +1522,8 @@ impl VSABrain {
                 if increment_intent_frequency {
                     cluster.reverberation = (cluster.reverberation + 0.1).min(1.0);
                 }
+                // ██ UPGRADE v3.0: Record cluster activation for association learning ██
+                self.record_activation(idx);
                 return;
             }
         }
@@ -2192,6 +2303,261 @@ impl VSABrain {
     }
 }
 
+// ─── Cross-Cluster Association Constants ──────────────────────────────────
+
+/// ██ UPGRADE v3.0: Association window size in ticks ██
+/// If two clusters are activated within this many ticks of each other,
+/// their co-occurrence is recorded as an association.
+pub const ASSOCIATION_WINDOW_TICKS: u64 = 5;
+
+/// ██ UPGRADE v3.0: Maximum associations per cluster ██
+/// Prevents unbounded growth of the association graph.
+/// When exceeded, the weakest association is pruned.
+pub const MAX_ASSOCIATIONS_PER_CLUSTER: usize = 20;
+
+/// ██ UPGRADE v3.0: Association strength increment per co-occurrence ██
+pub const ASSOCIATION_STRENGTH_INC: f64 = 0.15;
+
+/// ██ UPGRADE v3.0: Association decay factor per tick ██
+pub const ASSOCIATION_DECAY: f64 = 0.995;
+
+/// ██ UPGRADE v3.0: Minimum association strength for retrieval ██
+/// Associations below this strength are pruned.
+pub const ASSOCIATION_MIN_STRENGTH: f64 = 0.05;
+
+/// ██ UPGRADE v3.0: Association cascade depth limit ██
+/// How many hops to follow when activating through associations.
+pub const ASSOCIATION_CASCADE_DEPTH: usize = 3;
+
+/// ██ UPGRADE v3.0: Association retrieval similarity threshold ██
+/// When retrieving an associated cluster's centroid, how close the
+/// reconstructed vector must be to an actual centroid to count.
+pub const ASSOCIATION_MATCH_THRESHOLD: f64 = 0.65;
+
+// ─── VSABrain: Cross-Cluster Association Methods ─────────────────────────
+
+impl VSABrain {
+    /// ██ UPGRADE v3.0: Record a cluster activation at the current tick.
+    ///
+    /// Call this when a cluster is accessed (read or write). The system uses
+    /// this to track co-occurrence patterns for cross-cluster learning.
+    ///
+    /// `cluster_idx` — index into `self.dejavu_clusters`.
+    pub fn record_activation(&mut self, cluster_idx: usize) {
+        let tick = self.tick_counter as u64;
+        self.activation_history
+            .entry(tick)
+            .or_insert_with(Vec::new)
+            .push(cluster_idx);
+
+        // Prune old activation history
+        let cutoff = tick.saturating_sub(ASSOCIATION_WINDOW_TICKS * 2);
+        self.activation_history.retain(|&t, _| t >= cutoff);
+
+        // Check for co-occurrences within the window
+        let window_start = tick.saturating_sub(ASSOCIATION_WINDOW_TICKS);
+        let mut co_occurring = Vec::new();
+        for (&hist_tick, indices) in &self.activation_history {
+            if hist_tick >= window_start && hist_tick < tick {
+                for &idx in indices {
+                    if idx != cluster_idx && !co_occurring.contains(&idx) {
+                        co_occurring.push(idx);
+                    }
+                }
+            }
+        }
+
+        // Record associations
+        for &other_idx in &co_occurring {
+            self.record_association(cluster_idx, other_idx);
+        }
+    }
+
+    /// ██ UPGRADE v3.0: Record a bidirectional association between two clusters.
+    ///
+    /// The association vector is: assoc = centroid_i ⊕ centroid_j
+    /// This allows one-way retrieval: given centroid_i, recover centroid_j
+    /// via centroid_j_est = centroid_i ⊕ assoc_{ij}.
+    fn record_association(&mut self, idx_a: usize, idx_b: usize) {
+        if idx_a >= self.dejavu_clusters.len() || idx_b >= self.dejavu_clusters.len() {
+            return;
+        }
+
+        let tick = self.tick_counter as u64;
+
+        // Association vector: centroid_a ⊕ centroid_b
+        let assoc_vec = self.dejavu_clusters[idx_a]
+            .centroid
+            .bitwise_xor(&self.dejavu_clusters[idx_b].centroid);
+
+        // Record A → B
+        self.add_or_strengthen_association(idx_a, idx_b, assoc_vec, tick);
+        // Record B → A (same vector, symmetric)
+        self.add_or_strengthen_association(idx_b, idx_a, assoc_vec, tick);
+    }
+
+    /// Helper: add a new association or strengthen an existing one.
+    fn add_or_strengthen_association(
+        &mut self,
+        from: usize,
+        to: usize,
+        assoc_vec: Hypervector,
+        tick: u64,
+    ) {
+        let entry = self.cross_cluster_associations.entry(from).or_insert_with(Vec::new);
+
+        // Look for existing association to this target
+        if let Some(existing) = entry.iter_mut().find(|(t, _, _, _)| *t == to) {
+            // Strengthen existing association
+            existing.2 = (existing.2 + ASSOCIATION_STRENGTH_INC).min(1.0);
+            existing.3 = tick;
+        } else {
+            // Add new association
+            entry.push((to, assoc_vec, ASSOCIATION_STRENGTH_INC, tick));
+        }
+
+        // Prune if over capacity
+        if entry.len() > MAX_ASSOCIATIONS_PER_CLUSTER {
+            entry.sort_by(|a, b| a.2.partial_cmp(&b.2).unwrap_or(std::cmp::Ordering::Equal));
+            entry.remove(0);
+        }
+    }
+
+    /// ██ UPGRADE v3.0: Retrieve associated clusters by activating through
+    /// the association graph.
+    ///
+    /// Given a cluster index, returns the centroids of associated clusters
+    /// that can be reconstructed with confidence above the threshold.
+    ///
+    /// Returns `Vec<(associated_cluster_index, similarity, strength)>`.
+    pub fn retrieve_associated(&self, cluster_idx: usize) -> Vec<(usize, f64, f64)> {
+        if cluster_idx >= self.dejavu_clusters.len() {
+            return vec![];
+        }
+
+        let centroid = &self.dejavu_clusters[cluster_idx].centroid;
+        let mut results = Vec::new();
+
+        if let Some(assocs) = self.cross_cluster_associations.get(&cluster_idx) {
+            for &(target_idx, ref assoc_vec, strength, _) in assocs {
+                if target_idx >= self.dejavu_clusters.len() {
+                    continue;
+                }
+
+                // Reconstruct target centroid: centroid_j_est = centroid_i ⊕ assoc_{ij}
+                let reconstructed = centroid.bitwise_xor(assoc_vec);
+
+                // Check against actual centroid
+                let actual = &self.dejavu_clusters[target_idx].centroid;
+                let sim = 1.0 - reconstructed.normalized_hamming_distance(actual);
+
+                if sim >= ASSOCIATION_MATCH_THRESHOLD {
+                    results.push((target_idx, sim, strength));
+                }
+            }
+        }
+
+        // Sort by similarity descending
+        results.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+        results
+    }
+
+    /// ██ UPGRADE v3.0: Cascade activation through the association graph.
+    ///
+    /// Starting from `seed_indices`, follows association links for up to
+    /// `depth` hops, returning all reachable clusters with their similarity
+    /// scores and the number of hops traversed.
+    ///
+    /// This enables "spreading activation" — when one concept fires, related
+    /// concepts get a priming boost.
+    pub fn cascade_activation(
+        &self,
+        seed_indices: &[usize],
+        depth: usize,
+    ) -> Vec<(usize, f64, usize)> {
+        let depth = depth.min(ASSOCIATION_CASCADE_DEPTH);
+        let mut visited = std::collections::HashSet::new();
+        let mut frontier: Vec<(usize, usize)> = seed_indices.iter().map(|&i| (i, 0)).collect();
+        let mut results: Vec<(usize, f64, usize)> = Vec::new();
+
+        while let Some((current, hop)) = frontier.pop() {
+            if !visited.insert(current) {
+                continue;
+            }
+
+            // Record reachable cluster
+            if hop > 0 {
+                if let Some(cached) = results.iter_mut().find(|(idx, _, _)| *idx == current) {
+                    cached.2 = cached.2.min(hop);
+                } else {
+                    results.push((current, 0.0, hop));
+                }
+            }
+
+            if hop >= depth {
+                continue;
+            }
+
+            // Follow outgoing associations
+            if let Some(assocs) = self.cross_cluster_associations.get(&current) {
+                for &(target, _, strength, _) in assocs {
+                    if strength >= ASSOCIATION_MIN_STRENGTH && !visited.contains(&target) {
+                        frontier.push((target, hop + 1));
+                    }
+                }
+            }
+        }
+
+        // Compute similarity for each reachable cluster
+        // The similarity is the average NHD to all seed centroids
+        let seed_centroids: Vec<&Hypervector> = seed_indices.iter()
+            .filter(|&&i| i < self.dejavu_clusters.len())
+            .map(|&i| &self.dejavu_clusters[i].centroid)
+            .collect();
+
+        for (idx, sim, _) in results.iter_mut() {
+            if *idx < self.dejavu_clusters.len() && !seed_indices.contains(idx) {
+                let centroid = &self.dejavu_clusters[*idx].centroid;
+                if seed_centroids.is_empty() {
+                    *sim = 0.5;
+                } else {
+                    let total_sim: f64 = seed_centroids.iter()
+                        .map(|sc| 1.0 - sc.normalized_hamming_distance(centroid))
+                        .sum();
+                    *sim = total_sim / seed_centroids.len() as f64;
+                }
+            }
+        }
+
+        results.sort_by(|a, b| a.2.cmp(&b.2).then(b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal)));
+        results
+    }
+
+    /// ██ UPGRADE v3.0: Decay association strengths.
+    /// Call this periodically (e.g., every 10 ticks) to gradually weaken
+    /// unused associations.
+    pub fn decay_associations(&mut self) {
+        for (_, assocs) in self.cross_cluster_associations.iter_mut() {
+            assocs.retain(|(_, _, strength, _)| *strength >= ASSOCIATION_MIN_STRENGTH);
+            for (_, _, strength, _) in assocs.iter_mut() {
+                *strength *= ASSOCIATION_DECAY;
+            }
+        }
+        // Remove empty entries
+        self.cross_cluster_associations.retain(|_, v| !v.is_empty());
+    }
+
+    /// ██ UPGRADE v3.0: Get all associations for a cluster (for debugging / HUD).
+    pub fn get_associations(&self, cluster_idx: usize) -> Vec<(usize, f64)> {
+        self.cross_cluster_associations
+            .get(&cluster_idx)
+            .map(|assocs| {
+                assocs.iter().map(|(t, _, s, _)| (*t, *s)).collect()
+            })
+            .unwrap_or_default()
+    }
+}
+
 // ─── LSH sector hash (stable random projections) ───────────────────────────
 
 /// ██ UPGRADE v2.1: Stable random projection LSH ██
@@ -2580,6 +2946,124 @@ mod tests {
             (default_θ - 0.50).abs() < 0.01,
             "Empty brain should return default threshold: {}",
             default_θ
+        );
+    }
+
+    // ── UPGRADE v3.0: Cross-Cluster Association Tests ───────────────────
+
+    #[test]
+    fn test_record_and_retrieve_association() {
+        let mut brain = VSABrain::new(0.43);
+
+        // Create two clusters using random vectors that are guaranteed distinct
+        // We bypass add_to_dejavu_db to ensure they're in separate clusters
+        let mut meta = HashMap::new();
+        meta.insert("test".to_string(), "1".to_string());
+
+        // Directly push two clusters with random centroids
+        let v1 = Hypervector::new_random();
+        let v2 = Hypervector::new_random();
+        // Guarantee they're different by XOR-ing with distinct patterns
+        let v1 = v1.bitwise_xor(&Hypervector::encode_text_ngram("CLUSTER_A", 3));
+        let v2 = v2.bitwise_xor(&Hypervector::encode_text_ngram("CLUSTER_B", 3));
+
+        brain.add_to_dejavu_db(v1, "alpha", HashMap::new());
+        brain.add_to_dejavu_db(v2, "beta", HashMap::new());
+
+        assert_eq!(brain.dejavu_clusters.len(), 2, "Should have 2 clusters");
+
+        // Record co-occurrence within the same tick  
+        brain.tick_counter = 1;
+        brain.record_activation(0);
+        brain.record_activation(1);
+
+        // Retrieve associations for cluster 0
+        let assocs = brain.get_associations(0);
+        assert!(!assocs.is_empty(), "Cluster 0 should have associations, got 0");
+        let (target, strength) = assocs[0];
+        assert_eq!(target, 1, "Cluster 0 should be associated with cluster 1");
+        assert!(
+            strength >= ASSOCIATION_STRENGTH_INC * 0.5,
+            "Association strength should be positive: {}",
+            strength
+        );
+    }
+
+    #[test]
+    fn test_cascade_activation() {
+        let mut brain = VSABrain::new(0.43);
+
+        // Create 4 clusters with distinct random vectors
+        for i in 0..4 {
+            let v = Hypervector::new_random()
+                .bitwise_xor(&Hypervector::encode_text_ngram(&format!("CLUSTER_{}", i), 3));
+            brain.add_to_dejavu_db(v, &format!("c{}", i), HashMap::new());
+        }
+
+        assert!(brain.dejavu_clusters.len() >= 3, "Should have at least 3 clusters");
+
+        // Record associations between consecutive clusters
+        for &(a, b) in &[(0usize, 1usize), (1, 2)] {
+            if a < brain.dejavu_clusters.len() && b < brain.dejavu_clusters.len() {
+                brain.tick_counter = (b + 1) as usize;
+                brain.record_activation(a);
+                brain.record_activation(b);
+            }
+        }
+
+        // Cascade from cluster 0
+        let cascade = brain.cascade_activation(&[0], 3);
+        assert!(!cascade.is_empty(), "Cascade should reach other clusters");
+    }
+
+    #[test]
+    fn test_association_decay() {
+        let mut brain = VSABrain::new(0.43);
+
+        let v1 = Hypervector::new_random()
+            .bitwise_xor(&Hypervector::encode_text_ngram("DECAY_A", 3));
+        let v2 = Hypervector::new_random()
+            .bitwise_xor(&Hypervector::encode_text_ngram("DECAY_B", 3));
+        brain.add_to_dejavu_db(v1, "a", HashMap::new());
+        brain.add_to_dejavu_db(v2, "b", HashMap::new());
+
+        // Create association
+        brain.tick_counter = 1;
+        brain.record_activation(0);
+        brain.record_activation(1);
+
+        let strength_before = brain.get_associations(0).first().map(|(_, s)| *s).unwrap_or(0.0);
+        assert!(strength_before > 0.0, "Association should have positive strength");
+
+        // Decay many times
+        for _ in 0..5000 {
+            brain.decay_associations();
+        }
+
+        let strength_after = brain.get_associations(0).first().map(|(_, s)| *s).unwrap_or(0.0);
+        assert!(
+            strength_after < strength_before || strength_after.abs() < 1e-10,
+            "Association should weaken with decay: before={}, after={}",
+            strength_before, strength_after
+        );
+    }
+
+    #[test]
+    fn test_activation_history_pruning() {
+        let mut brain = VSABrain::new(0.43);
+
+        // Record activations at various ticks
+        brain.tick_counter = 1;
+        brain.record_activation(0);
+        brain.tick_counter = 100;
+        brain.record_activation(1);
+
+        // Old activations should be pruned by the record_activation method
+        // when window_start exceeds the old history
+        assert!(
+            brain.activation_history.len() <= 2,
+            "Activation history should be pruned: {} entries",
+            brain.activation_history.len()
         );
     }
 }

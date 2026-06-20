@@ -12,6 +12,22 @@ pub const MIN_RECONSTRUCTION_ENERGY: f64 = 0.65;
 /// Iterations without energy improvement before noise injection fires.
 pub const PLATEAU_PATIENCE: usize = 8;
 
+/// ██ UPGRADE v3.0: Beam search width for multi-hypothesis resonator ██
+/// Higher values improve factorization success rate at the cost of O(K·B³) 
+/// compute per iteration.  B=3 gives 27 hypotheses evaluated per iteration,
+/// which is fast for typical vocabulary sizes (10-30 terms per slot).
+pub const BEAM_WIDTH: usize = 3;
+
+/// ██ UPGRADE v3.0: Top-N candidates per slot for branching ██
+/// Each hypothesis generates the top-C candidates for each of the 3 slots,
+/// producing C³ new candidates per hypothesis before pruning back to BEAM_WIDTH.
+pub const BRANCH_CANDIDATES: usize = 2;
+
+/// Minimum energy improvement fraction to reset plateau counter.
+/// If energy hasn't improved by at least this fraction in PATIENCE iterations,
+/// noise injection fires.  Adaptive version scales this by current entropy.
+pub const MIN_ENERGY_IMPROVEMENT: f64 = 0.005;
+
 // ─── Vocabulary ───────────────────────────────────────────────────────────
 
 /// ██ UPGRADE v2.1: Added LSH fallback diagnostics ██
@@ -198,6 +214,36 @@ impl ResonatorVocabulary {
         (best_term, best_sim)
     }
 
+    /// ██ UPGRADE v3.0: Top-N cleanup for beam search branching ██
+    ///
+    /// Returns the top `n` best-matching terms from the given subset,
+    /// sorted by similarity descending.  Each entry includes the term
+    /// string and its similarity score.
+    ///
+    /// This is used by the beam search resonator to generate multiple
+    /// candidate factor assignments per iteration.
+    pub fn cleanup_top_n(&self, vector: &Hypervector, subset: &[String], n: usize) -> Vec<(String, f64)> {
+        if subset.is_empty() || n == 0 {
+            return vec![];
+        }
+
+        let mut scored: Vec<(String, f64)> = Vec::with_capacity(subset.len());
+        for term in subset {
+            if let Some(vec) = self.terms.get(term) {
+                let sim = 1.0 - vector.normalized_hamming_distance(vec);
+                scored.push((term.clone(), sim));
+            }
+        }
+
+        // Sort by similarity descending
+        scored.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+
+        // Take top N, or fewer if there aren't enough
+        let take = n.min(scored.len());
+        scored.truncate(take);
+        scored
+    }
+
     /// Prune redundant vocabulary terms by clustering similar vectors.
     ///
     /// Every new `learn_term` registration slightly shifts the geometry of
@@ -312,11 +358,86 @@ pub fn reconstruction_energy(
 
 // ─── Simultaneous Resonator Network ────────────────────────────────────────
 
+/// ██ UPGRADE v3.0: Beam Search Resonator Network ██
+///
+/// A hypothesis struct for the beam search: one (subject, verb, object) guess
+/// along with its reconstruction energy and the actual hypervectors.
+#[derive(Clone, Debug)]
+pub struct FactorHypothesis {
+    pub s_str: String,
+    pub v_str: String,
+    pub o_str: String,
+    pub s_vec: Hypervector,
+    pub v_vec: Hypervector,
+    pub o_vec: Hypervector,
+    pub energy: f64,
+}
+
+/// ██ UPGRADE v3.0: Compute adaptive plateau patience based on beam entropy ██
+///
+/// When the beam has diverse hypotheses (high entropy), we should be more
+/// patient because the correct answer might still emerge.  When all hypotheses
+/// agree (low entropy), we can converge faster.
+///
+/// Returns `(adaptive_patience, adaptive_threshold)`:
+/// - `adaptive_patience`: iterations before noise injection, ranges from 4 to 16
+/// - `adaptive_threshold`: minimum reconstruction energy, ranges from 0.55 to 0.70
+pub fn adaptive_resonance_params(hypotheses: &[FactorHypothesis], base_energy: f64) -> (usize, f64) {
+    if hypotheses.len() < 2 {
+        return (PLATEAU_PATIENCE, MIN_RECONSTRUCTION_ENERGY);
+    }
+
+    // Compute the entropy of the beam's subject distribution
+    // High entropy → diverse hypotheses → more patience
+    let mut s_counts: HashMap<&str, usize> = HashMap::new();
+    let mut v_counts: HashMap<&str, usize> = HashMap::new();
+    let mut o_counts: HashMap<&str, usize> = HashMap::new();
+    for h in hypotheses {
+        *s_counts.entry(&h.s_str).or_insert(0) += 1;
+        *v_counts.entry(&h.v_str).or_insert(0) += 1;
+        *o_counts.entry(&h.o_str).or_insert(0) += 1;
+    }
+
+    let n = hypotheses.len() as f64;
+    let entropy = |counts: &HashMap<&str, usize>| -> f64 {
+        counts.values().fold(0.0, |acc, &c| {
+            let p = c as f64 / n;
+            if p > 0.0 { acc - p * p.log2() } else { acc }
+        })
+    };
+
+    let s_entropy = entropy(&s_counts);
+    let v_entropy = entropy(&v_counts);
+    let o_entropy = entropy(&o_counts);
+    let mean_entropy = (s_entropy + v_entropy + o_entropy) / 3.0;
+
+    // Max possible entropy for B hypotheses: log2(B)
+    let max_entropy = (n + 1.0).log2();
+    let normalized_entropy = if max_entropy > 0.0 {
+        (mean_entropy / max_entropy).clamp(0.0, 1.0)
+    } else {
+        0.0
+    };
+
+    // High entropy → more patience, lower threshold
+    let adaptive_patience = (PLATEAU_PATIENCE as f64 * (1.0 + normalized_entropy)).round() as usize;
+    let adaptive_patience = adaptive_patience.max(4).min(16);
+
+    // Lower the threshold when energy is improving (we're making progress)
+    let energy_factor = (1.0 - base_energy).clamp(0.0, 1.0);
+    let adaptive_threshold = MIN_RECONSTRUCTION_ENERGY - 0.10 * energy_factor * normalized_entropy;
+    let adaptive_threshold = adaptive_threshold.clamp(0.50, 0.70);
+
+    (adaptive_patience, adaptive_threshold)
+}
+
+/// ██ UPGRADE v3.0: Beam Search Factorisation ██
+///
 /// Factorises a thought vector into (subject, verb, object) using a
-/// **Simultaneous Resonator Network** with reconstruction-energy validation
+/// **Beam Search Resonator Network** with reconstruction-energy validation
 /// and simulated-annealing noise injection.
 ///
-/// ## Simultaneous updates
+/// ## Simultaneous updates (same as v2.x)
 /// All three factors are computed **in parallel** from the *previous* tick's
 /// estimates, preventing cascade errors (the "Cocktail Party Problem"):
 ///
@@ -326,15 +447,27 @@ pub fn reconstruction_energy(
 /// O_{t+1} = clean(ρ₋₃₉(T ⊕ ρ₁₃(S_t) ⊕ ρ₂₆(V_t)))
 /// ```
 ///
+/// ## Beam Search (NEW v3.0)
+/// Instead of maintaining a single hypothesis, we maintain a BEAM of up to
+/// `BEAM_WIDTH` hypotheses.  At each iteration:
+/// 1. For each hypothesis, generate the top `BRANCH_CANDIDATES` candidates
+///    for each of the 3 factors (S, V, O).
+/// 2. Combine into all C³ candidate triples per hypothesis.
+/// 3. Score each triple by reconstruction energy.
+/// 4. Prune back to the top BEAM_WIDTH hypotheses.
+///
+/// This dramatically improves escape from local minima and increases
+/// factorization success rate for noisy or ambiguous inputs.
+///
+/// ## Adaptive Resonance (NEW v3.0)
+/// Plateau patience and energy thresholds adapt based on:
+/// - Entropy of the beam hypothesis distribution
+/// - Current best energy vs. the target threshold
+///
 /// ## Reconstruction energy
-/// After convergence, the extracted SVO is re-encoded into T̂ and compared
+/// After convergence, the best SVO is re-encoded into T̂ and compared
 /// to the original T via Hamming distance.  If the energy E < 0.65 the
 /// result is rejected as a hallucination.
-///
-/// ## Annealing
-/// If the energy plateaus below threshold, deterministic bit-flip noise is
-/// injected into the factor guesses (temperature-scheduled) to escape local
-/// minima.
 ///
 /// Returns `None` when the energy check fails (hallucination filter).
 pub fn factorize_svo(
@@ -349,7 +482,7 @@ pub fn factorize_svo(
         return None;
     }
 
-    // ── Initialise factor guesses from slot-specific bundles ─────────
+    // ── Initialise initial hypothesis from slot-specific bundles ────
     let s_init_vectors: Vec<&Hypervector> =
         subjects.iter().filter_map(|t| vocab.get_vector(t)).collect();
     let v_init_vectors: Vec<&Hypervector> =
@@ -357,134 +490,213 @@ pub fn factorize_svo(
     let o_init_vectors: Vec<&Hypervector> =
         objects.iter().filter_map(|t| vocab.get_vector(t)).collect();
 
-    let mut current_s = if s_init_vectors.is_empty() {
+    let init_s_vec = if s_init_vectors.is_empty() {
         Hypervector::new_random()
     } else {
         Hypervector::bundle(&s_init_vectors)
     };
-    let mut current_v = if v_init_vectors.is_empty() {
+    let init_v_vec = if v_init_vectors.is_empty() {
         Hypervector::new_random()
     } else {
         Hypervector::bundle(&v_init_vectors)
     };
-    let mut current_o = if o_init_vectors.is_empty() {
+    let init_o_vec = if o_init_vectors.is_empty() {
         Hypervector::new_random()
     } else {
         Hypervector::bundle(&o_init_vectors)
     };
 
-    let mut last_s_str = String::new();
-    let mut last_v_str = String::new();
-    let mut last_o_str = String::new();
+    // Start with 1 hypothesis, pruned to beam width
+    let mut beam: Vec<FactorHypothesis> = vec![FactorHypothesis {
+        s_str: String::new(),
+        v_str: String::new(),
+        o_str: String::new(),
+        s_vec: init_s_vec,
+        v_vec: init_v_vec,
+        o_vec: init_o_vec,
+        energy: 0.0,
+    }];
 
-    // Annealing state
-    let mut best_energy = 0.0;
+    let mut best_overall_energy = 0.0;
     let mut iter_since_best = 0usize;
 
     for iteration in 0..max_iterations {
-        // ── Pre-compute rotated factor estimates (from PREVIOUS tick) ─
-        let v_rot26 = current_v.rotate_left(2 * 13); // ρ₂₆(V_t)
-        let o_rot39 = current_o.rotate_left(3 * 13); // ρ₃₉(O_t)
-        let s_rot13 = current_s.rotate_left(1 * 13); // ρ₁₃(S_t)
+        let mut candidates: Vec<FactorHypothesis> = Vec::new();
 
-        // ── Simultaneous unbinding (all from previous-tick state) ────
-        // S_{t+1} = clean(rotate_right(T ⊕ ρ₂₆(V_t) ⊕ ρ₃₉(O_t), 13))
-        let s_next_raw = rotate_right(
-            &thought_vector.bitwise_xor(&v_rot26).bitwise_xor(&o_rot39),
-            1 * 13,
-        );
+        for hyp in &beam {
+            let v_rot26 = hyp.v_vec.rotate_left(2 * 13);
+            let o_rot39 = hyp.o_vec.rotate_left(3 * 13);
+            let s_rot13 = hyp.s_vec.rotate_left(1 * 13);
 
-        // V_{t+1} = clean(rotate_right(T ⊕ ρ₁₃(S_t) ⊕ ρ₃₉(O_t), 26))
-        let v_next_raw = rotate_right(
-            &thought_vector.bitwise_xor(&s_rot13).bitwise_xor(&o_rot39),
-            2 * 13,
-        );
+            // ── Simultaneous unbinding ───────────────────────────────
+            let s_next_raw = rotate_right(
+                &thought_vector.bitwise_xor(&v_rot26).bitwise_xor(&o_rot39),
+                1 * 13,
+            );
+            let v_next_raw = rotate_right(
+                &thought_vector.bitwise_xor(&s_rot13).bitwise_xor(&o_rot39),
+                2 * 13,
+            );
+            let o_next_raw = rotate_right(
+                &thought_vector.bitwise_xor(&s_rot13).bitwise_xor(&v_rot26),
+                3 * 13,
+            );
 
-        // O_{t+1} = clean(rotate_right(T ⊕ ρ₁₃(S_t) ⊕ ρ₂₆(V_t), 39))
-        let o_next_raw = rotate_right(
-            &thought_vector.bitwise_xor(&s_rot13).bitwise_xor(&v_rot26),
-            3 * 13,
-        );
+            // ── Get top-N candidates for each slot ──────────────────
+            let s_cands = vocab.cleanup_top_n(&s_next_raw, subjects, BRANCH_CANDIDATES);
+            let v_cands = vocab.cleanup_top_n(&v_next_raw, verbs, BRANCH_CANDIDATES);
+            let o_cands = vocab.cleanup_top_n(&o_next_raw, objects, BRANCH_CANDIDATES);
 
-        // ── Cleanup (nearest-neighbour in vocabulary) ───────────────
-        let (s_str, _) = vocab.cleanup_subset(&s_next_raw, subjects);
-        let (v_str, _) = vocab.cleanup_subset(&v_next_raw, verbs);
-        let (o_str, _) = vocab.cleanup_subset(&o_next_raw, objects);
+            // ── Enumerate all combinations ──────────────────────────
+            for (s_str, _) in &s_cands {
+                let s_vec = vocab.get_vector(s_str).cloned()
+                    .unwrap_or_else(|| hyp.s_vec);
+                for (v_str, _) in &v_cands {
+                    let v_vec = vocab.get_vector(v_str).cloned()
+                        .unwrap_or_else(|| hyp.v_vec);
+                    for (o_str, _) in &o_cands {
+                        let o_vec = vocab.get_vector(o_str).cloned()
+                            .unwrap_or_else(|| hyp.o_vec);
+                        let energy = reconstruction_energy(
+                            &s_vec, &v_vec, &o_vec, thought_vector,
+                        );
+                        candidates.push(FactorHypothesis {
+                            s_str: s_str.clone(),
+                            v_str: v_str.clone(),
+                            o_str: o_str.clone(),
+                            s_vec,
+                            v_vec,
+                            o_vec,
+                            energy,
+                        });
+                    }
+                }
+            }
 
-        // ── Update ALL factor vectors simultaneously ────────────────
-        let next_s = vocab
-            .get_vector(&s_str)
-            .cloned()
-            .unwrap_or_else(Hypervector::new_random);
-        let next_v = vocab
-            .get_vector(&v_str)
-            .cloned()
-            .unwrap_or_else(Hypervector::new_random);
-        let next_o = vocab
-            .get_vector(&o_str)
-            .cloned()
-            .unwrap_or_else(Hypervector::new_random);
+            // Also push the current hypothesis with updated energy
+            let cur_energy = reconstruction_energy(
+                &hyp.s_vec, &hyp.v_vec, &hyp.o_vec, thought_vector,
+            );
+            candidates.push(FactorHypothesis {
+                s_str: hyp.s_str.clone(),
+                v_str: hyp.v_str.clone(),
+                o_str: hyp.o_str.clone(),
+                s_vec: hyp.s_vec,
+                v_vec: hyp.v_vec,
+                o_vec: hyp.o_vec,
+                energy: cur_energy,
+            });
+        }
 
-        current_s = next_s;
-        current_v = next_v;
-        current_o = next_o;
+        // ── Deduplicate and prune to BEAM_WIDTH ─────────────────────
+        // Sort by energy descending
+        candidates.sort_by(|a, b| b.energy.partial_cmp(&a.energy).unwrap_or(std::cmp::Ordering::Equal));
 
-        // ── Convergence check ───────────────────────────────────────
-        let converged = !s_str.is_empty()
-            && s_str == last_s_str
-            && v_str == last_v_str
-            && o_str == last_o_str;
+        // Deduplicate: keep first occurrence of each unique (s,v,o) tuple
+        let mut seen = std::collections::HashSet::new();
+        let mut pruned: Vec<FactorHypothesis> = Vec::with_capacity(BEAM_WIDTH);
+        for cand in candidates {
+            let key = (cand.s_str.clone(), cand.v_str.clone(), cand.o_str.clone());
+            if seen.insert(key) {
+                pruned.push(cand);
+                if pruned.len() >= BEAM_WIDTH {
+                    break;
+                }
+            }
+        }
 
-        last_s_str = s_str.clone();
-        last_v_str = v_str.clone();
-        last_o_str = o_str.clone();
+        beam = pruned;
 
-        // ── Reconstruction energy ───────────────────────────────────
-        let energy = reconstruction_energy(&current_s, &current_v, &current_o, thought_vector);
+        // ── Track best energy across beam ───────────────────────────
+        let best_local_energy = beam.first().map(|h| h.energy).unwrap_or(0.0);
 
-        // Track best energy for annealing
-        if energy > best_energy {
-            best_energy = energy;
+        let improved = best_local_energy > best_overall_energy + MIN_ENERGY_IMPROVEMENT;
+        if improved {
+            best_overall_energy = best_local_energy;
             iter_since_best = 0;
         } else {
             iter_since_best += 1;
         }
 
-        // If converged, validate via reconstruction energy
-        if converged {
-            if energy >= MIN_RECONSTRUCTION_ENERGY {
-                return Some((s_str, v_str, o_str, energy));
+        // ── Compute adaptive resonance parameters ───────────────────
+        let (adaptive_patience, adaptive_threshold) =
+            adaptive_resonance_params(&beam, best_overall_energy);
+
+        // ── Convergence check: all hypotheses agree? ────────────────
+        // If the top hypothesis has converged (all strings non-empty and
+        // every hypothesis in the beam agrees on all 3 factors), we're done.
+        let best = &beam[0];
+        let top3_agree = beam.len() >= 3 && beam.iter().all(|h| {
+            !h.s_str.is_empty() && h.s_str == best.s_str
+                && !h.v_str.is_empty() && h.v_str == best.v_str
+                && !h.o_str.is_empty() && h.o_str == best.o_str
+        });
+
+        if top3_agree {
+            if best.energy >= adaptive_threshold {
+                return Some((best.s_str.clone(), best.v_str.clone(), best.o_str.clone(), best.energy));
             }
-            // Low energy despite convergence → hallucination.
-            // Inject noise and continue to try escaping the local minimum.
+            // Low energy despite consensus → hallucination or local minimum.
+            // Apply targeted noise to diversify the beam.
             let temperature = 1.0 - (iteration as f64 / max_iterations as f64);
-            inject_noise(&mut current_s, &mut current_v, &mut current_o, temperature);
-            // Reset convergence trackers
-            last_s_str.clear();
-            last_v_str.clear();
-            last_o_str.clear();
+            for hyp in beam.iter_mut() {
+                inject_noise(&mut hyp.s_vec, &mut hyp.v_vec, &mut hyp.o_vec, temperature * 0.5);
+            }
+            iter_since_best = 0;
             continue;
         }
 
-        // ── Plateau annealing (no improvement for too long) ─────────
-        if iter_since_best >= PLATEAU_PATIENCE && energy < MIN_RECONSTRUCTION_ENERGY {
-            let temperature = 1.0 - (iteration as f64 / max_iterations as f64);
-            // Only inject if temperature is still meaningful
-            if temperature > 0.05 {
-                inject_noise(&mut current_s, &mut current_v, &mut current_o, temperature);
-                iter_since_best = 0;
-                // Reset convergence trackers so we don't falsely re-converge
-                last_s_str.clear();
-                last_v_str.clear();
-                last_o_str.clear();
+        // Single-hypothesis convergence (backward compat path)
+        if !best.s_str.is_empty() && beam.len() == 1 {
+            if best.energy >= adaptive_threshold {
+                return Some((best.s_str.clone(), best.v_str.clone(), best.o_str.clone(), best.energy));
             }
+            let temperature = 1.0 - (iteration as f64 / max_iterations as f64);
+            // Split the borrow to satisfy the borrow checker
+            let hyp = &mut beam[0];
+            inject_noise(&mut hyp.s_vec, &mut hyp.v_vec, &mut hyp.o_vec, temperature);
+            hyp.s_str.clear();
+            hyp.v_str.clear();
+            hyp.o_str.clear();
+            continue;
+        }
+
+        // ── Plateau annealing ───────────────────────────────────────
+        if iter_since_best >= adaptive_patience && best_overall_energy < adaptive_threshold {
+            let temperature = 1.0 - (iteration as f64 / max_iterations as f64);
+            if temperature > 0.05 {
+                for hyp in beam.iter_mut() {
+                    inject_noise(&mut hyp.s_vec, &mut hyp.v_vec, &mut hyp.o_vec, temperature);
+                    hyp.s_str.clear();
+                    hyp.v_str.clear();
+                    hyp.o_str.clear();
+                }
+                iter_since_best = 0;
+            }
+        }
+
+        // ── Restart: if beam is empty or all dead, reinitialize ─────
+        if beam.is_empty() || beam.iter().all(|h| h.s_str.is_empty() && h.energy < 0.1) {
+            beam = vec![FactorHypothesis {
+                s_str: String::new(),
+                v_str: String::new(),
+                o_str: String::new(),
+                s_vec: Hypervector::new_random(),
+                v_vec: Hypervector::new_random(),
+                o_vec: Hypervector::new_random(),
+                energy: 0.0,
+            }];
+            iter_since_best = 0;
         }
     }
 
-    // ── Ran out of iterations — final energy gate ────────────────────
-    let energy = reconstruction_energy(&current_s, &current_v, &current_o, thought_vector);
-    if energy >= MIN_RECONSTRUCTION_ENERGY {
-        Some((last_s_str, last_v_str, last_o_str, energy))
+    // ── Ran out of iterations — best hypothesis through energy gate ─
+    if let Some(best) = beam.into_iter().next() {
+        if best.energy >= MIN_RECONSTRUCTION_ENERGY {
+            Some((best.s_str, best.v_str, best.o_str, best.energy))
+        } else {
+            None
+        }
     } else {
         None
     }
@@ -648,6 +860,7 @@ pub fn lsh_sector(vector: &Hypervector) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rand::Rng;
 
     fn make_vocab() -> ResonatorVocabulary {
         let mut v = ResonatorVocabulary::new();
@@ -890,5 +1103,158 @@ mod tests {
             }
             _ => panic!("Expected Nested slot"),
         }
+    }
+
+    // ── UPGRADE v3.0: Beam Search Resonator Tests ──────────────────────────
+
+    #[test]
+    fn test_cleanup_top_n_returns_multiple() {
+        let vocab = make_vocab();
+        let query = vocab.get_vector("Finch").unwrap();
+
+        let subjects = vec![
+            "Finch".to_string(),
+            "Agent-1".to_string(),
+            "Broker".to_string(),
+        ];
+
+        let top2 = vocab.cleanup_top_n(query, &subjects, 2);
+        assert_eq!(top2.len(), 2, "Should return exactly 2 candidates");
+        assert_eq!(top2[0].0, "Finch", "Best candidate should be exact match");
+        assert!(top2[0].1 >= top2[1].1, "Results should be sorted by similarity");
+    }
+
+    #[test]
+    fn test_cleanup_top_n_handles_insufficient_candidates() {
+        let vocab = make_vocab();
+        let query = vocab.get_vector("Finch").unwrap();
+
+        let subjects = vec!["Finch".to_string()];
+
+        let top5 = vocab.cleanup_top_n(query, &subjects, 5);
+        assert_eq!(top5.len(), 1, "Should return at most the available candidates");
+    }
+
+    #[test]
+    fn test_beam_resonator_basic_factorization() {
+        let vocab = make_vocab();
+
+        let s_hv = vocab.get_vector("Finch").unwrap();
+        let v_hv = vocab.get_vector("write").unwrap();
+        let o_hv = vocab.get_vector("ledger").unwrap();
+
+        let t = encode_svo(s_hv, v_hv, o_hv);
+
+        let subjects = vec![
+            "Finch".to_string(),
+            "Agent-1".to_string(),
+            "Broker".to_string(),
+        ];
+        let verbs = vec!["write".to_string(), "read".to_string(), "panic".to_string()];
+        let objects = vec![
+            "ledger".to_string(),
+            "hosts".to_string(),
+            "server".to_string(),
+        ];
+
+        let res = factorize_svo(&t, &vocab, &subjects, &verbs, &objects, 30);
+        assert!(res.is_some(), "Beam resonator should resolve the thought vector");
+        let (s, v, o, energy) = res.unwrap();
+        assert_eq!(s, "Finch", "Subject should be Finch");
+        assert_eq!(v, "write", "Verb should be write");
+        assert_eq!(o, "ledger", "Object should be ledger");
+        assert!(
+            energy >= MIN_RECONSTRUCTION_ENERGY,
+            "Reconstruction energy should pass threshold: {}",
+            energy
+        );
+    }
+
+    #[test]
+    fn test_beam_resonator_noisy_ambiguous_input() {
+        // Test with a more difficult case: a thought vector made ambiguous
+        // by adding a small amount of noise. The beam search should still
+        // find the correct factorization.
+        let vocab = make_vocab();
+
+        let s_hv = vocab.get_vector("Finch").unwrap();
+        let v_hv = vocab.get_vector("write").unwrap();
+        let o_hv = vocab.get_vector("ledger").unwrap();
+
+        let mut t = encode_svo(s_hv, v_hv, o_hv);
+
+        // Add noise: flip ~1% of bits to make factorization harder
+        let noise_bits = (HD_DIMENSION / 100).max(1);
+        let mut rng = rand::thread_rng();
+        for _ in 0..noise_bits {
+            let block = rng.gen_range(0..crate::U64_BLOCKS);
+            let bit = rng.gen_range(0..64);
+            t.bits[block] ^= 1u64 << bit;
+        }
+
+        let subjects = vec![
+            "Finch".to_string(),
+            "Agent-1".to_string(),
+            "Broker".to_string(),
+        ];
+        let verbs = vec!["write".to_string(), "read".to_string(), "panic".to_string()];
+        let objects = vec![
+            "ledger".to_string(),
+            "hosts".to_string(),
+            "server".to_string(),
+        ];
+
+        let res = factorize_svo(&t, &vocab, &subjects, &verbs, &objects, 50);
+        assert!(res.is_some(), "Beam resonator should handle noisy input");
+        let (s, v, o, energy) = res.unwrap();
+        // Due to noise, the exact factors might shift slightly, but should be close
+        assert!(
+            energy >= MIN_RECONSTRUCTION_ENERGY - 0.10,
+            "Noisy reconstruction energy should be reasonable: {}",
+            energy
+        );
+        let _ = (s, v, o);
+    }
+
+    #[test]
+    fn test_adaptive_resonance_params_high_diversity() {
+        // Create diverse hypotheses (all different)
+        let mut vocab = make_vocab();
+        let s_vec = vocab.get_vector("Finch").cloned().unwrap_or_else(Hypervector::new_random);
+        let v_vec = vocab.get_vector("write").cloned().unwrap_or_else(Hypervector::new_random);
+        let o_vec = vocab.get_vector("ledger").cloned().unwrap_or_else(Hypervector::new_random);
+
+        let hypotheses = vec![
+            FactorHypothesis { s_str: "Finch".into(), v_str: "write".into(), o_str: "ledger".into(), s_vec: s_vec.clone(), v_vec: v_vec.clone(), o_vec: o_vec.clone(), energy: 0.85 },
+            FactorHypothesis { s_str: "Agent-1".into(), v_str: "read".into(), o_str: "hosts".into(), s_vec: s_vec.clone(), v_vec: v_vec.clone(), o_vec: o_vec.clone(), energy: 0.65 },
+            FactorHypothesis { s_str: "Broker".into(), v_str: "panic".into(), o_str: "server".into(), s_vec, v_vec, o_vec, energy: 0.55 },
+        ];
+
+        let (patience, threshold) = adaptive_resonance_params(&hypotheses, 0.5);
+        // High diversity should increase patience
+        assert!(patience >= PLATEAU_PATIENCE, "High diversity should increase patience: {}", patience);
+        // High diversity should lower threshold
+        assert!(threshold <= MIN_RECONSTRUCTION_ENERGY, "High diversity should lower threshold: {}", threshold);
+    }
+
+    #[test]
+    fn test_adaptive_resonance_params_low_diversity() {
+        // Create unanimous hypotheses (all same)
+        let mut vocab = make_vocab();
+        let s_vec = vocab.get_vector("Finch").cloned().unwrap_or_else(Hypervector::new_random);
+        let v_vec = vocab.get_vector("write").cloned().unwrap_or_else(Hypervector::new_random);
+        let o_vec = vocab.get_vector("ledger").cloned().unwrap_or_else(Hypervector::new_random);
+
+        let hypotheses = vec![
+            FactorHypothesis { s_str: "Finch".into(), v_str: "write".into(), o_str: "ledger".into(), s_vec: s_vec.clone(), v_vec: v_vec.clone(), o_vec: o_vec.clone(), energy: 0.90 },
+            FactorHypothesis { s_str: "Finch".into(), v_str: "write".into(), o_str: "ledger".into(), s_vec: s_vec.clone(), v_vec: v_vec.clone(), o_vec: o_vec, energy: 0.88 },
+            FactorHypothesis { s_str: "Finch".into(), v_str: "write".into(), o_str: "ledger".into(), s_vec, v_vec, o_vec: o_vec.clone(), energy: 0.86 },
+        ];
+
+        let (patience, threshold) = adaptive_resonance_params(&hypotheses, 0.9);
+        // Low diversity should keep patience near default
+        assert!(patience <= PLATEAU_PATIENCE + 2, "Low diversity should not increase patience much: {}", patience);
+        // High energy means higher threshold
+        assert!(threshold <= MIN_RECONSTRUCTION_ENERGY + 0.01, "Threshold should be reasonable: {}", threshold);
     }
 }

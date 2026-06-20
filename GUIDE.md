@@ -36,7 +36,7 @@ This guide bridges the formal mathematics (`MATH.md`) and the Rust implementatio
           ┌────────────────────────┐     ┌──────────────────────────────┐
           │   Dissonance Check     │     │   DEEPTHOUGHT REASONING      │
           │   δ(world, baseline)   │     │   forward_chain_anchored()   │
-          │   > 0.55 → pivot       │     │   τ = 0.030 soft projection  │
+           │   > 0.55 → pivot       │     │   τ = 0.10 soft projection   │
           └───────────┬────────────┘     │   (or τ = 0 hard projection) │
                       │                  └──────────────┬───────────────┘
                       │                                 │
@@ -263,10 +263,16 @@ The key insight: **algebraic composition is EXPANSIVE** (ε → 0.5), so promote
   │  return output                               │
   └─────────────────────────────────────────────┘
 
-  TAU GUIDE:
-    τ = 0.0     → hard projection (4.3 bits capacity, κ_P ≈ 0.97)
-    τ = 0.030   → SWEET SPOT (7.5 bits, κ_P ≈ 1.0, 9.1× capacity)
-    τ > 0.10    → MUSH (outputs blend to centroid mean, κ_P < 0.85)
+  TAU GUIDE (v3.1 corrected):
+    τ = 0.0     → hard projection (4.32 bits, C_eff=20,  κ_P ≈ 0.95)
+    τ = 0.08    → CONSERVATIVE OPTIMUM (10.58 bits, C_eff=1528, κ_P ≈ 0.99, 76× gain)
+    τ = 0.10    → MAX CAPACITY (11.32 bits, C_eff=2554, κ_P ≈ 0.92, 128× gain)
+    τ > 0.50    → MUSH (outputs blend to centroid mean, κ_P < 0.19)
+    
+  NOTE (v3.1): The numerical stability transform was corrected from
+  exp(-(d - min_d)²/τ) to exp(-(d² - min_d²)/τ). The old formula
+  over-weighted distant centroids by exp(2·min_d·(d - min_d)/τ),
+  making τ=0.030 appear optimal. The true optimum is τ=0.10.
 ```
 
 ### 1.6 LSH Routing + Anchor-Through-Clusters
@@ -451,7 +457,7 @@ let query = Hypervector::new_random();
 let hard = soft_project(&query, &clusters, 0.0);
 // Equivalent to: anchor_through_clusters(&query, &clusters)
 
-// SOFT projection at sweet spot (τ = 0.030)
+// SOFT projection at sweet spot (τ = 0.10, v3.1)
 // 9.1× capacity multiplier, κ_P ≈ 1.0
 let soft = soft_project(&query, &clusters, 0.030);
 
@@ -502,9 +508,12 @@ let mut telemetry = HashMap::new();
 telemetry.insert("vix_zscore".to_string(), 0.5);
 telemetry.insert("move_zscore".to_string(), 0.2);
 let world_state = brain.compile_state_vector(&telemetry);
+// 2. Enable soft projection at sweet spot (v3.1 corrected)
+//    NOTE: The numerical stability transform was fixed from
+//    exp(-(d-min_d)²/τ) to exp(-(d²-min_d²)/τ). The old sweet spot
+//    τ=0.030 was an artifact of the bug; the true optimal is τ=0.10.
 
-// 2. Enable soft projection at sweet spot
-brain.soft_projection_tau = 0.030;
+brain.soft_projection_tau = 0.10;
 
 // 3. Project world state through clusters
 let projected = brain.project_through_clusters(&world_state);

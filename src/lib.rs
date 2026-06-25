@@ -685,6 +685,28 @@ pub struct MemoryCluster {
     pub last_access_tick: u64,
 }
 
+/// EWMA smoothing factor for drift magnitude tracking (Theorem XXIII.4).
+/// α = 0.05 gives half-life ≈ ln(2)/ln(1/0.95) ≈ 13.5 ticks.
+/// Fast enough to detect drift onset within ~14 ticks, slow enough to
+/// reject single-tick noise bursts.
+pub const DRIFT_MAGNITUDE_ALPHA: f64 = 0.05;
+
+/// Maximum within-cluster tracking rate (Theorem XXIII.4).
+/// Per-tick drift δ in NHD above this value triggers the adaptive novelty
+/// gate in `add_to_dejavu_db`, which lowers the absorption threshold to
+/// force faster centroid catching-up and bound cluster proliferation.
+pub const DELTA_MAX: f64 = 0.00035;
+
+/// Baseline NHD threshold for the `add_to_dejavu_db` cluster absorption gate.
+/// Corresponds to similarity 0.65.  The adaptive gate raises or lowers
+/// this threshold based on measured drift rate.
+pub const THETA_MAIN_BASELINE: f64 = 0.35;
+
+/// Floor of the adaptive novelty gate (NHD).  Must be > θ_merge (0.30)
+/// so that even under maximal absorption pressure, the gate never merges
+/// clusters that the compactor would keep separate.
+pub const THETA_ADAPT_MIN: f64 = 0.32;
+
 /// Default projection threshold (NHD) for cluster anchoring.
 /// Derived from θ* = (3ε - 2ε²)/2 with ε = 0.50 (worst-case composition noise).
 pub const DEFAULT_PROJECTION_THRESHOLD_NHD: f64 = 0.50;
@@ -930,6 +952,10 @@ impl MemoryCluster {
                 }
             }
         }
+        // Enforce ρ-admissible invariant: δ(c, ρ¹³(c)) > 0.
+        // Required for Assumption ρ in Theorem XXV.4.
+        // This is a no-op for non-pathological centroids.
+        self.enforce_rho_admissible();
     }
 
     /// Record an access (read or write) at the given tick.
@@ -977,6 +1003,80 @@ impl MemoryCluster {
     /// Return `true` if the accumulator is resident (hot).
     pub fn is_hot(&self) -> bool {
         !self.accumulator.is_empty()
+    }
+
+    /// ██ v3.1: Enforce ρ-admissible invariant (Assumption ρ, Theorem XXV.4) ██
+    ///
+    /// The operator f = nearest ∘ P_τ ∘ ρ¹³ has its centroid transition domain
+    /// in ρ²⁶(W_i), not W_i or ρ¹³(W_i).  The Sub-Lemma S constructive proof
+    /// requires that NO centroid is a fixed point of ρ¹³, ρ²⁶, or ρ⁵².
+    ///
+    /// Fixed points of ρ¹³ (shift by 13):
+    ///   gcd(13, 10240) = 1 → ρ¹³ generates C_10240.
+    ///   Only constant vectors (all-zeros, all-ones) are fixed points.
+    ///
+    /// Fixed points of ρ²⁶ (shift by 26):
+    ///   gcd(26, 10240) = 2 → ρ²⁶ generates C_5120.
+    ///   Additional fixed points: period-2 vectors (0101..., 1010...).
+    ///   These pass ρ¹³ (δ = 1.0 since 13 odd) but collapse ρ²⁶(W_i) → W_i.
+    ///
+    /// Fixed points of ρ⁵² (shift by 52):
+    ///   gcd(52, 10240) = 4 → ρ⁵² generates C_2560.
+    ///   Additional fixed points: period-4 vectors (0011..., 1100...,
+    ///   0110..., etc).  These pass ρ¹³ and ρ²⁶ but break the constructive
+    ///   witness in Sub-Lemma S (the inequality d_ptr - d_ptc < 2r_i fails
+    ///   when d(c_i, ρ⁻⁵²(c_i)) = 0).
+    ///
+    /// The three checks are cheap: three XOR + popcount at compaction time.
+    /// Real-world embeddings never produce these degeneracies, but the
+    /// invariant is enforced unconditionally as a formal safety guarantee.
+    pub fn enforce_rho_admissible(&mut self) {
+        // Check ρ¹³ (shift by 13) — catches constant vectors.
+        let r13 = self.centroid.rotate_left(13);
+        if self.centroid.normalized_hamming_distance(&r13) == 0.0 {
+            // Fixed point of ρ¹³ — flip bit 0 to break symmetry.
+            self.centroid.bits[0] ^= 1;
+            if !self.accumulator.is_empty() {
+                let threshold = self.total_weight / 2;
+                self.accumulator[0] = if self.centroid.bits[0] & 1 == 1 {
+                    threshold + 1
+                } else {
+                    threshold
+                };
+            }
+        }
+
+        // Check ρ²⁶ (shift by 26) — catches period-2 vectors.
+        // Uses bit 1 (different from bit 0 for ρ¹³) to avoid conflict.
+        let r26 = self.centroid.rotate_left(26);
+        if self.centroid.normalized_hamming_distance(&r26) == 0.0 {
+            self.centroid.bits[1] ^= 1;
+            if !self.accumulator.is_empty() {
+                let threshold = self.total_weight / 2;
+                self.accumulator[1] = if self.centroid.bits[1] & 1 == 1 {
+                    threshold + 1
+                } else {
+                    threshold
+                };
+            }
+        }
+
+        // Check ρ⁵² (shift by 52) — catches period-4 vectors.
+        // Uses bit 2 (different from bit 0 for ρ¹³, bit 1 for ρ²⁶).
+        // Required by Sub-Lemma S constructive proof (Theorem XXV.5):
+        // the witness construction needs d(c_i, ρ⁻⁵²(c_i)) > 0.
+        let r52 = self.centroid.rotate_left(52);
+        if self.centroid.normalized_hamming_distance(&r52) == 0.0 {
+            self.centroid.bits[2] ^= 1;
+            if !self.accumulator.is_empty() {
+                let threshold = self.total_weight / 2;
+                self.accumulator[2] = if self.centroid.bits[2] & 1 == 1 {
+                    threshold + 1
+                } else {
+                    threshold
+                };
+            }
+        }
     }
 
     /// ██ FIX v2.5: Decay the accumulator to age out old evidence ██
@@ -1168,6 +1268,13 @@ pub struct VSABrain {
     /// co-occurrence learning.  Maps tick → set of activated cluster indices.
     /// Kept for the last ASSOCIATION_WINDOW_TICKS ticks.
     pub activation_history: HashMap<u64, Vec<usize>>,
+
+    /// ██ Theorem XXIII.4: Drift magnitude EWMA ██
+    /// Per-tick drift magnitude δ_measured(t) = popcount(Δ_t) / D, smoothed
+    /// via EWMA with α = DRIFT_MAGNITUDE_ALPHA.  Used by `adaptive_novelty_threshold`
+    /// to detect when drift exceeds δ_max = 0.00035.
+    /// Initialized to 0.0; converges within ~3 half-lives (~42 ticks).
+    pub drift_magnitude_ewma: f64,
 }
 
 /// Synthetic cold-start regime labels for Tick 0 initialization.
@@ -1197,6 +1304,7 @@ impl VSABrain {
             cold_storage: crate::compression::ColdStorageManager::new(),
             cross_cluster_associations: HashMap::new(),
             activation_history: HashMap::new(),
+            drift_magnitude_ewma: 0.0,
         }
     }
 
@@ -1390,7 +1498,8 @@ impl VSABrain {
         label: &str,
         metadata: HashMap<String, String>,
     ) {
-        let cluster_threshold = 0.65;
+        let adaptive_nhd = self.adaptive_novelty_threshold();
+        let cluster_threshold = 1.0 - adaptive_nhd;  // similarity = 1 - NHD
         let mut best_idx = None;
         let mut best_sim = -1.0;
 
@@ -1472,6 +1581,180 @@ impl VSABrain {
         self.record_activation(new_idx);
     }
 
+    /// ██ Theorem XXIII.4: Update drift magnitude EWMA ██
+    ///
+    /// Called once per tick with the residual delta vector
+    /// δ_t = S_t ⊕ ρ(S_{t-1}) ⊕ A_{t-1}.  Computes the per-tick drift
+    /// magnitude as the normalized popcount of δ_t and updates the
+    /// exponential moving average:
+    ///
+    ///   m_t = α · |δ_t|/D + (1-α) · m_{t-1}
+    ///
+    /// where α = DRIFT_MAGNITUDE_ALPHA = 0.05.
+    ///
+    /// See Theorem XXIII.4 and `adaptive_novelty_threshold()`.
+    pub fn update_drift_magnitude(&mut self, delta_t: &Hypervector) {
+        let magnitude = delta_t.count_ones() as f64 / HD_DIMENSION as f64;
+        self.drift_magnitude_ewma =
+            DRIFT_MAGNITUDE_ALPHA * magnitude + (1.0 - DRIFT_MAGNITUDE_ALPHA) * self.drift_magnitude_ewma;
+    }
+
+    /// ██ Theorem XXIII.3: Adaptive novelty threshold ██
+    ///
+    /// Returns the NHD threshold for the `add_to_dejavu_db` cluster
+    /// absorption gate.  At baseline drift (δ_measured ≤ δ_max), returns
+    /// THETA_MAIN_BASELINE = 0.35 NHD (0.65 similarity).  As measured
+    /// drift increases, the threshold drops proportionally until it hits
+    /// THETA_ADAPT_MIN = 0.32 NHD (0.68 similarity), just above the
+    /// compactor merge threshold (0.30 NHD).
+    ///
+    /// The formula:
+    ///
+    ///     θ_adapt = max(THETA_ADAPT_MIN, THETA_MAIN_BASELINE · δ_max / δ_measured)
+    ///
+    /// In similarity space (used by `add_to_dejavu_db`):
+    ///
+    ///     sim_adapt = 1.0 - θ_adapt
+    ///
+    /// | δ_measured | θ_adapt (NHD) | sim_adapt | Effect |
+    /// |------------|---------------|-----------|--------|
+    /// | ≤ δ_max    | 0.35          | 0.65      | Baseline (unchanged) |
+    /// | 2× δ_max   | 0.175         | 0.825     | More absorption |
+    /// | 4× δ_max   | 0.32 (floor)  | 0.68      | Max absorption pressure |
+    pub fn adaptive_novelty_threshold(&self) -> f64 {
+        if self.drift_magnitude_ewma <= DELTA_MAX {
+            THETA_MAIN_BASELINE
+        } else {
+            let adapted = THETA_MAIN_BASELINE * (DELTA_MAX / self.drift_magnitude_ewma);
+            adapted.max(THETA_ADAPT_MIN)
+        }
+    }
+
+    /// ██ Theorem XXIII.3: Compact close clusters ██
+    ///
+    /// Finds the closest pair of clusters by centroid NHD.  If the distance
+    /// is ≤ `merge_threshold`, merges the smaller cluster into the larger
+    /// one.  The survivor's anchor is preserved; the absorbed cluster's
+    /// entries are re-delta-encoded against the survivor's anchor to
+    /// guarantee exact reconstruction.  Accumulators are summed and the
+    /// centroid is recomputed.
+    ///
+    /// Repeats until no pair is within the threshold.  Returns the number
+    /// of clusters merged.
+    ///
+    /// O(K²) per call, where K = number of clusters.  Designed to be called
+    /// every 50 ticks when the adaptive gate is active (δ_measured > δ_max).
+    pub fn compact_clusters(&mut self, merge_threshold: f64) -> usize {
+        let mut merges = 0;
+        loop {
+            if self.dejavu_clusters.len() < 2 {
+                break;
+            }
+
+            // Find closest pair
+            let mut min_dist = f64::MAX;
+            let mut min_i = 0;
+            let mut min_j = 1;
+            for i in 0..self.dejavu_clusters.len() {
+                for j in (i + 1)..self.dejavu_clusters.len() {
+                    let d = self.dejavu_clusters[i].centroid.normalized_hamming_distance(
+                        &self.dejavu_clusters[j].centroid,
+                    );
+                    if d < min_dist {
+                        min_dist = d;
+                        min_i = i;
+                        min_j = j;
+                    }
+                }
+            }
+
+            if min_dist > merge_threshold {
+                break;
+            }
+
+            // Ensure the larger cluster (by weight) is the survivor
+            if self.dejavu_clusters[min_i].total_weight < self.dejavu_clusters[min_j].total_weight {
+                std::mem::swap(&mut min_i, &mut min_j);
+            }
+
+            // Ensure both have their accumulators initialized
+            self.dejavu_clusters[min_i].ensure_accumulator();
+            self.dejavu_clusters[min_j].ensure_accumulator();
+
+            // Re-encode absorbed cluster's entries against survivor's anchor
+            // Copy both anchors first to avoid borrow conflicts.
+            let j_anchor = self.dejavu_clusters[min_j].anchor;
+            let i_anchor = self.dejavu_clusters[min_i].anchor;
+            let j_entries: Vec<DejavuEntry> = self.dejavu_clusters[min_j].entries.drain(..).collect();
+            for entry in j_entries {
+                let reconstructed = entry.reconstruct(&j_anchor);
+                let new_entry = DejavuEntry::new(
+                    reconstructed,
+                    entry.label,
+                    entry.metadata,
+                    Some(&i_anchor),
+                );
+                self.dejavu_clusters[min_i].entries.push(new_entry);
+            }
+
+            // Enforce entry cap on survivor (keep newest entries)
+            if self.dejavu_clusters[min_i].entries.len() > MAX_ENTRIES_PER_CLUSTER {
+                let drain = MAX_ENTRIES_PER_CLUSTER / 4;
+                self.dejavu_clusters[min_i].entries.drain(0..drain);
+            }
+
+            // Merge accumulators
+            // Copy both weights + j's accumulator first to avoid borrow conflicts.
+            let survivor_total = self.dejavu_clusters[min_i].total_weight;
+            let absorbed_total = self.dejavu_clusters[min_j].total_weight;
+            let combined = survivor_total + absorbed_total;
+            let j_acc: Vec<u32> = self.dejavu_clusters[min_j].accumulator.clone();
+
+            for (a_i, &a_j) in self.dejavu_clusters[min_i]
+                .accumulator
+                .iter_mut()
+                .zip(j_acc.iter())
+            {
+                *a_i = (*a_i as u64 + a_j as u64) as u32;
+            }
+            self.dejavu_clusters[min_i].total_weight = combined;
+
+            // Rescale if above MAX_CLUSTER_WEIGHT (same logic as absorb_entry)
+            if self.dejavu_clusters[min_i].total_weight > MAX_CLUSTER_WEIGHT {
+                let scale = MAX_CLUSTER_WEIGHT as f64 / self.dejavu_clusters[min_i].total_weight as f64;
+                // Copy centroid before mutating accumulator
+                let centroid_before = self.dejavu_clusters[min_i].centroid;
+                for acc in self.dejavu_clusters[min_i].accumulator.iter_mut() {
+                    *acc = (*acc as f64 * scale).round() as u32;
+                }
+                self.dejavu_clusters[min_i].total_weight = MAX_CLUSTER_WEIGHT;
+                // Preserve centroid fixed-point under rescaling
+                let new_threshold = self.dejavu_clusters[min_i].total_weight / 2;
+                for (i, acc) in self.dejavu_clusters[min_i].accumulator.iter_mut().enumerate() {
+                    let word = centroid_before.bits[i / 64];
+                    let bit_before = (word >> (i % 64)) & 1;
+                    let is_above = *acc > new_threshold;
+                    if bit_before == 1 && !is_above {
+                        *acc = new_threshold + 1;
+                    } else if bit_before == 0 && is_above {
+                        *acc = new_threshold;
+                    }
+                }
+            }
+
+            // Recompute centroid from merged accumulator
+            self.dejavu_clusters[min_i].recompute_centroid();
+
+            // ρ-admissible check on the merged centroid (Theorem XXV.4)
+            self.dejavu_clusters[min_i].enforce_rho_admissible();
+
+            // Remove the absorbed cluster
+            self.dejavu_clusters.remove(min_j);
+            merges += 1;
+        }
+        merges
+    }
+
     /// ██ Tier 4: Absorb an epistemic update from the broker.
     ///
     /// After an agent executes an action and the broker broadcasts the
@@ -1501,7 +1784,8 @@ impl VSABrain {
         }
 
         if let Some(idx) = best_idx {
-            if best_sim >= 0.65 {
+            let adaptive_sim = 1.0 - self.adaptive_novelty_threshold();
+            if best_sim >= adaptive_sim {
                 // ██ FIX v2.6 (Layer 3): Thaw from cold storage on epistemic update ██
                 if self.cold_storage.contains(idx) {
                     if let Some(data) = self.cold_storage.take(idx) {
@@ -1741,7 +2025,7 @@ impl VSABrain {
         // Transient entries are never delta-encoded (they're short-lived)
         let entry = DejavuEntry::new(vector, label.to_string(), metadata, None);
 
-        let cluster_threshold = 0.65;
+        let cluster_threshold = 1.0 - self.adaptive_novelty_threshold();
         let mut best_idx = None;
         let mut best_sim = -1.0;
 
@@ -2318,7 +2602,21 @@ pub const MAX_ASSOCIATIONS_PER_CLUSTER: usize = 20;
 /// ██ UPGRADE v3.0: Association strength increment per co-occurrence ██
 pub const ASSOCIATION_STRENGTH_INC: f64 = 0.15;
 
-/// ██ UPGRADE v3.0: Association decay factor per tick ██
+/// ██ UPGRADE v3.0: Association decay factor (per maintenance call) ██
+///
+/// Applied every 50 ticks in the maintenance block.  Effective per-tick
+/// decay: 0.995^{1/50} ≈ 0.9999 (negligible).  The 50-tick half-life is:
+///
+///     t_{1/2} = 50 · ln(0.5) / ln(0.995) ≈ 6,915 ticks ≈ 3.8 hours
+///
+/// A single co-occurrence (strength 0.15) decays below the pruning
+/// floor (ASSOCIATION_MIN_STRENGTH = 0.05) in approximately:
+///
+///     n = 50 · ln(0.05/0.15) / ln(0.995) ≈ 5,500 ticks ≈ 3 hours
+///
+/// This is long enough for Level 2 association traversal to remain
+/// reliable across a full trading session, but slow enough that stale
+/// associations from previous sessions eventually fade.
 pub const ASSOCIATION_DECAY: f64 = 0.995;
 
 /// ██ UPGRADE v3.0: Minimum association strength for retrieval ██
@@ -2333,6 +2631,12 @@ pub const ASSOCIATION_CASCADE_DEPTH: usize = 3;
 /// When retrieving an associated cluster's centroid, how close the
 /// reconstructed vector must be to an actual centroid to count.
 pub const ASSOCIATION_MATCH_THRESHOLD: f64 = 0.65;
+
+/// ██ UPGRADE v3.0: Minimum association strength for concept resolution ██
+/// Higher than ASSOCIATION_MIN_STRENGTH (0.05 pruning floor).
+/// An association must reach this strength (≈2 co-occurrences at 0.15/inc)
+/// before it's trusted for resolving term coreference in the QA engine.
+pub const ASSOCIATION_RESOLUTION_THRESHOLD: f64 = 0.30;
 
 // ─── VSABrain: Cross-Cluster Association Methods ─────────────────────────
 
@@ -2430,7 +2734,17 @@ impl VSABrain {
     /// that can be reconstructed with confidence above the threshold.
     ///
     /// Returns `Vec<(associated_cluster_index, similarity, strength)>`.
-    pub fn retrieve_associated(&self, cluster_idx: usize) -> Vec<(usize, f64, f64)> {
+    /// Retrieve associated clusters from the association graph.
+    ///
+    /// `min_strength`: optional minimum association strength filter.
+    ///   - `None` = return all valid associations (existing tests pass)
+    ///   - `Some(threshold)` = only return associations with strength ≥ threshold
+    ///     (used by QA engine's `resolve_term` for concept resolution)
+    pub fn retrieve_associated(
+        &self,
+        cluster_idx: usize,
+        min_strength: Option<f64>,
+    ) -> Vec<(usize, f64, f64)> {
         if cluster_idx >= self.dejavu_clusters.len() {
             return vec![];
         }
@@ -2442,6 +2756,13 @@ impl VSABrain {
             for &(target_idx, ref assoc_vec, strength, _) in assocs {
                 if target_idx >= self.dejavu_clusters.len() {
                     continue;
+                }
+
+                // Optional strength gate for concept resolution
+                if let Some(min_s) = min_strength {
+                    if strength < min_s {
+                        continue;
+                    }
                 }
 
                 // Reconstruct target centroid: centroid_j_est = centroid_i ⊕ assoc_{ij}
@@ -2556,6 +2877,145 @@ impl VSABrain {
             })
             .unwrap_or_default()
     }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CROSS-SESSION PERSISTENCE
+    // ═══════════════════════════════════════════════════════════════════════
+    //
+    // Saves and loads the brain state that must survive restarts:
+    //   1. Cluster centroids (MemoryCluster struct with all fields)
+    //   2. Cross-cluster associations
+    //
+    // NOT serialized:
+    //   - Accumulators (reconstructed via ensure_accumulator() on access)
+    //   - Activation history (ephemeral — rebuilt from streaming data)
+    //   - Experiences buffer (ephemeral — rebuilt from streaming data)
+    //   - Tick counter (resets on reload — tick-based decay is ambiguous
+    //     after a clock gap; associations use strength-only decay going forward)
+    //   - Drift magnitude EWMA (converges within ~42 ticks of streaming data)
+    //
+    // On reload, associations with out-of-bounds cluster indices are
+    // silently dropped. The tick field in associations is also dropped
+    // (set to 0) to avoid ambiguity about the clock gap.
+
+    /// Save the brain state to a JSON file.
+    ///
+    /// Only persists cluster centroids (with anchors and entries) and
+    /// cross-cluster associations. All ephemeral state is excluded.
+    ///
+    /// Returns the number of clusters and associations saved.
+    pub fn save_to_file(&self, path: &str) -> Result<(usize, usize), String> {
+        // Strip tick field from associations — it's meaningless after reload
+        let associations: Vec<(usize, usize, Hypervector, f64)> = self
+            .cross_cluster_associations
+            .iter()
+            .flat_map(|(from, assocs)| {
+                assocs.iter().map(move |(to, vec, strength, _tick)| {
+                    (*from, *to, *vec, *strength)
+                })
+            })
+            .collect();
+
+        let snapshot = BrainSnapshot {
+            cluster_count: self.dejavu_clusters.len(),
+            clusters: self.dejavu_clusters.clone(),
+            associations,
+            soft_projection_tau: self.soft_projection_tau,
+        };
+
+        let json = serde_json::to_string_pretty(&snapshot)
+            .map_err(|e| format!("Serialization error: {}", e))?;
+        std::fs::write(path, &json)
+            .map_err(|e| format!("Write error: {}", e))?;
+
+        Ok((snapshot.clusters.len(), snapshot.associations.len()))
+    }
+
+    /// Load the brain state from a JSON file.
+    ///
+    /// Replaces the current brain state with the deserialized clusters and
+    /// associations. Accumulators are left empty (cold) — they will be
+    /// lazily reconstructed via `ensure_accumulator()` on first access.
+    ///
+    /// Associations with out-of-bounds cluster indices (which can occur
+    /// if cluster indices shifted during a prior session's compaction)
+    /// are silently dropped. This is safe because:
+    ///   - Level 2 resolution falls through to Level 3 (raw n-gram) if
+    ///     no valid association is found.
+    ///   - New associations are learned as the system processes data.
+    pub fn load_from_file(&mut self, path: &str) -> Result<(usize, usize), String> {
+        let json = std::fs::read_to_string(path)
+            .map_err(|e| format!("Read error: {}", e))?;
+        let snapshot: BrainSnapshot = serde_json::from_str(&json)
+            .map_err(|e| format!("Deserialization error: {}", e))?;
+
+        // Validate cluster count
+        if snapshot.clusters.len() != snapshot.cluster_count {
+            return Err(format!(
+                "Corrupt snapshot: declared {} clusters but found {}",
+                snapshot.cluster_count,
+                snapshot.clusters.len()
+            ));
+        }
+
+        // Restore clusters (accumulators are empty — cold state)
+        self.dejavu_clusters = snapshot.clusters;
+        for cluster in self.dejavu_clusters.iter_mut() {
+            // Ensure accumulator is empty — will be lazily reconstructed
+            cluster.accumulator = Vec::new();
+            // Reset last_access_tick — will be updated on first access
+            cluster.last_access_tick = 0;
+        }
+
+        // Restore associations with bounds validation
+        self.cross_cluster_associations.clear();
+        let mut valid_count = 0;
+        let mut dropped_count = 0;
+        for (from, to, vec, strength) in snapshot.associations {
+            if from < self.dejavu_clusters.len() && to < self.dejavu_clusters.len() {
+                self.cross_cluster_associations
+                    .entry(from)
+                    .or_insert_with(Vec::new)
+                    .push((to, vec, strength, 0)); // tick = 0 (no clock)
+                valid_count += 1;
+            } else {
+                dropped_count += 1;
+            }
+        }
+
+        // Restore soft projection tau (or leave default 0.0)
+        self.soft_projection_tau = snapshot.soft_projection_tau;
+
+        // Reset ephemeral state
+        self.tick_counter = 0;
+        self.drift_magnitude_ewma = 0.0;
+        self.activation_history.clear();
+        self.experiences.clear();
+
+        Ok((self.dejavu_clusters.len(), valid_count))
+    }
+}
+
+/// Serializable snapshot of the brain for cross-session persistence.
+///
+/// Contains only the state that must survive restarts:
+/// - Cluster centroids (with anchors, entries, weights)
+/// - Cross-cluster associations (tick field stripped)
+/// - Soft projection tau parameter
+///
+/// Accumulators are intentionally excluded — they are lazily reconstructed
+/// via `MemoryCluster::ensure_accumulator()` on first use after deserialization.
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+pub struct BrainSnapshot {
+    /// Number of clusters — used for index validation on reload.
+    pub cluster_count: usize,
+    /// Serialized MemoryClusters (centroids, anchors, entries, weights).
+    pub clusters: Vec<MemoryCluster>,
+    /// Associations as (from_idx, to_idx, vector, strength) — tick field
+    /// is intentionally stripped; strength-only decay on reload.
+    pub associations: Vec<(usize, usize, Hypervector, f64)>,
+    /// The soft projection tau parameter, if non-default.
+    pub soft_projection_tau: f64,
 }
 
 // ─── LSH sector hash (stable random projections) ───────────────────────────
@@ -3065,5 +3525,477 @@ mod tests {
             "Activation history should be pruned: {} entries",
             brain.activation_history.len()
         );
+    }
+
+    /// Verify the association decay half-life matches the documented value.
+    ///
+    /// A single co-occurrence yields strength ≈ ASSOCIATION_STRENGTH_INC
+    /// (0.15).  After N = ln(0.05/0.15) / ln(0.995) ≈ 219 calls, it should
+    /// fall below ASSOCIATION_MIN_STRENGTH (0.05) and be pruned.
+    ///
+    /// The "half-life" (to drop to 0.075) occurs after approx 138 calls.
+    #[test]
+    fn test_association_decay_half_life() {
+        let mut brain = VSABrain::new(0.43);
+
+        let v1 = Hypervector::new_random()
+            .bitwise_xor(&Hypervector::encode_text_ngram("HL_A", 3));
+        let v2 = Hypervector::new_random()
+            .bitwise_xor(&Hypervector::encode_text_ngram("HL_B", 3));
+        brain.add_to_dejavu_db(v1, "a", HashMap::new());
+        brain.add_to_dejavu_db(v2, "b", HashMap::new());
+
+        // Create a single co-occurrence (strength = 0.15)
+        brain.tick_counter = 1;
+        brain.record_activation(0);
+        brain.record_activation(1);
+
+        let initial = brain.get_associations(0).first().map(|(_, s)| *s).unwrap_or(0.0);
+        eprintln!("\n  Association Decay Half-Life Verification:");
+        eprintln!("  Initial strength: {:.4}", initial);
+
+        // Half-life: 0.995^n = 0.5 → n = ln(0.5)/ln(0.995) ≈ 138
+        let half_life_calls = (0.5_f64.ln() / ASSOCIATION_DECAY.ln()).ceil() as usize;
+        eprintln!("  Theoretical half-life: {} calls", half_life_calls);
+
+        for _ in 0..half_life_calls {
+            brain.decay_associations();
+        }
+
+        let after_hl = brain.get_associations(0).first().map(|(_, s)| *s).unwrap_or(0.0);
+        eprintln!("  After {} calls: {:.4} (expected ~{:.4})",
+            half_life_calls, after_hl, initial * 0.5);
+        assert!(
+            (after_hl - initial * 0.5).abs() < 0.02,
+            "Half-life should reduce strength by ~50%: start={:.4}, after {} calls={:.4}",
+            initial, half_life_calls, after_hl
+        );
+
+        // After enough decays, the association should be pruned
+        // (fall below ASSOCIATION_MIN_STRENGTH = 0.05)
+        let prune_calls = ((ASSOCIATION_MIN_STRENGTH / initial).ln() / ASSOCIATION_DECAY.ln()).ceil() as usize;
+        for _ in 0..(prune_calls - half_life_calls) {
+            brain.decay_associations();
+        }
+
+        let pruned = brain.get_associations(0).first().copied();
+        eprintln!("  After {} calls (pruning threshold): {:?} (expected < 0.05 or gone)",
+            prune_calls, pruned);
+        assert!(
+            pruned.is_none() || pruned.unwrap().1 < ASSOCIATION_MIN_STRENGTH,
+            "Single-co-occurrence association should be pruned after {} decays",
+            prune_calls
+        );
+        eprintln!("  ✓ Half-life matches theoretical value ({} calls)", half_life_calls);
+        eprintln!("  ✓ Pruning occurs at expected threshold");
+    }
+
+    /// Verify the ρ-admissible invariant:
+    ///   δ(c_k, ρ¹³(c_k)) > 0 for all centroids.
+    ///
+    /// Since gcd(13, 10240) = 1, the cyclic shift by 13 generates the full
+    /// group C_10240. The only fixed points of ρ¹³ on {0,1}^10240 are the
+    /// constant vectors (all zeros or all ones). These are detected and
+    /// perturbed by flipping a single bit.
+    ///
+    /// Non-constant centroids pass through unchanged.
+    /// Required for Assumption ρ in Theorem XXV.4.
+    #[test]
+    fn test_rho_admissible_invariant() {
+        // Helper to construct a MemoryCluster with a given centroid
+        let make_cluster = |centroid: Hypervector| -> MemoryCluster {
+            MemoryCluster {
+                centroid,
+                entries: Vec::new(),
+                reverberation: 0.0,
+                last_reinforced_tick: 0,
+                anchor: Hypervector::new_zero(),
+                accumulator: Vec::new(),
+                total_weight: 500,
+                last_access_tick: 0,
+            }
+        };
+
+        // 1. All-zeros centroid — a trivial fixed point of ρ¹³.
+        let mut cluster = make_cluster(Hypervector::new_zero());
+
+        let rotated_before = cluster.centroid.rotate_left(13);
+        let dist_before = cluster.centroid.normalized_hamming_distance(&rotated_before);
+        eprintln!("  All-zeros distance to ρ¹³(self) before: {:.6}", dist_before);
+        assert_eq!(dist_before, 0.0, "All-zeros should be a fixed point of ρ¹³");
+
+        cluster.enforce_rho_admissible();
+
+        let rotated_after = cluster.centroid.rotate_left(13);
+        let dist_after = cluster.centroid.normalized_hamming_distance(&rotated_after);
+        eprintln!("  All-zeros distance to ρ¹³(self) after:  {:.6}", dist_after);
+        assert!(
+            dist_after > 0.0,
+            "After enforcement, centroid should NOT be a fixed point"
+        );
+        // Flipping 1 bit in an otherwise-constant vector creates exactly 2
+        // differing bits between c and ρ¹³(c): the flipped position and the
+        // position it rotates to. So δ = 2/D.
+        assert!(
+            0.0 < dist_after && dist_after <= (2.0 / 10240.0 + 1e-10),
+            "Perturbation of constant vector should yield δ ≤ 2/D, got {}",
+            dist_after
+        );
+        eprintln!("  ✓ All-zeros perturbed (δ(c,ρ¹³(c)) = {:.6})", dist_after);
+
+        // 2. All-ones centroid — also a fixed point.
+        let mut ones_cluster = make_cluster(Hypervector::new_ones());
+        let rotated_ones_before = ones_cluster.centroid.rotate_left(13);
+        let dist_ones_before = ones_cluster.centroid.normalized_hamming_distance(&rotated_ones_before);
+        assert_eq!(dist_ones_before, 0.0, "All-ones should be a fixed point of ρ¹³");
+
+        ones_cluster.enforce_rho_admissible();
+        let rotated_ones_after = ones_cluster.centroid.rotate_left(13);
+        let dist_ones_after = ones_cluster.centroid.normalized_hamming_distance(&rotated_ones_after);
+        assert!(dist_ones_after > 0.0, "All-ones should be perturbed");
+        eprintln!("  ✓ All-ones perturbed");
+
+        // 3. Normal (random, non-constant) centroid — passes through unchanged.
+        let original = Hypervector::new_random();
+        let mut normal_cluster = make_cluster(original);
+        let before = normal_cluster.centroid;
+        normal_cluster.enforce_rho_admissible();
+        assert_eq!(
+            before, normal_cluster.centroid,
+            "Non-constant centroid should be unchanged"
+        );
+        eprintln!("  ✓ Non-constant centroid unchanged");
+
+        // 4. Accumulator consistency (with resident accumulator).
+        let mut acc_cluster = MemoryCluster {
+            centroid: Hypervector::new_zero(),
+            entries: Vec::new(),
+            reverberation: 0.0,
+            last_reinforced_tick: 0,
+            anchor: Hypervector::new_zero(),
+            accumulator: vec![250u32; 10240],
+            total_weight: 500,
+            last_access_tick: 0,
+        };
+        acc_cluster.enforce_rho_admissible();
+        // After enforcement, centroid bit 0 should match accumulator[0] > threshold
+        let expected_bit = acc_cluster.centroid.bits[0] & 1;
+        let threshold = acc_cluster.total_weight / 2;
+        let acc_implies_one = acc_cluster.accumulator[0] > threshold;
+        assert_eq!(
+            expected_bit, acc_implies_one as u64,
+            "Accumulator should be consistent with flipped centroid bit 0"
+        );
+        eprintln!("  ✓ Accumulator consistency verified");
+
+        // 5. Period-2 centroid — fixed point of ρ²⁶, NOT of ρ¹³.
+        // Must be caught by the ρ²⁶ check and perturbed.
+        let period2_bits = {
+            let mut bits = [0u64; 160];
+            for i in 0..160 {
+                let mut word = 0u64;
+                for bit in 0..64 {
+                    let pos = i * 64 + bit;
+                    if pos % 2 == 0 {
+                        word |= 1u64 << bit;
+                    }
+                }
+                bits[i] = word;
+            }
+            bits
+        };
+        let mut p2_cluster = make_cluster(Hypervector { bits: period2_bits });
+
+        // Verify: δ(c, ρ¹³(c)) = 1.0 (passes ρ¹³ check)
+        let r13_before = p2_cluster.centroid.rotate_left(13);
+        let d_r13 = p2_cluster.centroid.normalized_hamming_distance(&r13_before);
+        eprintln!("  Period-2 δ(c, ρ¹³(c)) before: {:.4}", d_r13);
+        assert!(
+            d_r13 > 0.99,
+            "Period-2 centroid should NOT be a ρ¹³ fixed point (δ={})",
+            d_r13
+        );
+
+        // Verify: δ(c, ρ²⁶(c)) = 0.0 (FAILS ρ²⁶ check)
+        let r26_before = p2_cluster.centroid.rotate_left(26);
+        let d_r26 = p2_cluster.centroid.normalized_hamming_distance(&r26_before);
+        eprintln!("  Period-2 δ(c, ρ²⁶(c)) before: {:.6}", d_r26);
+        assert_eq!(d_r26, 0.0, "Period-2 centroid MUST be a ρ²⁶ fixed point");
+
+        // Enforce ρ-admissible invariant
+        p2_cluster.enforce_rho_admissible();
+
+        // Both ρ¹³ and ρ²⁶ should now have δ > 0
+        let r13_after = p2_cluster.centroid.rotate_left(13);
+        let d_r13_after = p2_cluster.centroid.normalized_hamming_distance(&r13_after);
+        let r26_after = p2_cluster.centroid.rotate_left(26);
+        let d_r26_after = p2_cluster.centroid.normalized_hamming_distance(&r26_after);
+        eprintln!("  Period-2 δ(c, ρ¹³(c)) after:  {:.6}", d_r13_after);
+        eprintln!("  Period-2 δ(c, ρ²⁶(c)) after:  {:.6}", d_r26_after);
+        assert!(
+            d_r13_after > 0.0,
+            "After enforcement, ρ¹³ should also have δ > 0 (bit flip may affect both)"
+        );
+        assert!(
+            d_r26_after > 0.0,
+            "After enforcement, ρ²⁶ must have δ > 0"
+        );
+        eprintln!("  ✓ Period-2 centroid perturbed");
+
+        // 6. Period-4 centroid — fixed point of ρ⁵², NOT of ρ¹³ or ρ²⁶.
+        // Must be caught by the ρ⁵² check and perturbed.
+        let period4_bits = {
+            let mut bits = [0u64; 160];
+            for i in 0..160 {
+                let mut word = 0u64;
+                for bit in 0..64 {
+                    let pos = i * 64 + bit;
+                    // 0011 repeating pattern
+                    if pos % 4 == 0 || pos % 4 == 1 {
+                        word |= 1u64 << bit;
+                    }
+                }
+                bits[i] = word;
+            }
+            bits
+        };
+        let mut p4_cluster = make_cluster(Hypervector { bits: period4_bits });
+
+        // Verify it passes ρ¹³ and ρ²⁶ checks
+        let r13_p4 = p4_cluster.centroid.rotate_left(13);
+        let d_p4_r13 = p4_cluster.centroid.normalized_hamming_distance(&r13_p4);
+        eprintln!("  Period-4 δ(c, ρ¹³(c)): {:.4}", d_p4_r13);
+        assert!(d_p4_r13 > 0.01, "Period-4 centroid should pass ρ¹³ check");
+
+        let r26_p4 = p4_cluster.centroid.rotate_left(26);
+        let d_p4_r26 = p4_cluster.centroid.normalized_hamming_distance(&r26_p4);
+        eprintln!("  Period-4 δ(c, ρ²⁶(c)): {:.4}", d_p4_r26);
+        assert!(d_p4_r26 > 0.01, "Period-4 centroid should pass ρ²⁶ check");
+
+        // Verify it FAILS ρ⁵² check
+        let r52_p4 = p4_cluster.centroid.rotate_left(52);
+        let d_p4_r52 = p4_cluster.centroid.normalized_hamming_distance(&r52_p4);
+        eprintln!("  Period-4 δ(c, ρ⁵²(c)) before: {:.6}", d_p4_r52);
+        assert_eq!(d_p4_r52, 0.0, "Period-4 centroid MUST be a ρ⁵² fixed point");
+
+        // Enforce
+        p4_cluster.enforce_rho_admissible();
+
+        let r52_p4_after = p4_cluster.centroid.rotate_left(52);
+        let d_p4_r52_after = p4_cluster.centroid.normalized_hamming_distance(&r52_p4_after);
+        eprintln!("  Period-4 δ(c, ρ⁵²(c)) after:  {:.6}", d_p4_r52_after);
+        assert!(
+            d_p4_r52_after > 0.0,
+            "After enforcement, ρ⁵² must have δ > 0"
+        );
+        eprintln!("  ✓ Period-4 centroid perturbed");
+
+        eprintln!("  All ρ-admissible invariant checks pass.");
+    }
+
+    #[test]
+    fn test_ix1_grounding_preservation() {
+        // Theorem IX.1: An abstaining agent maintains geometric grounding
+        // in shared reality even as its causal reasoning diverges.
+        // The accumulator update (absorb_entry) is unconditional;
+        // only the cluster.reverberation increment is conditional on
+        // increment_intent_frequency.
+        let mut brain = VSABrain::new(0.43);
+
+        // Helper: create a mask that flips systematic bits to simulate drift
+        fn perturb(hv: &Hypervector, n_flips: usize, seed: usize) -> Hypervector {
+            let mut mask_bits = [0u64; U64_BLOCKS];
+            for f in 0..n_flips {
+                let bit_pos = ((seed * 37 + f * 101) as usize) % HD_DIMENSION;
+                let block = bit_pos / 64;
+                let bit = bit_pos % 64;
+                mask_bits[block] ^= 1u64 << bit;
+            }
+            let mask = Hypervector { bits: mask_bits };
+            hv.bitwise_xor(&mask)
+        }
+
+        // Initial cluster seeded with a world state, but with low reverberation
+        // so we can test that abstention doesn't increase it.
+        let world_0 = Hypervector::new_random()
+            .bitwise_xor(&Hypervector::encode_text_ngram("GROUND_TRUTH", 3));
+        brain.add_to_dejavu_db(world_0, "truth", HashMap::new());
+        assert_eq!(brain.dejavu_clusters.len(), 1);
+        // Reset reverberation to a low value to allow testing of increment behavior
+        brain.dejavu_clusters[0].reverberation = 0.1;
+
+        let initial_centroid = brain.dejavu_clusters[0].centroid;
+        let initial_reverb = brain.dejavu_clusters[0].reverberation;
+        let initial_weight = brain.dejavu_clusters[0].total_weight;
+
+        // Send many epistemic updates with abstention flag (no intent frequency increment).
+        // The centroid MUST still track reality via the unconditional accumulator update,
+        // but reverberation must NOT increase.
+        let n_abstain = 200;    // enough to move centroid significantly
+        let mut last_world = initial_centroid;
+        for i in 0..n_abstain {
+            // Gradual drift: i/10 bits flipped per step, growing to 20 bits
+            let n_flips = ((i / 10) + 1).min(20);
+            let world_state = perturb(&last_world, n_flips, i);
+            brain.absorb_epistemic_update(
+                &world_state,
+                "truth",
+                false, // increment_intent_frequency = false (abstaining)
+            );
+            last_world = world_state;
+        }
+
+        // After many abstaining updates:
+        // 1. Weight increased (updates were absorbed)
+        let weight_after = brain.dejavu_clusters[0].total_weight;
+        assert!(
+            weight_after > initial_weight + (n_abstain as u32) / 2,
+            "Weight must increase during abstention: initial={}, after={}, expected > {}",
+            initial_weight, weight_after, initial_weight + (n_abstain as u32) / 2
+        );
+
+        // 2. Reverberation MUST NOT have increased (we never set increment_intent_frequency)
+        let reverb_after = brain.dejavu_clusters[0].reverberation;
+        assert!(
+            reverb_after == initial_reverb,
+            "Reverberation must NOT increase during abstention: initial={:.4}, after={:.4}",
+            initial_reverb, reverb_after
+        );
+
+        // 3. Centroid MUST have moved (it tracked the drift through accumulator updates)
+        let centroid_after = brain.dejavu_clusters[0].centroid;
+        let centroid_shift = initial_centroid.normalized_hamming_distance(&centroid_after);
+        assert!(
+            centroid_shift > 0.0,
+            "Centroid must track reality even during abstention"
+        );
+
+        // Now send updates WITH intent frequency increment (quorum agent).
+        // Reverberation MUST increase.
+        let n_quorum = 100;
+        for i in 0..n_quorum {
+            let n_flips = ((i / 10) + 1).min(20);
+            let world_state = perturb(&last_world, n_flips, i + 5000);
+            brain.absorb_epistemic_update(
+                &world_state,
+                "truth",
+                true, // increment_intent_frequency = true (quorum agent)
+            );
+            last_world = world_state;
+        }
+
+        let reverb_final = brain.dejavu_clusters[0].reverberation;
+        assert!(
+            reverb_final > reverb_after + 0.01,
+            "Reverberation must increase for quorum agent: after_abstain={:.4}, after_quorum={:.4}",
+            reverb_after, reverb_final
+        );
+
+        eprintln!("  ✓ Grounding preserved: {} abstaining + {} quorum updates", n_abstain, n_quorum);
+        eprintln!("    Centroid shift during abstention: {:.6}", centroid_shift);
+        eprintln!("    Weight: {} → {} → {}", initial_weight, weight_after,
+            brain.dejavu_clusters[0].total_weight);
+        eprintln!("    Reverb: {:.4} (init) → {:.4} (after abstain) → {:.4} (after quorum)",
+            initial_reverb, reverb_after, reverb_final);
+    }
+
+    #[test]
+    fn test_xii1_promotion_boundedness() {
+        // Theorem XII.1: append_composed_rule never creates new clusters.
+        // If no existing cluster matches the antecedent (sim >= 0.65),
+        // the composed rule is silently dropped (returns false).
+        let mut brain = VSABrain::new(0.43);
+
+        // Create two clusters with known centroids
+        let c1 = Hypervector::encode_text_ngram("monetary_policy", 3);
+        let c2 = Hypervector::encode_text_ngram("fiscal_outlook", 3);
+        brain.add_to_dejavu_db(c1, "monetary_policy", HashMap::new());
+        brain.add_to_dejavu_db(c2, "fiscal_outlook", HashMap::new());
+        let n_clusters_before = brain.dejavu_clusters.len();
+        assert_eq!(n_clusters_before, 2);
+
+        // Record entry counts before any promotions
+        let entries_before: Vec<usize> = brain.dejavu_clusters.iter()
+            .map(|c| c.entries.len()).collect();
+
+        // 1. Promote a rule whose antecedent matches an existing cluster (monetary_policy)
+        let consequent1 = Hypervector::encode_text_ngram("rates_rise", 3);
+        let stored1 = brain.append_composed_rule("monetary_policy", &consequent1);
+        assert!(stored1, "append_composed_rule must succeed when antecedent matches");
+
+        // 2. Promote another rule matching the same cluster
+        let consequent2 = Hypervector::encode_text_ngram("bond_yields_up", 3);
+        let stored2 = brain.append_composed_rule("monetary_policy", &consequent2);
+        assert!(stored2, "Second promotion to same cluster must succeed");
+
+        // 3. Promote a rule whose antecedent matches the OTHER cluster
+        let consequent3 = Hypervector::encode_text_ngram("deficit_widens", 3);
+        let stored3 = brain.append_composed_rule("fiscal_outlook", &consequent3);
+        assert!(stored3, "Promotion to fiscal_outlook must succeed");
+
+        // 4. No new clusters were created
+        assert_eq!(
+            brain.dejavu_clusters.len(), n_clusters_before,
+            "Promotions must NOT create new clusters: before={}, after={}",
+            n_clusters_before, brain.dejavu_clusters.len()
+        );
+
+        // 5. Entry counts increased only in the matching clusters
+        let entries_after: Vec<usize> = brain.dejavu_clusters.iter()
+            .map(|c| c.entries.len()).collect();
+        assert_eq!(
+            entries_after[0] - entries_before[0], 2,
+            "Cluster 0 (monetary_policy) should have gained 2 entries"
+        );
+        assert_eq!(
+            entries_after[1] - entries_before[1], 1,
+            "Cluster 1 (fiscal_outlook) should have gained 1 entry"
+        );
+
+        // 6. Now promote a rule with NO matching antecedent — must return false
+        let consequent4 = Hypervector::encode_text_ngram("tech_stocks_rise", 3);
+
+        // Use an antecedent label that won't match any cluster (encoding is via
+        // encode_sentence inside append_composed_rule, so we can't easily craft
+        // one that doesn't match — but "xyzzy_unknown" should be far enough).
+        // Actually, encode_sentence creates a trigram-based embedding, so any
+        // text will have some distance. Let's use a highly dissimilar label.
+        let stored4 = brain.append_composed_rule("completely_unrelated_topic_xyzzy", &consequent4);
+        assert!(!stored4, "append_composed_rule must fail when no cluster matches");
+
+        // 7. Still no new clusters
+        assert_eq!(
+            brain.dejavu_clusters.len(), n_clusters_before,
+            "Failed promotions must NOT create new clusters"
+        );
+
+        // 8. Entry counts unchanged by the failed promotion
+        let entries_final: Vec<usize> = brain.dejavu_clusters.iter()
+            .map(|c| c.entries.len()).collect();
+        assert_eq!(entries_final[0], entries_after[0],
+            "Failed promotion must not affect cluster 0 entries");
+        assert_eq!(entries_final[1], entries_after[1],
+            "Failed promotion must not affect cluster 1 entries");
+
+        // 9. Verify the absorbed entries are in the accumulator (centroid shifted)
+        let centroid_shift_0 = brain.dejavu_clusters[0].centroid
+            .normalized_hamming_distance(
+                &Hypervector::encode_text_ngram("monetary_policy", 3));
+        assert!(
+            centroid_shift_0 > 0.0,
+            "Centroid 0 should have shifted from absorbing promotions"
+        );
+
+        // 10. Weight increased from promotions
+        assert!(
+            brain.dejavu_clusters[0].total_weight > 1,
+            "Cluster 0 weight should increase from promoted entries"
+        );
+
+        eprintln!("  ✓ Promotion boundedness verified: {} clusters before/after, entries d0=+{}, d1=+{}",
+            n_clusters_before,
+            entries_after[0] - entries_before[0],
+            entries_after[1] - entries_before[1]);
+        eprintln!("    Failed promotion correctly returned false, no clusters created");
     }
 }

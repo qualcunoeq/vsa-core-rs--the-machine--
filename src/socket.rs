@@ -124,12 +124,83 @@ impl AdminSocketServer {
                                                 }
 
                                             } else if command == "FACTS" {
-                                                let count = {
+                                                let (count, rules) = {
                                                     let qa_guard = qa_clone.read().await;
-                                                    qa_guard.fact_count()
+                                                    (qa_guard.fact_count(), qa_guard.rule_count())
                                                 };
-                                                let response = format!("FACTS: {} facts in memory.\n", count);
+                                                let response = format!("FACTS: {} facts, {} causal rules in memory.\n", count, rules);
                                                 let _ = writer.write_all(response.as_bytes()).await;
+
+                                            } else if command.starts_with("CHAIN ") {
+                                                let question = &command[6..];
+                                                let answer = {
+                                                    let qa_guard = qa_clone.read().await;
+                                                    qa_guard.answer_chain(question)
+                                                };
+                                                let response = format!("CHAIN: {}\n", answer);
+                                                let _ = writer.write_all(response.as_bytes()).await;
+                                                let _ = log_tx_clone.send(format!("ADMIN: CHAIN '{}' → '{}'", question, answer));
+
+                                            } else if command.starts_with("STORE_RULE ") {
+                                                let rule_text = &command[11..];
+                                                // Format: "IF subject verb object THEN subject verb object"
+                                                let lower = rule_text.to_lowercase();
+                                                if let Some(if_rest) = lower.strip_prefix("if ") {
+                                                    if let Some(then_pos) = if_rest.find(" then ") {
+                                                        let antecedent = &if_rest[..then_pos].trim();
+                                                        let consequent = &if_rest[then_pos + 6..].trim();
+                                                        let ante_triples = crate::nlp::extract_svo(antecedent);
+                                                        let cons_triples = crate::nlp::extract_svo(consequent);
+                                                        if !ante_triples.is_empty() && !cons_triples.is_empty() {
+                                                            let mut qa_guard = qa_clone.write().await;
+                                                            qa_guard.store_rule(
+                                                                &ante_triples[0].subject, &ante_triples[0].verb, &ante_triples[0].object,
+                                                                &cons_triples[0].subject, &cons_triples[0].verb, &cons_triples[0].object,
+                                                                "admin_socket",
+                                                            );
+                                                            let response = format!("RULE STORED: {} {} {} → {} {} {}\n",
+                                                                ante_triples[0].subject, ante_triples[0].verb, ante_triples[0].object,
+                                                                cons_triples[0].subject, cons_triples[0].verb, cons_triples[0].object);
+                                                            let _ = writer.write_all(response.as_bytes()).await;
+                                                        } else {
+                                                            let _ = writer.write_all(b"ERROR: Could not extract SVO from antecedent or consequent.\n").await;
+                                                        }
+                                                    } else {
+                                                        let _ = writer.write_all(b"ERROR: Use format: IF subject verb object THEN subject verb object\n").await;
+                                                    }
+                                                } else {
+                                                    let _ = writer.write_all(b"ERROR: Use format: IF subject verb object THEN subject verb object\n").await;
+                                                }
+
+                                            } else if command == "SAVE" {
+                                                let result = {
+                                                    let qa_guard = qa_clone.read().await;
+                                                    qa_guard.save_to_file("data/qa_memory.json")
+                                                };
+                                                match result {
+                                                    Ok(()) => {
+                                                        let _ = writer.write_all(b"SAVED: QA memory persisted to data/qa_memory.json\n").await;
+                                                        let _ = log_tx_clone.send("ADMIN: QA memory saved.".to_string());
+                                                    }
+                                                    Err(e) => {
+                                                        let _ = writer.write_all(format!("ERROR: Save failed: {}\n", e).as_bytes()).await;
+                                                    }
+                                                }
+
+                                            } else if command == "LOAD" {
+                                                let result = QaEngine::load_from_file("data/qa_memory.json");
+                                                match result {
+                                                    Ok(loaded) => {
+                                                        let mut qa_guard = qa_clone.write().await;
+                                                        *qa_guard = loaded;
+                                                        let count = qa_guard.fact_count();
+                                                        let _ = writer.write_all(format!("LOADED: {} facts from data/qa_memory.json\n", count).as_bytes()).await;
+                                                        let _ = log_tx_clone.send(format!("ADMIN: QA memory loaded ({} facts).", count));
+                                                    }
+                                                    Err(e) => {
+                                                        let _ = writer.write_all(format!("ERROR: Load failed: {}\n", e).as_bytes()).await;
+                                                    }
+                                                }
 
                                             } else if command == "EXIT" || command == "QUIT" {
                                                 let _ = writer.write_all(b"Terminating session.\n").await;

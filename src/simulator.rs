@@ -10,9 +10,11 @@
 //   T₀ = Self_t (current integrated identity)
 //
 //   For each candidate action A ∈ {A₁, A₂, A₃}:
-//     T₁ = T₀ ⊕ A.effect  →  evaluate(T₁) × γ⁰
-//     T₂ = T₁ ⊕ A.effect  →  evaluate(T₂) × γ¹
-//     T₃ = T₂ ⊕ A.effect  →  evaluate(T₃) × γ²
+//     T₁ = T₀ ⊕ ρ⁰(A.effect)  →  evaluate(T₁) × γ⁰
+//     T₂ = T₁ ⊕ ρ¹(A.effect)  →  evaluate(T₂) × γ¹
+//     T₃ = T₂ ⊕ ρ²(A.effect)  →  evaluate(T₃) × γ²
+//     (ρⁿ is rotate-left by n bits — avoids XOR idempotency where
+//      applying the same vector twice cancels out)
 //     Score_A = Σ evaluate(Tₙ) × γⁿ
 //
 //   Select argmin Score_A (lower = better = more stable future)
@@ -44,8 +46,9 @@
 //
 // Actions are predefined as (label, effect_vector, deficit_change,
 // error_change, cost).  The effect_vector is XORed into the current
-// state to produce the simulated next state.  Deficit and error changes
-// are the simulator's predictive model of what each action does.
+// state (with a step-dependent rotation to avoid XOR idempotency) to
+// produce the simulated next state.  Deficit and error changes are the
+// simulator's predictive model of what each action does.
 //
 // ## Mathematical Guarantees
 //
@@ -113,8 +116,10 @@ pub const DEFAULT_WEIGHTS: [f64; 4] = [0.30, 0.30, 0.20, 0.20];
 ///
 /// Each action has:
 /// - A unique ID and human label
-/// - An effect vector: XOR this into the current state to simulate the
-///   action's impact on the identity/self
+/// - An effect vector: bind this (via XOR) into the current state to simulate
+///   the action's impact on the identity/self.  At each rollout step the
+///   effect is rotated by `step` bits so repeated applications accumulate
+///   instead of cancelling (XOR is its own inverse).
 /// - Expected deficit change per step: how homeostasis responds (-1..1,
 ///   negative = reduces deficit = good)
 /// - Expected error change per step: how prediction error responds (-1..1,
@@ -124,7 +129,8 @@ pub const DEFAULT_WEIGHTS: [f64; 4] = [0.30, 0.30, 0.20, 0.20];
 pub struct ActionProposal {
     pub id: u8,
     pub label: String,
-    /// Effect hypervector: XOR into state to simulate the action.
+    /// Effect hypervector: XOR into state (with step-dependent rotation) to
+    /// simulate the action's cumulative impact.
     pub effect_vector: Hypervector,
     /// Expected change in homeostatic deficit per rollout step.
     pub deficit_delta: f64,
@@ -249,9 +255,10 @@ impl CounterfactualSimulator {
     pub fn register_default_actions(&mut self) {
         self.actions.clear();
 
-        // 0: NULL — do nothing (baseline)
-        self.actions.push(ActionProposal::from_text(
-            0, "NULL", "ACTION_NULL_NOOP",
+        // 0: NULL — do nothing (baseline).  Uses zero effect vector so
+        // repeated application produces no state change.
+        self.actions.push(ActionProposal::new(
+            0, "NULL", Hypervector::new_zero(),
             0.0, 0.0, 0.0,
         ));
 
@@ -321,6 +328,9 @@ impl CounterfactualSimulator {
     /// Run a full simulation round: evaluate every action over the rollout
     /// horizon and return the ranked results.
     ///
+    /// Uses `self.weights`.  For dynamically-modulated weights (e.g., from
+    /// the IntrinsicMotivation drive system), use `evaluate_driven`.
+    ///
     /// # Arguments
     ///
     /// * `current_identity` — Self_t from SelfModel (the ground truth T₀).
@@ -338,56 +348,10 @@ impl CounterfactualSimulator {
         prediction_error: f64,
         global_broadcast: &Hypervector,
     ) -> SimulationReport {
-        if self.actions.is_empty() {
-            return SimulationReport {
-                best_action: ActionProposal::new(0, "NONE", Hypervector::new_zero(), 0.0, 0.0, 0.0),
-                best_outcome: SimulatedOutcome {
-                    action_id: 0,
-                    action_label: "NONE".to_string(),
-                    simulated_states: Vec::new(),
-                    simulated_deficits: Vec::new(),
-                    simulated_errors: Vec::new(),
-                    identity_shifts: Vec::new(),
-                    step_scores: Vec::new(),
-                    total_score: 0.0,
-                },
-                ranked_outcomes: Vec::new(),
-                actions_evaluated: 0,
-                rollout_depth: self.rollout_depth,
-                total_simulations: self.total_simulations,
-            };
-        }
-
-        let mut outcomes: Vec<SimulatedOutcome> = Vec::with_capacity(self.actions.len());
-
-        for action in &self.actions {
-            let outcome = self.simulate_action(
-                action,
-                current_identity,
-                homeostatic_deficit,
-                prediction_error,
-                global_broadcast,
-            );
-            outcomes.push(outcome);
-        }
-
-        // Sort by total_score ascending (lower = better)
-        outcomes.sort_by(|a, b| a.total_score.partial_cmp(&b.total_score).unwrap());
-
-        let best_outcome = outcomes.first().cloned().unwrap();
-        let best_action = self.actions.iter()
-            .find(|a| a.id == best_outcome.action_id)
-            .cloned()
-            .unwrap();
-
-        SimulationReport {
-            best_action,
-            best_outcome,
-            ranked_outcomes: outcomes,
-            actions_evaluated: self.actions.len(),
-            rollout_depth: self.rollout_depth,
-            total_simulations: self.total_simulations,
-        }
+        self.evaluate_internal(
+            current_identity, homeostatic_deficit, prediction_error,
+            global_broadcast, &self.weights,
+        )
     }
 
     /// Run a simulation round with dynamic weights (e.g., from drives).
@@ -403,24 +367,14 @@ impl CounterfactualSimulator {
         global_broadcast: &Hypervector,
         weights: &[f64; 4],
     ) -> SimulationReport {
-        // Store original weights, temporarily override, then restore
-        let original = self.weights;
-
-        // Can't mutate self.weights since we have &self, so we need
-        // to modify simulate_action to accept weights.  Create a
-        // temporary struct with the new weights using unsafe to
-        // transmute... OR just make evaluate_with_weights a standalone.
-        //
-        // Simpler approach: use a second code path that passes weights
-        // through to a weighted version of simulate_action.
-        self.evaluate_with_weights_internal(
+        self.evaluate_internal(
             current_identity, homeostatic_deficit, prediction_error,
             global_broadcast, weights,
         )
     }
 
-    /// Internal: evaluate with explicit weights array.
-    fn evaluate_with_weights_internal(
+    /// Evaluate with the instance's default weights.
+    fn evaluate_internal(
         &self,
         current_identity: &Hypervector,
         homeostatic_deficit: f64,
@@ -451,7 +405,7 @@ impl CounterfactualSimulator {
         let mut outcomes: Vec<SimulatedOutcome> = Vec::with_capacity(self.actions.len());
 
         for action in &self.actions {
-            let outcome = self.simulate_action_weighted(
+            let outcome = self.simulate_action_internal(
                 action,
                 current_identity,
                 homeostatic_deficit,
@@ -479,8 +433,11 @@ impl CounterfactualSimulator {
         }
     }
 
-    /// Simulate a single action with explicit weights.
-    fn simulate_action_weighted(
+    /// Core simulation loop for a single action.  Shared by both
+    /// `evaluate` (uses `self.weights`) and `evaluate_driven` (uses
+    /// caller-supplied weights) — the only difference is which weight
+    /// array is passed in.
+    fn simulate_action_internal(
         &self,
         action: &ActionProposal,
         current_identity: &Hypervector,
@@ -488,71 +445,6 @@ impl CounterfactualSimulator {
         prediction_error: f64,
         global_broadcast: &Hypervector,
         weights: &[f64; 4],
-    ) -> SimulatedOutcome {
-        let mut states = Vec::with_capacity(self.rollout_depth);
-        let mut deficits = Vec::with_capacity(self.rollout_depth);
-        let mut errors = Vec::with_capacity(self.rollout_depth);
-        let mut shifts = Vec::with_capacity(self.rollout_depth);
-        let mut scores = Vec::with_capacity(self.rollout_depth);
-
-        let ground = current_identity.bitwise_xor(global_broadcast);
-        let mut sim_state = ground;
-        let mut cum_deficit = homeostatic_deficit;
-        let mut cum_error = prediction_error;
-
-        for step in 0..self.rollout_depth {
-            sim_state = sim_state.bitwise_xor(&action.effect_vector);
-            cum_deficit = (cum_deficit + action.deficit_delta).clamp(0.0, 1.0);
-            cum_error = (cum_error + action.error_delta).clamp(0.0, 1.0);
-            let identity_shift = current_identity.normalized_hamming_distance(&sim_state);
-            let decay = self.uncertainty_decay.powi(step as i32);
-
-            let step_score = decay * (
-                weights[0] * cum_deficit +
-                weights[1] * cum_error +
-                weights[2] * identity_shift +
-                weights[3] * action.cost
-            );
-
-            states.push(sim_state);
-            deficits.push(cum_deficit);
-            errors.push(cum_error);
-            shifts.push(identity_shift);
-            scores.push(step_score);
-        }
-
-        let total_score: f64 = scores.iter().sum();
-        SimulatedOutcome {
-            action_id: action.id,
-            action_label: action.label.clone(),
-            simulated_states: states,
-            simulated_deficits: deficits,
-            simulated_errors: errors,
-            identity_shifts: shifts,
-            step_scores: scores,
-            total_score,
-        }
-    }
-
-    // ═════════════════════════════════════════════════════════════════════
-    // SINGLE ACTION SIMULATION
-    // ═════════════════════════════════════════════════════════════════════
-
-    /// Simulate a single action over the rollout horizon.
-    ///
-    /// For each step t = 1..rollout_depth:
-    ///   Tₜ = Tₜ₋₁ ⊕ action.effect
-    ///   scoreₜ = evaluate(Tₜ) × γᵗ
-    ///
-    /// The simulated state blends the action's effect with the current
-    /// identity and the global broadcast context.
-    fn simulate_action(
-        &self,
-        action: &ActionProposal,
-        current_identity: &Hypervector,
-        homeostatic_deficit: f64,
-        prediction_error: f64,
-        global_broadcast: &Hypervector,
     ) -> SimulatedOutcome {
         let mut states = Vec::with_capacity(self.rollout_depth);
         let mut deficits = Vec::with_capacity(self.rollout_depth);
@@ -568,8 +460,11 @@ impl CounterfactualSimulator {
         let mut cum_error = prediction_error;
 
         for step in 0..self.rollout_depth {
-            // Apply action effect: Tₜ = Tₜ₋₁ ⊕ action.effect
-            sim_state = sim_state.bitwise_xor(&action.effect_vector);
+            // Apply action effect with rotation to avoid XOR idempotency:
+            // Tₜ₊₁ = Tₜ ⊕ ρᵗ(effect).  Rotating by step bits ensures each
+            // application is distinct and accumulates rather than cancelling.
+            let rotated_effect = action.effect_vector.rotate_left(step as usize);
+            sim_state = sim_state.bitwise_xor(&rotated_effect);
 
             // Update simulated homeostasis and error
             cum_deficit = (cum_deficit + action.deficit_delta).clamp(0.0, 1.0);
@@ -583,10 +478,10 @@ impl CounterfactualSimulator {
 
             // Step score (lower = better)
             let step_score = decay * (
-                self.weights[0] * cum_deficit +
-                self.weights[1] * cum_error +
-                self.weights[2] * identity_shift +
-                self.weights[3] * action.cost
+                weights[0] * cum_deficit +
+                weights[1] * cum_error +
+                weights[2] * identity_shift +
+                weights[3] * action.cost
             );
 
             states.push(sim_state);
@@ -918,6 +813,68 @@ mod tests {
             score_a < score_b,
             "Efficient action should beat expensive one: {:.6} < {:.6}",
             score_a, score_b
+        );
+    }
+
+    /// Test that `evaluate_driven` can override weights to make action
+    /// preferable over inaction.
+    ///
+    /// With default weights [0.30, 0.30, 0.20, 0.20], NULL always wins
+    /// because it has zero cost and identity shift.  But when the drive
+    /// system pushes deficit weight to 0.80 and identity/cost near zero,
+    /// REGULATE should beat NULL at high deficit.
+    #[test]
+    fn test_driven_evaluation() {
+        let mut sim = CounterfactualSimulator::new(3, [0.30, 0.30, 0.20, 0.20]);
+        sim.register_default_actions();
+
+        let identity = Hypervector::encode_text_ngram("DRIVEN_TEST", 3);
+        let broadcast = Hypervector::new_zero();
+        let deficit = 0.90;  // very high deficit
+        let error = 0.10;    // low error
+
+        // First: default weights → NULL should win (as seen in other tests)
+        let default_report = sim.evaluate(&identity, deficit, error, &broadcast);
+        eprintln!("  Default weights winner: {} (score={:.6})",
+            default_report.best_action.label, default_report.best_outcome.total_score);
+        assert_eq!(
+            default_report.best_action.id, 0,
+            "With default weights, NULL should win (id=0), got {}",
+            default_report.best_action.label,
+        );
+
+        // Second: driven weights that heavily prioritise deficit reduction
+        // and almost ignore identity shift and cost.
+        // [Δdeficit, Δerror, Δidentity, cost] = [0.80, 0.10, 0.05, 0.05]
+        let driven_weights = [0.80, 0.10, 0.05, 0.05];
+        let driven_report = sim.evaluate_driven(
+            &identity, deficit, error, &broadcast, &driven_weights,
+        );
+        eprintln!("  Driven weights winner: {} (score={:.6})",
+            driven_report.best_action.label, driven_report.best_outcome.total_score);
+        eprintln!("  Driven outcome rankings:");
+        for (i, o) in driven_report.ranked_outcomes.iter().enumerate() {
+            eprintln!("    {}. {}: score={:.6}, final_deficit={:.3}, final_error={:.3}",
+                i + 1, o.action_label, o.total_score,
+                o.simulated_deficits.last().unwrap_or(&0.0),
+                o.simulated_errors.last().unwrap_or(&0.0));
+        }
+
+        // With high deficit and identity/cost de-emphasised, REGULATE (id=3)
+        // should win because it reduces deficit the fastest (-0.20/step)
+        assert_eq!(
+            driven_report.best_action.id, 3,
+            "With driven weights favouring deficit reduction, REGULATE \
+             should win (id=3), got {} (id={})",
+            driven_report.best_action.label, driven_report.best_action.id,
+        );
+
+        // Third: confirm default weights path is unchanged (not affected
+        // by the driven call — &self, no mutation)
+        let after_report = sim.evaluate(&identity, deficit, error, &broadcast);
+        assert_eq!(
+            after_report.best_action.id, 0,
+            "Default weights should still pick NULL after driven call",
         );
     }
 }

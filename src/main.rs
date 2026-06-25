@@ -721,6 +721,7 @@ async fn run_agent(
         qa_w.store_fact("the_fed", "raise", "rates", "The Fed raised rates.");
         qa_w.store_fact("inflation", "rise", "above expectations", "Inflation rose above expectations.");
     }
+    let qa_for_loop = Arc::clone(&qa_engine);
     let admin_server = AdminSocketServer::new(
         Arc::clone(&active_intent),
         defense.clone(),
@@ -1110,6 +1111,31 @@ async fn run_agent(
                         merged_clusters += 1;
                     }
                 }
+
+                // ██ Theorem XXIII.3: Cluster-level compactor ██
+                // When drift exceeds δ_max, the adaptive gate lowers the
+                // absorption threshold.  The compactor runs alongside it
+                // with a slightly relaxed threshold (θ_adapt + 0.03) to
+                // merge clusters that were spawned too eagerly during drift.
+                if brain_guard.drift_magnitude_ewma > the_machine::DELTA_MAX {
+                    let merge_thresh = brain_guard.adaptive_novelty_threshold() + 0.03;
+                    let compactor_merges = brain_guard.compact_clusters(merge_thresh);
+                    if compactor_merges > 0 {
+                        total_removed += compactor_merges;
+                        merged_clusters += compactor_merges;
+                        let _ = subconscious_log_tx.send(format!(
+                            "AGENT {}: Compactor merged {} cluster(s) (θ_merge={:.4}).",
+                            id_str, compactor_merges, merge_thresh
+                        ));
+                    }
+                }
+
+                // ██ Association decay (UPGRADE v3.0) ██
+                // Decay all association strengths by ASSOCIATION_DECAY = 0.995
+                // per call (≈ 50 ticks).  Effective half-life ≈ 3.8 hours.
+                // Prunes associations below ASSOCIATION_MIN_STRENGTH = 0.05.
+                brain_guard.decay_associations();
+
                 drop(brain_guard);
                 if merged_clusters > 0 {
                     let _ = subconscious_log_tx.send(format!(
@@ -1168,6 +1194,15 @@ async fn run_agent(
                     "AGENT {}: CONTRACTION TELEMETRY — κ_P={:.4} (n={}), κ_F={:.4} (n={}), κ={:.6}",
                     id_str, kp, n_p, kf, n_f, kj
                 ));
+
+                // ██ Sync cluster data to QA engine for semantic resolution ██
+                // Copy centroids + associations from VSABrain to QaEngine's
+                // snapshot. Both locks are held briefly (microseconds).
+                {
+                    let brain_read = brain_subconscious.read().await;
+                    let mut qa_write = qa_for_loop.write().await;
+                    qa_write.sync_cluster_data(&brain_read);
+                }
             }
 
             let mut telemetry = HashMap::new();
@@ -1644,6 +1679,11 @@ async fn run_agent(
                 let delta_t = current_world_state
                     .bitwise_xor(&prev_state.rotate_left(13))
                     .bitwise_xor(&last_action);
+                // ██ Theorem XXIII.4: Update drift magnitude EWMA on the brain ██
+                {
+                    let mut brain_write = brain_subconscious.write().await;
+                    brain_write.update_drift_magnitude(&delta_t);
+                }
                 recent_deltas.push_back(delta_t);
                 if recent_deltas.len() > history_limit {
                     recent_deltas.pop_front();

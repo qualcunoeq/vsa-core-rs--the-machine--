@@ -99,7 +99,7 @@ pub const MAX_L3_CONCEPTS_PER_CYCLE: usize = 8;
 // ═══════════════════════════════════════════════════════════════════════════
 
 /// A single transition point discovered during replay.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TransitionPoint {
     /// Tick when the transition occurred.
     pub tick: u64,
@@ -118,7 +118,7 @@ pub struct TransitionPoint {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /// The compressed narrative of a single wake cycle.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct WakeNarrative {
     /// Number of transitions detected.
     pub transition_count: usize,
@@ -138,7 +138,7 @@ pub struct WakeNarrative {
 
 /// Tracks which L2 concepts are active during wake and builds a
 /// co-occurrence matrix for L3 abstraction during sleep.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct L2ActivationHistory {
     /// Circular buffer of (tick, active_L2_indices).
     history: Vec<(u64, Vec<usize>)>,
@@ -205,7 +205,7 @@ impl L2ActivationHistory {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /// What happened during the sleep cycle.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SleepReport {
     /// Whether sleep was actually triggered.
     pub slept: bool,
@@ -235,6 +235,7 @@ pub struct SleepReport {
 ///
 /// Manages the wake/sleep state machine, triggers consolidation when
 /// homeostasis demands it, and runs the four-phase sleep pipeline.
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct SleepCycle {
     /// Current tick (system tick, not sleep tick).
     pub tick: u64,
@@ -630,6 +631,82 @@ impl SleepCycle {
             self.phase,
             self.l2_history.len(),
         )
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
+    // PERSISTENCE
+    // ═════════════════════════════════════════════════════════════════════
+
+    /// Save the sleep cycle state to a JSON file.
+    /// Only serializes essential state: tick, sleep_interval, total_sleep_cycles,
+    /// last_sleep_tick, and the L2 activation history.
+    pub fn save_to_file(&self, path: &str) -> Result<(), String> {
+        #[derive(serde::Serialize)]
+        struct SleepState<'a> {
+            tick: u64,
+            last_sleep_tick: u64,
+            sleep_interval: u64,
+            total_sleep_cycles: u64,
+            l2_history: &'a L2ActivationHistory,
+        }
+        let state = SleepState {
+            tick: self.tick,
+            last_sleep_tick: self.last_sleep_tick,
+            sleep_interval: self.sleep_interval,
+            total_sleep_cycles: self.total_sleep_cycles,
+            l2_history: &self.l2_history,
+        };
+        let json = serde_json::to_string_pretty(&state)
+            .map_err(|e| format!("Serialization error: {}", e))?;
+        std::fs::write(path, &json).map_err(|e| format!("Write error: {}", e))?;
+        Ok(())
+    }
+
+    /// Load the sleep cycle state from a JSON file.
+    /// Returns a SleepCycle with the loaded state, or a default if file doesn't exist.
+    pub fn load_from_file(default: &SleepCycle, path: &str) -> SleepCycle {
+        match std::fs::read_to_string(path) {
+            Ok(json) => {
+                #[derive(serde::Deserialize)]
+                struct SleepState {
+                    tick: u64,
+                    last_sleep_tick: u64,
+                    sleep_interval: u64,
+                    total_sleep_cycles: u64,
+                    l2_history: L2ActivationHistory,
+                }
+                match serde_json::from_str::<SleepState>(&json) {
+                    Ok(state) => SleepCycle {
+                        tick: state.tick,
+                        last_sleep_tick: state.last_sleep_tick,
+                        sleep_interval: state.sleep_interval,
+                        total_sleep_cycles: state.total_sleep_cycles,
+                        sleeping: false,
+                        l2_history: state.l2_history,
+                        phase: 0,
+                    },
+                    Err(e) => {
+                        eprintln!("WARNING: Failed to deserialize sleep state: {}. Using defaults.", e);
+                        default.clone()
+                    }
+                }
+            }
+            Err(_) => default.clone(),
+        }
+    }
+}
+
+impl Clone for SleepCycle {
+    fn clone(&self) -> Self {
+        SleepCycle {
+            tick: self.tick,
+            last_sleep_tick: self.last_sleep_tick,
+            sleep_interval: self.sleep_interval,
+            total_sleep_cycles: self.total_sleep_cycles,
+            sleeping: self.sleeping,
+            l2_history: self.l2_history.clone(),
+            phase: self.phase,
+        }
     }
 }
 

@@ -95,6 +95,10 @@ pub fn verb_lemma(word: &str) -> String {
         "falls" | "fell" | "fallen" | "falling" => "fall".to_string(),
         // grow
         "grows" | "grew" | "grown" | "growing" => "grow".to_string(),
+        // increase
+        "increases" | "increased" | "increasing" => "increase".to_string(),
+        // decrease
+        "decreases" | "decreased" | "decreasing" => "decrease".to_string(),
         // Regular -ies → -y
         _ if lower.ends_with("ies") && lower.len() > 4 => {
             // "carries" → "carry", "studies" → "study"
@@ -119,6 +123,11 @@ pub fn verb_lemma(word: &str) -> String {
         // Regular -s → ∅
         _ if lower.ends_with('s') && !lower.ends_with("ss") && lower.len() > 3 => {
             lower[..lower.len() - 1].to_string()
+        }
+        // "ied" → "y" (rallied → rally, studied → study, carried → carry)
+        _ if lower.ends_with("ied") && lower.len() > 4 => {
+            let stem = &lower[..lower.len() - 3];
+            format!("{}y", stem)
         }
         // Regular -ed → ∅
         _ if lower.ends_with("ed") && lower.len() > 4 => {
@@ -541,6 +550,12 @@ fn tag_word(word: &str) -> PosTag {
         return PosTag::Punct;
     }
 
+    // Capitalized mid-sentence → proper noun (check BEFORE verb lexicon)
+    // "Fed" should be a noun, not a verb
+    if word.chars().next().map(|c| c.is_uppercase()).unwrap_or(false) && word.len() > 1 {
+        return PosTag::Noun;
+    }
+
     // Verb lexicon lookup (comprehensive)
     if is_verb_form(word) {
         return PosTag::Verb;
@@ -574,11 +589,6 @@ fn tag_word(word: &str) -> PosTag {
     }
     if lower.ends_with('s') && lower.len() > 3 {
         // Plural noun or 3rd-person verb — default to noun
-        return PosTag::Noun;
-    }
-
-    // Capitalized mid-sentence → proper noun
-    if word.chars().next().map(|c| c.is_uppercase()).unwrap_or(false) && word.len() > 1 {
         return PosTag::Noun;
     }
 
@@ -842,7 +852,15 @@ fn extract_object(tokens: &[Token], start: usize) -> String {
 // ─── SVO extraction from a single sentence ─────────────────────────────────
 
 /// Extract all SVO triples from one tagged sentence.
+/// Wrapper that calls the depth-limited version with recursion guard.
 fn extract_svo_from_sentence(tokens: &Sentence) -> Vec<SvoTriple> {
+    extract_svo_from_sentence_depth(tokens, 3)
+}
+
+/// Internal implementation with recursion depth control.
+/// `depth` controls recursion for nested subordinate clauses.
+/// At depth 0, no subordinate clause extraction is attempted.
+fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTriple> {
     let mut triples = Vec::new();
     let n = tokens.len();
 
@@ -1045,10 +1063,85 @@ fn extract_svo_from_sentence(tokens: &Sentence) -> Vec<SvoTriple> {
         results
     }).collect();
 
+    // ── PASS 4: Subordinate clause extraction ──────────────────────
+    // Pattern: [sub_conj noun_phrase verb ...] , [noun_phrase verb ...]
+    // e.g., "After the Fed raised rates, the market rallied."
+    // Only attempt if depth > 0 to prevent infinite recursion.
+    if depth > 0 {
+        let sub_conjunctions: &[&str] = &[
+            "after", "before", "when", "while", "since", "until",
+            "once", "although", "though", "because", "if",
+            "unless", "whereas",
+        ];
+
+        for &conj in sub_conjunctions {
+            // Find which token index has this conjunction
+            let conj_token_idx: Option<usize> = tokens.iter().position(|t| t.lower == conj);
+            if let Some(ci) = conj_token_idx {
+                // Find the comma after the subordinate clause
+                let clause_end_idx = tokens[ci..].iter()
+                    .position(|t| t.text == ",")
+                    .map(|p| ci + p)
+                    .unwrap_or(n);
+                // Extract tokens AFTER the conjunction (skip the conjunction itself)
+                let sub_start = ci + 1;
+                let sub_text: String = tokens[sub_start..clause_end_idx].iter()
+                    .map(|t| t.text.clone())
+                    .collect::<Vec<_>>()
+                    .join(" ");
+                if sub_text.len() > 3 && sub_text.len() < 200 {
+                    let sub_tokens = tokenize(&sub_text);
+                    let sub_tagged = tag_tokens(&sub_tokens);
+                    let sub_results = extract_svo_from_sentence_depth(&sub_tagged, depth.saturating_sub(1));
+                    for mut st in sub_results {
+                        if st.confidence > 0.5 {
+                            st.construction = format!("subordinate:{}", conj);
+                            st.confidence *= 0.6;
+                            triples.push(st);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ── PASS 5: Relative clause extraction ───────────────────────────
+    // Pattern: noun_phrase + [who/which/that] + verb + ...
+    // e.g., "The Fed, which raised rates, paused."
+    for i in 1..n.saturating_sub(2) {
+        let is_rel_marker = tokens[i].lower == "who"
+            || tokens[i].lower == "which"
+            || tokens[i].lower == "that"
+            || tokens[i].lower == "whom";
+        if !is_rel_marker { continue; }
+
+        // The subject is the noun phrase before the relative marker
+        let (rel_subject, _) = extract_noun_phrase(tokens, i - 1);
+        if rel_subject.is_empty() { continue; }
+
+        // The verb comes after the relative marker
+        if tokens[i + 1].pos != PosTag::Verb { continue; }
+        let rel_verb = verb_lemma(&tokens[i + 1].text);
+
+        // Object comes after the verb
+        let obj_text = if i + 2 < n {
+            extract_object(tokens, i + 2)
+        } else {
+            String::new()
+        };
+        triples.push(SvoTriple {
+            subject: rel_subject,
+            verb: rel_verb,
+            object: obj_text,
+            confidence: 0.70,
+            construction: "relative_clause".to_string(),
+        });
+    }
+
     // Deduplicate by (subject, verb, object)
     let mut seen = HashMap::new();
     let mut deduped = Vec::new();
-    for t in expanded {
+    for t in triples {
         let key = (t.subject.to_lowercase(), t.verb.to_lowercase(), t.object.to_lowercase());
         if !seen.contains_key(&key) {
             seen.insert(key, true);
@@ -1205,6 +1298,9 @@ mod tests {
         assert_eq!(verb_lemma("is"), "be");
         assert_eq!(verb_lemma("was"), "be");
         assert_eq!(verb_lemma("has"), "have");
+        assert_eq!(verb_lemma("rallied"), "rally");
+        assert_eq!(verb_lemma("studied"), "study");
+        assert_eq!(verb_lemma("carried"), "carry");
     }
 
     #[test]
@@ -1239,5 +1335,95 @@ mod tests {
         }
 
         assert!(total >= 3, "Expected ≥3 triples from 5 sentences, got {total}");
+    }
+
+    // ── New NLP capability tests ────────────────────────────────────
+
+    #[test]
+    fn test_subordinate_clause_after() {
+        let triples = extract_svo("After the Fed raised rates, the market rallied.");
+        eprintln!("  [nlp] subordinate 'after': {} triples", triples.len());
+        for t in &triples {
+            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+        }
+        // Should at least extract the main clause
+        let has_main = triples.iter().any(|t| {
+            t.subject.to_lowercase().contains("market") && t.verb == "rally"
+        });
+        assert!(has_main, "Should extract 'market rallied'");
+        // Should also extract the subordinate clause
+        let has_sub = triples.iter().any(|t| {
+            t.construction.starts_with("subordinate") && t.verb == "raise"
+        });
+        assert!(has_sub, "Should extract subordinate 'Fed raised rates'");
+    }
+
+    #[test]
+    fn test_subordinate_clause_before() {
+        let triples = extract_svo("Before the ECB cut rates, the euro fell.");
+        eprintln!("  [nlp] subordinate 'before': {} triples", triples.len());
+        for t in &triples {
+            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+        }
+        assert!(triples.len() >= 2, "Should extract ≥2 triples from subordinate clause");
+    }
+
+    #[test]
+    fn test_relative_clause_who() {
+        let triples = extract_svo("The Fed, who raised rates, paused.");
+        eprintln!("  [nlp] relative 'who': {} triples", triples.len());
+        for t in &triples {
+            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+        }
+        let has_rel = triples.iter().any(|t| t.construction == "relative_clause");
+        assert!(has_rel, "Should extract a relative clause");
+    }
+
+    #[test]
+    fn test_relative_clause_which() {
+        let triples = extract_svo("The policy which caused inflation was reversed.");
+        eprintln!("  [nlp] relative 'which': {} triples", triples.len());
+        for t in &triples {
+            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+        }
+        let has_rel = triples.iter().any(|t| t.construction == "relative_clause");
+        assert!(has_rel, "Should extract a relative clause with 'which'");
+    }
+
+    #[test]
+    fn test_financial_complex_sentence() {
+        let triples = extract_svo("After the Federal Reserve raised interest rates, bond yields increased sharply.");
+        eprintln!("  [nlp] financial complex: {} triples", triples.len());
+        for t in &triples {
+            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+        }
+        // Should extract the causal chain
+        let has_antecedent = triples.iter().any(|t| {
+            t.subject.to_lowercase().contains("reserve") && t.verb == "raise"
+        });
+        let has_consequent = triples.iter().any(|t| {
+            t.subject.to_lowercase().contains("yields") && t.verb == "increase"
+        });
+        assert!(has_antecedent, "Should extract 'Fed raised rates'");
+        assert!(has_consequent, "Should extract 'yields increased'");
+    }
+
+    #[test]
+    fn test_subordinate_clause_because() {
+        let triples = extract_svo("Stocks fell because the Fed raised rates.");
+        eprintln!("  [nlp] subordinate 'because': {} triples", triples.len());
+        for t in &triples {
+            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+        }
+        // Should extract at least one clause with raise/fed
+        let has_fed = triples.iter().any(|t| {
+            t.subject.to_lowercase().contains("fed") && t.verb == "raise"
+        });
+        assert!(has_fed, "Should extract 'Fed raised rates' clause");
+        // Should also extract the main clause
+        let has_stocks = triples.iter().any(|t| {
+            t.subject.to_lowercase().contains("stocks") && t.verb == "fall"
+        });
+        assert!(has_stocks, "Should extract 'Stocks fell' clause");
     }
 }

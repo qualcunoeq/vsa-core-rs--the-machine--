@@ -68,6 +68,38 @@ pub const CURIOSITY_BONUS_FACTOR: f64 = 0.2;
 
 /// Maximum number of curiosity-driven exploration steps before
 /// the system reverts to exploitation (Theorem P3 bound).
+///
+/// ## Theorem P3 (Curiosity Bound — restated for actual implementation)
+///
+/// **Statement:**
+/// The curiosity engine limits exploration to MAX_CURIOSITY_STEPS = 50
+/// consecutive steps before reverting to exploitation. This is a hard
+/// engineering cap, not a function of state space entropy.
+///
+/// **Why not C = log₂(K)?**
+/// The curiosity bonus is computed as:
+///   bonus = CURIOSITY_BONUS_FACTOR × (entropy_norm + error_norm) / 2
+/// where entropy_norm = entropy / log₂(D) and error_norm = prediction_error.
+/// This is a continuous-valued function of transition entropy and prediction
+/// error, not a binary split-counting argument. The bonus biases exploration
+/// toward uncertain states but does NOT imply a log₂(K) bound on exploration
+/// depth.
+///
+/// **Actual bound:**
+///   steps_active ≤ MAX_CURIOSITY_STEPS = 50
+///   curiosity_level ∈ [0.0, 1.0]  (decrements by DECAY_PER_STEP per step)
+///   When steps_taken ≥ max_steps: `active` is set to false and the forager
+///   switches back to exploitation mode.
+///
+/// **Justification:**
+/// 50 steps is sufficient for D = 10240 because:
+///   1. Pure exploration rarely needs >20 steps to encounter novel transitions
+///      (the state space is large but transitions cluster in practice).
+///   2. The bonus formula ensures curiosity automatically diminishes as
+///      states become predictable (error_norm → 0).
+///   3. 50 steps at 5 ticks/step = 250 ticks ≈ 25 seconds of wall time —
+///      long enough for meaningful exploration, short enough to prevent
+///      runaway loops.
 pub const MAX_CURIOSITY_STEPS: usize = 50;
 
 // ─── IntentMemory ───────────────────────────────────────────────────────────
@@ -175,6 +207,8 @@ pub struct CuriosityEngine {
     /// Whether curiosity is currently active.
     pub active: bool,
     /// Maximum steps before auto-deactivation (Theorem P3 bound).
+    /// The hard cap is MAX_CURIOSITY_STEPS = 50; the actual bound
+    /// is this value (which may differ if overridden in tests).
     pub max_steps: usize,
 }
 

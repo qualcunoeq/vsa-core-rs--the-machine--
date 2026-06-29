@@ -6,3 +6,6 @@
 # CUDA compiled artifacts
 src/cuda/libnhd.so
 stockfish
+__pycache__/
+*.jsonl
+*.py

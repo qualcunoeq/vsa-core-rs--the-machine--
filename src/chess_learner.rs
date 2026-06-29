@@ -611,6 +611,7 @@ pub fn plan_weight_for_game(games_at_level: usize) -> f64 {
 ///   - Some(0) → pure random
 ///   - Some(n) → n% Stockfish d1, (100-n)% fully random
 ///   - Some(100) → pure Stockfish d1
+/// `search_depth` controls Stockfish search depth (default 1; depth 0 = random legal).
 pub fn play_game<F>(
     sf: &mut StockfishClient,
     evaluate_fn: &F,
@@ -618,6 +619,7 @@ pub fn play_game<F>(
     qa: Option<&crate::qa::QaEngine>,
     hybrid_stockfish_pct: Option<usize>,
     plan_weight: f64,
+    search_depth: usize,
 ) -> GameRecord
 where
     F: Fn(&str) -> f64,
@@ -724,7 +726,7 @@ where
             let sf_pct = hybrid_stockfish_pct.unwrap_or(0);
             let sf_threshold = (sf_pct as f64) / 100.0;
             let opponent_move = if sf_pct > 0 && rand::thread_rng().gen_bool(sf_threshold) {
-                let best = sf.opponent_move(&current_fen);
+                let best = sf.opponent_move_at_depth(&current_fen, search_depth);
                 if best.is_empty() { break; }
                 best
             } else {
@@ -944,7 +946,7 @@ pub fn train_stage1(brain: &mut VSABrain, num_games: usize) -> QaEngine {
         };
 
         // Play the game with planner augmentation
-        let record = play_game(&mut sf, &evaluate, machine_is_white, Some(&qa), None, PLAN_WEIGHT);
+        let record = play_game(&mut sf, &evaluate, machine_is_white, Some(&qa), None, PLAN_WEIGHT, 1);
 
         // Feed game outcome back to planner rules
         let outcome = if record.result > 0.0 { 1.0 } else if record.result < 0.0 { 0.0 } else { 0.5 };
@@ -1429,6 +1431,7 @@ pub fn train_stage2(
     num_games: usize,
     hybrid_stockfish_pct: Option<usize>,
     mut game_records: Option<&mut Vec<GameRecord>>,
+    search_depth: usize,
 ) -> (usize, usize, usize, f64) {
     let num_mined = qa.rules().iter().filter(|r| r.source == "mined").count();
     let num_hand = qa.rules().iter().filter(|r| r.source != "mined").count();
@@ -1467,7 +1470,7 @@ pub fn train_stage2(
             knn_evaluate_tracked(fen, brain, K_NEAREST, &TRACKED_WEIGHTS, &tracked_cache)
         };
 
-        let mut record = play_game(&mut sf, &evaluate, machine_is_white, Some(qa), hybrid_stockfish_pct, p_weight);
+        let mut record = play_game(&mut sf, &evaluate, machine_is_white, Some(qa), hybrid_stockfish_pct, p_weight, search_depth);
 
         // Self-improvement: update ALL rules in the plan chain
         let outcome = if record.result > 0.0 { 1.0 } else if record.result < 0.0 { 0.0 } else { 0.5 };
@@ -1814,6 +1817,7 @@ pub fn train_curriculum(
     games_per_level: usize,
     max_index: usize,
     existing_qa: Option<crate::qa::QaEngine>,
+    search_depth: usize,
 ) -> (usize, Vec<(usize, f64, f64, usize)>) {
     let mut qa = match existing_qa {
         Some(q) => q,
@@ -1838,7 +1842,7 @@ pub fn train_curriculum(
         // Run games at this rung, collecting game records for re-mining
         let mut game_records: Vec<GameRecord> = Vec::with_capacity(games_per_level);
         let (wins, losses, draws, wr) = train_stage2(
-            brain, &mut qa, games_per_level, Some(sf_pct), Some(&mut game_records),
+            brain, &mut qa, games_per_level, Some(sf_pct), Some(&mut game_records), search_depth,
         );
 
         // Re-mine L2 rules from current stage positions (replaces previous rules)

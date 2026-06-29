@@ -177,7 +177,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .position(|x| x == "--skill-level")
                 .and_then(|p| args.get(p + 1))
                 .and_then(|s| s.parse().ok());
-            the_machine::chess_learner::train_stage2(&mut brain, &mut qa, val_games, skill_lvl, None);
+            let val_depth: usize = args.iter()
+                .position(|x| x == "--val-depth")
+                .and_then(|p| args.get(p + 1))
+                .and_then(|s| s.parse().ok())
+                .unwrap_or(1);
+            the_machine::chess_learner::train_stage2(&mut brain, &mut qa, val_games, skill_lvl, None, val_depth);
         }
     } else if args.contains(&"--curriculum".to_string()) {
         // ----------------- CURRICULUM MODE -----------------
@@ -215,8 +220,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             eprintln!("Initializing VSABrain for curriculum training (no pre-training)...");
         }
 
+        let sf_depth: usize = args.iter()
+            .position(|x| x == "--sf-depth")
+            .and_then(|p| args.get(p + 1))
+            .and_then(|s| s.parse().ok())
+            .unwrap_or(1);
         the_machine::chess_learner::train_curriculum(
-            &mut brain, start_lvl, games_per, max_lvl, qa,
+            &mut brain, start_lvl, games_per, max_lvl, qa, sf_depth,
         );
     } else {
         // ----------------- DEFAULT PATH: MULTI-AGENT SIMULATION -----------------

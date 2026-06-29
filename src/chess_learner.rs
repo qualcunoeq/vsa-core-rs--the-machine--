@@ -606,6 +606,135 @@ pub fn plan_weight_for_game(games_at_level: usize) -> f64 {
     }
 }
 
+/// Predict opponent behavioral distribution for a position using k-NN over
+/// stored opponent responses. Returns Vec<(behavior_label, probability)>.
+fn predict_behavior_distribution(
+    fen: &str,
+    responses: &[OpponentResponse],
+    k: usize,
+) -> Vec<(OpponentBehavior, f64)> {
+    if responses.is_empty() {
+        return Vec::new();
+    }
+
+    let query_hv = encode_position(fen);
+    // Compute similarity to all stored responses
+    let mut sims: Vec<(usize, f64)> = responses.iter().enumerate()
+        .map(|(i, r)| {
+            let r_hv = encode_position(&r.fen_before_opponent);
+            let sim = 1.0 - query_hv.normalized_hamming_distance(&r_hv);
+            (i, sim)
+        })
+        .collect();
+    sims.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
+
+    // Take k nearest, aggregate behaviors by weighted vote
+    let mut behavior_votes: HashMap<OpponentBehavior, f64> = HashMap::new();
+    let mut total_weight = 0.0_f64;
+    for &(idx, sim) in sims.iter().take(k) {
+        let weight = sim.max(0.0);
+        *behavior_votes.entry(responses[idx].behavior.clone()).or_insert(0.0) += weight;
+        total_weight += weight;
+    }
+
+    if total_weight < 1e-9 {
+        return Vec::new();
+    }
+
+    let mut result: Vec<(OpponentBehavior, f64)> = behavior_votes.into_iter()
+        .map(|(b, w)| (b, w / total_weight))
+        .collect();
+    result.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
+    result
+}
+
+/// Generate a representative opponent move for the given behavioral class.
+/// Uses chess heuristics (capture highest-value piece, retreat attacked piece, etc.)
+fn sample_response_for_behavior(fen: &str, behavior: &OpponentBehavior, legal_moves: &[(String, f64)]) -> String {
+    let pieces = parse_fen(fen);
+    let white_to_move = fen.contains(" w ");
+
+    match behavior {
+        OpponentBehavior::Captures => {
+            // Find the best capture: highest-value captured piece
+            let mut best_capture = String::new();
+            let mut best_value = -1;
+            for (uci, _) in legal_moves {
+                if let Some(dest) = uci.chars().nth(2) {
+                    let target_piece = pieces.iter()
+                        .find(|&&(_, r, f)| {
+                            let f_char = (b'a' + f) as char;
+                            let r_char = (b'1' + r) as char;
+                            uci.len() >= 4 && uci.as_bytes()[2] == f_char as u8 && uci.as_bytes()[3] == r_char as u8
+                        });
+                    if let Some(&(ch, _, _)) = target_piece {
+                        // Check if it's an opponent piece
+                        let is_white_piece = ch.is_uppercase();
+                        if is_white_piece != white_to_move {
+                            let value = match ch.to_ascii_uppercase() {
+                                'P' => 1, 'N' => 3, 'B' => 3, 'R' => 5, 'Q' => 9, 'K' => 100, _ => 0,
+                            };
+                            if value > best_value {
+                                best_value = value;
+                                best_capture = uci.clone();
+                            }
+                        }
+                    }
+                }
+            }
+            if !best_capture.is_empty() { return best_capture; }
+        },
+        OpponentBehavior::Retreats => {
+            // Find a move that moves an attacked piece to safety
+            for (uci, _) in legal_moves {
+                let src = &uci[..2];
+                let src_f = (src.as_bytes()[0] - b'a') as usize;
+                let src_r = (src.as_bytes()[1] - b'1') as usize;
+                // Check if source piece was under attack in the original position
+                // (simplified: just return the first move that moves a piece backward)
+                if uci.len() >= 4 {
+                    let dest_r = (uci.as_bytes()[3] - b'1') as i32;
+                    let src_r_i32 = src_r as i32;
+                    let dist = (dest_r - src_r_i32).abs();
+                    if dist <= 1 {
+                        return uci.clone(); // short move = likely retreat
+                    }
+                }
+            }
+        },
+        OpponentBehavior::Advances => {
+            // Find a pawn push
+            for (uci, _) in legal_moves {
+                let src = &uci[..2];
+                let src_f_u8 = src.as_bytes()[0] - b'a';
+                let src_r_u8 = src.as_bytes()[1] - b'1';
+                for &(ch, r, f) in &pieces {
+                    if (ch == 'P' || ch == 'p') && f == src_f_u8 && r == src_r_u8 {
+                        return uci.clone(); // pawn move
+                    }
+                }
+            }
+        },
+        OpponentBehavior::Develops => {
+            // Find a knight or bishop move toward center
+            for (uci, _) in legal_moves {
+                let src = &uci[..2];
+                let src_f_u8 = src.as_bytes()[0] - b'a';
+                let src_r_u8 = src.as_bytes()[1] - b'1';
+                for &(ch, r, f) in &pieces {
+                    if (ch == 'N' || ch == 'n' || ch == 'B' || ch == 'b') && f == src_f_u8 && r == src_r_u8 {
+                        return uci.clone(); // develop piece
+                    }
+                }
+            }
+        },
+        _ => {} // KingsideCastle, QueensideCastle, Defends, Unclear: fall through
+    }
+
+    // Fallback: first legal move
+    legal_moves.first().map(|(uci, _)| uci.clone()).unwrap_or_default()
+}
+
 /// `hybrid_stockfish_pct` controls opponent strength:
 ///   - None    → pure random (0% Stockfish)
 ///   - Some(0) → pure random
@@ -703,6 +832,42 @@ where
                                 {
                                     score -= 0.40;  // direct penalty
                                 }
+                            }
+                        }
+                    }
+
+                    // Path 3: Opponent model lookahead — predict Stockfish's response
+                    // to this candidate move, evaluate the resulting position, blend.
+                    if !qa.opponent_responses.is_empty() {
+                        let behavior_dist = predict_behavior_distribution(
+                            &new_fen, &qa.opponent_responses, 10);
+                        if !behavior_dist.is_empty() {
+                            // Expected value over top behavioral classes
+                            let mut lookahead_sum = 0.0;
+                            let mut lookahead_weight = 0.0;
+                            // Get legal moves for the opponent from this position
+                            sf.set_position(&new_fen);
+                            let opp_legal = sf.legal_moves();
+                            let opp_moves: Vec<(String, f64)> = opp_legal.iter()
+                                .map(|(m, _)| (m.clone(), 0.0)).collect();
+
+                            for (behavior, prob) in &behavior_dist {
+                                let response = sample_response_for_behavior(
+                                    &new_fen, behavior, &opp_moves);
+                                if !response.is_empty() {
+                                    let resp_fen = sf.apply_move_to_fen(&new_fen, &response);
+                                    if !resp_fen.is_empty() {
+                                        let resp_score = evaluate_fn(&resp_fen);
+                                        lookahead_sum += prob * resp_score;
+                                        lookahead_weight += prob;
+                                    }
+                                }
+                            }
+                            if lookahead_weight > 0.1 {
+                                let lookahead_avg = lookahead_sum / lookahead_weight;
+                                // Blend: weight lookahead by plan_weight (same influence as planner)
+                                score = score * (1.0 - plan_weight * 0.5)
+                                    + lookahead_avg * (plan_weight * 0.5);
                             }
                         }
                     }
@@ -1711,6 +1876,9 @@ pub fn mine_opponent_rules(
     if responses.is_empty() {
         return 0;
     }
+
+    // Store raw responses in QaEngine for behavioral prediction during move selection
+    qa.opponent_responses = responses.to_vec();
 
     // Store bridge rule: opponent_response correlates with positive_outcome → white has advantage
     let has_pos_bridge = qa.rules().iter().any(|r| {

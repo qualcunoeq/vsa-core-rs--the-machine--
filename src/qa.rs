@@ -275,6 +275,10 @@ pub struct QaEngine {
     /// Used for negative rule checks during move selection.
     #[serde(skip)]
     pub chess_hierarchy: Option<crate::hierarchy::HierarchicalManifold>,
+    /// Stored opponent responses for behavioral prediction (Path 3 lookahead).
+    /// Populated by `mine_opponent_rules`.
+    #[serde(skip)]
+    pub opponent_responses: Vec<crate::chess_learner::OpponentResponse>,
 }
 
 impl QaEngine {
@@ -290,6 +294,7 @@ impl QaEngine {
             centroid_rules: Vec::new(),
             l2_rules: Vec::new(),
             chess_hierarchy: None,
+            opponent_responses: Vec::new(),
         }
     }
 

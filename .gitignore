@@ -5,3 +5,4 @@
 *.log
 # CUDA compiled artifacts
 src/cuda/libnhd.so
+stockfish

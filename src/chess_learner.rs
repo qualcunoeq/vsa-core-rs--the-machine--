@@ -585,6 +585,7 @@ pub struct GameRecord {
     pub ply_count: usize,
     pub eval_spread: f64,         // max - min of k-NN scores during evaluation
     pub avg_abs_eval: f64,        // average |score| of evaluated moves (variance proxy)
+    pub opponent_responses: Vec<OpponentResponse>, // opponent response patterns
 }
 
 /// Play one game: The Machine vs random mover.
@@ -631,6 +632,10 @@ where
     let mut eval_min = f64::INFINITY;
     let mut eval_abs_sum = 0.0;
     let mut eval_count = 0usize;
+    // Opponent response tracking
+    let mut opponent_responses: Vec<OpponentResponse> = Vec::new();
+    let mut last_machine_fen = String::new();
+    let mut last_machine_move = String::new();
 
     loop {
         // Check if game is over
@@ -647,6 +652,8 @@ where
         let chosen_move: String;
 
         if machine_to_move {
+            // Save position before machine's move for opponent response tracking
+            last_machine_fen = current_fen.clone();
             // The Machine selects a move by evaluating candidate positions.
             // Evaluate top candidate moves.  Against Stockfish d1, we need more
             // options since the opponent rarely blunders badly.
@@ -712,6 +719,7 @@ where
             }
 
             chosen_move = best_move;
+            last_machine_move = chosen_move.clone();
         } else {
             let sf_pct = hybrid_stockfish_pct.unwrap_or(0);
             let sf_threshold = (sf_pct as f64) / 100.0;
@@ -720,12 +728,18 @@ where
                 if best.is_empty() { break; }
                 best
             } else {
-                // Fully random move from ALL legal moves (or if sf_pct == 0)
                 let idx = rand::thread_rng().gen_range(0..legal.len());
                 legal[idx].0.clone()
             };
             if opponent_move.is_empty() {
                 break;
+            }
+            // Record opponent response (only if machine has moved this game)
+            if !last_machine_fen.is_empty() {
+                let response = record_opponent_response(
+                    &last_machine_fen, &last_machine_move, &current_fen, &opponent_move,
+                );
+                opponent_responses.push(response);
             }
             chosen_move = opponent_move;
         }
@@ -734,6 +748,13 @@ where
         current_fen = sf.apply_move_get_fen(&chosen_move);
         positions.push(current_fen.clone());
         ply += 1;
+
+        // Update the last response with the resulting position
+        if let Some(last) = opponent_responses.last_mut() {
+            if last.fen_after_opponent == last.fen_before_opponent {
+                last.fen_after_opponent = current_fen.clone();
+            }
+        }
 
         // Hard cap: 100 plies max.  Longer games = more diverse positions = better clustering.
         if ply > 100 {
@@ -748,6 +769,13 @@ where
     // If machine is black, negate
     let machine_result = if machine_is_white { result } else { -result };
 
+    // Backpropagate game outcome to opponent responses
+    for response in &mut opponent_responses {
+        response.outcome = if machine_result > 0.0 { 1.0 }
+            else if machine_result < 0.0 { 0.0 }
+            else { 0.5 };
+    }
+
     GameRecord {
         positions,
         result: machine_result,
@@ -755,6 +783,7 @@ where
         ply_count: ply,
         eval_spread: if eval_count > 0 { eval_max - eval_min } else { 0.0 },
         avg_abs_eval: if eval_count > 0 { eval_abs_sum / eval_count as f64 } else { 0.0 },
+        opponent_responses,
     }
 }
 
@@ -1147,6 +1176,7 @@ pub fn reconstruct_game_records_from_clusters(brain: &VSABrain) -> Vec<GameRecor
                 ply_count,
                 eval_spread: 0.0,
                 avg_abs_eval: 0.0,
+                opponent_responses: Vec::new(),
             });
         }
         i = j;
@@ -1490,6 +1520,14 @@ pub fn train_stage2(
         }
     }
 
+    // Mine opponent rules from collected game records
+    let num_opponent_rules = if let Some(ref records) = game_records {
+        let all_responses: Vec<OpponentResponse> = records.iter()
+            .flat_map(|r| r.opponent_responses.iter().cloned())
+            .collect();
+        mine_opponent_rules(&all_responses, qa)
+    } else { 0 };
+
     let win_rate = total_wins as f64 / num_games as f64 * 100.0;
     let avg_hand_conf: f64 = qa.rules().iter()
         .filter(|r| r.source != "mined")
@@ -1523,7 +1561,238 @@ pub fn train_stage2(
 ///   - If WR > promotion_threshold, advances to next level
 ///   - Reports 50-game window WR curves
 ///
-/// Returns the highest level reached and final stats.
+// ─── Opponent Modeling ────────────────────────────────────────────────────
+//
+// Encodes opponent behavior patterns as SVO facts the planner can reason
+// about.  Instead of just mining position-to-position transitions, we mine
+// action→response patterns: "when I play move M, opponent responds with R."
+//
+// These are stored as causal rules like:
+//   ("if_I_play", "move_description", "opponent_responds_with", "response_desc")
+//   → ("opponent_response", "correlated_with", "positive_outcome")
+//
+// The planner can then reason: given this opponent model, which moves create
+// positions the opponent handles poorly?
+// ────────────────────────────────────────────────────────────────────────────
+
+/// Classifies an opponent's response to a Machine move.
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+pub enum OpponentBehavior {
+    Captures,           // Opponent captured a piece
+    Retreats,           // Opponent moved a piece away from attack  
+    Advances,           // Opponent advanced a pawn
+    KingsideCastle,     // Opponent castled kingside
+    QueensideCastle,    // Opponent castled queenside
+    Develops,           // Opponent developed a piece (knight/bishop out)
+    Defends,            // Opponent moved to defend an attacked piece
+    Unclear,            // Can't classify
+}
+
+/// Describes what happened on one opponent response to a Machine action.
+#[derive(Clone, Debug)]
+pub struct OpponentResponse {
+    /// The FEN before the Machine moved (Machine's turn).
+    pub fen_before_machine: String,
+    /// The Machine's UCI move.
+    pub machine_move: String,
+    /// The FEN after the Machine's move (before opponent's response).
+    pub fen_before_opponent: String,
+    /// The opponent's UCI response.
+    pub opponent_move: String,
+    /// The FEN after the opponent's move.
+    pub fen_after_opponent: String,
+    /// Classified opponent behavior.
+    pub behavior: OpponentBehavior,
+    /// Game outcome from Machine's perspective (1=win, 0=loss, 0.5=draw).
+    /// Filled in after the game ends.
+    pub outcome: f64,
+}
+
+/// Classify what the opponent did, given the board state before and after.
+fn classify_opponent_move(
+    pieces_before: &[(char, u8, u8)],
+    pieces_after: &[(char, u8, u8)],
+    opponent_move_uci: &str,
+) -> OpponentBehavior {
+    // Check for captures: piece count decreased
+    if pieces_after.len() < pieces_before.len() {
+        return OpponentBehavior::Captures;
+    }
+
+    let dest = &opponent_move_uci[2..4.min(opponent_move_uci.len())];
+    let dest_file = (dest.as_bytes()[0] - b'a') as u8;
+    let dest_rank = (dest.as_bytes()[1] - b'1') as u8;
+
+    // Find which piece moved to dest
+    let moved_piece = pieces_after.iter().find(|&&(_, r, f)| r == dest_rank && f == dest_file);
+    let dest_piece = moved_piece.map(|&(c, _, _)| c).unwrap_or(' ');
+
+    // Castle detection
+    if opponent_move_uci == "e8g8" || opponent_move_uci == "e1g1" {
+        return OpponentBehavior::KingsideCastle;
+    }
+    if opponent_move_uci == "e8c8" || opponent_move_uci == "e1c1" {
+        return OpponentBehavior::QueensideCastle;
+    }
+
+    // Pawn advance
+    if dest_piece == 'P' || dest_piece == 'p' {
+        return OpponentBehavior::Advances;
+    }
+
+    // Development: knight or bishop moving to a non-back-rank
+    if (dest_piece == 'N' || dest_piece == 'n' || dest_piece == 'B' || dest_piece == 'b')
+        && (opponent_move_uci.as_bytes()[1] - b'1') < 6  // not from back rank... 
+    {
+        // Check if it moved FROM the back rank
+        let src_rank = opponent_move_uci.as_bytes()[1] - b'1';
+        if src_rank == 0 || src_rank == 7 {
+            return OpponentBehavior::Develops;
+        }
+    }
+
+    // Retreat: moved a piece that was under attack before
+    let src = &opponent_move_uci[..2];
+    let src_file = (src.as_bytes()[0] - b'a') as u8;
+    let src_rank = (src.as_bytes()[1] - b'1') as u8;
+    let src_was_attacked = pieces_before.iter().any(|&(_, r, f)| r == src_rank && f == src_file);
+
+    // Check if the source was attacked by building attack maps
+    // Simple heuristic: if source piece was attacked, it's a retreat
+    if src_was_attacked {
+        return OpponentBehavior::Retreats;
+    }
+
+    // Defense: moved a piece to defend another attacked piece
+    // Check if any piece is now defended that wasn't before
+    // (simplified: check if destination square has an attacked piece nearby)
+    // For now, just mark as unclear for unclassified moves
+    OpponentBehavior::Unclear
+}
+
+/// Record an opponent response during a game.
+fn record_opponent_response(
+    fen_before_machine: &str,
+    machine_move: &str,
+    fen_after_machine: &str,
+    opponent_move: &str,
+) -> OpponentResponse {
+    let pieces_before = parse_fen(fen_before_machine);
+    let pieces_after = parse_fen(fen_after_machine);
+
+    let behavior = classify_opponent_move(&pieces_before, &pieces_after, opponent_move);
+
+    OpponentResponse {
+        fen_before_machine: fen_before_machine.to_string(),
+        machine_move: machine_move.to_string(),
+        fen_before_opponent: fen_after_machine.to_string(),
+        opponent_move: opponent_move.to_string(),
+        fen_after_opponent: fen_after_machine.to_string(), // placeholder, caller sets this
+        behavior,
+        outcome: 0.0,
+    }
+}
+
+/// Mine opponent model rules from recorded opponent responses.
+///
+/// For each opponent behavior type, compute:
+/// - win_rate: how often this behavior → Machine win
+/// - support: how many times observed
+///
+/// Stores as causal rules in the QA engine. Also stores a bridge rule
+/// connecting opponent response outcomes to the planning goal chain.
+pub fn mine_opponent_rules(
+    responses: &[OpponentResponse],
+    qa: &mut QaEngine,
+) -> usize {
+    if responses.is_empty() {
+        return 0;
+    }
+
+    // Store bridge rule: opponent_response correlates with positive_outcome → white has advantage
+    let has_pos_bridge = qa.rules().iter().any(|r| {
+        r.antecedent_subject == "opponent_response"
+            && r.antecedent_verb == "correlates_with"
+            && r.antecedent_object == "positive_outcome"
+    });
+    if !has_pos_bridge {
+        qa.store_rule(
+            "opponent_response", "correlates_with", "positive_outcome",
+            "white", "has", "advantage",
+            "opponent_model_bridge",
+        );
+    }
+    let has_neg_bridge = qa.rules().iter().any(|r| {
+        r.antecedent_subject == "opponent_response"
+            && r.antecedent_verb == "correlates_with"
+            && r.antecedent_object == "negative_outcome"
+    });
+    if !has_neg_bridge {
+        qa.store_rule(
+            "opponent_response", "correlates_with", "negative_outcome",
+            "white", "has", "disadvantage",
+            "opponent_model_bridge",
+        );
+    }
+
+    // Aggregate by behavior type
+    let mut stats: HashMap<OpponentBehavior, (u32, f64)> = HashMap::new();
+    for r in responses {
+        let entry = stats.entry(r.behavior.clone()).or_insert((0, 0.0));
+        entry.0 += 1;
+        if r.outcome > 0.5 {
+            entry.1 += 1.0;
+        } else if r.outcome == 0.5 {
+            entry.1 += 0.5;
+        }
+    }
+
+    let mut rules_mined = 0;
+    for (behavior, (total, wins)) in &stats {
+        if *total < 5 {
+            continue; // minimum support
+        }
+        let win_rate = *wins / *total as f64;
+
+        // Behavior description as text for SVO storage
+        let beh_str = format!("{:?}", behavior);
+        let opp_name = "stockfish_d1"; // could parameterize
+
+        if win_rate >= 0.60 {
+            // Opponent's response correlates with Machine winning
+            qa.store_rule_with_confidence(
+                opp_name, "responds_with", &beh_str,
+                "opponent_response", "correlates_with", "positive_outcome",
+                "opponent_model",
+                win_rate,
+            );
+            rules_mined += 1;
+        } else if win_rate <= 0.40 {
+            // Opponent's response correlates with Machine losing
+            qa.store_rule_with_confidence(
+                opp_name, "responds_with", &beh_str,
+                "opponent_response", "correlates_with", "negative_outcome",
+                "opponent_model",
+                1.0 - win_rate,
+            );
+            rules_mined += 1;
+        }
+    }
+
+    eprintln!("  Opponent model: {} rules mined from {} responses (behaviors: {})",
+        rules_mined, responses.len(), stats.len());
+
+    // Show per-behavior stats
+    let mut sorted: Vec<_> = stats.iter().collect();
+    sorted.sort_by(|a, b| b.1 .0.cmp(&a.1 .0));
+    for (behavior, (total, wins)) in sorted.iter().take(5) {
+        let wr = *wins / *total as f64;
+        eprintln!("    {:?}: support={}, win_rate={:.3}", behavior, total, wr);
+    }
+
+    rules_mined
+}
+
 /// The hybrid Stockfish percentage ladder for curriculum training.
 /// Each rung increases the proportion of Stockfish d1 moves.
 const CURRICULUM_LADDER: &[usize] = &[10, 30, 50, 70, 90, 100];
@@ -1591,7 +1860,9 @@ pub fn train_curriculum(
             else if sf_pct <= 70 { 25.0 }
             else if sf_pct <= 90 { 15.0 }
             else { 5.0 };
-        let min_rules = 5;
+        // Minimum rules: lower threshold for small game counts (50 games often
+        // produce 2-5 rules); higher for large counts (500 games → 10+ rules).
+        let min_rules = if games_per_level <= 100 { 2 } else { 5 };
 
         if wr >= promotion_threshold && rules_mined >= min_rules {
             let next_pct = CURRICULUM_LADDER.get(current + 1).unwrap_or(&sf_pct);

@@ -53,10 +53,10 @@ impl ResonatorVocabulary {
         let baseline = vec![
             "sys_read", "sys_write", "execute_bash", "tcp_send",
             "Agent-1", "Agent-2", "Agent-3", "Broker", "Finch",
-            "Breach", "Crisis", "Stable", "Attack", "Stealth", "Lehman",
-            "Market", "News", "Infra",
+            "Anomaly", "Stress", "Stable", "Alert", "Background", "Normal",
+            "Signal", "State", "Focus",
             "hosts", "ledger", "read", "write", "execute", "panic", "sync",
-            "What", "is", "the", "crisis", "breached", "server", "admin",
+            "What", "is", "the", "anomaly", "breached", "server", "admin",
             "IF_RULE", "CAUSE_RULE", "THEN_RULE", "consequence",
         ];
         for term in baseline {

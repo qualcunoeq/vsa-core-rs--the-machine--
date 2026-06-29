@@ -6,18 +6,18 @@ use crate::{Hypervector, HD_DIMENSION};
 // ─── Default SVO candidate lists ──────────────────────────────────────────
 
 pub const DEFAULT_SUBJECTS: &[&str] = &[
-    "Agent-1", "Agent-2", "Agent-3", "Broker", "Finch",
-    "Market", "News", "Infra",
+    "System", "Agent", "Observer", "Process", "Component",
+    "Module", "Interface", "Environment",
 ];
 
 pub const DEFAULT_VERBS: &[&str] = &[
-    "read", "write", "execute", "panic", "sync", "breached",
+    "observe", "process", "respond", "adapt", "learn",
+    "connect", "analyze", "signal",
 ];
 
 pub const DEFAULT_OBJECTS: &[&str] = &[
-    "hosts", "ledger", "crisis", "Stable",
-    "Attack", "Breach", "Stealth", "Lehman",
-    "admin", "server",
+    "state", "pattern", "signal", "context", "relation",
+    "structure", "data", "event", "resource", "boundary",
 ];
 
 // ─── AutonomyDrive ────────────────────────────────────────────────────────
@@ -554,11 +554,15 @@ mod tests {
     use crate::resonator::{encode_svo, ResonatorVocabulary};
 
     fn setup_env() -> (ResonatorVocabulary, ActionRegistry, Vec<String>, Vec<String>, Vec<String>) {
-        let vocab = ResonatorVocabulary::new();
+        let mut vocab = ResonatorVocabulary::new();
         let registry = ActionRegistry::new();
         let subjects: Vec<String> = DEFAULT_SUBJECTS.iter().map(|s| s.to_string()).collect();
         let verbs: Vec<String> = DEFAULT_VERBS.iter().map(|v| v.to_string()).collect();
         let objects: Vec<String> = DEFAULT_OBJECTS.iter().map(|o| o.to_string()).collect();
+        // Ensure default terms are registered in vocab for factorization
+        for s in &subjects { vocab.register_term(s); }
+        for v in &verbs { vocab.register_term(v); }
+        for o in &objects { vocab.register_term(o); }
         (vocab, registry, subjects, verbs, objects)
     }
 
@@ -591,9 +595,9 @@ mod tests {
         let (vocab, registry, subjects, verbs, objects) = setup_env();
         let drive = AutonomyDrive::new(0.43);
 
-        let s_hv = vocab.get_vector("Finch").unwrap();
-        let v_hv = vocab.get_vector("write").unwrap();
-        let o_hv = vocab.get_vector("ledger").unwrap();
+        let s_hv = vocab.get_vector("Agent").unwrap();
+        let v_hv = vocab.get_vector("process").unwrap();
+        let o_hv = vocab.get_vector("data").unwrap();
         let dissonance = encode_svo(s_hv, v_hv, o_hv);
 
         let current_state = Hypervector::new_random();

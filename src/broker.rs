@@ -199,7 +199,7 @@ pub struct NeocortexBroker {
     /// anxiety for weight computation is clamped to at least `ANXIETY_FLOOR`.
     reentry_ticks: Arc<RwLock<HashMap<String, usize>>>,
     /// ██ Phase 3: Cohort registry ██
-    /// Maps known role strings (e.g. "News", "Infra", "Market") to
+    /// Maps known role strings (e.g. "Signal", "Internal", "External") to
     /// stable cohort indices.  Populated at construction time and never
     /// modified thereafter.  Agents reporting an unknown role are
     /// assigned to the "General" cohort at the end of the vector.
@@ -249,9 +249,9 @@ impl NeocortexBroker {
     pub fn new(key: &str, file_path: &str, port: u16) -> Self {
         // Build the cohort registry from known roles.
         let mut cohort_registry = HashMap::new();
-        cohort_registry.insert("News".to_string(), 0);
-        cohort_registry.insert("Infra".to_string(), 1);
-        cohort_registry.insert("Market".to_string(), 2);
+        cohort_registry.insert("Signal".to_string(), 0);
+        cohort_registry.insert("Internal".to_string(), 1);
+        cohort_registry.insert("External".to_string(), 2);
         // "General" cohort (index 3) is for unrecognised roles.
         let cohort_count = cohort_registry.len() + 1;
 
@@ -1885,10 +1885,10 @@ mod tests {
         let mut h = TestHarness::new();
 
         // Two News agents, two Infra agents — all stable, calm.
-        h.add_agent("N1", "News", 0.2, 0).await;
-        h.add_agent("N2", "News", 0.2, 0).await;
-        h.add_agent("I1", "Infra", 0.2, 0).await;
-        h.add_agent("I2", "Infra", 0.2, 0).await;
+        h.add_agent("N1", "Signal", 0.2, 0).await;
+        h.add_agent("N2", "Signal", 0.2, 0).await;
+        h.add_agent("I1", "Internal", 0.2, 0).await;
+        h.add_agent("I2", "Internal", 0.2, 0).await;
 
         // Submit all agents.  The order ensures each cohort gets its
         // second agent before the other cohort's first agent hits
@@ -1915,7 +1915,7 @@ mod tests {
         let mut h = TestHarness::new();
 
         // One News agent (cannot reach quorum alone — needs ≥ 2).
-        h.add_agent("N1", "News", 0.2, 0).await;
+        h.add_agent("N1", "Signal", 0.2, 0).await;
         let resp = h.submit("N1").await;
         // Single agent → falls through to bare goldilocks (no global).
         assert!(
@@ -1929,7 +1929,7 @@ mod tests {
         // abstain just because coherence is low — it depends on CONSENSUS_FLOOR.
         // Actually, coherence needs to be < 0.55 for abstention.
         // With stable agents, coherence should be high.
-        h.add_agent("N2", "News", 0.5, 0).await;
+        h.add_agent("N2", "Signal", 0.5, 0).await;
         h.submit("N2").await;
         // Both agents are stable with the same anchor → high coherence
         let w = h.assert_cohort_active(0).await;
@@ -1945,10 +1945,10 @@ mod tests {
 
         // Two News agents.  We'll disconnect and reconnect one to
         // observe the re-entry counter progression.
-        h.add_agent("N1", "News", 0.1, 0).await;
-        h.add_agent("N2", "News", 0.1, 0).await;
-        h.add_agent("I1", "Infra", 0.1, 0).await;
-        h.add_agent("I2", "Infra", 0.1, 0).await;
+        h.add_agent("N1", "Signal", 0.1, 0).await;
+        h.add_agent("N2", "Signal", 0.1, 0).await;
+        h.add_agent("I1", "Internal", 0.1, 0).await;
+        h.add_agent("I2", "Internal", 0.1, 0).await;
 
         // Settle both cohorts.
         for id in &["N1", "N2", "I1", "I2"] {
@@ -1957,7 +1957,7 @@ mod tests {
 
         // Simulate N1 disconnecting and reconnecting.
         h.remove_agent("N1").await;
-        h.add_agent("N1", "News", 0.1, 0).await;
+        h.add_agent("N1", "Signal", 0.1, 0).await;
 
         // Re-entry counter should be 0 after reconnection.
         assert_eq!(h.reentry_ticks("N1").await, 0);
@@ -1996,10 +1996,10 @@ mod tests {
         let mut h = TestHarness::new();
 
         // Set up a stable News cohort with 2 agents.
-        h.add_agent("N1", "News", 0.2, 0).await;
-        h.add_agent("N2", "News", 0.2, 0).await;
-        h.add_agent("I1", "Infra", 0.2, 0).await;
-        h.add_agent("I2", "Infra", 0.2, 0).await;
+        h.add_agent("N1", "Signal", 0.2, 0).await;
+        h.add_agent("N2", "Signal", 0.2, 0).await;
+        h.add_agent("I1", "Internal", 0.2, 0).await;
+        h.add_agent("I2", "Internal", 0.2, 0).await;
 
         // Baseline: both cohorts active.
         for id in &["N1", "N2", "I1", "I2"] {
@@ -2017,7 +2017,7 @@ mod tests {
         // (Limited to 5 to keep N1/N2 within MAX_SILENT_EPOCHS=10.)
         for i in 0..5 {
             // Connect
-            h.add_agent("FLAP", "News", 0.8 /* high anxiety */, 2 /* divergent */).await;
+            h.add_agent("FLAP", "Signal", 0.8 /* high anxiety */, 2 /* divergent */).await;
             let _resp = h.submit("FLAP").await;
             // After submit, verify News cohort is still in cohort_centroids.
             {
@@ -2099,10 +2099,10 @@ mod tests {
     #[tokio::test]
     async fn test_dead_agent_pruning() {
         let mut h = TestHarness::new();
-        h.add_agent("N1", "News", 0.2, 0).await;
-        h.add_agent("N2", "News", 0.2, 0).await;
-        h.add_agent("I1", "Infra", 0.2, 0).await;
-        h.add_agent("I2", "Infra", 0.2, 0).await;
+        h.add_agent("N1", "Signal", 0.2, 0).await;
+        h.add_agent("N2", "Signal", 0.2, 0).await;
+        h.add_agent("I1", "Internal", 0.2, 0).await;
+        h.add_agent("I2", "Internal", 0.2, 0).await;
         for id in &["N1", "N2", "I1", "I2"] {
             h.submit(id).await;
         }
@@ -2144,10 +2144,10 @@ mod tests {
         let mut h = TestHarness::new();
 
         // Two stable News agents and two stable Infra agents.
-        h.add_agent("N1", "News", 0.2, 0).await;
-        h.add_agent("N2", "News", 0.2, 0).await;
-        h.add_agent("I1", "Infra", 0.2, 0).await;
-        h.add_agent("I2", "Infra", 0.2, 0).await;
+        h.add_agent("N1", "Signal", 0.2, 0).await;
+        h.add_agent("N2", "Signal", 0.2, 0).await;
+        h.add_agent("I1", "Internal", 0.2, 0).await;
+        h.add_agent("I2", "Internal", 0.2, 0).await;
         for id in &["N1", "N2", "I1", "I2"] {
             h.submit(id).await;
         }
@@ -2193,7 +2193,7 @@ mod tests {
         let _ = std::fs::remove_file("data/test_stress_1000.bin");
 
         // Register 1000 agents across 4 cohorts.
-        let roles = ["News", "Infra", "Market", "General"];
+        let roles = ["Signal", "Internal", "External", "General"];
         let mut agent_ids: Vec<String> = Vec::with_capacity(1000);
         for i in 0..1000 {
             let id = format!("S{}", i);
@@ -2225,7 +2225,7 @@ mod tests {
         // Invariant 1: The broker is still responsive.
         // VERIFY needs a cohort assignment so it doesn't hit the
         // no-cohort early return path.
-        broker.assign_cohort("VERIFY", "Market").await;
+        broker.assign_cohort("VERIFY", "External").await;
         let test_centroid = Hypervector::new_random();
         // process_consolidation should not panic.  Its return value
         // is not deterministic (goldilocks may discard a random centroid

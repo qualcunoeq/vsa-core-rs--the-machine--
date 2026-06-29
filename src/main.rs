@@ -150,6 +150,74 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
         }
+    } else if args.contains(&"--chess-train".to_string()) {
+        // ----------------- CHESS SELF-PLAY TRAINING MODE -----------------
+        let num_games: usize = args.iter()
+            .position(|x| x == "--games")
+            .and_then(|p| args.get(p + 1))
+            .and_then(|s| s.parse().ok())
+            .unwrap_or(100);
+
+        eprintln!("Initializing VSABrain for chess training...");
+        // Use a tighter novelty threshold (0.12 NHD instead of 0.35) so that
+        // positions with different outcomes form distinct clusters rather than
+        // collapsing into one.  Random-play positions differ by ~0.15-0.20 NHD;
+        // the default 0.35 absorbs everything into one cluster.
+        let mut brain = the_machine::VSABrain::new(0.12);
+        let mut qa = the_machine::chess_learner::train_stage1(&mut brain, num_games);
+
+        // If --validate flag is set, run validation games with mined rules
+        if args.contains(&"--validate".to_string()) {
+            let val_games: usize = args.iter()
+                .position(|x| x == "--val-games")
+                .and_then(|p| args.get(p + 1))
+                .and_then(|s| s.parse().ok())
+                .unwrap_or(100);
+            let skill_lvl: Option<usize> = args.iter()
+                .position(|x| x == "--skill-level")
+                .and_then(|p| args.get(p + 1))
+                .and_then(|s| s.parse().ok());
+            the_machine::chess_learner::train_stage2(&mut brain, &mut qa, val_games, skill_lvl, None);
+        }
+    } else if args.contains(&"--curriculum".to_string()) {
+        // ----------------- CURRICULUM MODE -----------------
+        let start_lvl: usize = args.iter()
+            .position(|x| x == "--start-level")
+            .and_then(|p| args.get(p + 1))
+            .and_then(|s| s.parse().ok())
+            .unwrap_or(0);
+        let games_per: usize = args.iter()
+            .position(|x| x == "--games-per-level")
+            .and_then(|p| args.get(p + 1))
+            .and_then(|s| s.parse().ok())
+            .unwrap_or(200);
+        let max_lvl: usize = args.iter()
+            .position(|x| x == "--max-level")
+            .and_then(|p| args.get(p + 1))
+            .and_then(|s| s.parse().ok())
+            .unwrap_or(5);
+        let pretrain_games: usize = args.iter()
+            .position(|x| x == "--pretrain")
+            .and_then(|p| args.get(p + 1))
+            .and_then(|s| s.parse().ok())
+            .unwrap_or(0);
+
+        let mut brain = the_machine::VSABrain::new(0.12);
+        let mut qa: Option<the_machine::qa::QaEngine> = None;
+
+        if pretrain_games > 0 {
+            eprintln!("Phase 1: Hybrid pre-training ({} games)...", pretrain_games);
+            let trained_qa = the_machine::chess_learner::train_stage1(&mut brain, pretrain_games);
+            eprintln!("Phase 2: Stockfish curriculum ({} mined rules)...", 
+                trained_qa.l2_rules.len());
+            qa = Some(trained_qa);
+        } else {
+            eprintln!("Initializing VSABrain for curriculum training (no pre-training)...");
+        }
+
+        the_machine::chess_learner::train_curriculum(
+            &mut brain, start_lvl, games_per, max_lvl, qa,
+        );
     } else {
         // ----------------- DEFAULT PATH: MULTI-AGENT SIMULATION -----------------
         let shared_states = Arc::new(RwLock::new(HashMap::<String, AgentState>::new()));
@@ -536,18 +604,20 @@ async fn run_agent(
     let mut brain = VSABrain::new(0.43);
     brain.dejavu_clusters = initial_clusters;
 
-    brain.register_variable("vix_zscore", -3.0, 3.0);
-    brain.register_variable("move_zscore", -3.0, 3.0);
-    brain.register_variable("level_zscore", -3.0, 3.0);
-    brain.register_variable("slope_zscore", -3.0, 3.0);
-    brain.register_variable("curvature_zscore", -3.0, 3.0);
+    // General-purpose telemetry variables for cognitive state tracking
+    brain.register_variable("cpu_utilization", 0.0, 100.0);
+    brain.register_variable("ram_free_gb", 0.0, 64.0);
+    brain.register_variable("throughput", 0.0, 1000.0);
+    brain.register_variable("error_rate", 0.0, 1.0);
+    brain.register_variable("response_latency", 0.0, 1000.0);
 
-    let c_crisis = brain.register_concept("SystemicCrisis");
-    let c_normal = brain.register_concept("Equilibrium");
+    let c_high_load = brain.register_concept("HighLoadState");
+    let c_normal = brain.register_concept("SteadyState");
 
-    let v_role_market = Hypervector::role_market();
-    let v_role_news = Hypervector::role_news();
-    let v_role_infra = Hypervector::role_infra();
+    // Domain role vectors for binding different state modalities
+    let v_role_external_state = Hypervector::role_external();
+    let v_role_signal_state = Hypervector::role_signal();
+    let v_role_internal_state = Hypervector::role_internal();
 
     let brain_shared = Arc::new(RwLock::new(brain));
     let initial_intent = Hypervector::new_random();
@@ -716,10 +786,10 @@ async fn run_agent(
     // 6. Spawn TCP Admin Socket override server
     let qa_engine = Arc::new(RwLock::new(the_machine::qa::QaEngine::new()));
     {
-        // Seed initial facts from bootstrap data
+        // Seed initial facts — general knowledge, no domain bias
         let mut qa_w = qa_engine.write().await;
-        qa_w.store_fact("the_fed", "raise", "rates", "The Fed raised rates.");
-        qa_w.store_fact("inflation", "rise", "above expectations", "Inflation rose above expectations.");
+        qa_w.store_fact("the_system", "processes", "data", "The system processes incoming data.");
+        qa_w.store_fact("learning", "accumulates", "over time", "Learning accumulates over time.");
     }
     let qa_for_loop = Arc::clone(&qa_engine);
     let admin_server = AdminSocketServer::new(
@@ -758,24 +828,25 @@ async fn run_agent(
     tokio::spawn(async move {
         let action_registry = the_machine::action::ActionRegistry::new();
         let mut resonator_vocab = the_machine::resonator::ResonatorVocabulary::new();
+        // System terms for curiosity target factorization
         resonator_vocab.register_term("cargo check");
         resonator_vocab.register_term("data/temp_write_status.txt");
         resonator_vocab.register_term("hosts");
-        // Finance seed terms for curiosity target factorization
-        resonator_vocab.register_term("Federal Reserve");
-        resonator_vocab.register_term("Treasury yields");
-        resonator_vocab.register_term("stock market");
-        resonator_vocab.register_term("inflation");
-        resonator_vocab.register_term("interest rates");
-        resonator_vocab.register_term("monetary policy");
-        resonator_vocab.register_term("across the curve");
-        resonator_vocab.register_term("on the news");
-        resonator_vocab.register_term("above expectations");
-        resonator_vocab.register_term("raises");
-        resonator_vocab.register_term("cuts");
-        resonator_vocab.register_term("tightens");
-        resonator_vocab.register_term("rise");
-        resonator_vocab.register_term("rallies");
+        // General-purpose vocabulary for SVO factorization
+        resonator_vocab.register_term("system");
+        resonator_vocab.register_term("process");
+        resonator_vocab.register_term("data");
+        resonator_vocab.register_term("pattern");
+        resonator_vocab.register_term("signal");
+        resonator_vocab.register_term("state");
+        resonator_vocab.register_term("context");
+        resonator_vocab.register_term("response");
+        resonator_vocab.register_term("analysis");
+        resonator_vocab.register_term("observation");
+        resonator_vocab.register_term("incoming");
+        resonator_vocab.register_term("accumulated");
+        resonator_vocab.register_term("adapts");
+        resonator_vocab.register_term("evolves");
 
         // ██ UPGRADE v2.2: Synthetic Regime Injection (Tick 0) ██
         // Pre-seed the experience buffer, state queue, and delta history
@@ -831,7 +902,7 @@ async fn run_agent(
             vg.learn_term("STABLE");
             vg.learn_term("NOMINAL");
             vg.learn_term("VOLATILE");
-            vg.learn_term("CRISIS");
+            vg.learn_term("HIGH_LOAD");
         }
         let mut dt = DeepThought::new(
             the_machine::reason::DEFAULT_SLOT_COUNT,
@@ -863,6 +934,20 @@ async fn run_agent(
         // Initialize counterfactual simulator with default action set
         let mut sim = CounterfactualSimulator::with_defaults();
         sim.register_default_actions();
+
+        // ██ LAYER 0: Temporal cognition for Markov transition tracking ██
+        // Tracks P(c_j|c_i) at the centroid level for rule induction.
+        let mut temporal_cog = the_machine::temporal::TemporalCognition::new(1000, 200);
+
+        // ██ LAYER 0: Proto-rules for noisy Markov→SVO factorizations ██
+        // Vec of (antecedent_hv, consequent_hv, observation_count, last_factorization_energy, last_attempt_tick)
+        let mut proto_rules: Vec<(Hypervector, Hypervector, u32, f64, usize)> = Vec::new();
+        // Maximum proto-rules before we GC the weakest
+        const MAX_PROTO_RULES: usize = 100;
+
+        // ██ LAYER 4: Episode buffer for rule validation ██
+        let mut validation_buffer: Vec<(Hypervector, usize)> = Vec::with_capacity(100);
+        let mut validation_write_pos = 0usize;
 
         // Initialize intrinsic motivation system
         let mut drives = IntrinsicMotivation::new();
@@ -986,6 +1071,14 @@ async fn run_agent(
             let mut current_tick_actions = Vec::new();
 
             defense_subconscious.decrement_threat(0.01).await;
+
+            // SVO candidate lists for semantic intent formulation & rule induction
+            let auto_subjects: Vec<String> =
+                the_machine::autonomy::DEFAULT_SUBJECTS.iter().map(|s| s.to_string()).collect();
+            let auto_verbs: Vec<String> =
+                the_machine::autonomy::DEFAULT_VERBS.iter().map(|v| v.to_string()).collect();
+            let auto_objects: Vec<String> =
+                the_machine::autonomy::DEFAULT_OBJECTS.iter().map(|o| o.to_string()).collect();
 
             // v9.0 Sensory Encoders integration
             let mut telemetry_mod = the_machine::sensory::SystemTelemetryModality::new("telemetry");
@@ -1203,29 +1296,255 @@ async fn run_agent(
                     let mut qa_write = qa_for_loop.write().await;
                     qa_write.sync_cluster_data(&brain_read);
                 }
+
+                // ── LAYER 0: Induce rules from Markov transitions ─────
+                // Every 50 ticks, scan the transition model for reliable
+                // centroid→centroid transitions and factorize into SVO rules.
+                if ticker % 50 == 0 && ticker > 0 {
+                    // Acquire a fresh read lock (brain_guard was dropped above)
+                    let brain_read = brain_subconscious.read().await;
+                    let qa_handle = qa_for_loop.read().await;
+                    let k = temporal_cog.transitions.trained_centroid_count();
+                    let auto_subjects_clone = auto_subjects.clone();
+                    let auto_verbs_clone = auto_verbs.clone();
+                    let auto_objects_clone = auto_objects.clone();
+                    let roles = the_machine::analogy::RoleDictionary::new();
+                    drop(qa_handle);
+
+                    let mut induced_count = 0usize;
+                    let mut proto_updated = 0usize;
+
+                    for i in 0..k.min(200) {
+                        for j in 0..k.min(200) {
+                            if i == j { continue; }
+                            let p = temporal_cog.transitions.transition_probability(i, j);
+                            let count = temporal_cog.transitions.counts[i][j];
+                            if p >= 0.60 && count >= 20 {
+                                let c_i = brain_read.get_centroid(i);
+                                let c_j = brain_read.get_centroid(j);
+                                if let (Some(ci), Some(cj)) = (c_i, c_j) {
+                                    // Factorize centroid i (antecedent)
+                                    let fact_i = the_machine::analogy::factorize_triple(
+                                        ci, &roles, &resonator_vocab,
+                                        &auto_subjects_clone, &auto_verbs_clone, &auto_objects_clone, 15,
+                                    );
+                                    // Factorize centroid j (consequent)
+                                    let fact_j = the_machine::analogy::factorize_triple(
+                                        cj, &roles, &resonator_vocab,
+                                        &auto_subjects_clone, &auto_verbs_clone, &auto_objects_clone, 15,
+                                    );
+
+                                    match (fact_i, fact_j) {
+                                        (Some((s_i, v_i, o_i, e_i)), Some((s_j, v_j, o_j, e_j))) => {
+                                            if e_i >= 0.60 && e_j >= 0.60 {
+                                                // Clean factorization → store as QA rule
+                                                let mut qa_write = qa_for_loop.write().await;
+                                                qa_write.store_rule_with_confidence(
+                                                    &s_i, &v_i, &o_i,
+                                                    &s_j, &v_j, &o_j,
+                                                    "induced",
+                                                    0.60, // starting confidence
+                                                );
+                                                drop(qa_write);
+                                                induced_count += 1;
+                                                let _ = subconscious_log_tx.send(format!(
+                                                    "AGENT {}: LAYER0: Induced rule: {} {} {} → {} {} {} (E_i={:.2}, E_j={:.2}, P={:.2}, n={})",
+                                                    id_str, s_i, v_i, o_i, s_j, v_j, o_j, e_i, e_j, p, count,
+                                                ));
+                                            } else {
+                                                // Noisy → store as proto-rule for later retry
+                                                let found = proto_rules.iter_mut().find(|pr|
+                                                    pr.0.normalized_hamming_distance(ci) < 0.15
+                                                    && pr.1.normalized_hamming_distance(cj) < 0.15
+                                                );
+                                                if let Some(existing) = found {
+                                                    existing.2 = existing.2.saturating_add(count.min(50) as u32);
+                                                    existing.3 = (existing.3 + e_i.min(e_j)) / 2.0;
+                                                    existing.4 = ticker;
+                                                } else if proto_rules.len() < MAX_PROTO_RULES {
+                                                    proto_rules.push((
+                                                        *ci, *cj,
+                                                        count.min(50) as u32,
+                                                        e_i.min(e_j),
+                                                        ticker,
+                                                    ));
+                                                    proto_updated += 1;
+                                                }
+                                            }
+                                        }
+                                        _ => {
+                                            // Can't factorize — store as raw proto-rule
+                                            let found = proto_rules.iter_mut().find(|pr|
+                                                pr.0.normalized_hamming_distance(ci) < 0.15
+                                                && pr.1.normalized_hamming_distance(cj) < 0.15
+                                            );
+                                            if let Some(existing) = found {
+                                                existing.2 = existing.2.saturating_add(count.min(50) as u32);
+                                                existing.4 = ticker;
+                                            } else if proto_rules.len() < MAX_PROTO_RULES {
+                                                proto_rules.push((*ci, *cj, count.min(50) as u32, 0.0, ticker));
+                                                proto_updated += 1;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if induced_count > 0 || proto_updated > 0 {
+                        let _ = subconscious_log_tx.send(format!(
+                            "AGENT {}: LAYER0: Induced {} rule(s), {} proto-rule(s) updated ({} total proto-rules).",
+                            id_str, induced_count, proto_updated, proto_rules.len(),
+                        ));
+                    }
+
+                    // ── Retry proto-rules: attempt factorization again ──
+                    // Re-try proto-rules that were last attempted >100 ticks ago
+                    // and have accumulated more observations.
+                    let mut promoted: Vec<usize> = Vec::new();
+                    for (pr_idx, (pr_ant, pr_con, pr_cnt, pr_energy, pr_tick)) in proto_rules.iter_mut().enumerate() {
+                        if *pr_cnt >= 30 && ticker.saturating_sub(*pr_tick) > 100 {
+                            // Try factorizing again
+                            let roles2 = the_machine::analogy::RoleDictionary::new();
+                            let fact_i2 = the_machine::analogy::factorize_triple(
+                                pr_ant, &roles2, &resonator_vocab,
+                                &auto_subjects_clone, &auto_verbs_clone, &auto_objects_clone, 15,
+                            );
+                            let fact_j2 = the_machine::analogy::factorize_triple(
+                                pr_con, &roles2, &resonator_vocab,
+                                &auto_subjects_clone, &auto_verbs_clone, &auto_objects_clone, 15,
+                            );
+                            if let (Some((s_i2, v_i2, o_i2, e_i2)), Some((s_j2, v_j2, o_j2, e_j2))) = (fact_i2, fact_j2) {
+                                if e_i2 >= 0.65 && e_j2 >= 0.65 {
+                                    let mut qa_write = qa_for_loop.write().await;
+                                    qa_write.store_rule_with_confidence(
+                                        &s_i2, &v_i2, &o_i2,
+                                        &s_j2, &v_j2, &o_j2,
+                                        "induced_from_proto",
+                                        0.55, // slightly lower starting confidence for delayed induction
+                                    );
+                                    drop(qa_write);
+                                    promoted.push(pr_idx);
+                                    let _ = subconscious_log_tx.send(format!(
+                                        "AGENT {}: LAYER0: Proto-rule promoted: {} {} {} → {} {} {} (E={:.2}/{:.2})",
+                                        id_str, s_i2, v_i2, o_i2, s_j2, v_j2, o_j2, e_i2, e_j2,
+                                    ));
+                                } else {
+                                    *pr_energy = e_i2.min(e_j2);
+                                    *pr_tick = ticker;
+                                }
+                            }
+                        }
+                    }
+                    // Remove promoted proto-rules (descending order)
+                    for idx in promoted.into_iter().rev() {
+                        proto_rules.swap_remove(idx);
+                    }
+
+                    // ── LAYER 4: Validate rules against episode buffer ──
+                    // Replay the validation buffer through the newly induced rules
+                    // to measure retrospective prediction accuracy.
+                    if induced_count > 0 && validation_buffer.len() >= 10 {
+                        let qa_rules = qa_for_loop.read().await;
+                        let new_rules_start = qa_rules.rules().len().saturating_sub(induced_count);
+                        let mut correct_predictions = 0usize;
+                        let mut total_predictions = 0usize;
+
+                        // For each recently induced rule, replay buffer
+                        for ru_idx in new_rules_start..qa_rules.rules().len() {
+                            let rule = &qa_rules.rules()[ru_idx];
+                            let mut rule_correct = 0usize;
+                            let mut rule_total = 0usize;
+
+                            // Slide window over validation buffer
+                            for w in 0..validation_buffer.len().saturating_sub(1) {
+                                let (state, _c_idx) = &validation_buffer[w];
+                                let next_state = &validation_buffer[w + 1].0;
+
+                                // Does the rule's antecedent match this state?
+                                let ant_sim = 1.0 - state.normalized_hamming_distance(&rule.ante_hv);
+                                if ant_sim >= 0.56 {
+                                    rule_total += 1;
+                                    // Predict consequent
+                                    let predicted = rule.rule_hv.bitwise_xor(&rule.ante_hv);
+                                    // Compare against actual next state
+                                    let actual_sim = 1.0 - next_state.normalized_hamming_distance(&predicted);
+                                    // Also check raw consequent similarity
+                                    let cons_sim = 1.0 - next_state.normalized_hamming_distance(&rule.cons_hv);
+                                    if actual_sim > 0.50 || cons_sim > 0.50 {
+                                        rule_correct += 1;
+                                    }
+                                }
+                            }
+
+                            if rule_total > 0 {
+                                let accuracy = rule_correct as f64 / rule_total as f64;
+                                correct_predictions += rule_correct;
+                                total_predictions += rule_total;
+
+                                // Adjust confidence based on retrospective accuracy
+                                if accuracy < 0.30 {
+                                    let mut qa_write = qa_for_loop.write().await;
+                                    qa_write.update_rule_confidence(ru_idx, 1.0 - accuracy);
+                                    drop(qa_write);
+                                    let _ = subconscious_log_tx.send(format!(
+                                        "AGENT {}: LAYER4: Rule #{} validated — {}/{} correct ({:.0}%) — reducing confidence.",
+                                        id_str, ru_idx, rule_correct, rule_total, accuracy * 100.0,
+                                    ));
+                                } else if accuracy > 0.70 {
+                                    let mut qa_write = qa_for_loop.write().await;
+                                    qa_write.update_rule_confidence(ru_idx, 0.1); // low error
+                                    drop(qa_write);
+                                }
+                            }
+                        }
+                        drop(qa_rules);
+
+                        if total_predictions > 0 {
+                            let _ = subconscious_log_tx.send(format!(
+                                "AGENT {}: LAYER4: Rule validation summary: {}/{} correct ({:.0}%) across {} new rules.",
+                                id_str, correct_predictions, total_predictions,
+                                correct_predictions as f64 / total_predictions as f64 * 100.0,
+                                induced_count,
+                            ));
+                        }
+                    }
+
+                    // ── Cull low-confidence rules ──
+                    {
+                        let mut qa_write = qa_for_loop.write().await;
+                        let culled = qa_write.cull_low_confidence_rules(0.20);
+                        if culled > 0 {
+                            let _ = subconscious_log_tx.send(format!(
+                                "AGENT {}: LAYER2: Culled {} low-confidence rules (threshold=0.20).",
+                                id_str, culled,
+                            ));
+                        }
+                    }
+                }
             }
 
             let mut telemetry = HashMap::new();
-            let is_crisis_tick = ticker % 20 > 15;
-            let vix = if is_crisis_tick {
-                2.9 + (ticker % 3) as f64 * 0.05
+            let is_high_load_tick = ticker % 20 > 15;
+            let cpu = if is_high_load_tick {
+                70.0 + (ticker % 3) as f64 * 8.0
             } else {
-                0.2 + (ticker % 5) as f64 * 0.1
+                15.0 + (ticker % 5) as f64 * 5.0
             };
-            let mov = if is_crisis_tick { 3.0 } else { 0.1 };
-            let slope = if is_crisis_tick { -2.4 } else { 0.5 };
+            let ram = if is_high_load_tick { 8.0 } else { 42.0 };
+            let latency = if is_high_load_tick { 350.0 } else { 45.0 };
 
-            telemetry.insert("vix_zscore".to_string(), vix);
-            telemetry.insert("move_zscore".to_string(), mov);
+            telemetry.insert("cpu_utilization".to_string(), cpu);
+            telemetry.insert("ram_free_gb".to_string(), ram);
             telemetry.insert(
-                "level_zscore".to_string(),
-                if is_crisis_tick { -1.8 } else { 0.1 },
+                "throughput".to_string(),
+                if is_high_load_tick { 80.0 } else { 25.0 },
             );
-            telemetry.insert("slope_zscore".to_string(), slope);
-            telemetry.insert(
-                "curvature_zscore".to_string(),
-                if is_crisis_tick { 0.4 } else { 0.0 },
+            telemetry.insert("error_rate".to_string(),
+                if is_high_load_tick { 0.08 } else { 0.005 },
             );
+            telemetry.insert("response_latency".to_string(), latency);
 
             {
                 let mut metrics_guard = metrics_clone.write().await;
@@ -1233,25 +1552,25 @@ async fn run_agent(
             }
 
             let mut brain_guard = brain_subconscious.read().await;
-            let market_state = brain_guard.compile_state_vector(&telemetry);
+            let external_state = brain_guard.compile_state_vector(&telemetry);
 
             let curr_url = current_url_forager.read().await;
-            let news_headline = curr_url.split('/').last().unwrap_or("Index");
-            let news_state = Hypervector::encode_text_ngram(news_headline, 3);
+            let signal_headline = curr_url.split('/').last().unwrap_or("Index");
+            let signal_state = Hypervector::encode_text_ngram(signal_headline, 3);
 
-            let ping_status = if is_crisis_tick {
-                "OUTAGE_THREAT"
+            let ping_status = if is_high_load_tick {
+                "DEGRADED"
             } else {
-                "STABLE"
+                "NOMINAL"
             };
-            let infra_state = Hypervector::encode_text_ngram(ping_status, 3);
+            let internal_state = Hypervector::encode_text_ngram(ping_status, 3);
 
-            let bound_market = market_state.bitwise_xor(&v_role_market);
-            let bound_news = news_state.bitwise_xor(&v_role_news);
-            let bound_infra = infra_state.bitwise_xor(&v_role_infra);
+            let bound_external = external_state.bitwise_xor(&v_role_external_state);
+            let bound_signal = signal_state.bitwise_xor(&v_role_signal_state);
+            let bound_internal = internal_state.bitwise_xor(&v_role_internal_state);
 
             let current_world_state =
-                Hypervector::bundle(&[&bound_market, &bound_news, &bound_infra]);
+                Hypervector::bundle(&[&bound_external, &bound_signal, &bound_internal]);
 
             if let (Some(p_s), Some(p_n), Some(p_v)) = (pred_stable, pred_nominal, pred_volatile) {
                 let err_s = current_world_state.normalized_hamming_distance(&p_s);
@@ -1268,6 +1587,23 @@ async fn run_agent(
                 *ws_guard = current_world_state;
             }
 
+            // ── LAYER 0+4: Temporal observe + validation buffer ──
+            {
+                let c_idx = brain_guard.nearest_centroid_idx(&current_world_state);
+                if let Some((cidx, _sim)) = c_idx {
+                    // Layer 0: Record transition in Markov model
+                    temporal_cog.observe(&current_world_state, cidx, None, 0.5);
+
+                    // Layer 4: Push to validation buffer (ring buffer, 100 slots)
+                    if validation_buffer.len() < 100 {
+                        validation_buffer.push((current_world_state, cidx));
+                    } else {
+                        validation_buffer[validation_write_pos % 100] = (current_world_state, cidx);
+                    }
+                    validation_write_pos += 1;
+                }
+            }
+
             // ██ UPGRADE v2.3: DeepThought reasoning cycle ██
             // Every 10 ticks, run the anchored reason cycle and route the
             // attended intent back into the action pipeline.
@@ -1278,8 +1614,8 @@ async fn run_agent(
             let _resolved_concept = {
                 let (label, _) = brain_guard.evaluate_deja_vu(&current_world_state);
                 if let Some(ref lbl) = label {
-                    if lbl.contains("Lehman") {
-                        c_crisis
+                    if lbl.contains("HighLoad") || lbl.contains("high_load") || lbl.contains("crisis") {
+                        c_high_load
                     } else {
                         c_normal
                     }
@@ -1346,26 +1682,16 @@ async fn run_agent(
                 }
             }
 
-            // SVO candidate lists for semantic intent formulation
-            let auto_subjects: Vec<String> =
-                the_machine::autonomy::DEFAULT_SUBJECTS.iter().map(|s| s.to_string()).collect();
-            let auto_verbs: Vec<String> =
-                the_machine::autonomy::DEFAULT_VERBS.iter().map(|v| v.to_string()).collect();
-            let auto_objects: Vec<String> =
-                the_machine::autonomy::DEFAULT_OBJECTS.iter().map(|o| o.to_string()).collect();
-
-            let crisis_memory = brain_guard
+            let stress_memory = brain_guard
                 .dejavu_clusters
                 .first()
                 .map(|c| c.centroid)
-                .unwrap_or(c_crisis);
-            let crisis_sim = 1.0 - current_world_state.normalized_hamming_distance(&crisis_memory);
+                .unwrap_or(c_high_load);
+            let stress_sim = 1.0 - current_world_state.normalized_hamming_distance(&stress_memory);
 
-            // ── Inject learned crisis clusters into planning ─────────
-            // Build a combined crisis_concepts slice that includes both
-            // the statically-registered c_crisis vector AND any centroids
-            // learned from experience feedback.
-            let mut crisis_concepts = vec![c_crisis];
+            // ── Inject learned stress clusters into planning ─────────
+            // Build a combined stress_concepts slice (undesirable states)
+            let mut crisis_concepts = vec![c_high_load];
             crisis_concepts.extend(brain_guard.collect_learned_crisis_concepts());
 
             // ██ UPGRADE v2.3: DeepThought reasoning cycle (Tier 2) ██
@@ -1455,12 +1781,12 @@ async fn run_agent(
                 {
                     *forager_target.write().await = Some(param_hv);
                 }
-            } else if crisis_sim > 0.55 {
+            } else if stress_sim > 0.55 {
                 let mut drive_guard = active_drive_subconscious.write().await;
                 let mut intent_guard = intent_subconscious.write().await;
 
                 // Phantom pain: try parsing the offset from crisis memory
-                let phantom = current_world_state.bitwise_xor(&crisis_memory);
+                let phantom = current_world_state.bitwise_xor(&stress_memory);
                 let chosen_intent = if let Some((corrective_intent, label)) = drive.formulate_intent(
                     &phantom, &resonator_vocab, &action_registry,
                     &auto_subjects, &auto_verbs, &auto_objects, 30,

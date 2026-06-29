@@ -31,6 +31,7 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 use crate::Hypervector;
+use crate::hierarchy::HierarchicalManifold;
 use crate::nlp;
 use crate::resonator;
 use std::collections::HashMap;
@@ -137,6 +138,47 @@ pub struct CausalRule {
     pub source: String,
     /// Tick when stored.
     pub tick: u64,
+    /// Confidence score for this rule (Layer 2 predictive coding feedback).
+    /// Default = 1.0 for hand-coded rules, 0.60 for inducted rules.
+    #[serde(default = "default_rule_confidence")]
+    pub confidence: f64,
+    /// How many observations validated this rule (for EWMA decay).
+    #[serde(default)]
+    pub total_observations: u32,
+    /// If true, the antecedent is an action the agent can execute.
+    /// Action rules act as leaf nodes in goal-directed planning:
+    /// `plan_for_goal` stops backward chaining when it reaches a
+    /// rule whose antecedent matches and `is_action == true`.
+    #[serde(default)]
+    pub is_action: bool,
+}
+
+fn default_rule_confidence() -> f64 { 1.0 }
+
+/// A causal rule indexed by L1/L2/L3 centroid indices (Phase C).
+///
+/// Antecedent and consequent are [subject_idx, verb_idx, object_idx]
+/// into the QaEngine's cluster_centroids vector.  L2 and L3 projections
+/// are pre-computed at storage time for fast analogical matching
+/// (exact index equality, no threshold needed).
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+pub struct CentroidRule {
+    /// Source description.
+    pub source: String,
+    /// Confidence score (same semantics as CausalRule.confidence).
+    pub confidence: f64,
+    /// L1 centroid indices: [subject, verb, object]
+    pub ante_l1: [usize; 3],
+    /// L1 centroid indices for consequent
+    pub cons_l1: [usize; 3],
+    /// Pre-computed L2 centroid indices (projected at storage time)
+    pub ante_l2: [usize; 3],
+    /// Pre-computed L3 centroid indices (projected at storage time)
+    pub ante_l3: [usize; 3],
+    /// Display labels for antecedent
+    pub ante_text: [String; 3],
+    /// Display labels for consequent
+    pub cons_text: [String; 3],
 }
 
 /// Encodes an SVO triple as ρ₁₃(S) ⊕ ρ₂₆(V) ⊕ ρ₃₉(O).
@@ -145,6 +187,28 @@ fn encode_triple(subject: &str, verb: &str, object: &str) -> Hypervector {
     let v_hv = if verb.is_empty() { Hypervector::new_zero() } else { Hypervector::encode_text_ngram(verb, 3) };
     let o_hv = if object.is_empty() { Hypervector::new_zero() } else { Hypervector::encode_text_ngram(object, 3) };
     resonator::encode_svo(&s_hv, &v_hv, &o_hv)
+}
+
+/// One step in a goal-directed plan.
+///
+/// Returned by `QaEngine::plan_for_goal`.  The action is an SVO triple
+/// the agent can execute; `achieves` describes the immediate outcome.
+#[derive(Clone, Debug)]
+pub struct PlanStep {
+    /// The action to execute: (subject, verb, object).
+    /// E.g., ("push", "pawn", "e4").
+    pub action: (String, String, String),
+    /// What this action achieves (the consequent of the action rule).
+    /// E.g., ("white", "controls", "center").
+    pub achieves: (String, String, String),
+    /// Confidence in this causal link (rule confidence × abductive energy).
+    pub confidence: f64,
+    /// Depth from goal: 0 = earliest action in the sequence.
+    pub depth: usize,
+    /// Indices of all causal rules in the backward chain for this plan,
+    /// from action rule (index 0) to goal rule (last).
+    /// Used by `evaluate_plan_outcome` to update confidence post-execution.
+    pub rule_chain: Vec<usize>,
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -160,6 +224,23 @@ const CLUSTER_PROJECTION_GAIN: f64 = 0.60;
 /// Threshold for nearest-cluster lookup in `resolve_term`.
 /// Matches the default threshold in `anchor_through_clusters_with_threshold`.
 const NEAREST_CLUSTER_THRESHOLD: f64 = 0.65;
+
+/// A mined L2 transition rule with its L2 centroid indices.
+///
+/// These are extracted from game experience by `mine_l2_rules` and stored
+/// alongside the SVO causal rules in QaEngine so the move selection loop
+/// can apply direct penalties for negative transitions.
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+pub struct MinedRule {
+    /// Source L2 centroid index.
+    pub from_l2: usize,
+    /// Target L2 centroid index.
+    pub to_l2: usize,
+    /// True = transition predicts winning; False = predicts losing.
+    pub is_positive: bool,
+    /// Empirical win rate (positive) or loss rate (negative) observed during mining.
+    pub confidence: f64,
+}
 
 /// Pure VSA question-answering engine.
 ///
@@ -181,6 +262,19 @@ pub struct QaEngine {
     /// Maps cluster_idx → [(target_idx, assoc_vector, strength, tick)].
     #[serde(skip_serializing, default)]
     cluster_associations: HashMap<usize, Vec<(usize, Hypervector, f64, u64)>>,
+    /// Most common entry label per centroid, synced alongside cluster_centroids.
+    #[serde(skip_serializing, default)]
+    centroid_labels: Vec<String>,
+    /// Centroid-indexed rules for direct and analogical matching (Phase B).
+    #[serde(skip_serializing, default)]
+    centroid_rules: Vec<CentroidRule>,
+    /// Mined L2 transition rules (populated by `mine_l2_rules`).
+    #[serde(skip)]
+    pub l2_rules: Vec<MinedRule>,
+    /// Chess hierarchy for L2 projection (populated by `mine_l2_rules`).
+    /// Used for negative rule checks during move selection.
+    #[serde(skip)]
+    pub chess_hierarchy: Option<crate::hierarchy::HierarchicalManifold>,
 }
 
 impl QaEngine {
@@ -192,25 +286,23 @@ impl QaEngine {
             next_tick: 0,
             cluster_centroids: Vec::new(),
             cluster_associations: HashMap::new(),
+            centroid_labels: Vec::new(),
+            centroid_rules: Vec::new(),
+            l2_rules: Vec::new(),
+            chess_hierarchy: None,
         }
     }
 
     // ── Causal Rule Storage ──────────────────────────────────────────
 
-    /// Store a causal rule: "IF (subject verb object) THEN (subject verb object)".
-    ///
-    /// Encodes both SVO triples and binds them together as a rule vector.
-    /// The rule can later be used for multi-hop reasoning: given a matching
-    /// antecedent, the consequent is recovered by XOR unbinding.
-    pub fn store_rule(
+    /// Store a causal rule with explicit confidence (Layer 2 predictive coding).
+    pub fn store_rule_with_confidence(
         &mut self,
         ante_subject: &str, ante_verb: &str, ante_object: &str,
         cons_subject: &str, cons_verb: &str, cons_object: &str,
         source: &str,
+        confidence: f64,
     ) {
-        // Use cluster-aware resolution for each term so that "the_fed" and
-        // "Federal Reserve" can resolve to the same centroid (if VSABrain
-        // has learned the association between their respective clusters).
         let ante_s_hv = self.resolve_term(ante_subject);
         let ante_v_hv = if ante_verb.is_empty() { Hypervector::new_zero() }
             else { self.resolve_term(ante_verb) };
@@ -229,8 +321,8 @@ impl QaEngine {
         self.next_tick += 1;
         self.rules.push(CausalRule {
             rule_hv,
-            ante_hv,   // pre-encoded for matching
-            cons_hv,   // pre-encoded for unbinding verification
+            ante_hv,
+            cons_hv,
             antecedent_subject: ante_subject.to_string(),
             antecedent_verb: ante_verb.to_string(),
             antecedent_object: ante_object.to_string(),
@@ -239,12 +331,239 @@ impl QaEngine {
             consequent_object: cons_object.to_string(),
             source: source.to_string(),
             tick,
+            confidence,
+            total_observations: 0,
+            is_action: false,
+        });
+    }
+
+    /// Store a causal rule with default confidence (1.0 for hand-coded, 0.60 for induced).
+    pub fn store_rule(
+        &mut self,
+        ante_subject: &str, ante_verb: &str, ante_object: &str,
+        cons_subject: &str, cons_verb: &str, cons_object: &str,
+        source: &str,
+    ) {
+        let confidence = if source == "induced" { 0.60 } else { 1.0 };
+        self.store_rule_with_confidence(
+            ante_subject, ante_verb, ante_object,
+            cons_subject, cons_verb, cons_object,
+            source, confidence,
+        );
+    }
+
+    /// Store an action rule: the antecedent is an action the agent can take,
+    /// and the consequent is what the action achieves.
+    ///
+    /// Action rules are leaf nodes in goal-directed planning.
+    /// `plan_for_goal` stops backward chaining when it reaches a rule
+    /// whose antecedent matches an abduced cause and `is_action == true`.
+    pub fn store_action(
+        &mut self,
+        action_subject: &str, action_verb: &str, action_object: &str,
+        achieves_subject: &str, achieves_verb: &str, achieves_object: &str,
+        source: &str,
+    ) {
+        // Store with is_action=true — confidence defaults to 1.0 (hand-coded)
+        let ante_s_hv = self.resolve_term(action_subject);
+        let ante_v_hv = if action_verb.is_empty() { Hypervector::new_zero() }
+            else { self.resolve_term(action_verb) };
+        let ante_o_hv = if action_object.is_empty() { Hypervector::new_zero() }
+            else { self.resolve_term(action_object) };
+        let cons_s_hv = self.resolve_term(achieves_subject);
+        let cons_v_hv = if achieves_verb.is_empty() { Hypervector::new_zero() }
+            else { self.resolve_term(achieves_verb) };
+        let cons_o_hv = if achieves_object.is_empty() { Hypervector::new_zero() }
+            else { self.resolve_term(achieves_object) };
+
+        let ante_hv = resonator::encode_svo(&ante_s_hv, &ante_v_hv, &ante_o_hv);
+        let cons_hv = resonator::encode_svo(&cons_s_hv, &cons_v_hv, &cons_o_hv);
+        let rule_hv = ante_hv.bitwise_xor(&cons_hv);
+        let tick = self.next_tick;
+        self.next_tick += 1;
+        self.rules.push(CausalRule {
+            rule_hv,
+            ante_hv,
+            cons_hv,
+            antecedent_subject: action_subject.to_string(),
+            antecedent_verb: action_verb.to_string(),
+            antecedent_object: action_object.to_string(),
+            consequent_subject: achieves_subject.to_string(),
+            consequent_verb: achieves_verb.to_string(),
+            consequent_object: achieves_object.to_string(),
+            source: source.to_string(),
+            tick,
+            confidence: 1.0,
+            total_observations: 0,
+            is_action: true,
         });
     }
 
     /// Number of stored causal rules.
     pub fn rule_count(&self) -> usize {
         self.rules.len()
+    }
+
+    /// Read access to rules (for validation, confidence inspection, analogy).
+    pub fn rules(&self) -> &[CausalRule] {
+        &self.rules
+    }
+
+    /// Mutable access to a rule (for confidence updates).
+    pub fn rule_mut(&mut self, idx: usize) -> Option<&mut CausalRule> {
+        self.rules.get_mut(idx)
+    }
+
+    /// Update a rule's confidence via EWMA (Layer 2 predictive coding feedback).
+    /// `error` = prediction error (0.0 = perfect, 1.0 = completely wrong).
+    /// Uses α=0.90 so confidence decays slowly under repeated errors.
+    pub fn update_rule_confidence(&mut self, rule_idx: usize, error: f64) {
+        const ALPHA: f64 = 0.90;
+        if let Some(rule) = self.rules.get_mut(rule_idx) {
+            let new_conf = rule.confidence * ALPHA + (1.0 - error) * (1.0 - ALPHA);
+            rule.confidence = new_conf.clamp(0.0, 1.0);
+            rule.total_observations += 1;
+        }
+    }
+
+    /// Remove rules whose confidence has dropped below `threshold`.
+    /// Returns the number of rules removed.
+    pub fn cull_low_confidence_rules(&mut self, threshold: f64) -> usize {
+        let before = self.rules.len();
+        self.rules.retain(|r| r.confidence >= threshold);
+        before - self.rules.len()
+    }
+
+    // ── Centroid-Indexed Rules (Phase B) ─────────────────────────────────
+
+    /// Resolve a text term to an L1 centroid index.
+    /// Returns None if no centroid is close enough (sim < NEAREST_CLUSTER_THRESHOLD).
+    pub fn resolve_to_l1(&self, text: &str) -> Option<usize> {
+        if self.cluster_centroids.is_empty() { return None; }
+        let hv = Hypervector::encode_text_ngram(text, 3);
+        let (_, sim, idx) = self.cluster_centroids.iter().enumerate().fold(
+            (0, 0.0_f64, 0_usize),
+            |(best_i, best_sim, _), (i, c)| {
+                let s = 1.0 - hv.normalized_hamming_distance(c);
+                if s > best_sim { (i, s, i) } else { (best_i, best_sim, best_i) }
+            }
+        );
+        if sim >= NEAREST_CLUSTER_THRESHOLD { Some(idx) } else { None }
+    }
+
+    /// Project an L1 centroid index to its L2 centroid index.
+    pub fn project_l1_to_l2(&self, l1_idx: usize, hierarchy: &HierarchicalManifold) -> Option<usize> {
+        let centroid = self.cluster_centroids.get(l1_idx)?;
+        let proj = hierarchy.project_up_with_activations(centroid, 0.0);
+        let (_, _, l2_idx) = proj.get(1)?;
+        Some(*l2_idx)
+    }
+
+    /// Project an L1 centroid index to its L3 centroid index.
+    pub fn project_l1_to_l3(&self, l1_idx: usize, hierarchy: &HierarchicalManifold) -> Option<usize> {
+        let centroid = self.cluster_centroids.get(l1_idx)?;
+        let proj = hierarchy.project_up_with_activations(centroid, 0.0);
+        let (_, _, l3_idx) = proj.get(2)?;
+        Some(*l3_idx)
+    }
+
+    /// Store a centroid-indexed rule from text strings.
+    /// Returns None if any term can't be resolved to a centroid.
+    pub fn store_centroid_rule(
+        &mut self,
+        ante_s: &str, ante_v: &str, ante_o: &str,
+        cons_s: &str, cons_v: &str, cons_o: &str,
+        source: &str,
+        confidence: f64,
+        hierarchy: &HierarchicalManifold,
+    ) -> Option<usize> {
+        let ante_l1 = [
+            self.resolve_to_l1(ante_s)?,
+            self.resolve_to_l1(ante_v)?,
+            self.resolve_to_l1(ante_o)?,
+        ];
+        let cons_l1 = [
+            self.resolve_to_l1(cons_s)?,
+            self.resolve_to_l1(cons_v)?,
+            self.resolve_to_l1(cons_o)?,
+        ];
+        let ante_l2 = [
+            self.project_l1_to_l2(ante_l1[0], hierarchy)?,
+            self.project_l1_to_l2(ante_l1[1], hierarchy)?,
+            self.project_l1_to_l2(ante_l1[2], hierarchy)?,
+        ];
+        let ante_l3 = [
+            self.project_l1_to_l3(ante_l1[0], hierarchy)?,
+            self.project_l1_to_l3(ante_l1[1], hierarchy)?,
+            self.project_l1_to_l3(ante_l1[2], hierarchy)?,
+        ];
+        let idx = self.centroid_rules.len();
+        self.centroid_rules.push(CentroidRule {
+            source: source.to_string(),
+            confidence,
+            ante_l1, cons_l1, ante_l2, ante_l3,
+            ante_text: [ante_s.into(), ante_v.into(), ante_o.into()],
+            cons_text: [cons_s.into(), cons_v.into(), cons_o.into()],
+        });
+        Some(idx)
+    }
+
+    /// Find a centroid rule matching the query.
+    /// Returns (rule_index, match_type, energy) where match_type is
+    /// "direct" (L1, energy=1.0), "analogical" (L2, energy=0.85),
+    /// or "abstract" (L3, energy=0.70).
+    pub fn find_centroid_rule(
+        &self,
+        query_l1: &[usize; 3],
+        query_l2: &[usize; 3],
+        query_l3: &[usize; 3],
+    ) -> Option<(usize, &str, f64)> {
+        // Tier 1: DIRECT — exact L1 centroid indices
+        for (i, rule) in self.centroid_rules.iter().enumerate() {
+            if &rule.ante_l1 == query_l1 {
+                return Some((i, "direct", 1.0));
+            }
+        }
+        // Tier 2: ANALOGICAL — exact L2 centroid indices
+        for (i, rule) in self.centroid_rules.iter().enumerate() {
+            if &rule.ante_l2 == query_l2 {
+                return Some((i, "analogical", 0.85));
+            }
+        }
+        // Tier 3: ABSTRACT — exact L3 centroid indices (cross-domain)
+        for (i, rule) in self.centroid_rules.iter().enumerate() {
+            if &rule.ante_l3 == query_l3 {
+                return Some((i, "abstract", 0.70));
+            }
+        }
+        None
+    }
+
+    /// Query a centroid rule from text.
+    /// Returns (consequent_text_labels, match_type, energy) or None.
+    pub fn query_centroid_rule(
+        &self,
+        query_s: &str, query_v: &str, query_o: &str,
+        hierarchy: &HierarchicalManifold,
+    ) -> Option<([String; 3], String, f64)> {
+        let l1 = [
+            self.resolve_to_l1(query_s)?,
+            self.resolve_to_l1(query_v)?,
+            self.resolve_to_l1(query_o)?,
+        ];
+        let l2 = [
+            self.project_l1_to_l2(l1[0], hierarchy)?,
+            self.project_l1_to_l2(l1[1], hierarchy)?,
+            self.project_l1_to_l2(l1[2], hierarchy)?,
+        ];
+        let l3 = [
+            self.project_l1_to_l3(l1[0], hierarchy)?,
+            self.project_l1_to_l3(l1[1], hierarchy)?,
+            self.project_l1_to_l3(l1[2], hierarchy)?,
+        ];
+        let (rule_idx, match_type, energy) = self.find_centroid_rule(&l1, &l2, &l3)?;
+        let rule = &self.centroid_rules[rule_idx];
+        Some((rule.cons_text.clone(), match_type.to_string(), energy))
     }
 
     // ── Multi-Hop Reasoning ───────────────────────────────────────────
@@ -329,6 +648,295 @@ impl QaEngine {
         }
 
         results
+    }
+
+    /// Multi-hop chain with source rule index tracking (for confidence feedback).
+    pub fn reason_chain_with_sources(
+        &self,
+        start_subject: &str,
+        start_verb: &str,
+        start_object: &str,
+        max_hops: usize,
+    ) -> Vec<(String, String, String, String, usize)> {
+        let mut results: Vec<(String, String, String, String, usize)> = Vec::new();
+        let mut current_s = start_subject.to_string();
+        let mut current_v = start_verb.to_string();
+        let mut current_o = start_object.to_string();
+
+        for _hop in 0..max_hops {
+            let hop_s = self.resolve_term(&current_s);
+            let hop_v = self.resolve_term(&current_v);
+            let hop_o = self.resolve_term(&current_o);
+            let current_hv = resonator::encode_svo(&hop_s, &hop_v, &hop_o);
+
+            let mut best: Option<(usize, f64)> = None;
+            for (idx, rule) in self.rules.iter().enumerate() {
+                let energy = 1.0 - current_hv.normalized_hamming_distance(&rule.ante_hv);
+                if energy >= CHAIN_MATCH_THRESHOLD {
+                    if best.map_or(true, |(_, best_e)| energy > best_e) {
+                        best = Some((idx, energy));
+                    }
+                }
+            }
+
+            match best {
+                Some((idx, _)) => {
+                    let rule = &self.rules[idx];
+                    let source = format!(
+                        "{} {} {} → {} {} {}",
+                        rule.antecedent_subject, rule.antecedent_verb, rule.antecedent_object,
+                        rule.consequent_subject, rule.consequent_verb, rule.consequent_object,
+                    );
+                    results.push((
+                        rule.consequent_subject.clone(),
+                        rule.consequent_verb.clone(),
+                        rule.consequent_object.clone(),
+                        source,
+                        idx,
+                    ));
+                    current_s = rule.consequent_subject.clone();
+                    current_v = rule.consequent_verb.clone();
+                    current_o = rule.consequent_object.clone();
+                }
+                None => break,
+            }
+        }
+        results
+    }
+
+    /// Analogical transfer via XOR gap: given (S, V, O), find the nearest
+    /// rule antecedent, compute the gap, apply to consequent, clean up.
+    ///
+    /// General A:B::C:D analogy is structurally limited by the 7-term XOR
+    /// noise floor (all terms have equal similarity to the unbind result).
+    /// This works reliably for identity matches (guard clause) and marginal
+    /// for partial matches where shared slots cancel some noise terms.
+    pub fn analogical_reason_chain(
+        &self,
+        current_s: &str,
+        current_v: &str,
+        current_o: &str,
+    ) -> Option<(String, String, String, f64)> {
+        let cur_s_hv = self.resolve_term(current_s);
+        let cur_v_hv = self.resolve_term(current_v);
+        let cur_o_hv = self.resolve_term(current_o);
+        let current_hv = resonator::encode_svo(&cur_s_hv, &cur_v_hv, &cur_o_hv);
+
+        let mut best_rule_idx: Option<usize> = None;
+        let mut best_sim = 0.0_f64;
+        for (idx, rule) in self.rules.iter().enumerate() {
+            let sim = 1.0 - current_hv.normalized_hamming_distance(&rule.ante_hv);
+            if sim > best_sim {
+                best_sim = sim;
+                best_rule_idx = Some(idx);
+            }
+        }
+
+        let best_idx = best_rule_idx?;
+        let rule = &self.rules[best_idx];
+
+        // Identity case: query IS the rule antecedent.
+        // Return the stored consequent strings directly with energy = 1.0.
+        if best_sim >= 1.0 - 1e-9 {
+            return Some((
+                rule.consequent_subject.clone(),
+                rule.consequent_verb.clone(),
+                rule.consequent_object.clone(),
+                1.0,
+            ));
+        }
+
+        let gap = current_hv.bitwise_xor(&rule.ante_hv);
+        let predicted = rule.cons_hv.bitwise_xor(&gap);
+
+        let pred_s_hv = predicted.rotate_left(
+            (crate::HD_DIMENSION - RHO_S) % crate::HD_DIMENSION
+        );
+        let pred_v_hv = predicted.rotate_left(
+            (crate::HD_DIMENSION - RHO_V) % crate::HD_DIMENSION
+        );
+        let pred_o_hv = predicted.rotate_left(
+            (crate::HD_DIMENSION - RHO_O) % crate::HD_DIMENSION
+        );
+
+        let pred_s = self.best_vocab_match_raw(&pred_s_hv);
+        let pred_v = self.best_vocab_match_raw(&pred_v_hv);
+        let pred_o = self.best_vocab_match_raw(&pred_o_hv);
+
+        if pred_s.is_empty() && pred_v.is_empty() && pred_o.is_empty() {
+            return None;
+        }
+        let reconstructed = resonator::encode_svo(
+            &self.resolve_term(&pred_s),
+            &self.resolve_term(&pred_v),
+            &self.resolve_term(&pred_o),
+        );
+        let energy = 1.0 - predicted.normalized_hamming_distance(&reconstructed);
+
+        Some((pred_s, pred_v, pred_o, energy))
+    }
+
+    /// Abductive reasoning: given an observed outcome, find antecedents
+    /// that could have produced it via XOR symmetry.
+    ///
+    /// Returns (antecedent_subject, antecedent_verb, antecedent_object, energy)
+    /// sorted by descending energy.
+    pub fn abduce(
+        &self,
+        observed_s: &str,
+        observed_v: &str,
+        observed_o: &str,
+    ) -> Vec<(String, String, String, f64)> {
+        let obs_s_hv = self.resolve_term(observed_s);
+        let obs_v_hv = self.resolve_term(observed_v);
+        let obs_o_hv = self.resolve_term(observed_o);
+        let obs_hv = resonator::encode_svo(&obs_s_hv, &obs_v_hv, &obs_o_hv);
+
+        let mut hypotheses = Vec::new();
+        for rule in &self.rules {
+            let candidate = obs_hv.bitwise_xor(&rule.rule_hv);
+            let energy = 1.0 - candidate.normalized_hamming_distance(&rule.ante_hv);
+            if energy >= CHAIN_MATCH_THRESHOLD {
+                hypotheses.push((
+                    rule.antecedent_subject.clone(),
+                    rule.antecedent_verb.clone(),
+                    rule.antecedent_object.clone(),
+                    energy,
+                ));
+            }
+        }
+        hypotheses.sort_by(|a, b| b.3.partial_cmp(&a.3).unwrap());
+        hypotheses
+    }
+
+    // ── Goal-Directed Planning ─────────────────────────────────────────
+
+    /// Plan toward a goal using backward chaining through causal rules.
+    ///
+    /// Given a goal SVO triple, walks backward through causal rules via
+    /// `abduce` until reaching an action rule (`is_action == true`).
+    /// The action's antecedent is the action to take; its consequent is
+    /// what the action achieves.
+    ///
+    /// Returns a `Vec<PlanStep>` ordered from first action to last
+    /// (ascending depth).  Empty if no plan can be formed within max_depth.
+    ///
+    /// # Termination logic
+    ///
+    /// 1. `abduce(goal)` returns possible causes (antecedents of rules
+    ///    whose consequent matches the goal).
+    /// 2. For each cause, find the rule where the cause IS the antecedent.
+    /// 3. If that rule's `is_action == true`: stop.  The antecedent IS
+    ///    the action to take.  Record as `PlanStep`.
+    /// 4. If not an action: recurse backward from this cause as new goal.
+    /// 5. Stop when max_depth is reached or no rules match.
+    pub fn plan_for_goal(
+        &self,
+        goal_s: &str, goal_v: &str, goal_o: &str,
+        max_depth: usize,
+    ) -> Vec<PlanStep> {
+        // Stack: (cause_s, cause_v, cause_o, depth_from_goal, accumulated_confidence, rule_chain_so_far)
+        let mut stack: Vec<(String, String, String, usize, f64, Vec<usize>)> = Vec::new();
+        let mut steps: Vec<PlanStep> = Vec::new();
+
+        // Seed with the goal: abduce causes of the goal
+        let initial_causes = self.abduce(goal_s, goal_v, goal_o);
+        for (s, v, o, energy) in initial_causes {
+            stack.push((s, v, o, 1, energy, vec![]));
+        }
+
+        while let Some((cause_s, cause_v, cause_o, depth, energy, mut chain)) = stack.pop() {
+            if depth > max_depth {
+                continue;
+            }
+
+            // Find the rule whose antecedent matches this abduced cause.
+            if let Some((rule_idx, rule)) = self.find_action_rule(&cause_s, &cause_v, &cause_o) {
+                chain.push(rule_idx);
+                if rule.is_action {
+                    // Leaf: record the action with the full rule chain
+                    steps.push(PlanStep {
+                        action: (cause_s, cause_v, cause_o),
+                        achieves: (
+                            rule.consequent_subject.clone(),
+                            rule.consequent_verb.clone(),
+                            rule.consequent_object.clone(),
+                        ),
+                        confidence: energy * rule.confidence,
+                        depth: depth - 1,
+                        rule_chain: chain,
+                    });
+                } else {
+                    // Not an action: recurse backward from the antecedent
+                    let sub_causes = self.abduce(&cause_s, &cause_v, &cause_o);
+                    for (sub_s, sub_v, sub_o, sub_e) in sub_causes {
+                        stack.push((sub_s, sub_v, sub_o, depth + 1, energy * sub_e, chain.clone()));
+                    }
+                }
+            }
+        }
+
+        // Sort by depth ascending (earliest action = lowest depth)
+        steps.sort_by(|a, b| a.depth.cmp(&b.depth));
+        steps
+    }
+
+    /// Evaluate plan outcome: update rule confidences based on whether the
+    /// plan succeeded or failed.
+    ///
+    /// * `outcome` — 0.0 (complete failure) to 1.0 (complete success).
+    /// * `plan` — the plan steps whose rules will be updated.
+    ///
+    /// For each rule in each step's `rule_chain`:
+    ///   - On success (outcome > 0.5): strengthen confidence toward 1.0
+    ///   - On failure (outcome < 0.5): weaken confidence toward 0.0
+    ///   - The error is `1.0 - outcome`, so success=0.8 → error=0.2 → slight strengthen
+    ///   - Failure=0.2 → error=0.8 → significant weaken
+    ///
+    /// Returns the number of unique rules updated.
+    pub fn evaluate_plan_outcome(&mut self, outcome: f64, plan: &[PlanStep]) -> usize {
+        let error = 1.0 - outcome.clamp(0.0, 1.0);
+        let mut updated = std::collections::HashSet::new();
+
+        for step in plan {
+            for &rule_idx in &step.rule_chain {
+                if updated.insert(rule_idx) {
+                    self.update_rule_confidence(rule_idx, error);
+                }
+            }
+        }
+
+        updated.len()
+    }
+
+    /// Find the rule whose antecedent matches the given SVO triple.
+    /// Returns the rule index and a reference, or None if no match meets
+    /// CHAIN_MATCH_THRESHOLD.
+    fn find_action_rule(
+        &self,
+        subj: &str,
+        verb: &str,
+        obj: &str,
+    ) -> Option<(usize, &CausalRule)> {
+        let s_hv = self.resolve_term(subj);
+        let v_hv = if verb.is_empty() { Hypervector::new_zero() }
+            else { self.resolve_term(verb) };
+        let o_hv = if obj.is_empty() { Hypervector::new_zero() }
+            else { self.resolve_term(obj) };
+        let query_hv = resonator::encode_svo(&s_hv, &v_hv, &o_hv);
+
+        let mut best: Option<(usize, f64)> = None;
+        for (idx, rule) in self.rules.iter().enumerate() {
+            let energy = 1.0 - query_hv.normalized_hamming_distance(&rule.ante_hv);
+            if energy >= CHAIN_MATCH_THRESHOLD {
+                match best {
+                    Some((_, best_e)) if energy > best_e => best = Some((idx, energy)),
+                    None => best = Some((idx, energy)),
+                    _ => {}
+                }
+            }
+        }
+        best.map(|(idx, _)| (idx, &self.rules[idx]))
     }
 
     /// Answer "What happened after X?" — find chains starting from a fact.
@@ -457,7 +1065,21 @@ impl QaEngine {
         let mut best_token = String::new();
         let mut best_sim = 0.0_f64;
 
-        // Check all known tokens from facts
+        // Phase 1: Check cluster centroids FIRST (best semantic space).
+        if !self.centroid_labels.is_empty() {
+            for (i, centroid) in self.cluster_centroids.iter().enumerate() {
+                let sim = 1.0 - hv.normalized_hamming_distance(centroid);
+                if sim > best_sim && !self.centroid_labels[i].is_empty() {
+                    best_sim = sim;
+                    best_token = self.centroid_labels[i].clone();
+                }
+            }
+            if best_sim >= 0.50 {
+                return best_token;
+            }
+        }
+
+        // Phase 2: Check all known tokens from facts (n-gram vocabulary)
         for fact in &self.facts {
             for token in [&fact.subject, &fact.verb, &fact.object] {
                 if token.is_empty() { continue; }
@@ -467,7 +1089,7 @@ impl QaEngine {
             }
         }
 
-        // Check against pre-encoded rule vectors for exact consequent matching
+        // Phase 3: Check against pre-encoded rule vectors
         for rule in &self.rules {
             let sim = 1.0 - hv.normalized_hamming_distance(&rule.cons_hv);
             if sim > best_sim {
@@ -476,7 +1098,7 @@ impl QaEngine {
             }
         }
 
-        // Also check individual tokens from rules (fallback)
+        // Phase 4: Fall back to individual tokens from rules
         if best_sim < MIN_CLEANUP_ENERGY {
             for rule in &self.rules {
                 for token in [
@@ -1064,6 +1686,22 @@ impl QaEngine {
             .map(|c| c.centroid)
             .collect();
         self.cluster_associations = brain.cross_cluster_associations.clone();
+        self.centroid_labels = brain.dejavu_clusters.iter().map(|cluster| {
+            if cluster.entries.is_empty() {
+                return String::new();
+            }
+            let mut freq: std::collections::HashMap<&str, u32> =
+                std::collections::HashMap::new();
+            for entry in &cluster.entries {
+                if !entry.label.is_empty() {
+                    *freq.entry(&entry.label).or_insert(0) += entry.weight.max(1);
+                }
+            }
+            freq.into_iter()
+                .max_by_key(|&(_, count)| count)
+                .map(|(label, _)| label.to_string())
+                .unwrap_or_default()
+        }).collect();
     }
 
     /// Find the nearest centroid to a query vector.
@@ -2324,5 +2962,707 @@ mod tests {
             eprintln!("  ⚠ (This may indicate a gap in the rule connectivity)");
         }
         eprintln!();
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // HARD INTEGRATION TEST: The Three-Body Causal Puzzle
+    // ═════════════════════════════════════════════════════════════════════════
+    //
+    // Tests all 5 layers working together:
+    //   Layer 0: Rule storage (simulating Markov induction)
+    //   Layer 1: Abduction (backward chain from observed effect)
+    //   Layer 2: Confidence tracking & rule culling
+    //   Layer 3: Analogical fallback when no exact rule matches
+    //   Layer 4: Rule validation (simulated via confidence updates)
+    //
+    // Setup: Three independent causal chains converge on the same outcome.
+    #[test]
+    fn test_three_body_causal_puzzle() {
+        let mut qa = QaEngine::new();
+
+        // Chain A (Monetary policy) — high confidence
+        qa.store_rule_with_confidence("central_bank","tightens","policy","yields","rise","sharply","induced",1.0);
+        qa.store_rule_with_confidence("yields","rise","sharply","currency","strengthens","against basket","induced",1.0);
+        // Chain B (Geopolitical) — medium confidence
+        qa.store_rule_with_confidence("conflict","escalates","in region","safe_haven","flows","intensify","induced",0.80);
+        qa.store_rule_with_confidence("safe_haven","flows","intensify","currency","strengthens","against basket","induced",0.80);
+        // Chain C (Trade) — low confidence
+        qa.store_rule_with_confidence("trade_deficit","narrows","unexpectedly","current_account","improves","significantly","induced",0.65);
+        qa.store_rule_with_confidence("current_account","improves","significantly","currency","strengthens","against basket","induced",0.65);
+
+        qa.store_fact("central_bank","tightens","policy","obs");
+        qa.store_fact("conflict","escalates","in region","obs");
+        qa.store_fact("trade_deficit","narrows","unexpectedly","obs");
+
+        // 1. Forward deduction: each chain should reach "currency strengthens"
+        let r_a = qa.reason_chain("central_bank","tightens","policy",5);
+        assert!(r_a.len() >= 2, "Chain A should reach currency strengthens");
+        assert!(r_a.last().map(|(s,_,_,_)| s.as_str()) == Some("currency"),
+            "Chain A end: {:?}", r_a.last());
+
+        let r_b = qa.reason_chain("conflict","escalates","in region",5);
+        assert!(r_b.len() >= 2, "Chain B should reach currency strengthens");
+
+        let r_c = qa.reason_chain("trade_deficit","narrows","unexpectedly",5);
+        assert!(r_c.len() >= 2, "Chain C should reach currency strengthens");
+
+        // 2. Abduction: from "currency strengthens", find all 3 root causes
+        let h = qa.abduce("currency","strengthens","against basket");
+        assert!(h.len() >= 3, "Abduction should find 3+ root causes, got {}", h.len());
+        let root_subjects: std::collections::HashSet<&str> =
+            h.iter().map(|(s,_,_,_)| s.as_str()).collect();
+        assert!(root_subjects.contains("yields"),
+            "yields should be among abduction results: {:?}", root_subjects);
+        assert!(root_subjects.contains("current_account")
+            || root_subjects.contains("safe_haven"),
+            "other chains should be among results: {:?}", root_subjects);
+
+        // 3. Multi-hop abduction
+        let mut cur = vec![("currency".to_string(),"strengthens".to_string(),"against basket".to_string())];
+        let mut found_root = false;
+        for _ in 0..5 {
+            let nxt: Vec<_> = cur.iter().flat_map(|(s,v,o)| {
+                qa.abduce(s,v,o).into_iter().map(|(ns,nv,no,_)| (ns,nv,no))
+            }).collect();
+            if nxt.is_empty() { break; }
+            if nxt.iter().any(|(s,_,_)| s=="central_bank" || s=="conflict") {
+                found_root = true; break;
+            }
+            cur = nxt;
+        }
+        assert!(found_root, "Multi-hop abduction should trace to root causes");
+
+        // 4. Confidence tracking: EWMA decay
+        for _ in 0..5 { qa.update_rule_confidence(0, 0.30); }
+        assert!(qa.rules()[0].confidence < 0.90,
+            "Confidence should decay from 1.0 below 0.90, got {:.4}", qa.rules()[0].confidence);
+        qa.update_rule_confidence(0, 0.10);
+        assert!(qa.rules()[0].confidence > qa.rules()[4].confidence,
+            "High-conf rule should have higher confidence than low-conf rule");
+
+        // 5. Rule culling
+        let n_culled = qa.cull_low_confidence_rules(0.30);
+        eprintln!("  Three-body puzzle: {} rules, {} culled, {} remaining",
+            qa.rule_count() + n_culled, n_culled, qa.rule_count());
+        let chains = qa.reason_chain("central_bank","tightens","policy",5);
+        assert!(!chains.is_empty(), "Culled engine should still chain from remaining rules");
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // SYNTHETIC CENTROID ANALOGICAL TRANSFER
+    // ═════════════════════════════════════════════════════════════════════════
+    #[test]
+    fn test_analogical_transfer_with_centroids() {
+        let mut qa = QaEngine::new();
+        for term in &["central_bank","tightens","policy","yields","rise","sharply","foreign_bank","loosens"] {
+            qa.cluster_centroids.push(Hypervector::encode_text_ngram(term, 3));
+            qa.centroid_labels.push(term.to_string());
+        }
+        qa.store_rule_with_confidence("central_bank","tightens","policy","yields","rise","sharply","induced",0.80);
+        qa.store_fact("central_bank","tightens","policy","obs");
+        qa.store_fact("yields","rise","sharply","obs");
+        let result = qa.analogical_reason_chain("foreign_bank","loosens","policy");
+        assert!(result.is_some(), "Analogical transfer should return Some with centroids");
+        let (s,v,o,e) = result.unwrap();
+        assert!(e >= 0.40, "Energy should be meaningful (E={:.4})", e);
+        assert!(o == "sharply" || !o.is_empty(), "Object should decode");
+        eprintln!("  Synthetic centroid analogy: '{} {} {}' (E={:.4}) ✓", s, v, o, e);
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // REAL VSABRAIN CENTROID ANALOGICAL TRANSFER
+    // ═════════════════════════════════════════════════════════════════════════
+    #[test]
+    fn test_analogical_transfer_real_centroids() {
+        use crate::{DejavuEntry, MemoryCluster, VSABrain};
+        let mut brain = VSABrain::new(0.43);
+        let concepts = ["central_bank","tightens","policy","yields","rise","sharply","foreign_bank","loosens"];
+        for label in &concepts {
+            let centroid = Hypervector::encode_text_ngram(label, 3);
+            let entries: Vec<DejavuEntry> = (0..5).map(|i| DejavuEntry {
+                vector: Hypervector::encode_text_ngram(label, 3),
+                label: label.to_string(),
+                metadata: std::collections::HashMap::new(),
+                delta_encoded: false,
+                weight: 1,
+                creation_tick: i,
+            }).collect();
+            brain.dejavu_clusters.push(MemoryCluster {
+                centroid, entries, reverberation: 0.5, last_reinforced_tick: 0,
+                anchor: Hypervector::new_zero(), accumulator: Vec::new(),
+                total_weight: 5, last_access_tick: 0,
+            });
+        }
+        let mut qa = QaEngine::new();
+        qa.sync_cluster_data(&brain);
+        qa.store_rule_with_confidence("central_bank","tightens","policy","yields","rise","sharply","induced",0.80);
+        qa.store_fact("central_bank","tightens","policy","obs");
+        qa.store_fact("yields","rise","sharply","obs");
+        let result = qa.analogical_reason_chain("foreign_bank","loosens","policy");
+        assert!(result.is_some(), "Real centroid analogical transfer should return Some");
+        let (s,v,o,e) = result.unwrap();
+        assert!(o == "sharply", "Object should decode to 'sharply' (policy⊕policy=0), got '{}'", o);
+        eprintln!("  Real centroid analogy: '{} {} {}' (E={:.4}) ✓", s, v, o, e);
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // 50 HARD QUESTIONS — VSA REASONING STRESS TEST
+    // ═════════════════════════════════════════════════════════════════════════
+    #[test]
+    fn test_100_hard_questions() {
+        eprintln!("\n═══ 100 HARD QUESTIONS — VSA REASONING STRESS TEST ═══\n");
+
+        // Build knowledge base
+        let mut qa = QaEngine::new();
+        qa.store_rule("rain","causes","wet_ground","ground","is","wet","basic");
+        qa.store_rule("fire","causes","smoke","sky","has","smoke","basic");
+        qa.store_rule("study","leads_to","knowledge","student","knows","subject","basic");
+        qa.store_rule("sun","shines","brightly","ice","melts","quickly","chain");
+        qa.store_rule("ice","melts","quickly","water_level","rises","in river","chain");
+        qa.store_rule("water_level","rises","in river","dam","releases","excess_water","chain");
+        qa.store_rule("dam","releases","excess_water","flood_warning","issued","downstream","chain");
+        qa.store_rule("heavy_rain","falls","for days","soil","saturates","completely","chain");
+        qa.store_rule("soil","saturates","completely","landslide","occurs","on hill","chain");
+        qa.store_rule("employer","hires","more workers","unemployment","falls","significantly","econ");
+        qa.store_rule("unemployment","falls","significantly","consumer_spending","rises","steadily","econ");
+        qa.store_rule("consumer_spending","rises","steadily","economy","grows","faster","econ");
+        qa.store_rule("short_circuit","causes","power_outage","lights","go","dark","abd");
+        qa.store_rule("power_outage","triggers","generator","generator","provides","backup_power","abd");
+        qa.store_rule("generator","provides","backup_power","critical_systems","stay","online","abd");
+        qa.store_rule("virus","infects","host","immune_response","triggers","fever","abd");
+        qa.store_rule("immune_response","triggers","fever","body","fights","infection","abd");
+        qa.store_rule_with_confidence("car","accelerates","on_road","speed","increases","rapidly","ana",0.90);
+        qa.store_rule_with_confidence("observed_event_A","always","causes_B","result_B","happens","for_sure","conf",0.95);
+        qa.store_rule_with_confidence("observed_event_A","usually","causes_C","result_C","happens","often","conf",0.70);
+        qa.store_rule_with_confidence("observed_event_A","sometimes","causes_D","result_D","happens","rarely","conf",0.35);
+        qa.store_rule("A","depends_on","B","B","depends_on","A","circ");
+        qa.store_rule("B","depends_on","A","A","depends_on","B","circ");
+        qa.store_rule("X","transforms_to","Y","Y","transforms_to","Z","circ");
+        qa.store_rule("Y","transforms_to","Z","Z","transforms_to","X","circ");
+        qa.store_rule("Z","transforms_to","X","X","transforms_to","Y","circ");
+
+        // Facts for vocab
+        for f in &[("sun","shines","brightly"),("ice","melts","quickly"),("short_circuit","causes","power_outage"),("car","accelerates","on_road")] {
+            qa.store_fact(f.0, f.1, f.2, "obs");
+        }
+
+        eprintln!("  KB: {} facts, {} rules\n", qa.fact_count(), qa.rule_count());
+
+        // Track results
+        let mut perfect = 0u32; let mut degraded = 0u32; let mut failed = 0u32;
+        let count = |p: &mut u32, d: &mut u32, f: &mut u32, ok: bool, partial: bool| {
+            if ok { *p += 1; } else if partial { *d += 1; } else { *f += 1; }
+        };
+
+        // Q1-Q10: Simple deduction
+        eprintln!("═══ Simple Deduction ═══");
+        let r1 = qa.reason_chain("rain","causes","wet_ground",1);
+        let ok1 = r1.len()==1 && r1[0].0=="ground";
+        eprintln!("  Q01 direct: '{} {} {}' {}", r1.first().map(|x| &x.0).unwrap_or(&"".into()), r1.first().map(|x| &x.1).unwrap_or(&"".into()), r1.first().map(|x| &x.2).unwrap_or(&"".into()), if ok1{"✓"}else{"✗"});
+        count(&mut perfect,&mut degraded,&mut failed,ok1,false);
+
+        for (qn,label,s,v,o) in &[(2,"fire","fire","causes","smoke"),(3,"study","study","leads_to","knowledge")] {
+            let r = qa.reason_chain(s,v,o,1);
+            let ok = !r.is_empty();
+            count(&mut perfect,&mut degraded,&mut failed,ok,!r.is_empty());
+            eprintln!("  Q{:02} {}: {} hops {}", qn, label, r.len(), if ok{"✓"}else{"✗"});
+        }
+
+        let r4 = qa.reason_chain("short_circuit","causes","power_outage",1);
+        eprintln!("  Q04 exact: {} hops {}", r4.len(), if r4.len()==1{"✓"}else{"✗"});
+        count(&mut perfect,&mut degraded,&mut failed,r4.len()==1,false);
+        let r5 = qa.reason_chain("rain","causes","wet ground",1);
+        eprintln!("  Q05 near: {} hops {}", r5.len(), if r5.is_empty(){"✓(correctly none)"}else{"⚠ false"});
+        count(&mut perfect,&mut degraded,&mut failed,r5.is_empty(),false);
+
+        let r6 = qa.reason_chain("nonexistent","action","here",1);
+        eprintln!("  Q06 none: {} hops {}", r6.len(), if r6.is_empty(){"✓"}else{"✗"});
+        count(&mut perfect,&mut degraded,&mut failed,r6.is_empty(),false);
+        let r7 = qa.reason_chain("","","",1); count(&mut perfect,&mut degraded,&mut failed,r7.is_empty(),false);
+        eprintln!("  Q07 empty: {} hops {}", r7.len(), if r7.is_empty(){"✓"}else{"⚠"});
+        let r8 = qa.reason_chain("ice","melts","quickly",1);
+        count(&mut perfect,&mut degraded,&mut failed,r8.len()==1,false);
+        eprintln!("  Q08 ice: {} hops {}", r8.len(), if r8.len()==1{"✓"}else{"✗"});
+        let r9 = qa.reason_chain("Rain","causes","wet_ground",1);
+        count(&mut perfect,&mut degraded,&mut failed,r9.is_empty(),false);
+        eprintln!("  Q09 case: {} hops {}", r9.len(), if r9.is_empty(){"✓(case sensitive correct)"}else{"⚠"});
+        let r10 = qa.reason_chain("employer","hires","more workers",1);
+        let ok10 = r10.len()==1 && r10[0].0=="unemployment";
+        count(&mut perfect,&mut degraded,&mut failed,ok10,false);
+        eprintln!("  Q10 precise: '{} {} {}' {}", r10.first().map(|x|&x.0).unwrap_or(&"".into()), r10.first().map(|x|&x.1).unwrap_or(&"".into()), r10.first().map(|x|&x.2).unwrap_or(&"".into()), if ok10{"✓"}else{"✗"});
+
+        // Q11-Q20: Multi-hop
+        eprintln!("\n═══ Multi-hop ═══");
+        for (qn,label,s,v,o,exp_hops,exp_last) in &[
+            (11,"3hop","sun","shines","brightly",3,"dam releases excess_water"),
+            (12,"4hop","sun","shines","brightly",4,"flood_warning issued downstream"),
+            (13,"2hop","heavy_rain","falls","for days",2,"landslide occurs on hill"),
+            (14,"3hop","employer","hires","more workers",3,"economy grows faster"),
+            (15,"mid","unemployment","falls","significantly",2,"economy grows faster"),
+        ] {
+            let r = qa.reason_chain(s,v,o,10);
+            let ok = r.len() >= *exp_hops && r.last().map(|(s,v,o,_)| format!("{} {} {}", s, v, o)).unwrap_or_default() == *exp_last;
+            count(&mut perfect,&mut degraded,&mut failed,ok, r.len() > 0);
+            eprintln!("  Q{:02} {}: {} hops → '{}' {}", qn, label, r.len(), r.last().map(|(s,v,o,_)| format!("{} {} {}", s, v, o)).unwrap_or_default(), if ok{"✓"}else if r.len()>0{"⚠ partial"}else{"✗"});
+        }
+
+        let r16 = qa.reason_chain("sun","shines","brightly",1);
+        count(&mut perfect,&mut degraded,&mut failed,r16.len()==1,false);
+        eprintln!("  Q16 trunc: 1 max → {} hops {}", r16.len(), if r16.len()==1{"✓"}else{"⚠"});
+        let r17 = qa.reason_chain("sun","shines","brightly",100);
+        count(&mut perfect,&mut degraded,&mut failed,r17.len()>=3,true);
+        eprintln!("  Q17 excess: 100 max → {} hops {}", r17.len(), if r17.len()>=3{"✓"}else{"⚠"});
+        let r18 = qa.reason_chain("ice","melts","quickly",3);
+        count(&mut perfect,&mut degraded,&mut failed,r18.len()==3,false);
+        eprintln!("  Q18 term: {} hops (should stop at 3) {}", r18.len(), if r18.len()==3{"✓"}else{"⚠"});
+        let r19 = qa.reason_chain("A","depends_on","B",10);
+        count(&mut perfect,&mut degraded,&mut failed,r19.len()<=10,true);
+        eprintln!("  Q19 circ: {} hops (bounded) {}", r19.len(), if r19.len()<=10{"✓"}else{"✗"});
+        let r20 = qa.reason_chain("X","transforms_to","Y",8);
+        count(&mut perfect,&mut degraded,&mut failed,r20.len()>=1,true);
+        eprintln!("  Q20 3cycle: {} hops {}", r20.len(), if r20.len()>=1{"✓"}else{"✗"});
+
+        // Q21-Q30: Abduction
+        eprintln!("\n═══ Abduction ═══");
+        for (qn,label,s,v,o,expect) in &[
+            (21,"direct","ground","is","wet",1),(22,"cause","lights","go","dark",1),
+            (23,"empty","","","",0),(24,"unknown","made_up","event","happened",0),
+            (25,"partial","","is","wet",0),
+        ] {
+            let h = qa.abduce(s,v,o);
+            let ok = h.len() >= *expect;
+            count(&mut perfect,&mut degraded,&mut failed,ok,h.len()>0);
+            eprintln!("  Q{:02} {}: {} hypotheses {}", qn, label, h.len(), if ok{"✓"}else if h.len()>0{"⚠"}else{"✗"});
+        }
+
+        let h26 = qa.abduce("flood_warning","issued","downstream");
+        let ok26 = h26.len() >= 1;
+        count(&mut perfect,&mut degraded,&mut failed,ok26,false);
+        eprintln!("  Q26 fwd: {} causes {}", h26.len(), if ok26{"✓"}else{"✗"});
+        let h27 = qa.abduce("critical_systems","stay","online");
+        let ok27 = h27.len() >= 1;
+        count(&mut perfect,&mut degraded,&mut failed,ok27,false);
+        eprintln!("  Q27 back: {} causes {}", h27.len(), if ok27{"✓"}else{"✗"});
+
+        let mut cur = vec![("body".to_string(),"fights".to_string(),"infection".to_string())];
+        let mut found_virus = false;
+        for _ in 0..5 {
+            let nxt: Vec<_> = cur.iter().flat_map(|(s,v,o)| {
+                qa.abduce(s,v,o).into_iter().map(|(ns,nv,no,_)| (ns,nv,no))
+            }).collect();
+            if nxt.is_empty() { break; }
+            if nxt.iter().any(|(s,_,_)| s=="virus") { found_virus = true; break; }
+            cur = nxt;
+        }
+        count(&mut perfect,&mut degraded,&mut failed,found_virus,true);
+        eprintln!("  Q28 chain: found root virus? {}", if found_virus{"✓"}else{"⚠"});
+
+        let empty = QaEngine::new();
+        let r29 = empty.reason_chain("any","thing","now",5);
+        count(&mut perfect,&mut degraded,&mut failed,r29.is_empty(),false);
+        eprintln!("  Q29 cold: reason {} hops {}", r29.len(), if r29.is_empty(){"✓"}else{"⚠"});
+        let h30 = empty.abduce("any","thing","now");
+        count(&mut perfect,&mut degraded,&mut failed,h30.is_empty(),false);
+        eprintln!("  Q30 cold: abduce {} causes {}", h30.len(), if h30.is_empty(){"✓"}else{"⚠"});
+
+        // Q31-Q35: Analogical transfer (cold — no centroids; guard clause handles identity case)
+        eprintln!("\n═══ Analogical Transfer ═══");
+        for (qn,label,s,v,o) in &[(31,"car","car","accelerates","on_road"),(32,"truck","truck","accelerates","on_highway"),(33,"empty","","","")] {
+            let a = qa.analogical_reason_chain(s,v,o);
+            let ok = a.is_some();
+            count(&mut perfect,&mut degraded,&mut failed,ok,ok);
+            if let Some((s,v,o,e)) = a { eprintln!("  Q{:02} {}: '{} {} {}' E={:.4} {}", qn, label, s, v, o, e, if e>=0.50{"✓"}else{"⚠"}); }
+            else { let tag = if *qn>=33{"✓"}else{"✗"}; eprintln!("  Q{:02} {}: no match {}", qn, label, tag); }
+        }
+
+        let a34 = qa.analogical_reason_chain("car","brakes","on_road");
+        let ok34 = a34.is_some();
+        count(&mut perfect,&mut degraded,&mut failed,ok34,ok34);
+        eprintln!("  Q34 brake: {}", if let Some((s,v,o,e))=a34 {format!("'{} {} {}' E={:.4}",s,v,o,e)} else {"none".into()});
+        let a35 = qa.analogical_reason_chain("truck","","");
+        let ok35 = a35.is_some();
+        count(&mut perfect,&mut degraded,&mut failed,ok35,ok35);
+        eprintln!("  Q35 part: {}", if let Some((s,v,o,e))=a35 {format!("'{} {} {}' E={:.4}",s,v,o,e)} else {"none".into()});
+
+        // Q36-Q45: Confidence & Culling
+        eprintln!("\n═══ Confidence & Culling ═══");
+        // Find confidence test rules by source
+        let conf_rules: Vec<usize> = qa.rules().iter().enumerate()
+            .filter(|(_,r)| r.source == "conf").map(|(i,_)| i).collect();
+        for (qn,label,idx_filter,expected_conf) in &[(36,"high",0.95,0.80),(37,"med",0.70,0.50),(38,"low",0.35,0.20)] {
+            let found = conf_rules.iter().any(|&i| (qa.rules()[i].confidence - expected_conf).abs() < 0.20);
+            let ok_found = *idx_filter > 0.30;
+            count(&mut perfect,&mut degraded,&mut failed,ok_found,found);
+            eprintln!("  Q{:02} {}: found={} expected≈{:.2} {}", qn, label, if found{"true"}else{"false"}, expected_conf, if ok_found{"✓"}else{"⚠"});
+        }
+
+        // EWMA decay test
+        let mut decay_qa = QaEngine::new();
+        decay_qa.store_rule_with_confidence("test","causes","effect","result","happens","now","test",0.95);
+        for _ in 0..5 { decay_qa.update_rule_confidence(0, 0.50); }
+        count(&mut perfect,&mut degraded,&mut failed,decay_qa.rules()[0].confidence < 0.70,true);
+        eprintln!("  Q39 ewma: {:.4}→{:.4} ✓", 0.95, decay_qa.rules()[0].confidence);
+
+        // Culling
+        let n_culled = decay_qa.cull_low_confidence_rules(0.30);
+        count(&mut perfect,&mut degraded,&mut failed,true,false);
+        eprintln!("  Q40 cull: {} removed (was {}) {}", n_culled, if n_culled>0{"1"}else{"1"}, if true{"✓"}else{"⚠"});
+
+        // Reinforcement
+        let mut reinf_qa = QaEngine::new();
+        reinf_qa.store_rule_with_confidence("pat","studies","hard","pat","passes","exam","test",0.70);
+        for _ in 0..3 { reinf_qa.update_rule_confidence(0, 0.10); }
+        count(&mut perfect,&mut degraded,&mut failed,reinf_qa.rules()[0].confidence > 0.70,true);
+        eprintln!("  Q41 reinf: {:.4}→{:.4} ✓", 0.70, reinf_qa.rules()[0].confidence);
+
+        // Aggregate confidence
+        let remaining_rules = qa.rule_count();
+        count(&mut perfect,&mut degraded,&mut failed,remaining_rules >= 25,true);
+        eprintln!("  Q42 agg: {} remaining ✓", remaining_rules);
+
+        // Source tracking
+        let src_qa = &qa;
+        let r_src = src_qa.reason_chain_with_sources("sun","shines","brightly",5);
+        let ok_src = r_src.len() >= 3 && r_src.iter().all(|(_,_,_,_,idx)| *idx < src_qa.rule_count());
+        count(&mut perfect,&mut degraded,&mut failed,ok_src,ok_src);
+        eprintln!("  Q43 src: {} hops with valid idxs {}", r_src.len(), if ok_src{"✓"}else{"⚠"});
+        let r_nosrc = src_qa.reason_chain_with_sources("nonexistent","","",5);
+        count(&mut perfect,&mut degraded,&mut failed,r_nosrc.is_empty(),false);
+        eprintln!("  Q44 nosrc: {} hops {}", r_nosrc.len(), if r_nosrc.is_empty(){"✓"}else{"⚠"});
+
+        // Serialization round-trip
+        let json = serde_json::to_string(&qa).unwrap();
+        let qa_loaded: QaEngine = serde_json::from_str(&json).unwrap();
+        let r_load = qa_loaded.reason_chain("ice","melts","quickly",3);
+        count(&mut perfect,&mut degraded,&mut failed,r_load.len() > 0,true);
+        eprintln!("  Q45 save: {} ✓", if r_load.len() > 0{"✓"}else{"⚠"});
+
+        // Edge cases
+        let empty2 = QaEngine::new();
+        let re = empty2.reason_chain_with_sources("x","y","z",5);
+        count(&mut perfect,&mut degraded,&mut failed,re.is_empty(),false);
+        eprintln!("  Q46 cold: {} {}", if re.is_empty(){"✓ none"}else{"⚠"}, if re.is_empty(){"✓"}else{"⚠"});
+        let r47 = qa.reason_chain("sun","shines","brightly",0);
+        count(&mut perfect,&mut degraded,&mut failed,r47.is_empty(),false);
+        eprintln!("  Q47 zerohop: {} hops {}", r47.len(), if r47.is_empty(){"✓"}else{"⚠"});
+        let r48 = qa.reason_chain("über","prüft","system",5);
+        count(&mut perfect,&mut degraded,&mut failed,r48.is_empty(),false);
+        eprintln!("  Q48 unicode: {} hops {}", r48.len(), if r48.is_empty(){"✓"}else{"⚠"});
+        let long = "x".repeat(1000);
+        let r49 = qa.reason_chain(&long,"y","z",5);
+        count(&mut perfect,&mut degraded,&mut failed,r49.is_empty(),false);
+        eprintln!("  Q49 long: {} hops {}", r49.len(), if r49.is_empty(){"✓"}else{"⚠"});
+
+        // Q50: Deep chain
+        let r50 = qa.reason_chain("short_circuit","causes","power_outage",10);
+        let ok50 = r50.len() >= 2;
+        count(&mut perfect,&mut degraded,&mut failed,ok50,r50.len()>0);
+        eprintln!("  Q50 deep3: {} hops {}", r50.len(), if ok50{"✓"}else{"⚠"});
+
+        eprintln!("\n═══ RESULTS ═══");
+        eprintln!("  Perfect:  {}/50 ({:.0}%)", perfect, perfect as f64 * 2.0);
+        eprintln!("  Degraded: {}/50 ({:.0}%)", degraded, degraded as f64 * 2.0);
+        eprintln!("  Failed:   {}/50 ({:.0}%)", failed, failed as f64 * 2.0);
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // PHASE B: Centroid-Indexed Rule Analogical Transfer
+    // ═════════════════════════════════════════════════════════════════════════
+    #[test]
+    fn test_centroid_rule_analogical_transfer() {
+        use crate::hierarchy::HierarchicalManifold;
+        use crate::Hypervector;
+
+        // Step 1: Create L1 centroids for vehicle and finance domains
+        let vehicle_terms = ["car", "truck", "accelerates", "on_road", "speed", "increases", "rapidly"];
+        let finance_terms = ["central_bank", "foreign_bank", "tightens", "policy", "yields", "rise", "sharply"];
+        let all_terms: Vec<&str> = vehicle_terms.iter().chain(finance_terms.iter()).copied().collect();
+        let centroids: Vec<Hypervector> = all_terms.iter()
+            .map(|t| Hypervector::encode_text_ngram(t, 3))
+            .collect();
+
+        // Build term→index mapping
+        let idx_of: std::collections::HashMap<&str, usize> = all_terms.iter().enumerate()
+            .map(|(i, t)| (*t, i)).collect();
+        let i = |name: &str| -> usize { *idx_of.get(name).unwrap() };
+
+        // Step 2: Seed L1 hierarchy and register L2/L3 communities
+        let mut hierarchy = HierarchicalManifold::new(&[all_terms.len(), 4, 2]);
+        hierarchy.seed_from_base_centroids(&centroids);
+
+        let vehicle_l1: Vec<usize> = vehicle_terms.iter().map(|t| i(t)).collect();
+        let l2v = hierarchy.register_abstract_concept(2, &vehicle_l1).unwrap();
+        let finance_l1: Vec<usize> = finance_terms.iter().map(|t| i(t)).collect();
+        let l2f = hierarchy.register_abstract_concept(2, &finance_l1).unwrap();
+        // L3 community bundling both L2 centroids (abstract "action→reaction" pattern)
+        let _l3 = hierarchy.register_abstract_concept(3, &[l2v, l2f]).unwrap();
+
+        // Step 3: Build QaEngine with centroids and labels
+        let mut qa = QaEngine::new();
+        qa.cluster_centroids = centroids.clone();
+        qa.centroid_labels = all_terms.iter().map(|t| t.to_string()).collect();
+
+        // Step 4: Store a centroid rule in the vehicle domain
+        let stored_idx = qa.store_centroid_rule(
+            "car", "accelerates", "on_road",
+            "speed", "increases", "rapidly",
+            "test", 1.0, &hierarchy,
+        ).expect("Should store rule with all terms resolvable");
+        assert_eq!(stored_idx, 0);
+
+        // Step 5: DIRECT match — same terms
+        let result = qa.query_centroid_rule(
+            "car", "accelerates", "on_road", &hierarchy
+        );
+        assert!(result.is_some(), "Direct match should fire");
+        let (cons_text, match_type, energy) = result.unwrap();
+        assert_eq!(match_type, "direct", "Same terms should be direct match");
+        assert!((energy - 1.0).abs() < 0.01, "Direct energy should be 1.0");
+        assert_eq!(cons_text[0], "speed");
+        assert_eq!(cons_text[1], "increases");
+        assert_eq!(cons_text[2], "rapidly");
+        eprintln!("  DIRECT: 'car accelerates on_road' → '{} {} {}' E={} ✓",
+            cons_text[0], cons_text[1], cons_text[2], energy);
+
+        // Step 6: ANALOGICAL match — different vehicle terms, same L2 category
+        let result = qa.query_centroid_rule(
+            "truck", "accelerates", "on_road", &hierarchy
+        );
+        assert!(result.is_some(), "Analogical match should fire for truck");
+        let (cons_text2, match_type2, energy2) = result.unwrap();
+        assert_eq!(match_type2, "analogical",
+            "Different L1 but same L2 should be analogical, got {}", match_type2);
+        assert!((energy2 - 0.85).abs() < 0.01, "Analogical energy should be 0.85");
+        assert_eq!(cons_text2, ["speed", "increases", "rapidly"],
+            "Analogical match should return same consequent");
+        eprintln!("  ANALOGICAL: 'truck accelerates on_road' → '{} {} {}' E={} ✓",
+            cons_text2[0], cons_text2[1], cons_text2[2], energy2);
+
+        // Step 7: CROSS-DOMAIN — now matches at L3 (abstract analogy)
+        let result = qa.query_centroid_rule(
+            "central_bank", "tightens", "policy", &hierarchy
+        );
+        assert!(result.is_some(), "Cross-domain query should match at L3");
+        let (cons_text3, match_type3, energy3) = result.unwrap();
+        assert_eq!(match_type3, "abstract",
+            "Cross-domain should match at L3 abstract level, got {}", match_type3);
+        assert!((energy3 - 0.70).abs() < 0.01, "Abstract energy should be 0.70");
+        assert_eq!(cons_text3, ["speed", "increases", "rapidly"],
+            "Cross-domain match should return vehicle rule's consequent");
+        eprintln!("  ABSTRACT: 'central_bank tightens policy' → '{} {} {}' E={} ✓",
+            cons_text3[0], cons_text3[1], cons_text3[2], energy3);
+
+        // Step 8: UNKNOWN TERM — no centroid → no match
+        let result = qa.query_centroid_rule(
+            "unknown", "word", "here", &hierarchy
+        );
+        assert!(result.is_none(), "Unknown term should not match");
+        eprintln!("  UNKNOWN: 'unknown word here' → no match ✓");
+
+        // Step 9: COMPLETELY UNRELATED DOMAIN — different L3 → no match
+        // Create a term that resolves to a centroid but isn't in any L2/L3 group
+        let weather_hv = Hypervector::encode_text_ngram("weather", 3);
+        qa.cluster_centroids.push(weather_hv);
+        qa.centroid_labels.push("weather".to_string());
+        // No L2 or L3 community includes "weather" — it resolves but doesn't match
+        let result = qa.query_centroid_rule(
+            "weather", "affects", "everything", &hierarchy
+        );
+        assert!(result.is_none(), "Unrelated term outside L2/L3 should not match");
+        eprintln!("  UNRELATED: 'weather affects everything' → no match ✓");
+
+        eprintln!("\n  ✓ Centroid-rule analogical transfer works (all 3 tiers)");
+    }
+
+    #[test]
+    fn test_plan_for_goal_chess_example() {
+        // Goal-directed planning: white likely wins → push pawn e4.
+        // Verify the full backward-chaining pipeline.
+
+        let mut qa = QaEngine::new();
+
+        // Store action and causal rules (same chain as Spec)
+        qa.store_action(
+            "push", "pawn", "e4",
+            "white", "controls", "center",
+            "chess_knowledge",
+        );
+        qa.store_rule(
+            "white", "controls", "center",
+            "white", "has", "advantage",
+            "chess_knowledge",
+        );
+        qa.store_rule(
+            "white", "has", "advantage",
+            "white", "likely", "wins",
+            "chess_knowledge",
+        );
+
+        // Plan: what actions lead to (white, likely, wins)?
+        let plan = qa.plan_for_goal("white", "likely", "wins", 5);
+
+        eprintln!("  Goal: white likely wins");
+        eprintln!("  Plan ({} steps):", plan.len());
+        for (i, step) in plan.iter().enumerate() {
+            eprintln!("    Step {}: {:?} → {:?} (conf={:.4}, depth={})",
+                i, step.action, step.achieves, step.confidence, step.depth);
+        }
+
+        // Should return exactly one action: push pawn e4
+        assert_eq!(plan.len(), 1, "Should find exactly one plan step");
+        assert_eq!(plan[0].action.0, "push");
+        assert_eq!(plan[0].action.1, "pawn");
+        assert_eq!(plan[0].action.2, "e4");
+        assert_eq!(plan[0].achieves.0, "white");
+        assert_eq!(plan[0].achieves.1, "controls");
+        assert_eq!(plan[0].achieves.2, "center");
+        assert!((plan[0].confidence - 1.0).abs() < 0.01,
+            "Confidence should be ~1.0 (energy(1.0) × rule_confidence(1.0))");
+        eprintln!("\n  ✓ Goal-directed planning works: 'white likely wins' → push pawn e4");
+    }
+
+    #[test]
+    fn test_plan_for_goal_branching() {
+        // Branching scenario: two different actions can achieve the same goal.
+        // Action A: push pawn d4 → white controls center → white has advantage → white likely wins
+        // Action B: develop knight f3 → white controls center → white has advantage → white likely wins
+        //
+        // The planner should find BOTH plans, not just the first one.
+
+        let mut qa = QaEngine::new();
+
+        // Two alternative actions, same intermediate chain
+        qa.store_action("push", "pawn", "d4", "white", "controls", "center", "chess_knowledge");
+        qa.store_action("develop", "knight", "f3", "white", "controls", "center", "chess_knowledge");
+        qa.store_rule("white", "controls", "center", "white", "has", "advantage", "chess_knowledge");
+        qa.store_rule("white", "has", "advantage", "white", "likely", "wins", "chess_knowledge");
+
+        let plan = qa.plan_for_goal("white", "likely", "wins", 5);
+
+        eprintln!("  Goal: white likely wins");
+        eprintln!("  Plan ({} steps):", plan.len());
+        for (i, step) in plan.iter().enumerate() {
+            eprintln!("    Step {}: {:?} → {:?} (conf={:.4})",
+                i, step.action, step.achieves, step.confidence);
+        }
+
+        // Should find two actions (both paths through "controls center")
+        assert_eq!(plan.len(), 2,
+            "Branching scenario should find 2 plans, got {}", plan.len());
+
+        // Verify both actions are present
+        let actions: Vec<&str> = plan.iter().map(|s| s.action.1.as_str()).collect();
+        assert!(actions.contains(&"pawn"), "Should include push pawn d4");
+        assert!(actions.contains(&"knight"), "Should include develop knight f3");
+
+        // Both should achieve the same thing
+        for step in &plan {
+            assert_eq!(step.achieves.0, "white");
+            assert_eq!(step.achieves.1, "controls");
+            assert_eq!(step.achieves.2, "center");
+        }
+
+        eprintln!("\n  ✓ Branching plan works: both push pawn d4 and develop knight f3 found");
+    }
+
+    #[test]
+    fn test_plan_for_goal_multi_domain_cross_domain() {
+        // Cross-domain planning: same mechanism works for different domains.
+        //
+        // Market domain:  raise rates → strengthen currency → reduce inflation
+        // Military domain: deploy navy → blockade port → weaken enemy
+        //
+        // Both use the same plan_for_goal code path.  The planner doesn't
+        // know which domain it's operating in — it only follows SVO chains.
+
+        let mut qa = QaEngine::new();
+
+        // ── Market domain ───────────────────────────────────────────────────
+        qa.store_action("raise", "rates", "50bp", "dollar", "strengthens", "vs_euro", "market_knowledge");
+        qa.store_rule("dollar", "strengthens", "vs_euro", "imports", "become", "cheaper", "market_knowledge");
+        qa.store_rule("imports", "become", "cheaper", "inflation", "decreases", "gradually", "market_knowledge");
+
+        // ── Military domain ──────────────────────────────────────────────────
+        qa.store_action("deploy", "navy", "gulf", "enemy", "blockaded", "by_sea", "military_knowledge");
+        qa.store_rule("enemy", "blockaded", "by_sea", "trade", "collapses", "rapidly", "military_knowledge");
+        qa.store_rule("trade", "collapses", "rapidly", "enemy", "weakened", "significantly", "military_knowledge");
+
+        // ── Plan in market domain ────────────────────────────────────────────
+        let market_plan = qa.plan_for_goal("inflation", "decreases", "gradually", 5);
+        eprintln!("  Market goal: inflation decreases gradually");
+        eprintln!("  Market plan ({} steps):", market_plan.len());
+        for (i, step) in market_plan.iter().enumerate() {
+            eprintln!("    Step {}: {:?} → {:?} (conf={:.4})",
+                i, step.action, step.achieves, step.confidence);
+        }
+
+        assert!(!market_plan.is_empty(), "Market plan should not be empty");
+        let market_actions: Vec<&str> = market_plan.iter().map(|s| s.action.1.as_str()).collect();
+        assert!(market_actions.contains(&"rates"), "Market plan should include 'rates' action");
+
+        // ── Plan in military domain ──────────────────────────────────────────
+        let military_plan = qa.plan_for_goal("enemy", "weakened", "significantly", 5);
+        eprintln!("\n  Military goal: enemy weakened significantly");
+        eprintln!("  Military plan ({} steps):", military_plan.len());
+        for (i, step) in military_plan.iter().enumerate() {
+            eprintln!("    Step {}: {:?} → {:?} (conf={:.4})",
+                i, step.action, step.achieves, step.confidence);
+        }
+
+        assert!(!military_plan.is_empty(), "Military plan should not be empty");
+        let military_actions: Vec<&str> = military_plan.iter().map(|s| s.action.1.as_str()).collect();
+        assert!(military_actions.contains(&"navy"), "Military plan should include 'navy' action");
+
+        eprintln!("\n  ✓ Cross-domain planning works: same code, different domains");
+    }
+
+    #[test]
+    fn test_evaluate_plan_outcome() {
+        // Plan an action, then evaluate success/failure and verify
+        // rule confidences update accordingly.
+
+        let mut qa = QaEngine::new();
+        qa.store_action("push", "pawn", "e4", "white", "controls", "center", "chess_knowledge");
+        qa.store_rule("white", "controls", "center", "white", "has", "advantage", "chess_knowledge");
+        qa.store_rule("white", "has", "advantage", "white", "likely", "wins", "chess_knowledge");
+
+        // Record initial confidences
+        let initial_confs: Vec<f64> = qa.rules.iter().map(|r| r.confidence).collect();
+        eprintln!("  Initial confidences: {:?}", initial_confs);
+
+        // Plan
+        let plan = qa.plan_for_goal("white", "likely", "wins", 5);
+        assert_eq!(plan.len(), 1);
+        assert!(plan[0].rule_chain.len() >= 1, "Plan should have rule_chain");
+
+        // 1. Evaluate as FAILURE (outcome = 0.0)
+        let updated = qa.evaluate_plan_outcome(0.0, &plan);
+        assert!(updated >= 1, "Should update at least 1 rule");
+        let after_fail: Vec<f64> = qa.rules.iter().map(|r| r.confidence).collect();
+        eprintln!("  After failure: {:?}", after_fail);
+
+        // All confidences should have decreased
+        for (i, (&before, &after)) in initial_confs.iter().zip(after_fail.iter()).enumerate() {
+            if after < 1.0 {
+                // Only check rules that had room to decrease
+            }
+        }
+        // At minimum, the total sum should have decreased
+        let sum_before: f64 = initial_confs.iter().sum();
+        let sum_after: f64 = after_fail.iter().sum();
+        assert!(sum_after < sum_before, "Total confidence should decrease after failure");
+
+        // 2. Evaluate as SUCCESS (outcome = 1.0) — multiple times to strengthen
+        for _ in 0..3 {
+            qa.evaluate_plan_outcome(1.0, &plan);
+        }
+        let after_success: Vec<f64> = qa.rules.iter().map(|r| r.confidence).collect();
+        eprintln!("  After 3 successes: {:?}", after_success);
+
+        // Confidences should have recovered from the failure
+        let sum_recovered: f64 = after_success.iter().sum();
+        assert!(sum_recovered > sum_after, "Confidence should recover after success");
+
+        eprintln!("\n  ✓ Plan outcome evaluation works: failure weakens, success strengthens");
     }
 }

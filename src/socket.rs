@@ -54,7 +54,7 @@ impl AdminSocketServer {
                                 let mut line = String::new();
 
                                 let _ = writer.write_all(b"--- THE MACHINE ADMIN INTERFACE ---\n").await;
-                                let _ = writer.write_all(b"Commands: OVERRIDE <seed>, QUERY <text>, ASK <question>, EXIT\n").await;
+                                let _ = writer.write_all(b"Commands: OVERRIDE, QUERY, ASK, STORE, STORE_RULE, CHAIN, ABDUCE, ANALOGY, CULL, FACTS, SAVE, LOAD, EXIT\n").await;
 
                                 loop {
                                     let threat_val = *defense_clone.threat_level.read().await;
@@ -171,6 +171,71 @@ impl AdminSocketServer {
                                                 } else {
                                                     let _ = writer.write_all(b"ERROR: Use format: IF subject verb object THEN subject verb object\n").await;
                                                 }
+
+                                            } else if command.starts_with("ABDUCE ") {
+                                                let observation = &command[7..];
+                                                let triples = crate::nlp::extract_svo(observation);
+                                                if triples.is_empty() {
+                                                    let _ = writer.write_all(b"ERROR: Could not extract SVO from observation.\n").await;
+                                                } else {
+                                                    let hypotheses = {
+                                                        let qa_guard = qa_clone.read().await;
+                                                        qa_guard.abduce(
+                                                            &triples[0].subject,
+                                                            &triples[0].verb,
+                                                            &triples[0].object,
+                                                        )
+                                                    };
+                                                    if hypotheses.is_empty() {
+                                                        let _ = writer.write_all(b"NO HYPOTHESES: No known rule could have produced this observation.\n").await;
+                                                    } else {
+                                                        let mut response = format!("ABDUCTION: {} possible causes for '{} {} {}'\n",
+                                                            hypotheses.len(),
+                                                            triples[0].subject, triples[0].verb, triples[0].object,
+                                                        );
+                                                        for (i, (s, v, o, e)) in hypotheses.iter().take(5).enumerate() {
+                                                            response.push_str(&format!("  {}. {} {} {} (E={:.4})\n", i + 1, s, v, o, e));
+                                                        }
+                                                        let _ = writer.write_all(response.as_bytes()).await;
+                                                        let _ = log_tx_clone.send(format!(
+                                                            "ADMIN: ABDUCE '{}' → {} hypotheses",
+                                                            observation, hypotheses.len()
+                                                        ));
+                                                    }
+                                                }
+
+                                            } else if command.starts_with("ANALOGY ") {
+                                                let query = &command[8..];
+                                                let triples = crate::nlp::extract_svo(query);
+                                                if triples.is_empty() {
+                                                    let _ = writer.write_all(b"ERROR: Could not extract SVO from query.\n").await;
+                                                } else {
+                                                    let result = {
+                                                        let qa_guard = qa_clone.read().await;
+                                                        qa_guard.analogical_reason_chain(
+                                                            &triples[0].subject,
+                                                            &triples[0].verb,
+                                                            &triples[0].object,
+                                                        )
+                                                    };
+                                                    match result {
+                                                        Some((s, v, o, e)) => {
+                                                            let response = format!("ANALOGY: {} {} {} (E={:.4})\n", s, v, o, e);
+                                                            let _ = writer.write_all(response.as_bytes()).await;
+                                                        }
+                                                        None => {
+                                                            let _ = writer.write_all(b"ANALOGY: No analogical match found.\n").await;
+                                                        }
+                                                    }
+                                                }
+
+                                            } else if command == "CULL" {
+                                                let culled = {
+                                                    let mut qa_guard = qa_clone.write().await;
+                                                    qa_guard.cull_low_confidence_rules(0.20)
+                                                };
+                                                let response = format!("CULLED: {} low-confidence rules removed.\n", culled);
+                                                let _ = writer.write_all(response.as_bytes()).await;
 
                                             } else if command == "SAVE" {
                                                 let result = {

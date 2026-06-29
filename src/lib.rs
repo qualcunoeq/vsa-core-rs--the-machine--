@@ -12,6 +12,8 @@ pub mod analogy;
 pub mod autonomy;
 pub mod bridge;
 pub mod broker;
+pub mod chess_eval;
+pub mod chess_learner;
 pub mod code_bridge;
 pub mod compression;
 pub mod defense;
@@ -52,17 +54,23 @@ pub const U64_BLOCKS: usize = 160;
 pub const FPE_RESOLUTION: usize = 128;
 
 // ─── Role vectors ──────────────────────────────────────────────────────────
+// These encode domain-specific state bindings for multi-modal fusion.
+// Each role produces a deterministic orthogonal hypervector for XOR-binding
+// a state vector (e.g., role_external ⊕ environmental_state).
 
 impl Hypervector {
-    pub fn role_market() -> Self {
-        Self::encode_text_ngram("ROLE_MARKET_STATE", 3)
+    pub fn role_external() -> Self {
+        Self::encode_text_ngram("ROLE_EXTERNAL_STATE", 3)
     }
-    pub fn role_news() -> Self {
-        Self::encode_text_ngram("ROLE_NEWS_STATE", 3)
+    pub fn role_signal() -> Self {
+        Self::encode_text_ngram("ROLE_SIGNAL_STATE", 3)
     }
-    pub fn role_infra() -> Self {
-        Self::encode_text_ngram("ROLE_INFRA_STATE", 3)
+    pub fn role_internal() -> Self {
+        Self::encode_text_ngram("ROLE_INTERNAL_STATE", 3)
     }
+    pub fn role_market() -> Self { Self::encode_text_ngram("ROLE_MARKET_STATE", 3) }  // deprecated alias
+    pub fn role_news() -> Self { Self::encode_text_ngram("ROLE_NEWS_STATE", 3) }     // deprecated alias
+    pub fn role_infra() -> Self { Self::encode_text_ngram("ROLE_INFRA_STATE", 3) }   // deprecated alias
 }
 
 // ─── Serde helpers for [u64; 160] ──────────────────────────────────────────
@@ -303,6 +311,44 @@ impl Hypervector {
 
         let refs: Vec<&Hypervector> = ngrams.iter().collect();
         Self::bundle(&refs)
+    }
+
+    /// Sparse word encoding: sets exactly `num_bits` deterministic bit positions.
+    ///
+    /// Density = num_bits / HD_DIMENSION.  At 50 bits: ~0.5% density.
+    ///
+    /// ## Experimental History
+    /// Built to test Direction 1 for analogical transfer: sparse encoding breaks
+    /// the noise floor of dense 50%-density XOR cross-talk (sim improves from
+    /// 0.50 to ~0.84).  However, it fails the discrimination step because all
+    /// N terms in an N-term XOR have identical expected similarity to the XOR
+    /// result — the cleanup step cannot distinguish the signal from (N-1) noise
+    /// terms.  Proved empirically at 20, 50, 100, and 500 bits per word.
+    ///
+    /// ## Current Status
+    /// No production use in the codebase.  Kept as documented infrastructure:
+    /// a fast deterministic sparse encoder if a future component needs one.
+    /// The `encode_text_ngram` function remains the production encoding.
+    ///
+    /// The hash is a deterministic FNV-1a → splitmix64 of the text, so the same
+    /// word always produces the same sparse vector.  Empty text → zero vector.
+    pub fn encode_sparse(text: &str, num_bits: usize) -> Self {
+        if text.is_empty() {
+            return Self::new_zero();
+        }
+        // Deterministic 64-bit hash of the text (FNV-1a)
+        let hash: u64 = text.bytes().fold(0xcbf29ce484222325u64, |h, b| {
+            (h ^ (b as u64)).wrapping_mul(0x100000001b3u64)
+        });
+        let mut result = Self::new_zero();
+        for i in 0..num_bits {
+            let h = hash.wrapping_add((i as u64).wrapping_mul(0x9e3779b97f4a7c15));
+            let pos = (h ^ (h >> 31)) as usize % HD_DIMENSION;
+            let block = pos / 64;
+            let bit = pos % 64;
+            result.bits[block] |= 1u64 << bit;
+        }
+        result
     }
 
     /// Sentence encoder: position-permuted word n-grams
@@ -1282,9 +1328,9 @@ pub struct VSABrain {
 /// that span the three BMA regimes (stable, nominal, volatile) with
 /// pairwise Hamming variance > 0.38, enabling immediate multi-regime
 /// forecasting and non-zero dissonance.
-pub const SYNTH_STABLE: &str = "SYNTHETIC REGIME STABLE EQUILIBRIUM";
-pub const SYNTH_NOMINAL: &str = "SYNTHETIC REGIME NOMINAL MARKET";
-pub const SYNTH_VOLATILE: &str = "SYNTHETIC REGIME VOLATILE CRISIS";
+pub const SYNTH_STABLE: &str = "SYNTHETIC REGIME STABLE";
+pub const SYNTH_NOMINAL: &str = "SYNTHETIC REGIME NOMINAL";
+pub const SYNTH_VOLATILE: &str = "SYNTHETIC REGIME VOLATILE";
 pub const SYNTH_ACTION_NULL: &str = "NULL_ACTION_NOOP";
 pub const SYNTH_PARAM_NULL: &str = "NULL_PARAM_BASELINE";
 
@@ -2431,6 +2477,36 @@ impl VSABrain {
         search_clusters!(&self.transient_clusters, false);
 
         (best_label, best_sim, best_meta)
+    }
+
+    // ── Layer 0: Centroid access for Markov→SVO rule induction ──
+
+    /// Get a reference to the centroid of the cluster at index `idx`.
+    pub fn get_centroid(&self, idx: usize) -> Option<&Hypervector> {
+        self.dejavu_clusters.get(idx).map(|c| &c.centroid)
+    }
+
+    /// Number of permanent clusters (for iterating centroids).
+    pub fn cluster_count(&self) -> usize {
+        self.dejavu_clusters.len()
+    }
+
+    /// Find the index of the nearest cluster centroid to a query vector.
+    /// Returns (index, similarity) or None if no clusters exist.
+    pub fn nearest_centroid_idx(&self, vector: &Hypervector) -> Option<(usize, f64)> {
+        if self.dejavu_clusters.is_empty() {
+            return None;
+        }
+        let mut best_idx = 0;
+        let mut best_sim = 0.0_f64;
+        for (i, c) in self.dejavu_clusters.iter().enumerate() {
+            let sim = 1.0 - vector.normalized_hamming_distance(&c.centroid);
+            if sim > best_sim {
+                best_sim = sim;
+                best_idx = i;
+            }
+        }
+        Some((best_idx, best_sim))
     }
 
     /// ██ Tier 4: LSH-indexed evaluate_dejá-vù (mirrors query_dejavu) ██

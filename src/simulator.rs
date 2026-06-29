@@ -247,7 +247,7 @@ impl CounterfactualSimulator {
         CounterfactualSimulator::new(DEFAULT_ROLLOUT_DEPTH, DEFAULT_WEIGHTS)
     }
 
-    /// Register a set of default actions relevant to the bond-market system.
+    /// Register a set of default actions (domain-agnostic cognitive actions).
     ///
     /// These actions encode the fundamental behavioral modes the system
     /// can switch between.  Each has a text-encoded effect vector, a

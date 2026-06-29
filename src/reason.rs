@@ -1654,22 +1654,22 @@ impl DeepThought {
     /// Seed the reasoner with a baseline ontology of causal rules derived
     /// from the synthetic regime states (cold‑start initialization).
     pub fn seed_causal_rules(&mut self) {
-        // Stable → Nominal: low volatility regime transition
+        // Stable → Nominal: low-activity → normal regime transition
         self.causal.add_rule_text(
-            "SYNTHETIC REGIME STABLE EQUILIBRIUM",
-            "SYNTHETIC REGIME NOMINAL MARKET",
+            "SYNTHETIC REGIME STABLE",
+            "SYNTHETIC REGIME NOMINAL",
             "stable_to_nominal",
         );
         // Nominal → Volatile: escalation
         self.causal.add_rule_text(
-            "SYNTHETIC REGIME NOMINAL MARKET",
-            "SYNTHETIC REGIME VOLATILE CRISIS",
+            "SYNTHETIC REGIME NOMINAL",
+            "SYNTHETIC REGIME VOLATILE",
             "nominal_to_volatile",
         );
         // Volatile → Stable: mean reversion
         self.causal.add_rule_text(
-            "SYNTHETIC REGIME VOLATILE CRISIS",
-            "SYNTHETIC REGIME STABLE EQUILIBRIUM",
+            "SYNTHETIC REGIME VOLATILE",
+            "SYNTHETIC REGIME STABLE",
             "volatile_to_stable",
         );
     }

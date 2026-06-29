@@ -532,6 +532,28 @@ impl HierarchicalManifold {
 
         joint_kappa
     }
+
+    /// Hierarchical distance: project two centroids through the manifold
+    /// and return NHD between their projections at each level.
+    ///
+    /// `tau` controls soft projection (0.0 = hard, 0.10 = calibrated soft).
+    /// Returns Vec of (level_1_based, nhd) for each level.
+    pub fn hierarchical_distance(
+        &self,
+        a: &Hypervector,
+        b: &Hypervector,
+        tau: f64,
+    ) -> Vec<(usize, f64)> {
+        let proj_a = self.project_up_with_activations(a, tau);
+        let proj_b = self.project_up_with_activations(b, tau);
+
+        proj_a.iter().zip(proj_b.iter()).enumerate().map(|(level, (pa, pb))| {
+            let (va, _, _) = pa;
+            let (vb, _, _) = pb;
+            let nhd = va.normalized_hamming_distance(vb);
+            (level + 1, nhd)
+        }).collect()
+    }
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -879,5 +901,135 @@ mod tests {
             eprintln!("  Soft L2 sim to nearest centroid: {:.4}", soft_sim);
             assert!(soft_sim > 0.50, "Soft projection should snap near a centroid: sim={}", soft_sim);
         }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // PHASE A: Hierarchical Semantic Distance Test
+    // ═════════════════════════════════════════════════════════════════════════
+    //
+    // Measures whether the hierarchy does genuine semantic abstraction:
+    // semantically related concepts (car/truck) should be closer at L2
+    // than semantically unrelated concepts (car/central_bank).
+    // Complete separation justifies Phase B (centroid-level rule storage).
+    #[test]
+    fn test_hierarchical_semantic_distance() {
+        use crate::Hypervector;
+
+        // ── Step 1: Create vocabulary centroids ──
+        let vehicle_terms = ["car", "truck", "accelerates", "on_road", "speed"];
+        let finance_terms = ["central_bank", "foreign_bank", "tightens", "policy"];
+        let all_terms: Vec<&str> = vehicle_terms.iter().chain(finance_terms.iter()).copied().collect();
+        let centroids: Vec<Hypervector> = all_terms.iter()
+            .map(|t| Hypervector::encode_text_ngram(t, 3))
+            .collect();
+
+        // Build term→index mapping
+        let idx_of: std::collections::HashMap<&str, usize> = all_terms.iter().enumerate()
+            .map(|(i, t)| (*t, i)).collect();
+        let i = |name: &str| -> usize { *idx_of.get(name).unwrap() };
+
+        // ── Step 2: Seed L1 and register L2 communities ──
+        let mut hierarchy = HierarchicalManifold::new(&[all_terms.len(), 4]);
+        hierarchy.seed_from_base_centroids(&centroids);
+
+        // Vehicle community: car, truck, accelerates, on_road, speed
+        let vehicle_indices: Vec<usize> = vehicle_terms.iter().map(|t| i(t)).collect();
+        let _l2_vehicle = hierarchy.register_abstract_concept(2, &vehicle_indices)
+            .expect("Vehicle L2 concept should register");
+
+        // Finance community: central_bank, foreign_bank, tightens, policy
+        let finance_indices: Vec<usize> = finance_terms.iter().map(|t| i(t)).collect();
+        let _l2_finance = hierarchy.register_abstract_concept(2, &finance_indices)
+            .expect("Finance L2 concept should register");
+
+        assert_eq!(hierarchy.levels[1].centroids.len(), 2,
+            "Should have 2 L2 centroids");
+
+        // ── Step 3: Define similar and dissimilar pairs ──
+        let similar_pairs = [
+            ("car", "truck"),
+            ("central_bank", "foreign_bank"),
+            ("tightens", "policy"),
+            ("car", "accelerates"),
+        ];
+        let dissimilar_pairs = [
+            ("car", "central_bank"),
+            ("truck", "foreign_bank"),
+            ("speed", "tightens"),
+            ("accelerates", "policy"),
+        ];
+
+        // ── Step 4: Measure at three tau values ──
+        for tau in [0.0, 0.08, 0.10] {
+            eprintln!("\n═══ Hierarchical Distance (τ={:.2}) ═══", tau);
+            let mut all_similar_dist = Vec::new();
+            let mut all_dissimilar_dist = Vec::new();
+
+            for (label, pairs) in [("SIMILAR", &similar_pairs[..]), ("DISSIMILAR", &dissimilar_pairs[..])] {
+                eprintln!("  {}:", label);
+                for &(a_name, b_name) in pairs {
+                    let a = &centroids[i(a_name)];
+                    let b = &centroids[i(b_name)];
+                    let dists = hierarchy.hierarchical_distance(a, b, tau);
+                    let l1 = dists[0].1;
+                    let l2 = if dists.len() > 1 { dists[1].1 } else { 0.0 };
+                    eprintln!("    {:20} x {:<20}  L1={:.4}  L2={:.4}",
+                        a_name, b_name, l1, l2);
+                    if label == "SIMILAR" {
+                        all_similar_dist.push(l2);
+                    } else {
+                        all_dissimilar_dist.push(l2);
+                    }
+                }
+            }
+
+            // ── Step 5: Analysis ──
+            let sim_avg: f64 = all_similar_dist.iter().sum::<f64>() / all_similar_dist.len() as f64;
+            let dis_avg: f64 = all_dissimilar_dist.iter().sum::<f64>() / all_dissimilar_dist.len() as f64;
+            let sim_max = all_similar_dist.iter().cloned().fold(0.0_f64, f64::max);
+            let dis_min = all_dissimilar_dist.iter().cloned().fold(1.0_f64, f64::min);
+            let separation = dis_min - sim_max;
+
+            eprintln!();
+            eprintln!("  Similar avg L2:    {:.4}", sim_avg);
+            eprintln!("  Dissimilar avg L2: {:.4}", dis_avg);
+            eprintln!("  Similar max L2:    {:.4}", sim_max);
+            eprintln!("  Dissimilar min L2: {:.4}", dis_min);
+            eprintln!("  Separation Δ:      {:.4} (positive = complete separation)", separation);
+
+            if separation > 0.0 {
+                eprintln!("  RESULT: COMPLETE SEPARATION ✓");
+            } else if sim_avg < dis_avg {
+                eprintln!("  RESULT: PARTIAL SEPARATION (avg lower but overlap) ⚠");
+            } else {
+                eprintln!("  RESULT: NO SEPARATION ✗");
+            }
+        }
+
+        // ── Step 6: Assertions ──
+        // At tau=0.10 (calibrated sweet spot), require at least partial separation
+        let a = &centroids[i("car")];
+        let b = &centroids[i("truck")];
+        let dist = hierarchy.hierarchical_distance(a, b, 0.10);
+        let c = &centroids[i("car")];
+        let d = &centroids[i("central_bank")];
+        let dist_cross = hierarchy.hierarchical_distance(c, d, 0.10);
+        // The L2 distance for similar pairs should be lower than for dissimilar
+        // at least in the average
+        let sim_l2_avg = similar_pairs.iter()
+            .map(|(a,b)| {
+                let d = hierarchy.hierarchical_distance(&centroids[i(a)], &centroids[i(b)], 0.10);
+                d.get(1).map(|(_, v)| *v).unwrap_or(1.0)
+            })
+            .sum::<f64>() / similar_pairs.len() as f64;
+        let dis_l2_avg = dissimilar_pairs.iter()
+            .map(|(a,b)| {
+                let d = hierarchy.hierarchical_distance(&centroids[i(a)], &centroids[i(b)], 0.10);
+                d.get(1).map(|(_, v)| *v).unwrap_or(1.0)
+            })
+            .sum::<f64>() / dissimilar_pairs.len() as f64;
+        assert!(sim_l2_avg < dis_l2_avg,
+            "Similar pairs should have lower avg L2 distance (sim={:.4}, dis={:.4})",
+            sim_l2_avg, dis_l2_avg);
     }
 }

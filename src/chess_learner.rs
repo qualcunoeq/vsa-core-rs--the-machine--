@@ -607,23 +607,33 @@ pub fn plan_weight_for_game(games_at_level: usize) -> f64 {
 }
 
 /// Predict opponent behavioral distribution for a position using k-NN over
-/// stored opponent responses. Returns Vec<(behavior_label, probability)>.
+/// stored opponent responses.  Samples up to `max_sample` responses for speed.
+/// Returns Vec<(behavior_label, probability)> sorted by probability descending.
 fn predict_behavior_distribution(
     fen: &str,
     responses: &[OpponentResponse],
     k: usize,
+    max_sample: usize,
 ) -> Vec<(OpponentBehavior, f64)> {
     if responses.is_empty() {
         return Vec::new();
     }
 
     let query_hv = encode_position(fen);
-    // Compute similarity to all stored responses
-    let mut sims: Vec<(usize, f64)> = responses.iter().enumerate()
-        .map(|(i, r)| {
-            let r_hv = encode_position(&r.fen_before_opponent);
+    // Sample a subset for speed when responses are numerous
+    let sample_indices: Vec<usize> = if responses.len() > max_sample {
+        let step = responses.len() / max_sample;
+        (0..responses.len()).step_by(step.max(1)).collect()
+    } else {
+        (0..responses.len()).collect()
+    };
+
+    // Compute similarity to sampled responses (keep original index for lookup)
+    let mut sims: Vec<(usize, f64)> = sample_indices.iter()
+        .map(|&orig_idx| {
+            let r_hv = encode_position(&responses[orig_idx].fen_before_opponent);
             let sim = 1.0 - query_hv.normalized_hamming_distance(&r_hv);
-            (i, sim)
+            (orig_idx, sim)
         })
         .collect();
     sims.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
@@ -785,100 +795,86 @@ where
         if machine_to_move {
             // Save position before machine's move for opponent response tracking
             last_machine_fen = current_fen.clone();
-            // The Machine selects a move by evaluating candidate positions.
-            // Evaluate top candidate moves.  Against Stockfish d1, we need more
-            // options since the opponent rarely blunders badly.
             const TOP_N: usize = 8;
             let candidates: Vec<&(String, f64)> = legal.iter().take(TOP_N).collect();
 
-            // Candidate positions have the OPPONENT to move (Machine just played).
-            // The k-NN returns outcomes from the machine's perspective across all
-            // stored games.  High score = similar to a winning position for the
-            // machine.  Pick the move with the highest expected outcome.
+            // ── Pass 1: Quick k-NN prefilter ──────────────────────────────
+            // Evaluate all candidates with bare k-NN (no planner, no lookahead).
+            // Only the top 4-5 proceed to the expensive full evaluation.
+            let mut prefiltered: Vec<(String, f64)> = candidates.iter()
+                .filter_map(|&(ref move_uci, _)| {
+                    let new_fen = sf.apply_move_to_fen(&current_fen, move_uci);
+                    if new_fen.is_empty() { return None; }
+                    let k_score = evaluate_fn(&new_fen);
+                    Some((move_uci.clone(), k_score))
+                })
+                .collect();
+            prefiltered.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
+
+            let top_n_for_full = 5.min(prefiltered.len());
             let mut best_score = f64::NEG_INFINITY;
-            let mut best_move = candidates[0].0.clone();
+            let mut best_move = prefiltered[0].0.clone();
 
-            for &(ref move_uci, _) in &candidates {
-                // Get resulting FEN (using known current_fen, avoid extra "d" call)
+            // ── Pass 2: Full evaluation on top candidates ────────────────
+            // Plan bonus, negative rules, and opponent model lookahead only
+            // for the most promising moves.
+            for (i, &(ref move_uci, ref k_score)) in prefiltered.iter().enumerate() {
                 let new_fen = sf.apply_move_to_fen(&current_fen, move_uci);
+                if new_fen.is_empty() { continue; }
 
-                if new_fen.is_empty() {
-                    continue;
-                }
+                let mut score = *k_score;
 
-                // Evaluate the resulting position
-                let k_score = evaluate_fn(&new_fen);
-                let mut score = k_score;
-                
-                // Planner augmentation: weighted blend with k-NN.
-                // plan_weight varies by curriculum stage (0.70 early, 0.50 mid, 0.30 late).
-                if let Some(qa) = qa {
-                    let plan = qa.plan_for_goal("white", "has", "advantage", 5);
-                    let plan_score = plan.iter()
-                        .map(|step| step.confidence)
-                        .fold(0.0_f64, f64::max);
-                    score = plan_score * plan_weight + k_score * (1.0 - plan_weight);
+                // Full evaluation only for top 5 candidates
+                if i < top_n_for_full {
+                    if let Some(qa) = qa {
+                        let plan = qa.plan_for_goal("white", "has", "advantage", 5);
+                        let plan_score = plan.iter()
+                            .map(|step| step.confidence)
+                            .fold(0.0_f64, f64::max);
+                        score = plan_score * plan_weight + *k_score * (1.0 - plan_weight);
 
-                    // Negative rule penalty: direct score reduction when a candidate
-                    // move's L2 transition matches a mined negative rule.
-                    if let Some(ref hierarchy) = qa.chess_hierarchy {
-                        if !qa.l2_rules.is_empty() {
-                            let current_l2 = project_to_l2(&current_fen, hierarchy);
-                            let candidate_l2 = project_to_l2(&new_fen, hierarchy);
-                            for rule in &qa.l2_rules {
-                                if !rule.is_positive
-                                    && rule.from_l2 == current_l2
-                                    && rule.to_l2 == candidate_l2
-                                {
-                                    score -= 0.40;  // direct penalty
-                                }
-                            }
-                        }
-                    }
-
-                    // Path 3: Opponent model lookahead — predict Stockfish's response
-                    // to this candidate move, evaluate the resulting position, blend.
-                    if !qa.opponent_responses.is_empty() {
-                        let behavior_dist = predict_behavior_distribution(
-                            &new_fen, &qa.opponent_responses, 10);
-                        if !behavior_dist.is_empty() {
-                            // Expected value over top behavioral classes
-                            let mut lookahead_sum = 0.0;
-                            let mut lookahead_weight = 0.0;
-                            // Get legal moves for the opponent from this position
-                            sf.set_position(&new_fen);
-                            let opp_legal = sf.legal_moves();
-                            let opp_moves: Vec<(String, f64)> = opp_legal.iter()
-                                .map(|(m, _)| (m.clone(), 0.0)).collect();
-
-                            for (behavior, prob) in &behavior_dist {
-                                let response = sample_response_for_behavior(
-                                    &new_fen, behavior, &opp_moves);
-                                if !response.is_empty() {
-                                    let resp_fen = sf.apply_move_to_fen(&new_fen, &response);
-                                    if !resp_fen.is_empty() {
-                                        let resp_score = evaluate_fn(&resp_fen);
-                                        lookahead_sum += prob * resp_score;
-                                        lookahead_weight += prob;
+                        // Negative rule penalty
+                        if let Some(ref hierarchy) = qa.chess_hierarchy {
+                            if !qa.l2_rules.is_empty() {
+                                let current_l2 = project_to_l2(&current_fen, hierarchy);
+                                let candidate_l2 = project_to_l2(&new_fen, hierarchy);
+                                for rule in &qa.l2_rules {
+                                    if !rule.is_positive
+                                        && rule.from_l2 == current_l2
+                                        && rule.to_l2 == candidate_l2
+                                    {
+                                        score -= 0.40;
                                     }
                                 }
                             }
-                            if lookahead_weight > 0.1 {
-                                let lookahead_avg = lookahead_sum / lookahead_weight;
-                                // Blend: weight lookahead by plan_weight (same influence as planner)
-                                score = score * (1.0 - plan_weight * 0.5)
-                                    + lookahead_avg * (plan_weight * 0.5);
+                        }
+
+                        // Path 3: Opponent model lookahead (only on top candidates)
+                        if !qa.opponent_responses.is_empty() {
+                            let behavior_dist = predict_behavior_distribution(
+                                &new_fen, &qa.opponent_responses, 10, 500);
+                            if !behavior_dist.is_empty() {
+                                let (_, top_prob) = &behavior_dist[0];
+                                let response = sf.opponent_move_at_depth(&new_fen, search_depth);
+                                if !response.is_empty() {
+                                    let resp_fen = sf.apply_move_to_fen(&new_fen, &response);
+                                    if !resp_fen.is_empty() {
+                                        let lookahead_score = evaluate_fn(&resp_fen);
+                                        let blend = plan_weight * top_prob;
+                                        score = score * (1.0 - blend) + lookahead_score * blend;
+                                    }
+                                }
                             }
                         }
                     }
                 }
-                
-                // Track eval variance
+
+                // Track eval variance across ALL candidates
                 if score > eval_max { eval_max = score; }
                 if score < eval_min { eval_min = score; }
                 eval_abs_sum += score.abs();
                 eval_count += 1;
-                
+
                 if score > best_score {
                     best_score = score;
                     best_move = move_uci.clone();

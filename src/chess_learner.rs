@@ -1992,6 +1992,8 @@ pub fn train_curriculum(
         }
     };
     let mut current = start_index.min(CURRICULUM_LADDER.len().saturating_sub(1));
+    let mut retry_counts: Vec<usize> = vec![0; CURRICULUM_LADDER.len()]; // retries per stage
+    let max_retries_per_stage: usize = 1; // after 2 total attempts (1 initial + 1 retry), force advance
     let mut history: Vec<(usize, f64, f64, usize)> = Vec::new();
 
     eprintln!("\n╔══════════════════════════════════════════════════════════╗");
@@ -2035,18 +2037,27 @@ pub fn train_curriculum(
         if wr >= promotion_threshold && rules_mined >= min_rules {
             let next_pct = CURRICULUM_LADDER.get(current + 1).unwrap_or(&sf_pct);
             eprintln!(
-                "  ✓ WR {:.1}% ≥ {:.0}% with {} rules — PROMOTING to {}% SF d1",
+                "  ✓ WR {:.1}% ≥ {:.0}% with {} rules — PROMOTING to {}% SF d1\n",
                 wr, promotion_threshold, rules_mined, next_pct
+            );
+            current += 1;
+        } else if retry_counts[current] >= max_retries_per_stage {
+            eprintln!(
+                "  ✗ WR {:.1}% < {:.0}% ({} retries exhausted) — FORCE ADVANCE to {}% SF d1\n",
+                wr, promotion_threshold, max_retries_per_stage,
+                CURRICULUM_LADDER.get(current + 1).unwrap_or(&sf_pct)
             );
             current += 1;
         } else {
             eprintln!(
-                "  ✗ WR {:.1}% < {:.0}% or {} rules < {} — curriculum paused",
-                wr, promotion_threshold, rules_mined, min_rules
+                "  ✗ WR {:.1}% < {:.0}% or {} rules < {} — curriculum paused (retry {}/{})",
+                wr, promotion_threshold, rules_mined, min_rules,
+                retry_counts[current] + 1, max_retries_per_stage
             );
+            retry_counts[current] += 1;
             // If WR > 0, retry with more games; otherwise stop
             if wr > 0.0 {
-                eprintln!("  Retrying {}% SF d1 with {} more games...", sf_pct, games_per_level);
+                eprintln!("  Retrying {}% SF d1 with {} more games...\n", sf_pct, games_per_level);
             } else {
                 break;
             }

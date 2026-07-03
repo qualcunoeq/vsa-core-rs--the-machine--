@@ -13,6 +13,7 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 use crate::chess_eval::encode_position;
+use crate::defense::{ChessThreatDetector, ThreatClass, ThreatDetector, ThreatEvent};
 use crate::chess_eval::{encode_tracked_position, tracked_similarity, TrackedPosition, parse_fen};
 use crate::hierarchy::HierarchicalManifold;
 use crate::VSABrain;
@@ -777,6 +778,9 @@ where
     let mut opponent_responses: Vec<OpponentResponse> = Vec::new();
     let mut last_machine_fen = String::new();
     let mut last_machine_move = String::new();
+    // Threat detection: track the last threat events for defensive response
+    let mut recent_threats: Vec<ThreatEvent> = Vec::new();
+    let threat_detector = ChessThreatDetector::new(machine_is_white);
 
     loop {
         // Check if game is over
@@ -849,6 +853,34 @@ where
                             }
                         }
 
+                        // ── Threat Response: defensive bonus ──────────────
+                        // If we detected threats after opponent's last move,
+                        // give a bonus to moves that address them.
+                        if !recent_threats.is_empty() && move_uci.len() >= 4 {
+                            let from_file = (move_uci.as_bytes()[0] - b'a') as i8;
+                            let from_rank = (move_uci.as_bytes()[1] - b'1') as i8;
+                            let mut defensive_bonus = 0.0;
+                            for threat in &recent_threats {
+                                // Entity format: "queen_d5" or "knight_f3"
+                                if let Some(sq) = threat.entity.split('_').nth(1) {
+                                    if sq.len() == 2 {
+                                        let t_file = (sq.as_bytes()[0] - b'a') as i8;
+                                        let t_rank = (sq.as_bytes()[1] - b'1') as i8;
+                                        // If this move is FROM the threatened square,
+                                        // the piece is moving to safety
+                                        if from_file == t_file && from_rank == t_rank {
+                                            defensive_bonus = f64::max(defensive_bonus, threat.severity);
+                                        }
+                                    }
+                                }
+                            }
+                            if defensive_bonus > 0.0 {
+                                // Blend: higher threat = more defensive urgency
+                                let blend = 0.25 * defensive_bonus;
+                                score = score * (1.0 - blend) + 1.0 * blend;
+                            }
+                        }
+
                         // Path 3: Opponent model lookahead (only on top candidates)
                         if !qa.opponent_responses.is_empty() {
                             let behavior_dist = predict_behavior_distribution(
@@ -908,7 +940,15 @@ where
         }
 
         // Apply the chosen move
+        let fen_before_move = current_fen.clone();
         current_fen = sf.apply_move_get_fen(&chosen_move);
+
+        // ── Threat detection: if opponent just moved, check for new threats ──
+        if !machine_to_move {
+            let before_state = ChessThreatDetector::parse_state(&fen_before_move);
+            let after_state = ChessThreatDetector::parse_state(&current_fen);
+            recent_threats = threat_detector.detect(&before_state, &after_state);
+        }
         positions.push(current_fen.clone());
         ply += 1;
 
@@ -2132,7 +2172,7 @@ mod tests {
         let mut brain = crate::VSABrain::new(0.35);
 
         let evaluate = |fen: &str| -> f64 { knn_evaluate(fen, &brain, 5) };
-        let record = play_game(&mut sf, &evaluate, true, None, None, PLAN_WEIGHT);
+        let record = play_game(&mut sf, &evaluate, true, None, None, PLAN_WEIGHT, 1);
         store_game_outcomes(&record, &mut brain);
 
         eprintln!("  Game result: {} ({} ply, {} entries)",

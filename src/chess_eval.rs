@@ -54,7 +54,7 @@ pub fn parse_fen(fen: &str) -> Vec<(char, u8, u8)> {
 }
 
 /// Quick piece name (e.g., "wP" for white pawn, "bK" for black king).
-fn piece_label(ch: char) -> &'static str {
+pub(crate) fn piece_label(ch: char) -> &'static str {
     match ch {
         'P' => "wP", 'N' => "wN", 'B' => "wB", 'R' => "wR", 'Q' => "wQ", 'K' => "wK",
         'p' => "bP", 'n' => "bN", 'b' => "bB", 'r' => "bR", 'q' => "bQ", 'k' => "bK",
@@ -63,7 +63,7 @@ fn piece_label(ch: char) -> &'static str {
 }
 
 /// Material value of a piece type.
-fn piece_value(ch: char) -> i32 {
+pub(crate) fn piece_value(ch: char) -> i32 {
     match ch {
         'P' | 'p' => 1,
         'N' | 'n' => 3,
@@ -276,7 +276,7 @@ fn raycast(rank: u8, file: u8, dr: i8, df: i8, board: &[[Option<char>; 8]; 8]) -
 }
 
 /// All squares a piece attacks (including moves, not just captures).
-fn compute_attacks(ch: char, rank: u8, file: u8, board: &[[Option<char>; 8]; 8]) -> Vec<(u8, u8)> {
+pub(crate) fn compute_attacks(ch: char, rank: u8, file: u8, board: &[[Option<char>; 8]; 8]) -> Vec<(u8, u8)> {
     match piece_type(ch) {
         'P' => pawn_attacks(ch, rank, file),
         'N' => knight_attacks(rank, file),

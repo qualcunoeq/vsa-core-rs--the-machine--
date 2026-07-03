@@ -1,6 +1,164 @@
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
+// ─── General Threat Detection ──────────────────────────────────────────────
+//
+// Domain-independent threat perception layer.  The idea is from Person of
+// Interest — Harold Finch's Machine doesn't just plan, it MONITORS.  It
+// detects state changes and classifies them as threats, opportunities, or
+// neutral events before triggering a response.
+//
+// The chess instantiation is the first concrete use: after an opponent's move,
+// compare attack maps before/after.  Any machine piece that is newly under
+// attack is a threat.  This feeds into the planner as a defensive subgoal.
+
+/// A domain-independent classification of a state change.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ThreatClass {
+    /// Something actively harmful is happening (piece attacked, port probed)
+    Threat,
+    /// Something beneficial is happening (opponent blunders, opportunity opens)
+    Opportunity,
+    /// Change with no immediate action required
+    Neutral,
+}
+
+/// A single detected event — the output of the perception layer.
+#[derive(Debug, Clone)]
+pub struct ThreatEvent {
+    /// Domain identifier: "chess", "network", "market", etc.
+    pub domain: String,
+    /// How severe is this?  0.0 (negligible) to 1.0 (critical)
+    pub severity: f64,
+    /// What entity is affected?  "queen", "port_443", "position_401k"
+    pub entity: String,
+    /// Human-readable description of what happened
+    pub description: String,
+    /// Classification
+    pub class: ThreatClass,
+}
+
+/// A domain-independent threat detector trait.
+///
+/// Implementations compare two snapshots of a domain state and return
+/// everything that changed, classified by type.
+pub trait ThreatDetector<State> {
+    /// Compare two states and return all changes, each classified.
+    fn detect(&self, before: &State, after: &State) -> Vec<ThreatEvent>;
+}
+
+// ─── Chess Threat Detector ─────────────────────────────────────────────────
+//
+/// Chess instantiation of the threat detector.
+///
+/// Compares attack maps before and after the opponent's move.  Any friendly
+/// piece that is under attack after but was NOT under attack before is a
+/// threat event.
+pub struct ChessThreatDetector {
+    pub machine_is_white: bool,
+}
+
+/// Intermediate representation for building a square-indexed attack map.
+/// `opponent_attacks[sq]` = true if an opponent piece attacks that square.
+/// `our_attacks[sq]` = true if one of our pieces attacks that square.
+struct SquareAttackMap {
+    opponent_attacks: [[bool; 8]; 8],
+    our_attacks: [[bool; 8]; 8],
+}
+
+fn build_square_attack_map(
+    pieces: &[(char, u8, u8)],
+    board: &[[Option<char>; 8]; 8],
+    machine_is_white: bool,
+) -> SquareAttackMap {
+    let mut opp = [[false; 8]; 8];
+    let mut ours = [[false; 8]; 8];
+
+    for &(ch, rank, file) in pieces {
+        let is_machine_piece = ch.is_uppercase() == machine_is_white;
+        let attacked = crate::chess_eval::compute_attacks(ch, rank, file, board);
+        for (tr, tf) in attacked {
+            let r = tr as usize;
+            let f = tf as usize;
+            if is_machine_piece {
+                ours[r][f] = true;
+            } else {
+                opp[r][f] = true;
+            }
+        }
+    }
+
+    SquareAttackMap { opponent_attacks: opp, our_attacks: ours }
+}
+
+impl ChessThreatDetector {
+    pub fn new(machine_is_white: bool) -> Self {
+        ChessThreatDetector { machine_is_white }
+    }
+
+    /// Parse a FEN into the piece list and board matrix needed by
+    /// the attack detection functions.
+    pub fn parse_state(fen: &str) -> (Vec<(char, u8, u8)>, [[Option<char>; 8]; 8]) {
+        let pieces = crate::chess_eval::parse_fen(fen);
+        let mut board = [[None; 8]; 8];
+        for &(ch, rank, file) in &pieces {
+            board[rank as usize][file as usize] = Some(ch);
+        }
+        (pieces, board)
+    }
+}
+
+impl ThreatDetector<(Vec<(char, u8, u8)>, [[Option<char>; 8]; 8])> for ChessThreatDetector {
+    fn detect(
+        &self,
+        before: &(Vec<(char, u8, u8)>, [[Option<char>; 8]; 8]),
+        after: &(Vec<(char, u8, u8)>, [[Option<char>; 8]; 8]),
+    ) -> Vec<ThreatEvent> {
+        let (before_pieces, before_board) = before;
+        let (after_pieces, _after_board) = after;
+
+        let before_map = build_square_attack_map(before_pieces, before_board, self.machine_is_white);
+        let after_map = build_square_attack_map(after_pieces, _after_board, self.machine_is_white);
+
+        let mut events = Vec::new();
+
+        // For each of OUR pieces in the after state, check if it's newly attacked.
+        let is_white = self.machine_is_white;
+        for &(ch, rank, file) in after_pieces {
+            // Only check machine's own pieces
+            if ch.is_uppercase() != is_white {
+                continue;
+            }
+            let r = rank as usize;
+            let f = file as usize;
+
+            let was_attacked = before_map.opponent_attacks[r][f];
+            let is_attacked = after_map.opponent_attacks[r][f];
+
+            // New threat: attacked now but not before
+            if is_attacked && !was_attacked {
+                let value = crate::chess_eval::piece_value(ch);
+                // Normalize piece value to severity (queen=9 → 0.9, pawn=1 → 0.2)
+                let severity = (value as f64).max(1.0) / 10.0;
+                let label = crate::chess_eval::piece_label(ch);
+                let sq_name = format!("{}{}", (b'a' + file) as char, rank + 1);
+
+                events.push(ThreatEvent {
+                    domain: "chess".to_string(),
+                    severity: severity.clamp(0.0, 1.0),
+                    entity: format!("{}_{}", label, sq_name),
+                    description: format!("{} on {} is newly under attack", label, sq_name),
+                    class: ThreatClass::Threat,
+                });
+            }
+        }
+
+        events
+    }
+}
+
+// ─── Existing DefenseSystem ─────────────────────────────────────────────────
+
 #[derive(Clone)]
 pub struct DefenseSystem {
     pub threat_level: Arc<RwLock<f64>>,
@@ -271,5 +429,93 @@ mod tests {
         }
         let rotated2 = defense.evaluate_threat_response().await;
         assert!(rotated2, "Should rotate at 0.65 threat during inhibition (threshold=0.60)");
+    }
+
+    #[test]
+    fn test_chess_threat_detection() {
+        // Setup: machine is white.
+        // Before: white queen on d1, black rook on d8 (attacks d1 through files).
+        // After: black rook moves from d8 to d1 (captures? No, we model it as
+        //   the opponent's rook now attacking d1).
+        // The queen on d1 should be detected as newly attacked.
+        let detector = ChessThreatDetector::new(true);
+
+        // Before state: white king e1, white queen d1, black rook h8 (h8 does
+        // NOT attack d1 — different rank AND file, no direct line).
+        let before_pieces = vec![
+            ('K', 0, 4), // white king e1
+            ('Q', 0, 3), // white queen d1
+            ('r', 7, 7), // black rook h8
+        ];
+        let before_board = {
+            let mut b = [[None; 8]; 8];
+            b[0][4] = Some('K');
+            b[0][3] = Some('Q');
+            b[7][7] = Some('r');
+            b
+        };
+
+        // After state: same pieces (no capture), but the rook now on d3
+        // directly attacks the queen along the d-file.
+        let after_pieces = vec![
+            ('K', 0, 4), // white king e1
+            ('Q', 0, 3), // white queen d1 — still on d1
+            ('r', 2, 3), // black rook d3 — now attacks d1 down the file
+        ];
+        let after_board = {
+            let mut b = [[None; 8]; 8];
+            b[0][4] = Some('K');
+            b[0][3] = Some('Q');
+            b[2][3] = Some('r');
+            b
+        };
+
+        let events = detector.detect(&(before_pieces, before_board), &(after_pieces, after_board));
+
+        assert!(!events.is_empty(), "Should detect at least one threat: {:?}", events);
+        let queen_threat = events.iter().find(|e| e.entity == "wQ_d1");
+        assert!(
+            queen_threat.is_some(),
+            "Should detect queen on d1 as threatened: events={:?}", events
+        );
+        if let Some(qt) = queen_threat {
+            assert_eq!(qt.class, ThreatClass::Threat);
+            assert!(qt.severity > 0.5, "Queen threat should be high severity");
+            assert_eq!(qt.domain, "chess");
+            assert!(qt.description.contains("newly under attack"), "description: {}", qt.description);
+        }
+    }
+
+    #[test]
+    fn test_chess_threat_detection_no_false_positive() {
+        // Machine is white. If a piece was ALREADY under attack and stays
+        // under attack, it should NOT trigger a new threat event.
+        let detector = ChessThreatDetector::new(true);
+
+        // Before: white queen d1, black rook d8 attacks down d-file to d1
+        let before_pieces = vec![
+            ('K', 0, 4),
+            ('Q', 0, 3),
+            ('r', 7, 3), // rook d8 — attacks d1 through d-file
+        ];
+        let mut board_b = [[None; 8]; 8];
+        board_b[0][4] = Some('K');
+        board_b[0][3] = Some('Q');
+        board_b[7][3] = Some('r');
+
+        // After: same position (rook didn't move), queen still attacked
+        // but was already attacked before — no new threat.
+        let after_pieces = before_pieces.clone();
+        let mut board_a = [[None; 8]; 8];
+        board_a[0][4] = Some('K');
+        board_a[0][3] = Some('Q');
+        board_a[7][3] = Some('r');
+
+        let events = detector.detect(&(before_pieces, board_b), &(after_pieces, board_a));
+        assert!(
+            events.is_empty(),
+            "Should NOT detect new threat when piece was already attacked: {:?}",
+            events
+        );
     }
 }

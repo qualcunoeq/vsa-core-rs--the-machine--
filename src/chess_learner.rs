@@ -855,28 +855,40 @@ where
 
                         // ── Threat Response: defensive bonus ──────────────
                         // If we detected threats after opponent's last move,
-                        // give a bonus to moves that address them.
+                        // give a bonus to moves that address them.  We verify
+                        // the destination square is SAFE (not attacked) — not
+                        // just that the piece moved.
                         if !recent_threats.is_empty() && move_uci.len() >= 4 {
                             let from_file = (move_uci.as_bytes()[0] - b'a') as i8;
                             let from_rank = (move_uci.as_bytes()[1] - b'1') as i8;
+                            let to_file = (move_uci.as_bytes()[2] - b'a') as i8;
+                            let to_rank = (move_uci.as_bytes()[3] - b'1') as i8;
                             let mut defensive_bonus = 0.0;
                             for threat in &recent_threats {
-                                // Entity format: "queen_d5" or "knight_f3"
                                 if let Some(sq) = threat.entity.split('_').nth(1) {
                                     if sq.len() == 2 {
                                         let t_file = (sq.as_bytes()[0] - b'a') as i8;
                                         let t_rank = (sq.as_bytes()[1] - b'1') as i8;
                                         // If this move is FROM the threatened square,
-                                        // the piece is moving to safety
+                                        // check if destination square is safe
                                         if from_file == t_file && from_rank == t_rank {
-                                            defensive_bonus = f64::max(defensive_bonus, threat.severity);
+                                            // Verify destination safety using attack map
+                                            let dest_safe = {
+                                                let (pieces, board) = ChessThreatDetector::parse_state(&new_fen);
+                                                let map = crate::defense::build_square_attack_map(
+                                                    &pieces, &board, machine_is_white);
+                                                // Destination is safe if opponent doesn't attack it
+                                                !map.opponent_attacks[to_rank as usize][to_file as usize]
+                                            };
+                                            // Only give the bonus if the move is SAFE
+                                            let severity = if dest_safe { threat.severity } else { 0.0 };
+                                            defensive_bonus = f64::max(defensive_bonus, severity);
                                         }
                                     }
                                 }
                             }
                             if defensive_bonus > 0.0 {
-                                // Blend: higher threat = more defensive urgency
-                                let blend = 0.25 * defensive_bonus;
+                                let blend = 0.30 * defensive_bonus;
                                 score = score * (1.0 - blend) + 1.0 * blend;
                             }
                         }

@@ -61,12 +61,12 @@ pub struct ChessThreatDetector {
 /// Intermediate representation for building a square-indexed attack map.
 /// `opponent_attacks[sq]` = true if an opponent piece attacks that square.
 /// `our_attacks[sq]` = true if one of our pieces attacks that square.
-struct SquareAttackMap {
-    opponent_attacks: [[bool; 8]; 8],
-    our_attacks: [[bool; 8]; 8],
+pub(crate) struct SquareAttackMap {
+    pub opponent_attacks: [[bool; 8]; 8],
+    pub our_attacks: [[bool; 8]; 8],
 }
 
-fn build_square_attack_map(
+pub(crate) fn build_square_attack_map(
     pieces: &[(char, u8, u8)],
     board: &[[Option<char>; 8]; 8],
     machine_is_white: bool,

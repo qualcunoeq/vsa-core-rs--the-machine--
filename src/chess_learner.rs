@@ -2005,6 +2005,26 @@ pub fn train_curriculum(
         eprintln!("\n━━━ STAGE {}: {}% Stockfish d1 / {}% random ━━━",
             current, sf_pct, 100 - sf_pct);
 
+        // At 100% SF, retrain k-NN entries on pure Stockfish positions first
+        // so the evaluation function knows what winning looks like against Stockfish.
+        if sf_pct == 100 {
+            let retrain_games = 500;
+            eprintln!("  ── Retraining k-NN on {} pure Stockfish games ──", retrain_games);
+            // Clear all cluster entries (keep centroids, delete outcome labels)
+            for cluster in &mut brain.dejavu_clusters {
+                cluster.entries.clear();
+            }
+            // Clear opponent responses so Path 3 is disabled during retraining
+            qa.opponent_responses.clear();
+            // Run games to populate entries with Stockfish-calibrated labels
+            let mut retrain_records: Vec<GameRecord> = Vec::with_capacity(retrain_games);
+            train_stage2(brain, &mut qa, retrain_games, Some(sf_pct),
+                Some(&mut retrain_records), search_depth);
+            eprintln!("  ── k-NN retrained ({} clusters, {} total entries now from Stockfish data) ──",
+                brain.dejavu_clusters.len(),
+                brain.dejavu_clusters.iter().map(|c| c.entries.len()).sum::<usize>());
+        }
+
         // Run games at this rung, collecting game records for re-mining
         let mut game_records: Vec<GameRecord> = Vec::with_capacity(games_per_level);
         let (wins, losses, draws, wr) = train_stage2(

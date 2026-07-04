@@ -29,7 +29,7 @@ use the_machine::actuator::{
     self, ActionRequest, ActionType, ActionResult,
     JumpBoxActuator,
 };
-use the_machine::diagnostic::seed_diagnostic_knowledge;
+use the_machine::diagnostic::{seed_diagnostic_knowledge, seed_error_classifier, CanonicalSvo};
 use the_machine::qa::QaEngine;
 use the_machine::text_encoder::{ingest_text, store_knowledge_triple};
 use the_machine::VSABrain;
@@ -78,6 +78,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ── Seed diagnostic knowledge ──────────────────────────────────────
     eprintln!("[1/4] Seeding diagnostic knowledge...");
     seed_diagnostic_knowledge(&mut qa, &mut brain);
+
+    // Seed error classifier with known error types and their textual triggers.
+    let classifier = seed_error_classifier();
+    eprintln!("  → Error classifier: {} types, {} total triggers, VSA assoc: {}",
+        classifier.type_count(),
+        classifier.type_count() * 5, // approximate
+        "built"
+    );
 
     // Inject target info
     store_knowledge_triple(&mut brain, "target_vm", "ip", &target_ip, 1.0, "experiment_config");
@@ -135,26 +143,50 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             eprintln!("    {}", line);
         }
 
-        // Ingest the error log as text
+        // Ingest the error log as text (into the VSA brain for centroid formation)
         ingest_text(&mut brain, error_text, "error_log");
 
-        // Store the error pattern as a fact for forward chaining
-        if error_text.to_lowercase().contains("bind()") && error_text.to_lowercase().contains("failed") {
-            qa.store_fact("error", "contains", "bind_failed", "error_log");
-            eprintln!("  → Error pattern: bind_failed");
-        }
-        if error_text.to_lowercase().contains("failed") {
-            qa.store_fact("error", "contains", "failed", "error_log");
-            eprintln!("  → Error pattern: failed (startup problem)");
-        }
+        // Use the ErrorClassifier to map error text → canonical error type.
+        // This bridges the gap between textually-different-but-semantically-equivalent
+        // error messages (e.g., "bind() to 0.0.0.0:80 failed" and "Address already in use").
+        //
+        // The SVO encoding uses XOR (rot13(s) ⊕ rot26(v) ⊕ rot39(o)), which means
+        // matching S+V components CANCEL OUT.  Rules MUST use the exact canonical
+        // triple from the classifier.  The classifier does this mapping.
+        let (svo, match_level) = classifier.classify_deep(error_text);
 
-        // Forward chain: error patterns → possible causes
-        let n = qa.forward_chain(0.75);
-        eprintln!("  → Forward chain: {} facts derived from error", n);
+        match (svo, match_level) {
+            (Some(canonical), level) => {
+                let (subj, verb, obj) = canonical.clone();
+                qa.store_fact(&subj, &verb, &obj, "error_log");
+                eprintln!("  → Error type: {} (matched via {})", obj, level);
 
-        // Check: did we identify a cause?
-        let (has_cause, _) = qa.verify_fact("another_process", "is_listening_on", "same_port");
-        eprintln!("  → Port conflict hypothesis: {}", if has_cause { "FORMED ✓" } else { "NOT FORMED" });
+                // Forward chain: error type → possible causes
+                let n = qa.forward_chain(0.75);
+                eprintln!("  → Forward chain: {} facts derived from error", n);
+
+                // Check: did we identify a cause?
+                let (has_cause, _) = qa.verify_fact("another_process", "is_listening_on", "same_port");
+                eprintln!("  → Port conflict hypothesis: {}", if has_cause { "FORMED ✓" } else { "NOT FORMED" });
+
+                // Also check for other causes
+                let (has_refused, _) = qa.verify_fact("target_service", "is_not", "listening");
+                if has_refused {
+                    eprintln!("  → Connection refused hypothesis: FORMED");
+                }
+                let (has_missing, _) = qa.verify_fact("required_file", "is", "missing");
+                if has_missing {
+                    eprintln!("  → Missing file hypothesis: FORMED");
+                }
+            }
+            (None, "none") => {
+                eprintln!("  → Unknown error pattern: no classifier match");
+                // No fallback: the XOR-based SVO encoding cannot do partial matching
+                // (same S+V different O → energy ≈ 0.5).  Honest failure is better
+                // than a false positive.
+            }
+            _ => unreachable!(),
+        }
     } else {
         eprintln!("  ✗ Failed to read error log: {:?}", log_content.error);
     }

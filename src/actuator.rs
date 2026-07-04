@@ -57,6 +57,9 @@ pub enum ActionType {
     /// Execute an arbitrary command on the jump-box.
     /// Params: command (string)
     ExecuteCommand,
+    /// Fetch documentation for a term (man pages, --help, error codes).
+    /// Params: query (string) — the term to look up
+    FetchDocumentation,
 }
 
 /// An action specification sent from The Machine to the jump-box.
@@ -129,6 +132,12 @@ impl ActionRequest {
     pub fn exec(target: &str, command: &str) -> Self {
         Self::new(ActionType::ExecuteCommand, target)
             .with_param("command", command)
+    }
+
+    /// Helper: build a FetchDocumentation request.
+    pub fn fetch_docs(query: &str) -> Self {
+        Self::new(ActionType::FetchDocumentation, "localhost")
+            .with_param("query", query)
     }
 }
 

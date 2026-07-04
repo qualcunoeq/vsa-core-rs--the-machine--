@@ -23,11 +23,13 @@
 // Stage 1 of the autonomy build.  No execution — just judgment.
 // ────────────────────────────────────────────────────────────────────────────
 
+use crate::actuator::{ActionRequest, ActionResult, ActionType, JumpBoxActuator};
 use crate::diagnostic::{
     classify_structural, parse_error_structure,
     query_diagnostic_category, CanonicalSvo, ErrorClassifier,
 };
 use crate::qa::{PlanStep, QaEngine};
+use crate::text_encoder;
 use crate::Hypervector;
 use crate::VSABrain;
 
@@ -322,6 +324,124 @@ pub fn generate_hypotheses(brain: &VSABrain, problem: &str) -> Vec<Hypothesis> {
     hypotheses
 }
 
+// ─── Stage 2: Hypothesis Testing and Knowledge Acquisition ────────────────
+
+/// Extract key technical terms from a problem description for documentation lookup.
+pub fn extract_key_terms(problem: &str) -> Vec<String> {
+    let mut terms = Vec::new();
+    let lower = problem.to_lowercase();
+
+    // Extract single words that look like technical terms (≥4 chars, no common words)
+    let stop_words = ["the", "this", "that", "from", "with", "was", "were", "has",
+        "have", "been", "will", "would", "could", "should", "after", "before",
+        "error", "failed", "failure", "unknown", "invalid"];
+
+    for word in lower.split_whitespace() {
+        let clean: String = word.chars().filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_').collect();
+        if clean.len() >= 4 && !stop_words.contains(&clean.as_str()) {
+            terms.push(clean);
+        }
+    }
+
+    // Also extract compound terms (e.g., "SSL", "KMS", "EADDRINUSE")
+    for word in lower.split_whitespace() {
+        let clean: String = word.chars().filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_').collect();
+        if clean.len() >= 2 && clean.chars().all(|c| c.is_uppercase() || c.is_ascii_digit()) {
+            // Already added as technical term; add if not present
+            if !terms.contains(&clean) && clean.len() > 2 {
+                terms.push(clean);
+            }
+        }
+    }
+
+    terms.dedup();
+    terms.truncate(5); // max 5 lookups
+    terms
+}
+
+/// When Uncertain: test the best hypothesis by gathering more information.
+///
+/// Selects the highest-confidence hypothesis and executes a test action
+/// to gather observations.  Returns any SVO observations from the test.
+pub async fn resolve_uncertain(
+    hypotheses: Vec<Hypothesis>,
+    actuator: &JumpBoxActuator,
+    brain: &mut VSABrain,
+    target_ip: &str,
+) -> Vec<(String, String, String)> {
+    let best = hypotheses.into_iter()
+        .max_by(|a, b| a.confidence.partial_cmp(&b.confidence).unwrap())
+        .unwrap();
+
+    // Generate a test action based on the hypothesis category
+    let test_request = match best.category.as_str() {
+        "port_conflict" | "network_timeout" => {
+            // Check what's on port 80 (common conflict point)
+            ActionRequest::new(ActionType::ExecuteCommand, target_ip)
+                .with_param("command", "ss -tlnp 2>/dev/null || netstat -tlnp 2>/dev/null")
+                .with_timeout(10)
+        }
+        "missing_file" => {
+            ActionRequest::new(ActionType::ExecuteCommand, target_ip)
+                .with_param("command", "ls -la /etc/nginx/ 2>/dev/null; ls -la /var/log/ 2>/dev/null")
+                .with_timeout(10)
+        }
+        "permission_denied" => {
+            ActionRequest::new(ActionType::ExecuteCommand, target_ip)
+                .with_param("command", "id; ls -la /var/run/ 2>/dev/null; cat /proc/self/status 2>/dev/null | grep Cap")
+                .with_timeout(10)
+        }
+        "disk_full" => {
+            ActionRequest::new(ActionType::ExecuteCommand, target_ip)
+                .with_param("command", "df -h 2>/dev/null; du -sh /var/log/ 2>/dev/null | head -5")
+                .with_timeout(10)
+        }
+        _ => {
+            // Generic: read system status
+            ActionRequest::new(ActionType::ExecuteCommand, target_ip)
+                .with_param("command", "uptime; free -h; ss -tlnp 2>/dev/null | head -20")
+                .with_timeout(10)
+        }
+    };
+
+    let result = actuator.send_request(&test_request).await;
+
+    if result.success && !result.raw_output.trim().is_empty() {
+        // Ingest the test results into the brain
+        text_encoder::ingest_text(brain, &result.raw_output, "hypothesis_test");
+    }
+
+    result.observations
+}
+
+/// When Stuck: acquire knowledge by fetching documentation.
+///
+/// Extracts key terms from the problem, looks up documentation for each,
+/// and ingests the results into the brain.  Returns any observations.
+pub async fn resolve_stuck(
+    problem: &str,
+    actuator: &JumpBoxActuator,
+    brain: &mut VSABrain,
+) -> Vec<(String, String, String)> {
+    let terms = extract_key_terms(problem);
+    let mut all_observations = Vec::new();
+
+    for term in &terms {
+        let docs_request = ActionRequest::fetch_docs(term);
+        let result = actuator.send_request(&docs_request).await;
+
+        if result.success && !result.raw_output.trim().is_empty() {
+            // Ingest the documentation into the brain
+            text_encoder::ingest_text(brain, &result.raw_output, &format!("acquired_knowledge_{}", term));
+
+            // Extract any SVO observations
+            all_observations.extend(result.observations);
+        }
+    }
+
+    all_observations
+}
+
 // ─── Tests ────────────────────────────────────────────────────────────────
 
 #[cfg(test)]
@@ -406,6 +526,29 @@ mod tests {
         let display = format!("{}", state);
         assert!(display.contains("Stuck"), "Display should contain state name");
         assert!(display.contains("test"), "Display should contain problem");
+    }
+
+    #[test]
+    fn test_extract_key_terms() {
+        let terms = extract_key_terms("bind() to 0.0.0.0:80 failed (98: Unknown error)");
+        eprintln!("  Extracted terms: {:?}", terms);
+        assert!(!terms.is_empty(), "Should extract technical terms");
+        // Should extract meaningful terms like "bind", "failed", "Unknown"
+        let has_bind = terms.iter().any(|t| t.contains("bind"));
+        let has_failed = terms.iter().any(|t| t.contains("failed"));
+        assert!(has_bind || has_failed, "Should extract action-related terms");
+    }
+
+    #[test]
+    fn test_extract_key_terms_empty_for_short_words() {
+        let terms = extract_key_terms("a b c");
+        assert!(terms.is_empty(), "Short words should not be extracted");
+    }
+
+    #[test]
+    fn test_extract_key_terms_max_5() {
+        let terms = extract_key_terms("alpha beta gamma delta epsilon zeta eta theta");
+        assert!(terms.len() <= 5, "Should extract at most 5 terms");
     }
 
     #[test]

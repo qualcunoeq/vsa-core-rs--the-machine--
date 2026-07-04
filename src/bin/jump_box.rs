@@ -403,6 +403,7 @@ async fn dispatch_action(request: &ActionRequest) -> Result<ActionResult, String
         ActionType::CheckProcess => handle_check_process(request).await,
         ActionType::ListenPort => handle_listen_port(request).await,
         ActionType::ExecuteCommand => handle_execute_command(request).await,
+        ActionType::FetchDocumentation => handle_fetch_documentation(request).await,
     }
 }
 
@@ -537,6 +538,56 @@ async fn handle_execute_command(request: &ActionRequest) -> Result<ActionResult,
 
     log::warn!("RAW COMMAND EXECUTION: {}", command);
     run_command("sh", &["-c", command]).await
+}
+
+/// Fetch documentation for a term.  Tries man pages first, then --help.
+async fn handle_fetch_documentation(request: &ActionRequest) -> Result<ActionResult, String> {
+    let query = request.params.get("query")
+        .ok_or_else(|| "missing param: query".to_string())?;
+
+    // Sanitize: remove dangerous characters
+    let safe_query: String = query.chars()
+        .filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_' || *c == '.')
+        .collect();
+
+    if safe_query.is_empty() || safe_query.len() > 100 {
+        return Err("invalid query".to_string());
+    }
+
+    log::info!("FETCH DOCS: {}", safe_query);
+
+    // Try man page first
+    let man_result = run_command("man", &["-P", "cat", &safe_query]).await;
+    if let Ok(result) = man_result {
+        if result.success && !result.raw_output.trim().is_empty() {
+            return Ok(result);
+        }
+    }
+
+    // Fall back to --help
+    let help_result = run_command(&safe_query, &["--help"]).await;
+    if let Ok(result) = help_result {
+        if result.success && !result.raw_output.trim().is_empty() {
+            return Ok(result);
+        }
+    }
+
+    // Fall back to error code lookup via `perror` or `errno`
+    let perror_result = run_command("perror", &[&safe_query]).await;
+    if let Ok(result) = perror_result {
+        if result.success && !result.raw_output.trim().is_empty() {
+            return Ok(result);
+        }
+    }
+
+    // If nothing worked, return what we have (even if empty)
+    Ok(ActionResult {
+        success: false,
+        raw_output: format!("no documentation found for '{}'\n", safe_query),
+        error: Some("not found".to_string()),
+        observations: vec![],
+        duration_ms: 0,
+    })
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

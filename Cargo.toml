@@ -11,6 +11,10 @@ path = "src/main.rs"
 name = "bond_pipeline"
 path = "src/bin/bond_pipeline.rs"
 
+[[bin]]
+name = "jump_box"
+path = "src/bin/jump_box.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
@@ -27,6 +31,8 @@ syn = { version = "2.0", features = ["full", "visit", "extra-traits"] }
 quote = "1.0"
 rusqlite = { version = "0.31", features = ["bundled"] }
 libloading = "0.8"
+log = "0.4"
+env_logger = "0.10"
 
 [features]
 default = []

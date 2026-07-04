@@ -92,7 +92,39 @@ const ACTIONS: &[(&str, &str, &str)] = &[
     ("validate",         "validate",         "process"),
     ("validat",          "validate",         "process"),  // catches "validation", "validating"
     ("initializ",        "initialize",       "process"),
+    ("flush",            "flush",            "process"),
+    ("compact",          "compact",          "process"),
+    ("rebuild",          "rebuild",          "process"),
+    ("index",            "index",            "process"),
 ];
+
+/// Check if text contains a keyword at a word boundary.
+/// This avoids false positives like "port" in "report".
+fn contains_word(text: &str, keyword: &str) -> bool {
+    if keyword.is_empty() {
+        return false;
+    }
+    // Check each occurrence of the keyword
+    let lower = text.to_lowercase();
+    let kw_lower = keyword.to_lowercase();
+    let mut start = 0;
+    while let Some(pos) = lower[start..].find(&kw_lower) {
+        let abs_pos = start + pos;
+        // Check character before (must be start of string or non-alphanumeric)
+        let before_ok = abs_pos == 0 || !lower.as_bytes()[abs_pos - 1].is_ascii_alphanumeric();
+        // Check character after (must be end of string or non-alphanumeric)
+        let after_pos = abs_pos + kw_lower.len();
+        let after_ok = after_pos >= lower.len() || !lower.as_bytes()[after_pos].is_ascii_alphanumeric();
+        if before_ok && after_ok {
+            return true;
+        }
+        start = abs_pos + 1;
+        if start >= lower.len() {
+            break;
+        }
+    }
+    false
+}
 
 /// Keywords for extracting the target resource type.
 const RESOURCES: &[(&str, &str, &str)] = &[
@@ -109,6 +141,12 @@ const RESOURCES: &[(&str, &str, &str)] = &[
     ("directory",        "filesystem_dir",   "file_system"),
     ("disk",             "storage_disk",     "storage"),
     ("volume",           "storage_volume",   "storage"),
+    ("storage",          "storage_disk",     "storage"),
+    ("database",         "storage_db",       "storage"),
+    ("filesystem",       "storage_fs",       "storage"),
+    ("store",            "store_resource",   "storage"),
+    ("bucket",           "storage_bucket",   "storage"),
+    ("cache",            "cache_resource",   "storage"),
     ("certificate",      "credential_cert",  "credential"),
     ("key",              "credential_key",   "credential"),
     ("token",            "credential_token", "credential"),
@@ -131,6 +169,9 @@ const ERROR_CLASSES: &[(&str, &str, &str)] = &[
     ("enoent",           "not_found",        "resource_missing"),
     ("expired",          "expired",          "credential_invalid"),
     ("invalid",          "invalid",          "credential_invalid"),
+    ("stalled",          "stalled",          "unavailable"),
+    ("hung",             "hung",             "unavailable"),
+    ("corrupt",          "corrupted",        "unavailable"),
 ];
 
 /// Result of parsing an error text into structural components.
@@ -177,9 +218,10 @@ pub fn parse_error_structure(error_text: &str) -> ErrorStructure {
         }
     }
 
-    // Scan for resource keywords
+    // Scan for resource keywords (uses word-boundary matching to avoid
+    // false positives like "port" in "report" or "transport").
     for (keyword, concrete, abstract_) in RESOURCES {
-        if lower.contains(keyword) && keyword.len() > resource_kw_len {
+        if contains_word(&lower, keyword) && keyword.len() > resource_kw_len {
             resource_kw_len = keyword.len();
             resource_concrete = Some(concrete);
             resource_abstract = Some(abstract_);

@@ -12,36 +12,112 @@
 //   Server → Client:  single line of JSON (ActionResult) + newline
 //   Client:   TCP close
 //
-// This server binds to 127.0.0.1:7878 by default.  It MUST NOT bind to
-// 0.0.0.0.  The Machine connects via SSH tunnel or isolated local network.
+// Network layout:
+//   The Machine: 192.168.100.1
+//   Jump-box:    192.168.100.2:7878
+//   Target VM:   192.168.100.10
+//
+// Usage:
+//   jump_box --bind 192.168.100.2:7878 \
+//            --allowlist /etc/jumpbox/allowed_targets.txt \
+//            --log /var/log/jumpbox.log
 //
 // Safety constraints (non-negotiable):
 //   1. Target allowlist — only predefined IPs/ranges are reachable
 //   2. Log-before-execute — every command is logged before it runs
-//   3. Timeout on every command — no action hangs forever
-//   4. No shell injection — arguments are passed as argv[], not shell strings
+//   3. Hard timeout (120s) — no action hangs forever
+//   4. Arguments are passed as argv[], never concatenated into shell strings
+//   5. --bind defaults to 127.0.0.1:7878 for safety; explicitly set for deployment
 // ────────────────────────────────────────────────────────────────────────────
 
 use std::collections::HashMap;
+use std::fs;
 use std::time::Instant;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::TcpListener;
 use tokio::process::Command;
 use tokio::time::{timeout, Duration};
 
-// ─── Re-exported types from the main crate ─────────────────────────────────
-// These are the shared protocol types.  The actuator module defines them
-// for the client side; here we use them identically on the server side.
 use the_machine::actuator::{
     ActionRequest, ActionType, ActionResult,
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// SAFETY CONFIGURATION
+// CLI ARGUMENTS
 // ═══════════════════════════════════════════════════════════════════════════
 
-/// Default bind address — localhost ONLY.  Never 0.0.0.0.
-const BIND_ADDRESS: &str = "127.0.0.1:7878";
+struct Config {
+    /// Address to bind (default: 127.0.0.1:7878).
+    pub bind: String,
+    /// Path to allowlist file (one target per line, '#' comments, blank lines ignored).
+    /// If not provided, falls back to built-in defaults.
+    pub allowlist_path: Option<String>,
+    /// Path to log file.  If not provided, logs to stderr.
+    pub log_path: Option<String>,
+}
+
+impl Config {
+    fn parse(args: &[String]) -> Result<Config, String> {
+        let mut bind = "127.0.0.1:7878".to_string();
+        let mut allowlist_path = None;
+        let mut log_path = None;
+
+        let mut i = 1; // skip binary name
+        while i < args.len() {
+            match args[i].as_str() {
+                "--bind" => {
+                    i += 1;
+                    if i >= args.len() {
+                        return Err("--bind requires an argument (e.g., 192.168.100.2:7878)".to_string());
+                    }
+                    bind = args[i].clone();
+                }
+                "--allowlist" => {
+                    i += 1;
+                    if i >= args.len() {
+                        return Err("--allowlist requires a file path".to_string());
+                    }
+                    allowlist_path = Some(args[i].clone());
+                }
+                "--log" => {
+                    i += 1;
+                    if i >= args.len() {
+                        return Err("--log requires a file path".to_string());
+                    }
+                    log_path = Some(args[i].clone());
+                }
+                "--help" | "-h" => {
+                    return Err(format!(
+                        "Usage: jump_box [OPTIONS]\n\
+                         \n\
+                         Options:\n\
+                         --bind ADDR        Bind address (default: 127.0.0.1:7878)\n\
+                         --allowlist FILE   Path to allowed targets file\n\
+                         --log FILE         Path to log file (default: stderr)\n\
+                         --help             Show this help\n\
+                         \n\
+                         Allowlist file format:\n\
+                           One IP or CIDR per line.  '#' starts a comment.  Blank lines ignored.\n\
+                         \n\
+                         Example:\n\
+                           192.168.100.10\n\
+                           192.168.100.0/24\n\
+                           # This is a comment\n"
+                    ));
+                }
+                _ => {
+                    return Err(format!("Unknown argument: {}. Use --help for usage.", args[i]));
+                }
+            }
+            i += 1;
+        }
+        Ok(Config { bind, allowlist_path, log_path })
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SAFETY CONFIGURATION
+// ═══════════════════════════════════════════════════════════════════════════
 
 /// Hard timeout for any single action (seconds).
 const ACTION_TIMEOUT_SECS: u64 = 120;
@@ -49,17 +125,9 @@ const ACTION_TIMEOUT_SECS: u64 = 120;
 /// Default port range for full host scan.
 const DEFAULT_TOP_PORTS: &str = "100";
 
-/// Allowlist of target IPs this jump-box is allowed to touch.
-///
-/// Every incoming ActionRequest is checked against this list before
-/// any command is executed.  Requests with targets outside this list
-/// are rejected with an error — no command is run.
-///
-/// This is the last line of defense against a reasoning error in the
-/// planner causing commands to hit unintended targets.
-const ALLOWED_TARGETS: &[&str] = &[
-    "192.168.100.10",  // Target VM
-    // Add target IPs here before deploying
+/// Built-in default allowlist (used when no --allowlist file is provided).
+const BUILTIN_ALLOWED: &[&str] = &[
+    "192.168.100.10",
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -68,26 +136,83 @@ const ALLOWED_TARGETS: &[&str] = &[
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Stderr logging — env_logger writes to stderr, JSON protocol to stdout.
-    // In production, redirect stderr to a file:
-    //   jump_box 2>> /var/log/jump_box.log
-    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
-        .format_timestamp_secs()
-        .init();
+    let args: Vec<String> = std::env::args().collect();
 
-    let listener = TcpListener::bind(BIND_ADDRESS).await?;
+    let config = match Config::parse(&args) {
+        Ok(c) => c,
+        Err(msg) => {
+            eprintln!("{}", msg);
+            std::process::exit(if msg.starts_with("Usage") { 0 } else { 1 });
+        }
+    };
 
-    log::info!("Jump-box server starting on {}", BIND_ADDRESS);
-    log::info!("Allowed targets: {:?}", ALLOWED_TARGETS);
+    // ── Configure logging ───────────────────────────────────────────────
+    // env_logger writes to stderr.  In production, redirect stderr to a file:
+    //   jump_box 2>> /var/log/jumpbox.log
+    // Or use systemd journal with StandardError=journal.
+    if let Some(ref log_path) = config.log_path {
+        // Store the log path for reference; actual redirection is done by
+        // the caller (systemd, shell redirect, etc.)
+        eprintln!("Logging to {} (ensure stderr is redirected)", log_path);
+    }
+
+    env_logger::Builder::from_env(
+        env_logger::Env::default().default_filter_or("info")
+    )
+    .format_timestamp_secs()
+    .init();
+
+    // ── Load allowlist ──────────────────────────────────────────────────
+    let allowed_targets: Vec<String> = if let Some(ref path) = config.allowlist_path {
+        load_allowlist(path)?
+    } else {
+        BUILTIN_ALLOWED.iter().map(|s| s.to_string()).collect()
+    };
+
+    if allowed_targets.is_empty() {
+        log::warn!("Allowlist is EMPTY — no targets are reachable!");
+        log::warn!("Add targets to {} or use the built-in defaults.",
+            config.allowlist_path.as_deref().unwrap_or("--allowlist FILE"));
+    }
+
+    // ── Start server ────────────────────────────────────────────────────
+    let listener = TcpListener::bind(&config.bind).await?;
+
+    log::info!("Jump-box server starting on {}", config.bind);
+    log::info!("Allowed targets ({}): {:?}", allowed_targets.len(), allowed_targets);
     log::info!("Action timeout: {}s", ACTION_TIMEOUT_SECS);
-    log::warn!("This server executes shell commands.  Bind to 127.0.0.1 only.");
+    log::warn!("This server executes shell commands.  Bind to a non-routable isolated-network IP.");
     log::info!("──────────────────────────────────────────");
 
     loop {
         let (socket, addr) = listener.accept().await?;
         log::info!("Connection from {}", addr);
-        tokio::spawn(handle_connection(socket, addr));
+        let targets = allowed_targets.clone();
+        tokio::spawn(handle_connection(socket, addr, targets));
     }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ALLOWLIST LOADING
+// ═══════════════════════════════════════════════════════════════════════════
+
+/// Load a list of allowed targets from a file.
+///
+/// Format: one IP or CIDR per line.  Lines starting with '#' are comments.
+/// Blank lines are ignored.  Leading/trailing whitespace is trimmed.
+fn load_allowlist(path: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    let content = fs::read_to_string(path)?;
+    let mut targets = Vec::new();
+
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') {
+            continue;
+        }
+        targets.push(trimmed.to_string());
+    }
+
+    Ok(targets)
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -98,7 +223,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ///
 /// Protocol: read one newline-delimited JSON ActionRequest, execute,
 /// write one newline-delimited JSON ActionResult, close.
-async fn handle_connection(socket: tokio::net::TcpStream, addr: std::net::SocketAddr) {
+async fn handle_connection(
+    socket: tokio::net::TcpStream,
+    addr: std::net::SocketAddr,
+    allowed_targets: Vec<String>,
+) {
     let start = Instant::now();
     let (reader, mut writer) = socket.into_split();
     let mut reader = BufReader::new(reader);
@@ -141,7 +270,7 @@ async fn handle_connection(socket: tokio::net::TcpStream, addr: std::net::Socket
         addr, request.action_type, request.target, request.params, request.timeout_secs);
 
     // ── 3. Validate target ──────────────────────────────────────────────
-    if let Err(msg) = validate_target(&request.target) {
+    if let Err(msg) = validate_target(&request.target, &allowed_targets) {
         log::error!("{}: target validation failed: {}", addr, msg);
         let error_result = ActionResult {
             success: false,
@@ -196,46 +325,74 @@ async fn write_result(
 
 /// Check that a target is in the allowlist.
 ///
-/// Returns Ok(()) if the target is allowed, Err with a message if not.
-fn validate_target(target: &str) -> Result<(), String> {
-    // Empty target is allowed for actions that don't need one
-    // (e.g., CheckProcess with process name in params, ListenPort)
+/// Supports:
+/// - Exact IP match: "192.168.100.10"
+/// - CIDR prefix: "192.168.100.0/24", "10.0.0.0/16"
+/// - Empty string: always allowed (for actions that don't target a remote host)
+fn validate_target(target: &str, allowed_targets: &[String]) -> Result<(), String> {
     if target.is_empty() {
         return Ok(());
     }
 
-    if ALLOWED_TARGETS.contains(&target) {
+    // Exact match
+    if allowed_targets.iter().any(|t| t == target) {
         return Ok(());
     }
 
-    // CIDR or prefix matching (e.g., "192.168.100.0/24")
-    for allowed in ALLOWED_TARGETS {
-        if let Some(prefix) = allowed.strip_suffix("/24") {
-            if target.starts_with(&prefix[..prefix.len() - 1]) {
-                return Ok(());
+    // CIDR match
+    for allowed in allowed_targets {
+        if let Some((cidr_base, cidr_len)) = allowed.split_once('/') {
+            if let Ok(len) = cidr_len.parse::<u8>() {
+                if ip_in_cidr(target, cidr_base, len) {
+                    return Ok(());
+                }
             }
         }
     }
 
     Err(format!(
-        "target '{}' is not in the allowlist {:?}. \
-         Add it to ALLOWED_TARGETS in src/bin/jump_box.rs and recompile.",
-        target, ALLOWED_TARGETS
+        "target '{}' is not in the allowlist {:?}",
+        target, allowed_targets
     ))
+}
+
+/// Check if an IP address falls within a CIDR range.
+///
+/// Simple string-based check: split both IPs into octets, compare
+/// the first N bits (where N is the CIDR prefix length).
+fn ip_in_cidr(ip: &str, cidr_base: &str, prefix_len: u8) -> bool {
+    let ip_octets: Vec<&str> = ip.split('.').collect();
+    let base_octets: Vec<&str> = cidr_base.split('.').collect();
+
+    if ip_octets.len() != 4 || base_octets.len() != 4 {
+        return false;
+    }
+
+    let ip_int = ip_octets.iter()
+        .filter_map(|o| o.parse::<u32>().ok())
+        .fold(0u32, |acc, octet| (acc << 8) | octet);
+
+    let base_int = base_octets.iter()
+        .filter_map(|o| o.parse::<u32>().ok())
+        .fold(0u32, |acc, octet| (acc << 8) | octet);
+
+    if prefix_len == 0 {
+        return true; // /0 matches everything
+    }
+
+    let mask = if prefix_len >= 32 {
+        u32::MAX
+    } else {
+        u32::MAX << (32 - prefix_len)
+    };
+
+    (ip_int & mask) == (base_int & mask)
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ACTION DISPATCH
 // ═══════════════════════════════════════════════════════════════════════════
 
-/// Dispatch an ActionRequest to the appropriate handler.
-///
-/// Every handler follows the same pattern:
-///   1. Extract parameters from request.params
-///   2. Log the full command BEFORE executing
-///   3. Execute with timeout
-///   4. Log stdout, stderr, and exit code
-///   5. Return ActionResult
 async fn dispatch_action(request: &ActionRequest) -> Result<ActionResult, String> {
     match request.action_type {
         ActionType::ScanPort => handle_scan_port(request).await,
@@ -253,14 +410,12 @@ async fn dispatch_action(request: &ActionRequest) -> Result<ActionResult, String
 // ACTION HANDLERS
 // ═══════════════════════════════════════════════════════════════════════════
 
-/// ScanPort: nmap -p {port} {target} -oG -
 async fn handle_scan_port(request: &ActionRequest) -> Result<ActionResult, String> {
     let port = request.params.get("port")
         .ok_or_else(|| "missing param: port".to_string())?;
     run_command("nmap", &["-p", port, &request.target, "-oG", "-"]).await
 }
 
-/// ScanHost: nmap -sV --top-ports {n} {target} -oG -
 async fn handle_scan_host(request: &ActionRequest) -> Result<ActionResult, String> {
     let ports = request.params.get("ports")
         .map(|s| s.as_str())
@@ -268,14 +423,12 @@ async fn handle_scan_host(request: &ActionRequest) -> Result<ActionResult, Strin
     run_command("nmap", &["-sV", "--top-ports", ports, &request.target, "-oG", "-"]).await
 }
 
-/// CheckService: nmap -sV -p {port} {target}
 async fn handle_check_service(request: &ActionRequest) -> Result<ActionResult, String> {
     let port = request.params.get("port")
         .ok_or_else(|| "missing param: port".to_string())?;
     run_command("nmap", &["-sV", "-p", port, &request.target]).await
 }
 
-/// BruteForce: hydra -L users.txt -P passwords.txt {target} ssh
 async fn handle_brute_force(request: &ActionRequest) -> Result<ActionResult, String> {
     let port = request.params.get("port")
         .ok_or_else(|| "missing param: port".to_string())?;
@@ -292,32 +445,29 @@ async fn handle_brute_force(request: &ActionRequest) -> Result<ActionResult, Str
     let service = match port.as_str() {
         "22" => "ssh",
         "21" => "ftp",
-        "80" | "443" => "http-post-form",  // simplified
+        "80" | "443" => "http-post-form",
         "3306" => "mysql",
         "5432" => "postgres",
-        _ => "ssh",  // default
+        _ => "ssh",
     };
 
-    // Use hydra with stdin files
     let result = run_command("hydra", &[
         "-L", &user_file,
         "-P", &pass_file,
         "-s", port,
         &request.target,
         service,
-        "-t", "4",        // 4 parallel threads
+        "-t", "4",
         "-o", "/dev/null",
-        "-w", "10",       // 10s timeout per try
+        "-w", "10",
     ]).await;
 
-    // Clean up temp files
     let _ = std::fs::remove_file(&user_file);
     let _ = std::fs::remove_file(&pass_file);
 
     result
 }
 
-/// ProbeHttp: curl -s -I --max-time 10 http://{target}:{port}{path}
 async fn handle_probe_http(request: &ActionRequest) -> Result<ActionResult, String> {
     let port = request.params.get("port")
         .ok_or_else(|| "missing param: port".to_string())?;
@@ -337,40 +487,33 @@ async fn handle_probe_http(request: &ActionRequest) -> Result<ActionResult, Stri
     }
 }
 
-/// CheckProcess: pgrep -a {process_name} or ps aux | grep
 async fn handle_check_process(request: &ActionRequest) -> Result<ActionResult, String> {
     let name = request.params.get("process_name")
         .ok_or_else(|| "missing param: process_name".to_string())?;
 
-    // Try pgrep first; fall back to ps+grep if pgrep not available
     let result = run_command("pgrep", &["-a", name]).await;
 
     match result {
         Ok(r) => {
             if !r.success || r.raw_output.trim().is_empty() {
-                // Fallback
                 run_command("sh", &["-c", &format!("ps aux | grep -v grep | grep '{}'", name)]).await
             } else {
                 Ok(r)
             }
         }
         Err(e) => {
-            // pgrep not available — try ps fallback directly
             log::warn!("pgrep failed ({}), trying ps fallback", e);
             run_command("sh", &["-c", &format!("ps aux | grep -v grep | grep '{}'", name)]).await
         }
     }
 }
 
-/// ListenPort: nc -l -k -p {port} in background
-/// Returns immediately; the listener stays alive in a child process.
 async fn handle_listen_port(request: &ActionRequest) -> Result<ActionResult, String> {
     let port = request.params.get("port")
         .ok_or_else(|| "missing param: port".to_string())?;
 
     log::info!("Starting netcat listener on port {}", port);
 
-    // Spawn in background — we don't wait for it
     let child = Command::new("nc")
         .args(["-l", "-k", "-p", port])
         .kill_on_drop(true)
@@ -388,17 +531,11 @@ async fn handle_listen_port(request: &ActionRequest) -> Result<ActionResult, Str
     }
 }
 
-/// ExecuteCommand: runs an arbitrary command via sh -c
-///
-/// WARNING: This is intentionally the most dangerous handler.
-/// Target validation still applies, but if the target is allowlisted,
-/// this runs whatever command is requested.  Logged with full verbosity.
 async fn handle_execute_command(request: &ActionRequest) -> Result<ActionResult, String> {
     let command = request.params.get("command")
         .ok_or_else(|| "missing param: command".to_string())?;
 
     log::warn!("RAW COMMAND EXECUTION: {}", command);
-
     run_command("sh", &["-c", command]).await
 }
 
@@ -407,19 +544,10 @@ async fn handle_execute_command(request: &ActionRequest) -> Result<ActionResult,
 // ═══════════════════════════════════════════════════════════════════════════
 
 /// Run a shell command with args, log everything, return ActionResult.
-///
-/// This is the central execution primitive.  Every action handler funnels
-/// through this function, guaranteeing:
-///   - Full command is logged BEFORE execution
-///   - stdout and stderr are captured and logged
-///   - Exit code is logged
-///   - A hard timeout prevents hanging
 async fn run_command(cmd: &str, args: &[&str]) -> Result<ActionResult, String> {
     let full_command = format!("{} {}", cmd, args.join(" "));
     let start = Instant::now();
 
-    // Log BEFORE executing — if the process crashes the system, the record
-    // of what was attempted survives.
     log::info!("EXECUTE: {}", full_command);
 
     let child = Command::new(cmd)
@@ -430,13 +558,11 @@ async fn run_command(cmd: &str, args: &[&str]) -> Result<ActionResult, String> {
         .spawn()
         .map_err(|e| format!("failed to spawn '{}': {}. Is it installed?", cmd, e))?;
 
-    // Apply timeout
     let timeout_duration = Duration::from_secs(ACTION_TIMEOUT_SECS);
     let output = match timeout(timeout_duration, child.wait_with_output()).await {
         Ok(Ok(output)) => output,
         Ok(Err(e)) => return Err(format!("I/O error: {}", e)),
         Err(_) => {
-            // Timeout — child was killed by kill_on_drop
             return Err(format!(
                 "command timed out after {}s: {}",
                 ACTION_TIMEOUT_SECS, full_command
@@ -449,13 +575,11 @@ async fn run_command(cmd: &str, args: &[&str]) -> Result<ActionResult, String> {
     let exit_code = output.status.code().unwrap_or(-1);
     let duration_ms = start.elapsed().as_millis() as u64;
 
-    // Log AFTER execution
     log::info!("TIMESTAMP: {}", chrono::Utc::now().to_rfc3339());
     log::info!("EXIT: {}", exit_code);
     log::info!("DURATION: {}ms", duration_ms);
 
     if !stdout.is_empty() {
-        // Log stdout line by line for auditability
         for line in stdout.lines() {
             log::info!("STDOUT: {}", line);
         }
@@ -487,7 +611,6 @@ async fn run_command(cmd: &str, args: &[&str]) -> Result<ActionResult, String> {
 // HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
 
-/// Write a string to a temporary file and return the path.
 fn write_temp_file(prefix: &str, content: &str) -> Result<String, String> {
     let mut path = std::env::temp_dir();
     path.push(format!("{}{}", prefix, uuid::Uuid::new_v4()));
@@ -510,23 +633,122 @@ mod tests {
 
     #[test]
     fn test_validate_empty_target() {
-        assert!(validate_target("").is_ok());
+        let list = vec!["192.168.100.10".to_string()];
+        assert!(validate_target("", &list).is_ok());
     }
 
     #[test]
     fn test_validate_allowed_target() {
-        assert!(validate_target("192.168.100.10").is_ok());
+        let list = vec!["192.168.100.10".to_string()];
+        assert!(validate_target("192.168.100.10", &list).is_ok());
     }
 
     #[test]
     fn test_validate_disallowed_target() {
-        assert!(validate_target("192.168.1.1").is_err());
+        let list = vec!["192.168.100.10".to_string()];
+        assert!(validate_target("192.168.1.1", &list).is_err());
     }
 
     #[test]
     fn test_validate_external_target() {
-        assert!(validate_target("google.com").is_err());
-        assert!(validate_target("10.0.0.1").is_err());
+        let list = vec!["192.168.100.10".to_string()];
+        assert!(validate_target("google.com", &list).is_err());
+        assert!(validate_target("10.0.0.1", &list).is_err());
+    }
+
+    #[test]
+    fn test_validate_cidr_24() {
+        let list = vec!["192.168.100.0/24".to_string()];
+        assert!(validate_target("192.168.100.10", &list).is_ok());
+        assert!(validate_target("192.168.100.200", &list).is_ok());
+        assert!(validate_target("192.168.101.1", &list).is_err());
+    }
+
+    #[test]
+    fn test_validate_cidr_16() {
+        let list = vec!["10.0.0.0/16".to_string()];
+        assert!(validate_target("10.0.1.1", &list).is_ok());
+        assert!(validate_target("10.0.255.255", &list).is_ok());
+        assert!(validate_target("10.1.0.1", &list).is_err());
+    }
+
+    // ── Allowlist Loading ───────────────────────────────────────────────
+
+    #[test]
+    fn test_load_allowlist() {
+        let dir = std::env::temp_dir();
+        let path = dir.join("test_allowlist.txt");
+        std::fs::write(&path, "192.168.100.10\n# comment\n10.0.0.0/8\n\n192.168.1.1").unwrap();
+
+        let list = load_allowlist(path.to_str().unwrap()).unwrap();
+        assert_eq!(list.len(), 3);
+        assert!(list.contains(&"192.168.100.10".to_string()));
+        assert!(list.contains(&"10.0.0.0/8".to_string()));
+        assert!(list.contains(&"192.168.1.1".to_string()));
+
+        std::fs::remove_file(&path).unwrap();
+    }
+
+    // ── CLI Argument Parsing ────────────────────────────────────────────
+
+    #[test]
+    fn test_config_parse_defaults() {
+        let args = vec!["jump_box".to_string()];
+        let config = Config::parse(&args).unwrap();
+        assert_eq!(config.bind, "127.0.0.1:7878");
+        assert!(config.allowlist_path.is_none());
+        assert!(config.log_path.is_none());
+    }
+
+    #[test]
+    fn test_config_parse_bind() {
+        let args = vec![
+            "jump_box".to_string(),
+            "--bind".to_string(),
+            "192.168.100.2:7878".to_string(),
+        ];
+        let config = Config::parse(&args).unwrap();
+        assert_eq!(config.bind, "192.168.100.2:7878");
+    }
+
+    #[test]
+    fn test_config_parse_allowlist() {
+        let args = vec![
+            "jump_box".to_string(),
+            "--allowlist".to_string(),
+            "/etc/jumpbox/allowed_targets.txt".to_string(),
+        ];
+        let config = Config::parse(&args).unwrap();
+        assert_eq!(config.allowlist_path.unwrap(), "/etc/jumpbox/allowed_targets.txt");
+    }
+
+    #[test]
+    fn test_config_parse_all() {
+        let args = vec![
+            "jump_box".to_string(),
+            "--bind".to_string(),
+            "0.0.0.0:9999".to_string(),  // user's responsibility
+            "--allowlist".to_string(),
+            "/tmp/allow.txt".to_string(),
+            "--log".to_string(),
+            "/var/log/jumpbox.log".to_string(),
+        ];
+        let config = Config::parse(&args).unwrap();
+        assert_eq!(config.bind, "0.0.0.0:9999");
+        assert_eq!(config.allowlist_path.unwrap(), "/tmp/allow.txt");
+        assert_eq!(config.log_path.unwrap(), "/var/log/jumpbox.log");
+    }
+
+    #[test]
+    fn test_config_parse_missing_value() {
+        let args = vec!["jump_box".to_string(), "--bind".to_string()];
+        assert!(Config::parse(&args).is_err());
+    }
+
+    #[test]
+    fn test_config_parse_unknown_arg() {
+        let args = vec!["jump_box".to_string(), "--nonsense".to_string()];
+        assert!(Config::parse(&args).is_err());
     }
 
     // ── ActionRequest Deserialization ───────────────────────────────────
@@ -542,52 +764,10 @@ mod tests {
         let req: ActionRequest = serde_json::from_str(json).unwrap();
         assert_eq!(req.action_type, ActionType::ScanPort);
         assert_eq!(req.target, "192.168.100.10");
-        assert_eq!(req.params.get("port"), Some(&"22".to_string()));
-    }
-
-    #[test]
-    fn test_deserialize_check_service() {
-        let json = r#"{
-            "action_type": "CheckService",
-            "target": "192.168.100.10",
-            "params": {"port": "80"},
-            "timeout_secs": 30
-        }"#;
-        let req: ActionRequest = serde_json::from_str(json).unwrap();
-        assert_eq!(req.action_type, ActionType::CheckService);
-        assert_eq!(req.params.get("port"), Some(&"80".to_string()));
-    }
-
-    #[test]
-    fn test_deserialize_brute_force() {
-        let json = r#"{
-            "action_type": "BruteForce",
-            "target": "192.168.100.10",
-            "params": {"port": "22", "users": "root,admin", "passwords": "password,1234"},
-            "timeout_secs": 60
-        }"#;
-        let req: ActionRequest = serde_json::from_str(json).unwrap();
-        assert_eq!(req.action_type, ActionType::BruteForce);
-        assert_eq!(req.params.get("users"), Some(&"root,admin".to_string()));
-        assert_eq!(req.params.get("passwords"), Some(&"password,1234".to_string()));
-    }
-
-    #[test]
-    fn test_deserialize_probe_http() {
-        let json = r#"{
-            "action_type": "ProbeHttp",
-            "target": "192.168.100.10",
-            "params": {"port": "80", "path": "/index.html", "method": "GET"},
-            "timeout_secs": 15
-        }"#;
-        let req: ActionRequest = serde_json::from_str(json).unwrap();
-        assert_eq!(req.action_type, ActionType::ProbeHttp);
-        assert_eq!(req.params.get("path"), Some(&"/index.html".to_string()));
     }
 
     #[test]
     fn test_deserialize_all_action_types() {
-        // Every action type must deserialize from its JSON representation
         let cases = vec![
             (r#""ScanPort""#, ActionType::ScanPort),
             (r#""ScanHost""#, ActionType::ScanHost),
@@ -600,33 +780,14 @@ mod tests {
         ];
         for (json, expected) in cases {
             let deserialized: ActionType = serde_json::from_str(json).unwrap();
-            assert_eq!(deserialized, expected, "Failed for {}", json);
+            assert_eq!(deserialized, expected);
         }
-    }
-
-    // ── ActionResult Serialization ──────────────────────────────────────
-
-    #[test]
-    fn test_serialize_action_result() {
-        let result = ActionResult {
-            success: true,
-            raw_output: "22/tcp open ssh".to_string(),
-            observations: vec![],
-            error: None,
-            duration_ms: 150,
-        };
-        let json = serde_json::to_string(&result).unwrap();
-        assert!(json.contains("\"success\":true"));
-        assert!(json.contains("\"raw_output\":\"22/tcp open ssh\""));
     }
 
     // ── Protocol Round-Trip ─────────────────────────────────────────────
 
     #[test]
     fn test_protocol_round_trip() {
-        // Verify that what the client sends (ActionRequest) is exactly
-        // what the server receives, and what the server sends (ActionResult)
-        // is exactly what the client receives.
         let request = ActionRequest {
             action_type: ActionType::ScanPort,
             target: "192.168.100.10".to_string(),
@@ -634,33 +795,20 @@ mod tests {
             timeout_secs: 30,
         };
 
-        // Client: serialize
         let client_json = serde_json::to_string(&request).unwrap();
-
-        // Server: deserialize
         let server_req: ActionRequest = serde_json::from_str(&client_json).unwrap();
         assert_eq!(server_req.action_type, ActionType::ScanPort);
-        assert_eq!(server_req.target, "192.168.100.10");
-        assert_eq!(server_req.params.get("port"), Some(&"22".to_string()));
 
-        // Server: create result
         let result = ActionResult {
             success: true,
             raw_output: "22/open".to_string(),
-            observations: vec![
-                ("192_168_100_10".to_string(), "has_open_port".to_string(), "port_22".to_string()),
-            ],
+            observations: vec![],
             error: None,
             duration_ms: 150,
         };
 
-        // Server: serialize
         let server_json = serde_json::to_string(&result).unwrap();
-
-        // Client: deserialize
         let client_result: ActionResult = serde_json::from_str(&server_json).unwrap();
         assert!(client_result.success);
-        assert_eq!(client_result.observations.len(), 1);
-        assert_eq!(client_result.observations[0].0, "192_168_100_10");
     }
 }

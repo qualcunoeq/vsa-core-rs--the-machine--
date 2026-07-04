@@ -20,6 +20,7 @@ pub mod compression;
 pub mod defense;
 pub mod drift;
 pub mod drives;
+pub mod experiment;
 pub mod forager;
 pub mod hierarchy;
 pub mod hnsw;

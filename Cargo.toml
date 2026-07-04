@@ -15,6 +15,10 @@ path = "src/bin/bond_pipeline.rs"
 name = "jump_box"
 path = "src/bin/jump_box.rs"
 
+[[bin]]
+name = "attack_experiment"
+path = "src/bin/attack_experiment.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

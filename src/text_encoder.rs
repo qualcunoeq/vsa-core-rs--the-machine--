@@ -91,9 +91,16 @@ pub fn store_knowledge_triple(
 
     let label = format!("{:.4}", confidence.clamp(0.0, 1.0));
 
+    // Domain is derived from the source parameter.
+    // Standard domains: "text_knowledge", "system_state", "threat_model", "chess_stage1"
+    let domain = if source.contains("system") { "system_state" }
+        else if source.contains("threat") { "threat_model" }
+        else if source.contains("chess") { "chess" }
+        else { "text_knowledge" };
+
     let mut meta = HashMap::new();
     meta.insert("source".to_string(), source.to_string());
-    meta.insert("type".to_string(), "text_knowledge".to_string());
+    meta.insert("domain".to_string(), domain.to_string());
     meta.insert("subject".to_string(), subject.to_string());
     meta.insert("verb".to_string(), verb.to_string());
     meta.insert("object".to_string(), object.to_string());

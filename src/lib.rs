@@ -31,6 +31,7 @@ pub mod predictive;
 pub mod qa;
 pub mod reason;
 pub mod resonator;
+pub mod retrieval;
 pub mod sensory;
 pub mod simulator;
 pub mod sleep;

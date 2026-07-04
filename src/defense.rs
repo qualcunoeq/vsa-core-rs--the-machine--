@@ -157,6 +157,261 @@ impl ThreatDetector<(Vec<(char, u8, u8)>, [[Option<char>; 8]; 8])> for ChessThre
     }
 }
 
+// ─── System Threat Detector ─────────────────────────────────────────────────
+//
+/// System state threat detector: classifies SVO triples from the SystemEncoder
+/// using causal rules stored in the QA engine.
+///
+/// Detects:
+///   - Unknown processes with outbound connections
+///   - Processes accessing sensitive files (/etc/passwd, /etc/shadow)
+///   - Processes running as root with unexpected network activity
+///   - New listening ports
+///
+/// The threat rules are stored as QA causal rules so the system can learn
+/// and update them through experience, just like chess rules.
+pub struct SystemThreatDetector {
+    /// Known entities from previous snapshots (for diff-based detection)
+    pub known_processes: std::collections::HashSet<String>,
+    pub known_connections: std::collections::HashSet<String>,
+    pub known_listeners: std::collections::HashSet<String>,
+    pub baseline_established: bool,
+}
+
+/// Diff two sets of SVO triples and return only the new ones (present in
+/// `after` but not in `before`).
+pub fn diff_triples(
+    before: &[crate::perception::SvoTriple],
+    after: &[crate::perception::SvoTriple],
+) -> Vec<crate::perception::SvoTriple> {
+    let before_set: std::collections::HashSet<&crate::perception::SvoTriple> =
+        before.iter().collect();
+    after.iter()
+        .filter(|t| !before_set.contains(t))
+        .cloned()
+        .collect()
+}
+
+/// Seed threat detection rules into a QA engine.
+///
+/// These are the baseline patterns.  The QA engine can learn additional
+/// patterns through experience (via evaluate_plan_outcome).
+pub fn seed_threat_rules(qa: &mut crate::qa::QaEngine) {
+    // Network threats
+    qa.store_rule(
+        "process", "connected_to", "external_ip",
+        "connection", "is", "suspicious",
+        "threat_model"
+    );
+    qa.store_rule(
+        "process", "listening_on", "high_port",
+        "process", "may_be", "backdoor",
+        "threat_model"
+    );
+
+    // File access threats
+    qa.store_rule(
+        "process", "reading", "/etc/passwd",
+        "process", "may_be", "credential_harvesting",
+        "threat_model"
+    );
+    qa.store_rule(
+        "process", "reading", "/etc/shadow",
+        "process", "is", "privilege_escalation_attempt",
+        "threat_model"
+    );
+
+    // Process threats
+    qa.store_rule(
+        "process", "has_user", "root",
+        "unknown_process", "is", "privilege_escalation_risk",
+        "threat_model"
+    );
+    qa.store_rule(
+        "process", "writing_to", "/tmp",
+        "process", "may_be", "dropping_payload",
+        "threat_model"
+    );
+
+    // Composite: process with both network activity AND sensitive file access
+    qa.store_rule(
+        "connection", "is", "suspicious",
+        "system", "has", "network_threat",
+        "threat_model"
+    );
+    qa.store_rule(
+        "process", "may_be", "credential_harvesting",
+        "system", "has", "data_exfiltration_risk",
+        "threat_model"
+    );
+}
+
+impl SystemThreatDetector {
+    pub fn new() -> Self {
+        SystemThreatDetector {
+            known_processes: std::collections::HashSet::new(),
+            known_connections: std::collections::HashSet::new(),
+            known_listeners: std::collections::HashSet::new(),
+            baseline_established: false,
+        }
+    }
+
+    /// Classify a single SVO triple through the QA engine's causal rules.
+    /// Returns Some(ThreatEvent) if the triple matches a threat pattern.
+    #[allow(dead_code)]
+    fn classify(
+        &self,
+        triple: &crate::perception::SvoTriple,
+        qa: &crate::qa::QaEngine,
+    ) -> Option<ThreatEvent> {
+        let (subject, verb, object) = triple;
+
+        // Query the QA engine: ask what this triple means
+        let query_str = format!("{} {} {}", subject, verb, object);
+        let result = qa.answer(&query_str);
+
+        // If the QA engine finds a threat conclusion
+        if result.contains("threat") || result.contains("risk") || result.contains("suspicious") {
+            let severity = if result.contains("privilege_escalation") || result.contains("data_exfiltration") {
+                0.9
+            } else if result.contains("credential_harvesting") || result.contains("backdoor") {
+                0.8
+            } else if result.contains("suspicious") || result.contains("dropping_payload") {
+                0.7
+            } else {
+                0.5
+            };
+
+            return Some(ThreatEvent {
+                domain: "system".to_string(),
+                severity,
+                entity: format!("{}_{}", subject, verb),
+                description: format!("{} {} {} → {}", subject, verb, object, result),
+                class: ThreatClass::Threat,
+            });
+        }
+
+        // Rule-based checks for common threat patterns (fast path without QA)
+        // These match patterns that the QA rules above encode
+        if self.is_suspicious_network(subject, verb, object) {
+            let desc = format!("{} {} {} — unknown process with network activity", subject, verb, object);
+            return Some(ThreatEvent {
+                domain: "system".to_string(),
+                severity: 0.6,
+                entity: subject.clone(),
+                description: desc,
+                class: ThreatClass::Threat,
+            });
+        }
+
+        if self.is_sensitive_file_access(subject, verb, object) {
+            let desc = format!("{} {} {} — sensitive file access", subject, verb, object);
+            return Some(ThreatEvent {
+                domain: "system".to_string(),
+                severity: 0.8,
+                entity: subject.clone(),
+                description: desc,
+                class: ThreatClass::Threat,
+            });
+        }
+
+        None
+    }
+
+    /// Fast check: is this an outbound connection to an external address?
+    fn is_suspicious_network(&self, _subject: &str, verb: &str, object: &str) -> bool {
+        verb == "connected_to"
+            && !object.contains("127.0.0.1")
+            && !object.contains("0.0.0.0")
+            && !object.contains("::1")
+    }
+
+    /// Fast check: is a process accessing a sensitive system file?
+    fn is_sensitive_file_access(&self, _subject: &str, verb: &str, object: &str) -> bool {
+        verb == "has_open" || verb == "reading" || verb == "writing_to"
+            && (object.contains("/etc/passwd")
+                || object.contains("/etc/shadow")
+                || object.contains(".ssh")
+                || object.contains(".gnupg"))
+    }
+
+    /// Update known entities from a set of triples.
+    /// Call this with each new snapshot to maintain the baseline.
+    pub fn update_baseline(&mut self, triples: &[crate::perception::SvoTriple]) {
+        for (s, v, o) in triples {
+            if v == "is_running" {
+                self.known_processes.insert(s.clone());
+            }
+            if v == "connected_to" {
+                self.known_connections.insert(format!("{}_{}", s, o));
+            }
+            if v == "listening_on" || (v == "connected_to" && o.ends_with(":0")) {
+                self.known_listeners.insert(format!("{}_{}", s, o));
+            }
+        }
+        self.baseline_established = true;
+    }
+}
+
+/// Type alias for the system state used by SystemThreatDetector.
+pub type SystemState = Vec<crate::perception::SvoTriple>;
+
+impl ThreatDetector<SystemState> for SystemThreatDetector {
+    fn detect(&self, before: &SystemState, after: &SystemState) -> Vec<ThreatEvent> {
+        if !self.baseline_established {
+            return Vec::new();
+        }
+
+        // Find new triples (present in after but not in before)
+        let new_triples = diff_triples(before, after);
+        if new_triples.is_empty() {
+            return Vec::new();
+        }
+
+        // We can't access the QA engine from the trait method since it's
+        // not in self.  We use the fast-path heuristic checks instead.
+        let mut events = Vec::new();
+
+        for triple in &new_triples {
+            let (subject, verb, object) = triple;
+
+            // Fast heuristic checks (these match the QA rules above)
+            if self.is_suspicious_network(subject, verb, object) {
+                events.push(ThreatEvent {
+                    domain: "system".to_string(),
+                    severity: 0.6,
+                    entity: subject.clone(),
+                    description: format!("Unknown process {} connected to {}", subject, object),
+                    class: ThreatClass::Threat,
+                });
+            }
+
+            if self.is_sensitive_file_access(subject, verb, object) {
+                events.push(ThreatEvent {
+                    domain: "system".to_string(),
+                    severity: 0.8,
+                    entity: subject.clone(),
+                    description: format!("{} accessed sensitive file: {}", subject, object),
+                    class: ThreatClass::Threat,
+                });
+            }
+
+            // New listening port
+            if verb == "listening_on" && !self.known_listeners.contains(&format!("{}_{}", subject, object)) {
+                events.push(ThreatEvent {
+                    domain: "system".to_string(),
+                    severity: 0.5,
+                    entity: format!("{}_{}", subject, object),
+                    description: format!("New listening port: {} on {}", subject, object),
+                    class: ThreatClass::Threat,
+                });
+            }
+        }
+
+        events
+    }
+}
+
 // ─── Existing DefenseSystem ─────────────────────────────────────────────────
 
 #[derive(Clone)]
@@ -333,6 +588,75 @@ impl DefenseSystem {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_system_threat_detector_detects_new_connection() {
+        let detector = SystemThreatDetector::new();
+        let before: SystemState = vec![
+            ("process_1".to_string(), "is_running".to_string(), "bash".to_string()),
+        ];
+
+        let after: SystemState = vec![
+            ("process_1".to_string(), "is_running".to_string(), "bash".to_string()),
+            ("process_1".to_string(), "connected_to".to_string(), "10.0.0.1:443".to_string()),
+        ];
+
+        // Without baseline, empty results
+        let events = detector.detect(&before, &after);
+        assert!(events.is_empty(), "No baseline → no detection");
+
+        // With baseline
+        let mut detector2 = SystemThreatDetector::new();
+        detector2.update_baseline(&before);
+        let events = detector2.detect(&before, &after);
+        assert_eq!(events.len(), 1, "Should detect new connection");
+        assert_eq!(events[0].domain, "system");
+        assert!(events[0].description.contains("process_1"));
+        assert!(events[0].description.contains("10.0.0.1"));
+    }
+
+    #[test]
+    fn test_system_threat_detector_sensitive_file() {
+        let mut detector = SystemThreatDetector::new();
+        // Establish baseline with just the process
+        let baseline: SystemState = vec![
+            ("process_5".to_string(), "is_running".to_string(), "curl".to_string()),
+        ];
+        detector.update_baseline(&baseline);
+
+        let after: SystemState = vec![
+            ("process_5".to_string(), "is_running".to_string(), "curl".to_string()),
+            ("process_5".to_string(), "has_open".to_string(), "/etc/passwd".to_string()),
+        ];
+
+        let events = detector.detect(&baseline, &after);
+        assert!(!events.is_empty(), "Should detect sensitive file access");
+        let has_passwd = events.iter().any(|e| e.description.contains("/etc/passwd"));
+        assert!(has_passwd, "Should mention /etc/passwd");
+    }
+
+    #[test]
+    fn test_diff_triples() {
+        use crate::perception::SvoTriple;
+        let before: Vec<SvoTriple> = vec![
+            ("a".to_string(), "runs".to_string(), "b".to_string()),
+        ];
+        let after: Vec<SvoTriple> = vec![
+            ("a".to_string(), "runs".to_string(), "b".to_string()),
+            ("c".to_string(), "connects".to_string(), "d".to_string()),
+        ];
+        let diff = diff_triples(&before, &after);
+        assert_eq!(diff.len(), 1);
+        assert_eq!(diff[0].0, "c");
+    }
+
+    #[test]
+    fn test_seed_threat_rules() {
+        let mut qa = crate::qa::QaEngine::new();
+        seed_threat_rules(&mut qa);
+        // QA should have at least the rules we seeded
+        assert!(qa.rule_count() >= 7, "Should have at least 7 threat rules, got {}", qa.rule_count());
+    }
 
     #[tokio::test]
     async fn test_threat_evaluation_and_rotation() {

@@ -661,12 +661,24 @@ pub fn goal_achieved(qa: &QaEngine, subject: &str, verb: &str, object: &str) -> 
 ///
 /// The planner encodes targets and parameters in the action object string,
 /// separated by colons.  We parse them here.
-pub fn plan_step_to_request(step: &PlanStep) -> ActionRequest {
-    let (action_subj, action_verb, action_obj) = &step.action;
+/// Build an ActionRequest from a PlanStep, substituting the real target IP.
+///
+/// The planner uses placeholder action objects like "target:port" or
+/// "target:port:users:passwords".  This function substitutes the actual
+/// target IP for the "target" placeholder.
+pub fn plan_step_to_request(step: &PlanStep, target_ip: &str) -> ActionRequest {
+    let (_action_subj, action_verb, action_obj) = &step.action;
 
     // Parse the action object: "target:param1:param2" or just "target"
     let parts: Vec<&str> = action_obj.split(':').collect();
-    let target = if parts.is_empty() { "" } else { parts[0] };
+    let raw_target = if parts.is_empty() { "" } else { parts[0] };
+
+    // Substitute the placeholder "target" with the actual IP
+    let target = if raw_target == "target" || raw_target.is_empty() {
+        target_ip
+    } else {
+        raw_target
+    };
 
     match action_verb.as_str() {
         "scan_port" => {
@@ -679,11 +691,19 @@ pub fn plan_step_to_request(step: &PlanStep) -> ActionRequest {
         }
         "brute_force" => {
             let port: u16 = parts.get(1).and_then(|p| p.parse().ok()).unwrap_or(22);
-            let users = parts.get(2).map(|u| u.split(',')).unwrap_or("root".split(','));
-            let passes = parts.get(3).map(|p| p.split(',')).unwrap_or("password".split(','));
-            let users_v: Vec<&str> = users.collect();
-            let passes_v: Vec<&str> = passes.collect();
-            ActionRequest::brute_force(target, port, &users_v, &passes_v)
+            let users_str = parts.get(2).unwrap_or(&"root,admin");
+            let passes_str = parts.get(3).unwrap_or(&"password123,toor");
+            let users: Vec<&str> = if *users_str == "users" {
+                vec!["root", "admin"]
+            } else {
+                users_str.split(',').collect()
+            };
+            let passes: Vec<&str> = if *passes_str == "passwords" {
+                vec!["password123", "toor"]
+            } else {
+                passes_str.split(',').collect()
+            };
+            ActionRequest::brute_force(target, port, &users, &passes)
         }
         "probe_http" => {
             let port: u16 = parts.get(1).and_then(|p| p.parse().ok()).unwrap_or(80);
@@ -753,6 +773,26 @@ pub struct AttackCycleResult {
 /// # Returns
 /// A vector of `AttackCycleResult` for every cycle, providing a complete
 /// trace of what the system reasoned and what happened.
+/// Determine the target IP from the brain's stored knowledge.
+///
+/// Looks for the first entry with metadata (subject="target_vm", verb="ip")
+/// and returns its object value.  Falls back to "192.168.100.10" if not found.
+fn get_target_ip(brain: &VSABrain) -> String {
+    for cluster in &brain.dejavu_clusters {
+        for entry in &cluster.entries {
+            let subj = entry.metadata.get("subject").map(|s| s.as_str());
+            let verb = entry.metadata.get("verb").map(|s| s.as_str());
+            let obj  = entry.metadata.get("object");
+            if subj == Some("target_vm") && verb == Some("ip") {
+                if let Some(ip) = obj {
+                    return ip.clone();
+                }
+            }
+        }
+    }
+    "192.168.100.10".to_string()
+}
+
 pub async fn run_attack_loop(
     brain: &mut VSABrain,
     qa: &mut QaEngine,
@@ -761,6 +801,7 @@ pub async fn run_attack_loop(
     max_steps: usize,
 ) -> Vec<AttackCycleResult> {
     let (goal_s, goal_v, goal_o) = goal;
+    let target_ip = get_target_ip(brain);
     let mut results: Vec<AttackCycleResult> = Vec::new();
 
     eprintln!("\n═══════════════════════════════════════════════");
@@ -801,7 +842,7 @@ pub async fn run_attack_loop(
                 .any(|e| e.metadata.get("verb").map_or(false, |v| v == "has_open_port"));
 
             if !has_port_info {
-                let scan_request = ActionRequest::new(ActionType::ScanHost, "192.168.1.100");
+                let scan_request = ActionRequest::new(ActionType::ScanHost, &target_ip);
                 let scan_result = actuator.send_request(&scan_request).await;
 
                 if scan_result.success {
@@ -844,7 +885,7 @@ pub async fn run_attack_loop(
                     .collect();
 
                 for port_num in &known_ports {
-                    let svc_request = ActionRequest::check_service("192.168.1.100", *port_num);
+                    let svc_request = ActionRequest::check_service(&target_ip, *port_num);
                     let svc_result = actuator.send_request(&svc_request).await;
                     if svc_result.success {
                         let n = ingest_observations(brain, &svc_result.observations);
@@ -877,21 +918,55 @@ pub async fn run_attack_loop(
             step.achieves.0, step.achieves.1, step.achieves.2);
         eprintln!("  Confidence: {:.4}", step.confidence);
 
-        let request = plan_step_to_request(step);
+        let request = plan_step_to_request(step, &target_ip);
         let result = actuator.send_request(&request).await;
 
-        // ── 5. Ingest observations ───────────────────────────────────────
+        // ── 5. Check if this step directly achieves the goal ─────────────
+        let step_achieves_goal = result.success
+            && step.achieves.0 == goal_s
+            && step.achieves.1 == goal_v
+            && step.achieves.2 == goal_o;
+
+        // ── 6. Ingest observations ──────────────────────────────────────
         if result.success {
             let n = ingest_observations(brain, &result.observations);
             eprintln!("  ✓ Action succeeded: {} observations ingested", n);
 
+            // Store the achievement as a fact so the QA engine knows it happened
+            qa.store_fact(
+                &step.achieves.0, &step.achieves.1, &step.achieves.2,
+                "actuator",
+            );
+
+            // Also store as knowledge triple for brain-based queries
+            store_knowledge_triple(
+                brain,
+                &step.achieves.0, &step.achieves.1, &step.achieves.2,
+                1.0, "actuator",
+            );
+
             // Also learn: store a rule that this action achieves its goal
-            // This lets the planner learn from experience
             qa.store_action(
                 &step.action.0, &step.action.1, &step.action.2,
                 &step.achieves.0, &step.achieves.1, &step.achieves.2,
                 "learned",
             );
+
+            // Check if goal was directly achieved
+            if step_achieves_goal {
+                eprintln!("  ✓ Goal achieved after step {}!", step_num + 1);
+                qa.store_fact(goal_s, goal_v, goal_o, "actuator");
+                results.push(AttackCycleResult {
+                    step_num,
+                    plan_step: Some(step.clone()),
+                    action_request: Some(request),
+                    action_result: result,
+                    observations_ingested: n,
+                    goal_achieved: true,
+                    log: "Goal achieved!".to_string(),
+                });
+                break;
+            }
 
             results.push(AttackCycleResult {
                 step_num,
@@ -906,7 +981,6 @@ pub async fn run_attack_loop(
         } else {
             eprintln!("  ✗ Action failed: {:?}", result.error);
 
-            // Record the failure
             qa.evaluate_plan_outcome(0.0, &[step.clone()]);
 
             results.push(AttackCycleResult {
@@ -921,9 +995,9 @@ pub async fn run_attack_loop(
             });
         }
 
-        // ── 6. Check goal again ─────────────────────────────────────────
+        // ── 7. Check QA-based goal achievement ──────────────────────────
         if goal_achieved(qa, goal_s, goal_v, goal_o) {
-            eprintln!("  ✓ Goal achieved after step {}!", step_num + 1);
+            eprintln!("  ✓ Goal confirmed in QA engine after step {}!", step_num + 1);
             if let Some(last) = results.last_mut() {
                 last.goal_achieved = true;
             }
@@ -1089,7 +1163,7 @@ mod tests {
             depth: 0,
             rule_chain: vec![],
         };
-        let req = plan_step_to_request(&step);
+        let req = plan_step_to_request(&step, "192.168.100.10");
         assert_eq!(req.action_type, ActionType::ScanPort);
         assert_eq!(req.target, "192.168.1.100");
         assert_eq!(req.params.get("port"), Some(&"22".to_string()));
@@ -1104,10 +1178,24 @@ mod tests {
             depth: 0,
             rule_chain: vec![],
         };
-        let req = plan_step_to_request(&step);
+        let req = plan_step_to_request(&step, "10.0.0.1");
         assert_eq!(req.action_type, ActionType::CheckService);
         assert_eq!(req.target, "10.0.0.1");
         assert_eq!(req.params.get("port"), Some(&"80".to_string()));
+    }
+
+    #[test]
+    fn test_plan_step_to_request_substitutes_target_placeholder() {
+        let step = PlanStep {
+            action: ("machine".to_string(), "scan_port".to_string(), "target:22".to_string()),
+            achieves: ("machine".to_string(), "knows".to_string(), "port_state".to_string()),
+            confidence: 1.0,
+            depth: 0,
+            rule_chain: vec![],
+        };
+        let req = plan_step_to_request(&step, "192.168.100.10");
+        assert_eq!(req.target, "192.168.100.10");
+        assert_eq!(req.params.get("port"), Some(&"22".to_string()));
     }
 
     // ── Ingest Observations ──────────────────────────────────────────────

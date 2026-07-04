@@ -18,6 +18,7 @@ pub mod chess_learner;
 pub mod code_bridge;
 pub mod compression;
 pub mod defense;
+pub mod diagnostic;
 pub mod drift;
 pub mod drives;
 pub mod experiment;

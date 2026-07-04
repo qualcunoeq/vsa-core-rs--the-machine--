@@ -42,6 +42,7 @@ pub mod sleep;
 pub mod socket;
 pub mod temporal;
 pub mod system_encoder;
+pub mod meta_reasoning;
 pub mod text_encoder;
 pub mod workspace;
 

@@ -23,6 +23,7 @@ pub mod forager;
 pub mod hierarchy;
 pub mod hnsw;
 pub mod ledger;
+pub mod monitor;
 pub mod narrative;
 pub mod nlp;
 pub mod perception;

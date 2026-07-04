@@ -238,6 +238,8 @@ fn find_best_structural_category(
         // port_conflict: process accessing network_service, and it's unavailable
         (&[("process", "accesses", "network_service"),
            ("network_service", "has_state", "unavailable")], "port_conflict"),
+        // network_service unavailable alone (no action parsed) → connection_refused
+        (&[("network_service", "has_state", "unavailable")], "connection_refused"),
         // network_timeout: process accessing network_service, unavailable
         (&[("process", "accesses", "network_service"),
            ("network_service", "has_state", "unavailable")], "network_timeout"),

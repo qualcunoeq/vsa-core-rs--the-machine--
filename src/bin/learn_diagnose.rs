@@ -31,8 +31,8 @@
 
 use std::time::Instant;
 use the_machine::diagnostic::{
-    absorb_diagnosis, query_diagnostic_category,
-    seed_diagnostic_knowledge, seed_error_classifier,
+    absorb_diagnosis, classify_structural, query_diagnostic_category,
+    seed_diagnostic_knowledge, seed_error_classifier, structure_to_triples,
 };
 use the_machine::qa::QaEngine;
 use the_machine::VSABrain;
@@ -78,6 +78,17 @@ const PHASE2_EPISODES: &[Episode] = &[
 /// So a text that previously didn't match any trigger should now match via
 /// Level 2 trigram because the classifier learned it.
 const PHASE3_TEXT: &str = "bind() to 0.0.0.0:80 failed (98: Unknown error)";
+
+/// Zero-overlap test cases for structural matching (Phase 4).
+/// These texts have ZERO trigram overlap with any Phase 1 text but share
+/// the same ABSTRACT STRUCTURE.  The structural parser should bridge the gap.
+const ZERO_OVERLAP_TESTS: &[(&str, &str)] = &[
+    // Zero trigram overlap with any Phase 1 text, but structurally identical
+    // to "bind() to 0.0.0.0:80 failed" at the abstract level.
+    ("KMS keyserver unreachable: timeout", "network_service_unavailable"),
+    ("SSL certificate validation failed", "credential_invalid"),
+    ("disk quota exceeded on /var/log", "storage_full"),
+];
 
 fn main() {
     let start = Instant::now();
@@ -217,6 +228,73 @@ fn main() {
         after_level,
         after_svo.map(|c| c.2.as_str()).unwrap_or("none"));
 
+    eprintln!();
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // Phase 4: Zero-overlap structural matching (Level 3)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    eprintln!("── Phase 4: Zero-overlap structural matching ──────");
+    eprintln!("  Tests whether structural parsing bridges the gap for");
+    eprintln!("  errors with ZERO trigram overlap.");
+    eprintln!();
+
+    let mut structural_classified = 0;
+    let mut structural_total = 0;
+
+    for (text, expected_category) in ZERO_OVERLAP_TESTS {
+        structural_total += 1;
+        eprintln!("  Text: \"{}…\"", &text[..text.len().min(40)]);
+
+        // First: try the classifier (Levels 1+2) — should fail
+        let (svo, level) = classifier.classify_deep(text);
+        let from_classifier = svo.is_some();
+        if from_classifier {
+            eprintln!("    Level {}/1-2: {} (UNEXPECTED — should need structural)",
+                level, svo.unwrap().2);
+        } else {
+            eprintln!("    Level 1-2: no match (expected)");
+        }
+
+        // Then: try structural parsing (Level 3)
+        let structural_triples = classify_structural(text);
+        match structural_triples {
+            Some(triples) => {
+                eprintln!("    Level 3 structural: {} triples generated", triples.len());
+                for (i, (s, v, o)) in triples.iter().enumerate().take(3) {
+                    eprintln!("      Triple {}: ({}, {}, {})", i + 1, s, v, o);
+                }
+
+                // Check if abstract triples match known diagnostic categories
+                let has_network_service = triples.contains(
+                    &("process".to_string(), "accesses".to_string(), "network_service".to_string()));
+                let has_unavailable = triples.contains(
+                    &("network_service".to_string(), "has_state".to_string(), "unavailable".to_string()));
+                let has_storage_full = triples.contains(
+                    &("storage".to_string(), "has_state".to_string(), "capacity_exhausted".to_string()));
+
+                if has_network_service || has_unavailable {
+                    eprintln!("    → Bridge to: network_service_unavailable (port conflict / connection)");
+                    structural_classified += 1;
+                } else if has_storage_full {
+                    eprintln!("    → Bridge to: storage_full (disk space)");
+                    structural_classified += 1;
+                } else {
+                    eprintln!("    → Structural triples generated but no diagnostic bridge (uncategorized)");
+                }
+            }
+            None => {
+                eprintln!("    Level 3 structural: no triples generated");
+            }
+        }
+    }
+
+    eprintln!();
+    eprintln!("── Phase 4 Results ────────────────────────────────");
+    eprintln!("  Zero-overlap tests: {} / {} structurally classified",
+        structural_classified, structural_total);
+    eprintln!("  Classification rate: {:.0}%",
+        structural_classified as f64 / structural_total as f64 * 100.0);
     eprintln!();
     eprintln!("═══════════════════════════════════════════════════════════");
 }

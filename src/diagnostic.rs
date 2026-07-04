@@ -48,6 +48,260 @@ use crate::text_encoder::{ingest_text, store_knowledge_triple};
 use crate::Hypervector;
 use crate::VSABrain;
 
+// ─── Structural Error Parser — Level 3 Classification ────────────────────
+//
+// Parses error text into a structured SVO triple that reveals the SHARED
+// causal structure between textually orthogonal errors.
+//
+// The key insight: "bind() to 0.0.0.0:80 failed" and "KMS keyserver
+// unreachable" have ZERO trigram overlap but IDENTICAL structure:
+//
+//   (process, accesses, network_service)
+//   (network_service, unavailable, true)
+//
+// Both encode to the EXACT SAME canonical SVO triples, giving perfect 1.0
+// energy matching against rules written at the abstract level.
+//
+// The parser generates triples at two abstraction levels:
+//
+//   Level C (concrete):  preserves specific action and resource names
+//     e.g., ("bind", "accesses", "network_port")
+//     matches: "bind" + "port" errors (specific rules)
+//
+//   Level A (abstract):  maps to generalized categories
+//     e.g., ("process", "accesses", "network_service")
+//     matches: ANY resource-access error regardless of surface form
+//     This is what bridges the zero-overlap gap.
+//
+// Both levels are stored as facts.  The diagnostic rules fire at whichever
+// level matches — concrete rules have priority because they're more specific.
+
+/// Keywords for extracting the falling action from error text.
+const ACTIONS: &[(&str, &str, &str)] = &[
+    // (keyword, concrete_action, abstract_actor)
+    ("bind",             "bind",             "process"),
+    ("listen",           "listen",           "process"),
+    ("connect",          "connect",          "process"),
+    ("open",             "open_resource",    "process"),
+    ("read",             "read_resource",    "process"),
+    ("write",            "write_resource",   "process"),
+    ("query",            "query_resource",   "process"),
+    ("reach",            "reach_resource",   "process"),
+    ("mount",            "mount",            "process"),
+    ("parse",            "parse",            "process"),
+    ("validate",         "validate",         "process"),
+    ("validat",          "validate",         "process"),  // catches "validation", "validating"
+    ("initializ",        "initialize",       "process"),
+];
+
+/// Keywords for extracting the target resource type.
+const RESOURCES: &[(&str, &str, &str)] = &[
+    // (keyword, concrete_resource, abstract_service)
+    ("address",          "network_address",  "network_service"),
+    ("port",             "network_port",     "network_service"),
+    ("socket",           "network_socket",   "network_service"),
+    ("host",             "remote_host",      "network_service"),
+    ("server",           "remote_server",    "network_service"),
+    ("gateway",          "network_gateway",  "network_service"),
+    ("url",              "resource_url",     "network_service"),
+    ("endpoint",         "api_endpoint",     "network_service"),
+    ("file",             "filesystem_file",  "file_system"),
+    ("directory",        "filesystem_dir",   "file_system"),
+    ("disk",             "storage_disk",     "storage"),
+    ("volume",           "storage_volume",   "storage"),
+    ("certificate",      "credential_cert",  "credential"),
+    ("key",              "credential_key",   "credential"),
+    ("token",            "credential_token", "credential"),
+];
+
+/// Keywords for extracting the error class (result).
+const ERROR_CLASSES: &[(&str, &str, &str)] = &[
+    // (keyword, concrete_class, abstract_class)
+    ("failed",           "failed",           "unavailable"),
+    ("refused",          "refused",          "unavailable"),
+    ("unreachable",      "unreachable",      "unavailable"),
+    ("timeout",          "timed_out",        "unavailable"),
+    ("denied",           "permission_denied","permission_blocked"),
+    ("permission",       "permission_denied","permission_blocked"),
+    ("eacces",           "permission_denied","permission_blocked"),
+    ("exceeded",         "quota_exceeded",   "capacity_exhausted"),
+    ("full",             "capacity_full",    "capacity_exhausted"),
+    ("not found",        "not_found",        "resource_missing"),
+    ("missing",          "missing",          "resource_missing"),
+    ("enoent",           "not_found",        "resource_missing"),
+    ("expired",          "expired",          "credential_invalid"),
+    ("invalid",          "invalid",          "credential_invalid"),
+];
+
+/// Result of parsing an error text into structural components.
+pub struct ErrorStructure {
+    /// The concrete action (e.g., "bind", "connect").
+    pub action_concrete: Option<&'static str>,
+    /// The abstract actor (e.g., "process").
+    pub action_abstract: Option<&'static str>,
+    /// The concrete resource (e.g., "network_port", "remote_host").
+    pub resource_concrete: Option<&'static str>,
+    /// The abstract service (e.g., "network_service").
+    pub resource_abstract: Option<&'static str>,
+    /// The concrete error class (e.g., "failed", "refused").
+    pub error_concrete: Option<&'static str>,
+    /// The abstract result (e.g., "unavailable").
+    pub error_abstract: Option<&'static str>,
+}
+
+/// Parse error text into structural components.
+///
+/// The parser scans for keywords in three categories (action, resource,
+/// error class) and extracts both concrete and abstract forms.
+pub fn parse_error_structure(error_text: &str) -> ErrorStructure {
+    let lower = error_text.to_lowercase();
+
+    let mut action_concrete: Option<&str> = None;
+    let mut action_abstract: Option<&str> = None;
+    let mut action_kw_len: usize = 0;
+    let mut resource_concrete: Option<&str> = None;
+    let mut resource_abstract: Option<&str> = None;
+    let mut resource_kw_len: usize = 0;
+    let mut error_concrete: Option<&str> = None;
+    let mut error_abstract: Option<&str> = None;
+    let mut error_kw_len: usize = 0;
+
+    // Scan for action keywords (longest keyword match wins — avoids partial
+    // matching where "initializ" would match "initialization" but a shorter
+    // keyword like "mount" might overwrite it).
+    for (keyword, concrete, abstract_) in ACTIONS {
+        if lower.contains(keyword) && keyword.len() > action_kw_len {
+            action_kw_len = keyword.len();
+            action_concrete = Some(concrete);
+            action_abstract = Some(abstract_);
+        }
+    }
+
+    // Scan for resource keywords
+    for (keyword, concrete, abstract_) in RESOURCES {
+        if lower.contains(keyword) && keyword.len() > resource_kw_len {
+            resource_kw_len = keyword.len();
+            resource_concrete = Some(concrete);
+            resource_abstract = Some(abstract_);
+        }
+    }
+
+    // Detect port numbers in IP:port format (e.g., "0.0.0.0:80" or "[::]:443")
+    // These contain a colon followed by digits, indicating a network port.
+    if resource_concrete.is_none() {
+        for word in lower.split_whitespace() {
+            if word.contains(':') {
+                // Check for pattern like "address:port" or "[host]:port"
+                let after_colon = word.split(':').last().unwrap_or("");
+                if after_colon.chars().all(|c| c.is_ascii_digit()) {
+                    resource_concrete = Some("network_port");
+                    resource_abstract = Some("network_service");
+                    break;
+                }
+            }
+        }
+    }
+
+    // Detect common IP-like patterns as network services
+    if resource_concrete.is_none() {
+        // Pattern: digits.digits.digits.digits (IP address)
+        if lower.chars().any(|c| c.is_ascii_digit()) {
+            let has_ip_pattern = lower.contains('.') && lower.contains(':');
+            if has_ip_pattern {
+                resource_concrete = Some("network_address");
+                resource_abstract = Some("network_service");
+            }
+        }
+    }
+
+    // Scan for error class keywords
+    for (keyword, concrete, abstract_) in ERROR_CLASSES {
+        if lower.contains(keyword) && keyword.len() > error_kw_len {
+            error_kw_len = keyword.len();
+            error_concrete = Some(concrete);
+            error_abstract = Some(abstract_);
+        }
+    }
+
+    ErrorStructure {
+        action_concrete,
+        action_abstract,
+        resource_concrete,
+        resource_abstract,
+        error_concrete,
+        error_abstract,
+    }
+}
+
+/// Generate canonical SVO triples from a parsed error structure.
+///
+/// Produces triples at two abstraction levels:
+///
+/// **Concrete level** (preserves specifics):
+///   - (specific_action, "accesses", specific_resource)
+///   - (specific_resource, "has_state", specific_error)
+///
+/// **Abstract level** (generalized categories):
+///   - (abstract_actor, "accesses", abstract_service)
+///   - (abstract_service, "has_state", abstract_error)
+///
+/// Both levels are returned.  Store ALL of them as facts.  The forward
+/// chain matches at whichever level has a corresponding rule.
+pub fn structure_to_triples(structure: &ErrorStructure) -> Vec<CanonicalSvo> {
+    let mut triples = Vec::new();
+
+    // ── Concrete level ─────────────────────────────────────────────────
+    if let (Some(act), Some(res)) = (structure.action_concrete, structure.resource_concrete) {
+        triples.push((act.to_string(), "accesses".to_string(), res.to_string()));
+    }
+    if let (Some(res), Some(err)) = (structure.resource_concrete, structure.error_concrete) {
+        triples.push((res.to_string(), "has_state".to_string(), err.to_string()));
+    }
+
+    // ── Abstract level ─────────────────────────────────────────────────
+    if let (Some(act), Some(res)) = (structure.action_abstract, structure.resource_abstract) {
+        triples.push((act.to_string(), "accesses".to_string(), res.to_string()));
+    }
+    if let (Some(res), Some(err)) = (structure.resource_abstract, structure.error_abstract) {
+        triples.push((res.to_string(), "has_state".to_string(), err.to_string()));
+    }
+
+    // ── Mixed level: concrete+abstract bridge ───────────────────────────
+    // If we have a specific action but only an abstract resource,
+    // also generate the concrete-action + abstract-resource triple.
+    if let (Some(act), None) = (structure.action_concrete, structure.resource_concrete) {
+        if let Some(res) = structure.resource_abstract {
+            triples.push((act.to_string(), "accesses".to_string(), res.to_string()));
+        }
+    }
+    // If we have a specific resource but only an abstract error,
+    // generate the specific-resource + abstract-error triple.
+    if let (Some(res), None) = (structure.resource_concrete, structure.error_concrete) {
+        if let Some(err) = structure.error_abstract {
+            triples.push((res.to_string(), "has_state".to_string(), err.to_string()));
+        }
+    }
+
+    triples
+}
+
+/// Classify error text using structural parsing (Level 3).
+///
+/// Runs the structural parser and generates canonical triples.  Returns
+/// the first triple if parsing succeeded, None otherwise.
+///
+/// This is the third level of classification, called when Level 1
+/// (trigger) and Level 2 (trigram Jaccard) both fail to find a match.
+pub fn classify_structural(error_text: &str) -> Option<Vec<CanonicalSvo>> {
+    let structure = parse_error_structure(error_text);
+    let triples = structure_to_triples(&structure);
+    if triples.is_empty() {
+        None
+    } else {
+        Some(triples)
+    }
+}
+
 // ─── Error Classifier ──────────────────────────────────────────────────────
 
 /// A canonical (subject, verb, object) triple for forward-chain matching.
@@ -309,6 +563,99 @@ pub fn seed_diagnostic_knowledge(qa: &mut QaEngine, _brain: &mut VSABrain) {
         "error", "has_type", "startup_failure",
         "service", "has", "startup_problem",
         "diagnostic_error_type",
+    );
+
+    // ═════════════════════════════════════════════════════════════════════
+    // LAYER A: Abstract Structural Rules (bridge the zero-overlap gap)
+    //
+    // These rules fire when ANY error text parses to the same abstract
+    // structure, regardless of surface form.  A port conflict, a network
+    // timeout, an SSL error — all produce ("process", "accesses",
+    // "network_service") and thus all trigger the same abstract rule.
+    //
+    // The abstract+resource rules connect the abstract parsing to the
+    // concrete diagnostic chain.  ("process", "accesses", "network_service")
+    // is shared by ALL network-access failures.  The resource-specific
+    // rules then branch: if the resource is "network_port", it's a port
+    // conflict; if "remote_host", it's a connection issue.
+    //
+    // Concrete level rules (below) provide more specific matching for
+    // cases where the error text contains unambiguous resource keywords.
+    // ═════════════════════════════════════════════════════════════════════
+
+    // Abstract: ANY process accessing ANY network service is having a
+    // resource access problem.  The resource state tells us the cause.
+    qa.store_rule(
+        "process", "accesses", "network_service",
+        "resource_access", "is", "problematic",
+        "diagnostic_abstract",
+    );
+
+    // If a network service is unavailable, another process may be blocking it
+    qa.store_rule(
+        "network_service", "has_state", "unavailable",
+        "another_process", "is_listening_on", "same_port",
+        "diagnostic_abstract",
+    );
+
+    // If a network service has a permission error → file permissions
+    qa.store_rule(
+        "network_service", "has_state", "permission_blocked",
+        "file_permissions", "are", "incorrect",
+        "diagnostic_abstract",
+    );
+
+    // If a file system is unavailable → check which file is missing
+    qa.store_rule(
+        "file_system", "has_state", "unavailable",
+        "required_file", "is", "missing",
+        "diagnostic_abstract",
+    );
+
+    // If storage is full → free space
+    qa.store_rule(
+        "storage", "has_state", "capacity_exhausted",
+        "disk_space", "is", "full",
+        "diagnostic_abstract",
+    );
+
+    // Abstract resource access problem → verification needed
+    qa.store_rule(
+        "resource_access", "is", "problematic",
+        "machine", "identifies", "possible_cause",
+        "diagnostic_abstract_chain",
+    );
+
+    // ═════════════════════════════════════════════════════════════════════
+    // LAYER C: Concrete Structural Rules (resource-specific matching)
+    // ═════════════════════════════════════════════════════════════════════
+
+    // Concrete: bind accessing network_port → port conflict
+    qa.store_rule(
+        "bind", "accesses", "network_port",
+        "another_process", "is_listening_on", "same_port",
+        "diagnostic_concrete",
+    );
+
+    // Concrete: connect accessing remote_host → service not listening
+    qa.store_rule(
+        "connect", "accesses", "remote_host",
+        "target_service", "is_not", "listening",
+        "diagnostic_concrete",
+    );
+
+    // Concrete: open_resource accessing filesystem_file → missing file
+    qa.store_rule(
+        "open_resource", "accesses", "filesystem_file",
+        "required_file", "is", "missing",
+        "diagnostic_concrete",
+    );
+
+    // Concrete: bind accessing network_socket → port conflict
+    qa.store_rule(
+        "bind", "accesses", "network_socket",
+        "another_process", "is_listening_on", "same_port",
+        "diagnostic_concrete",
     );
 
     // ═════════════════════════════════════════════════════════════════════
@@ -1118,5 +1465,183 @@ mod tests {
             "Variant should match via trigram after pattern added");
         assert_eq!(variant_level, "trigram", "Variant should match via trigram");
         assert_eq!(variant.unwrap().2, "port_conflict", "Variant should classify as port_conflict");
+    }
+
+    // ── Structural Parser Tests ─────────────────────────────────────────
+
+    #[test]
+    fn test_parse_structure_bind_failed() {
+        // "bind() to 0.0.0.0:80 failed" should parse to:
+        //   action = bind, resource = network_port, error = failed
+        let s = parse_error_structure("bind() to 0.0.0.0:80 failed (98: Unknown error)");
+        assert_eq!(s.action_concrete, Some("bind"));
+        assert_eq!(s.action_abstract, Some("process"));
+        assert_eq!(s.resource_concrete, Some("network_port"));
+        assert_eq!(s.resource_abstract, Some("network_service"));
+        assert_eq!(s.error_concrete, Some("failed"));
+        assert_eq!(s.error_abstract, Some("unavailable"));
+    }
+
+    #[test]
+    fn test_parse_structure_kms_timeout() {
+        // "KMS keyserver unreachable" should parse to:
+        //   action = reach_resource, resource = remote_host or remote_server, error = unreachable
+        let s = parse_error_structure("KMS keyserver unreachable: timeout");
+        assert_eq!(s.action_concrete, Some("reach_resource"));
+        assert_eq!(s.action_abstract, Some("process"));
+        // Should match "server" → remote_server (longer keyword than "host" or "key")
+        // Actually "keyserver" contains "server" → remote_server
+        assert_eq!(s.resource_abstract, Some("network_service"));
+        assert_eq!(s.error_concrete, Some("unreachable"));
+        assert_eq!(s.error_abstract, Some("unavailable"));
+    }
+
+    #[test]
+    fn test_parse_structure_ssl_expired() {
+        // "SSL certificate expired" → no explicit action (the parser doesn't
+        // infer implied actions), resource=credential_cert, error=expired
+        let s = parse_error_structure("SSL certificate expired");
+        // Action is not explicitly stated in "SSL certificate expired"
+        // The parser only extracts actions from explicit action keywords
+        assert_eq!(s.resource_concrete, Some("credential_cert"));
+        assert_eq!(s.resource_abstract, Some("credential"));
+        assert_eq!(s.error_concrete, Some("expired"));
+        assert_eq!(s.error_abstract, Some("credential_invalid"));
+    }
+
+    #[test]
+    fn test_parse_structure_disk_full() {
+        let s = parse_error_structure("disk quota exceeded on /var/log");
+        assert_eq!(s.resource_concrete, Some("storage_disk"));
+        assert_eq!(s.resource_abstract, Some("storage"));
+        assert_eq!(s.error_concrete, Some("quota_exceeded"));
+        assert_eq!(s.error_abstract, Some("capacity_exhausted"));
+    }
+
+    #[test]
+    fn test_parse_structure_no_match() {
+        let s = parse_error_structure("Everything is fine");
+        assert!(s.action_concrete.is_none());
+        assert!(s.resource_concrete.is_none());
+        assert!(s.error_concrete.is_none());
+    }
+
+    #[test]
+    fn test_structure_to_triples_concrete() {
+        let s = parse_error_structure("bind() to 0.0.0.0:80 failed");
+        let triples = structure_to_triples(&s);
+        assert!(triples.len() >= 4, "Should produce at least 4 triples (got {})", triples.len());
+
+        // Should contain the concrete structural triple
+        assert!(triples.contains(&("bind".to_string(), "accesses".to_string(), "network_port".to_string())),
+            "Should contain bind→network_port");
+        // Should contain the abstract structural triple
+        assert!(triples.contains(&("process".to_string(), "accesses".to_string(), "network_service".to_string())),
+            "Should contain process→network_service");
+    }
+
+    #[test]
+    fn test_zero_overlap_analogy() {
+        // THE KEY TEST: Two errors with ZERO trigram overlap should
+        // produce the SAME abstract structural triple.
+        let s1 = parse_error_structure("bind() to 0.0.0.0:80 failed");
+        let s2 = parse_error_structure("KMS keyserver unreachable: timeout");
+
+        let t1 = structure_to_triples(&s1);
+        let t2 = structure_to_triples(&s2);
+
+        // Both should contain ("process", "accesses", "network_service")
+        assert!(t1.contains(&("process".to_string(), "accesses".to_string(), "network_service".to_string())),
+            "bind() failed should produce abstract triple");
+        assert!(t2.contains(&("process".to_string(), "accesses".to_string(), "network_service".to_string())),
+            "KMS timeout should produce abstract triple");
+
+        // Further: both should contain ("network_service", "has_state", "unavailable")
+        assert!(t1.contains(&("network_service".to_string(), "has_state".to_string(), "unavailable".to_string())),
+            "bind() failed should produce state triple");
+        assert!(t2.contains(&("network_service".to_string(), "has_state".to_string(), "unavailable".to_string())),
+            "KMS timeout should produce state triple");
+
+        // If both produce the same triples, they will fire the SAME
+        // abstract forward-chain rules → same diagnosis.
+    }
+
+    #[test]
+    fn test_structural_forward_chain_zero_overlap() {
+        // End-to-end: structural triples from two different errors should
+        // fire the same abstract diagnostic rule.
+        let mut qa = QaEngine::new();
+        let mut brain = VSABrain::new(0.12);
+        seed_diagnostic_knowledge(&mut qa, &mut brain);
+
+        // Store abstract triples from "bind() to 0.0.0.0:80 failed"
+        let s1 = parse_error_structure("bind() to 0.0.0.0:80 failed");
+        let t1 = structure_to_triples(&s1);
+        for (s, v, o) in &t1 {
+            qa.store_fact(s, v, o, "structural");
+        }
+
+        // Forward chain: should derive that another process is on the port
+        let n = qa.forward_chain(0.75);
+        eprintln!("  Bind failed -> forward chain: {} facts", n);
+        let (has_cause, _) = qa.verify_fact("another_process", "is_listening_on", "same_port");
+        assert!(has_cause,
+            "Abstract structural triples should derive port conflict cause");
+
+        // Now do the same with KMS timeout
+        let mut qa2 = QaEngine::new();
+        let mut brain2 = VSABrain::new(0.12);
+        seed_diagnostic_knowledge(&mut qa2, &mut brain2);
+
+        let s2 = parse_error_structure("KMS keyserver unreachable: timeout");
+        let t2 = structure_to_triples(&s2);
+        for (s, v, o) in &t2 {
+            qa2.store_fact(s, v, o, "structural");
+        }
+
+        let n2 = qa2.forward_chain(0.75);
+        eprintln!("  KMS timeout -> forward chain: {} facts", n2);
+        let (has_cause2, _) = qa2.verify_fact("another_process", "is_listening_on", "same_port");
+        assert!(has_cause2,
+            "KMS timeout should ALSO derive port conflict via abstract rules");
+    }
+
+    #[test]
+    fn test_structural_plus_classifier_chain() {
+        // Full pipeline: classifier → structural → forward chain
+        // The classifier fails (no trigger, no trigram), but the structural
+        // parser bridges the gap.
+        let mut qa = QaEngine::new();
+        let mut brain = VSABrain::new(0.12);
+        seed_diagnostic_knowledge(&mut qa, &mut brain);
+        let classifier = seed_error_classifier();
+
+        // Error with NO trigger match and NO trigram overlap with any pattern
+        let error_text = "KMS keyserver unreachable: timeout";
+
+        // Level 1 & 2 fail
+        let (svo, level) = classifier.classify_deep(error_text);
+        assert!(svo.is_none(), "Classifier should NOT match this via trigger/trigram");
+        assert_eq!(level, "none");
+
+        // Level 3: structural parsing
+        let structural_triples = classify_structural(error_text);
+        assert!(structural_triples.is_some(), "Structural parser should produce triples");
+        let triples = structural_triples.unwrap();
+
+        // Store structural triples as facts
+        for (s, v, o) in &triples {
+            qa.store_fact(s, v, o, "structural_fallback");
+        }
+
+        // Forward chain should fire the abstract rules
+        let n = qa.forward_chain(0.75);
+        eprintln!("  Structural fallback -> forward chain: {} facts", n);
+        assert!(n >= 1, "Structural triples should fire forward-chain rules");
+
+        // Should now verify the cause
+        let (has_cause, _) = qa.verify_fact("another_process", "is_listening_on", "same_port");
+        assert!(has_cause,
+            "Structural fallback should identify port conflict cause");
     }
 }

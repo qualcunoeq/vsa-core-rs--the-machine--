@@ -404,7 +404,8 @@ pub fn knn_evaluate(
 
 /// Learned track weights from static CV (structure-dominant).
 /// Order: [material, attacks, king_safety, mobility, structure]
-const TRACKED_WEIGHTS: [f64; 5] = [0.056, 0.251, 0.188, 0.000, 0.505];
+const TRACKED_WEIGHTS: [f64; 6] = [0.056, 0.251, 0.188, 0.000, 0.505, 0.000];
+// Tactics weight set to 0.0 until OLS calibration on Lichess data confirms its value.
 
 /// Evaluate a position using per-track k-NN with learned weights.
 ///
@@ -422,7 +423,7 @@ pub fn knn_evaluate_tracked(
     fen: &str,
     brain: &VSABrain,
     k: usize,
-    weights: &[f64; 5],
+    weights: &[f64; 6],
     tracked_cache: &RefCell<HashMap<String, TrackedPosition>>,
 ) -> f64 {
     let clusters = &brain.dejavu_clusters;
@@ -1115,6 +1116,145 @@ pub fn store_game_outcomes(
 
         store_chess_entry(brain, hv, &outcome_str, meta);
     }
+}
+
+/// Seed clusters from Lichess Stockfish eval data (CSV format).
+///
+/// CSV expected format: fen,eval_centipawns
+/// The centipawn eval is mapped to a 0.0-1.0 label via sigmoid:
+///   label = 1.0 / (1.0 + exp(-centipawn_eval / 150))
+/// This maps +1.5 pawns → ~0.73, +3.0 pawns → ~0.88, etc.
+/// Returns the number of positions ingested.
+pub fn seed_from_lichess_csv(
+    brain: &mut VSABrain,
+    csv_path: &str,
+    max_positions: usize,
+) -> std::io::Result<usize> {
+    use std::io::{BufRead, BufReader};
+    use std::fs::File;
+
+    let file = File::open(csv_path)?;
+    let reader = BufReader::new(file);
+    let mut count = 0usize;
+
+    // Sigmoid scale: 150 centipawns (1.5 pawns) = 1 natural unit of advantage
+    const SIGMOID_SCALE: f64 = 150.0;
+
+    for line in reader.lines() {
+        let line = line?;
+        if line.starts_with("fen,") || line.trim().is_empty() {
+            continue;
+        }
+
+        let parts: Vec<&str> = line.split(',').collect();
+        if parts.len() < 2 {
+            continue;
+        }
+
+        let fen = parts[0].trim();
+        let centipawn: f64 = match parts[1].trim().parse() {
+            Ok(v) => v,
+            Err(_) => continue,
+        };
+
+        // Skip extreme evals (mate-like scores)
+        if centipawn.abs() > 5000.0 {
+            continue;
+        }
+
+        // Map centipawn eval → win probability via sigmoid
+        // -500 → ~0.03, -150 → ~0.27, 0 → 0.50, +150 → ~0.73, +500 → ~0.97
+        let label = 1.0 / (1.0 + (-centipawn / SIGMOID_SCALE).exp());
+        let label_str = format!("{:.4}", label);
+
+        let hv = encode_position(fen);
+        let mut meta = std::collections::HashMap::new();
+        meta.insert("fen".to_string(), fen.to_string());
+        meta.insert("source".to_string(), "lichess".to_string());
+        meta.insert("stockfish_eval".to_string(), format!("{:.1}", centipawn));
+
+        store_chess_entry(brain, hv, &label_str, meta);
+        count += 1;
+
+        if count >= max_positions {
+            break;
+        }
+    }
+
+    Ok(count)
+}
+
+/// Measure R² of k-NN evaluation against held-out Lichess evals.
+///
+/// The brain should already be seeded (via seed_from_lichess_csv).  This
+/// function reads the CSV for test positions only (no re-seeding).
+/// Reads test positions starting at offset `max_train` from the CSV header.
+pub fn eval_lichess_r2(
+    brain: &VSABrain,
+    csv_path: &str,
+    max_train: usize,
+    test_positions: usize,
+    k_nearest: usize,
+) -> (f64, f64) {
+    use std::io::{BufRead, BufReader};
+    use std::fs::File;
+    use std::cell::RefCell;
+    use std::collections::HashMap;
+
+    // Read only the test positions (skip header + max_train data lines)
+    let file = File::open(csv_path).expect("Can't open CSV");
+    let reader = BufReader::new(file);
+
+    let test_set: Vec<(String, f64)> = reader.lines()
+        .skip(1) // skip CSV header
+        .skip(max_train) // skip training data
+        .filter_map(|line| {
+            let line = line.ok()?;
+            if line.trim().is_empty() { return None; }
+            let parts: Vec<&str> = line.split(',').collect();
+            if parts.len() < 2 { return None; }
+            let fen = parts[0].trim().to_string();
+            let centipawn: f64 = parts[1].trim().parse().ok()?;
+            if centipawn.abs() > 5000.0 { return None; }
+            Some((fen, centipawn))
+        })
+        .take(test_positions)
+        .collect();
+
+    if test_set.is_empty() {
+        eprintln!("Warning: no test positions available");
+        return (1.0, 0.0);
+    }
+
+    let n_test = test_set.len();
+    let mean_actual: f64 = test_set.iter().map(|(_, e)| e).sum::<f64>() / n_test as f64;
+
+    // Use equal weights for all 6 tracks to measure the tactics track's contribution
+    let equal_weights: [f64; 6] = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0];
+    let tracked_cache = RefCell::new(HashMap::<String, TrackedPosition>::new());
+    let evaluate = |fen: &str| -> f64 {
+        knn_evaluate_tracked(fen, brain, k_nearest, &equal_weights, &tracked_cache)
+    };
+
+    let mut total_se = 0.0;
+    let mut total_var = 0.0;
+
+    for (fen, actual_centipawn) in &test_set {
+        let predicted_label = evaluate(fen);
+        // Convert predicted label back to centipawns
+        let predicted_cp = if predicted_label <= 0.0 { -5000.0 }
+            else if predicted_label >= 1.0 { 5000.0 }
+            else { -150.0 * (1.0 / predicted_label - 1.0).ln() };
+
+        let se = (predicted_cp - actual_centipawn).powi(2);
+        total_se += se;
+        total_var += (actual_centipawn - mean_actual).powi(2);
+    }
+
+    let mse = total_se / n_test as f64;
+    let r2 = 1.0 - total_se / total_var.max(1e-10);
+
+    (mse, r2)
 }
 
 /// Run Stage 1 training: N games against random mover.

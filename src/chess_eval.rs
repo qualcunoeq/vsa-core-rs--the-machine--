@@ -518,6 +518,7 @@ pub struct TrackedPosition {
     pub king_safety: Hypervector,
     pub mobility: Hypervector,
     pub structure: Hypervector,
+    pub tactics: Hypervector,
 }
 
 /// Check if a pawn at (rank, file) is isolated (no friendly pawns on adjacent files).
@@ -997,6 +998,7 @@ pub fn encode_rich_tracked_position(fen: &str) -> TrackedPosition {
         king_safety: encode_triple_bundle(&king_safety),
         mobility: encode_triple_bundle(&activity),   // reused field: now "activity"
         structure: encode_triple_bundle(&structure),
+        tactics: Hypervector::new_zero(),
     }
 }
 
@@ -1007,6 +1009,7 @@ pub fn extract_tracked_triples(fen: &str) -> (
     Vec<(String, String, String)>,  // king_safety
     Vec<(String, String, String)>,  // mobility
     Vec<(String, String, String)>,  // structure
+    Vec<(String, String, String)>,  // tactics (forks, pins, hanging)
 ) {
     let pieces = parse_fen(fen);
     let (board, wk_sq, bk_sq) = build_board(&pieces);
@@ -1113,7 +1116,14 @@ pub fn extract_tracked_triples(fen: &str) -> (
         structure_triples.push(("black".to_string(), "to_move".to_string(), "true".to_string()));
     }
 
-    (material_triples, attack_triples, king_triples, mobility_triples, structure_triples)
+    // ── Tactics: forks, pins, hanging ────────────────────────────────────
+    let (attacks_from, attacks_to, defenses_to) = build_attack_map(&pieces, &board);
+    let mut tactics_triples: Vec<(String, String, String)> = Vec::new();
+    tactics_triples.extend(detect_forks(&pieces, &attacks_from));
+    tactics_triples.extend(detect_pins(&pieces, &board, wk_sq, bk_sq));
+    tactics_triples.extend(detect_hanging(&pieces, &attacks_to, &defenses_to));
+
+    (material_triples, attack_triples, king_triples, mobility_triples, structure_triples, tactics_triples)
 }
 
 /// Encode a set of triples into a single bundled hypervector.
@@ -1136,7 +1146,7 @@ fn encode_triple_bundle(triples: &[(String, String, String)]) -> Hypervector {
 /// Encode a chess position as 5 separate track hypervectors.
 /// Each track bundles triples within its own category.
 pub fn encode_tracked_position(fen: &str) -> TrackedPosition {
-    let (material, attacks, king_safety, mobility, structure) = extract_tracked_triples(fen);
+    let (material, attacks, king_safety, mobility, structure, tactics) = extract_tracked_triples(fen);
 
     TrackedPosition {
         material: encode_triple_bundle(&material),
@@ -1144,17 +1154,19 @@ pub fn encode_tracked_position(fen: &str) -> TrackedPosition {
         king_safety: encode_triple_bundle(&king_safety),
         mobility: encode_triple_bundle(&mobility),
         structure: encode_triple_bundle(&structure),
+        tactics: encode_triple_bundle(&tactics),
     }
 }
 
 /// Compute per-track similarities between two TrackedPositions.
-pub fn tracked_similarity(a: &TrackedPosition, b: &TrackedPosition) -> [f64; 5] {
+pub fn tracked_similarity(a: &TrackedPosition, b: &TrackedPosition) -> [f64; 6] {
     [
         1.0 - a.material.normalized_hamming_distance(&b.material),
         1.0 - a.attacks.normalized_hamming_distance(&b.attacks),
         1.0 - a.king_safety.normalized_hamming_distance(&b.king_safety),
         1.0 - a.mobility.normalized_hamming_distance(&b.mobility),
         1.0 - a.structure.normalized_hamming_distance(&b.structure),
+        1.0 - a.tactics.normalized_hamming_distance(&b.tactics),
     ]
 }
 

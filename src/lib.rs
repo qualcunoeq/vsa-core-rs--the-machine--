@@ -25,6 +25,7 @@ pub mod hnsw;
 pub mod ledger;
 pub mod narrative;
 pub mod nlp;
+pub mod perception;
 pub mod planning;
 pub mod predictive;
 pub mod qa;

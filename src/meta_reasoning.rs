@@ -442,6 +442,161 @@ pub async fn resolve_stuck(
     all_observations
 }
 
+// ─── Stage 3: The Autonomous Loop ─────────────────────────────────────────
+
+/// The result of an autonomous problem-solving session.
+#[derive(Clone, Debug)]
+pub enum SolutionResult {
+    /// The problem was solved successfully.
+    Solved {
+        iterations: usize,
+        plan: Vec<PlanStep>,
+        confidence: f64,
+        log: Vec<String>,
+        category: String,
+    },
+    /// The system failed to solve the problem within the iteration budget.
+    Failed {
+        iterations: usize,
+        last_state: String,
+        log: Vec<String>,
+    },
+}
+
+/// Attempt to solve a problem autonomously.
+///
+/// The loop:
+///   1. Assess the problem (Confident / Uncertain / Stuck)
+///   2. Act on the assessment
+///   3. Repeat until solved or max_iterations
+///
+/// Each iteration produces a log entry showing what the system was thinking
+/// and what it did about it.  The log is the publishable artifact.
+pub async fn solve_autonomously(
+    brain: &mut VSABrain,
+    qa: &mut QaEngine,
+    classifier: &mut ErrorClassifier,
+    actuator: &JumpBoxActuator,
+    problem: &str,
+    goal: (&str, &str, &str),
+    target_ip: &str,
+    max_iterations: usize,
+) -> SolutionResult {
+    let mut iteration_log: Vec<String> = Vec::new();
+
+    // Store the problem as a fact
+    qa.store_fact("system", "has_problem", problem, "autonomous_loop");
+
+    for iteration in 0..max_iterations {
+        // ── 1. Check if goal is already achieved ────────────────────────────
+        let (goal_verified, _) = qa.verify_fact(goal.0, goal.1, goal.2);
+        if goal_verified {
+            let solved_msg = format!("[iter {}] Goal achieved! system {} {}", iteration, goal.1, goal.2);
+            iteration_log.push(solved_msg);
+            return SolutionResult::Solved {
+                iterations: iteration,
+                plan: vec![],
+                confidence: 1.0,
+                log: iteration_log,
+                category: "goal_achieved".to_string(),
+            };
+        }
+
+        // ── 2. Assess the current state ────────────────────────────────────
+        let state = assess(problem, brain, qa, classifier);
+        let state_name = state.name().to_string();
+        let log_entry = format!("[iter {}] state={} | {}", iteration, state_name, state);
+        iteration_log.push(log_entry);
+
+        match state {
+            ReasoningState::Confident { plan, confidence, category } => {
+                // Execute each step of the plan
+                let mut all_succeeded = true;
+                for (step_idx, step) in plan.iter().enumerate() {
+                    let action_req = crate::actuator::plan_step_to_request(step, target_ip);
+                    let result = actuator.send_request(&action_req).await;
+
+                    let step_log = format!(
+                        "[iter {}] Executing step {}: ({}, {}, {}) → success={}",
+                        iteration, step_idx,
+                        step.action.0, step.action.1, step.action.2,
+                        result.success
+                    );
+                    iteration_log.push(step_log);
+
+                    if !result.success {
+                        all_succeeded = false;
+                        // Record the failure for the planner
+                        qa.evaluate_plan_outcome(0.0, &[step.clone()]);
+                        break;
+                    }
+
+                    // Ingest observations from the action result
+                    let obs = crate::actuator::parse_result_observations(
+                        &action_req, &result, target_ip);
+                    crate::actuator::ingest_observations(brain, &obs);
+                }
+
+                if all_succeeded {
+                    // Check if goal was achieved
+                    let (goal_ok, _) = qa.verify_fact(goal.0, goal.1, goal.2);
+                    if goal_ok {
+                        // Absorb the diagnosis
+                        let categories = ["port_conflict", "network_timeout", "missing_file",
+                            "permission_denied", "disk_full"];
+                        for cat in &categories {
+                            if category.contains(cat) {
+                                crate::diagnostic::absorb_diagnosis(
+                                    brain, qa, classifier, problem, cat, 1.0);
+                                break;
+                            }
+                        }
+                        return SolutionResult::Solved {
+                            iterations: iteration + 1,
+                            plan,
+                            confidence,
+                            log: iteration_log,
+                            category,
+                        };
+                    }
+                }
+                // If we get here, the plan didn't achieve the goal.
+                // Next iteration will reassess with new information.
+            }
+
+            ReasoningState::Uncertain { hypotheses, .. } => {
+                let new_obs = resolve_uncertain(hypotheses, actuator, brain, target_ip).await;
+                let obs_count = crate::actuator::ingest_observations(brain, &new_obs);
+                iteration_log.push(format!(
+                    "[iter {}] Uncertainty → tested hypothesis, ingested {} observations",
+                    iteration, obs_count
+                ));
+                // Forward chain with the new information
+                qa.forward_chain(0.75);
+            }
+
+            ReasoningState::Stuck { problem: p, .. } => {
+                let new_obs = resolve_stuck(&p, actuator, brain).await;
+                let obs_count = crate::actuator::ingest_observations(brain, &new_obs);
+                iteration_log.push(format!(
+                    "[iter {}] Stuck → acquired knowledge, ingested {} observations",
+                    iteration, obs_count
+                ));
+                // Forward chain with the new knowledge
+                qa.forward_chain(0.75);
+            }
+        }
+    }
+
+    // Exhausted iteration budget
+    let last_state = assess(problem, brain, qa, classifier);
+    SolutionResult::Failed {
+        iterations: max_iterations,
+        last_state: last_state.name().to_string(),
+        log: iteration_log,
+    }
+}
+
 // ─── Tests ────────────────────────────────────────────────────────────────
 
 #[cfg(test)]

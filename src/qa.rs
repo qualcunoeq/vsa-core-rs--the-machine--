@@ -1202,6 +1202,56 @@ impl QaEngine {
         self.facts.len()
     }
 
+    /// Forward-chain through causal rules: for each stored fact, check if
+    /// it matches any rule's antecedent above the chain threshold.  If so,
+    /// store the rule's consequent as a new fact.  Repeat until fixed point.
+    ///
+    /// Returns the number of new facts derived.
+    pub fn forward_chain(&mut self, chain_threshold: f64) -> usize {
+        let mut total_derived = 0;
+        loop {
+            let mut new_facts = Vec::new();
+            let snapshot: Vec<(String, String, String)> = self.facts.iter()
+                .map(|f| (f.subject.clone(), f.verb.clone(), f.object.clone()))
+                .collect();
+
+            for (subj, verb, obj) in &snapshot {
+                let s_hv = self.resolve_term(subj);
+                let v_hv = self.resolve_term(verb);
+                let o_hv = self.resolve_term(obj);
+                let fact_hv = resonator::encode_svo(&s_hv, &v_hv, &o_hv);
+
+                for rule in &self.rules {
+                    let energy = 1.0 - fact_hv.normalized_hamming_distance(&rule.ante_hv);
+                    if energy >= chain_threshold {
+                        let (c_s, c_v, c_o) = (
+                            &rule.consequent_subject,
+                            &rule.consequent_verb,
+                            &rule.consequent_object,
+                        );
+                        if c_s.is_empty() { continue; }
+                        let already = self.facts.iter().any(|f|
+                            f.subject == *c_s && f.verb == *c_v && f.object == *c_o
+                        );
+                        if !already {
+                            new_facts.push((c_s.clone(), c_v.clone(), c_o.clone()));
+                        }
+                    }
+                }
+            }
+
+            if new_facts.is_empty() {
+                break;
+            }
+
+            for (s, v, o) in &new_facts {
+                self.store_fact(s, v, o, "forward_chain");
+                total_derived += 1;
+            }
+        }
+        total_derived
+    }
+
     // ═════════════════════════════════════════════════════════════════
     // QUESTION PARSING
     // ═════════════════════════════════════════════════════════════════

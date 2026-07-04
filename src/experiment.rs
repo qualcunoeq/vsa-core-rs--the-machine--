@@ -57,9 +57,19 @@ pub fn seed_knowledge(qa: &mut QaEngine, brain: &mut VSABrain) {
         "attack_chain",
     );
 
-    // Rule D
+    // Rule D — knowing a service version means we can identify an attack vector.
+    // In a full system, this would go through CVE matching (service → CVE → exploit).
+    // Here we bridge directly so the chain can complete.
     qa.store_rule(
         "machine", "knows", "service_version",
+        "machine", "identifies", "attack_vector",
+        "attack_chain",
+    );
+
+    // Also allow open_service → attack_vector as a fallback (some services
+    // have well-known vulnerabilities that don't require version matching).
+    qa.store_rule(
+        "machine", "knows", "open_service",
         "machine", "identifies", "attack_vector",
         "attack_chain",
     );
@@ -100,24 +110,17 @@ pub fn seed_knowledge(qa: &mut QaEngine, brain: &mut VSABrain) {
     // action rule whose antecedent matches the abduced cause.
     // ═════════════════════════════════════════════════════════════════════
 
-    // Scanning → knows open service
+    // Scan port → knows open service (single port probe)
     qa.store_action(
         "machine", "scan_port", "target:port",
         "machine", "knows", "open_service",
         "attack_actions",
     );
 
-    // Host scan → knows open service
+    // Host scan → knows open service (full port range, includes version)
     qa.store_action(
         "machine", "scan_host", "target",
         "machine", "knows", "open_service",
-        "attack_actions",
-    );
-
-    // Check service version → knows service version
-    qa.store_action(
-        "machine", "check_service", "target:port",
-        "machine", "knows", "service_version",
         "attack_actions",
     );
 
@@ -128,7 +131,10 @@ pub fn seed_knowledge(qa: &mut QaEngine, brain: &mut VSABrain) {
         "attack_actions",
     );
 
-    // Brute force → goal achieved (direct path, bypasses CVE chain)
+    // Brute force → goal achieved (shortest path when credentials are weak)
+    // This demonstrates the agentic loop: plan → execute → verify → succeed
+    // Without this, the planner can't use stored facts to chain through
+    // the full scan→version→CVE→exploit path (future enhancement).
     qa.store_action(
         "machine", "brute_force", "target:port:users:passwords",
         "machine", "has_access_to", "target_vm",

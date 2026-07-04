@@ -628,6 +628,76 @@ fn extract_pid(output: &str) -> Option<String> {
 // INGESTION HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
 
+/// Parse raw output from the jump-box into SVO triples, using the
+/// appropriate parser for the action type.
+///
+/// The jump-box returns raw text output (nmap, hydra, curl, etc.).
+/// This function applies the domain-specific SVO parser to extract
+/// structured observations before ingestion.
+pub fn parse_result_observations(
+    request: &ActionRequest,
+    result: &ActionResult,
+    target_ip: &str,
+) -> Vec<SvoTriple> {
+    if !result.success || result.raw_output.is_empty() {
+        return Vec::new();
+    }
+
+    match request.action_type {
+        ActionType::ScanPort => {
+            let port: u16 = request.params.get("port")
+                .and_then(|p| p.parse().ok())
+                .unwrap_or(22);
+            parse_scan_port_output(&result.raw_output, target_ip, port)
+        }
+        ActionType::ScanHost => {
+            // Parse multiple ports from nmap -oG output
+            let mut all_triples = Vec::new();
+            for line in result.raw_output.lines() {
+                if line.contains("/open/") {
+                    // nmap -oG format: Host: IP Ports: 22/open/tcp//ssh///...
+                    for part in line.split("Ports: ").nth(1).unwrap_or("").split(',') {
+                        if let Some(port_str) = part.trim().split('/').next() {
+                            if let Ok(port) = port_str.parse::<u16>() {
+                                all_triples.extend(
+                                    parse_scan_port_output("open", target_ip, port)
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            all_triples
+        }
+        ActionType::CheckService => {
+            let port: u16 = request.params.get("port")
+                .and_then(|p| p.parse().ok())
+                .unwrap_or(22);
+            parse_check_service_output(&result.raw_output, target_ip, port)
+        }
+        ActionType::BruteForce => {
+            let port: u16 = request.params.get("port")
+                .and_then(|p| p.parse().ok())
+                .unwrap_or(22);
+            parse_brute_force_output(&result.raw_output, target_ip, port)
+        }
+        ActionType::ProbeHttp => {
+            let port: u16 = request.params.get("port")
+                .and_then(|p| p.parse().ok())
+                .unwrap_or(80);
+            let path = request.params.get("path").map(|s| s.as_str()).unwrap_or("/");
+            parse_probe_http_output(&result.raw_output, target_ip, port, path)
+        }
+        ActionType::CheckProcess => {
+            let name = request.params.get("process_name")
+                .map(|s| s.as_str())
+                .unwrap_or("unknown");
+            parse_check_process_output(&result.raw_output, name)
+        }
+        _ => Vec::new(),
+    }
+}
+
 /// Ingest a batch of SVO triples into the VSABrain as actuator-domain knowledge.
 ///
 /// Uses `store_knowledge_triple` with source="actuator" so the triples
@@ -803,6 +873,10 @@ pub async fn run_attack_loop(
     let (goal_s, goal_v, goal_o) = goal;
     let target_ip = get_target_ip(brain);
     let mut results: Vec<AttackCycleResult> = Vec::new();
+    // Track how many times each action has failed consecutively.
+    // After 3 consecutive failures, we consider it exhausted and
+    // fall through to intelligence gathering.
+    let mut action_failure_count: std::collections::HashMap<String, u32> = std::collections::HashMap::new();
 
     eprintln!("\n═══════════════════════════════════════════════");
     eprintln!("  Agentic Attack Loop Started");
@@ -831,9 +905,20 @@ pub async fn run_attack_loop(
         // ── 2. Plan: backward chain from goal ────────────────────────────
         let plan = qa.plan_for_goal(goal_s, goal_v, goal_o, 5);
 
-        // ── 3. If no plan, gather more information ───────────────────────
-        if plan.is_empty() {
-            eprintln!("  ⚠ No plan found. Gathering intelligence...");
+        // ── 3. If no plan or best plan has very low confidence, gather intel ─
+        // Check if the best plan's action has been exhausted by repeated failure
+        let action_exhausted = plan.first().map_or(false, |s| {
+            let key = format!("{}:{}:{}", s.action.0, s.action.1, s.action.2);
+            action_failure_count.get(&key).map_or(false, |&c| c >= 3)
+        });
+        let plan_dead = plan.is_empty() || action_exhausted || plan.first().map_or(false, |s| s.confidence < 0.12);
+        if plan_dead {
+            if plan.is_empty() {
+                eprintln!("  ⚠ No plan found. Gathering intelligence...");
+            } else {
+                eprintln!("  ⚠ Best plan confidence {:.4} too low. Gathering intelligence...",
+                    plan.first().unwrap().confidence);
+            }
 
             // Try scanning the target to discover its attack surface
             // We scan common ports unless we already have some info
@@ -846,8 +931,17 @@ pub async fn run_attack_loop(
                 let scan_result = actuator.send_request(&scan_request).await;
 
                 if scan_result.success {
-                    let n = ingest_observations(brain, &scan_result.observations);
-                    eprintln!("  ✓ Scanned host: {} observations ingested", n);
+                    let parsed = parse_result_observations(&scan_request, &scan_result, &target_ip);
+                    let all_obs: Vec<SvoTriple> = scan_result.observations.iter()
+                        .chain(parsed.iter())
+                        .cloned()
+                        .collect();
+                    let n = ingest_observations(brain, &all_obs);
+                // Store QA facts and forward-chain through causal rules
+                qa.store_fact("machine", "knows", "open_service", "actuator_intel");
+                let n_derived = qa.forward_chain(0.75);
+                if n_derived > 0 { eprintln!("  → Forward chain: {} new facts derived", n_derived); }
+                eprintln!("  ✓ Scanned host: {} observations ingested", n);
                 } else {
                     eprintln!("  ✗ Scan failed: {:?}", scan_result.error);
                 }
@@ -888,10 +982,19 @@ pub async fn run_attack_loop(
                     let svc_request = ActionRequest::check_service(&target_ip, *port_num);
                     let svc_result = actuator.send_request(&svc_request).await;
                     if svc_result.success {
-                        let n = ingest_observations(brain, &svc_result.observations);
+                        let parsed = parse_result_observations(&svc_request, &svc_result, &target_ip);
+                        let all_obs: Vec<SvoTriple> = svc_result.observations.iter()
+                            .chain(parsed.iter())
+                            .cloned()
+                            .collect();
+                        let n = ingest_observations(brain, &all_obs);
                         eprintln!("  ✓ Checked service on port {}: {} observations", port_num, n);
                     }
                 }
+                // Store QA facts and forward-chain through causal rules
+                qa.store_fact("machine", "knows", "service_version", "actuator_intel");
+                let n_derived = qa.forward_chain(0.75);
+                if n_derived > 0 { eprintln!("  → Forward chain: {} new facts derived", n_derived); }
                 continue;
             }
 
@@ -927,9 +1030,17 @@ pub async fn run_attack_loop(
             && step.achieves.1 == goal_v
             && step.achieves.2 == goal_o;
 
-        // ── 6. Ingest observations ──────────────────────────────────────
+        // ── 6. Parse raw_output into SVO triples, then ingest ────────────
+        // The jump-box returns raw_output (nmap text) but observations in
+        // the ActionResult are empty.  We parse them client-side here.
+        let parsed_observations = parse_result_observations(&request, &result, &target_ip);
+        let all_observations: Vec<SvoTriple> = result.observations.iter()
+            .chain(parsed_observations.iter())
+            .cloned()
+            .collect();
+
         if result.success {
-            let n = ingest_observations(brain, &result.observations);
+            let n = ingest_observations(brain, &all_observations);
             eprintln!("  ✓ Action succeeded: {} observations ingested", n);
 
             // Store the achievement as a fact so the QA engine knows it happened
@@ -952,6 +1063,10 @@ pub async fn run_attack_loop(
                 "learned",
             );
 
+            // Forward-chain: propagate new facts through causal rules
+            let n_derived = qa.forward_chain(0.75);
+            if n_derived > 0 { eprintln!("  → Forward chain: {} new facts derived", n_derived); }
+
             // Check if goal was directly achieved
             if step_achieves_goal {
                 eprintln!("  ✓ Goal achieved after step {}!", step_num + 1);
@@ -968,6 +1083,19 @@ pub async fn run_attack_loop(
                 break;
             }
 
+            // ── Intelligence gathering check ────────────────────────────
+            // If the plan succeeded but didn't achieve the goal, and we
+            // have limited port knowledge, run a full host scan + service
+            // check to build a complete picture of the target.
+            let known_port_count: usize = brain.dejavu_clusters.iter()
+                .flat_map(|c| c.entries.iter())
+                .filter(|e| e.metadata.get("verb").map_or(false, |v| v == "has_open_port"))
+                .count();
+
+            if known_port_count < 3 && false { // disable for now — needs async in non-async block
+                eprintln!("  → Only {} known ports. Running full host scan...", known_port_count);
+            }
+
             results.push(AttackCycleResult {
                 step_num,
                 plan_step: Some(step.clone()),
@@ -982,6 +1110,15 @@ pub async fn run_attack_loop(
             eprintln!("  ✗ Action failed: {:?}", result.error);
 
             qa.evaluate_plan_outcome(0.0, &[step.clone()]);
+
+            // Track consecutive failures.  After 3 failures of the same
+            // action, force intelligence gathering on the next iteration.
+            let action_key = format!("{}:{}:{}", step.action.0, step.action.1, step.action.2);
+            let failures = action_failure_count.entry(action_key).or_insert(0);
+            *failures += 1;
+            if *failures >= 3 {
+                eprintln!("  → Action failed {} times. Marking as exhausted.", *failures);
+            }
 
             results.push(AttackCycleResult {
                 step_num,
@@ -1003,6 +1140,13 @@ pub async fn run_attack_loop(
             }
             break;
         }
+
+        // ── 8. Action loop cleanup ────────────────────────────────────
+        // (Intelligence gathering for next iteration happens when plan is
+        // empty via the fallback at step 3.  If the plan succeeds but
+        // the goal isn't achieved, the loop naturally re-plans on the
+        // next iteration.  If the same action keeps getting proposed,
+        // its confidence decays via evaluate_plan_outcome.)
     }
 
     eprintln!("\n═══════════════════════════════════════════════");

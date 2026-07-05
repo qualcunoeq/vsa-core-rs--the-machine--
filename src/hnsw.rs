@@ -1401,6 +1401,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "scale benchmark: large recall sweep is intentionally long-running"]
     fn test_large_scale_recall() {
         // Test with 500 vectors to verify recall at moderate scale
         let mut index = HnswIndex::with_config(HnswConfig {

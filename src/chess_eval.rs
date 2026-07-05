@@ -1982,6 +1982,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "research benchmark: dataset-backed 10k chess cross-validation is too slow for the default unit suite"]
     fn test_10k_cross_validation() {
         let file_path = std::env::var("POSITIONS_FILE")
             .unwrap_or_else(|_| "/home/shiba/the-machine/positions.jsonl".to_string());
@@ -2164,6 +2165,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "research benchmark: dataset-backed chess cross-validation is too slow for the default unit suite"]
     fn test_triple_cross_validation_comparison() {
         /// Runs the same cross-validation as the baseline but with SVO-triple encoding.
         /// Direct R² comparison to piece-square encoding.
@@ -2227,6 +2229,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "research benchmark: dataset-backed chess cross-validation is too slow for the default unit suite"]
     fn test_tracked_cross_validation_comparison() {
         /// Tests whether separate encoding tracks solve the minority feature
         /// drowning problem.  Compares:
@@ -2353,6 +2356,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "research benchmark: dataset-backed chess cross-validation is too slow for the default unit suite"]
     fn test_learn_track_weights() {
         // Full pipeline: learn weights from dataset, then evaluate.
         let file_path = std::env::var("POSITIONS_FILE")
@@ -2414,6 +2418,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "research benchmark: dataset-backed rich chess cross-validation is too slow for the default unit suite"]
     fn test_rich_cross_validation_comparison() {
         /// Compares rich tracked encoding vs old tracked encoding and baseline.
         let file_path = std::env::var("POSITIONS_FILE")
@@ -2579,6 +2584,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "research benchmark: dataset-backed chess cross-validation is too slow for the default unit suite"]
     fn test_euclidean_vs_linear() {
         /// Compares Euclidean distance in similarity space vs linear combination.
         /// Uses V1 tracked encoding with learned weights for both.

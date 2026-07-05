@@ -645,6 +645,7 @@ mod tests {
 
     /// Test loading all three data sources from the database.
     #[test]
+    #[ignore = "integration benchmark: reads and encodes all bond SQLite data sources"]
     fn test_load_all_sources() {
         let mut reader = BondDataReader::new(BOND_DB_PATH);
         match reader.load_all_sources() {
@@ -705,6 +706,7 @@ mod tests {
     /// FULL END-TO-END: Load all 3 sources, run the entire cognitive
     /// pipeline, and verify the Abstractor discovers structure.
     #[test]
+    #[ignore = "integration benchmark: reads the bond SQLite dataset and runs the full market pipeline"]
     fn test_full_multi_source_pipeline() {
         let mut crucible = MarketCrucible::new(BOND_DB_PATH, 50);
         let report = crucible.run_full_pipeline();
@@ -751,6 +753,7 @@ mod tests {
 
     /// Test that the FOMC text encoding produces different vectors per meeting.
     #[test]
+    #[ignore = "integration benchmark: reads and encodes FOMC text from the bond SQLite dataset"]
     fn test_fomc_encoding_diversity() {
         let mut reader = BondDataReader::new(BOND_DB_PATH);
         match reader.load_fomc_minutes() {

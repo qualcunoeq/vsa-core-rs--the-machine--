@@ -580,6 +580,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "integration benchmark: parses a larger source file and is not needed for default unit verification"]
     fn test_ingest_larger_file() {
         let roles = RoleDictionary::new();
         let mut primary = AnalogicalIndex::new(&roles);

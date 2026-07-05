@@ -1127,9 +1127,12 @@ mod tests {
     /// Test A7: Community deduplication — same centroid set produces one L2 concept.
     #[test]
     fn test_community_deduplication() {
+        use rand::rngs::StdRng;
+        use rand::SeedableRng;
+
         let k = 5;
         let mut model = crate::temporal::TransitionModel::new(k);
-        let mut rng = rand::thread_rng();
+        let mut rng = StdRng::seed_from_u64(0xA75A_DD1C_A710);
 
         // Strong mutual transitions among {0, 1, 2}
         for _ in 0..100 {

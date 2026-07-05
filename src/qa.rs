@@ -225,6 +225,42 @@ const CLUSTER_PROJECTION_GAIN: f64 = 0.60;
 /// Matches the default threshold in `anchor_through_clusters_with_threshold`.
 const NEAREST_CLUSTER_THRESHOLD: f64 = 0.65;
 
+/// How a text term was resolved into a hypervector.
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub enum ResolveSource {
+    /// No usable cluster data; returned the raw n-gram encoding.
+    RawEncoding,
+    /// The raw text matched a centroid almost exactly.
+    ExactCluster,
+    /// The raw text snapped to a nearby centroid.
+    ClusterProjection,
+    /// A cross-cluster association reconstructed the returned centroid.
+    AssociationTraversal,
+}
+
+/// Provenance for `QaEngine::resolve_term_trace`.
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+pub struct ResolveTrace {
+    /// Original input text.
+    pub input: String,
+    /// Resolution path used.
+    pub source: ResolveSource,
+    /// Final resolved vector.
+    pub vector: Hypervector,
+    /// Normalized Hamming distance between the raw input vector and `vector`.
+    pub distance: Option<f64>,
+    /// Similarity between the raw input vector and `vector`.
+    pub similarity: Option<f64>,
+    /// Centroid index used for the final vector, when applicable.
+    pub centroid_index: Option<usize>,
+    /// Human label synced for the matched centroid, when available.
+    pub matched_label: Option<String>,
+    /// Association strength used for traversal, when applicable.
+    pub association_strength: Option<f64>,
+    /// Scalar confidence for downstream explanation and calibration.
+    pub confidence: f64,
+}
+
 /// A mined L2 transition rule with its L2 centroid indices.
 ///
 /// These are extracted from game experience by `mine_l2_rules` and stored
@@ -1774,6 +1810,26 @@ impl QaEngine {
         if best_sim >= NEAREST_CLUSTER_THRESHOLD { best } else { None }
     }
 
+    fn centroid_label(&self, idx: usize) -> Option<String> {
+        self.centroid_labels
+            .get(idx)
+            .filter(|label| !label.is_empty())
+            .cloned()
+    }
+
+    fn nearest_centroid_idx_raw(&self, vec: &Hypervector) -> Option<(usize, Hypervector, f64)> {
+        self.cluster_centroids
+            .iter()
+            .enumerate()
+            .map(|(idx, centroid)| {
+                let sim = 1.0 - vec.normalized_hamming_distance(centroid);
+                (idx, *centroid, sim)
+            })
+            .max_by(|(_, _, a), (_, _, b)| {
+                a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal)
+            })
+    }
+
     /// Resolve a text term to a semantically enriched hypervector.
     ///
     /// Three-level priority chain:
@@ -1786,41 +1842,70 @@ impl QaEngine {
     ///              direct projection. Handles coreferents in different clusters.
     ///   Level 3 — Raw n-gram fallback: no cluster data available.
     pub(crate) fn resolve_term(&self, text: &str) -> Hypervector {
+        self.resolve_term_trace(text).vector
+    }
+
+    /// Resolve a text term and return the provenance of the resolution.
+    ///
+    /// This mirrors `resolve_term` exactly, but preserves the source, matched
+    /// centroid, similarity, and association metadata for explanation and
+    /// later self-evaluation.
+    pub(crate) fn resolve_term_trace(&self, text: &str) -> ResolveTrace {
         let raw = Hypervector::encode_text_ngram(text, 3);
         if self.cluster_centroids.is_empty() {
-            return raw; // Level 3: no cluster data
+            return ResolveTrace {
+                input: text.to_string(),
+                source: ResolveSource::RawEncoding,
+                vector: raw,
+                distance: None,
+                similarity: None,
+                centroid_index: None,
+                matched_label: None,
+                association_strength: None,
+                confidence: 1.0,
+            };
         }
 
         // ── Level 1: Cluster projection ──────────────────────────────
-        let (projected, gain_l1) = match self.nearest_centroid(&raw) {
-            Some(c) => {
-                let g = 1.0 - c.normalized_hamming_distance(&raw);
-                (c, g)
+        let nearest = self.nearest_centroid_idx_raw(&raw);
+        let (projected_idx, projected, gain_l1) = match self.nearest_centroid(&raw) {
+            Some(projected) => {
+                let (idx, _, sim) =
+                    nearest.expect("thresholded nearest centroid must have raw nearest data");
+                (Some(idx), projected, sim)
             }
-            None => {
-                // No centroid within threshold — fall through to Level 2
-                (raw, -1.0)
-            }
+            None => (None, raw, -1.0),
         };
         if gain_l1 >= CLUSTER_PROJECTION_GAIN {
-            return projected; // Projection is meaningfully better than raw
+            let distance = 1.0 - gain_l1;
+            let idx = projected_idx.expect("thresholded nearest centroid must have an index");
+            return ResolveTrace {
+                input: text.to_string(),
+                source: if distance < 0.01 {
+                    ResolveSource::ExactCluster
+                } else {
+                    ResolveSource::ClusterProjection
+                },
+                vector: projected,
+                distance: Some(distance),
+                similarity: Some(gain_l1),
+                centroid_index: Some(idx),
+                matched_label: self.centroid_label(idx),
+                association_strength: None,
+                confidence: gain_l1.clamp(0.0, 1.0),
+            };
         }
 
         // ── Level 2: Association traversal ───────────────────────────
         // Find the nearest cluster index
-        let nearest_idx = self.cluster_centroids.iter()
-            .enumerate()
-            .min_by(|(_, a), (_, b)| {
-                let da = raw.normalized_hamming_distance(a);
-                let db = raw.normalized_hamming_distance(b);
-                da.partial_cmp(&db).unwrap_or(std::cmp::Ordering::Equal)
-            })
-            .map(|(idx, _)| idx);
+        let nearest_idx = nearest.map(|(idx, _, _)| idx);
 
         if let Some(n_idx) = nearest_idx {
             if let Some(assocs) = self.cluster_associations.get(&n_idx) {
                 let mut best_sim = gain_l1; // Compare against Level 1 result
                 let mut best_centroid = projected;
+                let mut best_target_idx = None;
+                let mut best_strength = None;
 
                 for &(target_idx, ref assoc_vec, strength, _) in assocs {
                     // Strength gate: only trust associations ≥ resolution threshold
@@ -1839,18 +1924,41 @@ impl QaEngine {
                     if sim > best_sim {
                         best_sim = sim;
                         best_centroid = reconstructed;
+                        best_target_idx = Some(target_idx);
+                        best_strength = Some(strength);
                     }
                 }
 
                 // Return association result only if it's meaningfully
                 // closer than raw (gain_l1 = -1.0 when no centroid found).
                 if best_sim > gain_l1 && best_sim >= 0.0 {
-                    return best_centroid;
+                    let distance = 1.0 - best_sim;
+                    return ResolveTrace {
+                        input: text.to_string(),
+                        source: ResolveSource::AssociationTraversal,
+                        vector: best_centroid,
+                        distance: Some(distance),
+                        similarity: Some(best_sim),
+                        centroid_index: best_target_idx,
+                        matched_label: best_target_idx.and_then(|idx| self.centroid_label(idx)),
+                        association_strength: best_strength,
+                        confidence: best_sim.clamp(0.0, 1.0),
+                    };
                 }
             }
         }
 
-        raw // Level 3: fallback — no improvement from clusters or associations
+        ResolveTrace {
+            input: text.to_string(),
+            source: ResolveSource::RawEncoding,
+            vector: raw,
+            distance: None,
+            similarity: None,
+            centroid_index: None,
+            matched_label: None,
+            association_strength: None,
+            confidence: 1.0,
+        }
     }
 }
 
@@ -2556,8 +2664,10 @@ mod tests {
 
         // Direct injection into cluster_centroids
         engine.cluster_centroids.push(centroid);
+        engine.centroid_labels.push("the_fed".to_string());
 
         let resolved = engine.resolve_term("the_fed");
+        let trace = engine.resolve_term_trace("the_fed");
         let dist = resolved.normalized_hamming_distance(&centroid);
         eprintln!("\n  resolve_term Level 1 (exact match):");
         eprintln!("    Input:      'the_fed'");
@@ -2570,6 +2680,10 @@ mod tests {
             "resolve_term should return the centroid on exact match, dist={:.6}",
             dist
         );
+        assert_eq!(trace.source, ResolveSource::ExactCluster);
+        assert_eq!(trace.centroid_index, Some(0));
+        assert_eq!(trace.matched_label.as_deref(), Some("the_fed"));
+        assert!(trace.confidence > 0.99);
         eprintln!("  ✓ Level 1: exact match snaps to centroid");
     }
 
@@ -2588,6 +2702,7 @@ mod tests {
 
         let raw = Hypervector::encode_text_ngram("the Fed", 3);
         let resolved = engine.resolve_term("the Fed");
+        let trace = engine.resolve_term_trace("the Fed");
         let dist_to_centroid = resolved.normalized_hamming_distance(&centroid);
         let dist_to_raw = resolved.normalized_hamming_distance(&raw);
         eprintln!("\n  resolve_term Level 1 (variant, no assoc):");
@@ -2601,19 +2716,19 @@ mod tests {
             "Without associations, resolve_term should return raw n-gram, dist={:.6}",
             dist_to_raw
         );
+        assert_eq!(trace.source, ResolveSource::RawEncoding);
+        assert_eq!(trace.centroid_index, None);
+        assert_eq!(trace.matched_label, None);
         eprintln!("  ✓ Level 1 variant → Level 3 fallback (no assoc)");
     }
 
     /// Level 2 validation: association traversal resolves cross-cluster
     /// coreference.
     ///
-    /// Injects two centroids:
-    ///   - idx 0: "the_fed" (nearest to input "the Fed")
-    ///   - idx 1: a known target centroid
-    /// Adds an association from 0 → 1 with assoc_vec = centroid_0 ⊕ centroid_1.
-    /// Calls resolve_term with a text that is close to centroid_1 but not
-    /// close to centroid_0.  Verifies the returned vector matches centroid_1,
-    /// proving Level 2 traversal fires.
+    /// Injects two centroids, then creates an association from the nearest
+    /// low-confidence centroid for "the Fed" to the other centroid. Verifies
+    /// the returned vector follows the association instead of falling back to
+    /// the raw n-gram.
     #[test]
     fn test_resolve_term_level2_association() {
         let mut engine = QaEngine::new();
@@ -2630,35 +2745,55 @@ mod tests {
         engine.cluster_centroids.push(centroid_0);
         engine.cluster_centroids.push(centroid_1);
 
-        // Association: 0 → 1 with assoc_vec = centroid_0 ⊕ centroid_1
-        let assoc_vec = engine.cluster_centroids[0]
-            .bitwise_xor(&engine.cluster_centroids[1]);
+        engine.centroid_labels.push("the_fed".to_string());
+        engine.centroid_labels.push("federal_reserve".to_string());
+
+        // Build the association from the actual nearest cluster for this
+        // variant so the test exercises Level 2 instead of exact projection.
+        let input = "the Fed";
+        let raw = Hypervector::encode_text_ngram(input, 3);
+        let (nearest_idx, _, nearest_sim) = engine.nearest_centroid_idx_raw(&raw).unwrap();
+        assert!(
+            nearest_sim < NEAREST_CLUSTER_THRESHOLD,
+            "variant should not pass Level 1, sim={:.4}",
+            nearest_sim
+        );
+        let target_idx = if nearest_idx == 0 { 1 } else { 0 };
+        let assoc_vec = engine.cluster_centroids[nearest_idx]
+            .bitwise_xor(&engine.cluster_centroids[target_idx]);
         engine.cluster_associations.insert(
-            0,
-            vec![(1, assoc_vec, 0.50, 0)], // strength 0.50 > 0.30 threshold
+            nearest_idx,
+            vec![(target_idx, assoc_vec, 0.50, 0)], // strength 0.50 > 0.30 threshold
         );
 
-        // Now resolve the FIRST centroid's text — it should match via Level 1
-        let resolved_0 = engine.resolve_term("the_fed");
-        let d0 = resolved_0.normalized_hamming_distance(&engine.cluster_centroids[0]);
-        eprintln!("    Resolve 'the_fed' → dist to centroid_0: {:.4}", d0);
-        assert!(d0 < 0.01, "Exact match should return centroid_0");
+        let resolved_1 = engine.resolve_term(input);
+        let trace = engine.resolve_term_trace(input);
+        let d1_to_target =
+            resolved_1.normalized_hamming_distance(&engine.cluster_centroids[target_idx]);
+        let d1_to_nearest =
+            resolved_1.normalized_hamming_distance(&engine.cluster_centroids[nearest_idx]);
+        eprintln!(
+            "    Resolve '{}' → dist to target centroid: {:.4}",
+            input, d1_to_target
+        );
+        eprintln!(
+            "    Resolve '{}' → dist to nearest centroid: {:.4}",
+            input, d1_to_nearest
+        );
 
-        // Now resolve text that is close to centroid_1 but far from centroid_0
-        // "federal_reserve" encoding should be close to centroid_1
-        let resolved_1 = engine.resolve_term("federal_reserve");
-        let d1_to_1 = resolved_1.normalized_hamming_distance(&engine.cluster_centroids[1]);
-        let d1_to_0 = resolved_1.normalized_hamming_distance(&engine.cluster_centroids[0]);
-        eprintln!("    Resolve 'federal_reserve' → dist to centroid_1: {:.4}", d1_to_1);
-        eprintln!("    Resolve 'federal_reserve' → dist to centroid_0: {:.4}", d1_to_0);
-
-        // With the association, Level 2 should route to centroid_1.
-        // The resolved vector should be VERY close to centroid_1
-        // (the XOR reconstruction is exact: centroid_0 ⊕ (centroid_0 ⊕ centroid_1) = centroid_1)
+        // The XOR reconstruction is exact:
+        // centroid_nearest ⊕ (centroid_nearest ⊕ centroid_target) = centroid_target.
         assert!(
-            d1_to_1 < 0.01,
-            "Association traversal should return centroid_1, dist={:.4}",
-            d1_to_1
+            d1_to_target < 0.01,
+            "Association traversal should return target centroid, dist={:.4}",
+            d1_to_target
+        );
+        assert_eq!(trace.source, ResolveSource::AssociationTraversal);
+        assert_eq!(trace.centroid_index, Some(target_idx));
+        assert_eq!(trace.association_strength, Some(0.50));
+        assert_eq!(
+            trace.matched_label.as_deref(),
+            Some(if target_idx == 0 { "the_fed" } else { "federal_reserve" })
         );
         eprintln!("  ✓ Level 2: association traversal resolves coreference");
     }
@@ -2671,6 +2806,7 @@ mod tests {
 
         let raw = Hypervector::encode_text_ngram("unknown_term", 3);
         let resolved = engine.resolve_term("unknown_term");
+        let trace = engine.resolve_term_trace("unknown_term");
         let dist = resolved.normalized_hamming_distance(&raw);
         eprintln!("\n  resolve_term Level 3 (fallback):");
         eprintln!("    Input: 'unknown_term'");
@@ -2680,6 +2816,9 @@ mod tests {
             "Level 3 should return raw n-gram, dist={:.6}",
             dist
         );
+        assert_eq!(trace.source, ResolveSource::RawEncoding);
+        assert_eq!(trace.vector.normalized_hamming_distance(&raw), 0.0);
+        assert_eq!(trace.distance, None);
         eprintln!("  ✓ Level 3: empty clusters → raw n-gram fallback");
     }
 

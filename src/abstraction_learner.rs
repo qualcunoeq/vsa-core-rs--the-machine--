@@ -131,6 +131,12 @@ impl AbstractionLearner {
             if token.chars().all(|c| c.is_ascii_digit()) {
                 continue;
             }
+            // Skip stopwords — common English words that carry no diagnostic
+            // signal.  Without this, tokens like "to", "on", "by", "from"
+            // could accumulate co-occurrence counts and get promoted.
+            if Self::is_stopword(token) {
+                continue;
+            }
 
             // Increment co-occurrence for (token, category)
             let entries = self.co_occurrence.entry(token.clone()).or_default();
@@ -306,12 +312,15 @@ impl AbstractionLearner {
             || lower.ends_with("denied") || lower.ends_with("refused")
             || lower.ends_with("expired") || lower.ends_with("invalid")
             || lower.ends_with("missing") || lower.ends_with("stalled")
-            || lower.ends_with("exceeded") || lower.ends_with("unreachable") {
+            || lower.ends_with("exceeded") || lower.ends_with("unreachable")
+            || lower.ends_with("rupted") || lower.ends_with("roken") {
             return true;
         }
-        // Common error words
+        // Common error words — includes connection/negotiation failures
         matches!(lower.as_str(), "timeout" | "error" | "fail" | "fault"
-            | "crash" | "panic" | "abort" | "dead" | "stuck" | "hung")
+            | "crash" | "panic" | "abort" | "dead" | "stuck" | "hung"
+            | "handshake" | "retry" | "backoff" | "throttle" | "timeout"
+            | "reset" | "disconnect" | "refused" | "reject")
     }
 
     /// Get a concrete form for a token.
@@ -448,6 +457,15 @@ impl AbstractionLearner {
         tokens
     }
 
+    // ─── Stopword filtering ────────────────────────────────────────────
+
+    /// Check if a token is a common English stopword that carries no
+    /// diagnostic signal.  Prevents noise tokens from being promoted.
+    fn is_stopword(token: &str) -> bool {
+        let lower = token.to_lowercase();
+        STOPWORDS.binary_search(&lower.as_str()).is_ok()
+    }
+
     // ─── Keyword map checking ──────────────────────────────────────────
 
     /// Check if a token is already a known keyword in the built-in maps.
@@ -480,6 +498,33 @@ const KNOWN_KEYWORDS: &[&str] = &[
     "socket", "stalled", "storage", "store",
     "timeout", "token", "unreachable", "url",
     "validat", "validate", "volume", "write",
+];
+
+/// Common English stopwords that carry no diagnostic signal.
+/// Sorted for binary search.  Tokens matching this list are skipped
+/// by `record_episode` to prevent noise promotion.
+const STOPWORDS: &[&str] = &[
+    "a", "about", "after", "all", "also", "an", "and", "any", "are", "as", "at",
+    "back", "be", "because", "been", "but", "by",
+    "can", "could",
+    "did", "do", "does", "done", "down",
+    "each", "either",
+    "for", "from",
+    "get", "got",
+    "had", "has", "have", "here", "how",
+    "if", "in", "into", "is", "it", "its",
+    "just",
+    "like",
+    "made", "make", "may", "maybe", "more", "most", "much", "must", "my",
+    "no", "nor", "not", "now",
+    "of", "off", "on", "once", "only", "or", "other", "our", "out", "over",
+    "said", "same", "see", "she", "should", "show", "side", "since", "so", "some", "still", "such",
+    "take", "than", "that", "the", "their", "them", "then", "there", "these",
+    "they", "this", "through", "to", "too", "under", "up", "upon",
+    "very",
+    "was", "way", "we", "well", "were", "what", "when", "where", "which",
+    "while", "who", "will", "with", "within", "without", "would",
+    "yes", "yet", "you", "your",
 ];
 
 // ─── Tests ─────────────────────────────────────────────────────────────────

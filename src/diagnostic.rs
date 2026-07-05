@@ -299,13 +299,22 @@ pub fn parse_error_structure_with_learner(
     let mut error_abstract: Option<&str> = None;
     let mut error_kw_len: usize = 0;
 
+    // Track which slots were filled by the learner — these are LOCKED
+    // so built-in keywords cannot overwrite them (learned mappings are
+    // more specific and domain-adapted).
+    let mut action_from_learner = false;
+    let mut resource_from_learner = false;
+    let mut error_from_learner = false;
+
     // ── Phase 1: Check learner's promoted mappings first ──────────────
-    // Learned mappings take priority over built-in keywords because they
-    // are more specific (learned from actual episodes in this domain).
+    // Learned mappings take priority over built-in keywords.  Once a
+    // slot is filled by the learner, it is LOCKED — no built-in keyword
+    // can overwrite it, regardless of keyword length.
 
     // Promoted actions
     for (keyword, concrete, abstract_) in learner.promoted_actions() {
-        if contains_word(&lower, keyword) && keyword.len() > action_kw_len {
+        if contains_word(&lower, keyword) && !action_from_learner {
+            action_from_learner = true;
             action_kw_len = keyword.len();
             action_concrete = Some(concrete);
             action_abstract = Some(abstract_);
@@ -314,7 +323,8 @@ pub fn parse_error_structure_with_learner(
 
     // Promoted resources
     for (keyword, concrete, abstract_) in learner.promoted_resources() {
-        if contains_word(&lower, keyword) && keyword.len() > resource_kw_len {
+        if contains_word(&lower, keyword) && !resource_from_learner {
+            resource_from_learner = true;
             resource_kw_len = keyword.len();
             resource_concrete = Some(concrete);
             resource_abstract = Some(abstract_);
@@ -323,7 +333,8 @@ pub fn parse_error_structure_with_learner(
 
     // Promoted errors
     for (keyword, concrete, abstract_) in learner.promoted_errors() {
-        if lower.contains(keyword) && keyword.len() > error_kw_len {
+        if lower.contains(keyword) && !error_from_learner {
+            error_from_learner = true;
             error_kw_len = keyword.len();
             error_concrete = Some(concrete);
             error_abstract = Some(abstract_);
@@ -331,8 +342,8 @@ pub fn parse_error_structure_with_learner(
     }
 
     // ── Phase 2: Check built-in maps (fallback) ───────────────────────
-    // Only check if the learner didn't already find a longer match.
-    // The built-in maps serve as a broader-coverage fallback.
+    // Only fills slots that the learner did NOT already fill.  Built-in
+    // keywords serve as a broader-coverage fallback for unlearned terms.
 
     for (keyword, concrete, abstract_) in ACTIONS {
         if lower.contains(keyword) && keyword.len() > action_kw_len {
@@ -454,6 +465,24 @@ pub fn structure_to_triples(structure: &ErrorStructure) -> Vec<CanonicalSvo> {
 /// (trigger) and Level 2 (trigram Jaccard) both fail to find a match.
 pub fn classify_structural(error_text: &str) -> Option<Vec<CanonicalSvo>> {
     let structure = parse_error_structure(error_text);
+    let triples = structure_to_triples(&structure);
+    if triples.is_empty() {
+        None
+    } else {
+        Some(triples)
+    }
+}
+
+/// Like `classify_structural`, but uses the learner's promoted keyword
+/// mappings for structural parsing.  Pass `None` to use only built-in maps.
+pub fn classify_structural_with_learner(
+    error_text: &str,
+    learner: Option<&AbstractionLearner>,
+) -> Option<Vec<CanonicalSvo>> {
+    let structure = match learner {
+        Some(l) => parse_error_structure_with_learner(error_text, l),
+        None => parse_error_structure(error_text),
+    };
     let triples = structure_to_triples(&structure);
     if triples.is_empty() {
         None
@@ -1343,6 +1372,82 @@ pub fn query_diagnostic_category(
         }
         best
     }
+}
+
+
+/// Like , but uses the learner's promoted
+/// keyword mappings for structural parsing.  Pass  to use only
+/// built-in maps (identical to the plain version).
+pub fn query_diagnostic_category_with_learner(
+    brain: &VSABrain,
+    error_text: &str,
+    learner: Option<&AbstractionLearner>,
+) -> Option<(String, f64)> {
+    let structure = match learner {
+        Some(l) => parse_error_structure_with_learner(error_text, l),
+        None => parse_error_structure(error_text),
+    };
+
+    // ── Build query from structural SVO (primary path) ────────────────
+    let query_hv: Hypervector = if let (Some(ref act), Some(ref res)) = (&structure.action_abstract, &structure.resource_abstract) {
+        let act_hv = Hypervector::encode_text_ngram(act, 3);
+        let acc_hv = Hypervector::encode_text_ngram("accesses", 3);
+        let res_hv = Hypervector::encode_text_ngram(res, 3);
+        crate::resonator::encode_svo(&act_hv, &acc_hv, &res_hv)
+    } else if let (Some(ref res), Some(ref err)) = (&structure.resource_abstract, &structure.error_abstract) {
+        let res_hv = Hypervector::encode_text_ngram(res, 3);
+        let state_v_hv = Hypervector::encode_text_ngram("has_state", 3);
+        let err_hv = Hypervector::encode_text_ngram(err, 3);
+        crate::resonator::encode_svo(&res_hv, &state_v_hv, &err_hv)
+    } else {
+        Hypervector::encode_text_ngram(error_text, 3)
+    };
+
+    // ── Rest is identical to query_diagnostic_category ────────────────
+    let (nearest_idx, nearest_sim) = brain.nearest_centroid_idx(&query_hv)?;
+    if nearest_sim < 0.50 {
+        return None;
+    }
+
+    let mut concept_matches: Vec<(String, f64)> = Vec::new();
+    if let Some(cluster) = brain.dejavu_clusters.get(nearest_idx) {
+        for entry in &cluster.entries {
+            if entry.label.starts_with("concept:") {
+                let concept_name = &entry.label[8..];
+                let concept_hv = Hypervector::encode_text_ngram(&format!("concept:{}", concept_name), 3);
+                if let Some((_concept_idx, concept_sim)) = brain.nearest_centroid_idx(&concept_hv) {
+                    let centroid = &brain.dejavu_clusters[nearest_idx].centroid;
+                    let concept_centroid = &brain.dejavu_clusters[_concept_idx].centroid;
+                    let cluster_dist = centroid.normalized_hamming_distance(concept_centroid);
+                    let cluster_sim = 1.0 - cluster_dist;
+                    concept_matches.push((concept_name.to_string(), cluster_sim));
+                } else {
+                    concept_matches.push((concept_name.to_string(), 0.5));
+                }
+            }
+        }
+    }
+
+    concept_matches.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+    if let Some((best_cat, best_sim)) = concept_matches.first() {
+        if *best_sim >= 0.50 {
+            return Some((best_cat.clone(), (*best_sim + nearest_sim) / 2.0));
+        }
+    }
+
+    for tc in &brain.transient_clusters {
+        for entry in &tc.entries {
+            if entry.label.starts_with("concept:") {
+                let concept_hv = Hypervector::encode_text_ngram(&entry.label, 3);
+                if let Some((_tc_idx, tc_sim)) = brain.nearest_centroid_idx(&concept_hv) {
+                    concept_matches.push((entry.label[8..].to_string(), tc_sim));
+                }
+            }
+        }
+    }
+
+    concept_matches.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+    concept_matches.first().map(|(cat, sim)| (cat.clone(), *sim))
 }
 
 /// Query whether a specific diagnostic category has been learned from past episodes.

@@ -26,8 +26,10 @@
 use crate::abstraction_learner::AbstractionLearner;
 use crate::actuator::{ActionRequest, ActionResult, ActionType, JumpBoxActuator};
 use crate::diagnostic::{
-    absorb_diagnosis_with_learner, classify_structural, parse_error_structure,
-    query_diagnostic_category, CanonicalSvo, ErrorClassifier,
+    absorb_diagnosis_with_learner, classify_structural,
+    classify_structural_with_learner, parse_error_structure,
+    parse_error_structure_with_learner, query_diagnostic_category,
+    query_diagnostic_category_with_learner, CanonicalSvo, ErrorClassifier,
 };
 use crate::qa::{PlanStep, QaEngine};
 use crate::text_encoder;
@@ -130,11 +132,28 @@ impl std::fmt::Display for ReasoningState {
 /// Each level feeds into the next.  If a confident plan is found, return it.
 /// If partial evidence exists, return Uncertain with hypotheses.
 /// If nothing matches, return Stuck.
+/// Thread-safe reference to an AbstractionLearner for assessment.
+/// Pass `None` if no learner is available (learner not yet created or
+/// assessment-only path without learning).
 pub fn assess(
     problem: &str,
     brain: &VSABrain,
     qa: &QaEngine,
     classifier: &ErrorClassifier,
+) -> ReasoningState {
+    assess_with_learner(problem, brain, qa, classifier, None)
+}
+
+/// Like `assess`, but uses the learner's promoted keyword mappings for
+/// structural parsing.  Call this from `solve_autonomously` so that
+/// learned mappings (e.g., "broker" → network_service) affect future
+/// assessments.
+pub fn assess_with_learner(
+    problem: &str,
+    brain: &VSABrain,
+    qa: &QaEngine,
+    classifier: &ErrorClassifier,
+    learner: Option<&AbstractionLearner>,
 ) -> ReasoningState {
     // ── Level 1-2: Classifier (trigger + trigram Jaccard) ───────────────
     if let (Some(canonical), _level) = classifier.classify_deep(problem) {
@@ -153,8 +172,8 @@ pub fn assess(
         }
     }
 
-    // ── Level 3: Structural parser ──────────────────────────────────────
-    let struct_triples = classify_structural(problem);
+    // ── Level 3: Structural parser (with learner extensions if available) ─
+    let struct_triples = classify_structural_with_learner(problem, learner);
     if let Some(ref triples) = struct_triples {
         // Check if any structural triple has a matching abstract rule
         if let Some(category) = find_best_structural_category(triples, qa) {
@@ -281,8 +300,19 @@ fn find_best_structural_category(
 }
 
 /// Generate a test action description for a hypothesis.
+/// Uses the learner's keyword extensions if available.
 pub fn generate_test_action(problem: &str) -> String {
-    let structure = parse_error_structure(problem);
+    generate_test_action_with_learner(problem, None)
+}
+
+fn generate_test_action_with_learner(
+    problem: &str,
+    learner: Option<&AbstractionLearner>,
+) -> String {
+    let structure = match learner {
+        Some(l) => parse_error_structure_with_learner(problem, l),
+        None => parse_error_structure(problem),
+    };
     if let Some(ref res) = structure.resource_concrete {
         format!("Check if resource '{}' is available", res)
     } else {
@@ -291,18 +321,27 @@ pub fn generate_test_action(problem: &str) -> String {
 }
 
 /// Generate hypotheses by structural analogy when the system is stuck.
+/// Uses the learner's keyword extensions if available.
 pub fn generate_hypotheses(brain: &VSABrain, problem: &str) -> Vec<Hypothesis> {
+    generate_hypotheses_with_learner(brain, problem, None)
+}
+
+fn generate_hypotheses_with_learner(
+    brain: &VSABrain,
+    problem: &str,
+    learner: Option<&AbstractionLearner>,
+) -> Vec<Hypothesis> {
     let mut hypotheses = Vec::new();
 
-    // Try structural parsing
-    if let Some(triples) = classify_structural(problem) {
+    // Try structural parsing (using learner extensions if available)
+    if let Some(triples) = classify_structural_with_learner(problem, learner) {
         if let Some(category) = find_best_structural_category(&triples, &QaEngine::new()) {
             hypotheses.push(Hypothesis {
                 category,
                 source: HypothesisSource::StructuralAnalogy,
                 confidence: 0.40,
                 structural_triples: triples,
-                test_description: generate_test_action(problem),
+                test_description: generate_test_action_with_learner(problem, learner),
             });
         }
     }
@@ -482,9 +521,33 @@ pub async fn solve_autonomously(
     target_ip: &str,
     max_iterations: usize,
 ) -> SolutionResult {
+    solve_autonomously_with_learner(
+        brain, qa, classifier, actuator, problem, goal, target_ip,
+        max_iterations, None,
+    ).await
+}
+
+/// Like `solve_autonomously`, but accepts an external `AbstractionLearner`
+/// that persists across solve sessions.  Use this when calling solve
+/// repeatedly so learned keyword mappings accumulate.
+///
+/// Pass `None` to create an internal learner (dropped after each solve).
+pub async fn solve_autonomously_with_learner(
+    brain: &mut VSABrain,
+    qa: &mut QaEngine,
+    classifier: &mut ErrorClassifier,
+    actuator: &JumpBoxActuator,
+    problem: &str,
+    goal: (&str, &str, &str),
+    target_ip: &str,
+    max_iterations: usize,
+    learner: Option<&mut AbstractionLearner>,
+) -> SolutionResult {
     let mut iteration_log: Vec<String> = Vec::new();
-    // AbstractionLearner — self-extending keyword maps from solved episodes.
-    let mut learner = AbstractionLearner::new();
+    // Learner for self-extending keyword maps.  If the caller provided one,
+    // use it (persistent across calls).  Otherwise create a fresh internal one.
+    let mut internal_learner = AbstractionLearner::new();
+    let learner_ref: &mut AbstractionLearner = learner.unwrap_or(&mut internal_learner);
 
     // Store the problem as a fact
     qa.store_fact("system", "has_problem", problem, "autonomous_loop");
@@ -504,8 +567,9 @@ pub async fn solve_autonomously(
             };
         }
 
-        // ── 2. Assess the current state ────────────────────────────────────
-        let state = assess(problem, brain, qa, classifier);
+        // ── 2. Assess the current state (with learner for promoted keywords) ─
+        let state = assess_with_learner(problem, brain, qa, classifier,
+                                        Some(learner_ref));
         let state_name = state.name().to_string();
         let log_entry = format!("[iter {}] state={} | {}", iteration, state_name, state);
         iteration_log.push(log_entry);
@@ -552,20 +616,20 @@ pub async fn solve_autonomously(
                             if category.contains(cat) {
                                 absorb_diagnosis_with_learner(
                                     brain, qa, classifier, problem, cat, 1.0,
-                                    Some(&mut learner));
+                                    Some(&mut *learner_ref));
                                 break;
                             }
                         }
                         // Log learner state after each solved episode
-                        let mut learner_report = learner.report();
+                        let mut learner_report = learner_ref.report();
                         learner_report.truncate(400);
                         iteration_log.push(format!(
                             "[iter {}] Learner: {} promoted, {} tracked tokens",
                             iteration,
-                            learner.promoted_count(),
-                            learner.tracked_token_count(),
+                            learner_ref.promoted_count(),
+                            learner_ref.tracked_token_count(),
                         ));
-                        eprintln!("  📊 Learner report:\n{}", learner.report());
+                        eprintln!("  📊 Learner report:\n{}", learner_ref.report());
                         return SolutionResult::Solved {
                             iterations: iteration + 1,
                             plan,
@@ -604,7 +668,8 @@ pub async fn solve_autonomously(
     }
 
     // Exhausted iteration budget
-    let last_state = assess(problem, brain, qa, classifier);
+    let last_state = assess_with_learner(problem, brain, qa, classifier,
+                                         Some(learner_ref));
     SolutionResult::Failed {
         iterations: max_iterations,
         last_state: last_state.name().to_string(),

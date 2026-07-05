@@ -540,9 +540,11 @@ pub async fn solve_autonomously(
                     // Check if goal was achieved
                     let (goal_ok, _) = qa.verify_fact(goal.0, goal.1, goal.2);
                     if goal_ok {
-                        // Absorb the diagnosis
-                        let categories = ["port_conflict", "network_timeout", "missing_file",
-                            "permission_denied", "disk_full"];
+                        // Absorb the diagnosis — must cover all categories the
+                        // diagnostic pipeline can return.
+                        let categories = ["port_conflict", "connection_refused",
+                            "missing_file", "permission_denied", "disk_full",
+                            "credential_invalid", "startup_failure"];
                         for cat in &categories {
                             if category.contains(cat) {
                                 crate::diagnostic::absorb_diagnosis(

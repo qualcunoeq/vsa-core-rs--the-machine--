@@ -1234,30 +1234,29 @@ pub fn absorb_diagnosis_with_learner(
 /// components (no action or resource keywords found in the error text).
 ///
 /// Returns the category name and confidence (similarity to nearest centroid).
-pub fn query_diagnostic_category(
+/// Shared internal implementation for query_diagnostic_category.
+///
+/// Takes a pre-parsed `ErrorStructure` so that both the plain and
+/// learner-aware variants can share this code without duplication.
+/// The caller is responsible for using the correct parsing function
+/// (with or without learner extensions).
+fn query_diagnostic_category_internal(
     brain: &VSABrain,
     error_text: &str,
+    structure: &ErrorStructure,
 ) -> Option<(String, f64)> {
-    let structure = parse_error_structure(error_text);
-
     // ── Build query from structural SVO (primary path) ────────────────
-    // If both action and resource are available, the structural SVO is the
-    // same for all structurally analogous errors, giving perfect matching.
-    // If only resource+error are available (no action keyword), use the state
-    // triple encode_svo(resource, "has_state", error) as the query.
     let query_hv: Hypervector = if let (Some(ref act), Some(ref res)) = (&structure.action_abstract, &structure.resource_abstract) {
         let act_hv = Hypervector::encode_text_ngram(act, 3);
         let acc_hv = Hypervector::encode_text_ngram("accesses", 3);
         let res_hv = Hypervector::encode_text_ngram(res, 3);
         crate::resonator::encode_svo(&act_hv, &acc_hv, &res_hv)
     } else if let (Some(ref res), Some(ref err)) = (&structure.resource_abstract, &structure.error_abstract) {
-        // No action keyword but we have resource+error → use state triple
         let res_hv = Hypervector::encode_text_ngram(res, 3);
         let state_v_hv = Hypervector::encode_text_ngram("has_state", 3);
         let err_hv = Hypervector::encode_text_ngram(err, 3);
         crate::resonator::encode_svo(&res_hv, &state_v_hv, &err_hv)
     } else {
-        // Fallback: trigram encoding (no structure available)
         Hypervector::encode_text_ngram(error_text, 3)
     };
 
@@ -1267,27 +1266,14 @@ pub fn query_diagnostic_category(
         return None;
     }
 
-    // ── Check dejavu cluster entries for concept labels ──────────────
-    // Structural SVO clusters may contain entries from multiple categories
-    // (e.g., both port_conflict and connection_refused share the structural
-    // SVO encode_svo("process", "accesses", "network_service")).  When
-    // multiple concept labels exist, disambiguate by finding which concept
-    // centroid is closest to the structural SVO cluster centroid.
+    // ── Disambiguate via concept labels in the cluster entries ───────
     let mut concept_matches: Vec<(String, f64)> = Vec::new();
-
     if let Some(cluster) = brain.dejavu_clusters.get(nearest_idx) {
         for entry in &cluster.entries {
             if entry.label.starts_with("concept:") {
-                // Compute similarity between the concept centroid cluster and
-                // the structural SVO centroid.  The concept centroid is stored
-                // as encode_text_ngram("concept:category_name", 3), and it lives
-                // in its own dejavu cluster.  Find its centroid and check the
-                // distance to the structural SVO query's nearest centroid.
                 let concept_name = &entry.label[8..];
                 let concept_hv = Hypervector::encode_text_ngram(&format!("concept:{}", concept_name), 3);
                 if let Some((_concept_idx, concept_sim)) = brain.nearest_centroid_idx(&concept_hv) {
-                    // The concept cluster centroid similarity to the structural
-                    // SVO cluster centroid gives us the disambiguation signal.
                     let centroid = &brain.dejavu_clusters[nearest_idx].centroid;
                     let concept_centroid = &brain.dejavu_clusters[_concept_idx].centroid;
                     let cluster_dist = centroid.normalized_hamming_distance(concept_centroid);
@@ -1300,7 +1286,7 @@ pub fn query_diagnostic_category(
         }
     }
 
-    // Return the best-matching concept (highest centroid-to-centroid similarity)
+    // Return the best-matching concept
     concept_matches.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
     if let Some((best_cat, best_sim)) = concept_matches.first() {
         if *best_sim >= 0.50 {
@@ -1309,9 +1295,6 @@ pub fn query_diagnostic_category(
     }
 
     // ── Check transient clusters ─────────────────────────────────────
-    // absorb_diagnosis adds labeled entries via add_transient_fact,
-    // which stores them in transient clusters.  Check all transient
-    // clusters for concept labels near the query.
     for tc in &brain.transient_clusters {
         for entry in &tc.entries {
             if entry.label.starts_with("concept:") {
@@ -1323,7 +1306,7 @@ pub fn query_diagnostic_category(
         }
     }
 
-    // ── Fallback: scan all clusters ──────────────────────────────────
+    // ── Fallback: scan all clusters for concept labels ───────────────
     let mut best_label = String::new();
     let mut best_sim = 0.50;
     for cluster in &brain.dejavu_clusters {
@@ -1339,45 +1322,54 @@ pub fn query_diagnostic_category(
     }
 
     if !best_label.is_empty() {
-        Some((best_label, best_sim))
-    } else {
-        // ── Final fallback: check concept centroids by similarity ────
-        // If no entry has a concept label, check centroid-to-centroid
-        // similarity with known concept hypervectors.
-        let known_categories = [
-            "port_conflict", "connection_refused", "missing_file",
-            "permission_denied", "disk_full", "startup_failure",
-        ];
-        let mut best: Option<(String, f64)> = None;
-        for cat in &known_categories {
-            let concept_name = format!("concept:{}", cat);
-            let concept_hv = Hypervector::encode_text_ngram(&concept_name, 3);
-            // Find the closest dejavu cluster centroid to this concept
-            if let Some((_idx, concept_sim)) = brain.nearest_centroid_idx(&concept_hv) {
-                // The query is near a centroid that is near the concept
-                let combined_sim = (nearest_sim + concept_sim) / 2.0;
-                if combined_sim >= 0.50 {
-                    match best {
-                        Some((_, ref mut best_s)) => {
-                            if combined_sim > *best_s {
-                                best = Some((cat.to_string(), combined_sim));
-                            }
-                        }
-                        None => {
-                            best = Some((cat.to_string(), combined_sim));
-                        }
+        return Some((best_label, best_sim));
+    }
+
+    // ── Final fallback: check known categories by centroid proximity ─
+    let known_categories = [
+        "port_conflict", "connection_refused", "missing_file",
+        "permission_denied", "disk_full", "startup_failure",
+    ];
+    let mut best: Option<(String, f64)> = None;
+    for cat in &known_categories {
+        let concept_name = format!("concept:{}", cat);
+        let concept_hv = Hypervector::encode_text_ngram(&concept_name, 3);
+        if let Some((_idx, concept_sim)) = brain.nearest_centroid_idx(&concept_hv) {
+            let combined_sim = (nearest_sim + concept_sim) / 2.0;
+            if combined_sim >= 0.50 {
+                match best {
+                    Some((_, ref mut best_s)) if combined_sim > *best_s => {
+                        best = Some((cat.to_string(), combined_sim));
                     }
+                    None => {
+                        best = Some((cat.to_string(), combined_sim));
+                    }
+                    _ => {}
                 }
             }
         }
-        best
     }
+    best
 }
 
+/// Query the VSABrain for the nearest diagnostic category to an error text.
+///
+/// Uses built-in keyword maps only.  See also
+/// `query_diagnostic_category_with_learner` for the version that also
+/// checks the learner's promoted keyword extensions.
+pub fn query_diagnostic_category(
+    brain: &VSABrain,
+    error_text: &str,
+) -> Option<(String, f64)> {
+    let structure = parse_error_structure(error_text);
+    query_diagnostic_category_internal(brain, error_text, &structure)
+}
 
-/// Like , but uses the learner's promoted
-/// keyword mappings for structural parsing.  Pass  to use only
-/// built-in maps (identical to the plain version).
+/// Like `query_diagnostic_category`, but also checks the learner's
+/// promoted keyword mappings when building the structural SVO query.
+///
+/// Pass `None` for the learner to use only built-in maps (equivalent
+/// to the plain function).
 pub fn query_diagnostic_category_with_learner(
     brain: &VSABrain,
     error_text: &str,
@@ -1387,67 +1379,7 @@ pub fn query_diagnostic_category_with_learner(
         Some(l) => parse_error_structure_with_learner(error_text, l),
         None => parse_error_structure(error_text),
     };
-
-    // ── Build query from structural SVO (primary path) ────────────────
-    let query_hv: Hypervector = if let (Some(ref act), Some(ref res)) = (&structure.action_abstract, &structure.resource_abstract) {
-        let act_hv = Hypervector::encode_text_ngram(act, 3);
-        let acc_hv = Hypervector::encode_text_ngram("accesses", 3);
-        let res_hv = Hypervector::encode_text_ngram(res, 3);
-        crate::resonator::encode_svo(&act_hv, &acc_hv, &res_hv)
-    } else if let (Some(ref res), Some(ref err)) = (&structure.resource_abstract, &structure.error_abstract) {
-        let res_hv = Hypervector::encode_text_ngram(res, 3);
-        let state_v_hv = Hypervector::encode_text_ngram("has_state", 3);
-        let err_hv = Hypervector::encode_text_ngram(err, 3);
-        crate::resonator::encode_svo(&res_hv, &state_v_hv, &err_hv)
-    } else {
-        Hypervector::encode_text_ngram(error_text, 3)
-    };
-
-    // ── Rest is identical to query_diagnostic_category ────────────────
-    let (nearest_idx, nearest_sim) = brain.nearest_centroid_idx(&query_hv)?;
-    if nearest_sim < 0.50 {
-        return None;
-    }
-
-    let mut concept_matches: Vec<(String, f64)> = Vec::new();
-    if let Some(cluster) = brain.dejavu_clusters.get(nearest_idx) {
-        for entry in &cluster.entries {
-            if entry.label.starts_with("concept:") {
-                let concept_name = &entry.label[8..];
-                let concept_hv = Hypervector::encode_text_ngram(&format!("concept:{}", concept_name), 3);
-                if let Some((_concept_idx, concept_sim)) = brain.nearest_centroid_idx(&concept_hv) {
-                    let centroid = &brain.dejavu_clusters[nearest_idx].centroid;
-                    let concept_centroid = &brain.dejavu_clusters[_concept_idx].centroid;
-                    let cluster_dist = centroid.normalized_hamming_distance(concept_centroid);
-                    let cluster_sim = 1.0 - cluster_dist;
-                    concept_matches.push((concept_name.to_string(), cluster_sim));
-                } else {
-                    concept_matches.push((concept_name.to_string(), 0.5));
-                }
-            }
-        }
-    }
-
-    concept_matches.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
-    if let Some((best_cat, best_sim)) = concept_matches.first() {
-        if *best_sim >= 0.50 {
-            return Some((best_cat.clone(), (*best_sim + nearest_sim) / 2.0));
-        }
-    }
-
-    for tc in &brain.transient_clusters {
-        for entry in &tc.entries {
-            if entry.label.starts_with("concept:") {
-                let concept_hv = Hypervector::encode_text_ngram(&entry.label, 3);
-                if let Some((_tc_idx, tc_sim)) = brain.nearest_centroid_idx(&concept_hv) {
-                    concept_matches.push((entry.label[8..].to_string(), tc_sim));
-                }
-            }
-        }
-    }
-
-    concept_matches.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
-    concept_matches.first().map(|(cat, sim)| (cat.clone(), *sim))
+    query_diagnostic_category_internal(brain, error_text, &structure)
 }
 
 /// Query whether a specific diagnostic category has been learned from past episodes.

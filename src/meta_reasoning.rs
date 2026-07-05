@@ -196,40 +196,27 @@ pub fn assess_with_learner(
         }
     }
 
-    // ── Level 4: Centroid proximity ─────────────────────────────────────
-    let error_hv = Hypervector::encode_text_ngram(problem, 3);
-    if let Some((idx, sim)) = brain.nearest_centroid_idx(&error_hv) {
-        if sim >= 0.55 {
-            // Find the centroid's most common label
-            let mut best_label = String::new();
-            let mut best_count = 0u32;
-            if let Some(cluster) = brain.dejavu_clusters.get(idx) {
-                let mut freq = std::collections::HashMap::new();
-                for entry in &cluster.entries {
-                    *freq.entry(&entry.label).or_insert(0) += entry.weight.max(1);
-                }
-                for (label, count) in &freq {
-                    if *count > best_count {
-                        best_count = *count;
-                        best_label = (*label).clone();
-                    }
-                }
-            }
-
-            if !best_label.is_empty() && !best_label.starts_with("concept:") {
-                let hypothesis = Hypothesis {
-                    category: best_label.clone(),
-                    source: HypothesisSource::CentroidProximity,
-                    confidence: sim,
-                    structural_triples: struct_triples.unwrap_or_default(),
-                    test_description: format!("Closest centroid: {} (sim={:.2})", best_label, sim),
-                };
-                return ReasoningState::Uncertain {
-                    hypotheses: vec![hypothesis],
-                    best_confidence: sim,
-                    problem: problem.to_string(),
-                };
-            }
+    // ── Level 4: Structural SVO centroid query (learner-aware) ──────────
+    // Uses the same structural SVO encoding as query_diagnostic_category
+    // with the learner's promoted keyword mappings.  This is the primary
+    // generalization path for learned abstractions.
+    if let Some((category, conf)) = query_diagnostic_category_with_learner(
+        brain, problem, learner)
+    {
+        if conf >= 0.55 {
+            let hypothesis = Hypothesis {
+                category: category.clone(),
+                source: HypothesisSource::CentroidProximity,
+                confidence: conf,
+                structural_triples: struct_triples.unwrap_or_default(),
+                test_description: format!(
+                    "Structural SVO centroid: {} (conf={:.2})", category, conf),
+            };
+            return ReasoningState::Uncertain {
+                hypotheses: vec![hypothesis],
+                best_confidence: conf,
+                problem: problem.to_string(),
+            };
         }
     }
 

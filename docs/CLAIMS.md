@@ -170,6 +170,28 @@ decision record or clear budget accounting.
 Next check: define an autonomy budget structure and require real external
 actions to consume from it.
 
+### C-008: QA Term Resolution Can Be Audited
+
+Status: `supported`
+
+Statement: Term resolution can expose the mechanism that produced each query
+vector without changing legacy QA behavior.
+
+Owner modules: `src/qa.rs`, `MATH.md`.
+
+Evidence: `resolve_term_trace` returns `ResolveTrace`, and `resolve_term` delegates
+to `resolve_term_trace(...).vector`. Resolver tests verify exact cluster, raw
+fallback, and association traversal provenance.
+
+Baseline: `resolve_term` returned only a hypervector, so failures could not be
+assigned to raw encoding, cluster projection, or association traversal.
+
+Failure condition: a trace reports a source, centroid, label, association, or
+confidence that does not match the branch used to construct the returned vector.
+
+Next check: propagate `ResolveTrace` into answer explanations and causal-chain
+debug output.
+
 ## Retired Or Negative Claims
 
 Negative results are useful research output.  Do not delete them just because
@@ -181,4 +203,3 @@ they are inconvenient.
 - Earlier soft-projection formula claims before the v3.1 correction: superseded
   by the corrected formula and calibration.
 - Earlier `L_F <= 0.5` bound: superseded by the tighter `L_F <= 1.0` correction.
-

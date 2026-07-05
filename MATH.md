@@ -85,6 +85,7 @@ the architecture as a whole loses its guarantees.
 | **A28** | **Telemetry Honesty** | Runtime monitors measure real instability signals and cannot be gamed | Contraction telemetry, XXII (monitoring) | Telemetry spooﬁng: adversarial inputs produce false contraction readings; tripwire never fires |
 | **A29** | **Rollback Viability** | Harmful updates can be reverted to a prior stable state | Learning, autonomy | Cannot undo bad learning; single bad episode permanently corrupts centroid memory |
 | **A30** | **Structural Analogy Soundness** | Abstract structural triples capture the same causal mechanism across surface forms | III (structural parser), meta-reasoning | False analogy: "KMS keyserver unreachable" and "bind() to port failed" produce same abstract triples but different root causes; wrong fix executed |
+| **A31** | **Trace Faithfulness** | Resolver traces report the actual branch, centroid, association, and confidence used to produce a vector | QA engine, answer provenance, self-evaluation | Silent misattribution: the system cannot distinguish raw fallback from concept resolution; feedback trains the wrong mechanism |
 
 ### 0.3 Assumption Dependency Graph
 
@@ -109,7 +110,8 @@ A4 (Cleanup Oracle) ───┬── A18 (Chain Depth Bound)
 
 A5 (Feedback Reliability) ─┬── A22 (Identifiability)
                            ├── A23 (Exploration Coverage)
-                           └── A25–A29 (Safety/Autonomy stack)
+                           ├── A25–A29 (Safety/Autonomy stack)
+                           └── A31 (Trace Faithfulness)
 ```
 
 ### 0.4 Empirical Validation Status of Assumptions
@@ -125,6 +127,7 @@ A5 (Feedback Reliability) ─┬── A22 (Identifiability)
 | A7 | Burst-Limited Adversary | **UNVERIFIED** | `test_adversarial_lf_boundary` proves worst-case $L_F = 1.0$ but no burst test exists |
 | A21 | Abstraction Preservation | **FALSE for held-out structural variants** | Intervention test: **0/3** zero-overlap texts classified without hand-coded keyword tables |
 | A30 | Structural Analogy Soundness | **INCOMPLETE** | Structural parser found correct triples for 3/3 test cases, but pattern list was incomplete (1/3 correct category) |
+| A31 | Trace Faithfulness | **IMPLEMENTED** | `resolve_term_trace` returns `ResolveTrace`; `test_resolve_term_*` verifies exact, raw, and association paths |
 
 ### 0.5 Critical Finding: A21 (Abstraction Preservation) — RESOLVED v3.2
 
@@ -658,6 +661,7 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XXX.1 | Unified tracking bound | **PROVEN** | Four lemmas: accumulator contraction + novelty bound + fission rate + memory cap. $\varepsilon \approx 0.155$ |
 | XXXI.1–8 | Failure mode taxonomy | **CATALOGUED** | 8 failure modes with detection monitors and recovery procedures |
 | XXXII.1–6 | Information-theoretic bounds | **COMPUTED** | $C_{\text{storage}} \approx 720$ bits, $C_{\text{channel}} \approx 6.3$ bits, bundling loss $\approx 98\%$ at $n=100$ |
+| XXXIII.1–3 | Traceable concept resolution | **IMPLEMENTED** | `resolve_term_trace` is a conservative extension of `resolve_term`; tests verify path provenance |
 
 ### Empirical Measurements
 
@@ -3184,3 +3188,122 @@ self-reinforcement by Theorem I.1).
 The remaining vulnerability is $W_{\max} - 1$ "poisoning" inputs before the cap is hit.
 This requires $O(W_{\max})$ sequential inputs, which is detectable by monitoring the
 input rate ($dW/dt$) and flagging abnormal ingestion patterns.
+
+---
+
+## XXXIII. Traceable Concept Resolution
+
+The QA engine resolves surface text into hypervectors before storing facts, storing
+rules, and following causal chains.  Before v3.3, this operation returned only the
+resolved vector.  The system could use the vector, but it could not tell whether the
+vector came from an exact cluster match, a projection, an association, or raw n-gram
+fallback.  This section formalizes the trace as an audit side-channel.
+
+### Definitions
+
+Let:
+
+- $E(t) \in \mathcal{H}$ be the trigram encoder for text term $t$.
+- $\mathcal{M} = \{c_1,\ldots,c_K\}$ be the synced QA centroid snapshot.
+- $A_i = \{(j, a_{ij}, w_{ij})\}$ be the association list for centroid $c_i$,
+  where $a_{ij} = c_i \oplus c_j$ and $w_{ij}$ is association strength.
+- $\theta_{\text{near}} = 0.65$ be the nearest-centroid similarity threshold.
+- $\theta_{\text{assoc}}$ be `ASSOCIATION_RESOLUTION_THRESHOLD`.
+
+The legacy resolver is a function:
+
+$$R(t) \in \mathcal{H}$$
+
+The traceable resolver is:
+
+$$\hat{R}(t) = (v, s, i, \ell, d, \alpha, q)$$
+
+where:
+
+- $v \in \mathcal{H}$ is the returned vector;
+- $s \in \{\text{RawEncoding}, \text{ExactCluster}, \text{ClusterProjection}, \text{AssociationTraversal}\}$ is the source tag;
+- $i \in \{1,\ldots,K\} \cup \{\bot\}$ is the returned centroid index, if any;
+- $\ell$ is the synced human label for $i$, if any;
+- $d = \delta(E(t), v)$ when meaningful;
+- $\alpha$ is association strength when `AssociationTraversal` fires;
+- $q \in [0,1]$ is trace confidence.
+
+### Theorem XXXIII.1 (Trace Is a Conservative Extension)
+
+For every text term $t$, the vector returned by traceable resolution equals the
+legacy resolver output:
+
+$$\pi_v(\hat{R}(t)) = R(t)$$
+
+where $\pi_v$ projects the trace tuple onto its vector component.
+
+**Proof.** The implementation defines `resolve_term(t)` as `resolve_term_trace(t).vector`.
+All branch logic is centralized in `resolve_term_trace`.  Therefore there is no
+independent path by which the legacy resolver can diverge from the traceable resolver.
+$\square$
+
+**Consequence.** Adding provenance does not change QA behavior.  It only exposes the
+resolution path for explanation, calibration, and feedback assignment.
+
+### Theorem XXXIII.2 (Source Tag Soundness)
+
+Assume A31 (Trace Faithfulness).  For any trace $\hat{R}(t)$:
+
+1. If $s = \text{RawEncoding}$, then $v = E(t)$ and no centroid claim is made.
+2. If $s = \text{ExactCluster}$, then $v = c_i$ for some $i$ and
+   $\delta(E(t), c_i) < 0.01$.
+3. If $s = \text{ClusterProjection}$, then $v = c_i$ for some $i$ and
+   $1 - \delta(E(t), c_i) \geq \theta_{\text{near}}$.
+4. If $s = \text{AssociationTraversal}$, then there exists an edge
+   $(j, a_{ji}, w_{ji}) \in A_j$ such that
+   $w_{ji} \geq \theta_{\text{assoc}}$ and $v = c_j \oplus a_{ji}$.
+
+**Proof.** Each case follows from the resolver branch conditions:
+
+- `RawEncoding` is returned only in the empty-centroid or no-improvement fallback path,
+  both of which set `vector = E(t)` and `centroid_index = None`.
+- `ExactCluster` is a cluster projection whose measured distance is below $0.01$.
+- `ClusterProjection` is returned only after the nearest-centroid threshold is met.
+- `AssociationTraversal` is returned only after iterating an association edge whose
+  strength passes the association threshold and reconstructing the target vector by
+  XORing the source centroid with the stored association vector. $\square$
+
+### Theorem XXXIII.3 (Feedback Assignment Observability)
+
+Let $L$ be a downstream loss or reward signal assigned to an answer that depended on
+resolved terms $t_1,\ldots,t_n$.  With traceable resolution, the system can attribute
+$L$ to a set of mechanism/source pairs:
+
+$$\{(t_k, s_k, i_k, \alpha_k, q_k)\}_{k=1}^n$$
+
+Without traceable resolution, all losses collapse to the vector sequence
+$\{R(t_k)\}_{k=1}^n$ and the system cannot distinguish:
+
+- a true concept match that produced a wrong answer;
+- a raw fallback that never reached concept memory;
+- an association edge that reconstructed the wrong concept;
+- a label/centroid mismatch introduced during sync.
+
+**Proof.** The trace contains the source tag, centroid index, label, association strength,
+and confidence for each term.  These fields partition the resolver path.  The vector
+alone does not encode the branch that produced it: the same vector may be returned by
+raw encoding, exact projection, or association reconstruction.  Therefore the trace
+strictly refines the observable state available to feedback assignment. $\square$
+
+### Boundary: Trace Is Not Semantic Truth
+
+Traceability proves which computation produced a vector.  It does **not** prove that the
+vector names the correct external concept.  Semantic correctness still depends on A20
+(Symbol Grounding), A21 (Abstraction Preservation), A30 (Structural Analogy Soundness),
+and the quality of synced centroid labels.
+
+Failure examples:
+
+- A mislabeled centroid can produce a faithful trace with the wrong label.
+- A strong but spurious association can faithfully report `AssociationTraversal` while
+  reconstructing the wrong target.
+- `RawEncoding` can be correct for a new term even though no concept memory exists yet.
+
+The trace is therefore an **audit layer**, not an oracle.  Its value is that future
+self-evaluation can decide which mechanism failed instead of treating every wrong answer
+as an undifferentiated QA error.

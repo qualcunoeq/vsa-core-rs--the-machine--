@@ -66,7 +66,7 @@ Expected contents:
 | Noise-stable memory | raw HV stream | NHD to source, retained signal, memory growth | `src/lib.rs`, `src/reason.rs` | structured long-run memory benchmark |
 | Concept formation | similarity-only grouping | prediction gain, compression gain, concept churn | `src/abstractor.rs` | abstractor on/off ablation |
 | Temporal prediction | last-state or frequency baseline | top-k accuracy, calibration error | `src/temporal.rs`, `src/predictive.rs` | seedable transition benchmark |
-| QA recall | direct lookup | answer accuracy, provenance completeness | `src/qa.rs` | traceable `resolve_term` result |
+| QA recall | direct lookup | answer accuracy, provenance completeness | `src/qa.rs` | propagate `ResolveTrace` into answer explanations |
 | Analogical transfer | non-VSA parser/classifier | held-out transfer accuracy | `src/analogy.rs` | keep negative A21 result until mechanism changes |
 | Diagnostics | static keyword map | held-out diagnosis accuracy, category drift | `src/diagnostic.rs`, `src/abstraction_learner.rs` | persistent learner promotion audit |
 | Tool use | direct invocation logs | replayability, reliability estimate, side-effect class | `src/action.rs`, `src/actuator.rs` | `ToolEvent` schema |
@@ -117,4 +117,3 @@ A mechanism should stay experimental when:
 - Add structured output to ignored benchmark tests.
 - Reduce warning noise in core modules so new warnings are visible.
 - Record negative results in `docs/CLAIMS.md` before removing failed mechanisms.
-

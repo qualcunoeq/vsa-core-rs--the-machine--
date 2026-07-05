@@ -45,6 +45,7 @@
 use std::collections::{HashMap, HashSet};
 use crate::qa::QaEngine;
 use crate::text_encoder::{ingest_text, store_knowledge_triple};
+use crate::abstraction_learner::AbstractionLearner;
 use crate::Hypervector;
 use crate::VSABrain;
 
@@ -177,17 +178,17 @@ const ERROR_CLASSES: &[(&str, &str, &str)] = &[
 /// Result of parsing an error text into structural components.
 pub struct ErrorStructure {
     /// The concrete action (e.g., "bind", "connect").
-    pub action_concrete: Option<&'static str>,
+    pub action_concrete: Option<String>,
     /// The abstract actor (e.g., "process").
-    pub action_abstract: Option<&'static str>,
+    pub action_abstract: Option<String>,
     /// The concrete resource (e.g., "network_port", "remote_host").
-    pub resource_concrete: Option<&'static str>,
+    pub resource_concrete: Option<String>,
     /// The abstract service (e.g., "network_service").
-    pub resource_abstract: Option<&'static str>,
+    pub resource_abstract: Option<String>,
     /// The concrete error class (e.g., "failed", "refused").
-    pub error_concrete: Option<&'static str>,
+    pub error_concrete: Option<String>,
     /// The abstract result (e.g., "unavailable").
-    pub error_abstract: Option<&'static str>,
+    pub error_abstract: Option<String>,
 }
 
 /// Parse error text into structural components.
@@ -266,12 +267,129 @@ pub fn parse_error_structure(error_text: &str) -> ErrorStructure {
     }
 
     ErrorStructure {
-        action_concrete,
-        action_abstract,
-        resource_concrete,
-        resource_abstract,
-        error_concrete,
-        error_abstract,
+        action_concrete: action_concrete.map(|s| s.to_string()),
+        action_abstract: action_abstract.map(|s| s.to_string()),
+        resource_concrete: resource_concrete.map(|s| s.to_string()),
+        resource_abstract: resource_abstract.map(|s| s.to_string()),
+        error_concrete: error_concrete.map(|s| s.to_string()),
+        error_abstract: error_abstract.map(|s| s.to_string()),
+    }
+}
+
+/// Like `parse_error_structure`, but also checks the learner's promoted
+/// keyword mappings before falling through to the built-in maps.
+///
+/// This is the main entry point for structural parsing in the autonomy
+/// loop.  The built-in maps (ACTIONS, RESOURCES, ERROR_CLASSES) remain
+/// as fallbacks for well-known keywords.  The learner's mappings extend
+/// coverage to domain-specific vocabulary discovered from solved episodes.
+pub fn parse_error_structure_with_learner(
+    error_text: &str,
+    learner: &AbstractionLearner,
+) -> ErrorStructure {
+    let lower = error_text.to_lowercase();
+
+    let mut action_concrete: Option<&str> = None;
+    let mut action_abstract: Option<&str> = None;
+    let mut action_kw_len: usize = 0;
+    let mut resource_concrete: Option<&str> = None;
+    let mut resource_abstract: Option<&str> = None;
+    let mut resource_kw_len: usize = 0;
+    let mut error_concrete: Option<&str> = None;
+    let mut error_abstract: Option<&str> = None;
+    let mut error_kw_len: usize = 0;
+
+    // ── Phase 1: Check learner's promoted mappings first ──────────────
+    // Learned mappings take priority over built-in keywords because they
+    // are more specific (learned from actual episodes in this domain).
+
+    // Promoted actions
+    for (keyword, concrete, abstract_) in learner.promoted_actions() {
+        if contains_word(&lower, keyword) && keyword.len() > action_kw_len {
+            action_kw_len = keyword.len();
+            action_concrete = Some(concrete);
+            action_abstract = Some(abstract_);
+        }
+    }
+
+    // Promoted resources
+    for (keyword, concrete, abstract_) in learner.promoted_resources() {
+        if contains_word(&lower, keyword) && keyword.len() > resource_kw_len {
+            resource_kw_len = keyword.len();
+            resource_concrete = Some(concrete);
+            resource_abstract = Some(abstract_);
+        }
+    }
+
+    // Promoted errors
+    for (keyword, concrete, abstract_) in learner.promoted_errors() {
+        if lower.contains(keyword) && keyword.len() > error_kw_len {
+            error_kw_len = keyword.len();
+            error_concrete = Some(concrete);
+            error_abstract = Some(abstract_);
+        }
+    }
+
+    // ── Phase 2: Check built-in maps (fallback) ───────────────────────
+    // Only check if the learner didn't already find a longer match.
+    // The built-in maps serve as a broader-coverage fallback.
+
+    for (keyword, concrete, abstract_) in ACTIONS {
+        if lower.contains(keyword) && keyword.len() > action_kw_len {
+            action_kw_len = keyword.len();
+            action_concrete = Some(concrete);
+            action_abstract = Some(abstract_);
+        }
+    }
+
+    for (keyword, concrete, abstract_) in RESOURCES {
+        if contains_word(&lower, keyword) && keyword.len() > resource_kw_len {
+            resource_kw_len = keyword.len();
+            resource_concrete = Some(concrete);
+            resource_abstract = Some(abstract_);
+        }
+    }
+
+    // Detect port numbers in IP:port format
+    if resource_concrete.is_none() {
+        for word in lower.split_whitespace() {
+            if word.contains(':') {
+                let after_colon = word.split(':').last().unwrap_or("");
+                if after_colon.chars().all(|c| c.is_ascii_digit()) {
+                    resource_concrete = Some("network_port");
+                    resource_abstract = Some("network_service");
+                    break;
+                }
+            }
+        }
+    }
+
+    // Detect common IP-like patterns as network services
+    if resource_concrete.is_none() {
+        if lower.chars().any(|c| c.is_ascii_digit()) {
+            let has_ip_pattern = lower.contains('.') && lower.contains(':');
+            if has_ip_pattern {
+                resource_concrete = Some("network_address");
+                resource_abstract = Some("network_service");
+            }
+        }
+    }
+
+    for (keyword, concrete, abstract_) in ERROR_CLASSES {
+        if lower.contains(keyword) && keyword.len() > error_kw_len {
+            error_kw_len = keyword.len();
+            error_concrete = Some(concrete);
+            error_abstract = Some(abstract_);
+        }
+    }
+
+    ErrorStructure {
+        action_concrete: action_concrete.map(|s| s.to_string()),
+        action_abstract: action_abstract.map(|s| s.to_string()),
+        resource_concrete: resource_concrete.map(|s| s.to_string()),
+        resource_abstract: resource_abstract.map(|s| s.to_string()),
+        error_concrete: error_concrete.map(|s| s.to_string()),
+        error_abstract: error_abstract.map(|s| s.to_string()),
     }
 }
 
@@ -293,34 +411,34 @@ pub fn structure_to_triples(structure: &ErrorStructure) -> Vec<CanonicalSvo> {
     let mut triples = Vec::new();
 
     // ── Concrete level ─────────────────────────────────────────────────
-    if let (Some(act), Some(res)) = (structure.action_concrete, structure.resource_concrete) {
-        triples.push((act.to_string(), "accesses".to_string(), res.to_string()));
+    if let (Some(ref act), Some(ref res)) = (&structure.action_concrete, &structure.resource_concrete) {
+        triples.push((act.clone(), "accesses".to_string(), res.clone()));
     }
-    if let (Some(res), Some(err)) = (structure.resource_concrete, structure.error_concrete) {
-        triples.push((res.to_string(), "has_state".to_string(), err.to_string()));
+    if let (Some(ref res), Some(ref err)) = (&structure.resource_concrete, &structure.error_concrete) {
+        triples.push((res.clone(), "has_state".to_string(), err.clone()));
     }
 
     // ── Abstract level ─────────────────────────────────────────────────
-    if let (Some(act), Some(res)) = (structure.action_abstract, structure.resource_abstract) {
-        triples.push((act.to_string(), "accesses".to_string(), res.to_string()));
+    if let (Some(ref act), Some(ref res)) = (&structure.action_abstract, &structure.resource_abstract) {
+        triples.push((act.clone(), "accesses".to_string(), res.clone()));
     }
-    if let (Some(res), Some(err)) = (structure.resource_abstract, structure.error_abstract) {
-        triples.push((res.to_string(), "has_state".to_string(), err.to_string()));
+    if let (Some(ref res), Some(ref err)) = (&structure.resource_abstract, &structure.error_abstract) {
+        triples.push((res.clone(), "has_state".to_string(), err.clone()));
     }
 
     // ── Mixed level: concrete+abstract bridge ───────────────────────────
     // If we have a specific action but only an abstract resource,
     // also generate the concrete-action + abstract-resource triple.
-    if let (Some(act), None) = (structure.action_concrete, structure.resource_concrete) {
-        if let Some(res) = structure.resource_abstract {
-            triples.push((act.to_string(), "accesses".to_string(), res.to_string()));
+    if let (Some(ref act), None) = (&structure.action_concrete, &structure.resource_concrete) {
+        if let Some(ref res) = structure.resource_abstract {
+            triples.push((act.clone(), "accesses".to_string(), res.clone()));
         }
     }
     // If we have a specific resource but only an abstract error,
     // generate the specific-resource + abstract-error triple.
-    if let (Some(res), None) = (structure.resource_concrete, structure.error_concrete) {
-        if let Some(err) = structure.error_abstract {
-            triples.push((res.to_string(), "has_state".to_string(), err.to_string()));
+    if let (Some(ref res), None) = (&structure.resource_concrete, &structure.error_concrete) {
+        if let Some(ref err) = structure.error_abstract {
+            triples.push((res.clone(), "has_state".to_string(), err.clone()));
         }
     }
 
@@ -940,6 +1058,24 @@ pub fn absorb_diagnosis(
     category: &str,
     outcome: f64,
 ) {
+    absorb_diagnosis_with_learner(brain, qa, classifier, error_text, category, outcome, None);
+}
+
+/// Like `absorb_diagnosis`, but also records the episode in the
+/// `AbstractionLearner` for self-extending keyword maps.
+///
+/// The learner tracks unknown tokens from the error text and promotes
+/// high-confidence token→role mappings after enough episodes.
+/// See `AbstractionLearner::record_episode` for details.
+pub fn absorb_diagnosis_with_learner(
+    brain: &mut VSABrain,
+    qa: &mut QaEngine,
+    classifier: &mut ErrorClassifier,
+    error_text: &str,
+    category: &str,
+    outcome: f64,
+    learner: Option<&mut AbstractionLearner>,
+) {
     // ═════════════════════════════════════════════════════════════════════
     // 1. STRUCTURAL SVO CENTROIDS (primary generalization mechanism)
     //
@@ -955,9 +1091,12 @@ pub fn absorb_diagnosis(
     //
     // The state SVO is stored EVEN WHEN ACTION IS MISSING (e.g., "disk
     // quota exceeded" has no action keyword but has resource + error).
-    let structure = parse_error_structure(error_text);
+    let structure = match learner {
+        Some(ref l) => parse_error_structure_with_learner(error_text, l),
+        None => parse_error_structure(error_text),
+    };
 
-    if let (Some(act), Some(res)) = (structure.action_abstract, structure.resource_abstract) {
+    if let (Some(ref act), Some(ref res)) = (&structure.action_abstract, &structure.resource_abstract) {
         let act_hv = Hypervector::encode_text_ngram(act, 3);
         let acc_hv = Hypervector::encode_text_ngram("accesses", 3);
         let res_hv = Hypervector::encode_text_ngram(res, 3);
@@ -989,7 +1128,7 @@ pub fn absorb_diagnosis(
     // Store STATE SVO regardless of whether action is available.
     // This handles cases like "disk quota exceeded" where only resource
     // and error keywords are present.
-    if let (Some(res), Some(err)) = (structure.resource_abstract, structure.error_abstract) {
+    if let (Some(ref res), Some(ref err)) = (&structure.resource_abstract, &structure.error_abstract) {
         let res_hv = Hypervector::encode_text_ngram(res, 3);
         let state_v_hv = Hypervector::encode_text_ngram("has_state", 3);
         let err_hv = Hypervector::encode_text_ngram(err, 3);
@@ -1039,7 +1178,16 @@ pub fn absorb_diagnosis(
     brain.absorb_epistemic_update(&error_hv, category, true);
 
     // ═════════════════════════════════════════════════════════════════════
-    // 4. SYNC & SELF-EXTEND
+    // 4. SELF-EXTENDING KEYWORD MAPS (AbstractionLearner)
+    // ═════════════════════════════════════════════════════════════════════
+    // Record the episode in the learner so it can track unknown tokens
+    // and promote high-confidence token→role mappings after enough episodes.
+    if let Some(l) = learner {
+        l.record_episode(error_text, category);
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
+    // 5. SYNC & SELF-EXTEND
     // ═════════════════════════════════════════════════════════════════════
     qa.sync_cluster_data(brain);
     classifier.add_pattern(category, error_text);
@@ -1068,12 +1216,12 @@ pub fn query_diagnostic_category(
     // same for all structurally analogous errors, giving perfect matching.
     // If only resource+error are available (no action keyword), use the state
     // triple encode_svo(resource, "has_state", error) as the query.
-    let query_hv: Hypervector = if let (Some(act), Some(res)) = (structure.action_abstract, structure.resource_abstract) {
+    let query_hv: Hypervector = if let (Some(ref act), Some(ref res)) = (&structure.action_abstract, &structure.resource_abstract) {
         let act_hv = Hypervector::encode_text_ngram(act, 3);
         let acc_hv = Hypervector::encode_text_ngram("accesses", 3);
         let res_hv = Hypervector::encode_text_ngram(res, 3);
         crate::resonator::encode_svo(&act_hv, &acc_hv, &res_hv)
-    } else if let (Some(res), Some(err)) = (structure.resource_abstract, structure.error_abstract) {
+    } else if let (Some(ref res), Some(ref err)) = (&structure.resource_abstract, &structure.error_abstract) {
         // No action keyword but we have resource+error → use state triple
         let res_hv = Hypervector::encode_text_ngram(res, 3);
         let state_v_hv = Hypervector::encode_text_ngram("has_state", 3);
@@ -1687,12 +1835,12 @@ mod tests {
         // "bind() to 0.0.0.0:80 failed" should parse to:
         //   action = bind, resource = network_port, error = failed
         let s = parse_error_structure("bind() to 0.0.0.0:80 failed (98: Unknown error)");
-        assert_eq!(s.action_concrete, Some("bind"));
-        assert_eq!(s.action_abstract, Some("process"));
-        assert_eq!(s.resource_concrete, Some("network_port"));
-        assert_eq!(s.resource_abstract, Some("network_service"));
-        assert_eq!(s.error_concrete, Some("failed"));
-        assert_eq!(s.error_abstract, Some("unavailable"));
+        assert_eq!(s.action_concrete.as_deref(), Some("bind"));
+        assert_eq!(s.action_abstract.as_deref(), Some("process"));
+        assert_eq!(s.resource_concrete.as_deref(), Some("network_port"));
+        assert_eq!(s.resource_abstract.as_deref(), Some("network_service"));
+        assert_eq!(s.error_concrete.as_deref(), Some("failed"));
+        assert_eq!(s.error_abstract.as_deref(), Some("unavailable"));
     }
 
     #[test]
@@ -1700,13 +1848,13 @@ mod tests {
         // "KMS keyserver unreachable" should parse to:
         //   action = reach_resource, resource = remote_host or remote_server, error = unreachable
         let s = parse_error_structure("KMS keyserver unreachable: timeout");
-        assert_eq!(s.action_concrete, Some("reach_resource"));
-        assert_eq!(s.action_abstract, Some("process"));
+        assert_eq!(s.action_concrete.as_deref(), Some("reach_resource"));
+        assert_eq!(s.action_abstract.as_deref(), Some("process"));
         // Should match "server" → remote_server (longer keyword than "host" or "key")
         // Actually "keyserver" contains "server" → remote_server
-        assert_eq!(s.resource_abstract, Some("network_service"));
-        assert_eq!(s.error_concrete, Some("unreachable"));
-        assert_eq!(s.error_abstract, Some("unavailable"));
+        assert_eq!(s.resource_abstract.as_deref(), Some("network_service"));
+        assert_eq!(s.error_concrete.as_deref(), Some("unreachable"));
+        assert_eq!(s.error_abstract.as_deref(), Some("unavailable"));
     }
 
     #[test]
@@ -1716,19 +1864,19 @@ mod tests {
         let s = parse_error_structure("SSL certificate expired");
         // Action is not explicitly stated in "SSL certificate expired"
         // The parser only extracts actions from explicit action keywords
-        assert_eq!(s.resource_concrete, Some("credential_cert"));
-        assert_eq!(s.resource_abstract, Some("credential"));
-        assert_eq!(s.error_concrete, Some("expired"));
-        assert_eq!(s.error_abstract, Some("credential_invalid"));
+        assert_eq!(s.resource_concrete.as_deref(), Some("credential_cert"));
+        assert_eq!(s.resource_abstract.as_deref(), Some("credential"));
+        assert_eq!(s.error_concrete.as_deref(), Some("expired"));
+        assert_eq!(s.error_abstract.as_deref(), Some("credential_invalid"));
     }
 
     #[test]
     fn test_parse_structure_disk_full() {
         let s = parse_error_structure("disk quota exceeded on /var/log");
-        assert_eq!(s.resource_concrete, Some("storage_disk"));
-        assert_eq!(s.resource_abstract, Some("storage"));
-        assert_eq!(s.error_concrete, Some("quota_exceeded"));
-        assert_eq!(s.error_abstract, Some("capacity_exhausted"));
+        assert_eq!(s.resource_concrete.as_deref(), Some("storage_disk"));
+        assert_eq!(s.resource_abstract.as_deref(), Some("storage"));
+        assert_eq!(s.error_concrete.as_deref(), Some("quota_exceeded"));
+        assert_eq!(s.error_abstract.as_deref(), Some("capacity_exhausted"));
     }
 
     #[test]

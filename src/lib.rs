@@ -4,6 +4,7 @@
 use rand::Rng;
 use std::collections::HashMap;
 
+pub mod abstraction_learner;
 pub mod abstractor;
 pub mod action;
 pub mod actuator;

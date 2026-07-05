@@ -23,9 +23,10 @@
 // Stage 1 of the autonomy build.  No execution — just judgment.
 // ────────────────────────────────────────────────────────────────────────────
 
+use crate::abstraction_learner::AbstractionLearner;
 use crate::actuator::{ActionRequest, ActionResult, ActionType, JumpBoxActuator};
 use crate::diagnostic::{
-    classify_structural, parse_error_structure,
+    absorb_diagnosis_with_learner, classify_structural, parse_error_structure,
     query_diagnostic_category, CanonicalSvo, ErrorClassifier,
 };
 use crate::qa::{PlanStep, QaEngine};
@@ -282,7 +283,7 @@ fn find_best_structural_category(
 /// Generate a test action description for a hypothesis.
 pub fn generate_test_action(problem: &str) -> String {
     let structure = parse_error_structure(problem);
-    if let Some(res) = structure.resource_concrete {
+    if let Some(ref res) = structure.resource_concrete {
         format!("Check if resource '{}' is available", res)
     } else {
         format!("Run diagnostic commands for: {}", problem)
@@ -482,6 +483,8 @@ pub async fn solve_autonomously(
     max_iterations: usize,
 ) -> SolutionResult {
     let mut iteration_log: Vec<String> = Vec::new();
+    // AbstractionLearner — self-extending keyword maps from solved episodes.
+    let mut learner = AbstractionLearner::new();
 
     // Store the problem as a fact
     qa.store_fact("system", "has_problem", problem, "autonomous_loop");
@@ -547,11 +550,22 @@ pub async fn solve_autonomously(
                             "credential_invalid", "startup_failure"];
                         for cat in &categories {
                             if category.contains(cat) {
-                                crate::diagnostic::absorb_diagnosis(
-                                    brain, qa, classifier, problem, cat, 1.0);
+                                absorb_diagnosis_with_learner(
+                                    brain, qa, classifier, problem, cat, 1.0,
+                                    Some(&mut learner));
                                 break;
                             }
                         }
+                        // Log learner state after each solved episode
+                        let mut learner_report = learner.report();
+                        learner_report.truncate(400);
+                        iteration_log.push(format!(
+                            "[iter {}] Learner: {} promoted, {} tracked tokens",
+                            iteration,
+                            learner.promoted_count(),
+                            learner.tracked_token_count(),
+                        ));
+                        eprintln!("  📊 Learner report:\n{}", learner.report());
                         return SolutionResult::Solved {
                             iterations: iteration + 1,
                             plan,

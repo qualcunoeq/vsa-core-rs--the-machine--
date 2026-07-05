@@ -88,6 +88,10 @@ The margin between the proven bound ($\kappa = 0.950$ at worst case) and the tri
 ## Project Structure
 
 ```
+docs/
+  ROADMAP.md      — Long-horizon research layers and near-term work
+  CLAIMS.md       — Claim ledger with evidence, baselines, and failure modes
+  EVALUATION.md   — Capability matrix and experiment/test taxonomy
 src/
   lib.rs          — Core VSA operations, Hypervector, MemoryCluster, ContractionTelemetry
   reason.rs       — DeepThought reasoning engine, forward chaining, soft_project()

@@ -68,6 +68,17 @@ datasets, run long validation loops, or emit calibration tables:
 4. Add traceable `resolve_term` results for QA and causal-chain debugging.
 5. Keep README and math-facing documentation aligned with current code.
 
+## Research Coordination
+
+The broad architecture is tracked through three lightweight docs:
+
+- `docs/ROADMAP.md` separates the lifelong system goal into research layers.
+- `docs/CLAIMS.md` records active, false, provisional, and retired claims.
+- `docs/EVALUATION.md` maps capabilities to baselines, metrics, and checks.
+
+New mechanisms should normally add or update a claim and identify how the
+result will be evaluated before becoming part of the core path.
+
 ## Known Residual Risk
 
 The codebase still emits many compiler warnings. Most are unused imports,

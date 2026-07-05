@@ -893,36 +893,45 @@ pub fn seed_error_classifier() -> ErrorClassifier {
     classifier
 }
 
-// ─── Epistemic Update Wiring ──────────────────────────────────────────────
+// ─── Epistemic Update Wiring (v3.2 — Structural SVO Centroids) ─────────────
 //
 // After a successful diagnosis, feed the episode back into the VSABrain so the
 // system learns from experience.  Over multiple episodes, the brain builds:
 //
-//   1. **Error text centroids**: dejavu clusters for each error text that
-//      stabilize after repeated exposure.
+//   1. **Structural SVO centroids** (PRIMARY):  encode_svo(action_abstract,
+//      "accesses", resource_abstract).  ALL episodes where a process accesses
+//      a network service reinforce the SAME structural centroid, regardless
+//      of surface form.  This is the mechanism that bridges the zero-overlap
+//      analogy gap:  "bind() to 0.0.0.0:80 failed" and "KMS keyserver
+//      unreachable" both produce encode_svo("process", "accesses",
+//      "network_service") — identical hypervectors, same centroid, perfect
+//      1.0 similarity.
 //
-//   2. **Category concept centroids**: separate centroids for each diagnostic
-//      category (port_conflict, connection_refused, etc.).  These are fixed
-//      vectors independent of the error text, so all port_conflict episodes
-//      cluster together regardless of the error text's trigrams.
+//   2. **State SVO centroids**:  encode_svo(resource_abstract, "has_state",
+//      error_abstract).  Captures the state-transition semantics.  Merged
+//      with the action-resource centroid for cross-validation.
 //
-//   3. **Cross-cluster associations**: when an error text cluster is activated
-//      near a category concept cluster (within the association window), an
-//      association is formed.  Level 2 of resolve_term can follow this:
-//      error text → category concept.
+//   3. **Category concept centroids**:  encode_text_ngram("concept:port_conflict", 3).
+//      Fixed reference point independent of surface form.  All variants
+//      of the same category converge toward this centroid.  Used by
+//      query_diagnostic_category to resolve category from structural query.
 //
-//   4. **Self-extending classifier patterns**: the error text is added to the
-//      classifier's pattern set for its category, so future trigram Jaccard
-//      matching (Level 2 of the classifier) recognizes similar texts.
+//   4. **Trigram centroids** (FALLBACK):  encode_text_ngram(error_text, 3).
+//      Kept for Level 1-2 classifier matching on surface-form variants.
+//      Does NOT contribute to zero-overlap analogy (intervention test: 0/3).
+//
+//   5. **Self-extending classifier patterns**:  the error text is added to
+//      the classifier's pattern set for its category, so future trigram
+//      Jaccard matching (Level 2) recognizes similar texts.
 
 /// Feed a successful diagnosis back into the VSABrain for learning.
 ///
+/// v3.2: Stores STRUCTURAL SVO centroids instead of surface trigrams for
+/// the primary generalization path.  Trigram centroids are preserved as a
+/// fallback but do not contribute to zero-overlap analogy.
+///
 /// Call this after the diagnostic loop has identified a cause, verified it,
 /// executed a fix, and confirmed the fix worked.
-///
-/// This wires `absorb_epistemic_update`, `add_transient_fact`, and `add_pattern`
-/// into a single call.  After calling `absorb`, sync QA cluster data so
-/// `resolve_term` can use the new centroids and associations.
 pub fn absorb_diagnosis(
     brain: &mut VSABrain,
     qa: &mut QaEngine,
@@ -931,99 +940,261 @@ pub fn absorb_diagnosis(
     category: &str,
     outcome: f64,
 ) {
-    // 1. Absorb the error text into dejavu clusters (episodic memory)
-    let error_hv = Hypervector::encode_text_ngram(error_text, 3);
-    brain.absorb_epistemic_update(&error_hv, category, true);
+    // ═════════════════════════════════════════════════════════════════════
+    // 1. STRUCTURAL SVO CENTROIDS (primary generalization mechanism)
+    //
+    // Parse the error text's causal structure and store centroids at the
+    // abstract level.  All episodes with the same abstract structure map
+    // to the SAME centroid, bridging the zero-overlap analogy gap.
+    //
+    // Two types of structural centroids are stored:
+    //   a) Action-resource SVO: encode_svo(action_abstract, "accesses",
+    //      resource_abstract) — captures WHAT accesses WHAT.
+    //   b) State SVO: encode_svo(resource_abstract, "has_state",
+    //      error_abstract) — captures the state outcome.
+    //
+    // The state SVO is stored EVEN WHEN ACTION IS MISSING (e.g., "disk
+    // quota exceeded" has no action keyword but has resource + error).
+    let structure = parse_error_structure(error_text);
 
-    // 2. Absorb the category concept as a separate centroid
-    //    The category concept hypervector is deterministic and independent
-    //    of the error text's trigrams.  This creates a cluster that all
-    //    episodes of the same category reinforce, enabling associative
-    //    linking between error text centroids and category centroids.
+    if let (Some(act), Some(res)) = (structure.action_abstract, structure.resource_abstract) {
+        let act_hv = Hypervector::encode_text_ngram(act, 3);
+        let acc_hv = Hypervector::encode_text_ngram("accesses", 3);
+        let res_hv = Hypervector::encode_text_ngram(res, 3);
+        let struct_hv = crate::resonator::encode_svo(&act_hv, &acc_hv, &res_hv);
+
+        // Absorb into dejavu clusters (updates centroid via accumulator)
+        brain.absorb_epistemic_update(&struct_hv, category, true);
+
+        // Add the CONCEPT hypervector as a LABELED ENTRY in the structural SVO cluster.
+        // This is the key disambiguation mechanism: when multiple categories share
+        // the same structural SVO (e.g., port_conflict and connection_refused both
+        // produce encode_svo("process", "accesses", "network_service")), the concept
+        // label on the entry tells query_diagnostic_category which specific category
+        // this episode belongs to.
+        let concept_name = format!("concept:{}", category);
+        let concept_hv = Hypervector::encode_text_ngram(&concept_name, 3);
+        // Find the cluster where the structural SVO was absorbed (it's the nearest
+        // to struct_hv), and add the concept hypervector as a labeled entry.
+        if let Some((struct_idx, _sim)) = brain.nearest_centroid_idx(&struct_hv) {
+            let label = format!("concept:{}", category);
+            let mut s_meta = HashMap::new();
+            s_meta.insert("category".to_string(), category.to_string());
+            s_meta.insert("type".to_string(), "structural_diagnosis".to_string());
+            let entry = crate::DejavuEntry::new(concept_hv, label, s_meta, None);
+            brain.dejavu_clusters[struct_idx].entries.push(entry);
+        }
+    }
+
+    // Store STATE SVO regardless of whether action is available.
+    // This handles cases like "disk quota exceeded" where only resource
+    // and error keywords are present.
+    if let (Some(res), Some(err)) = (structure.resource_abstract, structure.error_abstract) {
+        let res_hv = Hypervector::encode_text_ngram(res, 3);
+        let state_v_hv = Hypervector::encode_text_ngram("has_state", 3);
+        let err_hv = Hypervector::encode_text_ngram(err, 3);
+        let state_hv = crate::resonator::encode_svo(&res_hv, &state_v_hv, &err_hv);
+
+        brain.absorb_epistemic_update(&state_hv, category, true);
+
+        // Add concept label entry to the state SVO cluster too
+        let concept_name = format!("concept:{}", category);
+        let concept_hv = Hypervector::encode_text_ngram(&concept_name, 3);
+        if let Some((state_idx, _sim)) = brain.nearest_centroid_idx(&state_hv) {
+            let label = format!("concept:{}", category);
+            let mut s_meta = HashMap::new();
+            s_meta.insert("category".to_string(), category.to_string());
+            s_meta.insert("type".to_string(), "state_diagnosis".to_string());
+            let entry = crate::DejavuEntry::new(concept_hv, label, s_meta, None);
+            brain.dejavu_clusters[state_idx].entries.push(entry);
+        }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
+    // 2. CONCEPT CENTROID (fixed reference point)
+    //
+    // encode_text_ngram("concept:port_conflict", 3) is a deterministic
+    // hypervector independent of the error text.  All episodes of the same
+    // category reinforce this centroid, giving the category a fixed address
+    // in the hypervector space that query_diagnostic_category can find.
+    // ═════════════════════════════════════════════════════════════════════
     let concept_name = format!("concept:{}", category);
     let concept_hv = Hypervector::encode_text_ngram(&concept_name, 3);
     brain.absorb_epistemic_update(&concept_hv, category, true);
 
-    // 3. Store the outcome as a transient fact
     let mut meta = HashMap::new();
     meta.insert("category".to_string(), category.to_string());
     meta.insert("outcome".to_string(), format!("{:.2}", outcome));
     meta.insert("type".to_string(), "diagnosis".to_string());
-    brain.add_transient_fact(concept_hv, "diagnostic_category", meta);
+    brain.add_transient_fact(concept_hv, &format!("concept:{}", category), meta);
 
-    // 4. Sync cluster data to the QaEngine so resolve_term can use it
+    // ═════════════════════════════════════════════════════════════════════
+    // 3. SURFACE TRIGRAM CENTROID (fallback — does NOT bridge zero-overlap)
+    //
+    // Preserved for backward compatibility: Level 1-2 classifier matching
+    // on surface-form variants.  Intervention test proves this path
+    // contributes NOTHING to zero-overlap analogy (0/3 without tables).
+    // ═════════════════════════════════════════════════════════════════════
+    let error_hv = Hypervector::encode_text_ngram(error_text, 3);
+    brain.absorb_epistemic_update(&error_hv, category, true);
+
+    // ═════════════════════════════════════════════════════════════════════
+    // 4. SYNC & SELF-EXTEND
+    // ═════════════════════════════════════════════════════════════════════
     qa.sync_cluster_data(brain);
-
-    // 5. Self-extend the classifier's pattern set
     classifier.add_pattern(category, error_text);
 }
 
 /// Query the VSABrain for the nearest diagnostic category to an error text.
 ///
-/// This is the third level of classification (after the classifier's Level-1
-/// trigger and Level-2 trigram matching).  It uses the VSABrain's dejavu
-/// clusters and cross-cluster associations to find the category concept
-/// nearest to the error text's trigram encoding.
+/// v3.2: Uses STRUCTURAL SVO centroids (encode_svo of abstract action,
+/// "accesses", abstract resource) as the primary query path.  This bridges
+/// the zero-overlap analogy gap: structurally similar errors with orthogonal
+/// surface trigrams produce IDENTICAL structural SVO queries, matching the
+/// same centroid with perfect 1.0 similarity.
 ///
-/// Strategy:
-///   1. Encode the error text as a trigram bundle
-///   2. Find the nearest dejavu cluster centroid
-///   3. Check if any entry in that cluster has a concept label
-///   4. Follow cross-cluster associations to find a diagnostic category
+/// Falls back to trigram encoding if the structural parser cannot extract
+/// components (no action or resource keywords found in the error text).
 ///
-/// Returns the category name if found, None otherwise.
+/// Returns the category name and confidence (similarity to nearest centroid).
 pub fn query_diagnostic_category(
     brain: &VSABrain,
     error_text: &str,
-) -> Option<String> {
-    let error_hv = Hypervector::encode_text_ngram(error_text, 3);
+) -> Option<(String, f64)> {
+    let structure = parse_error_structure(error_text);
 
-    // Step 1: find nearest dejavu cluster by trigram similarity
-    let (nearest_idx, nearest_sim) = brain.nearest_centroid_idx(&error_hv)?;
+    // ── Build query from structural SVO (primary path) ────────────────
+    // If both action and resource are available, the structural SVO is the
+    // same for all structurally analogous errors, giving perfect matching.
+    // If only resource+error are available (no action keyword), use the state
+    // triple encode_svo(resource, "has_state", error) as the query.
+    let query_hv: Hypervector = if let (Some(act), Some(res)) = (structure.action_abstract, structure.resource_abstract) {
+        let act_hv = Hypervector::encode_text_ngram(act, 3);
+        let acc_hv = Hypervector::encode_text_ngram("accesses", 3);
+        let res_hv = Hypervector::encode_text_ngram(res, 3);
+        crate::resonator::encode_svo(&act_hv, &acc_hv, &res_hv)
+    } else if let (Some(res), Some(err)) = (structure.resource_abstract, structure.error_abstract) {
+        // No action keyword but we have resource+error → use state triple
+        let res_hv = Hypervector::encode_text_ngram(res, 3);
+        let state_v_hv = Hypervector::encode_text_ngram("has_state", 3);
+        let err_hv = Hypervector::encode_text_ngram(err, 3);
+        crate::resonator::encode_svo(&res_hv, &state_v_hv, &err_hv)
+    } else {
+        // Fallback: trigram encoding (no structure available)
+        Hypervector::encode_text_ngram(error_text, 3)
+    };
 
-    // Step 2: Check if any entry in this cluster has a concept label
-    // (The concept cluster should have been created by absorb_diagnosis
-    //  which uses the label "concept:category_name")
-    if nearest_sim >= 0.55 {
-        let cluster = &brain.dejavu_clusters[nearest_idx];
+    // ── Find nearest dejavu cluster ──────────────────────────────────
+    let (nearest_idx, nearest_sim) = brain.nearest_centroid_idx(&query_hv)?;
+    if nearest_sim < 0.50 {
+        return None;
+    }
+
+    // ── Check dejavu cluster entries for concept labels ──────────────
+    // Structural SVO clusters may contain entries from multiple categories
+    // (e.g., both port_conflict and connection_refused share the structural
+    // SVO encode_svo("process", "accesses", "network_service")).  When
+    // multiple concept labels exist, disambiguate by finding which concept
+    // centroid is closest to the structural SVO cluster centroid.
+    let mut concept_matches: Vec<(String, f64)> = Vec::new();
+
+    if let Some(cluster) = brain.dejavu_clusters.get(nearest_idx) {
         for entry in &cluster.entries {
             if entry.label.starts_with("concept:") {
-                return Some(entry.label[8..].to_string());
+                // Compute similarity between the concept centroid cluster and
+                // the structural SVO centroid.  The concept centroid is stored
+                // as encode_text_ngram("concept:category_name", 3), and it lives
+                // in its own dejavu cluster.  Find its centroid and check the
+                // distance to the structural SVO query's nearest centroid.
+                let concept_name = &entry.label[8..];
+                let concept_hv = Hypervector::encode_text_ngram(&format!("concept:{}", concept_name), 3);
+                if let Some((_concept_idx, concept_sim)) = brain.nearest_centroid_idx(&concept_hv) {
+                    // The concept cluster centroid similarity to the structural
+                    // SVO cluster centroid gives us the disambiguation signal.
+                    let centroid = &brain.dejavu_clusters[nearest_idx].centroid;
+                    let concept_centroid = &brain.dejavu_clusters[_concept_idx].centroid;
+                    let cluster_dist = centroid.normalized_hamming_distance(concept_centroid);
+                    let cluster_sim = 1.0 - cluster_dist;
+                    concept_matches.push((concept_name.to_string(), cluster_sim));
+                } else {
+                    concept_matches.push((concept_name.to_string(), 0.5));
+                }
             }
         }
-        // Also check transient clusters for the same
-        for tc in &brain.transient_clusters {
-            if let Some(entry) = tc.entries.first() {
+    }
+
+    // Return the best-matching concept (highest centroid-to-centroid similarity)
+    concept_matches.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+    if let Some((best_cat, best_sim)) = concept_matches.first() {
+        if *best_sim >= 0.50 {
+            return Some((best_cat.clone(), (*best_sim + nearest_sim) / 2.0));
+        }
+    }
+
+    // ── Check transient clusters ─────────────────────────────────────
+    // absorb_diagnosis adds labeled entries via add_transient_fact,
+    // which stores them in transient clusters.  Check all transient
+    // clusters for concept labels near the query.
+    for tc in &brain.transient_clusters {
+        for entry in &tc.entries {
+            if entry.label.starts_with("concept:") {
+                let sim = 1.0 - query_hv.normalized_hamming_distance(&tc.centroid);
+                if sim >= 0.50 {
+                    return Some((entry.label[8..].to_string(), sim));
+                }
+            }
+        }
+    }
+
+    // ── Fallback: scan all clusters ──────────────────────────────────
+    let mut best_label = String::new();
+    let mut best_sim = 0.50;
+    for cluster in &brain.dejavu_clusters {
+        let sim = 1.0 - query_hv.normalized_hamming_distance(&cluster.centroid);
+        if sim > best_sim {
+            for entry in &cluster.entries {
                 if entry.label.starts_with("concept:") {
-                    for entry in &tc.entries {
-                        if entry.label.starts_with("concept:") {
-                            return Some(entry.label[8..].to_string());
-                        }
-                    }
+                    best_sim = sim;
+                    best_label = entry.label[8..].to_string();
                 }
             }
         }
     }
 
-    // Step 3: follow cross-cluster associations from nearest cluster
-    let assocs = brain.get_associations(nearest_idx);
-    for (target_idx, strength) in &assocs {
-        if *strength >= crate::ASSOCIATION_RESOLUTION_THRESHOLD {
-            if let Some(centroid) = brain.get_centroid(*target_idx) {
-                let sim = 1.0 - error_hv.normalized_hamming_distance(centroid);
-                if sim >= 0.55 {
-                    let target_cluster = &brain.dejavu_clusters[*target_idx];
-                    for entry in &target_cluster.entries {
-                        if entry.label.starts_with("concept:") {
-                            return Some(entry.label[8..].to_string());
+    if !best_label.is_empty() {
+        Some((best_label, best_sim))
+    } else {
+        // ── Final fallback: check concept centroids by similarity ────
+        // If no entry has a concept label, check centroid-to-centroid
+        // similarity with known concept hypervectors.
+        let known_categories = [
+            "port_conflict", "connection_refused", "missing_file",
+            "permission_denied", "disk_full", "startup_failure",
+        ];
+        let mut best: Option<(String, f64)> = None;
+        for cat in &known_categories {
+            let concept_name = format!("concept:{}", cat);
+            let concept_hv = Hypervector::encode_text_ngram(&concept_name, 3);
+            // Find the closest dejavu cluster centroid to this concept
+            if let Some((_idx, concept_sim)) = brain.nearest_centroid_idx(&concept_hv) {
+                // The query is near a centroid that is near the concept
+                let combined_sim = (nearest_sim + concept_sim) / 2.0;
+                if combined_sim >= 0.50 {
+                    match best {
+                        Some((_, ref mut best_s)) => {
+                            if combined_sim > *best_s {
+                                best = Some((cat.to_string(), combined_sim));
+                            }
+                        }
+                        None => {
+                            best = Some((cat.to_string(), combined_sim));
                         }
                     }
                 }
             }
         }
+        best
     }
-
-    None
 }
 
 /// Query whether a specific diagnostic category has been learned from past episodes.

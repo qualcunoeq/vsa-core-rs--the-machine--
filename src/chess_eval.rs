@@ -2329,8 +2329,9 @@ mod tests {
         let tp1 = encode_tracked_position(fen);
         let tp2 = encode_tracked_position(fen);
         let sims = tracked_similarity(&tp1, &tp2);
+        let names = ["material", "attacks", "king", "mobility", "structure", "tactics"];
         for (i, sim) in sims.iter().enumerate() {
-            let name = ["material", "attacks", "king", "mobility", "structure"][i];
+            let name = names[i];
             assert!(*sim > 0.999, "{} track should be near-identical: sim={}", name, sim);
         }
     }
@@ -2344,8 +2345,9 @@ mod tests {
         let sims = tracked_similarity(&tp1, &tp2);
         eprintln!("  Track sims (e4 vs two kings): {:?}", sims);
         // Most tracks should show very low similarity
+        let names = ["material", "attacks", "king", "mobility", "structure", "tactics"];
         for (i, &sim) in sims.iter().enumerate() {
-            let name = ["material", "attacks", "king", "mobility", "structure"][i];
+            let name = names[i];
             eprintln!("    {}: {:.4}", name, sim);
         }
     }

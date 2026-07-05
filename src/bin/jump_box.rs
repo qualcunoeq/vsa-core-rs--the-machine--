@@ -541,6 +541,13 @@ async fn handle_execute_command(request: &ActionRequest) -> Result<ActionResult,
 }
 
 /// Fetch documentation for a term.  Tries man pages first, then --help.
+/// Binaries allowed for `--help` documentation lookup.
+/// Constrained to standard system documentation tools only — prevents
+/// arbitrary binary execution from learned/observed query terms.
+const DOC_BINARY_ALLOWLIST: &[&str] = &[
+    "man", "apropos", "whatis", "perror", "errno",
+];
+
 async fn handle_fetch_documentation(request: &ActionRequest) -> Result<ActionResult, String> {
     let query = request.params.get("query")
         .ok_or_else(|| "missing param: query".to_string())?;
@@ -564,11 +571,15 @@ async fn handle_fetch_documentation(request: &ActionRequest) -> Result<ActionRes
         }
     }
 
-    // Fall back to --help
-    let help_result = run_command(&safe_query, &["--help"]).await;
-    if let Ok(result) = help_result {
-        if result.success && !result.raw_output.trim().is_empty() {
-            return Ok(result);
+    // Fall back to --help on allowlisted binaries only
+    // Constrained to prevent arbitrary binary execution from
+    // learned/observed terms (security boundary).
+    if DOC_BINARY_ALLOWLIST.contains(&safe_query.as_str()) {
+        let help_result = run_command(&safe_query, &["--help"]).await;
+        if let Ok(result) = help_result {
+            if result.success && !result.raw_output.trim().is_empty() {
+                return Ok(result);
+            }
         }
     }
 

@@ -136,7 +136,7 @@ pub fn assess(
     classifier: &ErrorClassifier,
 ) -> ReasoningState {
     // ── Level 1-2: Classifier (trigger + trigram Jaccard) ───────────────
-    if let Some(canonical) = classifier.classify(problem) {
+    if let (Some(canonical), _level) = classifier.classify_deep(problem) {
         let (subj, verb, obj) = canonical.clone();
         let plan = qa.plan_for_goal("service", "is", "running", 5);
 
@@ -240,9 +240,6 @@ fn find_best_structural_category(
            ("network_service", "has_state", "unavailable")], "port_conflict"),
         // network_service unavailable alone (no action parsed) → connection_refused
         (&[("network_service", "has_state", "unavailable")], "connection_refused"),
-        // network_timeout: process accessing network_service, unavailable
-        (&[("process", "accesses", "network_service"),
-           ("network_service", "has_state", "unavailable")], "network_timeout"),
         // missing_file: process accessing file_system, missing
         (&[("process", "accesses", "file_system"),
            ("file_system", "has_state", "unavailable")], "missing_file"),
@@ -255,8 +252,8 @@ fn find_best_structural_category(
         // disk_full: storage capacity exhausted
         (&[("storage", "has_state", "capacity_exhausted")], "disk_full"),
         (&[("storage", "has_state", "unavailable")], "disk_full"),
-        // credential_invalid
-        (&[("credential", "has_state", "credential_invalid")], "permission_denied"),
+        // credential_invalid: credential has_state invalid (e.g., expired cert, bad token)
+        (&[("credential", "has_state", "credential_invalid")], "credential_invalid"),
         // Generic resource access failure
         (&[("process", "accesses", "storage")], "disk_full"),
         (&[("process", "accesses", "cache_resource")], "disk_full"),

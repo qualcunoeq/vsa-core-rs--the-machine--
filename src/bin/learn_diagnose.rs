@@ -166,8 +166,8 @@ fn main() {
                 eprintln!("    → Classified by classifier (Level {}) as: {}", level, cat);
                 classified += 1;
             }
-            (None, Some(cat)) => {
-                eprintln!("    → Classified by brain centroids as: {}", cat);
+            (None, Some((cat, _conf))) => {
+                eprintln!("    → Classified by brain centroids as: {} (conf={:.4})", cat, _conf);
                 classified += 1;
             }
             (Some(cat), _) => {

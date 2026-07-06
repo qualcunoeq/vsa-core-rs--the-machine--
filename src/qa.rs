@@ -239,7 +239,7 @@ pub enum ResolveSource {
 }
 
 /// Provenance for `QaEngine::resolve_term_trace`.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct ResolveTrace {
     /// Original input text.
     pub input: String,
@@ -1458,6 +1458,85 @@ impl QaEngine {
         results.into_iter().map(|(t, _, f)| (t, f)).collect()
     }
 
+    fn traces_for_question(&self, question: &str) -> Vec<ResolveTrace> {
+        let (_, subject, verb, object) = Self::parse_question(question);
+        let mut terms = Vec::new();
+
+        for term in [Some(subject), verb, object].into_iter().flatten() {
+            let clean = term.trim();
+            if clean.is_empty() {
+                continue;
+            }
+            let lower = clean.to_lowercase();
+            if QUESTION_SUBJECT.iter().any(|q| lower.contains(q))
+                || QUESTION_OBJECT.iter().any(|q| lower.contains(q))
+            {
+                continue;
+            }
+            terms.push(clean.to_string());
+        }
+
+        if terms.is_empty() {
+            for token in question.split_whitespace() {
+                let clean = token
+                    .trim_matches(|ch: char| !ch.is_alphanumeric() && ch != '_')
+                    .to_lowercase();
+                if clean.len() >= 3
+                    && !["who", "what", "when", "where", "why", "how", "did", "does", "after"]
+                        .contains(&clean.as_str())
+                {
+                    terms.push(clean);
+                }
+            }
+        }
+
+        terms
+            .into_iter()
+            .map(|term| self.resolve_term_trace(&term))
+            .collect()
+    }
+
+    fn answer_confidence(answer: &str, traces: &[ResolveTrace]) -> f64 {
+        let lower = answer.to_lowercase();
+        if lower.contains("do not know") || lower.contains("don't know") {
+            return 0.0;
+        }
+        if traces.is_empty() {
+            return 0.50;
+        }
+        traces.iter().map(|trace| trace.confidence).sum::<f64>() / traces.len() as f64
+    }
+
+    /// Answer a question and return a replayable cognitive episode.
+    pub fn answer_combined_episode(
+        &self,
+        id: impl Into<String>,
+        question: &str,
+    ) -> crate::cognition::CognitiveEpisode {
+        let answer = self.answer_combined(question);
+        let traces = self.traces_for_question(question);
+        let confidence = Self::answer_confidence(&answer, &traces);
+        let mut episode =
+            crate::cognition::CognitiveEpisode::new(id, question).with_answer(answer, confidence);
+        episode.term_traces = traces;
+        episode
+    }
+
+    /// Answer a causal-chain question and return a replayable cognitive episode.
+    pub fn answer_chain_episode(
+        &self,
+        id: impl Into<String>,
+        question: &str,
+    ) -> crate::cognition::CognitiveEpisode {
+        let answer = self.answer_chain(question);
+        let traces = self.traces_for_question(question);
+        let confidence = Self::answer_confidence(&answer, &traces);
+        let mut episode =
+            crate::cognition::CognitiveEpisode::new(id, question).with_answer(answer, confidence);
+        episode.term_traces = traces;
+        episode
+    }
+
     /// Answer with a combined multi-fact sentence that handles contradictions
     /// using temporal markers ("At first...", "then...", "later...").
     ///
@@ -2159,6 +2238,38 @@ mod tests {
         let a = engine.answer_combined("Who raised rates?");
         assert!(a.contains("the_fed"));
         assert!(!a.contains("not know"));
+    }
+
+    #[test]
+    fn test_answer_combined_episode_preserves_answer_and_traces_terms() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("the_fed", "raise", "rates", "s1");
+
+        let answer = engine.answer_combined("Who raised rates?");
+        let episode = engine.answer_combined_episode("qa-1", "Who raised rates?");
+
+        assert_eq!(episode.id, "qa-1");
+        assert_eq!(episode.answer.as_deref(), Some(answer.as_str()));
+        assert!(episode.confidence > 0.0);
+        assert!(
+            episode
+                .term_traces
+                .iter()
+                .any(|trace| trace.input == "raise" || trace.input == "rates"),
+            "expected parsed question terms in episode trace: {:?}",
+            episode.term_traces
+        );
+    }
+
+    #[test]
+    fn test_answer_chain_episode_preserves_unknown_confidence() {
+        let engine = QaEngine::new();
+        let episode = engine.answer_chain_episode("chain-unknown", "What happened after the_fed raised rates?");
+
+        assert_eq!(episode.id, "chain-unknown");
+        assert_eq!(episode.confidence, 0.0);
+        assert!(episode.answer.unwrap_or_default().contains("don't know"));
+        assert!(!episode.term_traces.is_empty());
     }
 
     #[test]

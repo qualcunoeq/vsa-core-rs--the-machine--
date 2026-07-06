@@ -24,6 +24,8 @@ Purpose: provide the stable symbolic substrate that all higher cognition uses.
 Current anchors:
 
 - `src/lib.rs`: `Hypervector`, `MemoryCluster`, accumulator dynamics, telemetry.
+- `src/cognition.rs`: shared episode, feedback, ablation, budget, and result
+  records used by higher layers.
 - `src/reason.rs`: projection, chaining, soft projection, theorem tests.
 - `src/hnsw.rs`: approximate nearest-neighbor search for hypervectors.
 - `src/compression.rs`: bitwise compression and coding experiments.
@@ -33,6 +35,11 @@ Research questions:
 - Which operations preserve useful structure under noise?
 - How much information survives bundling, binding, rotation, decay, and projection?
 - Where does hard projection help, and where does soft projection preserve signal?
+
+Implemented surface:
+
+- Shared `ExperimentResult` records can carry claim, commit, seed, baseline,
+  metrics, and pass/fail state.
 
 Near-term work:
 
@@ -56,6 +63,11 @@ Research questions:
 - Do clusters remain stable under non-stationary input?
 - Can L2 concepts form from transition structure rather than superficial similarity?
 - What should be forgotten, frozen, or promoted?
+
+Implemented surface:
+
+- `AblationConfig` can record whether trace, abstraction, associations, soft
+  projection, self-model, and tool-memory mechanisms were enabled.
 
 Near-term work:
 
@@ -81,10 +93,15 @@ Research questions:
 - Can it explain which memory, rule, or tool path produced an answer?
 - Does analogical structure transfer across domains?
 
+Implemented surface:
+
+- QA can return `CognitiveEpisode` records for combined and chain answers while
+  preserving legacy answer strings.
+
 Near-term work:
 
-- Add traceable `resolve_term` results in QA.
-- Store answer provenance as structured data, not only printed text.
+- Persist QA episodes and outcome feedback.
+- Store answer provenance across all answer paths, not only the new wrappers.
 - Maintain negative results where VSA structure does not improve a task.
 
 ## Layer 3: Self-Model And Adaptation
@@ -104,6 +121,11 @@ Research questions:
 - Can the system know when it does not know?
 - Can it improve after feedback without erasing old competence?
 - Can learned categories remain versioned, reversible, and auditable?
+
+Implemented surface:
+
+- `EpisodeOutcome` and `MemoryUpdate` define a reversible feedback carrier for
+  future adaptation loops.
 
 Near-term work:
 
@@ -129,9 +151,14 @@ Research questions:
 - Can the system learn tool reliability over time?
 - Can action selection be explained and rolled back?
 
+Implemented surface:
+
+- `ToolEvent` can represent tool intent, request, optional result, side-effect
+  class, confidence, and memory updates.
+
 Near-term work:
 
-- Add a tool-use event schema with input, output, confidence, and memory impact.
+- Route real tool calls through the tool-use event schema.
 - Separate simulated actions from real external actions at the type level.
 - Make tool reliability part of the self-model.
 
@@ -154,10 +181,14 @@ Research questions:
 - Can it recover from tool failure, bad memory, or adversarial input?
 - Can it protect integrity without hiding behavior from the operator?
 
+Implemented surface:
+
+- `AutonomyBudget` can account for action count, elapsed time, external writes,
+  and maximum allowed risk.
+
 Near-term work:
 
 - Prefer audit trails, integrity checks, sandboxing, and fail-closed behavior.
-- Define an autonomy budget model: time, action count, resource use, risk.
 - Require every external action to produce a replayable decision record.
 
 ## Research Hygiene
@@ -169,4 +200,3 @@ Use these conventions as the project grows:
 - Every broad claim belongs in `docs/CLAIMS.md`.
 - Every recurring experiment belongs in `docs/EVALUATION.md`.
 - Failed hypotheses belong in the claim ledger as negative results, not in memory.
-

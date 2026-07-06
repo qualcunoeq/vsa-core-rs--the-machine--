@@ -17,6 +17,7 @@ pub mod broker;
 pub mod chess_eval;
 pub mod chess_learner;
 pub mod code_bridge;
+pub mod cognition;
 pub mod compression;
 pub mod defense;
 pub mod diagnostic;

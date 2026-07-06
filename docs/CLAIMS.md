@@ -136,18 +136,19 @@ Statement: External tool use can be represented as structured memory events so
 the system can learn tool reliability and explain action choice.
 
 Owner modules: `src/action.rs`, `src/actuator.rs`, `src/code_bridge.rs`,
-`src/sensory.rs`.
+`src/sensory.rs`, `src/cognition.rs`.
 
-Evidence: current action and actuator surfaces exist, but tool reliability is
-not yet a first-class learned state.
+Evidence: current action and actuator surfaces exist.  `ToolEvent` now records
+intent, request, optional result, side-effect class, confidence, and memory
+updates, but tool reliability is not yet a first-class learned state.
 
 Baseline: direct tool invocation with only log output.
 
 Failure condition: the system cannot reconstruct why a tool was called, what it
 changed, or whether similar calls succeeded in the past.
 
-Next check: add a `ToolEvent` record with input, output summary, confidence,
-side-effect class, and memory updates.
+Next check: route real actuator calls through `ToolEvent` and aggregate success
+rates by action type and side-effect class.
 
 ### C-007: Autonomy Requires Operator-Visible Boundaries
 
@@ -157,18 +158,19 @@ Statement: Long-running autonomous behavior should be constrained by explicit
 budgets, audit records, rollback points, and fail-closed behavior.
 
 Owner modules: `src/bin/autonomy_experiment.rs`, `src/bin/validate_autonomy.rs`,
-`src/monitor.rs`, `src/workspace.rs`, `src/defense.rs`.
+`src/monitor.rs`, `src/workspace.rs`, `src/defense.rs`, `src/cognition.rs`.
 
-Evidence: simulated autonomy experiments and monitoring primitives exist, but
-budgeted action governance is not yet central.
+Evidence: simulated autonomy experiments and monitoring primitives exist.
+`AutonomyBudget` now accounts for action count, elapsed time, external writes,
+and maximum risk, but budgeted action governance is not yet central.
 
 Baseline: unconstrained goal loop.
 
 Failure condition: the system can take external actions without a replayable
 decision record or clear budget accounting.
 
-Next check: define an autonomy budget structure and require real external
-actions to consume from it.
+Next check: require real external actions to spend from `AutonomyBudget` and
+emit a replayable `ToolEvent`.
 
 ### C-008: QA Term Resolution Can Be Audited
 
@@ -177,11 +179,13 @@ Status: `supported`
 Statement: Term resolution can expose the mechanism that produced each query
 vector without changing legacy QA behavior.
 
-Owner modules: `src/qa.rs`, `MATH.md`.
+Owner modules: `src/qa.rs`, `src/cognition.rs`, `MATH.md`.
 
 Evidence: `resolve_term_trace` returns `ResolveTrace`, and `resolve_term` delegates
 to `resolve_term_trace(...).vector`. Resolver tests verify exact cluster, raw
-fallback, and association traversal provenance.
+fallback, and association traversal provenance.  QA episode wrappers now attach
+term traces and confidence to combined-answer and chain-answer outputs without
+changing legacy answer strings.
 
 Baseline: `resolve_term` returned only a hypervector, so failures could not be
 assigned to raw encoding, cluster projection, or association traversal.
@@ -189,8 +193,51 @@ assigned to raw encoding, cluster projection, or association traversal.
 Failure condition: a trace reports a source, centroid, label, association, or
 confidence that does not match the branch used to construct the returned vector.
 
-Next check: propagate `ResolveTrace` into answer explanations and causal-chain
-debug output.
+Next check: persist `CognitiveEpisode` records for QA runs and connect outcomes
+to reversible memory updates.
+
+### C-009: Cognitive Episodes Can Carry Feedback
+
+Status: `provisional`
+
+Statement: A reasoning attempt can be represented as a replayable episode with
+input, answer, confidence, trace evidence, outcome, memory updates, and active
+ablation flags.
+
+Owner modules: `src/cognition.rs`, `src/qa.rs`.
+
+Evidence: `CognitiveEpisode`, `EpisodeOutcome`, `MemoryUpdate`, and
+`AblationConfig` exist as serializable data structures.  QA wrappers create
+episodes for combined and chain answers, and unit tests cover episode creation
+and unknown-answer confidence handling.
+
+Baseline: answer strings and printed logs with no structured outcome or
+feedback carrier.
+
+Failure condition: the system cannot replay what evidence supported an answer,
+what feedback was applied, or which architecture components were enabled.
+
+Next check: add a small feedback store that appends episode outcomes and applies
+only reversible memory updates until evaluation proves the update rule.
+
+### C-010: Experiments Can Be Compared By Structured Result Records
+
+Status: `provisional`
+
+Statement: Broad research experiments can stay comparable if each run records
+claim, commit, seed, dataset, baseline, metrics, pass/fail, and notes.
+
+Owner modules: `src/cognition.rs`, `docs/EVALUATION.md`.
+
+Evidence: `ExperimentResult` mirrors the evaluation matrix result schema and
+has unit coverage for metric lookup.
+
+Baseline: interpreting free-form test output manually.
+
+Failure condition: two runs of the same experiment cannot be compared without
+reading logs by hand.
+
+Next check: make at least one ignored benchmark emit `ExperimentResult` JSON.
 
 ## Retired Or Negative Claims
 

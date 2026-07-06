@@ -1,0 +1,7 @@
+qa-depth 34057
+ablation-matrix 34060
+adaptation 34065
+temporal-abstraction 34070
+meta-reasoning 34076
+autonomy-budget 34081
+memory-pressure 34087

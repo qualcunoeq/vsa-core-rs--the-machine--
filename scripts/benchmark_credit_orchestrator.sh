@@ -1,13 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 duration_minutes="${1:-492}"
-interval_minutes="${2:-35}"
+interval_minutes="${2:-10}"
 final_margin_minutes="${3:-10}"
-start_ts="$(date +%s)"
-deadline_ts=$((start_ts + duration_minutes * 60))
-final_ts=$((deadline_ts - final_margin_minutes * 60))
 log_dir="logs/credit_window"
 mkdir -p "$log_dir"
+
+existing_final=""
+existing_deadline=""
+if [ -f "$log_dir/orchestrator_state.env" ]; then
+  existing_final="$(grep '^final_checkpoint_utc=' "$log_dir/orchestrator_state.env" | cut -d= -f2- || true)"
+  existing_deadline="$(grep '^deadline_utc=' "$log_dir/orchestrator_state.env" | cut -d= -f2- || true)"
+fi
+if [ -n "$existing_final" ]; then
+  final_ts="$(date -u -d "$existing_final" +%s)"
+  if [ -n "$existing_deadline" ]; then
+    deadline_ts="$(date -u -d "$existing_deadline" +%s)"
+  else
+    deadline_ts=$((final_ts + final_margin_minutes * 60))
+  fi
+else
+  start_ts="$(date +%s)"
+  deadline_ts=$((start_ts + duration_minutes * 60))
+  final_ts=$((deadline_ts - final_margin_minutes * 60))
+fi
+
 echo $$ > "$log_dir/orchestrator.pid"
 {
   echo "start_utc=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"

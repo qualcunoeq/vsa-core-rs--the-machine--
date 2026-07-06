@@ -1,0 +1,72 @@
+# Credit Window Checkpoint (periodic)
+
+- Timestamp: `2026-07-06 20:14:46 UTC`
+- Estimated CPU use: `77.0/80` cores
+- Estimated idle capacity: `3.0` cores
+- Active timed benchmark wrappers: `77`
+- Cognition result clusters: `20`
+- Chess self-play rows: `8251`
+
+## Active Long Runs
+- pid `310534`: `adaptation/large` in `20260706T200209Z_autofill`, remaining `167.4m`, cpu `0.0%`
+- pid `310535`: `memory-pressure/large` in `20260706T200209Z_autofill`, remaining `167.4m`, cpu `0.0%`
+- pid `310536`: `chaos-run/large` in `20260706T200209Z_autofill`, remaining `167.4m`, cpu `0.0%`
+- pid `310537`: `adaptation/large` in `20260706T200209Z_autofill`, remaining `167.4m`, cpu `0.0%`
+- pid `211930`: `memory-pressure/max` in `20260706T163951Z_memory_scaling_ladder`, remaining `145.1m`, cpu `0.0%`
+- pid `211935`: `memory-pressure/max` in `20260706T163951Z_memory_scaling_ladder`, remaining `145.1m`, cpu `0.0%`
+- pid `310383`: `adaptation/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310384`: `memory-pressure/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310386`: `adaptation/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310388`: `memory-pressure/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310393`: `adaptation/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310397`: `memory-pressure/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310403`: `adaptation/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310406`: `memory-pressure/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310413`: `adaptation/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310416`: `memory-pressure/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310422`: `adaptation/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310425`: `memory-pressure/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310431`: `adaptation/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310434`: `memory-pressure/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310440`: `adaptation/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310443`: `memory-pressure/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310449`: `adaptation/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `310452`: `memory-pressure/large` in `20260706T200201Z_status_refill`, remaining `137.2m`, cpu `0.0%`
+- pid `293572`: `adaptation/large` in `20260706T192706Z_autofill`, remaining `132.3m`, cpu `0.0%`
+- pid `293573`: `memory-pressure/large` in `20260706T192706Z_autofill`, remaining `132.3m`, cpu `0.0%`
+- pid `293574`: `chaos-run/large` in `20260706T192706Z_autofill`, remaining `132.3m`, cpu `0.0%`
+- pid `293575`: `adaptation/large` in `20260706T192706Z_autofill`, remaining `132.3m`, cpu `0.0%`
+- pid `293576`: `memory-pressure/large` in `20260706T192706Z_autofill`, remaining `132.3m`, cpu `0.0%`
+- pid `293577`: `chaos-run/large` in `20260706T192706Z_autofill`, remaining `132.3m`, cpu `0.0%`
+- pid `310385`: `chaos-run/large` in `20260706T200201Z_status_refill`, remaining `107.2m`, cpu `0.0%`
+- pid `310390`: `chaos-run/large` in `20260706T200201Z_status_refill`, remaining `107.2m`, cpu `0.0%`
+- pid `310400`: `chaos-run/large` in `20260706T200201Z_status_refill`, remaining `107.2m`, cpu `0.0%`
+- pid `310410`: `chaos-run/large` in `20260706T200201Z_status_refill`, remaining `107.2m`, cpu `0.0%`
+- pid `310419`: `chaos-run/large` in `20260706T200201Z_status_refill`, remaining `107.2m`, cpu `0.0%`
+- pid `310428`: `chaos-run/large` in `20260706T200201Z_status_refill`, remaining `107.2m`, cpu `0.0%`
+- pid `310437`: `chaos-run/large` in `20260706T200201Z_status_refill`, remaining `107.2m`, cpu `0.0%`
+- pid `310446`: `chaos-run/large` in `20260706T200201Z_status_refill`, remaining `107.2m`, cpu `0.0%`
+- pid `310455`: `chaos-run/large` in `20260706T200201Z_status_refill`, remaining `107.2m`, cpu `0.0%`
+- pid `276458`: `adaptation/large` in `20260706T185203Z_autofill`, remaining `97.3m`, cpu `0.0%`
+
+## Result Inventory
+- `20260706T104525Z`: `46` files, `207` rows, `70518` bytes
+- `20260706T141200Z_cluster2`: `86` files, `118` rows, `40854` bytes
+- `20260706T144231Z_cluster3_free15`: `15` files, `15` rows, `5685` bytes
+- `20260706T145016Z_adaptation_diag_freecores`: `9` files, `9` rows, `2928` bytes
+- `20260706T151900Z_hard_correctness_free20`: `14` files, `156` rows, `54004` bytes
+- `20260706T152255Z_squeeze_free32`: `22` files, `146` rows, `52475` bytes
+- `20260706T152411Z_squeeze_wave2_free24`: `24` files, `40` rows, `14799` bytes
+- `20260706T152510Z_squeeze_wave3_free14`: `14` files, `30` rows, `10972` bytes
+- `20260706T152610Z_squeeze_wave4_fill20`: `20` files, `252` rows, `90485` bytes
+- `20260706T152703Z_squeeze_wave5_final6`: `6` files, `18` rows, `6473` bytes
+- `20260706T155344Z_critical_signal`: `18` files, `250` rows, `89675` bytes
+- `20260706T155717Z_remaining_capacity`: `18` files, `42` rows, `13151` bytes
+- `20260706T160400Z_idle_fill`: `18` files, `136` rows, `48969` bytes
+- `20260706T163951Z_memory_scaling_ladder`: `8` files, `8` rows, `2819` bytes
+- `20260706T170551Z_manual_priority`: `16` files, `272` rows, `95304` bytes
+- `20260706T170645Z_manual_sustained`: `14` files, `242` rows, `86732` bytes
+- `20260706T174157Z_autofill`: `18` files, `36` rows, `12625` bytes
+- `20260706T181700Z_autofill`: `18` files, `36` rows, `12628` bytes
+- `20260706T182558Z_high_signal_refill`: `26` files, `66` rows, `23513` bytes
+- `20260706T183111Z_saturation_signal`: `19` files, `91` rows, `31941` bytes

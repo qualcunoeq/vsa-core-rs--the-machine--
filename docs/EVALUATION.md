@@ -100,6 +100,17 @@ The Rust-side carrier for this schema is `cognition::ExperimentResult`.  New
 benchmarks should prefer emitting that structure as JSON over printing
 human-only tables.
 
+## Cognition Benchmark Runner
+
+The future rented-machine benchmark campaign should use:
+
+```bash
+cargo run --release --bin cognition_bench -- --case all --scale large --seed 42 --out results/cognition_bench/run.jsonl
+```
+
+The runner defaults to `small` scale and `/tmp/cognition_bench.jsonl`, so local
+use stays limited unless a larger scale is explicitly requested.
+
 ## Promotion Rules
 
 A mechanism can move closer to core architecture when:

@@ -43,6 +43,10 @@ path = "src/bin/validate_autonomy.rs"
 name = "intervention_test"
 path = "src/bin/intervention_test.rs"
 
+[[bin]]
+name = "cognition_bench"
+path = "src/bin/cognition_bench.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
@@ -65,4 +69,3 @@ env_logger = "0.10"
 [features]
 default = []
 cuda = []
-

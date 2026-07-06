@@ -1,0 +1,716 @@
+{
+  "mode": "saturation",
+  "timestamp_utc": "2026-07-06 18:31:11 UTC",
+  "nproc": 80,
+  "used_cpu_cores_estimate": 45.59,
+  "free_cpu_cores_estimate": 34.41,
+  "active": [
+    {
+      "pid": 149812,
+      "remaining_minutes": 14.050000000000011,
+      "elapsed_minutes": 235.95,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chess",
+      "scale": "-",
+      "run": "20260706T143421Z_chess_stockfish_18c_4h"
+    },
+    {
+      "pid": 189066,
+      "remaining_minutes": 22.55000000000001,
+      "elapsed_minutes": 157.45,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T155344Z_critical_signal"
+    },
+    {
+      "pid": 189070,
+      "remaining_minutes": 22.55000000000001,
+      "elapsed_minutes": 157.45,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T155344Z_critical_signal"
+    },
+    {
+      "pid": 211930,
+      "remaining_minutes": 248.66666666666669,
+      "elapsed_minutes": 111.33333333333333,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "max",
+      "run": "20260706T163951Z_memory_scaling_ladder"
+    },
+    {
+      "pid": 211935,
+      "remaining_minutes": 248.66666666666669,
+      "elapsed_minutes": 111.33333333333333,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "max",
+      "run": "20260706T163951Z_memory_scaling_ladder"
+    },
+    {
+      "pid": 224667,
+      "remaining_minutes": 154.65,
+      "elapsed_minutes": 85.35,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T170551Z_manual_priority"
+    },
+    {
+      "pid": 224671,
+      "remaining_minutes": 154.65,
+      "elapsed_minutes": 85.35,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T170551Z_manual_priority"
+    },
+    {
+      "pid": 242297,
+      "remaining_minutes": 70.75,
+      "elapsed_minutes": 49.25,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "medium",
+      "run": "20260706T174157Z_autofill"
+    },
+    {
+      "pid": 242304,
+      "remaining_minutes": 70.75,
+      "elapsed_minutes": 49.25,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "medium",
+      "run": "20260706T174157Z_autofill"
+    },
+    {
+      "pid": 242321,
+      "remaining_minutes": 70.75,
+      "elapsed_minutes": 49.25,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "medium",
+      "run": "20260706T174157Z_autofill"
+    },
+    {
+      "pid": 259326,
+      "remaining_minutes": 105.8,
+      "elapsed_minutes": 14.2,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "medium",
+      "run": "20260706T181700Z_autofill"
+    },
+    {
+      "pid": 259338,
+      "remaining_minutes": 105.8,
+      "elapsed_minutes": 14.2,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "medium",
+      "run": "20260706T181700Z_autofill"
+    },
+    {
+      "pid": 259355,
+      "remaining_minutes": 105.8,
+      "elapsed_minutes": 14.2,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "medium",
+      "run": "20260706T181700Z_autofill"
+    },
+    {
+      "pid": 263680,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263681,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263682,
+      "remaining_minutes": 144.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263690,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263694,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263698,
+      "remaining_minutes": 144.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263710,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263712,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263714,
+      "remaining_minutes": 144.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263728,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263730,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263732,
+      "remaining_minutes": 144.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263745,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263749,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263751,
+      "remaining_minutes": 144.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263761,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 263767,
+      "remaining_minutes": 174.78333333333333,
+      "elapsed_minutes": 5.216666666666667,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T182558Z_high_signal_refill"
+    },
+    {
+      "pid": 266303,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266304,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266305,
+      "remaining_minutes": 150.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266306,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266308,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266311,
+      "remaining_minutes": 150.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266313,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266317,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266320,
+      "remaining_minutes": 150.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266323,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266326,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266329,
+      "remaining_minutes": 150.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266332,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266335,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266339,
+      "remaining_minutes": 150.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266341,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266343,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266347,
+      "remaining_minutes": 150.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266350,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266354,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266357,
+      "remaining_minutes": 150.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266360,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266361,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266365,
+      "remaining_minutes": 150.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266367,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266371,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266375,
+      "remaining_minutes": 150.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "chaos-run",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266378,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "adaptation",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    },
+    {
+      "pid": 266380,
+      "remaining_minutes": 180.0,
+      "elapsed_minutes": 0.0,
+      "pcpu": 0.0,
+      "pmem": 0.0,
+      "case": "memory-pressure",
+      "scale": "large",
+      "run": "20260706T183111Z_saturation_signal"
+    }
+  ],
+  "result_runs": [
+    {
+      "run": "20260706T104525Z",
+      "files": 46,
+      "lines": 207,
+      "bytes": 70518
+    },
+    {
+      "run": "20260706T141200Z_cluster2",
+      "files": 86,
+      "lines": 118,
+      "bytes": 40854
+    },
+    {
+      "run": "20260706T144231Z_cluster3_free15",
+      "files": 15,
+      "lines": 15,
+      "bytes": 5685
+    },
+    {
+      "run": "20260706T145016Z_adaptation_diag_freecores",
+      "files": 9,
+      "lines": 9,
+      "bytes": 2928
+    },
+    {
+      "run": "20260706T151900Z_hard_correctness_free20",
+      "files": 14,
+      "lines": 156,
+      "bytes": 54004
+    },
+    {
+      "run": "20260706T152255Z_squeeze_free32",
+      "files": 22,
+      "lines": 146,
+      "bytes": 52475
+    },
+    {
+      "run": "20260706T152411Z_squeeze_wave2_free24",
+      "files": 24,
+      "lines": 40,
+      "bytes": 14799
+    },
+    {
+      "run": "20260706T152510Z_squeeze_wave3_free14",
+      "files": 14,
+      "lines": 30,
+      "bytes": 10972
+    },
+    {
+      "run": "20260706T152610Z_squeeze_wave4_fill20",
+      "files": 20,
+      "lines": 252,
+      "bytes": 90485
+    },
+    {
+      "run": "20260706T152703Z_squeeze_wave5_final6",
+      "files": 6,
+      "lines": 18,
+      "bytes": 6473
+    },
+    {
+      "run": "20260706T155344Z_critical_signal",
+      "files": 18,
+      "lines": 250,
+      "bytes": 89675
+    },
+    {
+      "run": "20260706T155717Z_remaining_capacity",
+      "files": 18,
+      "lines": 42,
+      "bytes": 13151
+    },
+    {
+      "run": "20260706T160400Z_idle_fill",
+      "files": 18,
+      "lines": 136,
+      "bytes": 48969
+    },
+    {
+      "run": "20260706T163951Z_memory_scaling_ladder",
+      "files": 8,
+      "lines": 8,
+      "bytes": 2819
+    },
+    {
+      "run": "20260706T170551Z_manual_priority",
+      "files": 16,
+      "lines": 272,
+      "bytes": 95304
+    },
+    {
+      "run": "20260706T170645Z_manual_sustained",
+      "files": 14,
+      "lines": 242,
+      "bytes": 86732
+    },
+    {
+      "run": "20260706T174157Z_autofill",
+      "files": 15,
+      "lines": 33,
+      "bytes": 11647
+    },
+    {
+      "run": "20260706T181700Z_autofill",
+      "files": 15,
+      "lines": 33,
+      "bytes": 11650
+    },
+    {
+      "run": "20260706T182558Z_high_signal_refill",
+      "files": 15,
+      "lines": 15,
+      "bytes": 5622
+    }
+  ],
+  "chess_lines": 8095
+}

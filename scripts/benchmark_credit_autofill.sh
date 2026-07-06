@@ -24,19 +24,20 @@ if [ "$remaining_to_final_min" -lt 45 ]; then
   echo "skip: less than 45 minutes before final checkpoint" | tee "$log_dir/decision.log"
   exit 0
 fi
-if [ "$free_cores" -lt 10 ]; then
+if [ "$free_cores" -lt 6 ]; then
   echo "skip: only ${free_cores} estimated free cores" | tee "$log_dir/decision.log"
   exit 0
 fi
 # Keep every opportunistic run bounded so it can finish before the final checkpoint.
-duration=60
-if [ "$remaining_to_final_min" -gt 130 ]; then duration=120; fi
-if [ "$remaining_to_final_min" -gt 95 ] && [ "$duration" -lt 90 ]; then duration=90; fi
-slots=$((free_cores - 6))
-if [ "$slots" -gt 18 ]; then slots=18; fi
+duration=90
+if [ "$remaining_to_final_min" -gt 190 ]; then duration=180; fi
+if [ "$remaining_to_final_min" -gt 130 ] && [ "$duration" -lt 120 ]; then duration=120; fi
+slots=$((free_cores - 4))
+if [ "$slots" -gt 34 ]; then slots=34; fi
 if [ "$slots" -lt 4 ]; then slots=4; fi
 launched=0
-cases=("adaptation:medium" "chaos-run:medium" "memory-pressure:medium" "meta-reasoning:large" "temporal-abstraction:large" "autonomy-budget:large")
+# High-signal only: these runs expose learning/adaptation, state pressure, and robustness.
+cases=("adaptation:large" "memory-pressure:large" "chaos-run:large" "adaptation:large" "memory-pressure:large" "chaos-run:large")
 for ((i=0; i<slots; i++)); do
   pair="${cases[$((i % ${#cases[@]}))]}"
   case_name="${pair%%:*}"
@@ -58,6 +59,6 @@ Autofill benchmark wave launched by the credit-window orchestrator.
 - Remaining minutes before final checkpoint: ${remaining_to_final_min}
 - Per-job timeout: ${duration}m
 - Jobs launched: ${launched}
-- Cases: adaptation, chaos-run, memory-pressure, meta-reasoning, temporal-abstraction, autonomy-budget
+- Cases: adaptation/large, memory-pressure/large, chaos-run/large only
 EOF
 echo "launched ${launched} jobs for ${duration}m with ${free_cores} estimated free cores" | tee "$log_dir/decision.log"

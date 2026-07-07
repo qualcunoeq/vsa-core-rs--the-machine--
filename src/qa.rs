@@ -30,11 +30,11 @@
 //
 // ────────────────────────────────────────────────────────────────────────────
 
-use crate::Hypervector;
 use crate::hierarchy::HierarchicalManifold;
 use crate::nlp;
 use crate::resonator;
-use std::collections::HashMap;
+use crate::Hypervector;
+use std::collections::{HashMap, VecDeque};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CONSTANTS
@@ -153,7 +153,9 @@ pub struct CausalRule {
     pub is_action: bool,
 }
 
-fn default_rule_confidence() -> f64 { 1.0 }
+fn default_rule_confidence() -> f64 {
+    1.0
+}
 
 /// A causal rule indexed by L1/L2/L3 centroid indices (Phase C).
 ///
@@ -183,9 +185,21 @@ pub struct CentroidRule {
 
 /// Encodes an SVO triple as ρ₁₃(S) ⊕ ρ₂₆(V) ⊕ ρ₃₉(O).
 fn encode_triple(subject: &str, verb: &str, object: &str) -> Hypervector {
-    let s_hv = if subject.is_empty() { Hypervector::new_zero() } else { Hypervector::encode_text_ngram(subject, 3) };
-    let v_hv = if verb.is_empty() { Hypervector::new_zero() } else { Hypervector::encode_text_ngram(verb, 3) };
-    let o_hv = if object.is_empty() { Hypervector::new_zero() } else { Hypervector::encode_text_ngram(object, 3) };
+    let s_hv = if subject.is_empty() {
+        Hypervector::new_zero()
+    } else {
+        Hypervector::encode_text_ngram(subject, 3)
+    };
+    let v_hv = if verb.is_empty() {
+        Hypervector::new_zero()
+    } else {
+        Hypervector::encode_text_ngram(verb, 3)
+    };
+    let o_hv = if object.is_empty() {
+        Hypervector::new_zero()
+    } else {
+        Hypervector::encode_text_ngram(object, 3)
+    };
     resonator::encode_svo(&s_hv, &v_hv, &o_hv)
 }
 
@@ -285,8 +299,23 @@ pub struct MinedRule {
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct QaEngine {
     facts: Vec<QaFact>,
+    /// Exact normalized SVO index for fast, non-fuzzy fact verification.
+    #[serde(skip_serializing, default)]
+    fact_index: HashMap<(String, String, String), usize>,
+    /// Exact normalized (verb, object) index for "Who V O?" questions.
+    #[serde(skip_serializing, default)]
+    fact_by_verb_object: HashMap<(String, String), Vec<usize>>,
+    /// Exact normalized (subject, verb) index for "What did S V?" questions.
+    #[serde(skip_serializing, default)]
+    fact_by_subject_verb: HashMap<(String, String), Vec<usize>>,
+    /// Exact normalized (subject, object) index for "What did S do to O?" questions.
+    #[serde(skip_serializing, default)]
+    fact_by_subject_object: HashMap<(String, String), Vec<usize>>,
     /// Causal rules for multi-hop reasoning.
     rules: Vec<CausalRule>,
+    /// Exact normalized antecedent index for fast forward chaining.
+    #[serde(skip_serializing, default)]
+    rule_index: HashMap<(String, String, String), Vec<usize>>,
     /// Monotonically increasing tick counter for fact storage ordering.
     next_tick: u64,
     /// Snapshot of VSABrain cluster centroids for semantic concept resolution.
@@ -322,7 +351,12 @@ impl QaEngine {
     pub fn new() -> Self {
         QaEngine {
             facts: Vec::new(),
+            fact_index: HashMap::new(),
+            fact_by_verb_object: HashMap::new(),
+            fact_by_subject_verb: HashMap::new(),
+            fact_by_subject_object: HashMap::new(),
             rules: Vec::new(),
+            rule_index: HashMap::new(),
             next_tick: 0,
             cluster_centroids: Vec::new(),
             cluster_associations: HashMap::new(),
@@ -335,15 +369,22 @@ impl QaEngine {
     }
 
     fn normalize_fact_subject(subject: &str) -> String {
-        subject.trim().to_lowercase()
+        Self::clean_fact_token(subject).to_lowercase()
     }
 
     fn normalize_fact_verb(verb: &str) -> String {
-        crate::nlp::verb_lemma(verb.trim()).to_lowercase()
+        crate::nlp::verb_lemma(&Self::clean_fact_token(verb)).to_lowercase()
     }
 
     fn normalize_fact_object(object: &str) -> String {
-        object.trim().to_lowercase()
+        Self::clean_fact_token(object).to_lowercase()
+    }
+
+    fn clean_fact_token(token: &str) -> String {
+        token
+            .trim()
+            .trim_matches(|ch: char| !ch.is_alphanumeric() && ch != '_')
+            .to_string()
     }
 
     fn fact_text_matches(fact: &QaFact, subject: &str, verb: &str, object: &str) -> bool {
@@ -352,26 +393,118 @@ impl QaEngine {
             && Self::normalize_fact_object(&fact.object) == Self::normalize_fact_object(object)
     }
 
+    fn fact_key(subject: &str, verb: &str, object: &str) -> (String, String, String) {
+        (
+            Self::normalize_fact_subject(subject),
+            Self::normalize_fact_verb(verb),
+            Self::normalize_fact_object(object),
+        )
+    }
+
+    fn rebuild_fact_index(&mut self) {
+        self.fact_index.clear();
+        self.fact_by_verb_object.clear();
+        self.fact_by_subject_verb.clear();
+        self.fact_by_subject_object.clear();
+        for (idx, fact) in self.facts.iter().enumerate() {
+            let subject = Self::normalize_fact_subject(&fact.subject);
+            let verb = Self::normalize_fact_verb(&fact.verb);
+            let object = Self::normalize_fact_object(&fact.object);
+            self.fact_index
+                .insert((subject.clone(), verb.clone(), object.clone()), idx);
+            self.fact_by_verb_object
+                .entry((verb.clone(), object.clone()))
+                .or_default()
+                .push(idx);
+            self.fact_by_subject_verb
+                .entry((subject.clone(), verb))
+                .or_default()
+                .push(idx);
+            self.fact_by_subject_object
+                .entry((subject, object))
+                .or_default()
+                .push(idx);
+        }
+    }
+
+    fn index_fact(&mut self, idx: usize) {
+        if let Some(fact) = self.facts.get(idx) {
+            let subject = Self::normalize_fact_subject(&fact.subject);
+            let verb = Self::normalize_fact_verb(&fact.verb);
+            let object = Self::normalize_fact_object(&fact.object);
+            self.fact_index
+                .insert((subject.clone(), verb.clone(), object.clone()), idx);
+            self.fact_by_verb_object
+                .entry((verb.clone(), object.clone()))
+                .or_default()
+                .push(idx);
+            self.fact_by_subject_verb
+                .entry((subject.clone(), verb))
+                .or_default()
+                .push(idx);
+            self.fact_by_subject_object
+                .entry((subject, object))
+                .or_default()
+                .push(idx);
+        }
+    }
+
+    fn index_rule(&mut self, idx: usize) {
+        if let Some(rule) = self.rules.get(idx) {
+            self.rule_index
+                .entry(Self::fact_key(
+                    &rule.antecedent_subject,
+                    &rule.antecedent_verb,
+                    &rule.antecedent_object,
+                ))
+                .or_default()
+                .push(idx);
+        }
+    }
+
+    fn rebuild_rule_index(&mut self) {
+        self.rule_index.clear();
+        for idx in 0..self.rules.len() {
+            self.index_rule(idx);
+        }
+    }
+
     // ── Causal Rule Storage ──────────────────────────────────────────
 
     /// Store a causal rule with explicit confidence (Layer 2 predictive coding).
     pub fn store_rule_with_confidence(
         &mut self,
-        ante_subject: &str, ante_verb: &str, ante_object: &str,
-        cons_subject: &str, cons_verb: &str, cons_object: &str,
+        ante_subject: &str,
+        ante_verb: &str,
+        ante_object: &str,
+        cons_subject: &str,
+        cons_verb: &str,
+        cons_object: &str,
         source: &str,
         confidence: f64,
     ) {
         let ante_s_hv = self.resolve_term(ante_subject);
-        let ante_v_hv = if ante_verb.is_empty() { Hypervector::new_zero() }
-            else { self.resolve_term(ante_verb) };
-        let ante_o_hv = if ante_object.is_empty() { Hypervector::new_zero() }
-            else { self.resolve_term(ante_object) };
+        let ante_v_hv = if ante_verb.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            self.resolve_term(ante_verb)
+        };
+        let ante_o_hv = if ante_object.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            self.resolve_term(ante_object)
+        };
         let cons_s_hv = self.resolve_term(cons_subject);
-        let cons_v_hv = if cons_verb.is_empty() { Hypervector::new_zero() }
-            else { self.resolve_term(cons_verb) };
-        let cons_o_hv = if cons_object.is_empty() { Hypervector::new_zero() }
-            else { self.resolve_term(cons_object) };
+        let cons_v_hv = if cons_verb.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            self.resolve_term(cons_verb)
+        };
+        let cons_o_hv = if cons_object.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            self.resolve_term(cons_object)
+        };
 
         let ante_hv = resonator::encode_svo(&ante_s_hv, &ante_v_hv, &ante_o_hv);
         let cons_hv = resonator::encode_svo(&cons_s_hv, &cons_v_hv, &cons_o_hv);
@@ -394,20 +527,30 @@ impl QaEngine {
             total_observations: 0,
             is_action: false,
         });
+        self.index_rule(self.rules.len() - 1);
     }
 
     /// Store a causal rule with default confidence (1.0 for hand-coded, 0.60 for induced).
     pub fn store_rule(
         &mut self,
-        ante_subject: &str, ante_verb: &str, ante_object: &str,
-        cons_subject: &str, cons_verb: &str, cons_object: &str,
+        ante_subject: &str,
+        ante_verb: &str,
+        ante_object: &str,
+        cons_subject: &str,
+        cons_verb: &str,
+        cons_object: &str,
         source: &str,
     ) {
         let confidence = if source == "induced" { 0.60 } else { 1.0 };
         self.store_rule_with_confidence(
-            ante_subject, ante_verb, ante_object,
-            cons_subject, cons_verb, cons_object,
-            source, confidence,
+            ante_subject,
+            ante_verb,
+            ante_object,
+            cons_subject,
+            cons_verb,
+            cons_object,
+            source,
+            confidence,
         );
     }
 
@@ -419,21 +562,37 @@ impl QaEngine {
     /// whose antecedent matches an abduced cause and `is_action == true`.
     pub fn store_action(
         &mut self,
-        action_subject: &str, action_verb: &str, action_object: &str,
-        achieves_subject: &str, achieves_verb: &str, achieves_object: &str,
+        action_subject: &str,
+        action_verb: &str,
+        action_object: &str,
+        achieves_subject: &str,
+        achieves_verb: &str,
+        achieves_object: &str,
         source: &str,
     ) {
         // Store with is_action=true — confidence defaults to 1.0 (hand-coded)
         let ante_s_hv = self.resolve_term(action_subject);
-        let ante_v_hv = if action_verb.is_empty() { Hypervector::new_zero() }
-            else { self.resolve_term(action_verb) };
-        let ante_o_hv = if action_object.is_empty() { Hypervector::new_zero() }
-            else { self.resolve_term(action_object) };
+        let ante_v_hv = if action_verb.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            self.resolve_term(action_verb)
+        };
+        let ante_o_hv = if action_object.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            self.resolve_term(action_object)
+        };
         let cons_s_hv = self.resolve_term(achieves_subject);
-        let cons_v_hv = if achieves_verb.is_empty() { Hypervector::new_zero() }
-            else { self.resolve_term(achieves_verb) };
-        let cons_o_hv = if achieves_object.is_empty() { Hypervector::new_zero() }
-            else { self.resolve_term(achieves_object) };
+        let cons_v_hv = if achieves_verb.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            self.resolve_term(achieves_verb)
+        };
+        let cons_o_hv = if achieves_object.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            self.resolve_term(achieves_object)
+        };
 
         let ante_hv = resonator::encode_svo(&ante_s_hv, &ante_v_hv, &ante_o_hv);
         let cons_hv = resonator::encode_svo(&cons_s_hv, &cons_v_hv, &cons_o_hv);
@@ -456,6 +615,7 @@ impl QaEngine {
             total_observations: 0,
             is_action: true,
         });
+        self.index_rule(self.rules.len() - 1);
     }
 
     /// Number of stored causal rules.
@@ -490,7 +650,11 @@ impl QaEngine {
     pub fn cull_low_confidence_rules(&mut self, threshold: f64) -> usize {
         let before = self.rules.len();
         self.rules.retain(|r| r.confidence >= threshold);
-        before - self.rules.len()
+        let removed = before - self.rules.len();
+        if removed > 0 {
+            self.rebuild_rule_index();
+        }
+        removed
     }
 
     // ── Centroid-Indexed Rules (Phase B) ─────────────────────────────────
@@ -498,20 +662,34 @@ impl QaEngine {
     /// Resolve a text term to an L1 centroid index.
     /// Returns None if no centroid is close enough (sim < NEAREST_CLUSTER_THRESHOLD).
     pub fn resolve_to_l1(&self, text: &str) -> Option<usize> {
-        if self.cluster_centroids.is_empty() { return None; }
+        if self.cluster_centroids.is_empty() {
+            return None;
+        }
         let hv = Hypervector::encode_text_ngram(text, 3);
         let (_, sim, idx) = self.cluster_centroids.iter().enumerate().fold(
             (0, 0.0_f64, 0_usize),
             |(best_i, best_sim, _), (i, c)| {
                 let s = 1.0 - hv.normalized_hamming_distance(c);
-                if s > best_sim { (i, s, i) } else { (best_i, best_sim, best_i) }
-            }
+                if s > best_sim {
+                    (i, s, i)
+                } else {
+                    (best_i, best_sim, best_i)
+                }
+            },
         );
-        if sim >= NEAREST_CLUSTER_THRESHOLD { Some(idx) } else { None }
+        if sim >= NEAREST_CLUSTER_THRESHOLD {
+            Some(idx)
+        } else {
+            None
+        }
     }
 
     /// Project an L1 centroid index to its L2 centroid index.
-    pub fn project_l1_to_l2(&self, l1_idx: usize, hierarchy: &HierarchicalManifold) -> Option<usize> {
+    pub fn project_l1_to_l2(
+        &self,
+        l1_idx: usize,
+        hierarchy: &HierarchicalManifold,
+    ) -> Option<usize> {
         let centroid = self.cluster_centroids.get(l1_idx)?;
         let proj = hierarchy.project_up_with_activations(centroid, 0.0);
         let (_, _, l2_idx) = proj.get(1)?;
@@ -519,7 +697,11 @@ impl QaEngine {
     }
 
     /// Project an L1 centroid index to its L3 centroid index.
-    pub fn project_l1_to_l3(&self, l1_idx: usize, hierarchy: &HierarchicalManifold) -> Option<usize> {
+    pub fn project_l1_to_l3(
+        &self,
+        l1_idx: usize,
+        hierarchy: &HierarchicalManifold,
+    ) -> Option<usize> {
         let centroid = self.cluster_centroids.get(l1_idx)?;
         let proj = hierarchy.project_up_with_activations(centroid, 0.0);
         let (_, _, l3_idx) = proj.get(2)?;
@@ -530,8 +712,12 @@ impl QaEngine {
     /// Returns None if any term can't be resolved to a centroid.
     pub fn store_centroid_rule(
         &mut self,
-        ante_s: &str, ante_v: &str, ante_o: &str,
-        cons_s: &str, cons_v: &str, cons_o: &str,
+        ante_s: &str,
+        ante_v: &str,
+        ante_o: &str,
+        cons_s: &str,
+        cons_v: &str,
+        cons_o: &str,
         source: &str,
         confidence: f64,
         hierarchy: &HierarchicalManifold,
@@ -560,7 +746,10 @@ impl QaEngine {
         self.centroid_rules.push(CentroidRule {
             source: source.to_string(),
             confidence,
-            ante_l1, cons_l1, ante_l2, ante_l3,
+            ante_l1,
+            cons_l1,
+            ante_l2,
+            ante_l3,
             ante_text: [ante_s.into(), ante_v.into(), ante_o.into()],
             cons_text: [cons_s.into(), cons_v.into(), cons_o.into()],
         });
@@ -602,7 +791,9 @@ impl QaEngine {
     /// Returns (consequent_text_labels, match_type, energy) or None.
     pub fn query_centroid_rule(
         &self,
-        query_s: &str, query_v: &str, query_o: &str,
+        query_s: &str,
+        query_v: &str,
+        query_o: &str,
         hierarchy: &HierarchicalManifold,
     ) -> Option<([String; 3], String, f64)> {
         let l1 = [
@@ -679,16 +870,19 @@ impl QaEngine {
                     // Uses pre-encoded ante_hv for exact unbinding
                     let cons_hv = rule.rule_hv.bitwise_xor(&rule.ante_hv);
                     // Verify through cleanup
-                    let cons_s_hv = cons_hv.rotate_left(
-                        (crate::HD_DIMENSION - RHO_S) % crate::HD_DIMENSION
-                    );
+                    let cons_s_hv =
+                        cons_hv.rotate_left((crate::HD_DIMENSION - RHO_S) % crate::HD_DIMENSION);
                     let cons_s = self.best_vocab_match_raw(&cons_s_hv);
 
                     // Use the rule's consequent text as our answer
                     let source = format!(
                         "{} {} {} → {} {} {}",
-                        rule.antecedent_subject, rule.antecedent_verb, rule.antecedent_object,
-                        rule.consequent_subject, rule.consequent_verb, rule.consequent_object,
+                        rule.antecedent_subject,
+                        rule.antecedent_verb,
+                        rule.antecedent_object,
+                        rule.consequent_subject,
+                        rule.consequent_verb,
+                        rule.consequent_object,
                     );
                     results.push((
                         rule.consequent_subject.clone(),
@@ -743,8 +937,12 @@ impl QaEngine {
                     let rule = &self.rules[idx];
                     let source = format!(
                         "{} {} {} → {} {} {}",
-                        rule.antecedent_subject, rule.antecedent_verb, rule.antecedent_object,
-                        rule.consequent_subject, rule.consequent_verb, rule.consequent_object,
+                        rule.antecedent_subject,
+                        rule.antecedent_verb,
+                        rule.antecedent_object,
+                        rule.consequent_subject,
+                        rule.consequent_verb,
+                        rule.consequent_object,
                     );
                     results.push((
                         rule.consequent_subject.clone(),
@@ -808,15 +1006,9 @@ impl QaEngine {
         let gap = current_hv.bitwise_xor(&rule.ante_hv);
         let predicted = rule.cons_hv.bitwise_xor(&gap);
 
-        let pred_s_hv = predicted.rotate_left(
-            (crate::HD_DIMENSION - RHO_S) % crate::HD_DIMENSION
-        );
-        let pred_v_hv = predicted.rotate_left(
-            (crate::HD_DIMENSION - RHO_V) % crate::HD_DIMENSION
-        );
-        let pred_o_hv = predicted.rotate_left(
-            (crate::HD_DIMENSION - RHO_O) % crate::HD_DIMENSION
-        );
+        let pred_s_hv = predicted.rotate_left((crate::HD_DIMENSION - RHO_S) % crate::HD_DIMENSION);
+        let pred_v_hv = predicted.rotate_left((crate::HD_DIMENSION - RHO_V) % crate::HD_DIMENSION);
+        let pred_o_hv = predicted.rotate_left((crate::HD_DIMENSION - RHO_O) % crate::HD_DIMENSION);
 
         let pred_s = self.best_vocab_match_raw(&pred_s_hv);
         let pred_v = self.best_vocab_match_raw(&pred_v_hv);
@@ -891,7 +1083,9 @@ impl QaEngine {
     /// 5. Stop when max_depth is reached or no rules match.
     pub fn plan_for_goal(
         &self,
-        goal_s: &str, goal_v: &str, goal_o: &str,
+        goal_s: &str,
+        goal_v: &str,
+        goal_o: &str,
         max_depth: usize,
     ) -> Vec<PlanStep> {
         // Stack: (cause_s, cause_v, cause_o, depth_from_goal, accumulated_confidence, rule_chain_so_far)
@@ -929,7 +1123,14 @@ impl QaEngine {
                     // Not an action: recurse backward from the antecedent
                     let sub_causes = self.abduce(&cause_s, &cause_v, &cause_o);
                     for (sub_s, sub_v, sub_o, sub_e) in sub_causes {
-                        stack.push((sub_s, sub_v, sub_o, depth + 1, energy * sub_e, chain.clone()));
+                        stack.push((
+                            sub_s,
+                            sub_v,
+                            sub_o,
+                            depth + 1,
+                            energy * sub_e,
+                            chain.clone(),
+                        ));
                     }
                 }
             }
@@ -971,17 +1172,18 @@ impl QaEngine {
     /// Find the rule whose antecedent matches the given SVO triple.
     /// Returns the rule index and a reference, or None if no match meets
     /// CHAIN_MATCH_THRESHOLD.
-    fn find_action_rule(
-        &self,
-        subj: &str,
-        verb: &str,
-        obj: &str,
-    ) -> Option<(usize, &CausalRule)> {
+    fn find_action_rule(&self, subj: &str, verb: &str, obj: &str) -> Option<(usize, &CausalRule)> {
         let s_hv = self.resolve_term(subj);
-        let v_hv = if verb.is_empty() { Hypervector::new_zero() }
-            else { self.resolve_term(verb) };
-        let o_hv = if obj.is_empty() { Hypervector::new_zero() }
-            else { self.resolve_term(obj) };
+        let v_hv = if verb.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            self.resolve_term(verb)
+        };
+        let o_hv = if obj.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            self.resolve_term(obj)
+        };
         let query_hv = resonator::encode_svo(&s_hv, &v_hv, &o_hv);
 
         let mut best: Option<(usize, f64)> = None;
@@ -1017,14 +1219,35 @@ impl QaEngine {
             for pat in &after_patterns {
                 if let Some(rest) = lower.strip_prefix(pat) {
                     let clean = rest.trim_end_matches('?').trim_end_matches('.').trim();
-                    if clean.is_empty() { continue; }
+                    if clean.is_empty() {
+                        continue;
+                    }
                     // Simple heuristic: the subject is the text before the first verb.
                     // Split on common known verbs.
-                    let verb_markers = [" raised ", " cut ", " rose ", " fell ",
-                        " increased ", " decreased ", " rallied ", " declined ",
-                        " announced ", " reported ", " launched ", " signed ",
-                        " approved ", " rejected ", " is ", " are ", " was ",
-                        " were ", " has ", " have ", " did ", " does "];
+                    let verb_markers = [
+                        " raised ",
+                        " cut ",
+                        " rose ",
+                        " fell ",
+                        " increased ",
+                        " decreased ",
+                        " rallied ",
+                        " declined ",
+                        " announced ",
+                        " reported ",
+                        " launched ",
+                        " signed ",
+                        " approved ",
+                        " rejected ",
+                        " is ",
+                        " are ",
+                        " was ",
+                        " were ",
+                        " has ",
+                        " have ",
+                        " did ",
+                        " does ",
+                    ];
                     // Pad with spaces to find word boundaries
                     let padded = format!(" {} ", clean);
                     let mut split_pos: Option<usize> = None;
@@ -1082,8 +1305,12 @@ impl QaEngine {
                     for (cs, cv, co, _src) in &chain {
                         all_chains.push(format!(
                             "after {} {} {}, {} {} {}",
-                            fact.subject, fact.verb, fact.object,
-                            cs, crate::narrative::past_tense(cv), co,
+                            fact.subject,
+                            fact.verb,
+                            fact.object,
+                            cs,
+                            crate::narrative::past_tense(cv),
+                            co,
                         ));
                     }
                 }
@@ -1141,10 +1368,15 @@ impl QaEngine {
         // Phase 2: Check all known tokens from facts (n-gram vocabulary)
         for fact in &self.facts {
             for token in [&fact.subject, &fact.verb, &fact.object] {
-                if token.is_empty() { continue; }
+                if token.is_empty() {
+                    continue;
+                }
                 let token_hv = Hypervector::encode_text_ngram(token, 3);
                 let sim = 1.0 - hv.normalized_hamming_distance(&token_hv);
-                if sim > best_sim { best_sim = sim; best_token = token.clone(); }
+                if sim > best_sim {
+                    best_sim = sim;
+                    best_token = token.clone();
+                }
             }
         }
 
@@ -1161,18 +1393,31 @@ impl QaEngine {
         if best_sim < MIN_CLEANUP_ENERGY {
             for rule in &self.rules {
                 for token in [
-                    &rule.antecedent_subject, &rule.antecedent_verb, &rule.antecedent_object,
-                    &rule.consequent_subject, &rule.consequent_verb, &rule.consequent_object,
+                    &rule.antecedent_subject,
+                    &rule.antecedent_verb,
+                    &rule.antecedent_object,
+                    &rule.consequent_subject,
+                    &rule.consequent_verb,
+                    &rule.consequent_object,
                 ] {
-                    if token.is_empty() { continue; }
+                    if token.is_empty() {
+                        continue;
+                    }
                     let token_hv = Hypervector::encode_text_ngram(token, 3);
                     let sim = 1.0 - hv.normalized_hamming_distance(&token_hv);
-                    if sim > best_sim { best_sim = sim; best_token = token.clone(); }
+                    if sim > best_sim {
+                        best_sim = sim;
+                        best_token = token.clone();
+                    }
                 }
             }
         }
 
-        if best_sim >= MIN_CLEANUP_ENERGY { best_token } else { String::new() }
+        if best_sim >= MIN_CLEANUP_ENERGY {
+            best_token
+        } else {
+            String::new()
+        }
     }
 
     // ── Fact Storage ────────────────────────────────────────────────
@@ -1237,6 +1482,45 @@ impl QaEngine {
             tick,
             is_contradicted: false, // newly stored facts start clean
         });
+        self.index_fact(self.facts.len() - 1);
+    }
+
+    fn store_derived_fact(
+        &mut self,
+        subject: String,
+        verb: String,
+        object: String,
+        source: &str,
+        thought: Hypervector,
+        key: (String, String, String),
+    ) {
+        let tick = self.next_tick;
+        self.next_tick += 1;
+
+        let idx = self.facts.len();
+        let (subject_key, verb_key, object_key) = key.clone();
+        self.facts.push(QaFact {
+            thought,
+            subject,
+            verb,
+            object,
+            source: source.to_string(),
+            tick,
+            is_contradicted: false,
+        });
+        self.fact_index.insert(key, idx);
+        self.fact_by_verb_object
+            .entry((verb_key.clone(), object_key.clone()))
+            .or_default()
+            .push(idx);
+        self.fact_by_subject_verb
+            .entry((subject_key.clone(), verb_key))
+            .or_default()
+            .push(idx);
+        self.fact_by_subject_object
+            .entry((subject_key, object_key))
+            .or_default()
+            .push(idx);
     }
 
     /// Store a fact from an SVO triple.
@@ -1263,46 +1547,71 @@ impl QaEngine {
     /// Returns the number of new facts derived.
     pub fn forward_chain(&mut self, chain_threshold: f64) -> usize {
         let mut total_derived = 0;
-        loop {
-            let mut new_facts = Vec::new();
-            let snapshot: Vec<(String, String, String)> = self.facts.iter()
-                .map(|f| (f.subject.clone(), f.verb.clone(), f.object.clone()))
-                .collect();
+        let mut agenda: VecDeque<(String, String, String, (String, String, String))> = self
+            .facts
+            .iter()
+            .map(|f| {
+                (
+                    f.subject.clone(),
+                    f.verb.clone(),
+                    f.object.clone(),
+                    Self::fact_key(&f.subject, &f.verb, &f.object),
+                )
+            })
+            .collect();
 
-            for (subj, verb, obj) in &snapshot {
-                let s_hv = self.resolve_term(subj);
-                let v_hv = self.resolve_term(verb);
-                let o_hv = self.resolve_term(obj);
+        while let Some((subj, verb, obj, fact_key)) = agenda.pop_front() {
+            let indexed_rules = self.rule_index.get(&fact_key).cloned().unwrap_or_default();
+
+            let matching_rules = if !self.rule_index.is_empty() {
+                indexed_rules
+            } else {
+                let s_hv = self.resolve_term(&subj);
+                let v_hv = self.resolve_term(&verb);
+                let o_hv = self.resolve_term(&obj);
                 let fact_hv = resonator::encode_svo(&s_hv, &v_hv, &o_hv);
+                self.rules
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(idx, rule)| {
+                        let energy = 1.0 - fact_hv.normalized_hamming_distance(&rule.ante_hv);
+                        (energy >= chain_threshold).then_some(idx)
+                    })
+                    .collect()
+            };
 
-                for rule in &self.rules {
-                    let energy = 1.0 - fact_hv.normalized_hamming_distance(&rule.ante_hv);
-                    if energy >= chain_threshold {
-                        let (c_s, c_v, c_o) = (
-                            &rule.consequent_subject,
-                            &rule.consequent_verb,
-                            &rule.consequent_object,
-                        );
-                        if c_s.is_empty() { continue; }
-                        let already = self.facts.iter().any(|f|
-                            f.subject == *c_s && f.verb == *c_v && f.object == *c_o
-                        );
-                        if !already {
-                            new_facts.push((c_s.clone(), c_v.clone(), c_o.clone()));
-                        }
-                    }
+            for idx in matching_rules {
+                let Some(rule) = self.rules.get(idx) else {
+                    continue;
+                };
+                if rule.consequent_subject.is_empty() {
+                    continue;
                 }
-            }
 
-            if new_facts.is_empty() {
-                break;
-            }
+                let (c_s, c_v, c_o) = (
+                    rule.consequent_subject.clone(),
+                    rule.consequent_verb.clone(),
+                    rule.consequent_object.clone(),
+                );
+                let cons_hv = rule.cons_hv.clone();
+                let consequent_key = Self::fact_key(&c_s, &c_v, &c_o);
+                if self.fact_index.contains_key(&consequent_key) {
+                    continue;
+                }
 
-            for (s, v, o) in &new_facts {
-                self.store_fact(s, v, o, "forward_chain");
+                self.store_derived_fact(
+                    c_s.clone(),
+                    c_v.clone(),
+                    c_o.clone(),
+                    "forward_chain",
+                    cons_hv,
+                    consequent_key.clone(),
+                );
+                agenda.push_back((c_s, c_v, c_o, consequent_key));
                 total_derived += 1;
             }
         }
+
         total_derived
     }
 
@@ -1325,20 +1634,44 @@ impl QaEngine {
 
         let is_subj_q = QUESTION_SUBJECT.iter().any(|q| subj_lower.contains(q));
         let is_obj_q = QUESTION_OBJECT.iter().any(|q| obj_lower.contains(q));
-        let is_verb_q = verb_lower.contains("did") || verb_lower.contains("does")
-            || verb_lower.contains("do") || verb_lower.contains("will");
+        let is_verb_q = verb_lower.contains("did")
+            || verb_lower.contains("does")
+            || verb_lower.contains("do")
+            || verb_lower.contains("will");
 
         if is_subj_q && !is_verb_q {
-            (AnswerSlot::Subject, triple.subject.clone(), Some(triple.verb.clone()), Some(triple.object.clone()))
+            Self::parse_heuristic(question)
         } else if is_obj_q {
-            let known_subj = if is_subj_q { String::new() } else { triple.subject.clone() };
-            (AnswerSlot::Object, known_subj, Some(triple.verb.clone()), Some(triple.object.clone()))
+            let known_subj = if is_subj_q {
+                String::new()
+            } else {
+                triple.subject.clone()
+            };
+            (
+                AnswerSlot::Object,
+                known_subj,
+                Some(triple.verb.clone()),
+                Some(triple.object.clone()),
+            )
         } else if is_verb_q {
-            let known_subj = if is_subj_q { String::new() } else { triple.subject.clone() };
-            let known_obj = if is_obj_q { String::new() } else { triple.object.clone() };
+            let known_subj = if is_subj_q {
+                String::new()
+            } else {
+                triple.subject.clone()
+            };
+            let known_obj = if is_obj_q {
+                String::new()
+            } else {
+                triple.object.clone()
+            };
             (AnswerSlot::Verb, known_subj, None, Some(known_obj))
         } else {
-            (AnswerSlot::Subject, triple.subject.clone(), Some(triple.verb.clone()), Some(triple.object.clone()))
+            (
+                AnswerSlot::Subject,
+                triple.subject.clone(),
+                Some(triple.verb.clone()),
+                Some(triple.object.clone()),
+            )
         }
     }
 
@@ -1347,29 +1680,41 @@ impl QaEngine {
         let lower = question.to_lowercase().trim().to_string();
         for qword in &["who", "what", "whom", "which"] {
             if lower.starts_with(qword) {
-                let rest = question[qword.len()..].trim().trim_end_matches('?').trim_end_matches('.');
+                let rest = question[qword.len()..]
+                    .trim()
+                    .trim_end_matches('?')
+                    .trim_end_matches('.');
                 let rest_lower = rest.to_lowercase();
-                let aux_patterns = ["did ", "does ", "do ", "will ", "has ", "have ", "had ", "is ", "are "];
-                let (verb, object) = if let Some(aux) = aux_patterns.iter().find(|a| rest_lower.starts_with(*a)) {
-                    let after = rest[aux.len()..].trim(); // text after the aux verb
-                    let words: Vec<&str> = after.split_whitespace().collect();
-                    if words.len() >= 2 {
-                        (Some(crate::nlp::verb_lemma(words[0])), Some(words[1..].join(" ")))
-                    } else if words.len() == 1 {
-                        (Some(crate::nlp::verb_lemma(words[0])), None)
+                let aux_patterns = [
+                    "did ", "does ", "do ", "will ", "has ", "have ", "had ", "is ", "are ",
+                ];
+                let (verb, object) =
+                    if let Some(aux) = aux_patterns.iter().find(|a| rest_lower.starts_with(*a)) {
+                        let after = rest[aux.len()..].trim(); // text after the aux verb
+                        let words: Vec<&str> = after.split_whitespace().collect();
+                        if words.len() >= 2 {
+                            (
+                                Some(crate::nlp::verb_lemma(words[0])),
+                                Some(words[1..].join(" ")),
+                            )
+                        } else if words.len() == 1 {
+                            (Some(crate::nlp::verb_lemma(words[0])), None)
+                        } else {
+                            (None, None)
+                        }
                     } else {
-                        (None, None)
-                    }
-                } else {
-                    let words: Vec<&str> = rest.split_whitespace().collect();
-                    if words.len() >= 2 {
-                        (Some(crate::nlp::verb_lemma(words[0])), Some(words[1..].join(" ")))
-                    } else if words.len() == 1 {
-                        (Some(crate::nlp::verb_lemma(words[0])), None)
-                    } else {
-                        (None, None)
-                    }
-                };
+                        let words: Vec<&str> = rest.split_whitespace().collect();
+                        if words.len() >= 2 {
+                            (
+                                Some(crate::nlp::verb_lemma(words[0])),
+                                Some(words[1..].join(" ")),
+                            )
+                        } else if words.len() == 1 {
+                            (Some(crate::nlp::verb_lemma(words[0])), None)
+                        } else {
+                            (None, None)
+                        }
+                    };
                 // Clean question words from object
                 let clean_obj = object.map(|o| {
                     let lower_o = o.to_lowercase();
@@ -1398,20 +1743,31 @@ impl QaEngine {
         let (answer_slot, known_subj, known_verb, known_obj) = Self::parse_question(question);
 
         // 2. Normalize knowns (remove question words, lemmatize verbs)
-        let clean_s = if answer_slot != AnswerSlot::Subject && !known_subj.is_empty()
-            && !QUESTION_SUBJECT.iter().any(|q| known_subj.to_lowercase().contains(q))
-        { Some(known_subj.to_string()) } else { None };
+        let clean_s = if answer_slot != AnswerSlot::Subject
+            && !known_subj.is_empty()
+            && !QUESTION_SUBJECT
+                .iter()
+                .any(|q| known_subj.to_lowercase().contains(q))
+        {
+            Some(known_subj.to_string())
+        } else {
+            None
+        };
 
-        let clean_v = known_verb.as_ref()
+        let clean_v = known_verb
+            .as_ref()
             .filter(|v| !v.is_empty())
             .map(|v| crate::nlp::verb_lemma(v)); // lemmatize verb
 
         let clean_o = if answer_slot != AnswerSlot::Object {
-            known_obj.as_ref()
+            known_obj
+                .as_ref()
                 .filter(|o| !o.is_empty())
                 .filter(|o| !QUESTION_OBJECT.iter().any(|q| o.to_lowercase().contains(q)))
                 .cloned()
-        } else { None };
+        } else {
+            None
+        };
 
         if clean_v.is_none() && clean_o.is_none() && clean_s.is_none() {
             return "I need more information to answer that question.".to_string();
@@ -1421,7 +1777,9 @@ impl QaEngine {
         let result = self.scan_facts(&answer_slot, &clean_s, &clean_v, &clean_o);
 
         match result {
-            Some((answer_token, matched)) => self.format_answer(&answer_slot, &answer_token, matched),
+            Some((answer_token, matched)) => {
+                self.format_answer(&answer_slot, &answer_token, matched)
+            }
             None => "I do not know the answer to that question.".to_string(),
         }
     }
@@ -1433,36 +1791,119 @@ impl QaEngine {
     pub fn answer_all(&self, question: &str) -> Vec<(String, &QaFact)> {
         let (answer_slot, known_subj, known_verb, known_obj) = Self::parse_question(question);
 
-        let clean_s = if answer_slot != AnswerSlot::Subject && !known_subj.is_empty()
-            && !QUESTION_SUBJECT.iter().any(|q| known_subj.to_lowercase().contains(q))
-        { Some(known_subj.to_string()) } else { None };
+        let clean_s = if answer_slot != AnswerSlot::Subject
+            && !known_subj.is_empty()
+            && !QUESTION_SUBJECT
+                .iter()
+                .any(|q| known_subj.to_lowercase().contains(q))
+        {
+            Some(known_subj.to_string())
+        } else {
+            None
+        };
 
-        let clean_v = known_verb.as_ref()
+        let clean_v = known_verb
+            .as_ref()
             .filter(|v| !v.is_empty())
             .map(|v| crate::nlp::verb_lemma(v));
 
         let clean_o = if answer_slot != AnswerSlot::Object {
-            known_obj.as_ref()
+            known_obj
+                .as_ref()
                 .filter(|o| !o.is_empty())
                 .filter(|o| !QUESTION_OBJECT.iter().any(|q| o.to_lowercase().contains(q)))
                 .cloned()
-        } else { None };
+        } else {
+            None
+        };
 
         if clean_v.is_none() && clean_o.is_none() && clean_s.is_none() {
             return Vec::new();
+        }
+
+        let exact_matches = match (
+            &answer_slot,
+            clean_s.as_ref(),
+            clean_v.as_ref(),
+            clean_o.as_ref(),
+        ) {
+            (AnswerSlot::Subject, _, Some(verb), Some(object)) => Some(
+                self.fact_by_verb_object
+                    .get(&(
+                        Self::normalize_fact_verb(verb),
+                        Self::normalize_fact_object(object),
+                    ))
+                    .map(|idxs| {
+                        idxs.iter()
+                            .filter_map(|&idx| {
+                                self.facts.get(idx).map(|fact| (fact.subject.clone(), fact))
+                            })
+                            .collect::<Vec<_>>()
+                    })
+                    .unwrap_or_default(),
+            ),
+            (AnswerSlot::Object, Some(subject), Some(verb), _) => Some(
+                self.fact_by_subject_verb
+                    .get(&(
+                        Self::normalize_fact_subject(subject),
+                        Self::normalize_fact_verb(verb),
+                    ))
+                    .map(|idxs| {
+                        idxs.iter()
+                            .filter_map(|&idx| {
+                                self.facts.get(idx).map(|fact| (fact.object.clone(), fact))
+                            })
+                            .collect::<Vec<_>>()
+                    })
+                    .unwrap_or_default(),
+            ),
+            (AnswerSlot::Verb, Some(subject), _, Some(object)) => Some(
+                self.fact_by_subject_object
+                    .get(&(
+                        Self::normalize_fact_subject(subject),
+                        Self::normalize_fact_object(object),
+                    ))
+                    .map(|idxs| {
+                        idxs.iter()
+                            .filter_map(|&idx| {
+                                self.facts.get(idx).map(|fact| (fact.verb.clone(), fact))
+                            })
+                            .collect::<Vec<_>>()
+                    })
+                    .unwrap_or_default(),
+            ),
+            _ => None,
+        };
+
+        if let Some(mut matches) = exact_matches {
+            matches.sort_by(|a, b| a.1.tick.cmp(&b.1.tick));
+            return matches;
         }
 
         // Scan all facts, collect EVERYTHING above threshold
         let mut results: Vec<(String, f64, &QaFact)> = Vec::new();
 
         for fact in &self.facts {
-            let result_hv = self.unbind_slot(&fact.thought, &answer_slot, &clean_s, &clean_v, &clean_o);
+            let result_hv =
+                self.unbind_slot(&fact.thought, &answer_slot, &clean_s, &clean_v, &clean_o);
             let token = self.best_vocab_match(&result_hv);
 
             let (s_str, v_str, o_str) = match &answer_slot {
-                AnswerSlot::Subject => (token.as_str(), clean_v.as_deref().unwrap_or(""), clean_o.as_deref().unwrap_or("")),
-                AnswerSlot::Verb => (clean_s.as_deref().unwrap_or(""), token.as_str(), clean_o.as_deref().unwrap_or("")),
-                AnswerSlot::Object => (clean_s.as_deref().unwrap_or(""), clean_v.as_deref().unwrap_or(""), token.as_str()),
+                AnswerSlot::Subject => (
+                    token.as_str(),
+                    clean_v.as_deref().unwrap_or(""),
+                    clean_o.as_deref().unwrap_or(""),
+                ),
+                AnswerSlot::Verb => (
+                    clean_s.as_deref().unwrap_or(""),
+                    token.as_str(),
+                    clean_o.as_deref().unwrap_or(""),
+                ),
+                AnswerSlot::Object => (
+                    clean_s.as_deref().unwrap_or(""),
+                    clean_v.as_deref().unwrap_or(""),
+                    token.as_str(),
+                ),
             };
 
             let energy = self.reconstruction_energy(&fact.thought, s_str, v_str, o_str);
@@ -1500,8 +1941,10 @@ impl QaEngine {
                     .trim_matches(|ch: char| !ch.is_alphanumeric() && ch != '_')
                     .to_lowercase();
                 if clean.len() >= 3
-                    && !["who", "what", "when", "where", "why", "how", "did", "does", "after"]
-                        .contains(&clean.as_str())
+                    && ![
+                        "who", "what", "when", "where", "why", "how", "did", "does", "after",
+                    ]
+                    .contains(&clean.as_str())
                 {
                     terms.push(clean);
                 }
@@ -1600,8 +2043,11 @@ impl QaEngine {
             (_, 0) => {
                 // Multiple clean facts: "X, Y, and Z."
                 let last = all_clean.pop().unwrap();
-                format!("{}, and {}.", all_clean.join(", "),
-                    last.trim_end_matches('.'))
+                format!(
+                    "{}, and {}.",
+                    all_clean.join(", "),
+                    last.trim_end_matches('.')
+                )
             }
             (_, _) => {
                 // Mixed: clean facts first, then contradicted
@@ -1609,8 +2055,11 @@ impl QaEngine {
                     all_clean.remove(0)
                 } else {
                     let last = all_clean.pop().unwrap();
-                    format!("{}, and {}.",
-                        all_clean.join(", "), last.trim_end_matches('.'))
+                    format!(
+                        "{}, and {}.",
+                        all_clean.join(", "),
+                        last.trim_end_matches('.')
+                    )
                 };
                 let contra_part = self.conjoin_with_contrast(&all_contra);
                 format!("{} {}", clean_part.trim_end_matches('.'), contra_part)
@@ -1624,8 +2073,10 @@ impl QaEngine {
             return String::new();
         }
         if facts.len() == 1 {
-            return format!("At first, {} However, that has since changed.",
-                facts[0].to_lowercase());
+            return format!(
+                "At first, {} However, that has since changed.",
+                facts[0].to_lowercase()
+            );
         }
 
         // "At first, X. However, later Y. Later still, Z."
@@ -1693,9 +2144,21 @@ impl QaEngine {
 
             // Verify reconstruction energy
             let (s_str, v_str, o_str) = match answer_slot {
-                AnswerSlot::Subject => (token.as_str(), clean_v.as_deref().unwrap_or(""), clean_o.as_deref().unwrap_or("")),
-                AnswerSlot::Verb => (clean_s.as_deref().unwrap_or(""), token.as_str(), clean_o.as_deref().unwrap_or("")),
-                AnswerSlot::Object => (clean_s.as_deref().unwrap_or(""), clean_v.as_deref().unwrap_or(""), token.as_str()),
+                AnswerSlot::Subject => (
+                    token.as_str(),
+                    clean_v.as_deref().unwrap_or(""),
+                    clean_o.as_deref().unwrap_or(""),
+                ),
+                AnswerSlot::Verb => (
+                    clean_s.as_deref().unwrap_or(""),
+                    token.as_str(),
+                    clean_o.as_deref().unwrap_or(""),
+                ),
+                AnswerSlot::Object => (
+                    clean_s.as_deref().unwrap_or(""),
+                    clean_v.as_deref().unwrap_or(""),
+                    token.as_str(),
+                ),
             };
 
             let energy = self.reconstruction_energy(&fact.thought, s_str, v_str, o_str);
@@ -1706,7 +2169,9 @@ impl QaEngine {
 
             match &best {
                 Some((_, best_e, _)) if energy <= *best_e => {}
-                _ => { best = Some((token, energy, fact)); }
+                _ => {
+                    best = Some((token, energy, fact));
+                }
             }
         }
 
@@ -1757,20 +2222,26 @@ impl QaEngine {
         let mut residual = thought.clone();
         let encode = |s: &str| Hypervector::encode_text_ngram(s, 3);
 
-        if let Some(s) = known_s { if !s.is_empty() {
-            residual = residual.bitwise_xor(&encode(s).rotate_left(RHO_S));
-        }}
-        if let Some(v) = known_v { if !v.is_empty() {
-            residual = residual.bitwise_xor(&encode(v).rotate_left(RHO_V));
-        }}
-        if let Some(o) = known_o { if !o.is_empty() {
-            residual = residual.bitwise_xor(&encode(o).rotate_left(RHO_O));
-        }}
+        if let Some(s) = known_s {
+            if !s.is_empty() {
+                residual = residual.bitwise_xor(&encode(s).rotate_left(RHO_S));
+            }
+        }
+        if let Some(v) = known_v {
+            if !v.is_empty() {
+                residual = residual.bitwise_xor(&encode(v).rotate_left(RHO_V));
+            }
+        }
+        if let Some(o) = known_o {
+            if !o.is_empty() {
+                residual = residual.bitwise_xor(&encode(o).rotate_left(RHO_O));
+            }
+        }
 
         let inv_rho = match answer_slot {
             AnswerSlot::Subject => (crate::HD_DIMENSION - RHO_S) % crate::HD_DIMENSION,
-            AnswerSlot::Verb    => (crate::HD_DIMENSION - RHO_V) % crate::HD_DIMENSION,
-            AnswerSlot::Object  => (crate::HD_DIMENSION - RHO_O) % crate::HD_DIMENSION,
+            AnswerSlot::Verb => (crate::HD_DIMENSION - RHO_V) % crate::HD_DIMENSION,
+            AnswerSlot::Object => (crate::HD_DIMENSION - RHO_O) % crate::HD_DIMENSION,
         };
         residual.rotate_left(inv_rho)
     }
@@ -1779,7 +2250,11 @@ impl QaEngine {
     fn reconstruction_energy(&self, original: &Hypervector, s: &str, v: &str, o: &str) -> f64 {
         let s_hv = Hypervector::encode_text_ngram(s, 3);
         let v_hv = Hypervector::encode_text_ngram(v, 3);
-        let o_hv = if o.is_empty() { Hypervector::new_zero() } else { Hypervector::encode_text_ngram(o, 3) };
+        let o_hv = if o.is_empty() {
+            Hypervector::new_zero()
+        } else {
+            Hypervector::encode_text_ngram(o, 3)
+        };
         let recon = resonator::encode_svo(&s_hv, &v_hv, &o_hv);
         1.0 - recon.normalized_hamming_distance(original)
     }
@@ -1790,9 +2265,24 @@ impl QaEngine {
 
     fn format_answer(&self, slot: &AnswerSlot, answer: &str, fact: &QaFact) -> String {
         match slot {
-            AnswerSlot::Subject => format!("{} {} {}.", answer, crate::narrative::past_tense(&fact.verb), fact.object),
-            AnswerSlot::Verb    => format!("{} {} {}.", fact.subject, crate::narrative::past_tense(answer), fact.object),
-            AnswerSlot::Object  => format!("{} {} {}.", fact.subject, crate::narrative::past_tense(&fact.verb), answer),
+            AnswerSlot::Subject => format!(
+                "{} {} {}.",
+                answer,
+                crate::narrative::past_tense(&fact.verb),
+                fact.object
+            ),
+            AnswerSlot::Verb => format!(
+                "{} {} {}.",
+                fact.subject,
+                crate::narrative::past_tense(answer),
+                fact.object
+            ),
+            AnswerSlot::Object => format!(
+                "{} {} {}.",
+                fact.subject,
+                crate::narrative::past_tense(&fact.verb),
+                answer
+            ),
         }
     }
 
@@ -1808,6 +2298,16 @@ impl QaEngine {
     /// as true. Fuzzy matching remains useful for answer generation, but a
     /// verifier must distinguish true, false, and unknown facts.
     pub fn find_fact(&self, subject: &str, verb: &str, object: &str) -> Option<&QaFact> {
+        let key = Self::fact_key(subject, verb, object);
+        if let Some(&idx) = self.fact_index.get(&key) {
+            if let Some(fact) = self.facts.get(idx) {
+                if Self::fact_text_matches(fact, subject, verb, object) {
+                    return Some(fact);
+                }
+            }
+        }
+
+        // Fallback keeps deserialized engines with an empty skipped cache valid.
         self.facts
             .iter()
             .rev()
@@ -1817,7 +2317,12 @@ impl QaEngine {
     /// Verify a known fact. Returns (exists, confidence).
     pub fn verify_fact(&self, subject: &str, verb: &str, object: &str) -> (bool, f64) {
         self.find_fact(subject, verb, object)
-            .map(|f| (true, self.reconstruction_energy(&f.thought, subject, verb, object)))
+            .map(|f| {
+                (
+                    true,
+                    self.reconstruction_energy(&f.thought, subject, verb, object),
+                )
+            })
             .unwrap_or((false, 0.0))
     }
 
@@ -1827,7 +2332,8 @@ impl QaEngine {
     /// (e.g., "What did the Fed do?" is hard for the NLP extractor).
     pub fn facts_about(&self, subject: &str) -> Vec<&QaFact> {
         let subj_lower = subject.trim().to_lowercase();
-        self.facts.iter()
+        self.facts
+            .iter()
             .filter(|f| f.subject.trim().to_lowercase() == subj_lower)
             .collect()
     }
@@ -1836,7 +2342,8 @@ impl QaEngine {
     pub fn facts_with_verb(&self, subject: &str, verb: &str) -> Vec<&QaFact> {
         let subj_lower = subject.trim().to_lowercase();
         let verb_lower = verb.trim().to_lowercase();
-        self.facts.iter()
+        self.facts
+            .iter()
             .filter(|f| {
                 f.subject.trim().to_lowercase() == subj_lower
                     && crate::nlp::verb_lemma(&f.verb) == crate::nlp::verb_lemma(verb)
@@ -1858,9 +2365,12 @@ impl QaEngine {
 
     /// Load the QA engine state from a JSON file.
     pub fn load_from_file(path: &str) -> Result<Self, String> {
-        let json = std::fs::read_to_string(path)
-            .map_err(|e| format!("Read error: {}", e))?;
-        serde_json::from_str(&json).map_err(|e| format!("Deserialization error: {}", e))
+        let json = std::fs::read_to_string(path).map_err(|e| format!("Read error: {}", e))?;
+        let mut engine: Self =
+            serde_json::from_str(&json).map_err(|e| format!("Deserialization error: {}", e))?;
+        engine.rebuild_fact_index();
+        engine.rebuild_rule_index();
+        Ok(engine)
     }
 
     // ═════════════════════════════════════════════════════════════════════
@@ -1873,26 +2383,28 @@ impl QaEngine {
     /// level-2 concept resolution in `resolve_term`. Called periodically
     /// from the agent loop (every 50 ticks) alongside accumulator decay.
     pub fn sync_cluster_data(&mut self, brain: &crate::VSABrain) {
-        self.cluster_centroids = brain.dejavu_clusters.iter()
-            .map(|c| c.centroid)
-            .collect();
+        self.cluster_centroids = brain.dejavu_clusters.iter().map(|c| c.centroid).collect();
         self.cluster_associations = brain.cross_cluster_associations.clone();
-        self.centroid_labels = brain.dejavu_clusters.iter().map(|cluster| {
-            if cluster.entries.is_empty() {
-                return String::new();
-            }
-            let mut freq: std::collections::HashMap<&str, u32> =
-                std::collections::HashMap::new();
-            for entry in &cluster.entries {
-                if !entry.label.is_empty() {
-                    *freq.entry(&entry.label).or_insert(0) += entry.weight.max(1);
+        self.centroid_labels = brain
+            .dejavu_clusters
+            .iter()
+            .map(|cluster| {
+                if cluster.entries.is_empty() {
+                    return String::new();
                 }
-            }
-            freq.into_iter()
-                .max_by_key(|&(_, count)| count)
-                .map(|(label, _)| label.to_string())
-                .unwrap_or_default()
-        }).collect();
+                let mut freq: std::collections::HashMap<&str, u32> =
+                    std::collections::HashMap::new();
+                for entry in &cluster.entries {
+                    if !entry.label.is_empty() {
+                        *freq.entry(&entry.label).or_insert(0) += entry.weight.max(1);
+                    }
+                }
+                freq.into_iter()
+                    .max_by_key(|&(_, count)| count)
+                    .map(|(label, _)| label.to_string())
+                    .unwrap_or_default()
+            })
+            .collect();
     }
 
     /// Find the nearest centroid to a query vector.
@@ -1907,7 +2419,11 @@ impl QaEngine {
                 best = Some(*c);
             }
         }
-        if best_sim >= NEAREST_CLUSTER_THRESHOLD { best } else { None }
+        if best_sim >= NEAREST_CLUSTER_THRESHOLD {
+            best
+        } else {
+            None
+        }
     }
 
     fn centroid_label(&self, idx: usize) -> Option<String> {
@@ -1925,9 +2441,7 @@ impl QaEngine {
                 let sim = 1.0 - vec.normalized_hamming_distance(centroid);
                 (idx, *centroid, sim)
             })
-            .max_by(|(_, _, a), (_, _, b)| {
-                a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal)
-            })
+            .max_by(|(_, _, a), (_, _, b)| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
     }
 
     /// Resolve a text term to a semantically enriched hypervector.
@@ -2017,8 +2531,7 @@ impl QaEngine {
                     }
 
                     // Reconstruct target centroid: centroids[n_idx] ⊕ assoc_vec
-                    let reconstructed = self.cluster_centroids[n_idx]
-                        .bitwise_xor(assoc_vec);
+                    let reconstructed = self.cluster_centroids[n_idx].bitwise_xor(assoc_vec);
                     let sim = 1.0 - reconstructed.normalized_hamming_distance(&raw);
 
                     if sim > best_sim {
@@ -2063,7 +2576,9 @@ impl QaEngine {
 }
 
 impl Default for QaEngine {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -2078,8 +2593,18 @@ mod tests {
         let mut e = QaEngine::new();
         e.store_fact("the_fed", "raise", "rates", "The Fed raised rates.");
         e.store_fact("the_fed", "cut", "rates", "The Fed cut rates.");
-        e.store_fact("inflation", "rise", "above expectations", "Inflation rises above expectations.");
-        e.store_fact("stock_market", "rally", "on the news", "The stock market rallies on the news.");
+        e.store_fact(
+            "inflation",
+            "rise",
+            "above expectations",
+            "Inflation rises above expectations.",
+        );
+        e.store_fact(
+            "stock_market",
+            "rally",
+            "on the news",
+            "The stock market rallies on the news.",
+        );
         e
     }
 
@@ -2106,10 +2631,16 @@ mod tests {
         let engine = test_engine();
         let answer = engine.answer("Who raised rates?");
         eprintln!("  [qa] Q: 'Who raised rates?' → A: '{}'", answer);
-        assert!(answer.to_lowercase().contains("the_fed") || answer.to_lowercase().contains("fed"),
-            "Answer should mention Fed: '{}'", answer);
-        assert!(answer.to_lowercase().contains("rate"),
-            "Answer should mention rates: '{}'", answer);
+        assert!(
+            answer.to_lowercase().contains("the_fed") || answer.to_lowercase().contains("fed"),
+            "Answer should mention Fed: '{}'",
+            answer
+        );
+        assert!(
+            answer.to_lowercase().contains("rate"),
+            "Answer should mention rates: '{}'",
+            answer
+        );
     }
 
     #[test]
@@ -2117,8 +2648,11 @@ mod tests {
         let engine = test_engine();
         let answer = engine.answer("Who cut rates?");
         eprintln!("  [qa] Q: 'Who cut rates?' → A: '{}'", answer);
-        assert!(answer.to_lowercase().contains("the_fed") || answer.to_lowercase().contains("fed"),
-            "Answer should mention Fed: '{}'", answer);
+        assert!(
+            answer.to_lowercase().contains("the_fed") || answer.to_lowercase().contains("fed"),
+            "Answer should mention Fed: '{}'",
+            answer
+        );
     }
 
     #[test]
@@ -2126,7 +2660,11 @@ mod tests {
         let engine = test_engine();
         let answer = engine.answer("Who wrote the symphony?");
         eprintln!("  [qa] Q: 'Who wrote the symphony?' → A: '{}'", answer);
-        assert!(answer.contains("not know"), "Should indicate uncertainty: '{}'", answer);
+        assert!(
+            answer.contains("not know"),
+            "Should indicate uncertainty: '{}'",
+            answer
+        );
     }
 
     #[test]
@@ -2172,7 +2710,9 @@ mod tests {
         );
 
         assert!(
-            engine.verify_fact("agent_00001", "observed", "signal_00001").0,
+            engine
+                .verify_fact("agent_00001", "observed", "signal_00001")
+                .0,
             "exact stored fact should verify"
         );
         assert!(
@@ -2193,12 +2733,7 @@ mod tests {
     fn test_verify_rejects_adaptation_decoy() {
         let mut engine = QaEngine::new();
         engine.store_fact("agent_7", "solve", "novel_task_7", "test");
-        engine.store_fact(
-            "agent_7_decoy",
-            "solve",
-            "novel_task_7_decoy",
-            "test",
-        );
+        engine.store_fact("agent_7_decoy", "solve", "novel_task_7_decoy", "test");
 
         assert!(engine.verify_fact("agent_7", "solve", "novel_task_7").0);
         assert!(
@@ -2206,6 +2741,25 @@ mod tests {
                 .verify_fact("agent_7", "solve", "novel_task_7_decoy")
                 .0,
             "decoy object must not verify for the real subject"
+        );
+    }
+
+    #[test]
+    fn test_answer_who_question_uses_exact_index() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("agent_00001", "observed", "signal_00001", "test");
+        engine.store_fact(
+            "agent_00001_shadow",
+            "observed",
+            "signal_00001_shadow",
+            "test",
+        );
+
+        let answer = engine.answer_combined("Who observed signal_00001?");
+        assert!(
+            answer.contains("agent_00001"),
+            "expected indexed exact answer, got: {}",
+            answer
         );
     }
 
@@ -2218,21 +2772,37 @@ mod tests {
 
         let a1 = engine.answer("Who fed the cat?");
         eprintln!("  [qa] Q: 'Who fed the cat?' → A: '{}'", a1);
-        assert!(a1.to_lowercase().contains("alice"), "Should answer alice: '{}'", a1);
+        assert!(
+            a1.to_lowercase().contains("alice"),
+            "Should answer alice: '{}'",
+            a1
+        );
 
         let a2 = engine.answer("Who writes code?");
         eprintln!("  [qa] Q: 'Who writes code?' → A: '{}'", a2);
-        assert!(a2.to_lowercase().contains("bob"), "Should answer bob: '{}'", a2);
+        assert!(
+            a2.to_lowercase().contains("bob"),
+            "Should answer bob: '{}'",
+            a2
+        );
     }
 
     #[test]
     fn test_multi_word_object() {
         let mut engine = QaEngine::new();
-        engine.store_fact("inflation", "rise", "above expectations",
-            "Inflation rose above expectations.");
+        engine.store_fact(
+            "inflation",
+            "rise",
+            "above expectations",
+            "Inflation rose above expectations.",
+        );
         let a = engine.answer("What rose above expectations?");
         eprintln!("  [qa] Q: 'What rose above expectations?' → A: '{}'", a);
-        assert!(a.to_lowercase().contains("inflation"), "Should mention inflation: '{}'", a);
+        assert!(
+            a.to_lowercase().contains("inflation"),
+            "Should mention inflation: '{}'",
+            a
+        );
     }
 
     #[test]
@@ -2278,8 +2848,14 @@ mod tests {
         engine.store_fact("the_fed", "raise", "rates", "s1");
         engine.store_fact("the_fed", "cut", "rates", "s2");
         // First fact should be flagged as contradicted
-        assert!(engine.facts[0].is_contradicted, "raise→cut should flag contradiction");
-        assert!(!engine.facts[1].is_contradicted, "newer fact should be clean");
+        assert!(
+            engine.facts[0].is_contradicted,
+            "raise→cut should flag contradiction"
+        );
+        assert!(
+            !engine.facts[1].is_contradicted,
+            "newer fact should be clean"
+        );
     }
 
     #[test]
@@ -2334,7 +2910,8 @@ mod tests {
     #[test]
     fn test_answer_chain_episode_preserves_unknown_confidence() {
         let engine = QaEngine::new();
-        let episode = engine.answer_chain_episode("chain-unknown", "What happened after the_fed raised rates?");
+        let episode = engine
+            .answer_chain_episode("chain-unknown", "What happened after the_fed raised rates?");
 
         assert_eq!(episode.id, "chain-unknown");
         assert_eq!(episode.confidence, 0.0);
@@ -2351,7 +2928,10 @@ mod tests {
         let facts = engine.facts_about("the_fed");
         assert_eq!(facts.len(), 2, "Should have 2 facts about the Fed");
         // Verify contradictions were detected
-        assert!(engine.facts[0].is_contradicted, "raise→cut should flag contradiction");
+        assert!(
+            engine.facts[0].is_contradicted,
+            "raise→cut should flag contradiction"
+        );
         assert!(!engine.facts[1].is_contradicted);
     }
 
@@ -2417,7 +2997,10 @@ mod tests {
 
     #[test]
     fn test_object_antonym() {
-        assert!(crate::narrative::is_object_antonym("inflation", "deflation"));
+        assert!(crate::narrative::is_object_antonym(
+            "inflation",
+            "deflation"
+        ));
         assert!(!crate::narrative::is_object_antonym("rates", "rates"));
     }
 
@@ -2426,15 +3009,28 @@ mod tests {
     fn test_chain_engine() -> QaEngine {
         let mut e = QaEngine::new();
         e.store_fact("the_fed", "raise", "rates", "The Fed raised rates.");
-        e.store_fact("inflation", "rise", "above expectations", "Inflation rose above expectations.");
+        e.store_fact(
+            "inflation",
+            "rise",
+            "above expectations",
+            "Inflation rose above expectations.",
+        );
         e.store_rule(
-            "the_fed", "raise", "rates",
-            "treasury_yields", "rise", "across the curve",
+            "the_fed",
+            "raise",
+            "rates",
+            "treasury_yields",
+            "rise",
+            "across the curve",
             "Fed raises → yields rise",
         );
         e.store_rule(
-            "treasury_yields", "rise", "across the curve",
-            "stock_market", "fall", "sharply",
+            "treasury_yields",
+            "rise",
+            "across the curve",
+            "stock_market",
+            "fall",
+            "sharply",
             "yields rise → stocks fall",
         );
         e
@@ -2456,7 +3052,10 @@ mod tests {
         let chain = engine.reason_chain("the_fed", "raise", "rates", 1);
         eprintln!("  Chain (1 hop): {:?}", chain);
         assert!(!chain.is_empty(), "Should find at least 1 hop");
-        assert_eq!(chain[0].0, "treasury_yields", "First hop should be treasury_yields");
+        assert_eq!(
+            chain[0].0, "treasury_yields",
+            "First hop should be treasury_yields"
+        );
     }
 
     #[test]
@@ -2464,9 +3063,16 @@ mod tests {
         let engine = test_chain_engine();
         let chain = engine.reason_chain("the_fed", "raise", "rates", 5);
         eprintln!("  Chain (2 hops): {:?}", chain);
-        assert!(chain.len() >= 2, "Should find at least 2 hops, found {}", chain.len());
+        assert!(
+            chain.len() >= 2,
+            "Should find at least 2 hops, found {}",
+            chain.len()
+        );
         assert_eq!(chain[0].0, "treasury_yields");
-        assert_eq!(chain[1].0, "stock_market", "Second hop should be stock_market");
+        assert_eq!(
+            chain[1].0, "stock_market",
+            "Second hop should be stock_market"
+        );
     }
 
     #[test]
@@ -2482,11 +3088,16 @@ mod tests {
         let engine = test_chain_engine();
         let answer = engine.answer_chain("What happened after the_fed raised rates?");
         eprintln!("  'What happened after...?' → '{}'", answer);
-        assert!(!answer.contains("don't know"), "Should answer: '{}'", answer);
+        assert!(
+            !answer.contains("don't know"),
+            "Should answer: '{}'",
+            answer
+        );
         assert!(
             answer.to_lowercase().contains("treasury_yields")
-            || answer.to_lowercase().contains("treasury"),
-            "Should mention treasury yields: '{}'", answer
+                || answer.to_lowercase().contains("treasury"),
+            "Should mention treasury yields: '{}'",
+            answer
         );
     }
 
@@ -2504,8 +3115,12 @@ mod tests {
         // Store a fact and a rule about the same subject
         e.store_fact("the_fed", "raise", "rates", "source");
         e.store_rule(
-            "the_fed", "raise", "rates",
-            "inflation", "fall", "temporarily",
+            "the_fed",
+            "raise",
+            "rates",
+            "inflation",
+            "fall",
+            "temporarily",
             "test rule",
         );
         let chain = e.reason_chain("the_fed", "raise", "rates", 3);
@@ -2559,19 +3174,36 @@ mod tests {
         // Same concept, different textual form (underscore vs space)
         let c = encode_triple("the Fed", "raise", "rates");
         let sim_underscore = 1.0 - a.normalized_hamming_distance(&c);
-        eprintln!("  'the_fed' vs 'the Fed': {:.6} (threshold={})",
-            sim_underscore, if sim_underscore >= 0.56 { "PASS ✓" } else { "FAIL ✗" });
+        eprintln!(
+            "  'the_fed' vs 'the Fed': {:.6} (threshold={})",
+            sim_underscore,
+            if sim_underscore >= 0.56 {
+                "PASS ✓"
+            } else {
+                "FAIL ✗"
+            }
+        );
 
         // Synonyms: "the_fed" vs "Federal Reserve"
         let d = encode_triple("Federal Reserve", "raise", "rates");
         let sim_synonym = 1.0 - a.normalized_hamming_distance(&d);
-        eprintln!("  'the_fed' vs 'Federal Reserve': {:.6} (threshold={})",
-            sim_synonym, if sim_synonym >= 0.56 { "PASS ✓" } else { "FAIL ✗" });
+        eprintln!(
+            "  'the_fed' vs 'Federal Reserve': {:.6} (threshold={})",
+            sim_synonym,
+            if sim_synonym >= 0.56 {
+                "PASS ✓"
+            } else {
+                "FAIL ✗"
+            }
+        );
 
         // Completely unrelated triple (baseline noise floor)
         let e = encode_triple("alice", "eat", "cake");
         let sim_noise = 1.0 - a.normalized_hamming_distance(&e);
-        eprintln!("  'the_fed raise rates' vs 'alice eat cake': {:.6}", sim_noise);
+        eprintln!(
+            "  'the_fed raise rates' vs 'alice eat cake': {:.6}",
+            sim_noise
+        );
 
         // Same subject, different verb+object
         let f = encode_triple("the_fed", "cut", "inflation");
@@ -2586,15 +3218,23 @@ mod tests {
         eprintln!("");
         eprintln!("  ╔══════════════════════════════════════════════════════════════╗");
         eprintln!("  ║  CHAIN MATCHING IS TEXT-EXACT, NOT SEMANTIC                ║");
-        eprintln!("  ║  Pre-encoding + {:.2} threshold prevents false positives.       ║",
-            CHAIN_MATCH_THRESHOLD);
+        eprintln!(
+            "  ║  Pre-encoding + {:.2} threshold prevents false positives.       ║",
+            CHAIN_MATCH_THRESHOLD
+        );
         eprintln!("  ║  Synonyms (Fed ≠ Federal Reserve) will NOT match.          ║");
-        eprintln!("  ║  Underscore/space (the_fed ≠ the Fed): {:.4} < {:.2} → blocked ✓      ║",
-            0.571582, CHAIN_MATCH_THRESHOLD);
-        eprintln!("  ║  Case (the_fed ≠ the fed): {:.4} < {:.2} → blocked ✓              ║",
-            0.6486, CHAIN_MATCH_THRESHOLD);
-        eprintln!("  ║  Noise floor: ~0.50 — clean margin: {:.2}                        ║",
-            CHAIN_MATCH_THRESHOLD - 0.50);
+        eprintln!(
+            "  ║  Underscore/space (the_fed ≠ the Fed): {:.4} < {:.2} → blocked ✓      ║",
+            0.571582, CHAIN_MATCH_THRESHOLD
+        );
+        eprintln!(
+            "  ║  Case (the_fed ≠ the fed): {:.4} < {:.2} → blocked ✓              ║",
+            0.6486, CHAIN_MATCH_THRESHOLD
+        );
+        eprintln!(
+            "  ║  Noise floor: ~0.50 — clean margin: {:.2}                        ║",
+            CHAIN_MATCH_THRESHOLD - 0.50
+        );
         eprintln!("  ╚══════════════════════════════════════════════════════════════╝");
 
         // The semantic gap is a FUNDAMENTAL limitation of n-gram text encoding.
@@ -2625,7 +3265,10 @@ mod tests {
         let mut false_positives = 0;
         let mut total_sim = 0.0;
 
-        eprintln!("  False positive scan: {} unrelated triples vs reference", unrelated.len());
+        eprintln!(
+            "  False positive scan: {} unrelated triples vs reference",
+            unrelated.len()
+        );
         for (s, v, o) in &unrelated {
             let hv = encode_triple(s, v, o);
             let sim = 1.0 - reference.normalized_hamming_distance(&hv);
@@ -2638,11 +3281,25 @@ mod tests {
 
         let avg_sim = total_sim / unrelated.len() as f64;
         let fp_rate = false_positives as f64 / unrelated.len() as f64;
-        eprintln!("  Average similarity: {:.4} (expected ~0.50 for random)", avg_sim);
-        eprintln!("  False positives at threshold {:.2}: {} / {} ({:.1}%)",
-            MIN_CLEANUP_ENERGY, false_positives, unrelated.len(), fp_rate * 100.0);
-        eprintln!("  Random-noise upper bound (3σ): ~{:.4}", 0.50 + 3.0 * (1.0 / (2.0 * 10240.0_f64).sqrt()));
-        eprintln!("  Threshold margin: {:.4} above noise floor", MIN_CLEANUP_ENERGY - avg_sim);
+        eprintln!(
+            "  Average similarity: {:.4} (expected ~0.50 for random)",
+            avg_sim
+        );
+        eprintln!(
+            "  False positives at threshold {:.2}: {} / {} ({:.1}%)",
+            MIN_CLEANUP_ENERGY,
+            false_positives,
+            unrelated.len(),
+            fp_rate * 100.0
+        );
+        eprintln!(
+            "  Random-noise upper bound (3σ): ~{:.4}",
+            0.50 + 3.0 * (1.0 / (2.0 * 10240.0_f64).sqrt())
+        );
+        eprintln!(
+            "  Threshold margin: {:.4} above noise floor",
+            MIN_CLEANUP_ENERGY - avg_sim
+        );
 
         // At 0.56 threshold with D=10240, the expected false-positive rate
         // for random vectors is extremely low (~2^{-80}). Text-encoded
@@ -2666,14 +3323,20 @@ mod tests {
         e.store_rule("a", "b", "c", "g", "h", "i", "rule2");
 
         let chain = e.reason_chain("a", "b", "c", 3);
-        assert_eq!(chain.len(), 1, "Should find exactly 1 hop (first matching rule)");
+        assert_eq!(
+            chain.len(),
+            1,
+            "Should find exactly 1 hop (first matching rule)"
+        );
         assert_eq!(
             chain[0].0, "d",
             "Should pick first rule's consequent (d), got '{}'",
             chain[0].0
         );
-        eprintln!("  Conflict resolution: identical antecedents → picks first ({} {} {})",
-            chain[0].0, chain[0].1, chain[0].2);
+        eprintln!(
+            "  Conflict resolution: identical antecedents → picks first ({} {} {})",
+            chain[0].0, chain[0].1, chain[0].2
+        );
     }
 
     /// Test partial antecedent matching: if only the subject matches but
@@ -2681,14 +3344,20 @@ mod tests {
     #[test]
     fn test_chain_partial_antecedent_no_match() {
         let mut e = QaEngine::new();
-        e.store_rule("the_fed", "raise", "rates", "yields", "rise", "across", "rule");
+        e.store_rule(
+            "the_fed", "raise", "rates", "yields", "rise", "across", "rule",
+        );
         // Different verb+object for the same subject
         let chain = e.reason_chain("the_fed", "cut", "rates", 3);
-        eprintln!("  Partial match 'the_fed cut rates' vs rule 'the_fed raise rates': {} hops",
-            chain.len());
+        eprintln!(
+            "  Partial match 'the_fed cut rates' vs rule 'the_fed raise rates': {} hops",
+            chain.len()
+        );
         // Currently this will NOT match because the full triple encoding differs
-        assert!(chain.is_empty(),
-            "Different verb should NOT match (text-exact encoding)");
+        assert!(
+            chain.is_empty(),
+            "Different verb should NOT match (text-exact encoding)"
+        );
     }
 
     /// Test noise propagation through 3 hops with increasingly distant matching.
@@ -2712,7 +3381,11 @@ mod tests {
         // Now test: what if the intermediate step has encoding noise?
         // If we ask about a slightly different form of the intermediate state:
         let chain_noisy = e.reason_chain("a", "b", "c", 5);
-        assert_eq!(chain_noisy.len(), 3, "Clean chain should propagate through 3 hops");
+        assert_eq!(
+            chain_noisy.len(),
+            3,
+            "Clean chain should propagate through 3 hops"
+        );
         assert_eq!(chain_noisy[2].0, "j", "Should reach final consequent");
     }
 
@@ -2735,24 +3408,37 @@ mod tests {
         eprintln!("  ║  FINANCIAL SEMANTIC GAP                                      ║");
         eprintln!("  ╠══════════════════════════════════════════════════════════════╣");
         eprintln!("  ║  the_fed raise rates  ↔  central_bank hike interest_rates   ║");
-        eprintln!("  ║  Similarity: {:.4}  (needs ≥{} to chain)          ║",
-            sim1, MIN_CLEANUP_ENERGY);
+        eprintln!(
+            "  ║  Similarity: {:.4}  (needs ≥{} to chain)          ║",
+            sim1, MIN_CLEANUP_ENERGY
+        );
         eprintln!("  ║  the_fed raise rates  ↔  fomc tighten policy                 ║");
-        eprintln!("  ║  Similarity: {:.4}  (needs ≥{} to chain)          ║",
-            sim2, MIN_CLEANUP_ENERGY);
+        eprintln!(
+            "  ║  Similarity: {:.4}  (needs ≥{} to chain)          ║",
+            sim2, MIN_CLEANUP_ENERGY
+        );
         eprintln!("  ║  central_bank hike   ↔  fomc tighten policy                 ║");
-        eprintln!("  ║  Similarity: {:.4}  (needs ≥{} to chain)          ║",
-            sim3, MIN_CLEANUP_ENERGY);
+        eprintln!(
+            "  ║  Similarity: {:.4}  (needs ≥{} to chain)          ║",
+            sim3, MIN_CLEANUP_ENERGY
+        );
         eprintln!("  ║                                                            ║");
         eprintln!("  ║  All below threshold. Synonyms can't chain in current impl. ║");
         eprintln!("  ╚══════════════════════════════════════════════════════════════╝");
 
         // All should be well below threshold
-        assert!(sim1 < MIN_CLEANUP_ENERGY,
+        assert!(
+            sim1 < MIN_CLEANUP_ENERGY,
             "Synonyms should not match at cleanup threshold: {:.4} >= {:.4}",
-            sim1, MIN_CLEANUP_ENERGY);
-        assert!(sim2 < MIN_CLEANUP_ENERGY,
-            "Synonyms should not match: {:.4} >= {:.4}", sim2, MIN_CLEANUP_ENERGY);
+            sim1,
+            MIN_CLEANUP_ENERGY
+        );
+        assert!(
+            sim2 < MIN_CLEANUP_ENERGY,
+            "Synonyms should not match: {:.4} >= {:.4}",
+            sim2,
+            MIN_CLEANUP_ENERGY
+        );
     }
 
     /// Test: pre-encoded vectors prevent false positives from text encoding
@@ -2763,25 +3449,44 @@ mod tests {
         let mut e = QaEngine::new();
         // Rule stored with "the Fed" (space)
         e.store_fact("the_fed", "raise", "rates", "source");
-        e.store_rule("the Fed", "raise", "rates", "yields", "rise", "across", "space rule");
+        e.store_rule(
+            "the Fed",
+            "raise",
+            "rates",
+            "yields",
+            "rise",
+            "across",
+            "space rule",
+        );
 
         // Try to chain from "the_fed" (underscore)
         let chain = e.reason_chain("the_fed", "raise", "rates", 3);
-        eprintln!("  Pre-encoded barrier: chain from 'the_fed' via 'the Fed' rule: {} hops",
-            chain.len());
+        eprintln!(
+            "  Pre-encoded barrier: chain from 'the_fed' via 'the Fed' rule: {} hops",
+            chain.len()
+        );
         // With pre-encoded ante_hv and CHAIN_MATCH_THRESHOLD=0.75:
         //   sim(the_fed_encoding, the_Fed_encoding) ≈ 0.5716 < 0.75
         //   → Correctly rejected
         assert!(
             chain.is_empty(),
             "Pre-encoded vectors should prevent underscore/space false positives. \
-             Found {} hops (would be a false positive)", chain.len()
+             Found {} hops (would be a false positive)",
+            chain.len()
         );
 
         // Exact text still works
         let mut e2 = QaEngine::new();
         e2.store_fact("the_fed", "raise", "rates", "source");
-        e2.store_rule("the_fed", "raise", "rates", "yields", "rise", "across", "exact rule");
+        e2.store_rule(
+            "the_fed",
+            "raise",
+            "rates",
+            "yields",
+            "rise",
+            "across",
+            "exact rule",
+        );
         let chain2 = e2.reason_chain("the_fed", "raise", "rates", 3);
         assert_eq!(chain2.len(), 1, "Exact text should chain successfully");
         eprintln!("  Exact text chain works: {} hops ✓", chain2.len());
@@ -2814,10 +3519,15 @@ mod tests {
             let hv = encode_triple(s, v, o);
             let sim = 1.0 - reference.normalized_hamming_distance(&hv);
             let chains = sim >= CHAIN_MATCH_THRESHOLD;
-            eprintln!("    '{} {} {}': sim={:.4} → {} (needs ≥{})",
-                s, v, o, sim,
+            eprintln!(
+                "    '{} {} {}': sim={:.4} → {} (needs ≥{})",
+                s,
+                v,
+                o,
+                sim,
                 if chains { "CHAINS" } else { "BLOCKED" },
-                CHAIN_MATCH_THRESHOLD);
+                CHAIN_MATCH_THRESHOLD
+            );
         }
 
         // All text variants should be blocked by 0.75 threshold
@@ -2825,7 +3535,10 @@ mod tests {
             let hv = encode_triple(s, v, o);
             1.0 - reference.normalized_hamming_distance(&hv) < CHAIN_MATCH_THRESHOLD
         });
-        assert!(all_blocked, "All text variants should be blocked at threshold 0.75");
+        assert!(
+            all_blocked,
+            "All text variants should be blocked at threshold 0.75"
+        );
     }
 
     // ══════════════════════════════════════════════════════════════════════
@@ -2974,7 +3687,11 @@ mod tests {
         assert_eq!(trace.association_strength, Some(0.50));
         assert_eq!(
             trace.matched_label.as_deref(),
-            Some(if target_idx == 0 { "the_fed" } else { "federal_reserve" })
+            Some(if target_idx == 0 {
+                "the_fed"
+            } else {
+                "federal_reserve"
+            })
         );
         eprintln!("  ✓ Level 2: association traversal resolves coreference");
     }
@@ -3041,23 +3758,38 @@ mod tests {
             );
         }
         eprintln!("\n  Coreference Chain Integration Test:");
-        eprintln!("  Phase 1: Brain seeded with {} clusters", brain.dejavu_clusters.len());
+        eprintln!(
+            "  Phase 1: Brain seeded with {} clusters",
+            brain.dejavu_clusters.len()
+        );
 
         // ── Phase 2: Sync clusters + associations to QaEngine ────
         let mut engine = QaEngine::new();
         engine.sync_cluster_data(&brain);
-        eprintln!("  Phase 2: QA synced ({} centroids, {} assocs)",
+        eprintln!(
+            "  Phase 2: QA synced ({} centroids, {} assocs)",
             engine.cluster_centroids.len(),
-            engine.cluster_associations.len());
-        assert!(!engine.cluster_centroids.is_empty(), "Centroids must be synced");
+            engine.cluster_associations.len()
+        );
+        assert!(
+            !engine.cluster_centroids.is_empty(),
+            "Centroids must be synced"
+        );
 
         // ── Phase 3: Store rule using "the_fed" (resolves to centroid via Level 1) ──
         engine.store_rule(
-            "the_fed", "raise", "rates",
-            "inflation", "rise", "",
+            "the_fed",
+            "raise",
+            "rates",
+            "inflation",
+            "rise",
+            "",
             "IF the_fed raise rates THEN inflation rise",
         );
-        eprintln!("  Phase 3: Rule stored (total rules: {})", engine.rules.len());
+        eprintln!(
+            "  Phase 3: Rule stored (total rules: {})",
+            engine.rules.len()
+        );
         assert_eq!(engine.rules.len(), 1, "Should have 1 rule");
 
         // ── Phase 4: Store fact using "central_bank" ──────────────
@@ -3113,7 +3845,10 @@ mod tests {
         // correct centroids.
 
         engine.store_fact("the_fed", "raise", "rates", "The Fed raised rates.");
-        eprintln!("  Phase 4: Fact stored (total facts: {})", engine.facts.len());
+        eprintln!(
+            "  Phase 4: Fact stored (total facts: {})",
+            engine.facts.len()
+        );
         assert_eq!(engine.facts.len(), 1, "Should have 1 fact");
 
         // ── Phase 5: Chain from fact ───────────────────────────────
@@ -3152,9 +3887,24 @@ mod tests {
         qa.store_fact("gcd_13_10240", "equals", "1", "number_theory");
         qa.store_fact("rho_26", "is_cyclic_shift_by", "26", "definition");
         qa.store_fact("gcd_26_10240", "equals", "2", "number_theory");
-        qa.store_fact("rho_admissible_26", "excludes", "constant_vectors", "invariant");
-        qa.store_fact("rho_admissible_26", "excludes", "period_2_vectors", "invariant");
-        qa.store_fact("test_sublemma_s_surjectivity", "passed", "computationally", "verification");
+        qa.store_fact(
+            "rho_admissible_26",
+            "excludes",
+            "constant_vectors",
+            "invariant",
+        );
+        qa.store_fact(
+            "rho_admissible_26",
+            "excludes",
+            "period_2_vectors",
+            "invariant",
+        );
+        qa.store_fact(
+            "test_sublemma_s_surjectivity",
+            "passed",
+            "computationally",
+            "verification",
+        );
         qa.store_fact("domain_rho26_W_i", "derived", "from_isometry", "derivation");
         qa.store_fact("g_nearest_P_tau", "defined", "formally", "definition");
 
@@ -3166,110 +3916,182 @@ mod tests {
         let r13_gen = |qa: &mut QaEngine| {
             // Rule: current state → next state (linear chain)
             qa.store_rule(
-                "rho_13", "is_cyclic_shift_by", "13",
-                "rho_13", "generates", "full_group_C_10240",
+                "rho_13",
+                "is_cyclic_shift_by",
+                "13",
+                "rho_13",
+                "generates",
+                "full_group_C_10240",
                 "gcd_1_implies_generator",
             );
             qa.store_rule(
-                "gcd_13_10240", "equals", "1",
-                "rho_13", "generates", "full_group_C_10240",
+                "gcd_13_10240",
+                "equals",
+                "1",
+                "rho_13",
+                "generates",
+                "full_group_C_10240",
                 "gcd_1_implies_generator_alt",
             );
         };
         r13_gen(&mut qa);
 
         qa.store_rule(
-            "rho_13", "generates", "full_group_C_10240",
-            "rho_13", "fixedpoints", "constant_vectors_only",
+            "rho_13",
+            "generates",
+            "full_group_C_10240",
+            "rho_13",
+            "fixedpoints",
+            "constant_vectors_only",
             "generator_only_constants",
         );
         qa.store_rule(
-            "rho_13", "fixedpoints", "constant_vectors_only",
-            "rho_admissible", "satisfied", "",
+            "rho_13",
+            "fixedpoints",
+            "constant_vectors_only",
+            "rho_admissible",
+            "satisfied",
+            "",
             "rho_ok",
         );
 
         // ρ²⁶ branch: shift + gcd(26,10240)=2 → period-2 fixed points
         let r26_fp = |qa: &mut QaEngine| {
             qa.store_rule(
-                "rho_26", "is_cyclic_shift_by", "26",
-                "rho_26", "fixedpoints", "period_2_vectors",
+                "rho_26",
+                "is_cyclic_shift_by",
+                "26",
+                "rho_26",
+                "fixedpoints",
+                "period_2_vectors",
                 "gcd_2_implies_period2",
             );
             qa.store_rule(
-                "gcd_26_10240", "equals", "2",
-                "rho_26", "fixedpoints", "period_2_vectors",
+                "gcd_26_10240",
+                "equals",
+                "2",
+                "rho_26",
+                "fixedpoints",
+                "period_2_vectors",
                 "gcd_2_implies_period2_alt",
             );
         };
         r26_fp(&mut qa);
 
         qa.store_rule(
-            "rho_26", "fixedpoints", "period_2_vectors",
-            "rho_26_invariant", "added_to_enforce", "",
+            "rho_26",
+            "fixedpoints",
+            "period_2_vectors",
+            "rho_26_invariant",
+            "added_to_enforce",
+            "",
             "add_rho26_check",
         );
 
         // Merge branches: both invariants must be enforced
         qa.store_rule(
-            "rho_admissible", "satisfied", "",
-            "invariants", "enforced", "",
+            "rho_admissible",
+            "satisfied",
+            "",
+            "invariants",
+            "enforced",
+            "",
             "merge_rho_checks",
         );
         qa.store_rule(
-            "rho_26_invariant", "added_to_enforce", "",
-            "invariants", "enforced", "",
+            "rho_26_invariant",
+            "added_to_enforce",
+            "",
+            "invariants",
+            "enforced",
+            "",
             "merge_rho26_check",
         );
 
         // Domain + definition + test → Sub-Lemma S holds
         qa.store_rule(
-            "domain_rho26_W_i", "derived", "from_isometry",
-            "domain_ready", "true", "",
+            "domain_rho26_W_i",
+            "derived",
+            "from_isometry",
+            "domain_ready",
+            "true",
+            "",
             "domain_confirmed",
         );
         qa.store_rule(
-            "g_nearest_P_tau", "defined", "formally",
-            "g_ready", "true", "",
+            "g_nearest_P_tau",
+            "defined",
+            "formally",
+            "g_ready",
+            "true",
+            "",
             "g_definition_confirmed",
         );
         qa.store_rule(
-            "test_sublemma_s_surjectivity", "passed", "computationally",
-            "empirical_evidence", "confirmed", "",
+            "test_sublemma_s_surjectivity",
+            "passed",
+            "computationally",
+            "empirical_evidence",
+            "confirmed",
+            "",
             "empirical_verification",
         );
 
         // Assemble all premises
         qa.store_rule(
-            "invariants", "enforced", "",
-            "all_premises_met", "true", "",
+            "invariants",
+            "enforced",
+            "",
+            "all_premises_met",
+            "true",
+            "",
             "invariants_assembled",
         );
         qa.store_rule(
-            "domain_ready", "true", "",
-            "all_premises_met", "true", "",
+            "domain_ready",
+            "true",
+            "",
+            "all_premises_met",
+            "true",
+            "",
             "domain_assembled",
         );
         qa.store_rule(
-            "g_ready", "true", "",
-            "all_premises_met", "true", "",
+            "g_ready",
+            "true",
+            "",
+            "all_premises_met",
+            "true",
+            "",
             "g_assembled",
         );
         qa.store_rule(
-            "empirical_evidence", "confirmed", "",
-            "all_premises_met", "true", "",
+            "empirical_evidence",
+            "confirmed",
+            "",
+            "all_premises_met",
+            "true",
+            "",
             "evidence_assembled",
         );
 
         // Final conclusion
         qa.store_rule(
-            "all_premises_met", "true", "",
-            "sublemma_s", "holds", "",
+            "all_premises_met",
+            "true",
+            "",
+            "sublemma_s",
+            "holds",
+            "",
             "premises_satisfied",
         );
         qa.store_rule(
-            "sublemma_s", "holds", "",
-            "spectral_gap", "closed", "",
+            "sublemma_s",
+            "holds",
+            "",
+            "spectral_gap",
+            "closed",
+            "",
             "theorem_XXV4_complete",
         );
 
@@ -3282,38 +4104,58 @@ mod tests {
         let start_points = [
             ("rho_13", "is_cyclic_shift_by", "13", "ρ¹³ cyclic shift"),
             ("rho_26", "is_cyclic_shift_by", "26", "ρ²⁶ cyclic shift"),
-            ("domain_rho26_W_i", "derived", "from_isometry", "Domain = ρ²⁶(W_i)"),
+            (
+                "domain_rho26_W_i",
+                "derived",
+                "from_isometry",
+                "Domain = ρ²⁶(W_i)",
+            ),
             ("g_nearest_P_tau", "defined", "formally", "g = nearest∘P_τ"),
-            ("test_sublemma_s_surjectivity", "passed", "computationally", "Test passed"),
+            (
+                "test_sublemma_s_surjectivity",
+                "passed",
+                "computationally",
+                "Test passed",
+            ),
         ];
 
         let mut all_reach_conclusion = true;
 
         for (start_s, start_v, start_o, label) in &start_points {
             let chain = qa.reason_chain(start_s, start_v, start_o, 12);
-            let reached = chain.iter().any(|(s, v, o, _src)| {
-                s == "spectral_gap" && v == "closed"
-            });
+            let reached = chain
+                .iter()
+                .any(|(s, v, o, _src)| s == "spectral_gap" && v == "closed");
 
             // Print chain
             eprintln!();
             eprintln!("  From '{}' ({} hops):", label, chain.len());
             for (i, (subj, verb, obj, _source)) in chain.iter().enumerate() {
                 if i < 8 {
-                    let obj_display = if obj.is_empty() { String::new() } else { format!(" {}", obj) };
+                    let obj_display = if obj.is_empty() {
+                        String::new()
+                    } else {
+                        format!(" {}", obj)
+                    };
                     eprintln!("    {}. {} {}{}", i + 1, subj, verb, obj_display);
                 }
             }
             if chain.len() > 8 {
                 eprintln!("    ... ({} total hops)", chain.len());
             }
-            eprintln!("    ➜ {}", if reached { "spectral_gap closed ✓" } else { "chain terminated prematurely" });
+            eprintln!(
+                "    ➜ {}",
+                if reached {
+                    "spectral_gap closed ✓"
+                } else {
+                    "chain terminated prematurely"
+                }
+            );
 
             if !reached {
                 all_reach_conclusion = false;
                 if let Some(last) = chain.last() {
-                    eprintln!("       Stopped at: {} {} {}",
-                        last.0, last.1, last.2);
+                    eprintln!("       Stopped at: {} {} {}", last.0, last.1, last.2);
                 }
             }
         }
@@ -3331,7 +4173,10 @@ mod tests {
 
         if all_reach_conclusion {
             eprintln!("  ✓ All 5 root premises chain to 'spectral_gap closed'");
-            eprintln!("  ✓ Causal chain verified: {} → ... → spectral_gap closed", qa.rule_count());
+            eprintln!(
+                "  ✓ Causal chain verified: {} → ... → spectral_gap closed",
+                qa.rule_count()
+            );
         } else {
             eprintln!("  ⚠ Some chains terminated before reaching conclusion");
             eprintln!("  ⚠ (This may indicate a gap in the rule connectivity)");
@@ -3356,71 +4201,169 @@ mod tests {
         let mut qa = QaEngine::new();
 
         // Chain A (Monetary policy) — high confidence
-        qa.store_rule_with_confidence("central_bank","tightens","policy","yields","rise","sharply","induced",1.0);
-        qa.store_rule_with_confidence("yields","rise","sharply","currency","strengthens","against basket","induced",1.0);
+        qa.store_rule_with_confidence(
+            "central_bank",
+            "tightens",
+            "policy",
+            "yields",
+            "rise",
+            "sharply",
+            "induced",
+            1.0,
+        );
+        qa.store_rule_with_confidence(
+            "yields",
+            "rise",
+            "sharply",
+            "currency",
+            "strengthens",
+            "against basket",
+            "induced",
+            1.0,
+        );
         // Chain B (Geopolitical) — medium confidence
-        qa.store_rule_with_confidence("conflict","escalates","in region","safe_haven","flows","intensify","induced",0.80);
-        qa.store_rule_with_confidence("safe_haven","flows","intensify","currency","strengthens","against basket","induced",0.80);
+        qa.store_rule_with_confidence(
+            "conflict",
+            "escalates",
+            "in region",
+            "safe_haven",
+            "flows",
+            "intensify",
+            "induced",
+            0.80,
+        );
+        qa.store_rule_with_confidence(
+            "safe_haven",
+            "flows",
+            "intensify",
+            "currency",
+            "strengthens",
+            "against basket",
+            "induced",
+            0.80,
+        );
         // Chain C (Trade) — low confidence
-        qa.store_rule_with_confidence("trade_deficit","narrows","unexpectedly","current_account","improves","significantly","induced",0.65);
-        qa.store_rule_with_confidence("current_account","improves","significantly","currency","strengthens","against basket","induced",0.65);
+        qa.store_rule_with_confidence(
+            "trade_deficit",
+            "narrows",
+            "unexpectedly",
+            "current_account",
+            "improves",
+            "significantly",
+            "induced",
+            0.65,
+        );
+        qa.store_rule_with_confidence(
+            "current_account",
+            "improves",
+            "significantly",
+            "currency",
+            "strengthens",
+            "against basket",
+            "induced",
+            0.65,
+        );
 
-        qa.store_fact("central_bank","tightens","policy","obs");
-        qa.store_fact("conflict","escalates","in region","obs");
-        qa.store_fact("trade_deficit","narrows","unexpectedly","obs");
+        qa.store_fact("central_bank", "tightens", "policy", "obs");
+        qa.store_fact("conflict", "escalates", "in region", "obs");
+        qa.store_fact("trade_deficit", "narrows", "unexpectedly", "obs");
 
         // 1. Forward deduction: each chain should reach "currency strengthens"
-        let r_a = qa.reason_chain("central_bank","tightens","policy",5);
+        let r_a = qa.reason_chain("central_bank", "tightens", "policy", 5);
         assert!(r_a.len() >= 2, "Chain A should reach currency strengthens");
-        assert!(r_a.last().map(|(s,_,_,_)| s.as_str()) == Some("currency"),
-            "Chain A end: {:?}", r_a.last());
+        assert!(
+            r_a.last().map(|(s, _, _, _)| s.as_str()) == Some("currency"),
+            "Chain A end: {:?}",
+            r_a.last()
+        );
 
-        let r_b = qa.reason_chain("conflict","escalates","in region",5);
+        let r_b = qa.reason_chain("conflict", "escalates", "in region", 5);
         assert!(r_b.len() >= 2, "Chain B should reach currency strengthens");
 
-        let r_c = qa.reason_chain("trade_deficit","narrows","unexpectedly",5);
+        let r_c = qa.reason_chain("trade_deficit", "narrows", "unexpectedly", 5);
         assert!(r_c.len() >= 2, "Chain C should reach currency strengthens");
 
         // 2. Abduction: from "currency strengthens", find all 3 root causes
-        let h = qa.abduce("currency","strengthens","against basket");
-        assert!(h.len() >= 3, "Abduction should find 3+ root causes, got {}", h.len());
+        let h = qa.abduce("currency", "strengthens", "against basket");
+        assert!(
+            h.len() >= 3,
+            "Abduction should find 3+ root causes, got {}",
+            h.len()
+        );
         let root_subjects: std::collections::HashSet<&str> =
-            h.iter().map(|(s,_,_,_)| s.as_str()).collect();
-        assert!(root_subjects.contains("yields"),
-            "yields should be among abduction results: {:?}", root_subjects);
-        assert!(root_subjects.contains("current_account")
-            || root_subjects.contains("safe_haven"),
-            "other chains should be among results: {:?}", root_subjects);
+            h.iter().map(|(s, _, _, _)| s.as_str()).collect();
+        assert!(
+            root_subjects.contains("yields"),
+            "yields should be among abduction results: {:?}",
+            root_subjects
+        );
+        assert!(
+            root_subjects.contains("current_account") || root_subjects.contains("safe_haven"),
+            "other chains should be among results: {:?}",
+            root_subjects
+        );
 
         // 3. Multi-hop abduction
-        let mut cur = vec![("currency".to_string(),"strengthens".to_string(),"against basket".to_string())];
+        let mut cur = vec![(
+            "currency".to_string(),
+            "strengthens".to_string(),
+            "against basket".to_string(),
+        )];
         let mut found_root = false;
         for _ in 0..5 {
-            let nxt: Vec<_> = cur.iter().flat_map(|(s,v,o)| {
-                qa.abduce(s,v,o).into_iter().map(|(ns,nv,no,_)| (ns,nv,no))
-            }).collect();
-            if nxt.is_empty() { break; }
-            if nxt.iter().any(|(s,_,_)| s=="central_bank" || s=="conflict") {
-                found_root = true; break;
+            let nxt: Vec<_> = cur
+                .iter()
+                .flat_map(|(s, v, o)| {
+                    qa.abduce(s, v, o)
+                        .into_iter()
+                        .map(|(ns, nv, no, _)| (ns, nv, no))
+                })
+                .collect();
+            if nxt.is_empty() {
+                break;
+            }
+            if nxt
+                .iter()
+                .any(|(s, _, _)| s == "central_bank" || s == "conflict")
+            {
+                found_root = true;
+                break;
             }
             cur = nxt;
         }
-        assert!(found_root, "Multi-hop abduction should trace to root causes");
+        assert!(
+            found_root,
+            "Multi-hop abduction should trace to root causes"
+        );
 
         // 4. Confidence tracking: EWMA decay
-        for _ in 0..5 { qa.update_rule_confidence(0, 0.30); }
-        assert!(qa.rules()[0].confidence < 0.90,
-            "Confidence should decay from 1.0 below 0.90, got {:.4}", qa.rules()[0].confidence);
+        for _ in 0..5 {
+            qa.update_rule_confidence(0, 0.30);
+        }
+        assert!(
+            qa.rules()[0].confidence < 0.90,
+            "Confidence should decay from 1.0 below 0.90, got {:.4}",
+            qa.rules()[0].confidence
+        );
         qa.update_rule_confidence(0, 0.10);
-        assert!(qa.rules()[0].confidence > qa.rules()[4].confidence,
-            "High-conf rule should have higher confidence than low-conf rule");
+        assert!(
+            qa.rules()[0].confidence > qa.rules()[4].confidence,
+            "High-conf rule should have higher confidence than low-conf rule"
+        );
 
         // 5. Rule culling
         let n_culled = qa.cull_low_confidence_rules(0.30);
-        eprintln!("  Three-body puzzle: {} rules, {} culled, {} remaining",
-            qa.rule_count() + n_culled, n_culled, qa.rule_count());
-        let chains = qa.reason_chain("central_bank","tightens","policy",5);
-        assert!(!chains.is_empty(), "Culled engine should still chain from remaining rules");
+        eprintln!(
+            "  Three-body puzzle: {} rules, {} culled, {} remaining",
+            qa.rule_count() + n_culled,
+            n_culled,
+            qa.rule_count()
+        );
+        let chains = qa.reason_chain("central_bank", "tightens", "policy", 5);
+        assert!(
+            !chains.is_empty(),
+            "Culled engine should still chain from remaining rules"
+        );
     }
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -3429,19 +4372,44 @@ mod tests {
     #[test]
     fn test_analogical_transfer_with_centroids() {
         let mut qa = QaEngine::new();
-        for term in &["central_bank","tightens","policy","yields","rise","sharply","foreign_bank","loosens"] {
-            qa.cluster_centroids.push(Hypervector::encode_text_ngram(term, 3));
+        for term in &[
+            "central_bank",
+            "tightens",
+            "policy",
+            "yields",
+            "rise",
+            "sharply",
+            "foreign_bank",
+            "loosens",
+        ] {
+            qa.cluster_centroids
+                .push(Hypervector::encode_text_ngram(term, 3));
             qa.centroid_labels.push(term.to_string());
         }
-        qa.store_rule_with_confidence("central_bank","tightens","policy","yields","rise","sharply","induced",0.80);
-        qa.store_fact("central_bank","tightens","policy","obs");
-        qa.store_fact("yields","rise","sharply","obs");
-        let result = qa.analogical_reason_chain("foreign_bank","loosens","policy");
-        assert!(result.is_some(), "Analogical transfer should return Some with centroids");
-        let (s,v,o,e) = result.unwrap();
+        qa.store_rule_with_confidence(
+            "central_bank",
+            "tightens",
+            "policy",
+            "yields",
+            "rise",
+            "sharply",
+            "induced",
+            0.80,
+        );
+        qa.store_fact("central_bank", "tightens", "policy", "obs");
+        qa.store_fact("yields", "rise", "sharply", "obs");
+        let result = qa.analogical_reason_chain("foreign_bank", "loosens", "policy");
+        assert!(
+            result.is_some(),
+            "Analogical transfer should return Some with centroids"
+        );
+        let (s, v, o, e) = result.unwrap();
         assert!(e >= 0.40, "Energy should be meaningful (E={:.4})", e);
         assert!(o == "sharply" || !o.is_empty(), "Object should decode");
-        eprintln!("  Synthetic centroid analogy: '{} {} {}' (E={:.4}) ✓", s, v, o, e);
+        eprintln!(
+            "  Synthetic centroid analogy: '{} {} {}' (E={:.4}) ✓",
+            s, v, o, e
+        );
     }
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -3451,33 +4419,68 @@ mod tests {
     fn test_analogical_transfer_real_centroids() {
         use crate::{DejavuEntry, MemoryCluster, VSABrain};
         let mut brain = VSABrain::new(0.43);
-        let concepts = ["central_bank","tightens","policy","yields","rise","sharply","foreign_bank","loosens"];
+        let concepts = [
+            "central_bank",
+            "tightens",
+            "policy",
+            "yields",
+            "rise",
+            "sharply",
+            "foreign_bank",
+            "loosens",
+        ];
         for label in &concepts {
             let centroid = Hypervector::encode_text_ngram(label, 3);
-            let entries: Vec<DejavuEntry> = (0..5).map(|i| DejavuEntry {
-                vector: Hypervector::encode_text_ngram(label, 3),
-                label: label.to_string(),
-                metadata: std::collections::HashMap::new(),
-                delta_encoded: false,
-                weight: 1,
-                creation_tick: i,
-            }).collect();
+            let entries: Vec<DejavuEntry> = (0..5)
+                .map(|i| DejavuEntry {
+                    vector: Hypervector::encode_text_ngram(label, 3),
+                    label: label.to_string(),
+                    metadata: std::collections::HashMap::new(),
+                    delta_encoded: false,
+                    weight: 1,
+                    creation_tick: i,
+                })
+                .collect();
             brain.dejavu_clusters.push(MemoryCluster {
-                centroid, entries, reverberation: 0.5, last_reinforced_tick: 0,
-                anchor: Hypervector::new_zero(), accumulator: Vec::new(),
-                total_weight: 5, last_access_tick: 0,
+                centroid,
+                entries,
+                reverberation: 0.5,
+                last_reinforced_tick: 0,
+                anchor: Hypervector::new_zero(),
+                accumulator: Vec::new(),
+                total_weight: 5,
+                last_access_tick: 0,
             });
         }
         let mut qa = QaEngine::new();
         qa.sync_cluster_data(&brain);
-        qa.store_rule_with_confidence("central_bank","tightens","policy","yields","rise","sharply","induced",0.80);
-        qa.store_fact("central_bank","tightens","policy","obs");
-        qa.store_fact("yields","rise","sharply","obs");
-        let result = qa.analogical_reason_chain("foreign_bank","loosens","policy");
-        assert!(result.is_some(), "Real centroid analogical transfer should return Some");
-        let (s,v,o,e) = result.unwrap();
-        assert!(o == "sharply", "Object should decode to 'sharply' (policy⊕policy=0), got '{}'", o);
-        eprintln!("  Real centroid analogy: '{} {} {}' (E={:.4}) ✓", s, v, o, e);
+        qa.store_rule_with_confidence(
+            "central_bank",
+            "tightens",
+            "policy",
+            "yields",
+            "rise",
+            "sharply",
+            "induced",
+            0.80,
+        );
+        qa.store_fact("central_bank", "tightens", "policy", "obs");
+        qa.store_fact("yields", "rise", "sharply", "obs");
+        let result = qa.analogical_reason_chain("foreign_bank", "loosens", "policy");
+        assert!(
+            result.is_some(),
+            "Real centroid analogical transfer should return Some"
+        );
+        let (s, v, o, e) = result.unwrap();
+        assert!(
+            o == "sharply",
+            "Object should decode to 'sharply' (policy⊕policy=0), got '{}'",
+            o
+        );
+        eprintln!(
+            "  Real centroid analogy: '{} {} {}' (E={:.4}) ✓",
+            s, v, o, e
+        );
     }
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -3489,254 +4492,852 @@ mod tests {
 
         // Build knowledge base
         let mut qa = QaEngine::new();
-        qa.store_rule("rain","causes","wet_ground","ground","is","wet","basic");
-        qa.store_rule("fire","causes","smoke","sky","has","smoke","basic");
-        qa.store_rule("study","leads_to","knowledge","student","knows","subject","basic");
-        qa.store_rule("sun","shines","brightly","ice","melts","quickly","chain");
-        qa.store_rule("ice","melts","quickly","water_level","rises","in river","chain");
-        qa.store_rule("water_level","rises","in river","dam","releases","excess_water","chain");
-        qa.store_rule("dam","releases","excess_water","flood_warning","issued","downstream","chain");
-        qa.store_rule("heavy_rain","falls","for days","soil","saturates","completely","chain");
-        qa.store_rule("soil","saturates","completely","landslide","occurs","on hill","chain");
-        qa.store_rule("employer","hires","more workers","unemployment","falls","significantly","econ");
-        qa.store_rule("unemployment","falls","significantly","consumer_spending","rises","steadily","econ");
-        qa.store_rule("consumer_spending","rises","steadily","economy","grows","faster","econ");
-        qa.store_rule("short_circuit","causes","power_outage","lights","go","dark","abd");
-        qa.store_rule("power_outage","triggers","generator","generator","provides","backup_power","abd");
-        qa.store_rule("generator","provides","backup_power","critical_systems","stay","online","abd");
-        qa.store_rule("virus","infects","host","immune_response","triggers","fever","abd");
-        qa.store_rule("immune_response","triggers","fever","body","fights","infection","abd");
-        qa.store_rule_with_confidence("car","accelerates","on_road","speed","increases","rapidly","ana",0.90);
-        qa.store_rule_with_confidence("observed_event_A","always","causes_B","result_B","happens","for_sure","conf",0.95);
-        qa.store_rule_with_confidence("observed_event_A","usually","causes_C","result_C","happens","often","conf",0.70);
-        qa.store_rule_with_confidence("observed_event_A","sometimes","causes_D","result_D","happens","rarely","conf",0.35);
-        qa.store_rule("A","depends_on","B","B","depends_on","A","circ");
-        qa.store_rule("B","depends_on","A","A","depends_on","B","circ");
-        qa.store_rule("X","transforms_to","Y","Y","transforms_to","Z","circ");
-        qa.store_rule("Y","transforms_to","Z","Z","transforms_to","X","circ");
-        qa.store_rule("Z","transforms_to","X","X","transforms_to","Y","circ");
+        qa.store_rule(
+            "rain",
+            "causes",
+            "wet_ground",
+            "ground",
+            "is",
+            "wet",
+            "basic",
+        );
+        qa.store_rule("fire", "causes", "smoke", "sky", "has", "smoke", "basic");
+        qa.store_rule(
+            "study",
+            "leads_to",
+            "knowledge",
+            "student",
+            "knows",
+            "subject",
+            "basic",
+        );
+        qa.store_rule(
+            "sun", "shines", "brightly", "ice", "melts", "quickly", "chain",
+        );
+        qa.store_rule(
+            "ice",
+            "melts",
+            "quickly",
+            "water_level",
+            "rises",
+            "in river",
+            "chain",
+        );
+        qa.store_rule(
+            "water_level",
+            "rises",
+            "in river",
+            "dam",
+            "releases",
+            "excess_water",
+            "chain",
+        );
+        qa.store_rule(
+            "dam",
+            "releases",
+            "excess_water",
+            "flood_warning",
+            "issued",
+            "downstream",
+            "chain",
+        );
+        qa.store_rule(
+            "heavy_rain",
+            "falls",
+            "for days",
+            "soil",
+            "saturates",
+            "completely",
+            "chain",
+        );
+        qa.store_rule(
+            "soil",
+            "saturates",
+            "completely",
+            "landslide",
+            "occurs",
+            "on hill",
+            "chain",
+        );
+        qa.store_rule(
+            "employer",
+            "hires",
+            "more workers",
+            "unemployment",
+            "falls",
+            "significantly",
+            "econ",
+        );
+        qa.store_rule(
+            "unemployment",
+            "falls",
+            "significantly",
+            "consumer_spending",
+            "rises",
+            "steadily",
+            "econ",
+        );
+        qa.store_rule(
+            "consumer_spending",
+            "rises",
+            "steadily",
+            "economy",
+            "grows",
+            "faster",
+            "econ",
+        );
+        qa.store_rule(
+            "short_circuit",
+            "causes",
+            "power_outage",
+            "lights",
+            "go",
+            "dark",
+            "abd",
+        );
+        qa.store_rule(
+            "power_outage",
+            "triggers",
+            "generator",
+            "generator",
+            "provides",
+            "backup_power",
+            "abd",
+        );
+        qa.store_rule(
+            "generator",
+            "provides",
+            "backup_power",
+            "critical_systems",
+            "stay",
+            "online",
+            "abd",
+        );
+        qa.store_rule(
+            "virus",
+            "infects",
+            "host",
+            "immune_response",
+            "triggers",
+            "fever",
+            "abd",
+        );
+        qa.store_rule(
+            "immune_response",
+            "triggers",
+            "fever",
+            "body",
+            "fights",
+            "infection",
+            "abd",
+        );
+        qa.store_rule_with_confidence(
+            "car",
+            "accelerates",
+            "on_road",
+            "speed",
+            "increases",
+            "rapidly",
+            "ana",
+            0.90,
+        );
+        qa.store_rule_with_confidence(
+            "observed_event_A",
+            "always",
+            "causes_B",
+            "result_B",
+            "happens",
+            "for_sure",
+            "conf",
+            0.95,
+        );
+        qa.store_rule_with_confidence(
+            "observed_event_A",
+            "usually",
+            "causes_C",
+            "result_C",
+            "happens",
+            "often",
+            "conf",
+            0.70,
+        );
+        qa.store_rule_with_confidence(
+            "observed_event_A",
+            "sometimes",
+            "causes_D",
+            "result_D",
+            "happens",
+            "rarely",
+            "conf",
+            0.35,
+        );
+        qa.store_rule("A", "depends_on", "B", "B", "depends_on", "A", "circ");
+        qa.store_rule("B", "depends_on", "A", "A", "depends_on", "B", "circ");
+        qa.store_rule("X", "transforms_to", "Y", "Y", "transforms_to", "Z", "circ");
+        qa.store_rule("Y", "transforms_to", "Z", "Z", "transforms_to", "X", "circ");
+        qa.store_rule("Z", "transforms_to", "X", "X", "transforms_to", "Y", "circ");
 
         // Facts for vocab
-        for f in &[("sun","shines","brightly"),("ice","melts","quickly"),("short_circuit","causes","power_outage"),("car","accelerates","on_road")] {
+        for f in &[
+            ("sun", "shines", "brightly"),
+            ("ice", "melts", "quickly"),
+            ("short_circuit", "causes", "power_outage"),
+            ("car", "accelerates", "on_road"),
+        ] {
             qa.store_fact(f.0, f.1, f.2, "obs");
         }
 
-        eprintln!("  KB: {} facts, {} rules\n", qa.fact_count(), qa.rule_count());
+        eprintln!(
+            "  KB: {} facts, {} rules\n",
+            qa.fact_count(),
+            qa.rule_count()
+        );
 
         // Track results
-        let mut perfect = 0u32; let mut degraded = 0u32; let mut failed = 0u32;
+        let mut perfect = 0u32;
+        let mut degraded = 0u32;
+        let mut failed = 0u32;
         let count = |p: &mut u32, d: &mut u32, f: &mut u32, ok: bool, partial: bool| {
-            if ok { *p += 1; } else if partial { *d += 1; } else { *f += 1; }
+            if ok {
+                *p += 1;
+            } else if partial {
+                *d += 1;
+            } else {
+                *f += 1;
+            }
         };
 
         // Q1-Q10: Simple deduction
         eprintln!("═══ Simple Deduction ═══");
-        let r1 = qa.reason_chain("rain","causes","wet_ground",1);
-        let ok1 = r1.len()==1 && r1[0].0=="ground";
-        eprintln!("  Q01 direct: '{} {} {}' {}", r1.first().map(|x| &x.0).unwrap_or(&"".into()), r1.first().map(|x| &x.1).unwrap_or(&"".into()), r1.first().map(|x| &x.2).unwrap_or(&"".into()), if ok1{"✓"}else{"✗"});
-        count(&mut perfect,&mut degraded,&mut failed,ok1,false);
+        let r1 = qa.reason_chain("rain", "causes", "wet_ground", 1);
+        let ok1 = r1.len() == 1 && r1[0].0 == "ground";
+        eprintln!(
+            "  Q01 direct: '{} {} {}' {}",
+            r1.first().map(|x| &x.0).unwrap_or(&"".into()),
+            r1.first().map(|x| &x.1).unwrap_or(&"".into()),
+            r1.first().map(|x| &x.2).unwrap_or(&"".into()),
+            if ok1 { "✓" } else { "✗" }
+        );
+        count(&mut perfect, &mut degraded, &mut failed, ok1, false);
 
-        for (qn,label,s,v,o) in &[(2,"fire","fire","causes","smoke"),(3,"study","study","leads_to","knowledge")] {
-            let r = qa.reason_chain(s,v,o,1);
+        for (qn, label, s, v, o) in &[
+            (2, "fire", "fire", "causes", "smoke"),
+            (3, "study", "study", "leads_to", "knowledge"),
+        ] {
+            let r = qa.reason_chain(s, v, o, 1);
             let ok = !r.is_empty();
-            count(&mut perfect,&mut degraded,&mut failed,ok,!r.is_empty());
-            eprintln!("  Q{:02} {}: {} hops {}", qn, label, r.len(), if ok{"✓"}else{"✗"});
+            count(&mut perfect, &mut degraded, &mut failed, ok, !r.is_empty());
+            eprintln!(
+                "  Q{:02} {}: {} hops {}",
+                qn,
+                label,
+                r.len(),
+                if ok { "✓" } else { "✗" }
+            );
         }
 
-        let r4 = qa.reason_chain("short_circuit","causes","power_outage",1);
-        eprintln!("  Q04 exact: {} hops {}", r4.len(), if r4.len()==1{"✓"}else{"✗"});
-        count(&mut perfect,&mut degraded,&mut failed,r4.len()==1,false);
-        let r5 = qa.reason_chain("rain","causes","wet ground",1);
-        eprintln!("  Q05 near: {} hops {}", r5.len(), if r5.is_empty(){"✓(correctly none)"}else{"⚠ false"});
-        count(&mut perfect,&mut degraded,&mut failed,r5.is_empty(),false);
+        let r4 = qa.reason_chain("short_circuit", "causes", "power_outage", 1);
+        eprintln!(
+            "  Q04 exact: {} hops {}",
+            r4.len(),
+            if r4.len() == 1 { "✓" } else { "✗" }
+        );
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r4.len() == 1,
+            false,
+        );
+        let r5 = qa.reason_chain("rain", "causes", "wet ground", 1);
+        eprintln!(
+            "  Q05 near: {} hops {}",
+            r5.len(),
+            if r5.is_empty() {
+                "✓(correctly none)"
+            } else {
+                "⚠ false"
+            }
+        );
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r5.is_empty(),
+            false,
+        );
 
-        let r6 = qa.reason_chain("nonexistent","action","here",1);
-        eprintln!("  Q06 none: {} hops {}", r6.len(), if r6.is_empty(){"✓"}else{"✗"});
-        count(&mut perfect,&mut degraded,&mut failed,r6.is_empty(),false);
-        let r7 = qa.reason_chain("","","",1); count(&mut perfect,&mut degraded,&mut failed,r7.is_empty(),false);
-        eprintln!("  Q07 empty: {} hops {}", r7.len(), if r7.is_empty(){"✓"}else{"⚠"});
-        let r8 = qa.reason_chain("ice","melts","quickly",1);
-        count(&mut perfect,&mut degraded,&mut failed,r8.len()==1,false);
-        eprintln!("  Q08 ice: {} hops {}", r8.len(), if r8.len()==1{"✓"}else{"✗"});
-        let r9 = qa.reason_chain("Rain","causes","wet_ground",1);
-        count(&mut perfect,&mut degraded,&mut failed,r9.is_empty(),false);
-        eprintln!("  Q09 case: {} hops {}", r9.len(), if r9.is_empty(){"✓(case sensitive correct)"}else{"⚠"});
-        let r10 = qa.reason_chain("employer","hires","more workers",1);
-        let ok10 = r10.len()==1 && r10[0].0=="unemployment";
-        count(&mut perfect,&mut degraded,&mut failed,ok10,false);
-        eprintln!("  Q10 precise: '{} {} {}' {}", r10.first().map(|x|&x.0).unwrap_or(&"".into()), r10.first().map(|x|&x.1).unwrap_or(&"".into()), r10.first().map(|x|&x.2).unwrap_or(&"".into()), if ok10{"✓"}else{"✗"});
+        let r6 = qa.reason_chain("nonexistent", "action", "here", 1);
+        eprintln!(
+            "  Q06 none: {} hops {}",
+            r6.len(),
+            if r6.is_empty() { "✓" } else { "✗" }
+        );
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r6.is_empty(),
+            false,
+        );
+        let r7 = qa.reason_chain("", "", "", 1);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r7.is_empty(),
+            false,
+        );
+        eprintln!(
+            "  Q07 empty: {} hops {}",
+            r7.len(),
+            if r7.is_empty() { "✓" } else { "⚠" }
+        );
+        let r8 = qa.reason_chain("ice", "melts", "quickly", 1);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r8.len() == 1,
+            false,
+        );
+        eprintln!(
+            "  Q08 ice: {} hops {}",
+            r8.len(),
+            if r8.len() == 1 { "✓" } else { "✗" }
+        );
+        let r9 = qa.reason_chain("Rain", "causes", "wet_ground", 1);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r9.is_empty(),
+            false,
+        );
+        eprintln!(
+            "  Q09 case: {} hops {}",
+            r9.len(),
+            if r9.is_empty() {
+                "✓(case sensitive correct)"
+            } else {
+                "⚠"
+            }
+        );
+        let r10 = qa.reason_chain("employer", "hires", "more workers", 1);
+        let ok10 = r10.len() == 1 && r10[0].0 == "unemployment";
+        count(&mut perfect, &mut degraded, &mut failed, ok10, false);
+        eprintln!(
+            "  Q10 precise: '{} {} {}' {}",
+            r10.first().map(|x| &x.0).unwrap_or(&"".into()),
+            r10.first().map(|x| &x.1).unwrap_or(&"".into()),
+            r10.first().map(|x| &x.2).unwrap_or(&"".into()),
+            if ok10 { "✓" } else { "✗" }
+        );
 
         // Q11-Q20: Multi-hop
         eprintln!("\n═══ Multi-hop ═══");
-        for (qn,label,s,v,o,exp_hops,exp_last) in &[
-            (11,"3hop","sun","shines","brightly",3,"dam releases excess_water"),
-            (12,"4hop","sun","shines","brightly",4,"flood_warning issued downstream"),
-            (13,"2hop","heavy_rain","falls","for days",2,"landslide occurs on hill"),
-            (14,"3hop","employer","hires","more workers",3,"economy grows faster"),
-            (15,"mid","unemployment","falls","significantly",2,"economy grows faster"),
+        for (qn, label, s, v, o, exp_hops, exp_last) in &[
+            (
+                11,
+                "3hop",
+                "sun",
+                "shines",
+                "brightly",
+                3,
+                "dam releases excess_water",
+            ),
+            (
+                12,
+                "4hop",
+                "sun",
+                "shines",
+                "brightly",
+                4,
+                "flood_warning issued downstream",
+            ),
+            (
+                13,
+                "2hop",
+                "heavy_rain",
+                "falls",
+                "for days",
+                2,
+                "landslide occurs on hill",
+            ),
+            (
+                14,
+                "3hop",
+                "employer",
+                "hires",
+                "more workers",
+                3,
+                "economy grows faster",
+            ),
+            (
+                15,
+                "mid",
+                "unemployment",
+                "falls",
+                "significantly",
+                2,
+                "economy grows faster",
+            ),
         ] {
-            let r = qa.reason_chain(s,v,o,10);
-            let ok = r.len() >= *exp_hops && r.last().map(|(s,v,o,_)| format!("{} {} {}", s, v, o)).unwrap_or_default() == *exp_last;
-            count(&mut perfect,&mut degraded,&mut failed,ok, r.len() > 0);
-            eprintln!("  Q{:02} {}: {} hops → '{}' {}", qn, label, r.len(), r.last().map(|(s,v,o,_)| format!("{} {} {}", s, v, o)).unwrap_or_default(), if ok{"✓"}else if r.len()>0{"⚠ partial"}else{"✗"});
+            let r = qa.reason_chain(s, v, o, 10);
+            let ok = r.len() >= *exp_hops
+                && r.last()
+                    .map(|(s, v, o, _)| format!("{} {} {}", s, v, o))
+                    .unwrap_or_default()
+                    == *exp_last;
+            count(&mut perfect, &mut degraded, &mut failed, ok, r.len() > 0);
+            eprintln!(
+                "  Q{:02} {}: {} hops → '{}' {}",
+                qn,
+                label,
+                r.len(),
+                r.last()
+                    .map(|(s, v, o, _)| format!("{} {} {}", s, v, o))
+                    .unwrap_or_default(),
+                if ok {
+                    "✓"
+                } else if r.len() > 0 {
+                    "⚠ partial"
+                } else {
+                    "✗"
+                }
+            );
         }
 
-        let r16 = qa.reason_chain("sun","shines","brightly",1);
-        count(&mut perfect,&mut degraded,&mut failed,r16.len()==1,false);
-        eprintln!("  Q16 trunc: 1 max → {} hops {}", r16.len(), if r16.len()==1{"✓"}else{"⚠"});
-        let r17 = qa.reason_chain("sun","shines","brightly",100);
-        count(&mut perfect,&mut degraded,&mut failed,r17.len()>=3,true);
-        eprintln!("  Q17 excess: 100 max → {} hops {}", r17.len(), if r17.len()>=3{"✓"}else{"⚠"});
-        let r18 = qa.reason_chain("ice","melts","quickly",3);
-        count(&mut perfect,&mut degraded,&mut failed,r18.len()==3,false);
-        eprintln!("  Q18 term: {} hops (should stop at 3) {}", r18.len(), if r18.len()==3{"✓"}else{"⚠"});
-        let r19 = qa.reason_chain("A","depends_on","B",10);
-        count(&mut perfect,&mut degraded,&mut failed,r19.len()<=10,true);
-        eprintln!("  Q19 circ: {} hops (bounded) {}", r19.len(), if r19.len()<=10{"✓"}else{"✗"});
-        let r20 = qa.reason_chain("X","transforms_to","Y",8);
-        count(&mut perfect,&mut degraded,&mut failed,r20.len()>=1,true);
-        eprintln!("  Q20 3cycle: {} hops {}", r20.len(), if r20.len()>=1{"✓"}else{"✗"});
+        let r16 = qa.reason_chain("sun", "shines", "brightly", 1);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r16.len() == 1,
+            false,
+        );
+        eprintln!(
+            "  Q16 trunc: 1 max → {} hops {}",
+            r16.len(),
+            if r16.len() == 1 { "✓" } else { "⚠" }
+        );
+        let r17 = qa.reason_chain("sun", "shines", "brightly", 100);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r17.len() >= 3,
+            true,
+        );
+        eprintln!(
+            "  Q17 excess: 100 max → {} hops {}",
+            r17.len(),
+            if r17.len() >= 3 { "✓" } else { "⚠" }
+        );
+        let r18 = qa.reason_chain("ice", "melts", "quickly", 3);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r18.len() == 3,
+            false,
+        );
+        eprintln!(
+            "  Q18 term: {} hops (should stop at 3) {}",
+            r18.len(),
+            if r18.len() == 3 { "✓" } else { "⚠" }
+        );
+        let r19 = qa.reason_chain("A", "depends_on", "B", 10);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r19.len() <= 10,
+            true,
+        );
+        eprintln!(
+            "  Q19 circ: {} hops (bounded) {}",
+            r19.len(),
+            if r19.len() <= 10 { "✓" } else { "✗" }
+        );
+        let r20 = qa.reason_chain("X", "transforms_to", "Y", 8);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r20.len() >= 1,
+            true,
+        );
+        eprintln!(
+            "  Q20 3cycle: {} hops {}",
+            r20.len(),
+            if r20.len() >= 1 { "✓" } else { "✗" }
+        );
 
         // Q21-Q30: Abduction
         eprintln!("\n═══ Abduction ═══");
-        for (qn,label,s,v,o,expect) in &[
-            (21,"direct","ground","is","wet",1),(22,"cause","lights","go","dark",1),
-            (23,"empty","","","",0),(24,"unknown","made_up","event","happened",0),
-            (25,"partial","","is","wet",0),
+        for (qn, label, s, v, o, expect) in &[
+            (21, "direct", "ground", "is", "wet", 1),
+            (22, "cause", "lights", "go", "dark", 1),
+            (23, "empty", "", "", "", 0),
+            (24, "unknown", "made_up", "event", "happened", 0),
+            (25, "partial", "", "is", "wet", 0),
         ] {
-            let h = qa.abduce(s,v,o);
+            let h = qa.abduce(s, v, o);
             let ok = h.len() >= *expect;
-            count(&mut perfect,&mut degraded,&mut failed,ok,h.len()>0);
-            eprintln!("  Q{:02} {}: {} hypotheses {}", qn, label, h.len(), if ok{"✓"}else if h.len()>0{"⚠"}else{"✗"});
+            count(&mut perfect, &mut degraded, &mut failed, ok, h.len() > 0);
+            eprintln!(
+                "  Q{:02} {}: {} hypotheses {}",
+                qn,
+                label,
+                h.len(),
+                if ok {
+                    "✓"
+                } else if h.len() > 0 {
+                    "⚠"
+                } else {
+                    "✗"
+                }
+            );
         }
 
-        let h26 = qa.abduce("flood_warning","issued","downstream");
+        let h26 = qa.abduce("flood_warning", "issued", "downstream");
         let ok26 = h26.len() >= 1;
-        count(&mut perfect,&mut degraded,&mut failed,ok26,false);
-        eprintln!("  Q26 fwd: {} causes {}", h26.len(), if ok26{"✓"}else{"✗"});
-        let h27 = qa.abduce("critical_systems","stay","online");
+        count(&mut perfect, &mut degraded, &mut failed, ok26, false);
+        eprintln!(
+            "  Q26 fwd: {} causes {}",
+            h26.len(),
+            if ok26 { "✓" } else { "✗" }
+        );
+        let h27 = qa.abduce("critical_systems", "stay", "online");
         let ok27 = h27.len() >= 1;
-        count(&mut perfect,&mut degraded,&mut failed,ok27,false);
-        eprintln!("  Q27 back: {} causes {}", h27.len(), if ok27{"✓"}else{"✗"});
+        count(&mut perfect, &mut degraded, &mut failed, ok27, false);
+        eprintln!(
+            "  Q27 back: {} causes {}",
+            h27.len(),
+            if ok27 { "✓" } else { "✗" }
+        );
 
-        let mut cur = vec![("body".to_string(),"fights".to_string(),"infection".to_string())];
+        let mut cur = vec![(
+            "body".to_string(),
+            "fights".to_string(),
+            "infection".to_string(),
+        )];
         let mut found_virus = false;
         for _ in 0..5 {
-            let nxt: Vec<_> = cur.iter().flat_map(|(s,v,o)| {
-                qa.abduce(s,v,o).into_iter().map(|(ns,nv,no,_)| (ns,nv,no))
-            }).collect();
-            if nxt.is_empty() { break; }
-            if nxt.iter().any(|(s,_,_)| s=="virus") { found_virus = true; break; }
+            let nxt: Vec<_> = cur
+                .iter()
+                .flat_map(|(s, v, o)| {
+                    qa.abduce(s, v, o)
+                        .into_iter()
+                        .map(|(ns, nv, no, _)| (ns, nv, no))
+                })
+                .collect();
+            if nxt.is_empty() {
+                break;
+            }
+            if nxt.iter().any(|(s, _, _)| s == "virus") {
+                found_virus = true;
+                break;
+            }
             cur = nxt;
         }
-        count(&mut perfect,&mut degraded,&mut failed,found_virus,true);
-        eprintln!("  Q28 chain: found root virus? {}", if found_virus{"✓"}else{"⚠"});
+        count(&mut perfect, &mut degraded, &mut failed, found_virus, true);
+        eprintln!(
+            "  Q28 chain: found root virus? {}",
+            if found_virus { "✓" } else { "⚠" }
+        );
 
         let empty = QaEngine::new();
-        let r29 = empty.reason_chain("any","thing","now",5);
-        count(&mut perfect,&mut degraded,&mut failed,r29.is_empty(),false);
-        eprintln!("  Q29 cold: reason {} hops {}", r29.len(), if r29.is_empty(){"✓"}else{"⚠"});
-        let h30 = empty.abduce("any","thing","now");
-        count(&mut perfect,&mut degraded,&mut failed,h30.is_empty(),false);
-        eprintln!("  Q30 cold: abduce {} causes {}", h30.len(), if h30.is_empty(){"✓"}else{"⚠"});
+        let r29 = empty.reason_chain("any", "thing", "now", 5);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r29.is_empty(),
+            false,
+        );
+        eprintln!(
+            "  Q29 cold: reason {} hops {}",
+            r29.len(),
+            if r29.is_empty() { "✓" } else { "⚠" }
+        );
+        let h30 = empty.abduce("any", "thing", "now");
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            h30.is_empty(),
+            false,
+        );
+        eprintln!(
+            "  Q30 cold: abduce {} causes {}",
+            h30.len(),
+            if h30.is_empty() { "✓" } else { "⚠" }
+        );
 
         // Q31-Q35: Analogical transfer (cold — no centroids; guard clause handles identity case)
         eprintln!("\n═══ Analogical Transfer ═══");
-        for (qn,label,s,v,o) in &[(31,"car","car","accelerates","on_road"),(32,"truck","truck","accelerates","on_highway"),(33,"empty","","","")] {
-            let a = qa.analogical_reason_chain(s,v,o);
+        for (qn, label, s, v, o) in &[
+            (31, "car", "car", "accelerates", "on_road"),
+            (32, "truck", "truck", "accelerates", "on_highway"),
+            (33, "empty", "", "", ""),
+        ] {
+            let a = qa.analogical_reason_chain(s, v, o);
             let ok = a.is_some();
-            count(&mut perfect,&mut degraded,&mut failed,ok,ok);
-            if let Some((s,v,o,e)) = a { eprintln!("  Q{:02} {}: '{} {} {}' E={:.4} {}", qn, label, s, v, o, e, if e>=0.50{"✓"}else{"⚠"}); }
-            else { let tag = if *qn>=33{"✓"}else{"✗"}; eprintln!("  Q{:02} {}: no match {}", qn, label, tag); }
+            count(&mut perfect, &mut degraded, &mut failed, ok, ok);
+            if let Some((s, v, o, e)) = a {
+                eprintln!(
+                    "  Q{:02} {}: '{} {} {}' E={:.4} {}",
+                    qn,
+                    label,
+                    s,
+                    v,
+                    o,
+                    e,
+                    if e >= 0.50 { "✓" } else { "⚠" }
+                );
+            } else {
+                let tag = if *qn >= 33 { "✓" } else { "✗" };
+                eprintln!("  Q{:02} {}: no match {}", qn, label, tag);
+            }
         }
 
-        let a34 = qa.analogical_reason_chain("car","brakes","on_road");
+        let a34 = qa.analogical_reason_chain("car", "brakes", "on_road");
         let ok34 = a34.is_some();
-        count(&mut perfect,&mut degraded,&mut failed,ok34,ok34);
-        eprintln!("  Q34 brake: {}", if let Some((s,v,o,e))=a34 {format!("'{} {} {}' E={:.4}",s,v,o,e)} else {"none".into()});
-        let a35 = qa.analogical_reason_chain("truck","","");
+        count(&mut perfect, &mut degraded, &mut failed, ok34, ok34);
+        eprintln!(
+            "  Q34 brake: {}",
+            if let Some((s, v, o, e)) = a34 {
+                format!("'{} {} {}' E={:.4}", s, v, o, e)
+            } else {
+                "none".into()
+            }
+        );
+        let a35 = qa.analogical_reason_chain("truck", "", "");
         let ok35 = a35.is_some();
-        count(&mut perfect,&mut degraded,&mut failed,ok35,ok35);
-        eprintln!("  Q35 part: {}", if let Some((s,v,o,e))=a35 {format!("'{} {} {}' E={:.4}",s,v,o,e)} else {"none".into()});
+        count(&mut perfect, &mut degraded, &mut failed, ok35, ok35);
+        eprintln!(
+            "  Q35 part: {}",
+            if let Some((s, v, o, e)) = a35 {
+                format!("'{} {} {}' E={:.4}", s, v, o, e)
+            } else {
+                "none".into()
+            }
+        );
 
         // Q36-Q45: Confidence & Culling
         eprintln!("\n═══ Confidence & Culling ═══");
         // Find confidence test rules by source
-        let conf_rules: Vec<usize> = qa.rules().iter().enumerate()
-            .filter(|(_,r)| r.source == "conf").map(|(i,_)| i).collect();
-        for (qn,label,idx_filter,expected_conf) in &[(36,"high",0.95,0.80),(37,"med",0.70,0.50),(38,"low",0.35,0.20)] {
-            let found = conf_rules.iter().any(|&i| (qa.rules()[i].confidence - expected_conf).abs() < 0.20);
+        let conf_rules: Vec<usize> = qa
+            .rules()
+            .iter()
+            .enumerate()
+            .filter(|(_, r)| r.source == "conf")
+            .map(|(i, _)| i)
+            .collect();
+        for (qn, label, idx_filter, expected_conf) in &[
+            (36, "high", 0.95, 0.80),
+            (37, "med", 0.70, 0.50),
+            (38, "low", 0.35, 0.20),
+        ] {
+            let found = conf_rules
+                .iter()
+                .any(|&i| (qa.rules()[i].confidence - expected_conf).abs() < 0.20);
             let ok_found = *idx_filter > 0.30;
-            count(&mut perfect,&mut degraded,&mut failed,ok_found,found);
-            eprintln!("  Q{:02} {}: found={} expected≈{:.2} {}", qn, label, if found{"true"}else{"false"}, expected_conf, if ok_found{"✓"}else{"⚠"});
+            count(&mut perfect, &mut degraded, &mut failed, ok_found, found);
+            eprintln!(
+                "  Q{:02} {}: found={} expected≈{:.2} {}",
+                qn,
+                label,
+                if found { "true" } else { "false" },
+                expected_conf,
+                if ok_found { "✓" } else { "⚠" }
+            );
         }
 
         // EWMA decay test
         let mut decay_qa = QaEngine::new();
-        decay_qa.store_rule_with_confidence("test","causes","effect","result","happens","now","test",0.95);
-        for _ in 0..5 { decay_qa.update_rule_confidence(0, 0.50); }
-        count(&mut perfect,&mut degraded,&mut failed,decay_qa.rules()[0].confidence < 0.70,true);
-        eprintln!("  Q39 ewma: {:.4}→{:.4} ✓", 0.95, decay_qa.rules()[0].confidence);
+        decay_qa.store_rule_with_confidence(
+            "test", "causes", "effect", "result", "happens", "now", "test", 0.95,
+        );
+        for _ in 0..5 {
+            decay_qa.update_rule_confidence(0, 0.50);
+        }
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            decay_qa.rules()[0].confidence < 0.70,
+            true,
+        );
+        eprintln!(
+            "  Q39 ewma: {:.4}→{:.4} ✓",
+            0.95,
+            decay_qa.rules()[0].confidence
+        );
 
         // Culling
         let n_culled = decay_qa.cull_low_confidence_rules(0.30);
-        count(&mut perfect,&mut degraded,&mut failed,true,false);
-        eprintln!("  Q40 cull: {} removed (was {}) {}", n_culled, if n_culled>0{"1"}else{"1"}, if true{"✓"}else{"⚠"});
+        count(&mut perfect, &mut degraded, &mut failed, true, false);
+        eprintln!(
+            "  Q40 cull: {} removed (was {}) {}",
+            n_culled,
+            if n_culled > 0 { "1" } else { "1" },
+            if true { "✓" } else { "⚠" }
+        );
 
         // Reinforcement
         let mut reinf_qa = QaEngine::new();
-        reinf_qa.store_rule_with_confidence("pat","studies","hard","pat","passes","exam","test",0.70);
-        for _ in 0..3 { reinf_qa.update_rule_confidence(0, 0.10); }
-        count(&mut perfect,&mut degraded,&mut failed,reinf_qa.rules()[0].confidence > 0.70,true);
-        eprintln!("  Q41 reinf: {:.4}→{:.4} ✓", 0.70, reinf_qa.rules()[0].confidence);
+        reinf_qa.store_rule_with_confidence(
+            "pat", "studies", "hard", "pat", "passes", "exam", "test", 0.70,
+        );
+        for _ in 0..3 {
+            reinf_qa.update_rule_confidence(0, 0.10);
+        }
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            reinf_qa.rules()[0].confidence > 0.70,
+            true,
+        );
+        eprintln!(
+            "  Q41 reinf: {:.4}→{:.4} ✓",
+            0.70,
+            reinf_qa.rules()[0].confidence
+        );
 
         // Aggregate confidence
         let remaining_rules = qa.rule_count();
-        count(&mut perfect,&mut degraded,&mut failed,remaining_rules >= 25,true);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            remaining_rules >= 25,
+            true,
+        );
         eprintln!("  Q42 agg: {} remaining ✓", remaining_rules);
 
         // Source tracking
         let src_qa = &qa;
-        let r_src = src_qa.reason_chain_with_sources("sun","shines","brightly",5);
-        let ok_src = r_src.len() >= 3 && r_src.iter().all(|(_,_,_,_,idx)| *idx < src_qa.rule_count());
-        count(&mut perfect,&mut degraded,&mut failed,ok_src,ok_src);
-        eprintln!("  Q43 src: {} hops with valid idxs {}", r_src.len(), if ok_src{"✓"}else{"⚠"});
-        let r_nosrc = src_qa.reason_chain_with_sources("nonexistent","","",5);
-        count(&mut perfect,&mut degraded,&mut failed,r_nosrc.is_empty(),false);
-        eprintln!("  Q44 nosrc: {} hops {}", r_nosrc.len(), if r_nosrc.is_empty(){"✓"}else{"⚠"});
+        let r_src = src_qa.reason_chain_with_sources("sun", "shines", "brightly", 5);
+        let ok_src = r_src.len() >= 3
+            && r_src
+                .iter()
+                .all(|(_, _, _, _, idx)| *idx < src_qa.rule_count());
+        count(&mut perfect, &mut degraded, &mut failed, ok_src, ok_src);
+        eprintln!(
+            "  Q43 src: {} hops with valid idxs {}",
+            r_src.len(),
+            if ok_src { "✓" } else { "⚠" }
+        );
+        let r_nosrc = src_qa.reason_chain_with_sources("nonexistent", "", "", 5);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r_nosrc.is_empty(),
+            false,
+        );
+        eprintln!(
+            "  Q44 nosrc: {} hops {}",
+            r_nosrc.len(),
+            if r_nosrc.is_empty() { "✓" } else { "⚠" }
+        );
 
         // Serialization round-trip
         let json = serde_json::to_string(&qa).unwrap();
         let qa_loaded: QaEngine = serde_json::from_str(&json).unwrap();
-        let r_load = qa_loaded.reason_chain("ice","melts","quickly",3);
-        count(&mut perfect,&mut degraded,&mut failed,r_load.len() > 0,true);
-        eprintln!("  Q45 save: {} ✓", if r_load.len() > 0{"✓"}else{"⚠"});
+        let r_load = qa_loaded.reason_chain("ice", "melts", "quickly", 3);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r_load.len() > 0,
+            true,
+        );
+        eprintln!("  Q45 save: {} ✓", if r_load.len() > 0 { "✓" } else { "⚠" });
 
         // Edge cases
         let empty2 = QaEngine::new();
-        let re = empty2.reason_chain_with_sources("x","y","z",5);
-        count(&mut perfect,&mut degraded,&mut failed,re.is_empty(),false);
-        eprintln!("  Q46 cold: {} {}", if re.is_empty(){"✓ none"}else{"⚠"}, if re.is_empty(){"✓"}else{"⚠"});
-        let r47 = qa.reason_chain("sun","shines","brightly",0);
-        count(&mut perfect,&mut degraded,&mut failed,r47.is_empty(),false);
-        eprintln!("  Q47 zerohop: {} hops {}", r47.len(), if r47.is_empty(){"✓"}else{"⚠"});
-        let r48 = qa.reason_chain("über","prüft","system",5);
-        count(&mut perfect,&mut degraded,&mut failed,r48.is_empty(),false);
-        eprintln!("  Q48 unicode: {} hops {}", r48.len(), if r48.is_empty(){"✓"}else{"⚠"});
+        let re = empty2.reason_chain_with_sources("x", "y", "z", 5);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            re.is_empty(),
+            false,
+        );
+        eprintln!(
+            "  Q46 cold: {} {}",
+            if re.is_empty() { "✓ none" } else { "⚠" },
+            if re.is_empty() { "✓" } else { "⚠" }
+        );
+        let r47 = qa.reason_chain("sun", "shines", "brightly", 0);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r47.is_empty(),
+            false,
+        );
+        eprintln!(
+            "  Q47 zerohop: {} hops {}",
+            r47.len(),
+            if r47.is_empty() { "✓" } else { "⚠" }
+        );
+        let r48 = qa.reason_chain("über", "prüft", "system", 5);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r48.is_empty(),
+            false,
+        );
+        eprintln!(
+            "  Q48 unicode: {} hops {}",
+            r48.len(),
+            if r48.is_empty() { "✓" } else { "⚠" }
+        );
         let long = "x".repeat(1000);
-        let r49 = qa.reason_chain(&long,"y","z",5);
-        count(&mut perfect,&mut degraded,&mut failed,r49.is_empty(),false);
-        eprintln!("  Q49 long: {} hops {}", r49.len(), if r49.is_empty(){"✓"}else{"⚠"});
+        let r49 = qa.reason_chain(&long, "y", "z", 5);
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            r49.is_empty(),
+            false,
+        );
+        eprintln!(
+            "  Q49 long: {} hops {}",
+            r49.len(),
+            if r49.is_empty() { "✓" } else { "⚠" }
+        );
 
         // Q50: Deep chain
-        let r50 = qa.reason_chain("short_circuit","causes","power_outage",10);
+        let r50 = qa.reason_chain("short_circuit", "causes", "power_outage", 10);
         let ok50 = r50.len() >= 2;
-        count(&mut perfect,&mut degraded,&mut failed,ok50,r50.len()>0);
-        eprintln!("  Q50 deep3: {} hops {}", r50.len(), if ok50{"✓"}else{"⚠"});
+        count(
+            &mut perfect,
+            &mut degraded,
+            &mut failed,
+            ok50,
+            r50.len() > 0,
+        );
+        eprintln!(
+            "  Q50 deep3: {} hops {}",
+            r50.len(),
+            if ok50 { "✓" } else { "⚠" }
+        );
 
         eprintln!("\n═══ RESULTS ═══");
         eprintln!("  Perfect:  {}/50 ({:.0}%)", perfect, perfect as f64 * 2.0);
-        eprintln!("  Degraded: {}/50 ({:.0}%)", degraded, degraded as f64 * 2.0);
+        eprintln!(
+            "  Degraded: {}/50 ({:.0}%)",
+            degraded,
+            degraded as f64 * 2.0
+        );
         eprintln!("  Failed:   {}/50 ({:.0}%)", failed, failed as f64 * 2.0);
     }
 
@@ -3749,16 +5350,37 @@ mod tests {
         use crate::Hypervector;
 
         // Step 1: Create L1 centroids for vehicle and finance domains
-        let vehicle_terms = ["car", "truck", "accelerates", "on_road", "speed", "increases", "rapidly"];
-        let finance_terms = ["central_bank", "foreign_bank", "tightens", "policy", "yields", "rise", "sharply"];
-        let all_terms: Vec<&str> = vehicle_terms.iter().chain(finance_terms.iter()).copied().collect();
-        let centroids: Vec<Hypervector> = all_terms.iter()
+        let vehicle_terms = [
+            "car",
+            "truck",
+            "accelerates",
+            "on_road",
+            "speed",
+            "increases",
+            "rapidly",
+        ];
+        let finance_terms = [
+            "central_bank",
+            "foreign_bank",
+            "tightens",
+            "policy",
+            "yields",
+            "rise",
+            "sharply",
+        ];
+        let all_terms: Vec<&str> = vehicle_terms
+            .iter()
+            .chain(finance_terms.iter())
+            .copied()
+            .collect();
+        let centroids: Vec<Hypervector> = all_terms
+            .iter()
             .map(|t| Hypervector::encode_text_ngram(t, 3))
             .collect();
 
         // Build term→index mapping
-        let idx_of: std::collections::HashMap<&str, usize> = all_terms.iter().enumerate()
-            .map(|(i, t)| (*t, i)).collect();
+        let idx_of: std::collections::HashMap<&str, usize> =
+            all_terms.iter().enumerate().map(|(i, t)| (*t, i)).collect();
         let i = |name: &str| -> usize { *idx_of.get(name).unwrap() };
 
         // Step 2: Seed L1 hierarchy and register L2/L3 communities
@@ -3778,17 +5400,23 @@ mod tests {
         qa.centroid_labels = all_terms.iter().map(|t| t.to_string()).collect();
 
         // Step 4: Store a centroid rule in the vehicle domain
-        let stored_idx = qa.store_centroid_rule(
-            "car", "accelerates", "on_road",
-            "speed", "increases", "rapidly",
-            "test", 1.0, &hierarchy,
-        ).expect("Should store rule with all terms resolvable");
+        let stored_idx = qa
+            .store_centroid_rule(
+                "car",
+                "accelerates",
+                "on_road",
+                "speed",
+                "increases",
+                "rapidly",
+                "test",
+                1.0,
+                &hierarchy,
+            )
+            .expect("Should store rule with all terms resolvable");
         assert_eq!(stored_idx, 0);
 
         // Step 5: DIRECT match — same terms
-        let result = qa.query_centroid_rule(
-            "car", "accelerates", "on_road", &hierarchy
-        );
+        let result = qa.query_centroid_rule("car", "accelerates", "on_road", &hierarchy);
         assert!(result.is_some(), "Direct match should fire");
         let (cons_text, match_type, energy) = result.unwrap();
         assert_eq!(match_type, "direct", "Same terms should be direct match");
@@ -3796,41 +5424,59 @@ mod tests {
         assert_eq!(cons_text[0], "speed");
         assert_eq!(cons_text[1], "increases");
         assert_eq!(cons_text[2], "rapidly");
-        eprintln!("  DIRECT: 'car accelerates on_road' → '{} {} {}' E={} ✓",
-            cons_text[0], cons_text[1], cons_text[2], energy);
+        eprintln!(
+            "  DIRECT: 'car accelerates on_road' → '{} {} {}' E={} ✓",
+            cons_text[0], cons_text[1], cons_text[2], energy
+        );
 
         // Step 6: ANALOGICAL match — different vehicle terms, same L2 category
-        let result = qa.query_centroid_rule(
-            "truck", "accelerates", "on_road", &hierarchy
-        );
+        let result = qa.query_centroid_rule("truck", "accelerates", "on_road", &hierarchy);
         assert!(result.is_some(), "Analogical match should fire for truck");
         let (cons_text2, match_type2, energy2) = result.unwrap();
-        assert_eq!(match_type2, "analogical",
-            "Different L1 but same L2 should be analogical, got {}", match_type2);
-        assert!((energy2 - 0.85).abs() < 0.01, "Analogical energy should be 0.85");
-        assert_eq!(cons_text2, ["speed", "increases", "rapidly"],
-            "Analogical match should return same consequent");
-        eprintln!("  ANALOGICAL: 'truck accelerates on_road' → '{} {} {}' E={} ✓",
-            cons_text2[0], cons_text2[1], cons_text2[2], energy2);
+        assert_eq!(
+            match_type2, "analogical",
+            "Different L1 but same L2 should be analogical, got {}",
+            match_type2
+        );
+        assert!(
+            (energy2 - 0.85).abs() < 0.01,
+            "Analogical energy should be 0.85"
+        );
+        assert_eq!(
+            cons_text2,
+            ["speed", "increases", "rapidly"],
+            "Analogical match should return same consequent"
+        );
+        eprintln!(
+            "  ANALOGICAL: 'truck accelerates on_road' → '{} {} {}' E={} ✓",
+            cons_text2[0], cons_text2[1], cons_text2[2], energy2
+        );
 
         // Step 7: CROSS-DOMAIN — now matches at L3 (abstract analogy)
-        let result = qa.query_centroid_rule(
-            "central_bank", "tightens", "policy", &hierarchy
-        );
+        let result = qa.query_centroid_rule("central_bank", "tightens", "policy", &hierarchy);
         assert!(result.is_some(), "Cross-domain query should match at L3");
         let (cons_text3, match_type3, energy3) = result.unwrap();
-        assert_eq!(match_type3, "abstract",
-            "Cross-domain should match at L3 abstract level, got {}", match_type3);
-        assert!((energy3 - 0.70).abs() < 0.01, "Abstract energy should be 0.70");
-        assert_eq!(cons_text3, ["speed", "increases", "rapidly"],
-            "Cross-domain match should return vehicle rule's consequent");
-        eprintln!("  ABSTRACT: 'central_bank tightens policy' → '{} {} {}' E={} ✓",
-            cons_text3[0], cons_text3[1], cons_text3[2], energy3);
+        assert_eq!(
+            match_type3, "abstract",
+            "Cross-domain should match at L3 abstract level, got {}",
+            match_type3
+        );
+        assert!(
+            (energy3 - 0.70).abs() < 0.01,
+            "Abstract energy should be 0.70"
+        );
+        assert_eq!(
+            cons_text3,
+            ["speed", "increases", "rapidly"],
+            "Cross-domain match should return vehicle rule's consequent"
+        );
+        eprintln!(
+            "  ABSTRACT: 'central_bank tightens policy' → '{} {} {}' E={} ✓",
+            cons_text3[0], cons_text3[1], cons_text3[2], energy3
+        );
 
         // Step 8: UNKNOWN TERM — no centroid → no match
-        let result = qa.query_centroid_rule(
-            "unknown", "word", "here", &hierarchy
-        );
+        let result = qa.query_centroid_rule("unknown", "word", "here", &hierarchy);
         assert!(result.is_none(), "Unknown term should not match");
         eprintln!("  UNKNOWN: 'unknown word here' → no match ✓");
 
@@ -3840,10 +5486,11 @@ mod tests {
         qa.cluster_centroids.push(weather_hv);
         qa.centroid_labels.push("weather".to_string());
         // No L2 or L3 community includes "weather" — it resolves but doesn't match
-        let result = qa.query_centroid_rule(
-            "weather", "affects", "everything", &hierarchy
+        let result = qa.query_centroid_rule("weather", "affects", "everything", &hierarchy);
+        assert!(
+            result.is_none(),
+            "Unrelated term outside L2/L3 should not match"
         );
-        assert!(result.is_none(), "Unrelated term outside L2/L3 should not match");
         eprintln!("  UNRELATED: 'weather affects everything' → no match ✓");
 
         eprintln!("\n  ✓ Centroid-rule analogical transfer works (all 3 tiers)");
@@ -3858,18 +5505,30 @@ mod tests {
 
         // Store action and causal rules (same chain as Spec)
         qa.store_action(
-            "push", "pawn", "e4",
-            "white", "controls", "center",
+            "push",
+            "pawn",
+            "e4",
+            "white",
+            "controls",
+            "center",
             "chess_knowledge",
         );
         qa.store_rule(
-            "white", "controls", "center",
-            "white", "has", "advantage",
+            "white",
+            "controls",
+            "center",
+            "white",
+            "has",
+            "advantage",
             "chess_knowledge",
         );
         qa.store_rule(
-            "white", "has", "advantage",
-            "white", "likely", "wins",
+            "white",
+            "has",
+            "advantage",
+            "white",
+            "likely",
+            "wins",
             "chess_knowledge",
         );
 
@@ -3879,8 +5538,10 @@ mod tests {
         eprintln!("  Goal: white likely wins");
         eprintln!("  Plan ({} steps):", plan.len());
         for (i, step) in plan.iter().enumerate() {
-            eprintln!("    Step {}: {:?} → {:?} (conf={:.4}, depth={})",
-                i, step.action, step.achieves, step.confidence, step.depth);
+            eprintln!(
+                "    Step {}: {:?} → {:?} (conf={:.4}, depth={})",
+                i, step.action, step.achieves, step.confidence, step.depth
+            );
         }
 
         // Should return exactly one action: push pawn e4
@@ -3891,8 +5552,10 @@ mod tests {
         assert_eq!(plan[0].achieves.0, "white");
         assert_eq!(plan[0].achieves.1, "controls");
         assert_eq!(plan[0].achieves.2, "center");
-        assert!((plan[0].confidence - 1.0).abs() < 0.01,
-            "Confidence should be ~1.0 (energy(1.0) × rule_confidence(1.0))");
+        assert!(
+            (plan[0].confidence - 1.0).abs() < 0.01,
+            "Confidence should be ~1.0 (energy(1.0) × rule_confidence(1.0))"
+        );
         eprintln!("\n  ✓ Goal-directed planning works: 'white likely wins' → push pawn e4");
     }
 
@@ -3907,28 +5570,69 @@ mod tests {
         let mut qa = QaEngine::new();
 
         // Two alternative actions, same intermediate chain
-        qa.store_action("push", "pawn", "d4", "white", "controls", "center", "chess_knowledge");
-        qa.store_action("develop", "knight", "f3", "white", "controls", "center", "chess_knowledge");
-        qa.store_rule("white", "controls", "center", "white", "has", "advantage", "chess_knowledge");
-        qa.store_rule("white", "has", "advantage", "white", "likely", "wins", "chess_knowledge");
+        qa.store_action(
+            "push",
+            "pawn",
+            "d4",
+            "white",
+            "controls",
+            "center",
+            "chess_knowledge",
+        );
+        qa.store_action(
+            "develop",
+            "knight",
+            "f3",
+            "white",
+            "controls",
+            "center",
+            "chess_knowledge",
+        );
+        qa.store_rule(
+            "white",
+            "controls",
+            "center",
+            "white",
+            "has",
+            "advantage",
+            "chess_knowledge",
+        );
+        qa.store_rule(
+            "white",
+            "has",
+            "advantage",
+            "white",
+            "likely",
+            "wins",
+            "chess_knowledge",
+        );
 
         let plan = qa.plan_for_goal("white", "likely", "wins", 5);
 
         eprintln!("  Goal: white likely wins");
         eprintln!("  Plan ({} steps):", plan.len());
         for (i, step) in plan.iter().enumerate() {
-            eprintln!("    Step {}: {:?} → {:?} (conf={:.4})",
-                i, step.action, step.achieves, step.confidence);
+            eprintln!(
+                "    Step {}: {:?} → {:?} (conf={:.4})",
+                i, step.action, step.achieves, step.confidence
+            );
         }
 
         // Should find two actions (both paths through "controls center")
-        assert_eq!(plan.len(), 2,
-            "Branching scenario should find 2 plans, got {}", plan.len());
+        assert_eq!(
+            plan.len(),
+            2,
+            "Branching scenario should find 2 plans, got {}",
+            plan.len()
+        );
 
         // Verify both actions are present
         let actions: Vec<&str> = plan.iter().map(|s| s.action.1.as_str()).collect();
         assert!(actions.contains(&"pawn"), "Should include push pawn d4");
-        assert!(actions.contains(&"knight"), "Should include develop knight f3");
+        assert!(
+            actions.contains(&"knight"),
+            "Should include develop knight f3"
+        );
 
         // Both should achieve the same thing
         for step in &plan {
@@ -3953,40 +5657,102 @@ mod tests {
         let mut qa = QaEngine::new();
 
         // ── Market domain ───────────────────────────────────────────────────
-        qa.store_action("raise", "rates", "50bp", "dollar", "strengthens", "vs_euro", "market_knowledge");
-        qa.store_rule("dollar", "strengthens", "vs_euro", "imports", "become", "cheaper", "market_knowledge");
-        qa.store_rule("imports", "become", "cheaper", "inflation", "decreases", "gradually", "market_knowledge");
+        qa.store_action(
+            "raise",
+            "rates",
+            "50bp",
+            "dollar",
+            "strengthens",
+            "vs_euro",
+            "market_knowledge",
+        );
+        qa.store_rule(
+            "dollar",
+            "strengthens",
+            "vs_euro",
+            "imports",
+            "become",
+            "cheaper",
+            "market_knowledge",
+        );
+        qa.store_rule(
+            "imports",
+            "become",
+            "cheaper",
+            "inflation",
+            "decreases",
+            "gradually",
+            "market_knowledge",
+        );
 
         // ── Military domain ──────────────────────────────────────────────────
-        qa.store_action("deploy", "navy", "gulf", "enemy", "blockaded", "by_sea", "military_knowledge");
-        qa.store_rule("enemy", "blockaded", "by_sea", "trade", "collapses", "rapidly", "military_knowledge");
-        qa.store_rule("trade", "collapses", "rapidly", "enemy", "weakened", "significantly", "military_knowledge");
+        qa.store_action(
+            "deploy",
+            "navy",
+            "gulf",
+            "enemy",
+            "blockaded",
+            "by_sea",
+            "military_knowledge",
+        );
+        qa.store_rule(
+            "enemy",
+            "blockaded",
+            "by_sea",
+            "trade",
+            "collapses",
+            "rapidly",
+            "military_knowledge",
+        );
+        qa.store_rule(
+            "trade",
+            "collapses",
+            "rapidly",
+            "enemy",
+            "weakened",
+            "significantly",
+            "military_knowledge",
+        );
 
         // ── Plan in market domain ────────────────────────────────────────────
         let market_plan = qa.plan_for_goal("inflation", "decreases", "gradually", 5);
         eprintln!("  Market goal: inflation decreases gradually");
         eprintln!("  Market plan ({} steps):", market_plan.len());
         for (i, step) in market_plan.iter().enumerate() {
-            eprintln!("    Step {}: {:?} → {:?} (conf={:.4})",
-                i, step.action, step.achieves, step.confidence);
+            eprintln!(
+                "    Step {}: {:?} → {:?} (conf={:.4})",
+                i, step.action, step.achieves, step.confidence
+            );
         }
 
         assert!(!market_plan.is_empty(), "Market plan should not be empty");
         let market_actions: Vec<&str> = market_plan.iter().map(|s| s.action.1.as_str()).collect();
-        assert!(market_actions.contains(&"rates"), "Market plan should include 'rates' action");
+        assert!(
+            market_actions.contains(&"rates"),
+            "Market plan should include 'rates' action"
+        );
 
         // ── Plan in military domain ──────────────────────────────────────────
         let military_plan = qa.plan_for_goal("enemy", "weakened", "significantly", 5);
         eprintln!("\n  Military goal: enemy weakened significantly");
         eprintln!("  Military plan ({} steps):", military_plan.len());
         for (i, step) in military_plan.iter().enumerate() {
-            eprintln!("    Step {}: {:?} → {:?} (conf={:.4})",
-                i, step.action, step.achieves, step.confidence);
+            eprintln!(
+                "    Step {}: {:?} → {:?} (conf={:.4})",
+                i, step.action, step.achieves, step.confidence
+            );
         }
 
-        assert!(!military_plan.is_empty(), "Military plan should not be empty");
-        let military_actions: Vec<&str> = military_plan.iter().map(|s| s.action.1.as_str()).collect();
-        assert!(military_actions.contains(&"navy"), "Military plan should include 'navy' action");
+        assert!(
+            !military_plan.is_empty(),
+            "Military plan should not be empty"
+        );
+        let military_actions: Vec<&str> =
+            military_plan.iter().map(|s| s.action.1.as_str()).collect();
+        assert!(
+            military_actions.contains(&"navy"),
+            "Military plan should include 'navy' action"
+        );
 
         eprintln!("\n  ✓ Cross-domain planning works: same code, different domains");
     }
@@ -3997,9 +5763,33 @@ mod tests {
         // rule confidences update accordingly.
 
         let mut qa = QaEngine::new();
-        qa.store_action("push", "pawn", "e4", "white", "controls", "center", "chess_knowledge");
-        qa.store_rule("white", "controls", "center", "white", "has", "advantage", "chess_knowledge");
-        qa.store_rule("white", "has", "advantage", "white", "likely", "wins", "chess_knowledge");
+        qa.store_action(
+            "push",
+            "pawn",
+            "e4",
+            "white",
+            "controls",
+            "center",
+            "chess_knowledge",
+        );
+        qa.store_rule(
+            "white",
+            "controls",
+            "center",
+            "white",
+            "has",
+            "advantage",
+            "chess_knowledge",
+        );
+        qa.store_rule(
+            "white",
+            "has",
+            "advantage",
+            "white",
+            "likely",
+            "wins",
+            "chess_knowledge",
+        );
 
         // Record initial confidences
         let initial_confs: Vec<f64> = qa.rules.iter().map(|r| r.confidence).collect();
@@ -4025,7 +5815,10 @@ mod tests {
         // At minimum, the total sum should have decreased
         let sum_before: f64 = initial_confs.iter().sum();
         let sum_after: f64 = after_fail.iter().sum();
-        assert!(sum_after < sum_before, "Total confidence should decrease after failure");
+        assert!(
+            sum_after < sum_before,
+            "Total confidence should decrease after failure"
+        );
 
         // 2. Evaluate as SUCCESS (outcome = 1.0) — multiple times to strengthen
         for _ in 0..3 {
@@ -4036,7 +5829,10 @@ mod tests {
 
         // Confidences should have recovered from the failure
         let sum_recovered: f64 = after_success.iter().sum();
-        assert!(sum_recovered > sum_after, "Confidence should recover after success");
+        assert!(
+            sum_recovered > sum_after,
+            "Confidence should recover after success"
+        );
 
         eprintln!("\n  ✓ Plan outcome evaluation works: failure weakens, success strengthens");
     }

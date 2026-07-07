@@ -279,7 +279,7 @@ fn bench_qa_depth(cfg: &BenchConfig) -> Vec<ExperimentResult> {
     for depth in cfg.scale.qa_depths() {
         let mut qa = QaEngine::new();
         qa.store_fact("node_0", "leads_to", "node_1", "seed");
-        for i in 1..depth {
+        for i in 0..depth {
             qa.store_rule(
                 &format!("node_{}", i),
                 "leads_to",

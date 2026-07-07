@@ -334,6 +334,24 @@ impl QaEngine {
         }
     }
 
+    fn normalize_fact_subject(subject: &str) -> String {
+        subject.trim().to_lowercase()
+    }
+
+    fn normalize_fact_verb(verb: &str) -> String {
+        crate::nlp::verb_lemma(verb.trim()).to_lowercase()
+    }
+
+    fn normalize_fact_object(object: &str) -> String {
+        object.trim().to_lowercase()
+    }
+
+    fn fact_text_matches(fact: &QaFact, subject: &str, verb: &str, object: &str) -> bool {
+        Self::normalize_fact_subject(&fact.subject) == Self::normalize_fact_subject(subject)
+            && Self::normalize_fact_verb(&fact.verb) == Self::normalize_fact_verb(verb)
+            && Self::normalize_fact_object(&fact.object) == Self::normalize_fact_object(object)
+    }
+
     // ── Causal Rule Storage ──────────────────────────────────────────
 
     /// Store a causal rule with explicit confidence (Layer 2 predictive coding).
@@ -1782,15 +1800,18 @@ impl QaEngine {
     // FACT VERIFICATION
     // ═════════════════════════════════════════════════════════════════
 
-    /// Find the closest matching fact by full reconstruction.
+    /// Find an explicitly stored fact by normalized SVO text.
+    ///
+    /// Fact verification is intentionally exact over normalized text. Earlier
+    /// versions accepted the closest reconstructed hypervector above the cleanup
+    /// threshold, which made near-miss negatives such as `task_1_decoy` verify
+    /// as true. Fuzzy matching remains useful for answer generation, but a
+    /// verifier must distinguish true, false, and unknown facts.
     pub fn find_fact(&self, subject: &str, verb: &str, object: &str) -> Option<&QaFact> {
-        let mut best: Option<&QaFact> = None;
-        let mut best_e = 0.0_f64;
-        for fact in &self.facts {
-            let e = self.reconstruction_energy(&fact.thought, subject, verb, object);
-            if e > best_e { best_e = e; best = Some(fact); }
-        }
-        best.filter(|_| best_e >= MIN_CLEANUP_ENERGY)
+        self.facts
+            .iter()
+            .rev()
+            .find(|fact| Self::fact_text_matches(fact, subject, verb, object))
     }
 
     /// Verify a known fact. Returns (exists, confidence).
@@ -2137,6 +2158,55 @@ mod tests {
         let engine = test_engine();
         let (ok, _) = engine.verify_fact("the_fed", "raise", "inflation");
         assert!(!ok, "Should not verify false fact");
+    }
+
+    #[test]
+    fn test_verify_rejects_near_miss_object() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("agent_00001", "observed", "signal_00001", "test");
+        engine.store_fact(
+            "agent_00001_shadow",
+            "observed",
+            "signal_00001_shadow",
+            "test",
+        );
+
+        assert!(
+            engine.verify_fact("agent_00001", "observed", "signal_00001").0,
+            "exact stored fact should verify"
+        );
+        assert!(
+            !engine
+                .verify_fact("agent_00001", "observed", "signal_00001_wrong")
+                .0,
+            "near-miss object must not verify as true"
+        );
+        assert!(
+            !engine
+                .verify_fact("agent_00001", "observed", "signal_00001_shadow")
+                .0,
+            "shadow object belongs to a different subject and must not verify"
+        );
+    }
+
+    #[test]
+    fn test_verify_rejects_adaptation_decoy() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("agent_7", "solve", "novel_task_7", "test");
+        engine.store_fact(
+            "agent_7_decoy",
+            "solve",
+            "novel_task_7_decoy",
+            "test",
+        );
+
+        assert!(engine.verify_fact("agent_7", "solve", "novel_task_7").0);
+        assert!(
+            !engine
+                .verify_fact("agent_7", "solve", "novel_task_7_decoy")
+                .0,
+            "decoy object must not verify for the real subject"
+        );
     }
 
     #[test]

@@ -522,7 +522,7 @@ pub struct TrackedPosition {
 }
 
 /// Check if a pawn at (rank, file) is isolated (no friendly pawns on adjacent files).
-fn is_isolated_pawn(rank: u8, file: u8, is_white: bool, pieces: &[(char, u8, u8)]) -> bool {
+fn is_isolated_pawn(_rank: u8, file: u8, is_white: bool, pieces: &[(char, u8, u8)]) -> bool {
     let my_pawn = if is_white { 'P' } else { 'p' };
     for df in -1..=1 {
         if df == 0 { continue; }
@@ -637,6 +637,7 @@ fn detect_hanging(
 }
 
 /// Detect undefended pieces: not defended by any friendly piece.
+#[allow(dead_code)]
 fn detect_undefended(
     pieces: &[(char, u8, u8)],
     attacks_to: &[Vec<usize>],
@@ -771,7 +772,7 @@ fn detect_king_exposure(
     board: &[[Option<char>; 8]; 8],
 ) -> Vec<(String, String, String)> {
     let mut triples = Vec::new();
-    for &(ch, rank, file) in pieces {
+    for &(ch, _rank, file) in pieces {
         if piece_type(ch) == 'K' {
             let is_white = ch.is_uppercase();
             for df in -1..=1 {
@@ -832,7 +833,7 @@ fn detect_dominant_rooks(
     board: &[[Option<char>; 8]; 8],
 ) -> Vec<(String, String, String)> {
     let mut triples = Vec::new();
-    for &(ch, rank, file) in pieces {
+    for &(ch, _rank, file) in pieces {
         if piece_type(ch) == 'R' {
             let is_white = ch.is_uppercase();
             let mut has_friendly_pawn = false;
@@ -1383,6 +1384,7 @@ pub fn cross_validate_knn_with_encoder(
 /// Default track weights: equal contribution from each of 5 tracks.
 /// These can be overridden for learned weighting experiments.
 /// Order: [material, attacks, king_safety, mobility, structure]
+#[allow(dead_code)]
 const DEFAULT_TRACK_WEIGHTS: [f64; 5] = [0.20, 0.20, 0.20, 0.20, 0.20];
 
 /// Cross-validate with per-track k-NN.

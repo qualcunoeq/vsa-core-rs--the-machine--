@@ -68,7 +68,6 @@
 // 6. test_sleep_weight_shift         — Sleep shifts multipliers
 // 7. test_drive_equilibrium          — Low deficit + low error → all quiet
 
-use crate::Hypervector;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CONSTANTS

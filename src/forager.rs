@@ -1,7 +1,7 @@
 use crate::compression::{CountingBloomFilter, CappedVecDeque};
 use crate::resonator::ResonatorVocabulary;
 use crate::Hypervector;
-use crate::analogy::{self, RoleDictionary, ROLE_AGENT, ROLE_ACTION, ROLE_PATIENT,
+use crate::analogy::{self, RoleDictionary,
     AnalogicalIndex, MetaIndex};
 use scraper::{Html, Selector};
 use std::collections::{HashMap, HashSet};

@@ -14,11 +14,10 @@
 
 use std::path::Path;
 use std::fs;
-use std::collections::HashMap;
 
 use syn::{
-    File, Item, ItemFn, ItemImpl, ItemStruct, ItemTrait, ImplItem, FnArg,
-    ReturnType, Type, Signature, visit::{self, Visit},
+    File, Item, ItemFn, ImplItem, FnArg,
+    ReturnType, Type,
 };
 
 use crate::analogy::{
@@ -87,6 +86,7 @@ fn type_to_string(ty: &Type) -> String {
 // ─── AST visitor ──────────────────────────────────────────────────────────────
 
 /// Holds extracted raw data before frame encoding
+#[allow(dead_code)]
 struct RawSignature {
     struct_name: String,
     fn_name:     String,
@@ -95,6 +95,7 @@ struct RawSignature {
     confidence:  f64,
 }
 
+#[allow(dead_code)]
 struct RawCall {
     caller:        String,
     caller_struct: String,
@@ -102,6 +103,7 @@ struct RawCall {
     confidence:    f64,
 }
 
+#[allow(dead_code)]
 struct RawField {
     struct_name: String,
     field_name:  String,
@@ -109,6 +111,7 @@ struct RawField {
     confidence:  f64,
 }
 
+#[allow(dead_code)]
 struct RawImpl {
     struct_name: String,
     trait_name:  String,
@@ -116,6 +119,7 @@ struct RawImpl {
 }
 
 /// AST visitor that extracts code structure frames.
+#[allow(dead_code)]
 struct CodeVisitor {
     current_struct: String,
     signatures: Vec<RawSignature>,
@@ -265,7 +269,7 @@ impl CodeVisitor {
                 self.extract_calls_from_expr(&assign.left, caller, struct_name);
                 self.extract_calls_from_expr(&assign.right, caller, struct_name);
             }
-            syn::Expr::Macro(mac) => {
+            syn::Expr::Macro(_mac) => {
                 // Skip macro calls (too complex for v1)
             }
             syn::Expr::Unsafe(unsafe_block) => {

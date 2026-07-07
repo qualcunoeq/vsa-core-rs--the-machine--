@@ -101,6 +101,7 @@ fn main() {
     }
 }
 
+#[allow(dead_code)]
 fn home_dir() -> std::path::PathBuf {
     std::env::var("HOME")
         .map(std::path::PathBuf::from)

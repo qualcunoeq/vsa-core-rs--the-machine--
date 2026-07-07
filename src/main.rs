@@ -966,14 +966,14 @@ async fn run_agent(
         let mut sleeper = SleepCycle::with_defaults();
 
         // ██ DRIFT v3.0: Wire remaining cognitive subsystems ██
-        let mut emotional_field = EmotionalField::new();
+        let emotional_field = EmotionalField::new();
         let mut intuition_engine = IntuitionEngine::new();
         let mut shadow_system = ShadowSystem::new();
         let mut global_context = Context::new("global");
         let mut psc_predictor = PscPredictor::with_defaults();
-        let mut current_emotion = Emotion::Neutral;
-        let mut current_stance = Stance::Open;
-        let mut current_mood = Mood::Neutral;
+        let mut current_emotion;
+        let mut current_stance;
+        let mut current_mood;
 
         // Initialize VSA n-gram chain for state transition prediction
         let mut ngram_chain = the_machine::narrative::NgramChain::bigram();

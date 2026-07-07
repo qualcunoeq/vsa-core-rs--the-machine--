@@ -950,10 +950,10 @@ impl HnswIndex {
 
     /// Deserialize the index from a byte buffer.
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, String> {
-        use std::io::Read;
+        
         let pos = &mut 0usize;
 
-        let read_u32 = |buf: &[u8], pos: &mut usize| -> Result<u32, String> {
+        let _read_u32 = |buf: &[u8], pos: &mut usize| -> Result<u32, String> {
             if *pos + 4 > buf.len() {
                 return Err("Truncated u32".to_string());
             }

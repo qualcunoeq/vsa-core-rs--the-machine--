@@ -8,7 +8,7 @@
 //! No Python, no spaCy, no subprocess — entirely self-contained Rust.
 
 use crate::analogy::{
-    self, AnalogicalIndex, EpistemicStatus, MetaIndex,
+    AnalogicalIndex, EpistemicStatus, MetaIndex,
     ObservationProvenance, RoleDictionary,
     ROLE_AGENT, ROLE_ACTION, ROLE_PATIENT,
 };

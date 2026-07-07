@@ -1948,8 +1948,8 @@ impl VSABrain {
     /// Respects the current soft_projection_tau setting.
     /// Called periodically by the agent loop for joint contraction monitoring.
     pub fn measure_kappa_p(&mut self, n_pairs: usize) {
-        use rand::Rng;
-        let mut rng = rand::thread_rng();
+        
+        let _rng = rand::thread_rng();
         let clusters = &self.dejavu_clusters;
         if clusters.len() < 2 {
             return;
@@ -3057,7 +3057,7 @@ impl VSABrain {
         // Restore associations with bounds validation
         self.cross_cluster_associations.clear();
         let mut valid_count = 0;
-        let mut dropped_count = 0;
+        let mut _dropped_count = 0;
         for (from, to, vec, strength) in snapshot.associations {
             if from < self.dejavu_clusters.len() && to < self.dejavu_clusters.len() {
                 self.cross_cluster_associations
@@ -3066,7 +3066,7 @@ impl VSABrain {
                     .push((to, vec, strength, 0)); // tick = 0 (no clock)
                 valid_count += 1;
             } else {
-                dropped_count += 1;
+                _dropped_count += 1;
             }
         }
 

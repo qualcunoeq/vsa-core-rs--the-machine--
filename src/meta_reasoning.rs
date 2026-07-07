@@ -24,11 +24,11 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 use crate::abstraction_learner::AbstractionLearner;
-use crate::actuator::{ActionRequest, ActionResult, ActionType, JumpBoxActuator};
+use crate::actuator::{ActionRequest, ActionType, JumpBoxActuator};
 use crate::diagnostic::{
-    absorb_diagnosis_with_learner, classify_structural,
+    absorb_diagnosis_with_learner,
     classify_structural_with_learner, parse_error_structure,
-    parse_error_structure_with_learner, query_diagnostic_category,
+    parse_error_structure_with_learner,
     query_diagnostic_category_with_learner, CanonicalSvo, ErrorClassifier,
 };
 use crate::qa::{PlanStep, QaEngine};
@@ -157,7 +157,7 @@ pub fn assess_with_learner(
 ) -> ReasoningState {
     // ── Level 1-2: Classifier (trigger + trigram Jaccard) ───────────────
     if let (Some(canonical), _level) = classifier.classify_deep(problem) {
-        let (subj, verb, obj) = canonical.clone();
+        let (_subj, _verb, obj) = canonical.clone();
         let plan = qa.plan_for_goal("service", "is", "running", 5);
 
         if !plan.is_empty() {
@@ -238,7 +238,7 @@ fn plan_confidence(plan: &[PlanStep]) -> f64 {
 /// by checking which abstract rules would fire.
 fn find_best_structural_category(
     triples: &[CanonicalSvo],
-    qa: &QaEngine,
+    _qa: &QaEngine,
 ) -> Option<String> {
     // Categories we know about, mapped from abstract state triples
     let category_patterns: &[(&[(&str, &str, &str)], &str)] = &[

@@ -1273,7 +1273,7 @@ fn query_diagnostic_category_internal(
             if entry.label.starts_with("concept:") {
                 let concept_name = &entry.label[8..];
                 let concept_hv = Hypervector::encode_text_ngram(&format!("concept:{}", concept_name), 3);
-                if let Some((_concept_idx, concept_sim)) = brain.nearest_centroid_idx(&concept_hv) {
+                if let Some((_concept_idx, _concept_sim)) = brain.nearest_centroid_idx(&concept_hv) {
                     let centroid = &brain.dejavu_clusters[nearest_idx].centroid;
                     let concept_centroid = &brain.dejavu_clusters[_concept_idx].centroid;
                     let cluster_dist = centroid.normalized_hamming_distance(concept_centroid);

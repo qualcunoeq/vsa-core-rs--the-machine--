@@ -319,7 +319,7 @@ impl AbstractionLearner {
         // Common error words — includes connection/negotiation failures
         matches!(lower.as_str(), "timeout" | "error" | "fail" | "fault"
             | "crash" | "panic" | "abort" | "dead" | "stuck" | "hung"
-            | "handshake" | "retry" | "backoff" | "throttle" | "timeout"
+            | "handshake" | "retry" | "backoff" | "throttle"
             | "reset" | "disconnect" | "refused" | "reject")
     }
 

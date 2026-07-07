@@ -16,10 +16,8 @@
 use std::collections::HashMap;
 use std::fs;
 use std::io::{BufRead, BufReader};
-use std::path::Path;
-use crate::Hypervector;
 use crate::VSABrain;
-use crate::perception::{Entity, Relation, SvoTriple, PerceptualEncoder};
+use crate::perception::{Entity, SvoTriple, PerceptualEncoder};
 
 // ─── Data Types ────────────────────────────────────────────────────────────
 

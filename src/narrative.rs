@@ -36,7 +36,7 @@
 
 use crate::drift::{CognitiveMode, Need, Emotion, Stance, Mood, Archetype};
 use crate::resonator::ResonatorVocabulary;
-use crate::self_model::{SelfModel, SelfNarrative, HomeostaticProfile};
+use crate::self_model::{SelfModel, SelfNarrative};
 use crate::workspace::{GlobalWorkspace, AttentionReport};
 use crate::drives::{IntrinsicMotivation, DriveId};
 use crate::sleep::WakeNarrative;
@@ -1760,7 +1760,7 @@ pub fn quick_narrative(sn: &SelfNarrative) -> String {
 mod tests {
     use super::*;
     use crate::drift::{CognitiveMode, HomeostaticRegulator};
-    use crate::self_model::{SelfModel, SelfNarrative};
+    use crate::self_model::{HomeostaticProfile, SelfModel, SelfNarrative};
     use crate::workspace::GlobalWorkspace;
 
     // ── Morphology Tests ─────────────────────────────────────────────

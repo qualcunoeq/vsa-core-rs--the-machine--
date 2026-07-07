@@ -1026,7 +1026,7 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
     // ── PASS 3: Conjunction expansion ───────────────────────────────
     // For each triple with a known verb, check if there's a conjoined verb
     // and create an additional triple
-    let expanded: Vec<SvoTriple> = triples.iter().flat_map(|triple| {
+    let _expanded: Vec<SvoTriple> = triples.iter().flat_map(|triple| {
         let mut results = vec![triple.clone()];
         let lower_verb = triple.verb.to_lowercase();
 

@@ -61,7 +61,7 @@
 
 use crate::Hypervector;
 use crate::hierarchy::HierarchicalManifold;
-use crate::abstractor::{Abstractor, DEFAULT_MIN_MUTUAL_P, DEFAULT_MIN_COMMUNITY_SIZE, DEFAULT_MAX_COMMUNITIES};
+use crate::abstractor::Abstractor;
 use std::collections::HashMap;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -347,7 +347,7 @@ impl SleepCycle {
         trajectory: &[Hypervector],
         hierarchy: &mut HierarchicalManifold,
         abstractor: &Abstractor,
-        error_history: &[f64],
+        _error_history: &[f64],
     ) -> SleepReport {
         self.sleeping = true;
         self.phase = 1;

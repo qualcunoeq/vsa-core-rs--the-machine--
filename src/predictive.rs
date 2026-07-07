@@ -369,7 +369,7 @@ impl PredictiveCodingLoop {
 
         // Step 3: Compute prediction error
         let error = match (prediction, actual_prediction) {
-            (Some((pred_idx, _)), Some((act_idx, _))) => {
+            (Some((pred_idx, _)), Some((_act_idx, _))) => {
                 if pred_idx == centroid_idx {
                     // Correct prediction: error is the uncertainty
                     self.temporal.transitions.transition_probability(
@@ -391,7 +391,7 @@ impl PredictiveCodingLoop {
         }
 
         // Step 5: Update curiosity
-        let entropy = if let Some(prev) = self.temporal.transitions.prev_centroid {
+        let _entropy = if let Some(prev) = self.temporal.transitions.prev_centroid {
             self.temporal.transitions.transition_entropy(prev)
         } else {
             0.0
@@ -468,7 +468,7 @@ impl PredictiveCodingLoop {
 
     /// Overall system assessment based on predictive performance.
     pub fn assessment(&self) -> PredictiveAssessment {
-        let accuracy = self.temporal.prediction_accuracy(100);
+        let _accuracy = self.temporal.prediction_accuracy(100);
         let anomaly_rate = if self.total_cycles > 0 {
             self.temporal.episodes.anomaly_count(100) as f64 / 100.0_f64.min(self.total_cycles as f64)
         } else {

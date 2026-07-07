@@ -1230,6 +1230,7 @@ impl AnalogicalIndex {
     ///    previous inserts. Each cached delta is applied to the new frame.
     ///
     /// This is O(N²) per insert vs. O(N³) for a full recompute.
+    #[allow(dead_code)]
     fn incremental_analogize(&mut self, new_idx: usize) {
         self.incremental_analogize_with_suppression(new_idx, None)
     }
@@ -1613,7 +1614,7 @@ impl ProvisionalizationGate {
     /// (not a prediction). In the current implementation, all frames
     /// are observations — this check becomes meaningful in v14.0 when
     /// materialized predictions feed back into the frame store.
-    pub fn passes<F>(&self, prediction: &AnalogicalPrediction, frame_is_observation: &F) -> bool
+    pub fn passes<F>(&self, prediction: &AnalogicalPrediction, _frame_is_observation: &F) -> bool
     where
         F: Fn(usize) -> bool,
     {
@@ -3232,7 +3233,7 @@ impl CausalRuleAbductor {
     ///
     /// Returns the number of refutations applied.
     pub fn tick_pending(&mut self) -> usize {
-        let mut refutations = 0;
+        let refutations = 0;
         let mut still_pending: Vec<(usize, usize)> = Vec::new();
 
         for (frame_idx, wait_count) in self.pending.drain(..) {
@@ -3495,6 +3496,7 @@ impl CausalRuleAbductor {
 pub struct MetaIndex {
     /// Reference to the primary AnalogicalIndex.
     /// The MetaIndex reads primary frames to generate meta-frames.
+    #[allow(dead_code)]
     primary: *const AnalogicalIndex,
     /// The index of meta-frames (epistemic frames).
     index: AnalogicalIndex,
@@ -3824,7 +3826,7 @@ impl MetaIndex {
     /// Use `curiosity_targets_structural` instead.
     pub fn curiosity_targets(
         &self,
-        primary_frames: &[RoleFrame],
+        _primary_frames: &[RoleFrame],
         _gap_threshold: f64,
     ) -> Vec<(Hypervector, f64)> {
         // Geometric approach — kept but documented as limited.
@@ -4141,7 +4143,7 @@ impl MetaIndex {
             return 0;
         }
 
-        let mut to_suppress: Vec<usize> = direct_frames.clone();
+        let _to_suppress: Vec<usize> = direct_frames.clone();
         let mut suppressed = 0usize;
 
         // Stage 2: BFS through analogy_lineage for transitive contamination

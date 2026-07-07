@@ -32,7 +32,6 @@
 
 use crate::Hypervector;
 use crate::hierarchy::HierarchicalManifold;
-use crate::temporal::TransitionModel;
 use crate::predictive::PredictiveCodingLoop;
 use crate::abstractor::Abstractor;
 use crate::sleep::SleepCycle;
@@ -300,7 +299,7 @@ impl BondDataReader {
 
         // Pre-generate FPE levels for numeric fields
         let levels_surprise = Hypervector::generate_level_vectors(64);
-        let levels_actual = Hypervector::generate_level_vectors(64);
+        let _levels_actual = Hypervector::generate_level_vectors(64);
         let levels_forecast = Hypervector::generate_level_vectors(64);
 
         let role_base = Hypervector::encode_text_ngram("ROLE_MACRO_SURPRISE", 3);
@@ -310,7 +309,7 @@ impl BondDataReader {
 
         let mut count = 0;
         for row in rows.flatten() {
-            let (date, indicator, actual, forecast, surprise, importance) = row;
+            let (date, indicator, _actual, forecast, surprise, importance) = row;
             let mut components: Vec<Hypervector> = Vec::new();
 
             // Encode indicator text
@@ -490,7 +489,7 @@ impl MarketCrucible {
                 let state_vec = state.encoded;
 
                 // Project through hierarchy
-                let (_, sim, centroid_idx) = if !self.hierarchy.levels[0].centroids.is_empty() {
+                let (_, _sim, centroid_idx) = if !self.hierarchy.levels[0].centroids.is_empty() {
                     self.hierarchy.levels[0].project_through(&state_vec)
                 } else {
                     let idx = self.hierarchy.levels[0].centroids.len();

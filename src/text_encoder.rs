@@ -10,7 +10,7 @@
 
 use crate::Hypervector;
 use crate::VSABrain;
-use crate::perception::{Entity, Relation, SvoTriple as SvoTuple, PerceptualEncoder};
+use crate::perception::{Entity, SvoTriple as SvoTuple, PerceptualEncoder};
 
 /// Text encoder: converts English text into SVO triples via rule-based NLP.
 ///

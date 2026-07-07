@@ -182,6 +182,7 @@ pub struct CentroidRule {
 }
 
 /// Encodes an SVO triple as ρ₁₃(S) ⊕ ρ₂₆(V) ⊕ ρ₃₉(O).
+#[allow(dead_code)]
 fn encode_triple(subject: &str, verb: &str, object: &str) -> Hypervector {
     let s_hv = if subject.is_empty() { Hypervector::new_zero() } else { Hypervector::encode_text_ngram(subject, 3) };
     let v_hv = if verb.is_empty() { Hypervector::new_zero() } else { Hypervector::encode_text_ngram(verb, 3) };
@@ -664,7 +665,7 @@ impl QaEngine {
                     let cons_s_hv = cons_hv.rotate_left(
                         (crate::HD_DIMENSION - RHO_S) % crate::HD_DIMENSION
                     );
-                    let cons_s = self.best_vocab_match_raw(&cons_s_hv);
+                    let _cons_s = self.best_vocab_match_raw(&cons_s_hv);
 
                     // Use the rule's consequent text as our answer
                     let source = format!(
@@ -1551,7 +1552,7 @@ impl QaEngine {
         }
 
         // Split into contradicted vs uncontradicted facts
-        let (mut contradicted, mut clean): (Vec<_>, Vec<_>) = results
+        let (contradicted, clean): (Vec<_>, Vec<_>) = results
             .into_iter()
             .partition(|(_, fact)| fact.is_contradicted);
 
@@ -1642,7 +1643,7 @@ impl QaEngine {
     }
 
     /// Format an answer for a contradicted fact (past-tense, with temporal marking).
-    fn format_answer_contradicted(&self, token: &str, fact: &QaFact) -> String {
+    fn format_answer_contradicted(&self, _token: &str, fact: &QaFact) -> String {
         // For contradicted facts, use past-perfect-like framing
         format!(
             "{} has {} {}.",
@@ -1814,7 +1815,7 @@ impl QaEngine {
     /// Get all facts matching a given subject+verb (for object retrieval).
     pub fn facts_with_verb(&self, subject: &str, verb: &str) -> Vec<&QaFact> {
         let subj_lower = subject.trim().to_lowercase();
-        let verb_lower = verb.trim().to_lowercase();
+        let _verb_lower = verb.trim().to_lowercase();
         self.facts.iter()
             .filter(|f| {
                 f.subject.trim().to_lowercase() == subj_lower

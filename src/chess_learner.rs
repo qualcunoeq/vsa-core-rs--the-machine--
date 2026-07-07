@@ -13,7 +13,7 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 use crate::chess_eval::encode_position;
-use crate::defense::{ChessThreatDetector, ThreatClass, ThreatDetector, ThreatEvent};
+use crate::defense::{ChessThreatDetector, ThreatDetector, ThreatEvent};
 use crate::chess_eval::{encode_tracked_position, tracked_similarity, TrackedPosition, parse_fen};
 use crate::hierarchy::HierarchicalManifold;
 use crate::VSABrain;
@@ -662,6 +662,7 @@ fn predict_behavior_distribution(
 
 /// Generate a representative opponent move for the given behavioral class.
 /// Uses chess heuristics (capture highest-value piece, retreat attacked piece, etc.)
+#[allow(dead_code)]
 fn sample_response_for_behavior(fen: &str, behavior: &OpponentBehavior, legal_moves: &[(String, f64)]) -> String {
     let pieces = parse_fen(fen);
     let white_to_move = fen.contains(" w ");
@@ -672,7 +673,7 @@ fn sample_response_for_behavior(fen: &str, behavior: &OpponentBehavior, legal_mo
             let mut best_capture = String::new();
             let mut best_value = -1;
             for (uci, _) in legal_moves {
-                if let Some(dest) = uci.chars().nth(2) {
+                if let Some(_dest) = uci.chars().nth(2) {
                     let target_piece = pieces.iter()
                         .find(|&&(_, r, f)| {
                             let f_char = (b'a' + f) as char;
@@ -700,7 +701,7 @@ fn sample_response_for_behavior(fen: &str, behavior: &OpponentBehavior, legal_mo
             // Find a move that moves an attacked piece to safety
             for (uci, _) in legal_moves {
                 let src = &uci[..2];
-                let src_f = (src.as_bytes()[0] - b'a') as usize;
+                let _src_f = (src.as_bytes()[0] - b'a') as usize;
                 let src_r = (src.as_bytes()[1] - b'1') as usize;
                 // Check if source piece was under attack in the original position
                 // (simplified: just return the first move that moves a piece backward)
@@ -1263,8 +1264,6 @@ pub fn train_stage1(brain: &mut VSABrain, num_games: usize) -> QaEngine {
     // Seed the QA engine with chess strategy rules for planning
     let mut qa = crate::qa::QaEngine::new();
     seed_chess_rules(&mut qa);
-    let mut rule_updates = 0usize;
-
     let mut sf = StockfishClient::new(STOCKFISH_PATH);
     let mut total_wins = 0usize;
     let mut total_losses = 0usize;
@@ -1304,7 +1303,7 @@ pub fn train_stage1(brain: &mut VSABrain, num_games: usize) -> QaEngine {
         // Feed game outcome back to planner rules
         let outcome = if record.result > 0.0 { 1.0 } else if record.result < 0.0 { 0.0 } else { 0.5 };
         let plan = qa.plan_for_goal("white", "has", "advantage", 5);
-        rule_updates += qa.evaluate_plan_outcome(outcome, &plan);
+        let _ = qa.evaluate_plan_outcome(outcome, &plan);
 
         // Track stats
         if record.result > 0.0 {
@@ -1348,7 +1347,7 @@ pub fn train_stage1(brain: &mut VSABrain, num_games: usize) -> QaEngine {
 
     // ── Post-training L2 rule mining ────────────────────────────────────
     eprintln!("\n  ── Mining L2 transition rules from {} games ──", games_played);
-    let (rules_mined, l2_cap, total_trans, unique_pairs, avg_mined_conf) = {
+    let (rules_mined, _l2_cap, _total_trans, _unique_pairs, avg_mined_conf) = {
         // Temporarily borrow qa mutably for mining
         mine_l2_rules(&game_records, brain, &mut qa, 5, 0.60)
     };
@@ -1459,7 +1458,7 @@ struct L2Transition {
 /// meaningful at scale.
 pub fn reconstruct_game_records_from_clusters(brain: &VSABrain) -> Vec<GameRecord> {
     let mut records: Vec<GameRecord> = Vec::new();
-    let mut seen: std::collections::HashSet<(f64, bool)> = std::collections::HashSet::new();
+    let _seen: std::collections::HashSet<(f64, bool)> = std::collections::HashSet::new();
 
     // Collect all (result, machine_color, ply, fen) tuples
     let mut all_positions: Vec<(f64, bool, usize, String)> = Vec::new();
@@ -1794,7 +1793,6 @@ pub fn train_stage2(
     let mut total_wins = 0usize;
     let mut total_losses = 0usize;
     let mut total_draws = 0usize;
-    let mut rule_updates = 0usize;
     // 50-game window tracking
     let mut window_wins_50 = 0usize;
     let mut prev_50_total_wins = 0usize;
@@ -1823,12 +1821,12 @@ pub fn train_stage2(
             knn_evaluate_tracked(fen, brain, K_NEAREST, &TRACKED_WEIGHTS, &tracked_cache)
         };
 
-        let mut record = play_game(&mut sf, &evaluate, machine_is_white, Some(qa), hybrid_stockfish_pct, p_weight, search_depth);
+        let record = play_game(&mut sf, &evaluate, machine_is_white, Some(qa), hybrid_stockfish_pct, p_weight, search_depth);
 
         // Self-improvement: update ALL rules in the plan chain
         let outcome = if record.result > 0.0 { 1.0 } else if record.result < 0.0 { 0.0 } else { 0.5 };
         let plan = qa.plan_for_goal("white", "has", "advantage", 5);
-        rule_updates += qa.evaluate_plan_outcome(outcome, &plan);
+        let _ = qa.evaluate_plan_outcome(outcome, &plan);
 
         store_game_outcomes(&record, brain);
 
@@ -1843,7 +1841,6 @@ pub fn train_stage2(
 
         // 50-game window WR
         if (game_num + 1) % 50 == 0 {
-            window_wins_50 = total_wins - if game_num < 50 { 0 } else { total_wins - prev_50_total_wins };
             window_wins_50 = total_wins - prev_50_total_wins;
             prev_50_total_wins = total_wins;
         }
@@ -1877,7 +1874,7 @@ pub fn train_stage2(
     }
 
     // Mine opponent rules from collected game records
-    let num_opponent_rules = if let Some(ref records) = game_records {
+    let _num_opponent_rules = if let Some(ref records) = game_records {
         let all_responses: Vec<OpponentResponse> = records.iter()
             .flat_map(|r| r.opponent_responses.iter().cloned())
             .collect();
@@ -2219,14 +2216,14 @@ pub fn train_curriculum(
 
         // Run games at this rung, collecting game records for re-mining
         let mut game_records: Vec<GameRecord> = Vec::with_capacity(games_per_level);
-        let (wins, losses, draws, wr) = train_stage2(
+        let (_wins, _losses, _draws, wr) = train_stage2(
             brain, &mut qa, games_per_level, Some(sf_pct), Some(&mut game_records), search_depth,
         );
 
         // Re-mine L2 rules from current stage positions (replaces previous rules)
         eprintln!("  ── Re-mining L2 rules after {} games at {}% SF d1 ──",
             games_per_level, sf_pct);
-        let (rules_mined, l2_cap, total_trans, unique_pairs, _avg_mined_conf) =
+        let (rules_mined, _l2_cap, _total_trans, _unique_pairs, _avg_mined_conf) =
             mine_l2_rules(&game_records, brain, &mut qa, 5, 0.60);
 
         let mined_conf = qa.rules().iter()

@@ -1,0 +1,2 @@
+cognition_bench: case=memory-pressure scale=Medium seed=92200 threads=80 out=results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_medium_idle_seed92200.jsonl
+wrote 1 results (1 passed) in 453.08s

@@ -1,0 +1,2 @@
+cognition_bench: case=qa-depth scale=Max seed=81301 threads=48 out=results/cognition_bench/20260706T152411Z_squeeze_wave2_free24/qa-depth_max_seed81301.jsonl
+wrote 5 results (5 passed) in 31.15s

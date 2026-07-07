@@ -1,0 +1,2 @@
+cognition_bench: case=ablation-matrix scale=Max seed=70102 threads=20 out=results/cognition_bench/20260706T151900Z_hard_correctness_free20/ablation-matrix_max_seed70102.jsonl
+wrote 7 results (7 passed) in 0.01s

@@ -1,0 +1,2 @@
+cognition_bench: case=memory-pressure scale=Large seed=80102 threads=32 out=results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_large_seed80102.jsonl
+wrote 1 results (1 passed) in 4766.90s

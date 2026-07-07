@@ -1,0 +1,2 @@
+nohup: ignoring input
+cognition_bench: case=adaptation scale=Max seed=42 threads=80 out=results/cognition_bench/20260706T104525Z/adaptation_max_seed42.jsonl

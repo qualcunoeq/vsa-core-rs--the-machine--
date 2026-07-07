@@ -1,0 +1,1 @@
+cognition_bench: case=adaptation scale=Large seed=96101 threads=80 out=results/cognition_bench/20260706T170551Z_manual_priority/adaptation_large_manual_seed96101.jsonl

@@ -1,0 +1,1 @@
+{"experiment":"memory-pressure","claim":"C-001","commit":"9c3df36","seed":70201,"dataset":null,"baseline":"unbounded append-only fact scan","metrics":{"p95_latency_ms":394837.312715,"fact_count":10000.0,"memory_items":10000.0,"accuracy":1.0,"avg_latency_ms":3948.37312715},"passed":true,"notes":"synthetic fact insertion and sparse recall probes"}

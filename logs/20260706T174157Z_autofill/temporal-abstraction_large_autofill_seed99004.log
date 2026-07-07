@@ -1,0 +1,2 @@
+cognition_bench: case=temporal-abstraction scale=Large seed=99004 threads=80 out=results/cognition_bench/20260706T174157Z_autofill/temporal-abstraction_large_autofill_seed99004.jsonl
+wrote 1 results (1 passed) in 0.01s

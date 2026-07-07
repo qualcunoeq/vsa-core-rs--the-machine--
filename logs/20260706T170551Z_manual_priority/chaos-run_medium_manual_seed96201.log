@@ -1,0 +1,2 @@
+cognition_bench: case=chaos-run scale=Medium seed=96201 threads=80 out=results/cognition_bench/20260706T170551Z_manual_priority/chaos-run_medium_manual_seed96201.jsonl
+wrote 55 results (55 passed) in 3617.93s

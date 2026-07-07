@@ -1,0 +1,2 @@
+cognition_bench: case=meta-reasoning scale=Max seed=91300 threads=80 out=results/cognition_bench/20260706T155717Z_remaining_capacity/meta-reasoning_max_remaining_seed91300.jsonl
+wrote 1 results (1 passed) in 43.30s

@@ -1,0 +1,10 @@
+launch memory_medium_seed94000 limit=2h --case memory-pressure --scale medium --seed 94000 --threads 80 --out results/cognition_bench/20260706T163951Z_memory_scaling_ladder/memory_medium_seed94000.jsonl
+launch memory_medium_seed94001 limit=2h --case memory-pressure --scale medium --seed 94001 --threads 80 --out results/cognition_bench/20260706T163951Z_memory_scaling_ladder/memory_medium_seed94001.jsonl
+launch memory_medium_seed94002 limit=2h --case memory-pressure --scale medium --seed 94002 --threads 80 --out results/cognition_bench/20260706T163951Z_memory_scaling_ladder/memory_medium_seed94002.jsonl
+launch memory_medium_seed94003 limit=2h --case memory-pressure --scale medium --seed 94003 --threads 80 --out results/cognition_bench/20260706T163951Z_memory_scaling_ladder/memory_medium_seed94003.jsonl
+launch memory_large_seed94100 limit=4h --case memory-pressure --scale large --seed 94100 --threads 80 --out results/cognition_bench/20260706T163951Z_memory_scaling_ladder/memory_large_seed94100.jsonl
+launch memory_large_seed94101 limit=4h --case memory-pressure --scale large --seed 94101 --threads 80 --out results/cognition_bench/20260706T163951Z_memory_scaling_ladder/memory_large_seed94101.jsonl
+launch memory_large_seed94102 limit=4h --case memory-pressure --scale large --seed 94102 --threads 80 --out results/cognition_bench/20260706T163951Z_memory_scaling_ladder/memory_large_seed94102.jsonl
+launch memory_large_seed94103 limit=4h --case memory-pressure --scale large --seed 94103 --threads 80 --out results/cognition_bench/20260706T163951Z_memory_scaling_ladder/memory_large_seed94103.jsonl
+launch memory_max_seed94200 limit=6h --case memory-pressure --scale max --seed 94200 --threads 80 --out results/cognition_bench/20260706T163951Z_memory_scaling_ladder/memory_max_seed94200.jsonl
+launch memory_max_seed94201 limit=6h --case memory-pressure --scale max --seed 94201 --threads 80 --out results/cognition_bench/20260706T163951Z_memory_scaling_ladder/memory_max_seed94201.jsonl

@@ -1,0 +1,20 @@
+nohup: ignoring input
+launch memory-pressure_large_idle_seed92000 limit=3h --case memory-pressure --scale large --seed 92000 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_large_idle_seed92000.jsonl
+launch memory-pressure_large_idle_seed92001 limit=3h --case memory-pressure --scale large --seed 92001 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_large_idle_seed92001.jsonl
+launch memory-pressure_large_idle_seed92002 limit=3h --case memory-pressure --scale large --seed 92002 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_large_idle_seed92002.jsonl
+launch memory-pressure_large_idle_seed92003 limit=3h --case memory-pressure --scale large --seed 92003 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_large_idle_seed92003.jsonl
+launch memory-pressure_large_idle_seed92004 limit=3h --case memory-pressure --scale large --seed 92004 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_large_idle_seed92004.jsonl
+launch memory-pressure_large_idle_seed92005 limit=3h --case memory-pressure --scale large --seed 92005 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_large_idle_seed92005.jsonl
+launch qa-depth_max_idle_seed92100 limit=2h --case qa-depth --scale max --seed 92100 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/qa-depth_max_idle_seed92100.jsonl
+launch qa-depth_max_idle_seed92101 limit=2h --case qa-depth --scale max --seed 92101 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/qa-depth_max_idle_seed92101.jsonl
+launch qa-depth_max_idle_seed92102 limit=2h --case qa-depth --scale max --seed 92102 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/qa-depth_max_idle_seed92102.jsonl
+launch qa-depth_max_idle_seed92103 limit=2h --case qa-depth --scale max --seed 92103 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/qa-depth_max_idle_seed92103.jsonl
+launch memory-pressure_medium_idle_seed92200 limit=2h --case memory-pressure --scale medium --seed 92200 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_medium_idle_seed92200.jsonl
+launch memory-pressure_medium_idle_seed92201 limit=2h --case memory-pressure --scale medium --seed 92201 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_medium_idle_seed92201.jsonl
+launch memory-pressure_medium_idle_seed92202 limit=2h --case memory-pressure --scale medium --seed 92202 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_medium_idle_seed92202.jsonl
+launch memory-pressure_medium_idle_seed92203 limit=2h --case memory-pressure --scale medium --seed 92203 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/memory-pressure_medium_idle_seed92203.jsonl
+launch chaos-run_medium_idle_seed92300 limit=90m --case chaos-run --scale medium --duration-minutes 60 --seed 92300 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/chaos-run_medium_idle_seed92300.jsonl
+launch chaos-run_medium_idle_seed92301 limit=90m --case chaos-run --scale medium --duration-minutes 60 --seed 92301 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/chaos-run_medium_idle_seed92301.jsonl
+launch meta-reasoning_max_idle_seed92400 limit=90m --case meta-reasoning --scale max --seed 92400 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/meta-reasoning_max_idle_seed92400.jsonl
+launch meta-reasoning_max_idle_seed92401 limit=90m --case meta-reasoning --scale max --seed 92401 --threads 80 --out results/cognition_bench/20260706T160400Z_idle_fill/meta-reasoning_max_idle_seed92401.jsonl
+cluster=20260706T160400Z_idle_fill launched=18 pid_file=logs/20260706T160400Z_idle_fill/pids.txt

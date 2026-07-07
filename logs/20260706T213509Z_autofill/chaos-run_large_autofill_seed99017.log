@@ -1,0 +1,2 @@
+cognition_bench: case=chaos-run scale=Large seed=99017 threads=80 out=results/cognition_bench/20260706T213509Z_autofill/chaos-run_large_autofill_seed99017.jsonl
+wrote 9 results (9 passed) in 5251.06s

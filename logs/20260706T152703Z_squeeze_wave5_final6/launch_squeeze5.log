@@ -1,0 +1,8 @@
+nohup: ignoring input
+launch memory-pressure_medium_seed84000 limit=2h --case memory-pressure --scale medium --seed 84000 --threads 80 --out results/cognition_bench/20260706T152703Z_squeeze_wave5_final6/memory-pressure_medium_seed84000.jsonl
+launch memory-pressure_medium_seed84001 limit=2h --case memory-pressure --scale medium --seed 84001 --threads 80 --out results/cognition_bench/20260706T152703Z_squeeze_wave5_final6/memory-pressure_medium_seed84001.jsonl
+launch memory-pressure_medium_seed84002 limit=2h --case memory-pressure --scale medium --seed 84002 --threads 80 --out results/cognition_bench/20260706T152703Z_squeeze_wave5_final6/memory-pressure_medium_seed84002.jsonl
+launch qa-depth_max_seed84100 limit=2h --case qa-depth --scale max --seed 84100 --threads 80 --out results/cognition_bench/20260706T152703Z_squeeze_wave5_final6/qa-depth_max_seed84100.jsonl
+launch qa-depth_max_seed84101 limit=2h --case qa-depth --scale max --seed 84101 --threads 80 --out results/cognition_bench/20260706T152703Z_squeeze_wave5_final6/qa-depth_max_seed84101.jsonl
+launch qa-depth_max_seed84102 limit=2h --case qa-depth --scale max --seed 84102 --threads 80 --out results/cognition_bench/20260706T152703Z_squeeze_wave5_final6/qa-depth_max_seed84102.jsonl
+cluster=20260706T152703Z_squeeze_wave5_final6 launched=6 pid_file=logs/20260706T152703Z_squeeze_wave5_final6/pids.txt

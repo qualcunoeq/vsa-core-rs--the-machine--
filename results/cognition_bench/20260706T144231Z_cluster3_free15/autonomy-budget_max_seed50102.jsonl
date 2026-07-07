@@ -1,0 +1,1 @@
+{"experiment":"autonomy-budget","claim":"C-007","commit":"39c84a8","seed":50102,"dataset":null,"baseline":"unconstrained goal loop","metrics":{"memory_items":25000.0,"external_write_blocks":2506.0,"actions_spent":11233.0,"risk_blocks":12521.0,"accuracy":1.0,"budget_blocks":13767.0},"passed":true,"notes":"simulated actions only; no external side effects"}

@@ -1,0 +1,1 @@
+{"experiment":"temporal-abstraction","claim":"C-003","commit":"39c84a8","seed":50202,"dataset":null,"baseline":"last-state predictor","metrics":{"p95_latency_ms":34.765438,"memory_items":50000.0,"prediction_error":0.09660019498358559,"confidence_error":0.10050390561037602,"avg_latency_ms":0.0006953087600000001},"passed":true,"notes":"predictive coding under noisy regime switch"}

@@ -1,0 +1,24 @@
+nohup: ignoring input
+launch memory-pressure_medium_seed80000 limit=2h --case memory-pressure --scale medium --seed 80000 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_medium_seed80000.jsonl
+launch memory-pressure_medium_seed80001 limit=2h --case memory-pressure --scale medium --seed 80001 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_medium_seed80001.jsonl
+launch memory-pressure_medium_seed80002 limit=2h --case memory-pressure --scale medium --seed 80002 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_medium_seed80002.jsonl
+launch memory-pressure_medium_seed80003 limit=2h --case memory-pressure --scale medium --seed 80003 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_medium_seed80003.jsonl
+launch memory-pressure_medium_seed80004 limit=2h --case memory-pressure --scale medium --seed 80004 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_medium_seed80004.jsonl
+launch memory-pressure_medium_seed80005 limit=2h --case memory-pressure --scale medium --seed 80005 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_medium_seed80005.jsonl
+launch memory-pressure_medium_seed80006 limit=2h --case memory-pressure --scale medium --seed 80006 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_medium_seed80006.jsonl
+launch memory-pressure_medium_seed80007 limit=2h --case memory-pressure --scale medium --seed 80007 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_medium_seed80007.jsonl
+launch memory-pressure_large_seed80100 limit=3h --case memory-pressure --scale large --seed 80100 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_large_seed80100.jsonl
+launch memory-pressure_large_seed80101 limit=3h --case memory-pressure --scale large --seed 80101 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_large_seed80101.jsonl
+launch memory-pressure_large_seed80102 limit=3h --case memory-pressure --scale large --seed 80102 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_large_seed80102.jsonl
+launch memory-pressure_large_seed80103 limit=3h --case memory-pressure --scale large --seed 80103 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/memory-pressure_large_seed80103.jsonl
+launch qa-depth_max_seed80200 limit=2h --case qa-depth --scale max --seed 80200 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/qa-depth_max_seed80200.jsonl
+launch qa-depth_max_seed80201 limit=2h --case qa-depth --scale max --seed 80201 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/qa-depth_max_seed80201.jsonl
+launch qa-depth_max_seed80202 limit=2h --case qa-depth --scale max --seed 80202 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/qa-depth_max_seed80202.jsonl
+launch qa-depth_max_seed80203 limit=2h --case qa-depth --scale max --seed 80203 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/qa-depth_max_seed80203.jsonl
+launch meta-reasoning_max_seed80300 limit=90m --case meta-reasoning --scale max --seed 80300 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/meta-reasoning_max_seed80300.jsonl
+launch meta-reasoning_max_seed80301 limit=90m --case meta-reasoning --scale max --seed 80301 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/meta-reasoning_max_seed80301.jsonl
+launch meta-reasoning_max_seed80302 limit=90m --case meta-reasoning --scale max --seed 80302 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/meta-reasoning_max_seed80302.jsonl
+launch meta-reasoning_max_seed80303 limit=90m --case meta-reasoning --scale max --seed 80303 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/meta-reasoning_max_seed80303.jsonl
+launch chaos-run_medium_seed80400 limit=90m --case chaos-run --scale medium --duration-minutes 60 --seed 80400 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/chaos-run_medium_seed80400.jsonl
+launch chaos-run_medium_seed80401 limit=90m --case chaos-run --scale medium --duration-minutes 60 --seed 80401 --threads 32 --out results/cognition_bench/20260706T152255Z_squeeze_free32/chaos-run_medium_seed80401.jsonl
+cluster=20260706T152255Z_squeeze_free32 launched=22 pid_file=logs/20260706T152255Z_squeeze_free32/pids.txt

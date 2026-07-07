@@ -1,0 +1,1 @@
+{"experiment":"adaptation","claim":"C-009","commit":"a401928","seed":40012,"dataset":null,"baseline":"no post-answer update","metrics":{"regression_rate":0.0,"accuracy":1.0,"before_accuracy":0.995,"memory_items":400.0,"trace_coverage":1.0},"passed":true,"notes":"synthetic feedback inserts facts and retests prior questions"}

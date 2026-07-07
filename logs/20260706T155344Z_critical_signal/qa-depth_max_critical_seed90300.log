@@ -1,0 +1,2 @@
+cognition_bench: case=qa-depth scale=Max seed=90300 threads=80 out=results/cognition_bench/20260706T155344Z_critical_signal/qa-depth_max_critical_seed90300.jsonl
+wrote 5 results (5 passed) in 31.01s

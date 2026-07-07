@@ -1,0 +1,2 @@
+cognition_bench: case=adaptation scale=Medium seed=99000 threads=80 out=results/cognition_bench/20260706T181700Z_autofill/adaptation_medium_autofill_seed99000.jsonl
+wrote 1 results (1 passed) in 3312.21s

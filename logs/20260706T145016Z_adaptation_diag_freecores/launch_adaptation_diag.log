@@ -1,0 +1,13 @@
+nohup: ignoring input
+launch adaptation_small_control_seed61000 limit=20m --case adaptation --scale small --seed 61000 --threads 8 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_small_control_seed61000.jsonl
+launch adaptation_small_control_seed61001 limit=20m --case adaptation --scale small --seed 61001 --threads 8 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_small_control_seed61001.jsonl
+launch adaptation_small_control_seed61002 limit=20m --case adaptation --scale small --seed 61002 --threads 8 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_small_control_seed61002.jsonl
+launch adaptation_medium_profile_seed61100 limit=90m --case adaptation --scale medium --seed 61100 --threads 12 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_medium_profile_seed61100.jsonl
+launch adaptation_medium_profile_seed61101 limit=90m --case adaptation --scale medium --seed 61101 --threads 12 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_medium_profile_seed61101.jsonl
+launch adaptation_medium_profile_seed61102 limit=90m --case adaptation --scale medium --seed 61102 --threads 12 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_medium_profile_seed61102.jsonl
+launch adaptation_medium_profile_seed61103 limit=90m --case adaptation --scale medium --seed 61103 --threads 12 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_medium_profile_seed61103.jsonl
+launch adaptation_medium_profile_seed61104 limit=90m --case adaptation --scale medium --seed 61104 --threads 12 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_medium_profile_seed61104.jsonl
+launch adaptation_medium_profile_seed61105 limit=90m --case adaptation --scale medium --seed 61105 --threads 12 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_medium_profile_seed61105.jsonl
+launch adaptation_large_sentinel_seed61200 limit=3h --case adaptation --scale large --seed 61200 --threads 12 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_large_sentinel_seed61200.jsonl
+launch adaptation_large_sentinel_seed61201 limit=3h --case adaptation --scale large --seed 61201 --threads 12 --out results/cognition_bench/20260706T145016Z_adaptation_diag_freecores/adaptation_large_sentinel_seed61201.jsonl
+cluster=20260706T145016Z_adaptation_diag_freecores launched=11 pid_file=logs/20260706T145016Z_adaptation_diag_freecores/pids.txt

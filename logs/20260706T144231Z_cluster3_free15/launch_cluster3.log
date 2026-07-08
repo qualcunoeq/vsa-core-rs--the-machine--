@@ -1,0 +1,17 @@
+nohup: ignoring input
+launch meta-reasoning_max_seed50000 limit=90m --case meta-reasoning --scale max --seed 50000 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/meta-reasoning_max_seed50000.jsonl
+launch meta-reasoning_max_seed50001 limit=90m --case meta-reasoning --scale max --seed 50001 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/meta-reasoning_max_seed50001.jsonl
+launch meta-reasoning_max_seed50002 limit=90m --case meta-reasoning --scale max --seed 50002 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/meta-reasoning_max_seed50002.jsonl
+launch meta-reasoning_max_seed50003 limit=90m --case meta-reasoning --scale max --seed 50003 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/meta-reasoning_max_seed50003.jsonl
+launch meta-reasoning_max_seed50004 limit=90m --case meta-reasoning --scale max --seed 50004 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/meta-reasoning_max_seed50004.jsonl
+launch autonomy-budget_max_seed50100 limit=90m --case autonomy-budget --scale max --seed 50100 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/autonomy-budget_max_seed50100.jsonl
+launch autonomy-budget_max_seed50101 limit=90m --case autonomy-budget --scale max --seed 50101 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/autonomy-budget_max_seed50101.jsonl
+launch autonomy-budget_max_seed50102 limit=90m --case autonomy-budget --scale max --seed 50102 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/autonomy-budget_max_seed50102.jsonl
+launch autonomy-budget_max_seed50103 limit=90m --case autonomy-budget --scale max --seed 50103 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/autonomy-budget_max_seed50103.jsonl
+launch autonomy-budget_max_seed50104 limit=90m --case autonomy-budget --scale max --seed 50104 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/autonomy-budget_max_seed50104.jsonl
+launch temporal-abstraction_max_seed50200 limit=90m --case temporal-abstraction --scale max --seed 50200 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/temporal-abstraction_max_seed50200.jsonl
+launch temporal-abstraction_max_seed50201 limit=90m --case temporal-abstraction --scale max --seed 50201 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/temporal-abstraction_max_seed50201.jsonl
+launch temporal-abstraction_max_seed50202 limit=90m --case temporal-abstraction --scale max --seed 50202 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/temporal-abstraction_max_seed50202.jsonl
+launch temporal-abstraction_max_seed50203 limit=90m --case temporal-abstraction --scale max --seed 50203 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/temporal-abstraction_max_seed50203.jsonl
+launch temporal-abstraction_max_seed50204 limit=90m --case temporal-abstraction --scale max --seed 50204 --threads 15 --out results/cognition_bench/20260706T144231Z_cluster3_free15/temporal-abstraction_max_seed50204.jsonl
+cluster=20260706T144231Z_cluster3_free15 launched=15 pid_file=logs/20260706T144231Z_cluster3_free15/pids.txt

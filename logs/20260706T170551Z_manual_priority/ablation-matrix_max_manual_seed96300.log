@@ -1,0 +1,2 @@
+cognition_bench: case=ablation-matrix scale=Max seed=96300 threads=80 out=results/cognition_bench/20260706T170551Z_manual_priority/ablation-matrix_max_manual_seed96300.jsonl
+wrote 7 results (7 passed) in 0.01s

@@ -1,0 +1,69 @@
+# Credit Window Checkpoint (periodic)
+
+- Timestamp: `2026-07-06 17:41:57 UTC`
+- Estimated CPU use: `49.7/80` cores
+- Estimated idle capacity: `30.3` cores
+- Active timed benchmark wrappers: `45`
+- Cognition result clusters: `17`
+- Chess self-play rows: `6341`
+
+## Active Long Runs
+- pid `211930`: `memory-pressure/max` in `20260706T163951Z_memory_scaling_ladder`, remaining `297.9m`, cpu `0.0%`
+- pid `211935`: `memory-pressure/max` in `20260706T163951Z_memory_scaling_ladder`, remaining `297.9m`, cpu `0.0%`
+- pid `225202`: `memory-pressure/large` in `20260706T170645Z_manual_sustained`, remaining `204.8m`, cpu `0.0%`
+- pid `225206`: `memory-pressure/large` in `20260706T170645Z_manual_sustained`, remaining `204.8m`, cpu `0.0%`
+- pid `225210`: `memory-pressure/large` in `20260706T170645Z_manual_sustained`, remaining `204.8m`, cpu `0.0%`
+- pid `225214`: `memory-pressure/large` in `20260706T170645Z_manual_sustained`, remaining `204.8m`, cpu `0.0%`
+- pid `225218`: `memory-pressure/large` in `20260706T170645Z_manual_sustained`, remaining `204.8m`, cpu `0.0%`
+- pid `225222`: `memory-pressure/large` in `20260706T170645Z_manual_sustained`, remaining `204.8m`, cpu `0.0%`
+- pid `224667`: `adaptation/large` in `20260706T170551Z_manual_priority`, remaining `203.9m`, cpu `0.0%`
+- pid `224671`: `adaptation/large` in `20260706T170551Z_manual_priority`, remaining `203.9m`, cpu `0.0%`
+- pid `211910`: `memory-pressure/large` in `20260706T163951Z_memory_scaling_ladder`, remaining `177.9m`, cpu `0.0%`
+- pid `211915`: `memory-pressure/large` in `20260706T163951Z_memory_scaling_ladder`, remaining `177.9m`, cpu `0.0%`
+- pid `211920`: `memory-pressure/large` in `20260706T163951Z_memory_scaling_ladder`, remaining `177.9m`, cpu `0.0%`
+- pid `211925`: `memory-pressure/large` in `20260706T163951Z_memory_scaling_ladder`, remaining `177.9m`, cpu `0.0%`
+- pid `242297`: `adaptation/medium` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242298`: `chaos-run/medium` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242299`: `memory-pressure/medium` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242300`: `meta-reasoning/large` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242304`: `adaptation/medium` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242307`: `chaos-run/medium` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242310`: `memory-pressure/medium` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242312`: `meta-reasoning/large` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242321`: `adaptation/medium` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242325`: `chaos-run/medium` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242328`: `memory-pressure/medium` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `242331`: `meta-reasoning/large` in `20260706T174157Z_autofill`, remaining `120.0m`, cpu `0.0%`
+- pid `189066`: `adaptation/large` in `20260706T155344Z_critical_signal`, remaining `71.8m`, cpu `0.0%`
+- pid `189070`: `adaptation/large` in `20260706T155344Z_critical_signal`, remaining `71.8m`, cpu `0.0%`
+- pid `149812`: `chess/-` in `20260706T143421Z_chess_stockfish_18c_4h`, remaining `63.3m`, cpu `0.0%`
+- pid `225254`: `chaos-run/medium` in `20260706T170645Z_manual_sustained`, remaining `54.8m`, cpu `0.0%`
+- pid `225242`: `chaos-run/medium` in `20260706T170645Z_manual_sustained`, remaining `54.8m`, cpu `0.0%`
+- pid `225246`: `chaos-run/medium` in `20260706T170645Z_manual_sustained`, remaining `54.8m`, cpu `0.0%`
+- pid `225250`: `chaos-run/medium` in `20260706T170645Z_manual_sustained`, remaining `54.8m`, cpu `0.0%`
+- pid `224675`: `chaos-run/medium` in `20260706T170551Z_manual_priority`, remaining `53.9m`, cpu `0.0%`
+- pid `224679`: `chaos-run/medium` in `20260706T170551Z_manual_priority`, remaining `53.9m`, cpu `0.0%`
+- pid `224684`: `chaos-run/medium` in `20260706T170551Z_manual_priority`, remaining `53.9m`, cpu `0.0%`
+- pid `224688`: `chaos-run/medium` in `20260706T170551Z_manual_priority`, remaining `53.9m`, cpu `0.0%`
+- pid `224651`: `adaptation/medium` in `20260706T170551Z_manual_priority`, remaining `53.9m`, cpu `0.0%`
+- pid `224655`: `adaptation/medium` in `20260706T170551Z_manual_priority`, remaining `53.9m`, cpu `0.0%`
+- pid `224659`: `adaptation/medium` in `20260706T170551Z_manual_priority`, remaining `53.9m`, cpu `0.0%`
+
+## Result Inventory
+- `20260706T104525Z`: `46` files, `207` rows, `70518` bytes
+- `20260706T141200Z_cluster2`: `86` files, `118` rows, `40854` bytes
+- `20260706T144231Z_cluster3_free15`: `15` files, `15` rows, `5685` bytes
+- `20260706T145016Z_adaptation_diag_freecores`: `9` files, `9` rows, `2928` bytes
+- `20260706T151900Z_hard_correctness_free20`: `14` files, `156` rows, `54004` bytes
+- `20260706T152255Z_squeeze_free32`: `22` files, `146` rows, `52475` bytes
+- `20260706T152411Z_squeeze_wave2_free24`: `24` files, `40` rows, `14799` bytes
+- `20260706T152510Z_squeeze_wave3_free14`: `14` files, `30` rows, `10972` bytes
+- `20260706T152610Z_squeeze_wave4_fill20`: `20` files, `252` rows, `90485` bytes
+- `20260706T152703Z_squeeze_wave5_final6`: `6` files, `18` rows, `6473` bytes
+- `20260706T155344Z_critical_signal`: `18` files, `250` rows, `89675` bytes
+- `20260706T155717Z_remaining_capacity`: `18` files, `42` rows, `13151` bytes
+- `20260706T160400Z_idle_fill`: `18` files, `136` rows, `48969` bytes
+- `20260706T163951Z_memory_scaling_ladder`: `4` files, `4` rows, `1397` bytes
+- `20260706T170551Z_manual_priority`: `8` files, `48` rows, `15144` bytes
+- `20260706T170645Z_manual_sustained`: `4` files, `4` rows, `1401` bytes
+- `20260706T174157Z_autofill`: `6` files, `6` rows, `2168` bytes

@@ -1,0 +1,83 @@
+# Credit Window Checkpoint (periodic)
+
+- Timestamp: `2026-07-07 00:26:02 UTC`
+- Estimated CPU use: `75.0/80` cores
+- Estimated idle capacity: `5.0` cores
+- Active timed benchmark wrappers: `75`
+- Cognition result clusters: `31`
+- Chess self-play rows: `8251`
+
+## Active Long Runs
+- pid `433763`: `adaptation/large` in `20260707T001559Z_autofill`, remaining `80.0m`, cpu `0.0%`
+- pid `433764`: `memory-pressure/large` in `20260707T001559Z_autofill`, remaining `80.0m`, cpu `0.0%`
+- pid `433765`: `chaos-run/large` in `20260707T001559Z_autofill`, remaining `80.0m`, cpu `0.0%`
+- pid `433766`: `adaptation/large` in `20260707T001559Z_autofill`, remaining `80.0m`, cpu `0.0%`
+- pid `433767`: `memory-pressure/large` in `20260707T001559Z_autofill`, remaining `80.0m`, cpu `0.0%`
+- pid `428954`: `adaptation/large` in `20260707T000555Z_autofill`, remaining `69.9m`, cpu `0.0%`
+- pid `428955`: `memory-pressure/large` in `20260707T000555Z_autofill`, remaining `69.9m`, cpu `0.0%`
+- pid `428956`: `chaos-run/large` in `20260707T000555Z_autofill`, remaining `69.9m`, cpu `0.0%`
+- pid `428957`: `adaptation/large` in `20260707T000555Z_autofill`, remaining `69.9m`, cpu `0.0%`
+- pid `428958`: `memory-pressure/large` in `20260707T000555Z_autofill`, remaining `69.9m`, cpu `0.0%`
+- pid `428959`: `chaos-run/large` in `20260707T000555Z_autofill`, remaining `69.9m`, cpu `0.0%`
+- pid `428961`: `adaptation/large` in `20260707T000555Z_autofill`, remaining `69.9m`, cpu `0.0%`
+- pid `428962`: `memory-pressure/large` in `20260707T000555Z_autofill`, remaining `69.9m`, cpu `0.0%`
+- pid `409204`: `adaptation/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409205`: `memory-pressure/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409206`: `chaos-run/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409207`: `adaptation/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409208`: `memory-pressure/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409210`: `chaos-run/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409211`: `adaptation/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409212`: `memory-pressure/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409215`: `chaos-run/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409217`: `adaptation/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409219`: `memory-pressure/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `409221`: `chaos-run/large` in `20260706T232542Z_autofill`, remaining `59.6m`, cpu `0.0%`
+- pid `404257`: `adaptation/large` in `20260706T231539Z_autofill`, remaining `49.6m`, cpu `0.0%`
+- pid `404258`: `memory-pressure/large` in `20260706T231539Z_autofill`, remaining `49.6m`, cpu `0.0%`
+- pid `404259`: `chaos-run/large` in `20260706T231539Z_autofill`, remaining `49.6m`, cpu `0.0%`
+- pid `404260`: `adaptation/large` in `20260706T231539Z_autofill`, remaining `49.6m`, cpu `0.0%`
+- pid `404261`: `memory-pressure/large` in `20260706T231539Z_autofill`, remaining `49.6m`, cpu `0.0%`
+- pid `414110`: `adaptation/large` in `20260706T233545Z_autofill`, remaining `39.7m`, cpu `0.0%`
+- pid `414111`: `memory-pressure/large` in `20260706T233545Z_autofill`, remaining `39.7m`, cpu `0.0%`
+- pid `414112`: `chaos-run/large` in `20260706T233545Z_autofill`, remaining `39.7m`, cpu `0.0%`
+- pid `414113`: `adaptation/large` in `20260706T233545Z_autofill`, remaining `39.7m`, cpu `0.0%`
+- pid `399400`: `adaptation/large` in `20260706T230536Z_autofill`, remaining `39.6m`, cpu `0.0%`
+- pid `399401`: `memory-pressure/large` in `20260706T230536Z_autofill`, remaining `39.6m`, cpu `0.0%`
+- pid `399402`: `chaos-run/large` in `20260706T230536Z_autofill`, remaining `39.6m`, cpu `0.0%`
+- pid `399403`: `adaptation/large` in `20260706T230536Z_autofill`, remaining `39.6m`, cpu `0.0%`
+- pid `399404`: `memory-pressure/large` in `20260706T230536Z_autofill`, remaining `39.6m`, cpu `0.0%`
+- pid `399405`: `chaos-run/large` in `20260706T230536Z_autofill`, remaining `39.6m`, cpu `0.0%`
+
+## Result Inventory
+- `20260706T104525Z`: `46` files, `207` rows, `70518` bytes
+- `20260706T141200Z_cluster2`: `86` files, `118` rows, `40854` bytes
+- `20260706T144231Z_cluster3_free15`: `15` files, `15` rows, `5685` bytes
+- `20260706T145016Z_adaptation_diag_freecores`: `9` files, `9` rows, `2928` bytes
+- `20260706T151900Z_hard_correctness_free20`: `14` files, `156` rows, `54004` bytes
+- `20260706T152255Z_squeeze_free32`: `22` files, `146` rows, `52475` bytes
+- `20260706T152411Z_squeeze_wave2_free24`: `24` files, `40` rows, `14799` bytes
+- `20260706T152510Z_squeeze_wave3_free14`: `14` files, `30` rows, `10972` bytes
+- `20260706T152610Z_squeeze_wave4_fill20`: `20` files, `252` rows, `90485` bytes
+- `20260706T152703Z_squeeze_wave5_final6`: `6` files, `18` rows, `6473` bytes
+- `20260706T155344Z_critical_signal`: `18` files, `250` rows, `89675` bytes
+- `20260706T155717Z_remaining_capacity`: `18` files, `42` rows, `13151` bytes
+- `20260706T160400Z_idle_fill`: `18` files, `136` rows, `48969` bytes
+- `20260706T163951Z_memory_scaling_ladder`: `8` files, `8` rows, `2819` bytes
+- `20260706T170551Z_manual_priority`: `16` files, `272` rows, `95304` bytes
+- `20260706T170645Z_manual_sustained`: `14` files, `242` rows, `86732` bytes
+- `20260706T174157Z_autofill`: `18` files, `36` rows, `12625` bytes
+- `20260706T181700Z_autofill`: `18` files, `36` rows, `12628` bytes
+- `20260706T182558Z_high_signal_refill`: `26` files, `66` rows, `23513` bytes
+- `20260706T183111Z_saturation_signal`: `19` files, `91` rows, `31941` bytes
+- `20260706T185203Z_autofill`: `13` files, `61` rows, `21424` bytes
+- `20260706T192706Z_autofill`: `4` files, `20` rows, `7031` bytes
+- `20260706T200201Z_status_refill`: `18` files, `90` rows, `31597` bytes
+- `20260706T200209Z_autofill`: `2` files, `10` rows, `3534` bytes
+- `20260706T202449Z_autofill`: `8` files, `40` rows, `14022` bytes
+- `20260706T210501Z_autofill`: `2` files, `10` rows, `3533` bytes
+- `20260706T211504Z_autofill`: `2` files, `10` rows, `3513` bytes
+- `20260706T213509Z_autofill`: `22` files, `110` rows, `38608` bytes
+- `20260706T215515Z_autofill`: `10` files, `50` rows, `17523` bytes
+- `20260706T223527Z_autofill`: `9` files, `41` rows, `14389` bytes
+- `20260706T224530Z_autofill`: `2` files, `10` rows, `3508` bytes

@@ -1,0 +1,2 @@
+cognition_bench: case=autonomy-budget scale=Large seed=98011 threads=80 out=results/cognition_bench/20260706T182558Z_high_signal_refill/autonomy-budget_large_refill_seed98011.jsonl
+wrote 1 results (1 passed) in 0.00s

@@ -1,0 +1,6 @@
+[codex/research-architecture-roadmap ac57dda] docs: checkpoint benchmark credit window 20260707T010614Z periodic
+ 2 files changed, 929 insertions(+)
+ create mode 100644 docs/benchmark_runs/credit_window/checkpoint_20260707T010614Z_periodic.md
+ create mode 100644 logs/credit_window/checkpoint_20260707T010614Z_periodic.json
+To github.com:qualcunoeq/the-machine.git
+   1abdec7..ac57dda  codex/research-architecture-roadmap -> codex/research-architecture-roadmap

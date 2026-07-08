@@ -1,0 +1,2 @@
+cognition_bench: case=meta-reasoning scale=Large seed=99003 threads=80 out=results/cognition_bench/20260706T174157Z_autofill/meta-reasoning_large_autofill_seed99003.jsonl
+wrote 1 results (1 passed) in 9.53s

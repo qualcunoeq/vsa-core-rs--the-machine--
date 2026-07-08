@@ -1,0 +1,4 @@
+310534 adaptation large 99000 180 results/cognition_bench/20260706T200209Z_autofill/adaptation_large_autofill_seed99000.jsonl
+310535 memory-pressure large 99001 180 results/cognition_bench/20260706T200209Z_autofill/memory-pressure_large_autofill_seed99001.jsonl
+310536 chaos-run large 99002 180 results/cognition_bench/20260706T200209Z_autofill/chaos-run_large_autofill_seed99002.jsonl
+310537 adaptation large 99003 180 results/cognition_bench/20260706T200209Z_autofill/adaptation_large_autofill_seed99003.jsonl

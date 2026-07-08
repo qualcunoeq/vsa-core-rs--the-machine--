@@ -1,0 +1,6 @@
+293572 adaptation large 99000 180 results/cognition_bench/20260706T192706Z_autofill/adaptation_large_autofill_seed99000.jsonl
+293573 memory-pressure large 99001 180 results/cognition_bench/20260706T192706Z_autofill/memory-pressure_large_autofill_seed99001.jsonl
+293574 chaos-run large 99002 180 results/cognition_bench/20260706T192706Z_autofill/chaos-run_large_autofill_seed99002.jsonl
+293575 adaptation large 99003 180 results/cognition_bench/20260706T192706Z_autofill/adaptation_large_autofill_seed99003.jsonl
+293576 memory-pressure large 99004 180 results/cognition_bench/20260706T192706Z_autofill/memory-pressure_large_autofill_seed99004.jsonl
+293577 chaos-run large 99005 180 results/cognition_bench/20260706T192706Z_autofill/chaos-run_large_autofill_seed99005.jsonl

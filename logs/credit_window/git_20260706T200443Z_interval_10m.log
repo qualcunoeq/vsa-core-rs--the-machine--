@@ -1,0 +1,7 @@
+[codex/research-architecture-roadmap b8400c6] docs: checkpoint benchmark credit window 20260706T200443Z interval_10m
+ 2 files changed, 974 insertions(+)
+ create mode 100644 docs/benchmark_runs/credit_window/checkpoint_20260706T200443Z_interval_10m.md
+ create mode 100644 logs/credit_window/checkpoint_20260706T200443Z_interval_10m.json
+To github.com:qualcunoeq/the-machine.git
+ ! [remote rejected] codex/research-architecture-roadmap -> codex/research-architecture-roadmap (cannot lock ref 'refs/heads/codex/research-architecture-roadmap': is at 9f01e0779831b806ae546924337a3f07d89d09bc but expected 11334c50ed19cee01a433e7abe718891003889f2)
+error: failed to push some refs to 'github.com:qualcunoeq/the-machine.git'

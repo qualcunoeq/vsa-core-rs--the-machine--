@@ -1,0 +1,2 @@
+cognition_bench: case=meta-reasoning scale=Max seed=82202 threads=80 out=results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/meta-reasoning_max_seed82202.jsonl
+wrote 1 results (1 passed) in 36.16s

@@ -1,0 +1,16 @@
+nohup: ignoring input
+launch memory-pressure_medium_seed82000 limit=2h --case memory-pressure --scale medium --seed 82000 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/memory-pressure_medium_seed82000.jsonl
+launch memory-pressure_medium_seed82001 limit=2h --case memory-pressure --scale medium --seed 82001 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/memory-pressure_medium_seed82001.jsonl
+launch memory-pressure_medium_seed82002 limit=2h --case memory-pressure --scale medium --seed 82002 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/memory-pressure_medium_seed82002.jsonl
+launch memory-pressure_medium_seed82003 limit=2h --case memory-pressure --scale medium --seed 82003 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/memory-pressure_medium_seed82003.jsonl
+launch qa-depth_max_seed82100 limit=2h --case qa-depth --scale max --seed 82100 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/qa-depth_max_seed82100.jsonl
+launch qa-depth_max_seed82101 limit=2h --case qa-depth --scale max --seed 82101 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/qa-depth_max_seed82101.jsonl
+launch qa-depth_max_seed82102 limit=2h --case qa-depth --scale max --seed 82102 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/qa-depth_max_seed82102.jsonl
+launch qa-depth_max_seed82103 limit=2h --case qa-depth --scale max --seed 82103 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/qa-depth_max_seed82103.jsonl
+launch meta-reasoning_max_seed82200 limit=90m --case meta-reasoning --scale max --seed 82200 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/meta-reasoning_max_seed82200.jsonl
+launch meta-reasoning_max_seed82201 limit=90m --case meta-reasoning --scale max --seed 82201 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/meta-reasoning_max_seed82201.jsonl
+launch meta-reasoning_max_seed82202 limit=90m --case meta-reasoning --scale max --seed 82202 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/meta-reasoning_max_seed82202.jsonl
+launch autonomy-budget_max_seed82300 limit=90m --case autonomy-budget --scale max --seed 82300 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/autonomy-budget_max_seed82300.jsonl
+launch autonomy-budget_max_seed82301 limit=90m --case autonomy-budget --scale max --seed 82301 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/autonomy-budget_max_seed82301.jsonl
+launch autonomy-budget_max_seed82302 limit=90m --case autonomy-budget --scale max --seed 82302 --threads 80 --out results/cognition_bench/20260706T152510Z_squeeze_wave3_free14/autonomy-budget_max_seed82302.jsonl
+cluster=20260706T152510Z_squeeze_wave3_free14 launched=14 pid_file=logs/20260706T152510Z_squeeze_wave3_free14/pids.txt

@@ -1,0 +1,8 @@
+[codex/research-architecture-roadmap c4f6a16] docs: checkpoint benchmark credit window 20260706T183111Z saturation
+ 5 files changed, 835 insertions(+), 8 deletions(-)
+ create mode 100644 docs/benchmark_runs/20260706T183111Z_saturation_signal.md
+ create mode 100644 docs/benchmark_runs/credit_window/checkpoint_20260706T183111Z_saturation.md
+ create mode 100644 logs/20260706T183111Z_saturation_signal/pids.txt
+ create mode 100644 logs/credit_window/checkpoint_20260706T183111Z_saturation.json
+To github.com:qualcunoeq/the-machine.git
+   2aad6b9..c4f6a16  codex/research-architecture-roadmap -> codex/research-architecture-roadmap

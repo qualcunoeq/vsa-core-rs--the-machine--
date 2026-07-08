@@ -1,0 +1,16 @@
+nohup: ignoring input
+launch qa-depth_max_seed70000 limit=2h --case qa-depth --scale max --seed 70000 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/qa-depth_max_seed70000.jsonl
+launch qa-depth_max_seed70001 limit=2h --case qa-depth --scale max --seed 70001 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/qa-depth_max_seed70001.jsonl
+launch qa-depth_max_seed70002 limit=2h --case qa-depth --scale max --seed 70002 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/qa-depth_max_seed70002.jsonl
+launch qa-depth_max_seed70003 limit=2h --case qa-depth --scale max --seed 70003 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/qa-depth_max_seed70003.jsonl
+launch ablation-matrix_max_seed70100 limit=90m --case ablation-matrix --scale max --seed 70100 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/ablation-matrix_max_seed70100.jsonl
+launch ablation-matrix_max_seed70101 limit=90m --case ablation-matrix --scale max --seed 70101 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/ablation-matrix_max_seed70101.jsonl
+launch ablation-matrix_max_seed70102 limit=90m --case ablation-matrix --scale max --seed 70102 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/ablation-matrix_max_seed70102.jsonl
+launch ablation-matrix_max_seed70103 limit=90m --case ablation-matrix --scale max --seed 70103 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/ablation-matrix_max_seed70103.jsonl
+launch memory-pressure_medium_seed70200 limit=2h --case memory-pressure --scale medium --seed 70200 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/memory-pressure_medium_seed70200.jsonl
+launch memory-pressure_medium_seed70201 limit=2h --case memory-pressure --scale medium --seed 70201 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/memory-pressure_medium_seed70201.jsonl
+launch memory-pressure_medium_seed70202 limit=2h --case memory-pressure --scale medium --seed 70202 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/memory-pressure_medium_seed70202.jsonl
+launch memory-pressure_medium_seed70203 limit=2h --case memory-pressure --scale medium --seed 70203 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/memory-pressure_medium_seed70203.jsonl
+launch chaos-run_medium_seed70300 limit=90m --case chaos-run --scale medium --duration-minutes 60 --seed 70300 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/chaos-run_medium_seed70300.jsonl
+launch chaos-run_medium_seed70301 limit=90m --case chaos-run --scale medium --duration-minutes 60 --seed 70301 --threads 20 --out results/cognition_bench/20260706T151900Z_hard_correctness_free20/chaos-run_medium_seed70301.jsonl
+cluster=20260706T151900Z_hard_correctness_free20 launched=14 pid_file=logs/20260706T151900Z_hard_correctness_free20/pids.txt

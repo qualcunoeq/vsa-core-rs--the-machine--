@@ -1,0 +1,17 @@
+qa-depth-1 35168
+ablation-matrix-1 35171
+temporal-abstraction-1 35177
+meta-reasoning-1 35182
+autonomy-budget-1 35187
+qa-depth-7 35191
+ablation-matrix-7 35197
+temporal-abstraction-7 35201
+meta-reasoning-7 35207
+autonomy-budget-7 35212
+qa-depth-1337 35217
+ablation-matrix-1337 35222
+temporal-abstraction-1337 35226
+meta-reasoning-1337 35232
+autonomy-budget-1337 35237
+adaptation-large 43786
+adaptation-medium 46470

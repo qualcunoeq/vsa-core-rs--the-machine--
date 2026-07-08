@@ -1,0 +1,2 @@
+cognition_bench: case=temporal-abstraction scale=Max seed=91102 threads=80 out=results/cognition_bench/20260706T155717Z_remaining_capacity/temporal-abstraction_max_remaining_seed91102.jsonl
+wrote 1 results (1 passed) in 0.04s

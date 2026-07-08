@@ -26,10 +26,9 @@
 use crate::abstraction_learner::AbstractionLearner;
 use crate::actuator::{ActionRequest, ActionType, JumpBoxActuator};
 use crate::diagnostic::{
-    absorb_diagnosis_with_learner,
-    classify_structural_with_learner, parse_error_structure,
-    parse_error_structure_with_learner,
-    query_diagnostic_category_with_learner, CanonicalSvo, ErrorClassifier,
+    absorb_diagnosis_with_learner, classify_structural_with_learner, parse_error_structure,
+    parse_error_structure_with_learner, query_diagnostic_category_with_learner, CanonicalSvo,
+    ErrorClassifier,
 };
 use crate::qa::{PlanStep, QaEngine};
 use crate::text_encoder;
@@ -82,10 +81,7 @@ pub enum ReasoningState {
         problem: String,
     },
     /// Stuck: no rule, no analogy, no centroid. Acquire knowledge.
-    Stuck {
-        problem: String,
-        tried: Vec<String>,
-    },
+    Stuck { problem: String, tried: Vec<String> },
 }
 
 impl ReasoningState {
@@ -102,17 +98,34 @@ impl ReasoningState {
 impl std::fmt::Display for ReasoningState {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ReasoningState::Confident { plan, confidence, category } => {
-                write!(f, "Confident(category={}, confidence={:.2}, plan={} steps)",
-                    category, confidence, plan.len())
+            ReasoningState::Confident {
+                plan,
+                confidence,
+                category,
+            } => {
+                write!(
+                    f,
+                    "Confident(category={}, confidence={:.2}, plan={} steps)",
+                    category,
+                    confidence,
+                    plan.len()
+                )
             }
-            ReasoningState::Uncertain { hypotheses, best_confidence, problem } => {
-                write!(f, "Uncertain(problem=\"{}\", best_confidence={:.2}, hypotheses={})",
-                    problem, best_confidence, hypotheses.len())
+            ReasoningState::Uncertain {
+                hypotheses,
+                best_confidence,
+                problem,
+            } => {
+                write!(
+                    f,
+                    "Uncertain(problem=\"{}\", best_confidence={:.2}, hypotheses={})",
+                    problem,
+                    best_confidence,
+                    hypotheses.len()
+                )
             }
             ReasoningState::Stuck { problem, tried } => {
-                write!(f, "Stuck(problem=\"{}\", tried={})",
-                    problem, tried.len())
+                write!(f, "Stuck(problem=\"{}\", tried={})", problem, tried.len())
             }
         }
     }
@@ -185,7 +198,10 @@ pub fn assess_with_learner(
                 source: HypothesisSource::StructuralAnalogy,
                 confidence: base_confidence,
                 structural_triples: triples.clone(),
-                test_description: format!("Check resource availability based on structural parse of '{}'", problem),
+                test_description: format!(
+                    "Check resource availability based on structural parse of '{}'",
+                    problem
+                ),
             };
 
             return ReasoningState::Uncertain {
@@ -200,8 +216,7 @@ pub fn assess_with_learner(
     // Uses the same structural SVO encoding as query_diagnostic_category
     // with the learner's promoted keyword mappings.  This is the primary
     // generalization path for learned abstractions.
-    if let Some((category, conf)) = query_diagnostic_category_with_learner(
-        brain, problem, learner)
+    if let Some((category, conf)) = query_diagnostic_category_with_learner(brain, problem, learner)
     {
         if conf >= 0.55 {
             let hypothesis = Hypothesis {
@@ -210,7 +225,9 @@ pub fn assess_with_learner(
                 confidence: conf,
                 structural_triples: struct_triples.unwrap_or_default(),
                 test_description: format!(
-                    "Structural SVO centroid: {} (conf={:.2})", category, conf),
+                    "Structural SVO centroid: {} (conf={:.2})",
+                    category, conf
+                ),
             };
             return ReasoningState::Uncertain {
                 hypotheses: vec![hypothesis],
@@ -223,7 +240,11 @@ pub fn assess_with_learner(
     // ── Genuinely stuck ────────────────────────────────────────────────
     ReasoningState::Stuck {
         problem: problem.to_string(),
-        tried: vec!["classifier".to_string(), "structural".to_string(), "centroid".to_string()],
+        tried: vec![
+            "classifier".to_string(),
+            "structural".to_string(),
+            "centroid".to_string(),
+        ],
     }
 }
 
@@ -236,31 +257,56 @@ fn plan_confidence(plan: &[PlanStep]) -> f64 {
 
 /// Given structural triples, find the best-matching diagnostic category
 /// by checking which abstract rules would fire.
-fn find_best_structural_category(
-    triples: &[CanonicalSvo],
-    _qa: &QaEngine,
-) -> Option<String> {
+fn find_best_structural_category(triples: &[CanonicalSvo], _qa: &QaEngine) -> Option<String> {
     // Categories we know about, mapped from abstract state triples
     let category_patterns: &[(&[(&str, &str, &str)], &str)] = &[
         // port_conflict: process accessing network_service, and it's unavailable
-        (&[("process", "accesses", "network_service"),
-           ("network_service", "has_state", "unavailable")], "port_conflict"),
+        (
+            &[
+                ("process", "accesses", "network_service"),
+                ("network_service", "has_state", "unavailable"),
+            ],
+            "port_conflict",
+        ),
         // network_service unavailable alone (no action parsed) → connection_refused
-        (&[("network_service", "has_state", "unavailable")], "connection_refused"),
+        (
+            &[("network_service", "has_state", "unavailable")],
+            "connection_refused",
+        ),
         // missing_file: process accessing file_system, missing
-        (&[("process", "accesses", "file_system"),
-           ("file_system", "has_state", "unavailable")], "missing_file"),
+        (
+            &[
+                ("process", "accesses", "file_system"),
+                ("file_system", "has_state", "unavailable"),
+            ],
+            "missing_file",
+        ),
         // missing_file: file_system has_state not_found
         (&[("file_system", "has_state", "not_found")], "missing_file"),
-        (&[("file_system", "has_state", "resource_missing")], "missing_file"),
+        (
+            &[("file_system", "has_state", "resource_missing")],
+            "missing_file",
+        ),
         // permission_denied: process accessing something, permission blocked
-        (&[("file_system", "has_state", "permission_blocked")], "permission_denied"),
-        (&[("network_service", "has_state", "permission_blocked")], "permission_denied"),
+        (
+            &[("file_system", "has_state", "permission_blocked")],
+            "permission_denied",
+        ),
+        (
+            &[("network_service", "has_state", "permission_blocked")],
+            "permission_denied",
+        ),
         // disk_full: storage capacity exhausted
-        (&[("storage", "has_state", "capacity_exhausted")], "disk_full"),
+        (
+            &[("storage", "has_state", "capacity_exhausted")],
+            "disk_full",
+        ),
         (&[("storage", "has_state", "unavailable")], "disk_full"),
         // credential_invalid: credential has_state invalid (e.g., expired cert, bad token)
-        (&[("credential", "has_state", "credential_invalid")], "credential_invalid"),
+        (
+            &[("credential", "has_state", "credential_invalid")],
+            "credential_invalid",
+        ),
         // Generic resource access failure
         (&[("process", "accesses", "storage")], "disk_full"),
         (&[("process", "accesses", "cache_resource")], "disk_full"),
@@ -268,9 +314,9 @@ fn find_best_structural_category(
     ];
 
     for (patterns, category) in category_patterns {
-        let all_match = patterns.iter().all(|(s, v, o)| {
-            triples.contains(&(s.to_string(), v.to_string(), o.to_string()))
-        });
+        let all_match = patterns
+            .iter()
+            .all(|(s, v, o)| triples.contains(&(s.to_string(), v.to_string(), o.to_string())));
         if all_match {
             return Some(category.to_string());
         }
@@ -347,7 +393,58 @@ fn generate_hypotheses_with_learner(
         }
     }
 
+    rank_hypotheses(hypotheses)
+}
+
+/// Return hypotheses in deterministic decision order.
+///
+/// Ranking is intentionally explicit: raw confidence is the primary signal,
+/// but equal scores must not leave the machine's next action dependent on
+/// vector insertion order or hash iteration.  Structural evidence wins over
+/// centroid-only evidence at equal confidence because it carries inspectable
+/// SVO support; lexical tie-breakers make the order fully reproducible.
+pub fn rank_hypotheses(mut hypotheses: Vec<Hypothesis>) -> Vec<Hypothesis> {
+    hypotheses.sort_by(compare_hypotheses);
     hypotheses
+}
+
+fn compare_hypotheses(a: &Hypothesis, b: &Hypothesis) -> std::cmp::Ordering {
+    normalized_confidence(b.confidence)
+        .total_cmp(&normalized_confidence(a.confidence))
+        .then_with(|| {
+            hypothesis_source_priority(&a.source).cmp(&hypothesis_source_priority(&b.source))
+        })
+        .then_with(|| a.category.cmp(&b.category))
+        .then_with(|| {
+            structural_key(&a.structural_triples).cmp(&structural_key(&b.structural_triples))
+        })
+        .then_with(|| a.test_description.cmp(&b.test_description))
+}
+
+fn normalized_confidence(confidence: f64) -> f64 {
+    if confidence.is_finite() {
+        confidence.clamp(0.0, 1.0)
+    } else {
+        0.0
+    }
+}
+
+fn hypothesis_source_priority(source: &HypothesisSource) -> u8 {
+    match source {
+        HypothesisSource::DirectRule => 0,
+        HypothesisSource::StructuralAnalogy => 1,
+        HypothesisSource::CentroidProximity => 2,
+        HypothesisSource::WeakTrigram => 3,
+    }
+}
+
+fn structural_key(triples: &[CanonicalSvo]) -> String {
+    let mut parts: Vec<String> = triples
+        .iter()
+        .map(|(s, v, o)| format!("{}:{}:{}", s, v, o))
+        .collect();
+    parts.sort();
+    parts.join("|")
 }
 
 // ─── Stage 2: Hypothesis Testing and Knowledge Acquisition ────────────────
@@ -358,12 +455,17 @@ pub fn extract_key_terms(problem: &str) -> Vec<String> {
     let lower = problem.to_lowercase();
 
     // Extract single words that look like technical terms (≥4 chars, no common words)
-    let stop_words = ["the", "this", "that", "from", "with", "was", "were", "has",
-        "have", "been", "will", "would", "could", "should", "after", "before",
-        "error", "failed", "failure", "unknown", "invalid"];
+    let stop_words = [
+        "the", "this", "that", "from", "with", "was", "were", "has", "have", "been", "will",
+        "would", "could", "should", "after", "before", "error", "failed", "failure", "unknown",
+        "invalid",
+    ];
 
     for word in lower.split_whitespace() {
-        let clean: String = word.chars().filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_').collect();
+        let clean: String = word
+            .chars()
+            .filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_')
+            .collect();
         if clean.len() >= 4 && !stop_words.contains(&clean.as_str()) {
             terms.push(clean);
         }
@@ -371,8 +473,15 @@ pub fn extract_key_terms(problem: &str) -> Vec<String> {
 
     // Also extract compound terms (e.g., "SSL", "KMS", "EADDRINUSE")
     for word in lower.split_whitespace() {
-        let clean: String = word.chars().filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_').collect();
-        if clean.len() >= 2 && clean.chars().all(|c| c.is_uppercase() || c.is_ascii_digit()) {
+        let clean: String = word
+            .chars()
+            .filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_')
+            .collect();
+        if clean.len() >= 2
+            && clean
+                .chars()
+                .all(|c| c.is_uppercase() || c.is_ascii_digit())
+        {
             // Already added as technical term; add if not present
             if !terms.contains(&clean) && clean.len() > 2 {
                 terms.push(clean);
@@ -395,37 +504,45 @@ pub async fn resolve_uncertain(
     brain: &mut VSABrain,
     target_ip: &str,
 ) -> Vec<(String, String, String)> {
-    let best = hypotheses.into_iter()
-        .max_by(|a, b| a.confidence.partial_cmp(&b.confidence).unwrap())
-        .unwrap();
+    let mut ranked = rank_hypotheses(hypotheses);
+    let best = ranked.remove(0);
 
     // Generate a test action based on the hypothesis category
     let test_request = match best.category.as_str() {
         "port_conflict" | "network_timeout" => {
             // Check what's on port 80 (common conflict point)
             ActionRequest::new(ActionType::ExecuteCommand, target_ip)
-                .with_param("command", "ss -tlnp 2>/dev/null || netstat -tlnp 2>/dev/null")
+                .with_param(
+                    "command",
+                    "ss -tlnp 2>/dev/null || netstat -tlnp 2>/dev/null",
+                )
                 .with_timeout(10)
         }
-        "missing_file" => {
-            ActionRequest::new(ActionType::ExecuteCommand, target_ip)
-                .with_param("command", "ls -la /etc/nginx/ 2>/dev/null; ls -la /var/log/ 2>/dev/null")
-                .with_timeout(10)
-        }
-        "permission_denied" => {
-            ActionRequest::new(ActionType::ExecuteCommand, target_ip)
-                .with_param("command", "id; ls -la /var/run/ 2>/dev/null; cat /proc/self/status 2>/dev/null | grep Cap")
-                .with_timeout(10)
-        }
-        "disk_full" => {
-            ActionRequest::new(ActionType::ExecuteCommand, target_ip)
-                .with_param("command", "df -h 2>/dev/null; du -sh /var/log/ 2>/dev/null | head -5")
-                .with_timeout(10)
-        }
+        "missing_file" => ActionRequest::new(ActionType::ExecuteCommand, target_ip)
+            .with_param(
+                "command",
+                "ls -la /etc/nginx/ 2>/dev/null; ls -la /var/log/ 2>/dev/null",
+            )
+            .with_timeout(10),
+        "permission_denied" => ActionRequest::new(ActionType::ExecuteCommand, target_ip)
+            .with_param(
+                "command",
+                "id; ls -la /var/run/ 2>/dev/null; cat /proc/self/status 2>/dev/null | grep Cap",
+            )
+            .with_timeout(10),
+        "disk_full" => ActionRequest::new(ActionType::ExecuteCommand, target_ip)
+            .with_param(
+                "command",
+                "df -h 2>/dev/null; du -sh /var/log/ 2>/dev/null | head -5",
+            )
+            .with_timeout(10),
         _ => {
             // Generic: read system status
             ActionRequest::new(ActionType::ExecuteCommand, target_ip)
-                .with_param("command", "uptime; free -h; ss -tlnp 2>/dev/null | head -20")
+                .with_param(
+                    "command",
+                    "uptime; free -h; ss -tlnp 2>/dev/null | head -20",
+                )
                 .with_timeout(10)
         }
     };
@@ -458,7 +575,11 @@ pub async fn resolve_stuck(
 
         if result.success && !result.raw_output.trim().is_empty() {
             // Ingest the documentation into the brain
-            text_encoder::ingest_text(brain, &result.raw_output, &format!("acquired_knowledge_{}", term));
+            text_encoder::ingest_text(
+                brain,
+                &result.raw_output,
+                &format!("acquired_knowledge_{}", term),
+            );
 
             // Extract any SVO observations
             all_observations.extend(result.observations);
@@ -509,9 +630,17 @@ pub async fn solve_autonomously(
     max_iterations: usize,
 ) -> SolutionResult {
     solve_autonomously_with_learner(
-        brain, qa, classifier, actuator, problem, goal, target_ip,
-        max_iterations, None,
-    ).await
+        brain,
+        qa,
+        classifier,
+        actuator,
+        problem,
+        goal,
+        target_ip,
+        max_iterations,
+        None,
+    )
+    .await
 }
 
 /// Like `solve_autonomously`, but accepts an external `AbstractionLearner`
@@ -543,7 +672,10 @@ pub async fn solve_autonomously_with_learner(
         // ── 1. Check if goal is already achieved ────────────────────────────
         let (goal_verified, _) = qa.verify_fact(goal.0, goal.1, goal.2);
         if goal_verified {
-            let solved_msg = format!("[iter {}] Goal achieved! system {} {}", iteration, goal.1, goal.2);
+            let solved_msg = format!(
+                "[iter {}] Goal achieved! system {} {}",
+                iteration, goal.1, goal.2
+            );
             iteration_log.push(solved_msg);
             return SolutionResult::Solved {
                 iterations: iteration,
@@ -555,14 +687,17 @@ pub async fn solve_autonomously_with_learner(
         }
 
         // ── 2. Assess the current state (with learner for promoted keywords) ─
-        let state = assess_with_learner(problem, brain, qa, classifier,
-                                        Some(learner_ref));
+        let state = assess_with_learner(problem, brain, qa, classifier, Some(learner_ref));
         let state_name = state.name().to_string();
         let log_entry = format!("[iter {}] state={} | {}", iteration, state_name, state);
         iteration_log.push(log_entry);
 
         match state {
-            ReasoningState::Confident { plan, confidence, category } => {
+            ReasoningState::Confident {
+                plan,
+                confidence,
+                category,
+            } => {
                 // Execute each step of the plan
                 let mut all_succeeded = true;
                 for (step_idx, step) in plan.iter().enumerate() {
@@ -571,8 +706,11 @@ pub async fn solve_autonomously_with_learner(
 
                     let step_log = format!(
                         "[iter {}] Executing step {}: ({}, {}, {}) → success={}",
-                        iteration, step_idx,
-                        step.action.0, step.action.1, step.action.2,
+                        iteration,
+                        step_idx,
+                        step.action.0,
+                        step.action.1,
+                        step.action.2,
                         result.success
                     );
                     iteration_log.push(step_log);
@@ -585,8 +723,8 @@ pub async fn solve_autonomously_with_learner(
                     }
 
                     // Ingest observations from the action result
-                    let obs = crate::actuator::parse_result_observations(
-                        &action_req, &result, target_ip);
+                    let obs =
+                        crate::actuator::parse_result_observations(&action_req, &result, target_ip);
                     crate::actuator::ingest_observations(brain, &obs);
                 }
 
@@ -596,14 +734,26 @@ pub async fn solve_autonomously_with_learner(
                     if goal_ok {
                         // Absorb the diagnosis — must cover all categories the
                         // diagnostic pipeline can return.
-                        let categories = ["port_conflict", "connection_refused",
-                            "missing_file", "permission_denied", "disk_full",
-                            "credential_invalid", "startup_failure"];
+                        let categories = [
+                            "port_conflict",
+                            "connection_refused",
+                            "missing_file",
+                            "permission_denied",
+                            "disk_full",
+                            "credential_invalid",
+                            "startup_failure",
+                        ];
                         for cat in &categories {
                             if category.contains(cat) {
                                 absorb_diagnosis_with_learner(
-                                    brain, qa, classifier, problem, cat, 1.0,
-                                    Some(&mut *learner_ref));
+                                    brain,
+                                    qa,
+                                    classifier,
+                                    problem,
+                                    cat,
+                                    1.0,
+                                    Some(&mut *learner_ref),
+                                );
                                 break;
                             }
                         }
@@ -655,8 +805,7 @@ pub async fn solve_autonomously_with_learner(
     }
 
     // Exhausted iteration budget
-    let last_state = assess_with_learner(problem, brain, qa, classifier,
-                                         Some(learner_ref));
+    let last_state = assess_with_learner(problem, brain, qa, classifier, Some(learner_ref));
     SolutionResult::Failed {
         iterations: max_iterations,
         last_state: last_state.name().to_string(),
@@ -680,14 +829,26 @@ mod tests {
         (brain, qa, classifier)
     }
 
+    fn test_hypothesis(category: &str, source: HypothesisSource, confidence: f64) -> Hypothesis {
+        Hypothesis {
+            category: category.to_string(),
+            source,
+            confidence,
+            structural_triples: vec![],
+            test_description: format!("test {}", category),
+        }
+    }
+
     #[test]
     fn test_confident_direct_match() {
         let (brain, qa, classifier) = setup();
         // "Address already in use" has a direct trigger match → should be Confident
         let state = assess("Address already in use", &brain, &qa, &classifier);
         eprintln!("  Confident test: {:?}", state);
-        assert!(matches!(state, ReasoningState::Confident { .. }),
-            "Should be Confident for a direct trigger match");
+        assert!(
+            matches!(state, ReasoningState::Confident { .. }),
+            "Should be Confident for a direct trigger match"
+        );
     }
 
     #[test]
@@ -698,8 +859,11 @@ mod tests {
         eprintln!("  Trigram test: {:?}", state);
         // May be Confident or Uncertain depending on trigram strength
         let name = state.name();
-        assert!(name == "confident" || name == "uncertain",
-            "Should at least be Uncertain for a trigram match (got {})", name);
+        assert!(
+            name == "confident" || name == "uncertain",
+            "Should at least be Uncertain for a trigram match (got {})",
+            name
+        );
     }
 
     #[test]
@@ -707,22 +871,36 @@ mod tests {
         let (brain, qa, classifier) = setup();
         // "KV store compaction stalled" has no trigger/trigram match
         // but the structural parser should find it
-        let state = assess("KV store compaction stalled unexpectedly; index rebuild queued",
-                           &brain, &qa, &classifier);
+        let state = assess(
+            "KV store compaction stalled unexpectedly; index rebuild queued",
+            &brain,
+            &qa,
+            &classifier,
+        );
         eprintln!("  Structural test: {:?}", state);
-        assert!(matches!(state, ReasoningState::Uncertain { .. }),
-            "Should be Uncertain for structural-only match (got {})", state.name());
+        assert!(
+            matches!(state, ReasoningState::Uncertain { .. }),
+            "Should be Uncertain for structural-only match (got {})",
+            state.name()
+        );
     }
 
     #[test]
     fn test_stuck_no_match() {
         let (brain, qa, classifier) = setup();
         // Completely nonsensical text — no trigger, no trigram, no structure
-        let state = assess("The quick brown fox jumps over the lazy dog",
-                           &brain, &qa, &classifier);
+        let state = assess(
+            "The quick brown fox jumps over the lazy dog",
+            &brain,
+            &qa,
+            &classifier,
+        );
         eprintln!("  Stuck test: {:?}", state);
-        assert!(matches!(state, ReasoningState::Stuck { .. }),
-            "Should be Stuck for completely unknown text (got {})", state.name());
+        assert!(
+            matches!(state, ReasoningState::Stuck { .. }),
+            "Should be Stuck for completely unknown text (got {})",
+            state.name()
+        );
     }
 
     #[test]
@@ -735,8 +913,46 @@ mod tests {
         let hypotheses = generate_hypotheses(&brain, "SSL certificate expired");
         eprintln!("  Hypotheses: {} generated", hypotheses.len());
         // Should generate at least centroid-based hypothesis
-        assert!(!hypotheses.is_empty(),
-            "Should generate at least one hypothesis");
+        assert!(
+            !hypotheses.is_empty(),
+            "Should generate at least one hypothesis"
+        );
+    }
+
+    #[test]
+    fn test_hypothesis_ranking_is_order_independent() {
+        let structural = test_hypothesis(
+            "connection_refused",
+            HypothesisSource::StructuralAnalogy,
+            0.60,
+        );
+        let centroid = test_hypothesis("disk_full", HypothesisSource::CentroidProximity, 0.60);
+
+        let ranked_a = rank_hypotheses(vec![structural.clone(), centroid.clone()]);
+        let ranked_b = rank_hypotheses(vec![centroid, structural]);
+
+        assert_eq!(ranked_a[0].category, "connection_refused");
+        assert_eq!(ranked_b[0].category, "connection_refused");
+        assert_eq!(
+            ranked_a
+                .iter()
+                .map(|h| h.category.as_str())
+                .collect::<Vec<_>>(),
+            ranked_b
+                .iter()
+                .map(|h| h.category.as_str())
+                .collect::<Vec<_>>(),
+            "Ranking should not depend on input order"
+        );
+    }
+
+    #[test]
+    fn test_hypothesis_ranking_clamps_invalid_confidence() {
+        let invalid = test_hypothesis("invalid_nan", HypothesisSource::DirectRule, f64::NAN);
+        let valid = test_hypothesis("valid_low", HypothesisSource::WeakTrigram, 0.20);
+
+        let ranked = rank_hypotheses(vec![invalid, valid]);
+        assert_eq!(ranked[0].category, "valid_low");
     }
 
     #[test]
@@ -746,7 +962,10 @@ mod tests {
             tried: vec!["classifier".to_string()],
         };
         let display = format!("{}", state);
-        assert!(display.contains("Stuck"), "Display should contain state name");
+        assert!(
+            display.contains("Stuck"),
+            "Display should contain state name"
+        );
         assert!(display.contains("test"), "Display should contain problem");
     }
 
@@ -758,7 +977,10 @@ mod tests {
         // Should extract meaningful terms like "bind", "failed", "Unknown"
         let has_bind = terms.iter().any(|t| t.contains("bind"));
         let has_failed = terms.iter().any(|t| t.contains("failed"));
-        assert!(has_bind || has_failed, "Should extract action-related terms");
+        assert!(
+            has_bind || has_failed,
+            "Should extract action-related terms"
+        );
     }
 
     #[test]
@@ -791,7 +1013,9 @@ mod tests {
                 rule_chain: vec![],
             },
         ];
-        assert!((plan_confidence(&plan) - 0.72).abs() < 0.01,
-            "Plan confidence should be product of step confidences");
+        assert!(
+            (plan_confidence(&plan) - 0.72).abs() < 0.01,
+            "Plan confidence should be product of step confidences"
+        );
     }
 }

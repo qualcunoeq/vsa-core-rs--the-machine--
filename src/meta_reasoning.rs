@@ -46,6 +46,40 @@ pub const MAX_PLAN_STEPS_PER_ITERATION: usize = 16;
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
+/// Deterministic explanation for a plan confidence calculation.
+#[derive(Clone, Debug, PartialEq)]
+pub struct PlanConfidenceReport {
+    /// Product of all normalized step confidences.
+    pub confidence: f64,
+    /// Number of plan steps included in the product.
+    pub step_count: usize,
+    /// The lowest-confidence step, if the plan is non-empty.
+    pub weakest_step: Option<usize>,
+    /// Normalized per-step confidence factors in execution order.
+    pub factors: Vec<f64>,
+}
+
+impl PlanConfidenceReport {
+    /// Stable compact string for logs and tests.
+    pub fn summary(&self) -> String {
+        let factors = self
+            .factors
+            .iter()
+            .map(|factor| format!("{:.3}", factor))
+            .collect::<Vec<_>>()
+            .join(",");
+        format!(
+            "confidence={:.3}; steps={}; weakest={}; factors=[{}]",
+            self.confidence,
+            self.step_count,
+            self.weakest_step
+                .map(|idx| idx.to_string())
+                .unwrap_or_else(|| "none".to_string()),
+            factors
+        )
+    }
+}
+
 /// The source of a hypothesis — how The Machine arrived at this explanation.
 #[derive(Clone, Debug, PartialEq)]
 pub enum HypothesisSource {
@@ -259,9 +293,28 @@ pub fn assess_with_learner(
 
 /// Compute the overall confidence of a plan (product of step confidences).
 fn plan_confidence(plan: &[PlanStep]) -> f64 {
-    plan.iter()
-        .map(|s| s.confidence)
-        .fold(1.0, |acc, c| acc * c)
+    explain_plan_confidence(plan).confidence
+}
+
+/// Explain the overall confidence of a plan with deterministic factors.
+pub fn explain_plan_confidence(plan: &[PlanStep]) -> PlanConfidenceReport {
+    let factors: Vec<f64> = plan
+        .iter()
+        .map(|step| normalized_confidence(step.confidence))
+        .collect();
+    let confidence = factors.iter().fold(1.0, |acc, factor| acc * factor);
+    let weakest_step = factors
+        .iter()
+        .enumerate()
+        .min_by(|a, b| a.1.total_cmp(b.1).then_with(|| a.0.cmp(&b.0)))
+        .map(|(idx, _)| idx);
+
+    PlanConfidenceReport {
+        confidence,
+        step_count: plan.len(),
+        weakest_step,
+        factors,
+    }
 }
 
 /// Given structural triples, find the best-matching diagnostic category
@@ -723,6 +776,12 @@ pub async fn solve_autonomously_with_learner(
                 confidence,
                 category,
             } => {
+                let confidence_report = explain_plan_confidence(&plan);
+                iteration_log.push(format!(
+                    "[iter {}] Plan confidence: {}",
+                    iteration,
+                    confidence_report.summary()
+                ));
                 // Execute each step of the plan
                 let mut all_succeeded = true;
                 let executable_steps = bounded_plan_step_count(plan.len());
@@ -1073,5 +1132,61 @@ mod tests {
             (plan_confidence(&plan) - 0.72).abs() < 0.01,
             "Plan confidence should be product of step confidences"
         );
+    }
+
+    #[test]
+    fn test_plan_confidence_report_is_deterministic() {
+        let plan = vec![
+            PlanStep {
+                action: ("a".to_string(), "b".to_string(), "c".to_string()),
+                achieves: ("d".to_string(), "e".to_string(), "f".to_string()),
+                confidence: 0.9,
+                depth: 0,
+                rule_chain: vec![],
+            },
+            PlanStep {
+                action: ("g".to_string(), "h".to_string(), "i".to_string()),
+                achieves: ("j".to_string(), "k".to_string(), "l".to_string()),
+                confidence: 0.8,
+                depth: 1,
+                rule_chain: vec![],
+            },
+        ];
+
+        let report = explain_plan_confidence(&plan);
+
+        assert!((report.confidence - 0.72).abs() < 0.01);
+        assert_eq!(report.step_count, 2);
+        assert_eq!(report.weakest_step, Some(1));
+        assert_eq!(
+            report.summary(),
+            "confidence=0.720; steps=2; weakest=1; factors=[0.900,0.800]"
+        );
+    }
+
+    #[test]
+    fn test_plan_confidence_report_clamps_invalid_factors() {
+        let plan = vec![
+            PlanStep {
+                action: ("a".to_string(), "b".to_string(), "c".to_string()),
+                achieves: ("d".to_string(), "e".to_string(), "f".to_string()),
+                confidence: f64::NAN,
+                depth: 0,
+                rule_chain: vec![],
+            },
+            PlanStep {
+                action: ("g".to_string(), "h".to_string(), "i".to_string()),
+                achieves: ("j".to_string(), "k".to_string(), "l".to_string()),
+                confidence: 1.4,
+                depth: 1,
+                rule_chain: vec![],
+            },
+        ];
+
+        let report = explain_plan_confidence(&plan);
+
+        assert_eq!(report.factors, vec![0.0, 1.0]);
+        assert_eq!(report.confidence, 0.0);
+        assert_eq!(report.weakest_step, Some(0));
     }
 }

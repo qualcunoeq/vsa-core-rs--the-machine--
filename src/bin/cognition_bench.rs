@@ -23,6 +23,9 @@ const CASES: &[&str] = &[
     "meta-reasoning",
     "autonomy-budget",
     "chaos-run",
+    "hard-adaptation",
+    "adversarial-qa",
+    "latency-slo",
 ];
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -276,7 +279,7 @@ fn bench_qa_depth(cfg: &BenchConfig) -> Vec<ExperimentResult> {
     for depth in cfg.scale.qa_depths() {
         let mut qa = QaEngine::new();
         qa.store_fact("node_0", "leads_to", "node_1", "seed");
-        for i in 1..depth {
+        for i in 0..depth {
             qa.store_rule(
                 &format!("node_{}", i),
                 "leads_to",
@@ -460,8 +463,10 @@ fn bench_adaptation(cfg: &BenchConfig) -> Vec<ExperimentResult> {
 
     for i in 0..train {
         let question = format!("Who solved task_{}?", i);
-        let before = qa.answer_combined_episode(format!("before-{}", i), &question);
-        if before.confidence > 0.0 {
+        if qa
+            .answer_combined(&question)
+            .contains(&format!("agent_{}", i))
+        {
             before_hits += 1;
         }
         qa.store_fact(
@@ -501,6 +506,221 @@ fn bench_adaptation(cfg: &BenchConfig) -> Vec<ExperimentResult> {
         after_hits > before_hits && regressions == 0,
         "synthetic feedback inserts facts and retests prior questions",
     )]
+}
+
+fn bench_hard_adaptation(cfg: &BenchConfig) -> Vec<ExperimentResult> {
+    let mut qa = QaEngine::new();
+    let episodes = cfg.scale.adaptation_episodes().max(20);
+    let train = episodes / 2;
+    let mut before_false_positives = 0;
+    let mut after_hits = 0;
+    let mut regressions = 0;
+    let mut transfer_hits = 0;
+    let start = Instant::now();
+
+    for i in 0..train {
+        let subject = format!("agent_{}", i);
+        let task = format!("novel_task_{}", i);
+        if qa.verify_fact(&subject, "solve", &task).0 {
+            before_false_positives += 1;
+        }
+        qa.store_fact(&subject, "solve", &task, "hard-feedback");
+        if qa.verify_fact(&subject, "solve", &task).0 {
+            after_hits += 1;
+        }
+
+        // Near-miss facts make exact recall harder than simple confidence checks.
+        qa.store_fact(
+            &format!("agent_{}_decoy", i),
+            "solve",
+            &format!("novel_task_{}_decoy", i),
+            "hard-feedback-decoy",
+        );
+    }
+
+    for i in 0..train {
+        let subject = format!("agent_{}", i);
+        let task = format!("novel_task_{}", i);
+        if !qa.verify_fact(&subject, "solve", &task).0 {
+            regressions += 1;
+        }
+        if !qa
+            .verify_fact(&subject, "solve", &format!("novel_task_{}_decoy", i))
+            .0
+        {
+            transfer_hits += 1;
+        }
+    }
+
+    let latency = elapsed_ms(start);
+    let train_f = train.max(1) as f64;
+    let before_rate = before_false_positives as f64 / train_f;
+    let after_accuracy = after_hits as f64 / train_f;
+    let regression_rate = regressions as f64 / train_f;
+    let near_miss_rejection = transfer_hits as f64 / train_f;
+
+    vec![result(
+        cfg,
+        "hard-adaptation",
+        "C-009",
+        "confidence-only adaptation check",
+        metric_pairs(&[
+            ("memory_items", qa.fact_count() as f64),
+            ("before_false_positive_rate", before_rate),
+            ("accuracy", after_accuracy),
+            ("regression_rate", regression_rate),
+            ("near_miss_rejection", near_miss_rejection),
+            ("avg_latency_ms", latency / train_f),
+            ("p95_latency_ms", latency),
+        ]),
+        before_rate <= 0.01
+            && after_accuracy >= 0.98
+            && regression_rate <= 0.01
+            && near_miss_rejection >= 0.98,
+        "exact pre/post adaptation with near-miss decoys and regression replay",
+    )]
+}
+
+fn bench_adversarial_qa(cfg: &BenchConfig) -> Vec<ExperimentResult> {
+    let mut qa = QaEngine::new();
+    let n = match cfg.scale {
+        Scale::Small => 16,
+        Scale::Medium => 128,
+        Scale::Large => 1_024,
+        Scale::Max => 8_192,
+    };
+    let probes = match cfg.scale {
+        Scale::Small => 16,
+        Scale::Medium => 64,
+        Scale::Large => 256,
+        Scale::Max => 1_024,
+    };
+    let mut rng = StdRng::seed_from_u64(cfg.seed);
+    let start = Instant::now();
+
+    for i in 0..n {
+        qa.store_fact(
+            &format!("agent_{:05}", i),
+            "observed",
+            &format!("signal_{:05}", i),
+            "adversarial-qa",
+        );
+        qa.store_fact(
+            &format!("agent_{:05}_shadow", i),
+            "observed",
+            &format!("signal_{:05}_shadow", i),
+            "adversarial-qa-shadow",
+        );
+    }
+
+    let mut exact_hits = 0;
+    let mut false_positives = 0;
+    let mut answer_hits = 0;
+    let mut answer_probes = 0;
+    for _ in 0..probes {
+        let idx = rng.gen_range(0..n);
+        let subject = format!("agent_{:05}", idx);
+        let object = format!("signal_{:05}", idx);
+        if qa.verify_fact(&subject, "observed", &object).0 {
+            exact_hits += 1;
+        }
+        if answer_probes < probes.min(32) {
+            answer_probes += 1;
+            if qa
+                .answer_combined(&format!("Who observed {}?", object))
+                .contains(&subject)
+            {
+                answer_hits += 1;
+            }
+        }
+        if qa
+            .verify_fact(&subject, "observed", &format!("signal_{:05}_wrong", idx))
+            .0
+        {
+            false_positives += 1;
+        }
+    }
+
+    let latency = elapsed_ms(start);
+    let probes_f = probes.max(1) as f64;
+    let answer_probes_f = answer_probes.max(1) as f64;
+    let exact_accuracy = exact_hits as f64 / probes_f;
+    let answer_accuracy = answer_hits as f64 / answer_probes_f;
+    let false_positive_rate = false_positives as f64 / probes_f;
+
+    vec![result(
+        cfg,
+        "adversarial-qa",
+        "C-008",
+        "clean synthetic lookup without near-miss negatives",
+        metric_pairs(&[
+            ("memory_items", qa.fact_count() as f64),
+            ("exact_accuracy", exact_accuracy),
+            ("answer_accuracy", answer_accuracy),
+            ("answer_probes", answer_probes as f64),
+            ("false_positive_rate", false_positive_rate),
+            ("avg_latency_ms", latency / probes_f),
+            ("p95_latency_ms", latency),
+        ]),
+        exact_accuracy >= 0.98 && answer_accuracy >= 0.80 && false_positive_rate <= 0.02,
+        "near-collision subjects/objects plus explicit negative probes",
+    )]
+}
+
+fn bench_latency_slo(cfg: &BenchConfig) -> Vec<ExperimentResult> {
+    let mut results = Vec::new();
+    for res in bench_qa_depth(cfg) {
+        let depth = res.metric("chain_depth").unwrap_or(0.0);
+        let p95 = res.metric("p95_latency_ms").unwrap_or(f64::INFINITY);
+        let slo_ms = (depth * depth * 0.75).max(50.0);
+        let mut metrics = res.metrics.clone();
+        metrics.insert("slo_ms".to_string(), slo_ms);
+        metrics.insert(
+            "slo_ratio".to_string(),
+            if slo_ms > 0.0 {
+                p95 / slo_ms
+            } else {
+                f64::INFINITY
+            },
+        );
+        results.push(result(
+            cfg,
+            &format!("latency-slo-qa-depth-{}", depth as usize),
+            "C-008",
+            "unbounded chain expansion",
+            metrics,
+            res.passed && p95 <= slo_ms,
+            "quality gate for QA latency growth",
+        ));
+    }
+
+    let mem = bench_memory_pressure(cfg)
+        .into_iter()
+        .next()
+        .expect("memory pressure emits one result");
+    let n = mem.metric("memory_items").unwrap_or(0.0);
+    let p95 = mem.metric("p95_latency_ms").unwrap_or(f64::INFINITY);
+    let slo_ms = (n.max(1.0).log10() * 2_000.0).max(5_000.0);
+    let mut metrics = mem.metrics.clone();
+    metrics.insert("slo_ms".to_string(), slo_ms);
+    metrics.insert(
+        "slo_ratio".to_string(),
+        if slo_ms > 0.0 {
+            p95 / slo_ms
+        } else {
+            f64::INFINITY
+        },
+    );
+    results.push(result(
+        cfg,
+        "latency-slo-memory-pressure",
+        "C-001",
+        "linear memory scan",
+        metrics,
+        mem.passed && p95 <= slo_ms,
+        "quality gate for retrieval latency growth",
+    ));
+    results
 }
 
 fn bench_temporal_abstraction(cfg: &BenchConfig) -> Vec<ExperimentResult> {
@@ -696,6 +916,9 @@ fn run_case(cfg: &BenchConfig, case: &str) -> Vec<ExperimentResult> {
         "meta-reasoning" => bench_meta_reasoning(cfg),
         "autonomy-budget" => bench_autonomy_budget(cfg),
         "chaos-run" => bench_chaos_run(cfg),
+        "hard-adaptation" => bench_hard_adaptation(cfg),
+        "adversarial-qa" => bench_adversarial_qa(cfg),
+        "latency-slo" => bench_latency_slo(cfg),
         _ => Vec::new(),
     }
 }

@@ -1057,8 +1057,45 @@ impl QaEngine {
                 ));
             }
         }
-        hypotheses.sort_by(|a, b| b.3.partial_cmp(&a.3).unwrap());
+        hypotheses.sort_by(Self::compare_abductive_hypotheses);
         hypotheses
+    }
+
+    fn compare_abductive_hypotheses(
+        a: &(String, String, String, f64),
+        b: &(String, String, String, f64),
+    ) -> std::cmp::Ordering {
+        b.3.total_cmp(&a.3)
+            .then_with(|| a.0.cmp(&b.0))
+            .then_with(|| a.1.cmp(&b.1))
+            .then_with(|| a.2.cmp(&b.2))
+    }
+
+    fn compare_plan_steps(a: &PlanStep, b: &PlanStep) -> std::cmp::Ordering {
+        a.depth
+            .cmp(&b.depth)
+            .then_with(|| b.confidence.total_cmp(&a.confidence))
+            .then_with(|| a.action.0.cmp(&b.action.0))
+            .then_with(|| a.action.1.cmp(&b.action.1))
+            .then_with(|| a.action.2.cmp(&b.action.2))
+            .then_with(|| a.achieves.0.cmp(&b.achieves.0))
+            .then_with(|| a.achieves.1.cmp(&b.achieves.1))
+            .then_with(|| a.achieves.2.cmp(&b.achieves.2))
+    }
+
+    fn candidate_rule_order(
+        a: (usize, f64, &CausalRule),
+        b: (usize, f64, &CausalRule),
+    ) -> std::cmp::Ordering {
+        b.1.total_cmp(&a.1)
+            .then_with(|| b.2.confidence.total_cmp(&a.2.confidence))
+            .then_with(|| a.2.antecedent_subject.cmp(&b.2.antecedent_subject))
+            .then_with(|| a.2.antecedent_verb.cmp(&b.2.antecedent_verb))
+            .then_with(|| a.2.antecedent_object.cmp(&b.2.antecedent_object))
+            .then_with(|| a.2.consequent_subject.cmp(&b.2.consequent_subject))
+            .then_with(|| a.2.consequent_verb.cmp(&b.2.consequent_verb))
+            .then_with(|| a.2.consequent_object.cmp(&b.2.consequent_object))
+            .then_with(|| a.0.cmp(&b.0))
     }
 
     // ── Goal-Directed Planning ─────────────────────────────────────────
@@ -1137,8 +1174,9 @@ impl QaEngine {
             }
         }
 
-        // Sort by depth ascending (earliest action = lowest depth)
-        steps.sort_by(|a, b| a.depth.cmp(&b.depth));
+        // Sort by deterministic decision order: earliest actions first,
+        // then higher confidence, then stable SVO keys for reproducibility.
+        steps.sort_by(Self::compare_plan_steps);
         steps
     }
 
@@ -1187,18 +1225,22 @@ impl QaEngine {
         };
         let query_hv = resonator::encode_svo(&s_hv, &v_hv, &o_hv);
 
-        let mut best: Option<(usize, f64)> = None;
+        let mut best: Option<(usize, f64, &CausalRule)> = None;
         for (idx, rule) in self.rules.iter().enumerate() {
             let energy = 1.0 - query_hv.normalized_hamming_distance(&rule.ante_hv);
             if energy >= CHAIN_MATCH_THRESHOLD {
                 match best {
-                    Some((_, best_e)) if energy > best_e => best = Some((idx, energy)),
-                    None => best = Some((idx, energy)),
+                    Some(current)
+                        if Self::candidate_rule_order((idx, energy, rule), current).is_lt() =>
+                    {
+                        best = Some((idx, energy, rule));
+                    }
+                    None => best = Some((idx, energy, rule)),
                     _ => {}
                 }
             }
         }
-        best.map(|(idx, _)| (idx, &self.rules[idx]))
+        best.map(|(idx, _, rule)| (idx, rule))
     }
 
     /// Answer "What happened after X?" — find chains starting from a fact.
@@ -5643,6 +5685,69 @@ mod tests {
         }
 
         eprintln!("\n  ✓ Branching plan works: both push pawn d4 and develop knight f3 found");
+    }
+
+    #[test]
+    fn test_plan_for_goal_orders_same_depth_by_confidence() {
+        let mut qa = QaEngine::new();
+
+        qa.store_action(
+            "alpha",
+            "repair",
+            "cache",
+            "service",
+            "is",
+            "running",
+            "test",
+        );
+        qa.store_action(
+            "zeta",
+            "repair",
+            "cache",
+            "service",
+            "is",
+            "running",
+            "test",
+        );
+        qa.rule_mut(0).unwrap().confidence = 0.40;
+        qa.rule_mut(1).unwrap().confidence = 0.90;
+
+        let plan = qa.plan_for_goal("service", "is", "running", 3);
+
+        assert_eq!(plan.len(), 2);
+        assert_eq!(plan[0].action.0, "zeta");
+        assert!(plan[0].confidence > plan[1].confidence);
+    }
+
+    #[test]
+    fn test_plan_for_goal_orders_same_depth_ties_lexically() {
+        let mut qa = QaEngine::new();
+
+        qa.store_action(
+            "zeta",
+            "repair",
+            "cache",
+            "service",
+            "is",
+            "running",
+            "test",
+        );
+        qa.store_action(
+            "alpha",
+            "repair",
+            "cache",
+            "service",
+            "is",
+            "running",
+            "test",
+        );
+
+        let plan = qa.plan_for_goal("service", "is", "running", 3);
+
+        assert_eq!(plan.len(), 2);
+        assert_eq!(plan[0].action.0, "alpha");
+        assert_eq!(plan[1].action.0, "zeta");
+        assert!((plan[0].confidence - plan[1].confidence).abs() < 1e-9);
     }
 
     #[test]

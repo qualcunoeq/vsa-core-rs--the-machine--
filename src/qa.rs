@@ -226,6 +226,36 @@ pub struct PlanStep {
     pub rule_chain: Vec<usize>,
 }
 
+/// Deterministic record of one rule-confidence update.
+#[derive(Clone, Debug, PartialEq)]
+pub struct RuleConfidenceUpdate {
+    pub rule_idx: usize,
+    pub before: f64,
+    pub after: f64,
+    pub outcome: f64,
+    pub error: f64,
+    pub rule_label: String,
+}
+
+impl RuleConfidenceUpdate {
+    pub fn delta(&self) -> f64 {
+        self.after - self.before
+    }
+
+    pub fn summary(&self) -> String {
+        format!(
+            "rule={}; before={:.3}; after={:.3}; delta={:.3}; outcome={:.3}; error={:.3}; {}",
+            self.rule_idx,
+            self.before,
+            self.after,
+            self.delta(),
+            self.outcome,
+            self.error,
+            self.rule_label
+        )
+    }
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // QA ENGINE
 // ═══════════════════════════════════════════════════════════════════════════
@@ -638,12 +668,41 @@ impl QaEngine {
     /// `error` = prediction error (0.0 = perfect, 1.0 = completely wrong).
     /// Uses α=0.90 so confidence decays slowly under repeated errors.
     pub fn update_rule_confidence(&mut self, rule_idx: usize, error: f64) {
+        let _ = self.update_rule_confidence_report(rule_idx, error);
+    }
+
+    /// Update a rule's confidence and return a deterministic explanation.
+    pub fn update_rule_confidence_report(
+        &mut self,
+        rule_idx: usize,
+        error: f64,
+    ) -> Option<RuleConfidenceUpdate> {
         const ALPHA: f64 = 0.90;
-        if let Some(rule) = self.rules.get_mut(rule_idx) {
-            let new_conf = rule.confidence * ALPHA + (1.0 - error) * (1.0 - ALPHA);
-            rule.confidence = new_conf.clamp(0.0, 1.0);
-            rule.total_observations += 1;
-        }
+        let normalized_error = error.clamp(0.0, 1.0);
+        let rule = self.rules.get_mut(rule_idx)?;
+        let before = rule.confidence;
+        let new_conf = rule.confidence * ALPHA + (1.0 - normalized_error) * (1.0 - ALPHA);
+        rule.confidence = new_conf.clamp(0.0, 1.0);
+        rule.total_observations += 1;
+        let after = rule.confidence;
+        let rule_label = format!(
+            "{} {} {} -> {} {} {}",
+            rule.antecedent_subject,
+            rule.antecedent_verb,
+            rule.antecedent_object,
+            rule.consequent_subject,
+            rule.consequent_verb,
+            rule.consequent_object
+        );
+
+        Some(RuleConfidenceUpdate {
+            rule_idx,
+            before,
+            after,
+            outcome: 1.0 - normalized_error,
+            error: normalized_error,
+            rule_label,
+        })
     }
 
     /// Remove rules whose confidence has dropped below `threshold`.
@@ -1194,18 +1253,29 @@ impl QaEngine {
     ///
     /// Returns the number of unique rules updated.
     pub fn evaluate_plan_outcome(&mut self, outcome: f64, plan: &[PlanStep]) -> usize {
-        let error = 1.0 - outcome.clamp(0.0, 1.0);
-        let mut updated = std::collections::HashSet::new();
+        self.evaluate_plan_outcome_report(outcome, plan).len()
+    }
+
+    /// Evaluate plan outcome and return deterministic confidence updates.
+    pub fn evaluate_plan_outcome_report(
+        &mut self,
+        outcome: f64,
+        plan: &[PlanStep],
+    ) -> Vec<RuleConfidenceUpdate> {
+        let normalized_outcome = outcome.clamp(0.0, 1.0);
+        let error = 1.0 - normalized_outcome;
+        let mut rule_indices = std::collections::BTreeSet::new();
 
         for step in plan {
             for &rule_idx in &step.rule_chain {
-                if updated.insert(rule_idx) {
-                    self.update_rule_confidence(rule_idx, error);
-                }
+                rule_indices.insert(rule_idx);
             }
         }
 
-        updated.len()
+        rule_indices
+            .into_iter()
+            .filter_map(|rule_idx| self.update_rule_confidence_report(rule_idx, error))
+            .collect()
     }
 
     /// Find the rule whose antecedent matches the given SVO triple.
@@ -5941,5 +6011,71 @@ mod tests {
         );
 
         eprintln!("\n  ✓ Plan outcome evaluation works: failure weakens, success strengthens");
+    }
+
+    #[test]
+    fn test_evaluate_plan_outcome_report_is_deterministic() {
+        let mut qa = QaEngine::new();
+        qa.store_action(
+            "restart",
+            "service",
+            "api",
+            "service",
+            "is",
+            "running",
+            "test",
+        );
+        qa.store_rule(
+            "service",
+            "is",
+            "running",
+            "system",
+            "is",
+            "healthy",
+            "test",
+        );
+
+        let plan = vec![PlanStep {
+            action: ("restart".to_string(), "service".to_string(), "api".to_string()),
+            achieves: ("service".to_string(), "is".to_string(), "running".to_string()),
+            confidence: 1.0,
+            depth: 0,
+            rule_chain: vec![1, 0, 1],
+        }];
+
+        let updates = qa.evaluate_plan_outcome_report(0.0, &plan);
+
+        assert_eq!(updates.len(), 2);
+        assert_eq!(updates[0].rule_idx, 0);
+        assert_eq!(updates[1].rule_idx, 1);
+        assert_eq!(updates[0].outcome, 0.0);
+        assert_eq!(updates[0].error, 1.0);
+        assert!(updates[0].after < updates[0].before);
+        assert!(updates[0].summary().contains("restart service api -> service is running"));
+    }
+
+    #[test]
+    fn test_rule_confidence_update_report_clamps_error() {
+        let mut qa = QaEngine::new();
+        qa.store_rule(
+            "a",
+            "causes",
+            "b",
+            "c",
+            "causes",
+            "d",
+            "test",
+        );
+
+        let update = qa.update_rule_confidence_report(0, -5.0).unwrap();
+
+        assert_eq!(update.error, 0.0);
+        assert_eq!(update.outcome, 1.0);
+        assert_eq!(update.before, 1.0);
+        assert_eq!(update.after, 1.0);
+        assert_eq!(
+            update.summary(),
+            "rule=0; before=1.000; after=1.000; delta=0.000; outcome=1.000; error=0.000; a causes b -> c causes d"
+        );
     }
 }

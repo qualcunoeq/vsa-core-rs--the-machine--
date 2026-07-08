@@ -35,6 +35,15 @@ use crate::text_encoder;
 use crate::Hypervector;
 use crate::VSABrain;
 
+/// Hard safety cap for the autonomous loop.  Callers still choose a smaller
+/// budget, but oversized requests are bounded to keep research runs finite.
+pub const MAX_AUTONOMOUS_ITERATIONS: usize = 128;
+
+/// Hard cap on how many plan steps can be attempted in one iteration.
+/// The planner is depth-limited today, but this keeps the executor bounded
+/// if future planners produce wider plans.
+pub const MAX_PLAN_STEPS_PER_ITERATION: usize = 16;
+
 // ─── Types ─────────────────────────────────────────────────────────────────
 
 /// The source of a hypothesis — how The Machine arrived at this explanation.
@@ -447,6 +456,14 @@ fn structural_key(triples: &[CanonicalSvo]) -> String {
     parts.join("|")
 }
 
+fn bounded_iteration_budget(requested: usize) -> usize {
+    requested.min(MAX_AUTONOMOUS_ITERATIONS)
+}
+
+fn bounded_plan_step_count(plan_len: usize) -> usize {
+    plan_len.min(MAX_PLAN_STEPS_PER_ITERATION)
+}
+
 // ─── Stage 2: Hypothesis Testing and Knowledge Acquisition ────────────────
 
 /// Extract key technical terms from a problem description for documentation lookup.
@@ -660,6 +677,14 @@ pub async fn solve_autonomously_with_learner(
     learner: Option<&mut AbstractionLearner>,
 ) -> SolutionResult {
     let mut iteration_log: Vec<String> = Vec::new();
+    let effective_max_iterations = bounded_iteration_budget(max_iterations);
+    if effective_max_iterations < max_iterations {
+        iteration_log.push(format!(
+            "[setup] iteration budget capped: requested={}, effective={}",
+            max_iterations, effective_max_iterations
+        ));
+    }
+
     // Learner for self-extending keyword maps.  If the caller provided one,
     // use it (persistent across calls).  Otherwise create a fresh internal one.
     let mut internal_learner = AbstractionLearner::new();
@@ -668,7 +693,7 @@ pub async fn solve_autonomously_with_learner(
     // Store the problem as a fact
     qa.store_fact("system", "has_problem", problem, "autonomous_loop");
 
-    for iteration in 0..max_iterations {
+    for iteration in 0..effective_max_iterations {
         // ── 1. Check if goal is already achieved ────────────────────────────
         let (goal_verified, _) = qa.verify_fact(goal.0, goal.1, goal.2);
         if goal_verified {
@@ -700,7 +725,18 @@ pub async fn solve_autonomously_with_learner(
             } => {
                 // Execute each step of the plan
                 let mut all_succeeded = true;
-                for (step_idx, step) in plan.iter().enumerate() {
+                let executable_steps = bounded_plan_step_count(plan.len());
+                if executable_steps < plan.len() {
+                    iteration_log.push(format!(
+                        "[iter {}] Plan execution capped: requested_steps={}, executed_steps={}",
+                        iteration,
+                        plan.len(),
+                        executable_steps
+                    ));
+                    all_succeeded = false;
+                }
+
+                for (step_idx, step) in plan.iter().take(executable_steps).enumerate() {
                     let action_req = crate::actuator::plan_step_to_request(step, target_ip);
                     let result = actuator.send_request(&action_req).await;
 
@@ -807,7 +843,7 @@ pub async fn solve_autonomously_with_learner(
     // Exhausted iteration budget
     let last_state = assess_with_learner(problem, brain, qa, classifier, Some(learner_ref));
     SolutionResult::Failed {
-        iterations: max_iterations,
+        iterations: effective_max_iterations,
         last_state: last_state.name().to_string(),
         log: iteration_log,
     }
@@ -993,6 +1029,26 @@ mod tests {
     fn test_extract_key_terms_max_5() {
         let terms = extract_key_terms("alpha beta gamma delta epsilon zeta eta theta");
         assert!(terms.len() <= 5, "Should extract at most 5 terms");
+    }
+
+    #[test]
+    fn test_iteration_budget_is_bounded() {
+        assert_eq!(bounded_iteration_budget(0), 0);
+        assert_eq!(bounded_iteration_budget(3), 3);
+        assert_eq!(
+            bounded_iteration_budget(MAX_AUTONOMOUS_ITERATIONS + 1),
+            MAX_AUTONOMOUS_ITERATIONS
+        );
+    }
+
+    #[test]
+    fn test_plan_step_budget_is_bounded() {
+        assert_eq!(bounded_plan_step_count(0), 0);
+        assert_eq!(bounded_plan_step_count(4), 4);
+        assert_eq!(
+            bounded_plan_step_count(MAX_PLAN_STEPS_PER_ITERATION + 10),
+            MAX_PLAN_STEPS_PER_ITERATION
+        );
     }
 
     #[test]

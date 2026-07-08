@@ -162,18 +162,26 @@ impl AbstractionLearner {
     /// For each token that meets the threshold, infer its role and validate.
     fn try_promote(&mut self) {
         let mut to_promote: Vec<LearnedMapping> = Vec::new();
+        let mut candidate_tokens: Vec<String> = self.co_occurrence.keys().cloned().collect();
+        candidate_tokens.sort();
 
-        // Collect candidates: tokens that meet the episode threshold
-        for (token, category_counts) in &self.co_occurrence {
+        // Collect candidates in lexical order so promotion is reproducible
+        // even though co_occurrence is backed by a HashMap.
+        for token in candidate_tokens {
+            let category_counts = match self.co_occurrence.get(&token) {
+                Some(counts) => counts,
+                None => continue,
+            };
             let total: u32 = category_counts.iter().map(|(_, c)| c).sum();
             if total < self.min_episodes {
                 continue;
             }
 
-            // Find dominant category
-            let dominant = category_counts.iter()
-                .max_by_key(|(_, c)| *c)
-                .unwrap();
+            // Find dominant category with deterministic tie-breaking.
+            let dominant = match Self::dominant_category(category_counts) {
+                Some(dominant) => dominant,
+                None => continue,
+            };
             let purity = dominant.1 as f64 / total as f64;
             if purity < self.min_purity {
                 continue;
@@ -185,20 +193,20 @@ impl AbstractionLearner {
             //   - Error-class tokens often end in "ed", "ing", "y"
             //   - Action tokens are typically verbs
             // This is a weak signal, so we combine it with category context.
-            let role = Self::infer_role(token, &dominant.0);
+            let role = Self::infer_role(&token, &dominant.0);
 
             // Check if this mapping already exists
-            if self.promoted.iter().any(|m| m.keyword == *token) {
+            if self.promoted.iter().any(|m| m.keyword == token) {
                 continue;
             }
 
             // Validate: check against known negative examples
-            if !self.validate_mapping(token, &dominant.0, &role) {
+            if !self.validate_mapping(&token, &dominant.0, &role) {
                 continue;
             }
 
             // Determine concrete and abstract values
-            let concrete = Self::concrete_for_token(token);
+            let concrete = Self::concrete_for_token(&token);
             let abstract_val = match Self::abstract_for_category(&dominant.0, &role) {
                 Some(a) => a.to_string(),
                 None => continue, // Can't determine abstract → skip
@@ -207,9 +215,9 @@ impl AbstractionLearner {
             let confidence = purity * (1.0 - 1.0 / (total as f64 + 1.0));
 
             // Avoid duplicates from multiple promotion cycles
-            if !to_promote.iter().any(|m| m.keyword == *token) {
+            if !to_promote.iter().any(|m| m.keyword == token) {
                 to_promote.push(LearnedMapping {
-                    keyword: token.clone(),
+                    keyword: token,
                     concrete,
                     abstract_: abstract_val,
                     role: role.clone(),
@@ -218,6 +226,8 @@ impl AbstractionLearner {
                 });
             }
         }
+
+        to_promote.sort_by(Self::compare_learned_mappings);
 
         // Add all validated promotions
         for mapping in to_promote {
@@ -234,6 +244,31 @@ impl AbstractionLearner {
                 mapping.confidence,
             );
             self.promoted.push(mapping);
+        }
+        self.promoted.sort_by(Self::compare_learned_mappings);
+    }
+
+    fn dominant_category(category_counts: &[(String, u32)]) -> Option<(String, u32)> {
+        let mut ranked = category_counts.to_vec();
+        ranked.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+        ranked.into_iter().next()
+    }
+
+    fn compare_learned_mappings(a: &LearnedMapping, b: &LearnedMapping) -> std::cmp::Ordering {
+        b.confidence
+            .total_cmp(&a.confidence)
+            .then_with(|| a.keyword.cmp(&b.keyword))
+            .then_with(|| Self::role_priority(&a.role).cmp(&Self::role_priority(&b.role)))
+            .then_with(|| a.source_category.cmp(&b.source_category))
+            .then_with(|| a.abstract_.cmp(&b.abstract_))
+            .then_with(|| a.concrete.cmp(&b.concrete))
+    }
+
+    fn role_priority(role: &MappingRole) -> u8 {
+        match role {
+            MappingRole::Action => 0,
+            MappingRole::Resource => 1,
+            MappingRole::Error => 2,
         }
     }
 
@@ -395,6 +430,11 @@ impl AbstractionLearner {
         self.promoted.len()
     }
 
+    /// Get promoted mappings in deterministic ranking order.
+    pub fn promoted_mappings(&self) -> Vec<&LearnedMapping> {
+        self.promoted.iter().collect()
+    }
+
     /// Get the total number of episodes recorded.
     pub fn episode_count(&self) -> u32 {
         self.total_episodes
@@ -418,12 +458,14 @@ impl AbstractionLearner {
         token_entries.sort_by(|a, b| {
             let total_a: u32 = a.1.iter().map(|(_, c)| c).sum();
             let total_b: u32 = b.1.iter().map(|(_, c)| c).sum();
-            total_b.cmp(&total_a)
+            total_b.cmp(&total_a).then_with(|| a.0.cmp(b.0))
         });
 
         for (token, counts) in token_entries.iter().take(10) {
             let total: u32 = counts.iter().map(|(_, c)| c).sum();
-            let cat_str: Vec<String> = counts.iter()
+            let mut sorted_counts = counts.to_vec();
+            sorted_counts.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+            let cat_str: Vec<String> = sorted_counts.iter()
                 .map(|(c, n)| format!("{}={}", c, n))
                 .collect();
             lines.push(format!("    {} ({}): {}", token, total, cat_str.join(", ")));
@@ -594,6 +636,44 @@ mod tests {
     }
 
     #[test]
+    fn test_dominant_category_tie_breaks_lexically() {
+        let dominant = AbstractionLearner::dominant_category(&[
+            ("zeta_category".to_string(), 2),
+            ("alpha_category".to_string(), 2),
+        ]);
+
+        assert_eq!(dominant, Some(("alpha_category".to_string(), 2)));
+    }
+
+    #[test]
+    fn test_promotions_have_deterministic_order() {
+        let mut first = AbstractionLearner::with_thresholds(2, 0.80);
+        first.record_episode("broker cluster outage", "connection_refused");
+        first.record_episode("cluster broker outage", "connection_refused");
+
+        let mut second = AbstractionLearner::with_thresholds(2, 0.80);
+        second.record_episode("cluster broker outage", "connection_refused");
+        second.record_episode("broker cluster outage", "connection_refused");
+
+        let first_keywords: Vec<&str> = first
+            .promoted_mappings()
+            .iter()
+            .map(|m| m.keyword.as_str())
+            .collect();
+        let second_keywords: Vec<&str> = second
+            .promoted_mappings()
+            .iter()
+            .map(|m| m.keyword.as_str())
+            .collect();
+
+        assert_eq!(first_keywords, second_keywords);
+        assert!(
+            first_keywords.windows(2).all(|pair| pair[0] <= pair[1]),
+            "Equal-confidence promotions should use lexical tie-breaking"
+        );
+    }
+
+    #[test]
     fn test_token_in_multiple_categories_not_promoted() {
         let mut learner = AbstractionLearner::with_thresholds(3, 0.80);
 
@@ -675,6 +755,18 @@ mod tests {
         let report = learner.report();
         assert!(report.contains("Episodes recorded:"));
         assert!(report.contains("unknown_token_error"));
+    }
+
+    #[test]
+    fn test_report_orders_equal_frequency_tokens_lexically() {
+        let mut learner = AbstractionLearner::with_thresholds(10, 0.80);
+        learner.record_episode("zeta_token alpha_token", "port_conflict");
+
+        let report = learner.report();
+        let alpha_pos = report.find("alpha_token").unwrap();
+        let zeta_pos = report.find("zeta_token").unwrap();
+
+        assert!(alpha_pos < zeta_pos);
     }
 
     #[test]

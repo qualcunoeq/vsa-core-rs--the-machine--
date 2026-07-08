@@ -16,10 +16,9 @@
 use std::collections::HashMap;
 use std::fs;
 use std::io::{BufRead, BufReader};
-use std::path::Path;
 use crate::Hypervector;
 use crate::VSABrain;
-use crate::perception::{Entity, Relation, SvoTriple, PerceptualEncoder};
+use crate::perception::{Entity, PerceptualEncoder, SvoTriple};
 
 // ─── Data Types ────────────────────────────────────────────────────────────
 
@@ -63,6 +62,15 @@ pub struct SysStateSnapshot {
     pub connections: Vec<ConnectionInfo>,
     pub file_descriptors: Vec<FileDescInfo>,
     pub timestamp: std::time::SystemTime,
+}
+
+/// Bitwise representation of a system snapshot plus the explicit facts used
+/// to produce it.
+#[derive(Debug, Clone)]
+pub struct EncodedSystemState {
+    pub vector: Hypervector,
+    pub triples: Vec<SvoTriple>,
+    pub summary: String,
 }
 
 // ─── Process Extraction ────────────────────────────────────────────────────
@@ -385,6 +393,93 @@ impl From<SysStateSnapshot> for Vec<SvoTriple> {
     }
 }
 
+fn canonicalize_component(component: &str) -> String {
+    component
+        .trim()
+        .to_lowercase()
+        .chars()
+        .map(|ch| {
+            if ch.is_ascii_alphanumeric() || matches!(ch, '_' | '-' | '.' | ':' | '/') {
+                ch
+            } else {
+                '_'
+            }
+        })
+        .collect::<String>()
+        .split('_')
+        .filter(|part| !part.is_empty())
+        .collect::<Vec<_>>()
+        .join("_")
+}
+
+/// Produce stable, deduplicated triples for a snapshot.
+///
+/// The snapshot timestamp is deliberately excluded. This encodes state, not
+/// wall-clock time, so identical states captured at different moments map to
+/// the same vector.
+pub fn canonical_snapshot_triples(snapshot: &SysStateSnapshot) -> Vec<SvoTriple> {
+    let mut triples: Vec<SvoTriple> = Vec::<SvoTriple>::from(snapshot.clone())
+        .into_iter()
+        .map(|(s, v, o)| {
+            (
+                canonicalize_component(&s),
+                canonicalize_component(&v),
+                canonicalize_component(&o),
+            )
+        })
+        .collect();
+    triples.sort();
+    triples.dedup();
+    triples
+}
+
+fn encode_system_triple(triple: &SvoTriple) -> Hypervector {
+    let s_hv = Hypervector::encode_text_ngram(&triple.0, 3);
+    let v_hv = Hypervector::encode_text_ngram(&triple.1, 3);
+    let o_hv = Hypervector::encode_text_ngram(&triple.2, 3);
+    crate::resonator::encode_svo(&s_hv, &v_hv, &o_hv)
+}
+
+/// Encode a snapshot into one order-invariant bitwise state vector.
+pub fn encode_snapshot_vector(snapshot: &SysStateSnapshot) -> Hypervector {
+    let triples = canonical_snapshot_triples(snapshot);
+    if triples.is_empty() {
+        return Hypervector::new_zero();
+    }
+
+    let triple_vectors: Vec<Hypervector> = triples.iter().map(encode_system_triple).collect();
+    let refs: Vec<&Hypervector> = triple_vectors.iter().collect();
+    Hypervector::bundle(&refs)
+}
+
+/// Human-readable summary grounded only in encoded snapshot facts.
+pub fn summarize_snapshot(snapshot: &SysStateSnapshot, sample_limit: usize) -> String {
+    let triples = canonical_snapshot_triples(snapshot);
+    let decoder = crate::language_decoder::NlpDecoder::new();
+    let sample = decoder.decode_triples(&triples, sample_limit);
+    format!(
+        "System state: {} processes, {} connections, {} file descriptors, {} canonical facts. {}",
+        snapshot.processes.len(),
+        snapshot.connections.len(),
+        snapshot.file_descriptors.len(),
+        triples.len(),
+        sample
+    )
+}
+
+/// Encode the current system state as explicit triples plus one vector.
+pub fn encode_system_state_filtered(max_procs: Option<usize>) -> EncodedSystemState {
+    let snapshot = capture_snapshot_filtered(max_procs);
+    let triples = canonical_snapshot_triples(&snapshot);
+    let vector = encode_snapshot_vector(&snapshot);
+    let summary = summarize_snapshot(&snapshot, 5);
+    EncodedSystemState {
+        vector,
+        triples,
+        summary,
+    }
+}
+
 // ─── PerceptualEncoder Implementation ──────────────────────────────────────
 
 /// System state encoder: reads Linux /proc and produces SVO triples.
@@ -448,6 +543,54 @@ pub fn ingest_system_state(brain: &mut VSABrain) -> usize {
 mod tests {
     use super::*;
     use crate::VSABrain;
+    use std::time::SystemTime;
+
+    fn synthetic_snapshot(state: &str) -> SysStateSnapshot {
+        SysStateSnapshot {
+            processes: vec![
+                ProcessInfo {
+                    pid: 2,
+                    ppid: 1,
+                    name: "worker".to_string(),
+                    cmdline: "/usr/bin/worker --serve".to_string(),
+                    uid: 1000,
+                    username: "alice".to_string(),
+                    state: state.to_string(),
+                },
+                ProcessInfo {
+                    pid: 1,
+                    ppid: 0,
+                    name: "init".to_string(),
+                    cmdline: "/sbin/init".to_string(),
+                    uid: 0,
+                    username: "root".to_string(),
+                    state: "S".to_string(),
+                },
+            ],
+            connections: vec![ConnectionInfo {
+                pid: 2,
+                protocol: "tcp".to_string(),
+                local_addr: "127.0.0.1".to_string(),
+                local_port: 8080,
+                remote_addr: "10.0.0.5".to_string(),
+                remote_port: 443,
+                state: "established".to_string(),
+            }],
+            file_descriptors: vec![FileDescInfo {
+                pid: 2,
+                fd_number: 3,
+                target: "/tmp/machine.log".to_string(),
+                fd_type: "file".to_string(),
+            }],
+            timestamp: SystemTime::UNIX_EPOCH,
+        }
+    }
+
+    fn reordered_synthetic_snapshot() -> SysStateSnapshot {
+        let mut snapshot = synthetic_snapshot("S");
+        snapshot.processes.reverse();
+        snapshot
+    }
 
     #[test]
     fn test_read_processes() {
@@ -568,5 +711,42 @@ mod tests {
         }
         assert!(!entities.is_empty(), "Should extract entities");
         eprintln!("  SystemEncoder: {} entities from {} processes", entities.len(), procs.len());
+    }
+
+    #[test]
+    fn test_canonical_snapshot_encoding_is_order_invariant() {
+        let a = synthetic_snapshot("S");
+        let b = reordered_synthetic_snapshot();
+
+        let a_triples = canonical_snapshot_triples(&a);
+        let b_triples = canonical_snapshot_triples(&b);
+        assert_eq!(a_triples, b_triples);
+        assert_eq!(encode_snapshot_vector(&a), encode_snapshot_vector(&b));
+    }
+
+    #[test]
+    fn test_snapshot_encoding_changes_with_state() {
+        let sleeping = synthetic_snapshot("S");
+        let running = synthetic_snapshot("R");
+
+        let sleeping_vector = encode_snapshot_vector(&sleeping);
+        let running_vector = encode_snapshot_vector(&running);
+
+        assert_ne!(sleeping_vector, running_vector);
+        assert!(
+            sleeping_vector.normalized_hamming_distance(&running_vector) > 0.01,
+            "A process state change should move the system vector"
+        );
+    }
+
+    #[test]
+    fn test_snapshot_summary_is_grounded_in_facts() {
+        let snapshot = synthetic_snapshot("S");
+        let summary = summarize_snapshot(&snapshot, 2);
+
+        assert!(summary.contains("2 processes"));
+        assert!(summary.contains("1 connections"));
+        assert!(summary.contains("canonical facts"));
+        assert!(summary.contains("process"));
     }
 }

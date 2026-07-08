@@ -28,6 +28,7 @@ pub mod forager;
 pub mod hierarchy;
 pub mod hnsw;
 pub mod ledger;
+pub mod language_decoder;
 pub mod monitor;
 pub mod narrative;
 pub mod nlp;

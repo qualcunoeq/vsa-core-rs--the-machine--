@@ -30,7 +30,7 @@ use crate::diagnostic::{
     parse_error_structure_with_learner, query_diagnostic_category_with_learner, CanonicalSvo,
     ErrorClassifier,
 };
-use crate::qa::{PlanStep, QaEngine};
+use crate::qa::{PlanStep, QaEngine, RuleConfidenceUpdate};
 use crate::text_encoder;
 use crate::Hypervector;
 use crate::VSABrain;
@@ -517,6 +517,19 @@ fn bounded_plan_step_count(plan_len: usize) -> usize {
     plan_len.min(MAX_PLAN_STEPS_PER_ITERATION)
 }
 
+fn confidence_feedback_log(iteration: usize, updates: &[RuleConfidenceUpdate]) -> Vec<String> {
+    updates
+        .iter()
+        .map(|update| {
+            format!(
+                "[iter {}] Confidence feedback: {}",
+                iteration,
+                update.summary()
+            )
+        })
+        .collect()
+}
+
 // ─── Stage 2: Hypothesis Testing and Knowledge Acquisition ────────────────
 
 /// Extract key technical terms from a problem description for documentation lookup.
@@ -813,7 +826,8 @@ pub async fn solve_autonomously_with_learner(
                     if !result.success {
                         all_succeeded = false;
                         // Record the failure for the planner
-                        qa.evaluate_plan_outcome(0.0, &[step.clone()]);
+                        let updates = qa.evaluate_plan_outcome_report(0.0, &[step.clone()]);
+                        iteration_log.extend(confidence_feedback_log(iteration, &updates));
                         break;
                     }
 
@@ -827,6 +841,8 @@ pub async fn solve_autonomously_with_learner(
                     // Check if goal was achieved
                     let (goal_ok, _) = qa.verify_fact(goal.0, goal.1, goal.2);
                     if goal_ok {
+                        let updates = qa.evaluate_plan_outcome_report(1.0, &plan);
+                        iteration_log.extend(confidence_feedback_log(iteration, &updates));
                         // Absorb the diagnosis — must cover all categories the
                         // diagnostic pipeline can return.
                         let categories = [
@@ -1188,5 +1204,27 @@ mod tests {
         assert_eq!(report.factors, vec![0.0, 1.0]);
         assert_eq!(report.confidence, 0.0);
         assert_eq!(report.weakest_step, Some(0));
+    }
+
+    #[test]
+    fn test_confidence_feedback_log_is_stable() {
+        let updates = vec![RuleConfidenceUpdate {
+            rule_idx: 7,
+            before: 0.4,
+            after: 0.46,
+            outcome: 1.0,
+            error: 0.0,
+            rule_label: "a b c -> d e f".to_string(),
+        }];
+
+        let lines = confidence_feedback_log(3, &updates);
+
+        assert_eq!(
+            lines,
+            vec![
+                "[iter 3] Confidence feedback: rule=7; before=0.400; after=0.460; delta=0.060; outcome=1.000; error=0.000; a b c -> d e f"
+                    .to_string()
+            ]
+        );
     }
 }

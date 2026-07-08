@@ -27,6 +27,7 @@ pub mod experiment;
 pub mod forager;
 pub mod hierarchy;
 pub mod hnsw;
+pub mod language_decoder;
 pub mod ledger;
 pub mod monitor;
 pub mod narrative;

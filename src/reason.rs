@@ -41,6 +41,7 @@
 
 use crate::resonator::{factorize_svo, ResonatorVocabulary};
 use crate::{Hypervector, MemoryCluster, VSABrain, HD_DIMENSION, U64_BLOCKS};
+use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -71,6 +72,30 @@ pub const MAX_CHAIN_DEPTH: usize = 5;
 /// The weight applied to slot `i` is multiplied by `(1.0 + SLOT_DEPTH_ALPHA * i)`.
 /// A value of 0.15 means slot 7 gets ~2× the base weight of slot 0.
 pub const SLOT_DEPTH_ALPHA: f64 = 0.15;
+
+fn compare_score_candidate(
+    left_idx: usize,
+    left_score: f64,
+    right_idx: usize,
+    right_score: f64,
+) -> Ordering {
+    left_score
+        .total_cmp(&right_score)
+        // Lower indices win exact ties for stable reasoning traces.
+        .then_with(|| right_idx.cmp(&left_idx))
+}
+
+fn compare_distance_candidate(
+    left_idx: usize,
+    left_distance: f64,
+    right_idx: usize,
+    right_distance: f64,
+) -> Ordering {
+    left_distance
+        .total_cmp(&right_distance)
+        // Ascending distance sort: lower index comes first on exact ties.
+        .then_with(|| left_idx.cmp(&right_idx))
+}
 
 /// ██ UPGRADE v2.3: Variable‑specific rotation offsets ██
 ///
@@ -147,7 +172,10 @@ impl ReasoningBlackboard {
         let best_idx = weights
             .iter()
             .enumerate()
-            .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
+            .filter(|(_, score)| score.is_finite())
+            .max_by(|(left_idx, left_score), (right_idx, right_score)| {
+                compare_score_candidate(*left_idx, **left_score, *right_idx, **right_score)
+            })
             .map(|(i, _)| i)
             .unwrap_or(0);
 
@@ -821,16 +849,25 @@ pub fn soft_project(x: &Hypervector, clusters: &[MemoryCluster], tau: f64) -> Hy
         let mut best_d = 2.0;
         for (i, c) in clusters.iter().enumerate() {
             let d = x.normalized_hamming_distance(&c.centroid);
-            if d < best_d { best_d = d; best_i = i; }
+            if d.is_finite() && d < best_d {
+                best_d = d;
+                best_i = i;
+            }
         }
         return clusters[best_i].centroid;
     }
 
     // Compute distances to ALL centroids
-    let mut dists: Vec<(usize, f64)> = clusters.iter().enumerate()
+    let mut dists: Vec<(usize, f64)> = clusters
+        .iter()
+        .enumerate()
         .map(|(i, c)| (i, x.normalized_hamming_distance(&c.centroid)))
+        .filter(|(_, d)| d.is_finite())
         .collect();
-    dists.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+    if dists.is_empty() {
+        return *x;
+    }
+    dists.sort_by(|a, b| compare_distance_candidate(a.0, a.1, b.0, b.1));
 
     // ██ CORRECTED v3.1: numerically stable softmax over ALL centroids ██
     //
@@ -1964,6 +2001,44 @@ mod tests {
     use std::collections::HashSet;
     use std::sync::Arc;
     use tokio::sync::RwLock;
+
+    #[test]
+    fn test_score_candidate_order_is_deterministic() {
+        assert_eq!(
+            compare_score_candidate(0, 0.80, 1, 0.80),
+            Ordering::Greater,
+            "lower index should win exact score ties"
+        );
+        assert_eq!(
+            compare_score_candidate(1, 0.80, 0, 0.80),
+            Ordering::Less,
+            "lower index should win exact score ties"
+        );
+        assert_eq!(
+            compare_score_candidate(1, 0.81, 0, 0.80),
+            Ordering::Greater,
+            "higher score should dominate tie-breaking"
+        );
+    }
+
+    #[test]
+    fn test_distance_candidate_order_is_deterministic() {
+        assert_eq!(
+            compare_distance_candidate(0, 0.20, 1, 0.20),
+            Ordering::Less,
+            "ascending distance sort should put the lower index first on ties"
+        );
+        assert_eq!(
+            compare_distance_candidate(1, 0.20, 0, 0.20),
+            Ordering::Greater,
+            "ascending distance sort should put the lower index first on ties"
+        );
+        assert_eq!(
+            compare_distance_candidate(1, 0.19, 0, 0.20),
+            Ordering::Less,
+            "lower distance should dominate tie-breaking"
+        );
+    }
 
     #[test]
     fn test_blackboard_write_read() {

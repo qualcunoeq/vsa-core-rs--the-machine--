@@ -33,6 +33,7 @@
 // 4. test_hierarchy_abstract_concept_formation — end-to-end cycle
 
 use crate::Hypervector;
+use std::cmp::Ordering;
 use std::f64;
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -47,6 +48,30 @@ pub const MAX_HIERARCHY_LEVELS: usize = 8;
 /// Minimum similarity for a level-2+ centroid to be considered "active"
 /// (i.e., the concept it represents is currently recognized).
 pub const LEVEL_ACTIVATION_SIMILARITY: f64 = 0.55;
+
+fn compare_similarity_candidate(
+    left_idx: usize,
+    left_sim: f64,
+    right_idx: usize,
+    right_sim: f64,
+) -> Ordering {
+    left_sim
+        .total_cmp(&right_sim)
+        // Lower indices win exact ties for reproducible projections.
+        .then_with(|| right_idx.cmp(&left_idx))
+}
+
+fn compare_distance_candidate(
+    left_idx: usize,
+    left_distance: f64,
+    right_idx: usize,
+    right_distance: f64,
+) -> Ordering {
+    left_distance
+        .total_cmp(&right_distance)
+        // Ascending distance order: lower index first on exact ties.
+        .then_with(|| left_idx.cmp(&right_idx))
+}
 
 // ─── ManifoldLevel ──────────────────────────────────────────────────────────
 
@@ -102,17 +127,26 @@ impl ManifoldLevel {
             return (*x, 1.0, 0);
         }
 
-        let mut best_idx = 0;
-        let mut best_sim = 0.0_f64;
+        let mut best: Option<(usize, f64)> = None;
 
         for (i, centroid) in self.centroids.iter().enumerate() {
             let sim = 1.0 - x.normalized_hamming_distance(centroid);
-            if sim > best_sim {
-                best_sim = sim;
-                best_idx = i;
+            if !sim.is_finite() {
+                continue;
+            }
+            let is_better = best
+                .map(|(best_idx, best_sim)| {
+                    compare_similarity_candidate(i, sim, best_idx, best_sim) == Ordering::Greater
+                })
+                .unwrap_or(true);
+            if is_better {
+                best = Some((i, sim));
             }
         }
 
+        let Some((best_idx, best_sim)) = best else {
+            return (*x, 0.0, 0);
+        };
         (self.centroids[best_idx], best_sim, best_idx)
     }
 
@@ -139,10 +173,14 @@ impl ManifoldLevel {
             .iter()
             .enumerate()
             .map(|(i, c)| (i, x.normalized_hamming_distance(c)))
+            .filter(|(_, d)| d.is_finite())
             .collect();
+        if dists.is_empty() {
+            return *x;
+        }
 
         // Sort by distance
-        dists.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+        dists.sort_by(|a, b| compare_distance_candidate(a.0, a.1, b.0, b.1));
 
         // ██ CORRECTED v3.1: numerically stable softmax over ALL centroids ██
         //
@@ -160,7 +198,9 @@ impl ManifoldLevel {
             w_sum += w;
         }
 
-        if w_sum < 1e-30 { return self.centroids[dists[0].0]; }
+        if w_sum < 1e-30 {
+            return self.centroids[dists[0].0];
+        }
 
         // Normalize weights — all centroids participate
         for (_, w) in weights.iter_mut() { *w /= w_sum; }
@@ -436,10 +476,11 @@ impl HierarchicalManifold {
                 let sim = 1.0 - unrotated.normalized_hamming_distance(c);
                 (i, sim)
             })
+            .filter(|(_, sim)| sim.is_finite())
             .collect();
 
         // Sort by similarity descending
-        scores.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
+        scores.sort_by(|a, b| compare_similarity_candidate(b.0, b.1, a.0, a.1));
 
         // Return only those above chance level (0.5 is random for binary HVs)
         scores.into_iter()
@@ -564,6 +605,44 @@ impl HierarchicalManifold {
 mod tests {
     use super::*;
     use crate::Hypervector;
+
+    #[test]
+    fn test_hierarchy_similarity_order_is_deterministic() {
+        assert_eq!(
+            compare_similarity_candidate(0, 0.75, 1, 0.75),
+            Ordering::Greater,
+            "lower index should win exact similarity ties"
+        );
+        assert_eq!(
+            compare_similarity_candidate(1, 0.75, 0, 0.75),
+            Ordering::Less,
+            "lower index should win exact similarity ties"
+        );
+        assert_eq!(
+            compare_similarity_candidate(1, 0.76, 0, 0.75),
+            Ordering::Greater,
+            "higher similarity should dominate tie-breaking"
+        );
+    }
+
+    #[test]
+    fn test_hierarchy_distance_order_is_deterministic() {
+        assert_eq!(
+            compare_distance_candidate(0, 0.25, 1, 0.25),
+            Ordering::Less,
+            "ascending distance order should put lower index first on ties"
+        );
+        assert_eq!(
+            compare_distance_candidate(1, 0.25, 0, 0.25),
+            Ordering::Greater,
+            "ascending distance order should put lower index first on ties"
+        );
+        assert_eq!(
+            compare_distance_candidate(1, 0.24, 0, 0.25),
+            Ordering::Less,
+            "lower distance should dominate tie-breaking"
+        );
+    }
 
     /// Test H1: Capacity grows linearly with levels.
     ///

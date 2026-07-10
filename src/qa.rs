@@ -34,6 +34,7 @@ use crate::hierarchy::HierarchicalManifold;
 use crate::nlp;
 use crate::resonator;
 use crate::Hypervector;
+use std::cmp::Ordering;
 use std::collections::{HashMap, VecDeque};
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -2546,6 +2547,33 @@ impl QaEngine {
             .cloned()
     }
 
+    fn compare_centroid_candidate(
+        left_idx: usize,
+        left_sim: f64,
+        right_idx: usize,
+        right_sim: f64,
+    ) -> Ordering {
+        left_sim
+            .total_cmp(&right_sim)
+            // Lower indices win exact ties so resolution does not depend on
+            // iterator or platform-specific floating comparison behavior.
+            .then_with(|| right_idx.cmp(&left_idx))
+    }
+
+    fn compare_association_candidate(
+        left_idx: usize,
+        left_sim: f64,
+        left_strength: f64,
+        right_idx: usize,
+        right_sim: f64,
+        right_strength: f64,
+    ) -> Ordering {
+        left_sim
+            .total_cmp(&right_sim)
+            .then_with(|| left_strength.total_cmp(&right_strength))
+            .then_with(|| right_idx.cmp(&left_idx))
+    }
+
     fn nearest_centroid_idx_raw(&self, vec: &Hypervector) -> Option<(usize, Hypervector, f64)> {
         self.cluster_centroids
             .iter()
@@ -2554,7 +2582,10 @@ impl QaEngine {
                 let sim = 1.0 - vec.normalized_hamming_distance(centroid);
                 (idx, *centroid, sim)
             })
-            .max_by(|(_, _, a), (_, _, b)| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))
+            .filter(|(_, _, sim)| sim.is_finite())
+            .max_by(|(left_idx, _, left_sim), (right_idx, _, right_sim)| {
+                Self::compare_centroid_candidate(*left_idx, *left_sim, *right_idx, *right_sim)
+            })
     }
 
     /// Resolve a text term to a semantically enriched hypervector.
@@ -2636,7 +2667,7 @@ impl QaEngine {
 
                 for &(target_idx, ref assoc_vec, strength, _) in assocs {
                     // Strength gate: only trust associations ≥ resolution threshold
-                    if strength < crate::ASSOCIATION_RESOLUTION_THRESHOLD {
+                    if !strength.is_finite() || strength < crate::ASSOCIATION_RESOLUTION_THRESHOLD {
                         continue;
                     }
                     if target_idx >= self.cluster_centroids.len() {
@@ -2646,8 +2677,25 @@ impl QaEngine {
                     // Reconstruct target centroid: centroids[n_idx] ⊕ assoc_vec
                     let reconstructed = self.cluster_centroids[n_idx].bitwise_xor(assoc_vec);
                     let sim = 1.0 - reconstructed.normalized_hamming_distance(&raw);
+                    if !sim.is_finite() {
+                        continue;
+                    }
 
-                    if sim > best_sim {
+                    let is_better = match (best_target_idx, best_strength) {
+                        (Some(current_idx), Some(current_strength)) => {
+                            Self::compare_association_candidate(
+                                target_idx,
+                                sim,
+                                strength,
+                                current_idx,
+                                best_sim,
+                                current_strength,
+                            ) == Ordering::Greater
+                        }
+                        _ => sim > best_sim,
+                    };
+
+                    if is_better {
                         best_sim = sim;
                         best_centroid = reconstructed;
                         best_target_idx = Some(target_idx);
@@ -3807,6 +3855,44 @@ mod tests {
             })
         );
         eprintln!("  ✓ Level 2: association traversal resolves coreference");
+    }
+
+    #[test]
+    fn test_centroid_candidate_ties_choose_lower_index() {
+        assert_eq!(
+            QaEngine::compare_centroid_candidate(1, 0.75, 0, 0.75),
+            std::cmp::Ordering::Less,
+            "lower centroid index should win exact similarity ties"
+        );
+        assert_eq!(
+            QaEngine::compare_centroid_candidate(0, 0.75, 1, 0.75),
+            std::cmp::Ordering::Greater,
+            "lower centroid index should win exact similarity ties"
+        );
+        assert_eq!(
+            QaEngine::compare_centroid_candidate(1, 0.76, 0, 0.75),
+            std::cmp::Ordering::Greater,
+            "higher similarity still dominates the tie-breaker"
+        );
+    }
+
+    #[test]
+    fn test_association_candidate_order_is_deterministic() {
+        assert_eq!(
+            QaEngine::compare_association_candidate(1, 0.70, 0.50, 0, 0.70, 0.50),
+            std::cmp::Ordering::Less,
+            "lower target index should win exact association ties"
+        );
+        assert_eq!(
+            QaEngine::compare_association_candidate(1, 0.70, 0.60, 0, 0.70, 0.50),
+            std::cmp::Ordering::Greater,
+            "stronger association should win when similarity ties"
+        );
+        assert_eq!(
+            QaEngine::compare_association_candidate(1, 0.71, 0.40, 0, 0.70, 0.90),
+            std::cmp::Ordering::Greater,
+            "higher reconstruction similarity should dominate association strength"
+        );
     }
 
     /// Level 3 validation: no clusters → raw n-gram fallback.
@@ -5762,22 +5848,10 @@ mod tests {
         let mut qa = QaEngine::new();
 
         qa.store_action(
-            "alpha",
-            "repair",
-            "cache",
-            "service",
-            "is",
-            "running",
-            "test",
+            "alpha", "repair", "cache", "service", "is", "running", "test",
         );
         qa.store_action(
-            "zeta",
-            "repair",
-            "cache",
-            "service",
-            "is",
-            "running",
-            "test",
+            "zeta", "repair", "cache", "service", "is", "running", "test",
         );
         qa.rule_mut(0).unwrap().confidence = 0.40;
         qa.rule_mut(1).unwrap().confidence = 0.90;
@@ -5794,22 +5868,10 @@ mod tests {
         let mut qa = QaEngine::new();
 
         qa.store_action(
-            "zeta",
-            "repair",
-            "cache",
-            "service",
-            "is",
-            "running",
-            "test",
+            "zeta", "repair", "cache", "service", "is", "running", "test",
         );
         qa.store_action(
-            "alpha",
-            "repair",
-            "cache",
-            "service",
-            "is",
-            "running",
-            "test",
+            "alpha", "repair", "cache", "service", "is", "running", "test",
         );
 
         let plan = qa.plan_for_goal("service", "is", "running", 3);
@@ -6017,27 +6079,23 @@ mod tests {
     fn test_evaluate_plan_outcome_report_is_deterministic() {
         let mut qa = QaEngine::new();
         qa.store_action(
-            "restart",
-            "service",
-            "api",
-            "service",
-            "is",
-            "running",
-            "test",
+            "restart", "service", "api", "service", "is", "running", "test",
         );
         qa.store_rule(
-            "service",
-            "is",
-            "running",
-            "system",
-            "is",
-            "healthy",
-            "test",
+            "service", "is", "running", "system", "is", "healthy", "test",
         );
 
         let plan = vec![PlanStep {
-            action: ("restart".to_string(), "service".to_string(), "api".to_string()),
-            achieves: ("service".to_string(), "is".to_string(), "running".to_string()),
+            action: (
+                "restart".to_string(),
+                "service".to_string(),
+                "api".to_string(),
+            ),
+            achieves: (
+                "service".to_string(),
+                "is".to_string(),
+                "running".to_string(),
+            ),
             confidence: 1.0,
             depth: 0,
             rule_chain: vec![1, 0, 1],
@@ -6051,21 +6109,15 @@ mod tests {
         assert_eq!(updates[0].outcome, 0.0);
         assert_eq!(updates[0].error, 1.0);
         assert!(updates[0].after < updates[0].before);
-        assert!(updates[0].summary().contains("restart service api -> service is running"));
+        assert!(updates[0]
+            .summary()
+            .contains("restart service api -> service is running"));
     }
 
     #[test]
     fn test_rule_confidence_update_report_clamps_error() {
         let mut qa = QaEngine::new();
-        qa.store_rule(
-            "a",
-            "causes",
-            "b",
-            "c",
-            "causes",
-            "d",
-            "test",
-        );
+        qa.store_rule("a", "causes", "b", "c", "causes", "d", "test");
 
         let update = qa.update_rule_confidence_report(0, -5.0).unwrap();
 

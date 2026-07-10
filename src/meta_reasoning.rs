@@ -44,6 +44,11 @@ pub const MAX_AUTONOMOUS_ITERATIONS: usize = 128;
 /// if future planners produce wider plans.
 pub const MAX_PLAN_STEPS_PER_ITERATION: usize = 16;
 
+/// Stop autonomous solving after this many consecutive cycles produce no new
+/// observations.  This prevents uncertain/stuck loops from burning the full
+/// iteration budget when probes or documentation acquisition add no evidence.
+pub const MAX_NO_PROGRESS_ITERATIONS: usize = 3;
+
 // ─── Types ─────────────────────────────────────────────────────────────────
 
 /// Deterministic explanation for a plan confidence calculation.
@@ -517,6 +522,18 @@ fn bounded_plan_step_count(plan_len: usize) -> usize {
     plan_len.min(MAX_PLAN_STEPS_PER_ITERATION)
 }
 
+fn next_no_progress_streak(current: usize, observations_added: usize) -> usize {
+    if observations_added == 0 {
+        current + 1
+    } else {
+        0
+    }
+}
+
+fn should_stop_for_no_progress(streak: usize) -> bool {
+    streak >= MAX_NO_PROGRESS_ITERATIONS
+}
+
 fn confidence_feedback_log(iteration: usize, updates: &[RuleConfidenceUpdate]) -> Vec<String> {
     updates
         .iter()
@@ -755,6 +772,7 @@ pub async fn solve_autonomously_with_learner(
     // use it (persistent across calls).  Otherwise create a fresh internal one.
     let mut internal_learner = AbstractionLearner::new();
     let learner_ref: &mut AbstractionLearner = learner.unwrap_or(&mut internal_learner);
+    let mut no_progress_streak = 0usize;
 
     // Store the problem as a fact
     qa.store_fact("system", "has_problem", problem, "autonomous_loop");
@@ -894,10 +912,22 @@ pub async fn solve_autonomously_with_learner(
             ReasoningState::Uncertain { hypotheses, .. } => {
                 let new_obs = resolve_uncertain(hypotheses, actuator, brain, target_ip).await;
                 let obs_count = crate::actuator::ingest_observations(brain, &new_obs);
+                no_progress_streak = next_no_progress_streak(no_progress_streak, obs_count);
                 iteration_log.push(format!(
-                    "[iter {}] Uncertainty → tested hypothesis, ingested {} observations",
-                    iteration, obs_count
+                    "[iter {}] Uncertainty → tested hypothesis, ingested {} observations, no_progress_streak={}",
+                    iteration, obs_count, no_progress_streak
                 ));
+                if should_stop_for_no_progress(no_progress_streak) {
+                    iteration_log.push(format!(
+                        "[iter {}] Stopping: no new observations for {} consecutive cycles",
+                        iteration, no_progress_streak
+                    ));
+                    return SolutionResult::Failed {
+                        iterations: iteration + 1,
+                        last_state: "no_progress".to_string(),
+                        log: iteration_log,
+                    };
+                }
                 // Forward chain with the new information
                 qa.forward_chain(0.75);
             }
@@ -905,10 +935,22 @@ pub async fn solve_autonomously_with_learner(
             ReasoningState::Stuck { problem: p, .. } => {
                 let new_obs = resolve_stuck(&p, actuator, brain).await;
                 let obs_count = crate::actuator::ingest_observations(brain, &new_obs);
+                no_progress_streak = next_no_progress_streak(no_progress_streak, obs_count);
                 iteration_log.push(format!(
-                    "[iter {}] Stuck → acquired knowledge, ingested {} observations",
-                    iteration, obs_count
+                    "[iter {}] Stuck → acquired knowledge, ingested {} observations, no_progress_streak={}",
+                    iteration, obs_count, no_progress_streak
                 ));
+                if should_stop_for_no_progress(no_progress_streak) {
+                    iteration_log.push(format!(
+                        "[iter {}] Stopping: no new observations for {} consecutive cycles",
+                        iteration, no_progress_streak
+                    ));
+                    return SolutionResult::Failed {
+                        iterations: iteration + 1,
+                        last_state: "no_progress".to_string(),
+                        log: iteration_log,
+                    };
+                }
                 // Forward chain with the new knowledge
                 qa.forward_chain(0.75);
             }
@@ -1124,6 +1166,20 @@ mod tests {
             bounded_plan_step_count(MAX_PLAN_STEPS_PER_ITERATION + 10),
             MAX_PLAN_STEPS_PER_ITERATION
         );
+    }
+
+    #[test]
+    fn test_no_progress_streak_updates_deterministically() {
+        assert_eq!(next_no_progress_streak(0, 0), 1);
+        assert_eq!(next_no_progress_streak(1, 0), 2);
+        assert_eq!(next_no_progress_streak(2, 4), 0);
+    }
+
+    #[test]
+    fn test_no_progress_stop_threshold() {
+        assert!(!should_stop_for_no_progress(0));
+        assert!(!should_stop_for_no_progress(MAX_NO_PROGRESS_ITERATIONS - 1));
+        assert!(should_stop_for_no_progress(MAX_NO_PROGRESS_ITERATIONS));
     }
 
     #[test]

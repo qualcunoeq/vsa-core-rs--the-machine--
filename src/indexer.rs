@@ -41,8 +41,22 @@ pub const INDEXER_DIM: usize = 256;
 /// Number of u64 blocks in a low‑dimension fingerprint.
 pub const INDEXER_U64_BLOCKS: usize = 4;
 
+/// Number of bits in the medium‑dimension fingerprint (multi-resolution cascade).
+/// 1024 bits = 16 u64 blocks, 10× cheaper than full 10240-bit comparison.
+/// Reference: GLM-5 Multi-Latent Attention with 256-dim KV latent (was 192).
+pub const MEDIUM_INDEXER_DIM: usize = 1024;
+
+/// Number of u64 blocks in a medium‑dimension fingerprint.
+pub const MEDIUM_INDEXER_U64_BLOCKS: usize = 16;
+
 /// Default number of top candidates to pass through to full projection.
 pub const DEFAULT_TOP_K: usize = 10;
+
+/// Number of candidates to pass through the medium-dim stage of the cascade.
+pub const CASCADE_MEDIUM_K: usize = 20;
+
+/// Number of candidates to pass through to full 10240-bit verification.
+pub const CASCADE_FULL_K: usize = 5;
 
 /// Absolute maximum top‑k to prevent pathological cases.
 pub const MAX_TOP_K: usize = 64;
@@ -130,6 +144,14 @@ impl FingerprintStrategy {
         }
     }
 
+    /// Extract a 1024‑bit medium-dim fingerprint for the cascade.
+    pub fn extract_medium(&self, hv: &Hypervector) -> MediumDimVector {
+        match self {
+            FingerprintStrategy::BlockSampling => extract_medium_block_sampling(hv),
+            FingerprintStrategy::Learned(proj) => extract_medium_learned(hv, &proj.positions),
+        }
+    }
+
     /// Returns a human‑readable name for the strategy.
     pub fn name(&self) -> &'static str {
         match self {
@@ -137,6 +159,62 @@ impl FingerprintStrategy {
             FingerprintStrategy::Learned(_) => "Learned",
         }
     }
+}
+
+// ─── Medium‑Dim Vector (Multi‑Resolution Cascade) ───────────────────────────
+
+/// A 1024‑bit vector used as an intermediate pre‑filter in the multi‑resolution
+/// cascade.  10× cheaper than full 10240‑bit comparison (16 u64 XOR vs 160).
+///
+/// Reference: GLM-5 Multi-Latent Attention with 256-dim KV latent —
+/// a mid-resolution latent reduces the candidate pool before expensive
+/// full-resolution verification.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+pub struct MediumDimVector {
+    pub bits: [u64; MEDIUM_INDEXER_U64_BLOCKS],
+}
+
+impl MediumDimVector {
+    /// Normalized Hamming distance between two 1024‑bit vectors.
+    pub fn normalized_hamming_distance(&self, other: &Self) -> f64 {
+        let mut diff: u64 = 0;
+        for i in 0..MEDIUM_INDEXER_U64_BLOCKS {
+            diff += (self.bits[i] ^ other.bits[i]).count_ones() as u64;
+        }
+        (diff as f64) / (MEDIUM_INDEXER_DIM as f64)
+    }
+
+    /// Cosine‑analogue similarity: 1.0 − NHammingDistance.
+    pub fn similarity(&self, other: &Self) -> f64 {
+        1.0 - self.normalized_hamming_distance(other)
+    }
+}
+
+/// Extract a 1024‑bit medium-dim fingerprint from a full 10240-bit hypervector.
+/// Uses 16 well-separated u64 blocks at uniform strides.
+fn extract_medium_block_sampling(hv: &Hypervector) -> MediumDimVector {
+    const BLOCK_STRIDE: usize = crate::U64_BLOCKS / MEDIUM_INDEXER_U64_BLOCKS; // 160/16 = 10
+    let mut bits = [0u64; MEDIUM_INDEXER_U64_BLOCKS];
+    for i in 0..MEDIUM_INDEXER_U64_BLOCKS {
+        bits[i] = hv.bits[i * BLOCK_STRIDE];
+    }
+    MediumDimVector { bits }
+}
+
+/// Extract a 1024‑bit medium-dim fingerprint using learned positions.
+/// Uses the first 1024 positions from the LearnedProjector's training.
+fn extract_medium_learned(hv: &Hypervector, positions: &[usize]) -> MediumDimVector {
+    // Use the first 1024 learned positions (or all available, capped at 1024)
+    let n = positions.len().min(MEDIUM_INDEXER_DIM);
+    let mut bits = [0u64; MEDIUM_INDEXER_U64_BLOCKS];
+    for i in 0..n {
+        let pos = positions[i];
+        let block = pos / 64;
+        let bit = pos % 64;
+        let val = (hv.bits[block] >> bit) & 1;
+        bits[i / 64] |= val << (i % 64);
+    }
+    MediumDimVector { bits }
 }
 
 // ─── Learned Projector ──────────────────────────────────────────────────────
@@ -351,14 +429,22 @@ impl LearnedProjector {
 /// uninformative (≤3% of queries with K ≤ 200).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct LightningIndexer {
-    /// Low‑dim fingerprints for each centroid.
+    /// Low‑dim fingerprints for each centroid (256-bit).
     fingerprints: Vec<LowDimVector>,
+
+    /// Medium‑dim fingerprints for each centroid (1024-bit, multi-resolution cascade).
+    medium_fingerprints: Vec<MediumDimVector>,
 
     /// Number of top candidates to return from `search`.
     top_k: usize,
 
     /// Fingerprint extraction strategy.
     strategy: FingerprintStrategy,
+
+    /// Enable multi-resolution cascade search (256→1024→10240-bit).
+    /// Reference: GLM-5 §2.1 Multi-Latent Attention — mid-resolution latent
+    /// reduces candidate pool before expensive full verification.
+    cascade_enabled: bool,
 
     /// Number of centroids at last rebuild (for invalidation detection).
     last_count: usize,
@@ -384,8 +470,10 @@ impl LightningIndexer {
         let k = top_k.clamp(1, MAX_TOP_K);
         LightningIndexer {
             fingerprints: Vec::new(),
+            medium_fingerprints: Vec::new(),
             top_k: k,
             strategy: FingerprintStrategy::BlockSampling,
+            cascade_enabled: false,
             last_count: 0,
             queries_processed: 0,
             top1_hits: 0,
@@ -397,8 +485,10 @@ impl LightningIndexer {
         let k = top_k.clamp(1, MAX_TOP_K);
         LightningIndexer {
             fingerprints: Vec::new(),
+            medium_fingerprints: Vec::new(),
             top_k: k,
             strategy,
+            cascade_enabled: false,
             last_count: 0,
             queries_processed: 0,
             top1_hits: 0,
@@ -416,6 +506,7 @@ impl LightningIndexer {
     /// compact_clusters, or sync_cluster_data).
     pub fn rebuild(&mut self, centroids: &[Hypervector]) {
         self.fingerprints = centroids.iter().map(|c| self.strategy.extract(c)).collect();
+        self.medium_fingerprints = centroids.iter().map(|c| self.strategy.extract_medium(c)).collect();
         self.last_count = centroids.len();
         // Reset telemetry on rebuild (new epoch).
         self.queries_processed = 0;
@@ -543,6 +634,128 @@ impl LightningIndexer {
 
         verified.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
         verified
+    }
+
+    /// Multi‑resolution cascade search.
+    ///
+    /// Three‑level pre‑filter inspired by GLM-5's Multi-Latent Attention:
+    ///
+    /// 1. **256‑bit scan** (40× cheaper): compare all K centroids, keep top `N1`.
+    /// 2. **1024‑bit scan** (10× cheaper): compare top N1 candidates, keep top `N2`.
+    /// 3. **10240‑bit verification**: full similarity on N2 candidates.
+    ///
+    /// Reference: GLM-5 §2.1 "Multi-Latent Attention with 256-dim KV latent."
+    /// The mid-resolution latent reduces the candidate pool before expensive
+    /// full-resolution verification, analogous to MLA's compressed KV cache.
+    pub fn search_cascade(
+        &self,
+        query: &Hypervector,
+        centroids: &[Hypervector],
+        n1: usize,   // candidates past stage 1 (e.g. 20)
+        n2: usize,   // candidates past stage 2 (e.g. 5)
+    ) -> Vec<(usize, f64)> {
+        if self.fingerprints.is_empty() || self.medium_fingerprints.is_empty() {
+            return Vec::new();
+        }
+
+        // Stage 1: 256-bit scan of all centroids
+        let q_fp = self.strategy.extract(query);
+        let n1 = n1.min(self.fingerprints.len());
+        let mut stage1: Vec<(usize, f64)> = self
+            .fingerprints
+            .iter()
+            .enumerate()
+            .map(|(i, fp)| (i, q_fp.similarity(fp)))
+            .collect();
+
+        if n1 < stage1.len() {
+            stage1.select_nth_unstable_by(n1, |a, b| b.1.total_cmp(&a.1));
+            stage1.truncate(n1);
+        }
+        stage1.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+
+        // Stage 2: 1024-bit scan of the top N1 candidates
+        let q_med = self.strategy.extract_medium(query);
+        let n2 = n2.min(stage1.len());
+        let mut stage2: Vec<(usize, f64)> = stage1
+            .iter()
+            .map(|&(idx, _)| {
+                let med_sim = if idx < self.medium_fingerprints.len() {
+                    q_med.similarity(&self.medium_fingerprints[idx])
+                } else {
+                    0.0
+                };
+                (idx, med_sim)
+            })
+            .collect();
+
+        if n2 < stage2.len() {
+            stage2.select_nth_unstable_by(n2, |a, b| b.1.total_cmp(&a.1));
+            stage2.truncate(n2);
+        }
+        stage2.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+
+        // Stage 3: Full 10240-bit verification on the top N2 candidates
+        let mut verified: Vec<(usize, f64)> = stage2
+            .iter()
+            .map(|&(idx, _)| {
+                let full_sim = if idx < centroids.len() {
+                    1.0 - query.normalized_hamming_distance(&centroids[idx])
+                } else {
+                    -1.0
+                };
+                (idx, full_sim)
+            })
+            .filter(|(_, sim)| sim.is_finite())
+            .collect();
+
+        verified.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+        verified
+    }
+
+    /// Cascade search with similarity threshold verification.
+    /// Combines the multi-resolution cascade with a final threshold check.
+    /// Returns only candidates whose full similarity ≥ threshold.
+    pub fn cascade_search_verified(
+        &mut self,
+        query: &Hypervector,
+        centroids: &[Hypervector],
+        threshold_sim: f64,
+    ) -> Vec<(usize, f64)> {
+        self.queries_processed += 1;
+
+        let results = self.search_cascade(query, centroids, CASCADE_MEDIUM_K, CASCADE_FULL_K);
+        if results.is_empty() {
+            return Vec::new();
+        }
+
+        let verified: Vec<(usize, f64)> = results
+            .into_iter()
+            .filter(|(_, sim)| *sim >= threshold_sim)
+            .collect();
+
+        if let Some(&(_, _)) = verified.first() {
+            self.top1_hits += 1;
+        }
+
+        verified
+    }
+
+    /// Enable multi-resolution cascade search.
+    /// When enabled, `search_with_similarity` uses the 3-level cascade
+    /// (256→1024→10240-bit) instead of the 2-level (256→10240-bit).
+    pub fn enable_cascade(&mut self) {
+        self.cascade_enabled = true;
+    }
+
+    /// Disable cascade search, falling back to the standard 2-level path.
+    pub fn disable_cascade(&mut self) {
+        self.cascade_enabled = false;
+    }
+
+    /// Returns true if the multi-resolution cascade is enabled.
+    pub fn cascade_is_enabled(&self) -> bool {
+        self.cascade_enabled
     }
 
     /// Return the indexer's top‑k setting.

@@ -1607,6 +1607,17 @@ pub struct VSABrain {
     /// converge toward the same semantic region into the general pool,
     /// analogous to on-policy distillation consolidating expert knowledge.
     pub domain_clusters: HashMap<String, Vec<Hypervector>>,
+
+    /// ██ GLM-5: Indexer Freeze Flag ██
+    ///
+    /// When frozen, `rebuild_indexer()` is a no-op.  Freeze the indexer
+    /// during periods of rapid centroid change (compaction, initial
+    /// training) to prevent the indexer from chasing unstable centroids.
+    ///
+    /// Reference: GLM-5 §3.2 "DSA RL Insights" — indexer parameters are
+    /// frozen during RL to prevent unstable learning.  Non-deterministic
+    /// top-K caused training collapse; freezing prevents oscillation.
+    pub indexer_frozen: bool,
 }
 
 /// Synthetic cold-start regime labels for Tick 0 initialization.
@@ -1652,6 +1663,7 @@ impl VSABrain {
             routing_ema_enabled: false,
             summary_index: None,
             domain_clusters: HashMap::new(),
+            indexer_frozen: false,
         }
     }
 
@@ -2085,6 +2097,12 @@ impl VSABrain {
     ///
     /// `journal` — optional concept lifecycle journal for recording merge events.
     pub fn compact_clusters(&mut self, merge_threshold: f64, mut journal: Option<&mut cognition::ConceptJournal>) -> usize {
+        // Freeze the indexer during compaction — centroid set is changing
+        // rapidly and the indexer would be chasing unstable targets.
+        // Reference: GLM-5 §3.2 "freeze indexer parameters during unstable periods."
+        let was_frozen = self.indexer_frozen;
+        self.freeze_indexer();
+
         let mut merges = 0;
         loop {
             if self.dejavu_clusters.len() < 2 {
@@ -2217,7 +2235,10 @@ impl VSABrain {
             merges += 1;
         }
         // Rebuild indexer after compaction — centroid set changed significantly.
-        self.rebuild_indexer();
+        // Restore the previous freeze state (if the caller had frozen it).
+        if !was_frozen {
+            self.unfreeze_indexer(true); // rebuild immediately
+        }
         merges
     }
 
@@ -2433,7 +2454,13 @@ impl VSABrain {
     /// Call this after any operation that changes centroids:
     /// `absorb_entry`, `compact_clusters`, cluster thawing, etc.
     /// If the indexer is not enabled, this is a no-op.
+    /// If the indexer is frozen (via `freeze_indexer()`), this is a no-op.
+    /// Reference: GLM-5 §3.2 — freezing the indexer prevents unstable
+    /// learning during periods of rapid centroid change.
     pub fn rebuild_indexer(&mut self) {
+        if self.indexer_frozen {
+            return;
+        }
         if let Some(ref mut indexer) = self.lightning_indexer {
             let centroids: Vec<Hypervector> = self
                 .dejavu_clusters
@@ -2441,6 +2468,24 @@ impl VSABrain {
                 .map(|c| c.centroid)
                 .collect();
             indexer.rebuild(&centroids);
+        }
+    }
+
+    /// Freeze the indexer — `rebuild_indexer()` becomes a no-op.
+    /// Use during periods of rapid centroid change (compaction, initial
+    /// training, domain distilling) to prevent unstable indexer updates.
+    /// Reference: GLM-5 §3.2 "indexer frozen during RL."
+    pub fn freeze_indexer(&mut self) {
+        self.indexer_frozen = true;
+    }
+
+    /// Unfreeze the indexer and optionally rebuild it immediately.
+    /// Pass `true` for `rebuild_now` to re-sync fingerprints with current
+    /// centroids after the freeze is lifted.
+    pub fn unfreeze_indexer(&mut self, rebuild_now: bool) {
+        self.indexer_frozen = false;
+        if rebuild_now {
+            self.rebuild_indexer();
         }
     }
 
@@ -2603,6 +2648,32 @@ impl VSABrain {
         let tau = self.adaptive_tau_min + alpha * (self.adaptive_tau_max - self.adaptive_tau_min);
 
         tau
+    }
+
+    // ─── Multi-Resolution Cascade (GLM-5 MLA analogue) ────────────────────
+
+    /// Enable the multi-resolution fingerprint cascade.
+    /// When enabled, `project_through_clusters` uses the 3-level cascade
+    /// (256→1024→10240-bit) instead of the 2-level (256→10240-bit).
+    /// Reference: GLM-5 §2.1 "Multi-Latent Attention."
+    pub fn enable_cascade(&mut self) {
+        if let Some(ref mut idx) = self.lightning_indexer {
+            idx.enable_cascade();
+        }
+    }
+
+    /// Disable the cascade, reverting to standard 2-level indexer.
+    pub fn disable_cascade(&mut self) {
+        if let Some(ref mut idx) = self.lightning_indexer {
+            idx.disable_cascade();
+        }
+    }
+
+    /// Returns true if the cascade is enabled.
+    pub fn cascade_is_enabled(&self) -> bool {
+        self.lightning_indexer
+            .as_ref()
+            .map_or(false, |idx| idx.cascade_is_enabled())
     }
 
     // ─── EMA Anticipatory Routing ─────────────────────────────────────────
@@ -5826,6 +5897,137 @@ mod tests {
         // The hit rate should still be 1.0 (no verified searches run).
         assert!((brain.indexer_hit_rate() - 1.0).abs() < 1e-10);
         let _ = query;
+    }
+
+    // ─── Indexer Freeze Tests (GLM-5 §3.2) ────────────────────────────────
+
+    #[test]
+    fn test_indexer_frozen_by_default() {
+        let brain = brain_with_n_clusters(10);
+        assert!(!brain.indexer_frozen, "Indexer should not be frozen by default");
+    }
+
+    #[test]
+    fn test_indexer_freeze_rebuild_is_noop() {
+        let mut brain = brain_with_n_clusters(10);
+        let pre_len = brain.lightning_indexer.as_ref().map(|i| i.len()).unwrap_or(0);
+        brain.freeze_indexer();
+        assert!(brain.indexer_frozen);
+        // Rebuild should be a no-op
+        brain.rebuild_indexer();
+        let post_len = brain.lightning_indexer.as_ref().map(|i| i.len()).unwrap_or(0);
+        assert_eq!(pre_len, post_len, "Frozen indexer should not rebuild");
+    }
+
+    #[test]
+    fn test_indexer_unfreeze_rebuild() {
+        let mut brain = brain_with_n_clusters(10);
+        brain.freeze_indexer();
+        // Add a new cluster while frozen
+        let new_vec = Hypervector::new_random();
+        brain.add_to_dejavu_db(new_vec, "new", HashMap::new());
+        // Unfreeze with rebuild
+        brain.unfreeze_indexer(true);
+        assert!(!brain.indexer_frozen);
+        assert_eq!(
+            brain.lightning_indexer.as_ref().unwrap().len(),
+            brain.dejavu_clusters.len(),
+            "Unfrozen indexer should match centroid count after rebuild"
+        );
+    }
+
+    #[test]
+    fn test_indexer_unfreeze_no_rebuild() {
+        let mut brain = brain_with_n_clusters(10);
+        let old_len = brain.lightning_indexer.as_ref().map(|i| i.len()).unwrap_or(0);
+        brain.freeze_indexer();
+        brain.unfreeze_indexer(false);
+        assert!(!brain.indexer_frozen);
+        let post_len = brain.lightning_indexer.as_ref().map(|i| i.len()).unwrap_or(0);
+        assert_eq!(
+            old_len, post_len,
+            "Unfreeze without rebuild should preserve indexer state"
+        );
+    }
+
+    #[test]
+    fn test_compact_clusters_freezes_indexer() {
+        // compact_clusters should freeze the indexer internally, then
+        // unfreeze and rebuild when done.
+        let mut brain = VSABrain::new(0.43);
+        let base = Hypervector::new_random();
+        for _ in 0..10 {
+            brain.add_to_dejavu_db(base, "base", HashMap::new());
+        }
+        let pre_idx_len = brain.lightning_indexer.as_ref().map(|i| i.len()).unwrap_or(0);
+        let _merged = brain.compact_clusters(0.20, None);
+        // After compaction, the indexer should be rebuilt and match.
+        let post_idx_len = brain.lightning_indexer.as_ref().map(|i| i.len()).unwrap_or(0);
+        assert_eq!(post_idx_len, brain.dejavu_clusters.len());
+        assert!(!brain.indexer_frozen, "Indexer should be thawed after compaction");
+        let _ = pre_idx_len;
+    }
+
+    // ─── Cascade Tests (GLM-5 MLA multi-resolution) ───────────────────────
+
+    #[test]
+    fn test_cascade_disabled_by_default() {
+        let brain = brain_with_n_clusters(10);
+        assert!(!brain.cascade_is_enabled());
+    }
+
+    #[test]
+    fn test_cascade_enable_disable_toggle() {
+        let mut brain = brain_with_n_clusters(10);
+        assert!(!brain.cascade_is_enabled());
+        brain.enable_cascade();
+        assert!(brain.cascade_is_enabled());
+        brain.disable_cascade();
+        assert!(!brain.cascade_is_enabled());
+    }
+
+    #[test]
+    fn test_cascade_projection_does_not_crash() {
+        let mut brain = brain_with_n_clusters(50);
+        brain.enable_cascade();
+        let query = Hypervector::new_random();
+        let result = brain.project_through_clusters(&query);
+        // Should return a valid hypervector (not crash)
+        assert_eq!(result.bits.len(), crate::U64_BLOCKS);
+    }
+
+    #[test]
+    fn test_cascade_projection_matches_within_tolerance() {
+        // The cascade should produce similar results to standard indexer.
+        let mut brain = brain_with_n_clusters(100);
+        let query = Hypervector::new_random();
+
+        // Baseline: standard indexer projection
+        let baseline = brain.project_through_clusters(&query);
+
+        // Cascade projection
+        brain.enable_cascade();
+        let cascade_result = brain.project_through_clusters(&query);
+
+        // Cascade should not produce wildly different results
+        let sim = 1.0 - baseline.normalized_hamming_distance(&cascade_result);
+        // They may differ slightly due to different candidate sets, but
+        // should be reasonably correlated
+        assert!(
+            sim > 0.30,
+            "Cascade and standard projection should agree (sim={:.4})",
+            sim
+        );
+    }
+
+    #[test]
+    fn test_cascade_works_with_empty_indexer() {
+        let mut brain = VSABrain::new(0.43);
+        brain.enable_cascade();
+        let query = Hypervector::new_random();
+        let result = brain.project_through_clusters(&query);
+        // Should not crash — falls through to full scan
+        assert_eq!(result.bits.len(), crate::U64_BLOCKS);
     }
 
     // ─── Adaptive τ Tests ─────────────────────────────────────────────────

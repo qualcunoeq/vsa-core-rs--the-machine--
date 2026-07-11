@@ -954,9 +954,23 @@ pub fn soft_project_indexed(
         _ => return soft_project(x, clusters, tau),
     };
 
+    // Use multi-resolution cascade when enabled (GLM-5 MLA analogue).
+    // The cascade does 3-level pre-filter: 256→1024→10240-bit.
+    let centroids: Vec<Hypervector> = clusters.iter().map(|c| c.centroid).collect();
+    let cascade_candidates = || -> Option<Vec<(usize, f64)>> {
+        if !indexer.cascade_is_enabled() {
+            return None;
+        }
+        let results = indexer.search_cascade(x, &centroids, crate::indexer::CASCADE_MEDIUM_K, crate::indexer::CASCADE_FULL_K);
+        if results.is_empty() { None } else { Some(results) }
+    };
+
     if tau < 1e-12 {
         // Hard projection: use indexer to find nearest centroid.
-        let candidates = indexer.search_with_similarity(x);
+        let candidates = match cascade_candidates() {
+            Some(c) => c,
+            None => indexer.search_with_similarity(x),
+        };
         if candidates.is_empty() {
             return soft_project(x, clusters, tau);
         }
@@ -979,12 +993,17 @@ pub fn soft_project_indexed(
     }
 
     // ── Soft projection with indexer pre‑filter ──────────────────
-    let candidates = indexer.search_with_similarity(x);
+    let candidates = match cascade_candidates() {
+        Some(c) => c,
+        None => indexer.search_with_similarity(x),
+    };
     if candidates.is_empty() {
         return soft_project(x, clusters, tau);
     }
 
     // Compute full distances for candidates only.
+    // (For cascade results, full similarity is already computed, but we
+    //  still need NHD for the softmax calculation.)
     let mut dists: Vec<(usize, f64)> = candidates
         .iter()
         .map(|&(idx, _)| (idx, x.normalized_hamming_distance(&clusters[idx].centroid)))

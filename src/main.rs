@@ -613,6 +613,7 @@ async fn run_agent(
     // 3. Initialize local brain read-only cache
     let mut brain = VSABrain::new(0.43);
     brain.dejavu_clusters = initial_clusters;
+    brain.decision_journal.path = Some("data/decision_journal.json".to_string());
 
     // General-purpose telemetry variables for cognitive state tracking
     brain.register_variable("cpu_utilization", 0.0, 100.0);
@@ -1364,6 +1365,16 @@ async fn run_agent(
                         brain_write.confidence_calibration.record_store(&qa_read.episode_store);
                     }
                     drop(qa_read);
+
+                    // Persist decision journal (Layer 3 budget decisions)
+                    {
+                        let brain_read = brain_subconscious.read().await;
+                        if !brain_read.decision_journal.is_empty() {
+                            if let Err(e) = brain_read.decision_journal.save() {
+                                eprintln!("[tick {}] Failed to save decision journal: {}", ticker, e);
+                            }
+                        }
+                    }
                 }
 
                 // ── LAYER 0: Induce rules from Markov transitions ─────

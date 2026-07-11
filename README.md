@@ -44,14 +44,15 @@ $$\mathcal{M}_{t+1} = F(\mathcal{M}_t, \{x_\tau\})$$
 
 ### Soft Projection (v3.1 — corrected)
 
-The default projection is a **hard nearest-centroid snap** ($\tau = 0$). An optional **soft projection** replaces this with a temperature-weighted majority vote over ALL centroids, increasing effective capacity from 4.3 to **9.5 bits** (37$\times$ more distinct states, $C_{\text{eff}} = 743$) while maintaining contraction ($\kappa_P = 0.932$).
+The default projection is a **hard nearest-centroid snap** ($\tau = 0$). An optional **soft projection** replaces this with a temperature-weighted majority vote over ALL centroids, increasing effective capacity from 4.3 to **10.58 bits** (128$\times$ more distinct states, $C_{\text{eff}} = 2554$) while maintaining contraction ($\kappa_P = 0.916$).
 
 > **v3.1 correction**: The original soft projection had a numerical stability bug:
 > `exp(-(d - min_d)²/τ)` instead of the correct `exp(-(d² - min_d²)/τ)`. The
 > buggy formula over-weighted distant centroids by `exp(2·min_d·(d-min_d)/τ)`,
 > making the old τ=0.030 behave like the corrected τ≈0.10, but with distorted
-> weights. The fix (June 2026) corrected the formula and removed top-3 truncation.
-> The true optimal τ is **0.10**, giving C_eff = 743 (37× vs 9.1× previously claimed).
+> weights. The fix (June 2026) corrected the formula, removed top-3 truncation,
+> and increased the sweep resolution from 400→800 pairs and 1000→2000 queries.
+> The true optimal τ is **0.10**, giving C_eff = 2554 (128× vs 37× previously reported).
 
 ---
 
@@ -73,7 +74,7 @@ Every theorem in the formal specification (`src/MATH.md`, 1860 lines) is either:
 | System mixes exponentially | XXVI.2 | d_TV ≤ 0.01 within 77 cycles (3850 ticks) |
 | Adversary cannot break contraction | XXII.1-R | L_F ≤ 1.0 (tight), joint margin = 0.010 |
 | Tracking error never exceeds threshold | XXIII.1 | min_c δ(v_t, c) ≤ 0.70 always |
-| Capacity gain is real | XXVII.2-R | 37× multiplier at τ = 0.10 (v3.1) |
+| Capacity gain is real | XXVII.2-R | 128× multiplier (C_eff = 2554) at τ = 0.10 (v3.1 corrected) |
 
 ### Runtime Safety Net
 

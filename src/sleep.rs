@@ -59,6 +59,7 @@
 // 6. test_bounded_duration             — Sleep completes in bounded steps
 // 7. test_trajectory_clear_on_complete — Buffer cleared after sleep
 
+use crate::cognition::{ConceptEvent, ConceptEventType, ConceptJournal};
 use crate::Hypervector;
 use crate::hierarchy::HierarchicalManifold;
 use crate::abstractor::Abstractor;
@@ -340,6 +341,7 @@ impl SleepCycle {
     /// * `hierarchy` — The hierarchical manifold (for L3 registration).
     /// * `abstractor` — The abstractor (for coherence data).
     /// * `error_history` — Recent prediction errors (for plateau checking).
+    /// * `journal` — Optional concept lifecycle journal for recording events.
     ///
     /// Returns a SleepReport with everything that happened.
     pub fn cycle(
@@ -348,12 +350,14 @@ impl SleepCycle {
         hierarchy: &mut HierarchicalManifold,
         abstractor: &Abstractor,
         _error_history: &[f64],
+        mut journal: Option<&mut ConceptJournal>,
     ) -> SleepReport {
         self.sleeping = true;
         self.phase = 1;
         self.total_sleep_cycles += 1;
 
         let trajectory_len = trajectory.len();
+        let cycle_count = self.total_sleep_cycles;
 
         // ── PHASE 1: REPLAY ────────────────────────────────────────────
         // Scan trajectory for transition points (identity delta spikes)
@@ -364,11 +368,11 @@ impl SleepCycle {
 
         // ── PHASE 3: L3 META-ABSTRACTION ───────────────────────────────
         self.phase = 3;
-        let l3_created = self.phase3_l3_abstraction(hierarchy);
+        let l3_created = self.phase3_l3_abstraction(hierarchy, &mut journal, cycle_count);
 
         // ── PHASE 4: PRUNING ───────────────────────────────────────────
         self.phase = 4;
-        let l2_pruned = self.phase4_pruning(hierarchy, abstractor);
+        let l2_pruned = self.phase4_pruning(hierarchy, abstractor, &mut journal, cycle_count);
 
         // Clear the activation history for the next wake cycle
         self.l2_history.clear();
@@ -386,7 +390,7 @@ impl SleepCycle {
             l2_concepts_pruned: l2_pruned,
             trajectory_before: trajectory_len,
             trajectory_after: 0, // caller clears trajectory
-            total_sleep_cycles: self.total_sleep_cycles,
+            total_sleep_cycles: cycle_count,
         }
     }
 
@@ -469,7 +473,7 @@ impl SleepCycle {
 
     /// Run community detection on L2 co-occurrence matrix and register
     /// L3 meta-concepts in the hierarchy.
-    fn phase3_l3_abstraction(&self, hierarchy: &mut HierarchicalManifold) -> usize {
+    fn phase3_l3_abstraction_impl(&self, hierarchy: &mut HierarchicalManifold) -> usize {
         // Need at least 3 hierarchy levels (L1, L2, L3)
         if hierarchy.levels.len() < 3 {
             return 0;
@@ -583,12 +587,43 @@ impl SleepCycle {
         created
     }
 
+    /// Phase 3 wrapper that pushes journal events for L3 concept creation.
+    fn phase3_l3_abstraction(
+        &self,
+        hierarchy: &mut HierarchicalManifold,
+        journal: &mut Option<&mut ConceptJournal>,
+        cycle_count: u64,
+    ) -> usize {
+        let before = hierarchy.levels.get(2).map(|l| l.centroids.len()).unwrap_or(0);
+        let created = self.phase3_l3_abstraction_impl(hierarchy);
+        let after = hierarchy.levels.get(2).map(|l| l.centroids.len()).unwrap_or(0);
+
+        // Journal newly created L3 concepts
+        if created > 0 {
+            if let Some(j) = journal.as_mut() {
+                for idx in before..after.min(before + created) {
+                    j.push(ConceptEvent {
+                        tick: self.tick,
+                        event_type: ConceptEventType::Created,
+                        level: 3,
+                        concept_idx: Some(idx),
+                        details: format!(
+                            "L3 concept {} created (sleep cycle {})",
+                            idx, cycle_count,
+                        ),
+                    });
+                }
+            }
+        }
+        created
+    }
+
     // ═════════════════════════════════════════════════════════════════════
     // PHASE 4: PRUNING
     // ═════════════════════════════════════════════════════════════════════
 
     /// Prune low-coherence L2 concepts from the hierarchy.
-    fn phase4_pruning(&self, hierarchy: &mut HierarchicalManifold, abstractor: &Abstractor) -> usize {
+    fn phase4_pruning_impl(&self, hierarchy: &mut HierarchicalManifold, abstractor: &Abstractor) -> usize {
         if hierarchy.levels.len() < 2 {
             return 0;
         }
@@ -616,6 +651,47 @@ impl SleepCycle {
         }
 
         to_dissolve.len()
+    }
+
+    /// Phase 4 wrapper that pushes journal events for L2 concept dissolution.
+    fn phase4_pruning(
+        &self,
+        hierarchy: &mut HierarchicalManifold,
+        abstractor: &Abstractor,
+        journal: &mut Option<&mut ConceptJournal>,
+        cycle_count: u64,
+    ) -> usize {
+        // Get low-coherence indices before dissolving (for journaling)
+        let mut to_dissolve: Vec<usize> = Vec::new();
+        if hierarchy.levels.len() >= 2 {
+            let l2_level = &hierarchy.levels[1];
+            for (i, score) in abstractor.coherence.scores.iter().enumerate() {
+                if *score < PRUNE_COHERENCE_THRESHOLD && i < l2_level.centroids.len() {
+                    to_dissolve.push(i);
+                }
+            }
+        }
+        let pruned = self.phase4_pruning_impl(hierarchy, abstractor);
+
+        // Journal dissolution events
+        if pruned > 0 {
+            if let Some(j) = journal.as_mut() {
+                for &idx in &to_dissolve {
+                    let coh = abstractor.coherence.coherence(idx);
+                    j.push(ConceptEvent {
+                        tick: self.tick,
+                        event_type: ConceptEventType::Dissolved,
+                        level: 2,
+                        concept_idx: Some(idx),
+                        details: format!(
+                            "L2 concept {} dissolved during sleep pruning (coherence={:.4}, cycle={})",
+                            idx, coh, cycle_count,
+                        ),
+                    });
+                }
+            }
+        }
+        pruned
     }
 
     // ═════════════════════════════════════════════════════════════════════
@@ -853,7 +929,7 @@ mod tests {
 
         // Run Phase 3
         let abstractor = Abstractor::new();
-        let l3_created = sc.phase3_l3_abstraction(&mut hierarchy);
+        let l3_created = sc.phase3_l3_abstraction_impl(&mut hierarchy);
 
         eprintln!("  L3 concepts created: {}", l3_created);
         eprintln!("  L3 centroids: {:?}", hierarchy.levels[2].centroids.len());
@@ -885,7 +961,7 @@ mod tests {
         // Decay the second one below threshold
         abstractor.coherence.scores[1] = 0.10; // well below PRUNE_COHERENCE_THRESHOLD
 
-        let pruned = sc.phase4_pruning(&mut hierarchy, &abstractor);
+        let pruned = sc.phase4_pruning_impl(&mut hierarchy, &abstractor);
 
         eprintln!("  L2 concepts pruned: {}", pruned);
         assert!(
@@ -932,7 +1008,7 @@ mod tests {
 
         let error_history = vec![0.10; 50];
 
-        let report = sc.cycle(&trajectory, &mut hierarchy, &abstractor, &error_history);
+        let report = sc.cycle(&trajectory, &mut hierarchy, &abstractor, &error_history, None);
 
         eprintln!("");
         eprintln!("  ═══════════════════════════════════════════");

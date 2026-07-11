@@ -85,8 +85,9 @@ Baseline: nearest-centroid grouping without transition information.
 Failure condition: transition-aware abstraction does not improve prediction,
 compression, or transfer over similarity-only grouping.
 
-Next check: add an ablation benchmark comparing abstractor on/off over the same
-seeded transition stream.
+Next check: run `test_abstraction_ablation_benchmark` across multiple seeds and
+verify concept formation is consistent; measure prediction error delta between
+on/off configurations across a broader range of community structures.
 
 ### C-004: Self-Extending Diagnostics Improve Adaptation
 
@@ -105,8 +106,9 @@ Baseline: static keyword/category maps.
 Failure condition: promoted categories do not improve held-out diagnosis, or
 they degrade existing categories through overgeneralization.
 
-Next check: persist learner promotions with version metadata and measure
-pre/post behavior on held-out diagnostic variants.
+Next check: measure pre/post behavior on held-out diagnostic variants using
+`TaskFamily` / `PrePostComparison` from `cognition.rs`.  Verify that version
+metadata survives save/load round-trip across schema changes.
 
 ### C-005: VSA Analogy Transfers Structure Across Domains
 
@@ -138,17 +140,25 @@ the system can learn tool reliability and explain action choice.
 Owner modules: `src/action.rs`, `src/actuator.rs`, `src/code_bridge.rs`,
 `src/sensory.rs`, `src/cognition.rs`.
 
-Evidence: current action and actuator surfaces exist.  `ToolEvent` now records
-intent, request, optional result, side-effect class, confidence, and memory
-updates, but tool reliability is not yet a first-class learned state.
+Evidence: `ToolEvent` records intent, request, result, side-effect class,
+confidence, and memory updates.  `ToolEventStore` provides persistent audit
+log with JSON save/load.  `ToolReliabilityTracker` on `VSABrain.tool_reliability`
+aggregates per-action-type EWMA success rates.  `record_tool_event()` is wired
+into `run_attack_loop` after each action execution.  `SimulationMode` on
+`ActionRequest` provides type-level distinction between real and simulated
+actions.  6 unit tests cover store push/query/persistence, reliability tracker
+EWMA/case-insensitivity, and simulation mode defaults.
 
-Baseline: direct tool invocation with only log output.
+Baseline: direct tool invocation with only log output; no simulated/real
+distinction; no reliability aggregation.
 
 Failure condition: the system cannot reconstruct why a tool was called, what it
-changed, or whether similar calls succeeded in the past.
+changed, or whether similar calls succeeded in the past.  A simulated action
+produces an external side effect (type-level confusion).
 
-Next check: route real actuator calls through `ToolEvent` and aggregate success
-rates by action type and side-effect class.
+Next check: wire `record_tool_event()` into the remaining execution paths
+(meta_reasoning, main.rs legacy path).  Add an integration test that exercises
+the full record→store→reliability path.
 
 ### C-007: Autonomy Requires Operator-Visible Boundaries
 
@@ -160,17 +170,25 @@ budgets, audit records, rollback points, and fail-closed behavior.
 Owner modules: `src/bin/autonomy_experiment.rs`, `src/bin/validate_autonomy.rs`,
 `src/monitor.rs`, `src/workspace.rs`, `src/defense.rs`, `src/cognition.rs`.
 
-Evidence: simulated autonomy experiments and monitoring primitives exist.
-`AutonomyBudget` now accounts for action count, elapsed time, external writes,
-and maximum risk, but budgeted action governance is not yet central.
+Evidence: `AutonomyBudget` on `VSABrain.autonomy_budget` tracks action count,
+elapsed time, external writes, and max risk.  `budgeted_execute()` in
+`actuator.rs` is the central enforcement point: checks `can_spend()` before
+every action, calls `spend()` after, returns `None` if budget exhausted.
+`DecisionRecord` captures the full decision context (tick, intent, action,
+result, pre/post budget snapshots, reasoning, tool_event_id).
+`DecisionJournal` on `VSABrain.decision_journal` provides persistent audit.
+4 unit tests cover enforcement flow (action cap, risk gate, external write cap,
+time budget), record creation, journal query, and persistence round-trip.
 
-Baseline: unconstrained goal loop.
+Baseline: unconstrained goal loop; no budget enforcement; no decision records.
 
-Failure condition: the system can take external actions without a replayable
-decision record or clear budget accounting.
+Failure condition: the system executes an external action without passing
+through `budgeted_execute()` budget check, or budget exhaustion does not
+produce a denial record in the decision journal.
 
-Next check: require real external actions to spend from `AutonomyBudget` and
-emit a replayable `ToolEvent`.
+Next check: wire `budgeted_execute()` into `solve_autonomously()` in
+`meta_reasoning.rs` and the main.rs agent loop.  Persist `decision_journal`
+periodically (every 50 ticks).
 
 ### C-008: QA Term Resolution Can Be Audited
 
@@ -184,8 +202,8 @@ Owner modules: `src/qa.rs`, `src/cognition.rs`, `MATH.md`.
 Evidence: `resolve_term_trace` returns `ResolveTrace`, and `resolve_term` delegates
 to `resolve_term_trace(...).vector`. Resolver tests verify exact cluster, raw
 fallback, and association traversal provenance.  QA episode wrappers now attach
-term traces and confidence to combined-answer and chain-answer outputs without
-changing legacy answer strings.
+term traces and confidence to combined-answer, chain-answer, single-answer, and
+verify-fact outputs without changing legacy answer strings.
 
 Baseline: `resolve_term` returned only a hypervector, so failures could not be
 assigned to raw encoding, cluster projection, or association traversal.
@@ -193,8 +211,8 @@ assigned to raw encoding, cluster projection, or association traversal.
 Failure condition: a trace reports a source, centroid, label, association, or
 confidence that does not match the branch used to construct the returned vector.
 
-Next check: persist `CognitiveEpisode` records for QA runs and connect outcomes
-to reversible memory updates.
+Next check: add rule-level provenance to chain answers (which rules fired, in
+what order, with what confidence).
 
 ### C-009: Cognitive Episodes Can Carry Feedback
 
@@ -208,17 +226,68 @@ Owner modules: `src/cognition.rs`, `src/qa.rs`.
 
 Evidence: `CognitiveEpisode`, `EpisodeOutcome`, `MemoryUpdate`, and
 `AblationConfig` exist as serializable data structures.  QA wrappers create
-episodes for combined and chain answers, and unit tests cover episode creation
-and unknown-answer confidence handling.
+episodes for combined, chain, single-answer, and verify-fact paths.  Socket
+ASK and CHAIN commands persist episodes automatically.  The episode store
+is auto-saved every 50 ticks in the main agent loop.  Unit tests cover episode
+creation, persistence round-trip, and unknown-answer confidence handling.
 
 Baseline: answer strings and printed logs with no structured outcome or
 feedback carrier.
 
-Failure condition: the system cannot replay what evidence supported an answer,
-what feedback was applied, or which architecture components were enabled.
+Failure condition: a question asked via socket, cognition_bench, or test leaves
+no episode record in the persisted store after the answer is generated.
 
-Next check: add a small feedback store that appends episode outcomes and applies
-only reversible memory updates until evaluation proves the update rule.
+Next check: wire episode outcomes from feedback into the store and measure
+confidence calibration against observed accuracy.
+
+### C-011: Concept Lifecycle Events Are Auditable
+
+Status: `provisional`
+
+Statement: All concept lifecycle events (creation, reinforcement, dissolution,
+merge, decay) can be recorded in a structured, queryable, persistent journal
+without changing the behavior of the abstraction or consolidation pipeline.
+
+Owner modules: `src/cognition.rs`, `src/abstractor.rs`, `src/sleep.rs`,
+`src/lib.rs`.
+
+Evidence: `ConceptEventType` covers 7 event variants. `ConceptJournal` supports
+push, query by tick/level/type, and JSON persistence. Events are wired into
+`Abstractor::cycle` (creation, reinforcement, dissolution, decay crossing 0.5),
+`VSABrain::compact_clusters` (merge), and `SleepCycle::cycle` (L3 creation, L2
+pruning).
+
+Baseline: concept lifecycle was observable only via ad-hoc `eprintln!` output.
+
+Failure condition: a lifecycle event occurs (concept created, dissolved, merged,
+decayed, frozen) but is not recorded in the journal when a journal is passed to
+the cycle method.
+
+Next check: wire journal into `freeze_cold_clusters`; add a benchmark that
+exercises all 7 event types and verifies journal completeness.
+
+### C-012: Concept Quality Can Be Measured Without Manual Inspection
+
+Status: `provisional`
+
+Statement: A concept's quality can be scored automatically from coherence,
+component structure, reinforcement recency, and internal similarity, without
+requiring a human to inspect centroid output.
+
+Owner modules: `src/cognition.rs` (`ConceptQualityScore`).
+
+Evidence: `ConceptQualityScore` composite formula weights coherence (50%),
+component count (20%), freshness (20%), and internal similarity (10%). Tests
+verify that high-quality concepts score > 0.70 and low-quality concepts score
+< 0.50, with correct ranking and bounded results.
+
+Baseline: concept quality was assessable only by reading cluster centroids.
+
+Failure condition: a concept with high coherence, many components, recent
+reinforcement, and high internal similarity scores lower than a concept with
+low values in all categories.
+
+Next check: validate against held-out human judgment; add calibration check.
 
 ### C-010: Experiments Can Be Compared By Structured Result Records
 
@@ -238,6 +307,53 @@ Failure condition: two runs of the same experiment cannot be compared without
 reading logs by hand.
 
 Next check: make at least one ignored benchmark emit `ExperimentResult` JSON.
+
+### C-013: QA Confidence Can Be Calibrated Against Observed Accuracy
+
+Status: `provisional`
+
+Statement: The system can measure the gap between its stated confidence and its
+actual accuracy by recording (confidence, was_correct) pairs from episode outcomes
+and computing calibration metrics (ECE, calibration gap).
+
+Owner modules: `src/cognition.rs` (`ConfidenceCalibration`), `src/qa.rs`.
+
+Evidence: `ConfidenceCalibration` records per-bin accuracy and confidence,
+computes ECE, identifies over/underconfidence.  Tests verify empty-state handling,
+recording (perfectly calibrated data gives low ECE, overconfident data gives
+positive calibration gap), and integration with `EpisodeStore` / `CognitiveEpisode`
+outcomes.  5 unit tests pass.
+
+Baseline: confidence was stated but never checked against reality.
+
+Failure condition: the system reports overconfidence (avg_confidence >> accuracy)
+or underconfidence (avg_confidence << accuracy) without detecting it.
+
+Next check: wire `ConfidenceCalibration::record_store()` into the main agent loop
+every 50 ticks so that calibration is tracked continuously across sessions.
+
+### C-014: Feedback Improvement Can Be Measured Pre/Post
+
+Status: `provisional`
+
+Statement: The effect of feedback on a task family can be measured by running the
+same questions before and after feedback, comparing accuracy and confidence deltas.
+
+Owner modules: `src/cognition.rs` (`TaskFamily`, `PrePostComparison`).
+
+Evidence: `TaskFamily` defines a set of task items (questions + verify-fact checks).
+`TaskFamilyRun` captures results with per-task answers, confidence, and match
+against expected.  `PrePostComparison` computes accuracy delta, confidence delta,
+answer change count, and correctness change count.  Tests verify correct delta
+computation for a simple before/after scenario.
+
+Baseline: feedback effects were assessed only by reading printed logs.
+
+Failure condition: a known improvement (e.g., storing the correct fact changes an
+answer from wrong to right) is not reflected in the pre-post accuracy delta.
+
+Next check: add a `QaEngine` integration test that defines a task family, records
+pre-run, stores a new fact, records post-run, and verifies accuracy improvement.
 
 ## Retired Or Negative Claims
 

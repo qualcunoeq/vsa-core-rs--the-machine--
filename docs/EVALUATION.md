@@ -64,7 +64,7 @@ Expected contents:
 | Capability | Baseline | Metric | Current surface | Next improvement |
 | --- | --- | --- | --- | --- |
 | Noise-stable memory | raw HV stream | NHD to source, retained signal, memory growth | `src/lib.rs`, `src/reason.rs` | structured long-run memory benchmark |
-| Concept formation | similarity-only grouping | prediction gain, compression gain, concept churn | `src/abstractor.rs` | abstractor on/off ablation |
+| Concept formation | similarity-only grouping | prediction gain, compression gain, concept churn | `src/abstractor.rs`, `src/cognition.rs` | `test_abstraction_ablation_benchmark` (ignored) emits `ExperimentResult` JSON |
 | Temporal prediction | last-state or frequency baseline | top-k accuracy, calibration error | `src/temporal.rs`, `src/predictive.rs` | seedable transition benchmark |
 | QA recall | direct lookup | answer accuracy, provenance completeness | `src/qa.rs`, `src/cognition.rs` | persist `CognitiveEpisode` records for QA runs |
 | Analogical transfer | non-VSA parser/classifier | held-out transfer accuracy | `src/analogy.rs` | keep negative A21 result until mechanism changes |

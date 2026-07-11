@@ -5,6 +5,22 @@ use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::TcpListener;
 use tokio::sync::RwLock;
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Verify AdminSocketServer constructs without panicking.
+    #[test]
+    fn test_admin_socket_new() {
+        let intent = Arc::new(RwLock::new(Hypervector::new_zero()));
+        let defense = DefenseSystem::new(0);
+        let brain = Arc::new(RwLock::new(VSABrain::new(0.43)));
+        let qa = Arc::new(RwLock::new(QaEngine::new()));
+        let _server = AdminSocketServer::new(intent, defense, brain, qa);
+        // If we reach here, construction succeeded
+    }
+}
+
 pub struct AdminSocketServer {
     intent: Arc<RwLock<Hypervector>>,
     defense: DefenseSystem,
@@ -101,13 +117,19 @@ impl AdminSocketServer {
 
                                             } else if command.starts_with("ASK ") {
                                                 let question = &command[4..];
-                                                let answer = {
-                                                    let qa_guard = qa_clone.read().await;
-                                                    qa_guard.answer_combined(question)
-                                                };
-                                                let response = format!("ANSWER: {}\n", answer);
+                                                let mut qa_guard = qa_clone.write().await;
+                                                let episode = qa_guard.answer_combined_episode(
+                                                    format!("socket-ask-{}", std::time::SystemTime::now()
+                                                        .duration_since(std::time::UNIX_EPOCH)
+                                                        .unwrap_or_default()
+                                                        .as_millis()),
+                                                    question,
+                                                );
+                                                let answer = episode.answer.as_deref().unwrap_or("I do not know.");
+                                                let response = format!("ANSWER: {} [confidence={:.2}]\n", answer, episode.confidence);
+                                                drop(qa_guard);
                                                 let _ = writer.write_all(response.as_bytes()).await;
-                                                let _ = log_tx_clone.send(format!("ADMIN: ASK '{}' → '{}'", question, answer));
+                                                let _ = log_tx_clone.send(format!("ADMIN: ASK '{}' → '{}' (conf={:.2})", question, answer, episode.confidence));
 
                                             } else if command.starts_with("STORE ") {
                                                 let fact = &command[6..];
@@ -133,13 +155,19 @@ impl AdminSocketServer {
 
                                             } else if command.starts_with("CHAIN ") {
                                                 let question = &command[6..];
-                                                let answer = {
-                                                    let qa_guard = qa_clone.read().await;
-                                                    qa_guard.answer_chain(question)
-                                                };
-                                                let response = format!("CHAIN: {}\n", answer);
+                                                let mut qa_guard = qa_clone.write().await;
+                                                let episode = qa_guard.answer_chain_episode(
+                                                    format!("socket-chain-{}", std::time::SystemTime::now()
+                                                        .duration_since(std::time::UNIX_EPOCH)
+                                                        .unwrap_or_default()
+                                                        .as_millis()),
+                                                    question,
+                                                );
+                                                let answer = episode.answer.as_deref().unwrap_or("I do not know.");
+                                                let response = format!("CHAIN: {} [confidence={:.2}]\n", answer, episode.confidence);
+                                                drop(qa_guard);
                                                 let _ = writer.write_all(response.as_bytes()).await;
-                                                let _ = log_tx_clone.send(format!("ADMIN: CHAIN '{}' → '{}'", question, answer));
+                                                let _ = log_tx_clone.send(format!("ADMIN: CHAIN '{}' → '{}' (conf={:.2})", question, answer, episode.confidence));
 
                                             } else if command.starts_with("STORE_RULE ") {
                                                 let rule_text = &command[11..];

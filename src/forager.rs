@@ -629,3 +629,50 @@ impl VSAForager {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_resolve_url_absolute_unchanged() {
+        let url = VSAForager::resolve_url("http://example.com/page", "http://other.com/img.png");
+        assert_eq!(url, Some("http://other.com/img.png".to_string()));
+    }
+
+    #[test]
+    fn test_resolve_url_relative_path() {
+        let url = VSAForager::resolve_url("http://example.com/page", "img.png");
+        assert_eq!(url, Some("http://example.com/img.png".to_string()));
+    }
+
+    #[test]
+    fn test_resolve_url_root_relative() {
+        let url = VSAForager::resolve_url("http://example.com/page", "/images/pic.jpg");
+        assert_eq!(url, Some("http://example.com/images/pic.jpg".to_string()));
+    }
+
+    #[test]
+    fn test_resolve_url_protocol_relative() {
+        let url = VSAForager::resolve_url("https://example.com/page", "//cdn.example.com/img.png");
+        assert_eq!(url, Some("https://cdn.example.com/img.png".to_string()));
+    }
+
+    #[test]
+    fn test_resolve_url_fragment_returns_none() {
+        let url = VSAForager::resolve_url("http://example.com/page", "#section");
+        assert_eq!(url, None);
+    }
+
+    #[test]
+    fn test_resolve_url_javascript_returns_none() {
+        let url = VSAForager::resolve_url("http://example.com/page", "javascript:void(0)");
+        assert_eq!(url, None);
+    }
+
+    #[test]
+    fn test_resolve_url_empty_returns_none() {
+        let url = VSAForager::resolve_url("http://example.com/page", "");
+        assert_eq!(url, None);
+    }
+}

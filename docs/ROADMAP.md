@@ -69,11 +69,19 @@ Implemented surface:
 - `AblationConfig` can record whether trace, abstraction, associations, soft
   projection, self-model, and tool-memory mechanisms were enabled.
 
+Implemented:
+
+- `ConceptEvent` / `ConceptJournal` in `cognition.rs` — structured lifecycle log with
+  push, query, and JSON persistence. Wired into abstractor cycle (creation, reinforcement,
+  dissolution, decay) and cluster compactor (merge).
+- `ConceptQualityScore` in `cognition.rs` — composite score from coherence, component
+  count, freshness, and internal similarity. No manual inspection needed.
+- `test_abstraction_ablation_benchmark` (ignored) — compares concept count and prediction
+  error with abstraction on vs off, emits `ExperimentResult` JSON.
+
 Near-term work:
 
-- Track concept birth, merge, split, freeze, and decay events in a structured log.
-- Add an ablation for abstraction enabled vs disabled.
-- Define a concept quality score that does not depend on manual inspection.
+- Wire `ConceptJournal` into `freeze_cold_clusters` (cold storage events).
 
 ## Layer 2: Reasoning And Explanation
 
@@ -95,14 +103,23 @@ Research questions:
 
 Implemented surface:
 
-- QA can return `CognitiveEpisode` records for combined and chain answers while
-  preserving legacy answer strings.
+- `answer_episode()` wraps `answer()` with `ResolveTrace` provenance and auto-push
+  to `episode_store`.
+- `verify_fact_episode()` wraps `verify_fact()` with term-level traces.
+- `answer_combined_episode()` and `answer_chain_episode()` (existing) cover combined
+  and chain paths.
+- Socket `ASK` and `CHAIN` commands now use episode wrappers, recording every
+  admin-socket query in the episode store.
+- Episode store automatically persisted every 50 ticks in `main.rs`.
+- `traces_for_question()` collects term-level `ResolveTrace` for any question.
 
 Near-term work:
 
-- Persist QA episodes and outcome feedback.
-- Store answer provenance across all answer paths, not only the new wrappers.
-- Maintain negative results where VSA structure does not improve a task.
+- Wire multi-hop chain provenance: `reason_chain()` should return rule-level traces
+  alongside text results.
+- Add forward-chain / abduce episode wrappers for completeness.
+- Wire `ConfidenceCalibration::record_store()` into the main agent loop every 50 ticks
+  to track calibration over time.
 
 ## Layer 3: Self-Model And Adaptation
 
@@ -124,14 +141,20 @@ Research questions:
 
 Implemented surface:
 
-- `EpisodeOutcome` and `MemoryUpdate` define a reversible feedback carrier for
-  future adaptation loops.
+- `AbstractionLearner` promotions now include schema `version` (u64) and per-mapping
+  `promoted_at_episode` + `metadata` HashMap for forward-compatible attribute extensions.
+- `ConfidenceCalibration` in `cognition.rs` records (confidence, was_correct) pairs,
+  computes ECE, calibration gap, and per-bin accuracy. Wired to `CognitiveEpisode`
+  outcomes via `record_episode()` and `record_store()`.
+- `TaskFamily` / `PrePostComparison` in `cognition.rs` define before/after feedback
+  tracking: define a family of questions, run pre-feedback, apply updates, run post,
+  and compare accuracy/confidence deltas.
 
 Near-term work:
 
-- Persist `AbstractionLearner` promotions with version metadata.
-- Add confidence calibration checks for diagnostic and QA answers.
-- Track pre/post feedback behavior on the same task family.
+- Wire `ConfidenceCalibration::record_store()` into the main agent loop (every 50 ticks).
+- Add a `run_pre_post()` integration test using `QaEngine`.
+- Persist `SelfModel` state for cross-session trajectory continuity.
 
 ## Layer 4: Tools And World Interfaces
 
@@ -153,14 +176,24 @@ Research questions:
 
 Implemented surface:
 
-- `ToolEvent` can represent tool intent, request, optional result, side-effect
-  class, confidence, and memory updates.
+- `ToolEvent` / `ToolEventStore` — append-only audit log with JSON persistence,
+  query by action type, success rate aggregation.  `ToolEventStore` stored on
+  `VSABrain.tool_event_store` and wired into `run_attack_loop` via
+  `record_tool_event()`.
+- `SimulationMode` enum (`Real` / `Simulated`) added to `ActionRequest` as a
+  first-class type-level field.  `ActionRequest::new()` defaults to `Simulated`;
+  all helper methods (`.scan_port()`, `.check_service()`, etc.) use `.real()`.
+- `ToolReliabilityTracker` — per-action-type EWMA success/failure tracking,
+  stored on `VSABrain.tool_reliability`.  Updated alongside every tool event.
+  Supports `success_rate()`, `reliability()` (EWMA), `overall_reliability()`.
+  Case-insensitive action type lookup.
 
 Near-term work:
 
-- Route real tool calls through the tool-use event schema.
-- Separate simulated actions from real external actions at the type level.
-- Make tool reliability part of the self-model.
+- Wire `record_tool_event()` into the remaining execution paths (meta_reasoning,
+  autonomy_experiment, main.rs legacy action path).
+- Add a `tool_reliability` integration test that verifies EWMA updates across
+  multiple real-tool calls.
 
 ## Layer 5: Bounded Autonomy And Resilience
 
@@ -183,13 +216,26 @@ Research questions:
 
 Implemented surface:
 
-- `AutonomyBudget` can account for action count, elapsed time, external writes,
-  and maximum allowed risk.
+- `AutonomyBudget` on `VSABrain.autonomy_budget` — enforced in `run_attack_loop`
+  via `budgeted_execute()` which checks `can_spend()` before execution, calls
+  `spend()` after, and records a `DecisionRecord` with full pre/post budget
+  snapshots, reasoning, and link to ToolEvent.  Budget defaults: 1000 actions,
+  1 hour, 100 external writes, 0.80 max risk.
+- `DecisionRecord` / `DecisionJournal` on `VSABrain.decision_journal` — captures
+  tick, intent, action request, result, budget before/after, reasoning, budget
+  status, and ToolEvent link.  Persisted via JSON save/load.  Supports querying
+  blocked records and successful records.
 
-Near-term work:
+Wired into:
+- `solve_autonomously_with_learner()` in `meta_reasoning.rs` — plan steps use
+  `budgeted_execute()` instead of raw `send_request()`.
+- `resolve_uncertain()` and `resolve_stuck()` in `meta_reasoning.rs` — hypothesis
+  testing and documentation acquisition gated by budget.
+- `main.rs` corrective plan execution — budget check before `execute_action()`
+  with full `DecisionRecord` creation, spending, and logging.
 
-- Prefer audit trails, integrity checks, sandboxing, and fail-closed behavior.
-- Require every external action to produce a replayable decision record.
+Remaining work:
+- Add `decision_journal.save()` to periodic persistence in main.rs (every 50 ticks).
 
 ## Research Hygiene
 

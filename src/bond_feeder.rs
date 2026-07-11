@@ -519,7 +519,7 @@ impl MarketCrucible {
                 // Run abstractor every 5 ticks
                 if self.tick > 0 && self.tick % 5 == 0 {
                     let abs_report = self.abstractor.cycle(
-                        &self.temporal.transitions, &mut self.hierarchy, &self.predictive,
+                        &self.temporal.transitions, &mut self.hierarchy, &self.predictive, None,
                     );
                     report.record_abstraction(abs_report);
                 }
@@ -538,7 +538,7 @@ impl MarketCrucible {
         let error_history: Vec<f64> = self.predictive.error_history.clone();
         if self.hierarchy.levels.len() >= 3 {
             let sleep_report = self.sleeper.cycle(
-                &trajectory, &mut self.hierarchy, &self.abstractor, &error_history,
+                &trajectory, &mut self.hierarchy, &self.abstractor, &error_history, None,
             );
             report.sleep_report = Some(Box::new(sleep_report.clone()));
             eprintln!("  ✅ Sleep: {} transitions, {} L3 concepts, {} L2 pruned",

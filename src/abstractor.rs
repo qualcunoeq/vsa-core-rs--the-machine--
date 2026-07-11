@@ -63,6 +63,7 @@
 // 5. test_dissolution_on_regime_change    — Dead L2 concept removed
 // 6. test_full_abstraction_lifecycle      — End-to-end: discover→form→predict→dissolve
 
+use crate::cognition::{ConceptEvent, ConceptEventType, ConceptJournal};
 use crate::hierarchy::HierarchicalManifold;
 use crate::predictive::PredictiveCodingLoop;
 use crate::temporal::TransitionModel;
@@ -318,11 +319,23 @@ impl Abstractor {
     /// 5. Dissolve obsolete L2 concepts
     ///
     /// Returns a summary of what happened.
+    /// Run one abstraction cycle.
+    ///
+    /// 1. Scan the transition model for temporal communities
+    /// 2. Check the prediction error gate
+    /// 3. If gate is open and communities found → form L2 concepts
+    /// 4. Update coherence tracking from model
+    /// 5. Dissolve obsolete L2 concepts
+    ///
+    /// `journal` — optional concept lifecycle journal for recording events.
+    ///
+    /// Returns a summary of what happened.
     pub fn cycle(
         &mut self,
         transition_model: &TransitionModel,
         hierarchy: &mut HierarchicalManifold,
         predictive: &PredictiveCodingLoop,
+        mut journal: Option<&mut ConceptJournal>,
     ) -> AbstractionReport {
         self.tick += 1;
         let mut report = AbstractionReport::new();
@@ -351,6 +364,19 @@ impl Abstractor {
                     if let Some(idx) = self.find_existing_abstraction(&community.centroid_indices) {
                         self.coherence.reinforce(idx);
                         report.reinforced += 1;
+                        if let Some(j) = journal.as_mut() {
+                            j.push(ConceptEvent {
+                                tick: self.tick,
+                                event_type: ConceptEventType::Reinforced,
+                                level: 2,
+                                concept_idx: Some(idx),
+                                details: format!(
+                                    "L2 concept {} reinforced ({} components)",
+                                    idx,
+                                    community.centroid_indices.len(),
+                                ),
+                            });
+                        }
                     }
                     continue;
                 }
@@ -358,12 +384,26 @@ impl Abstractor {
                 // Register in hierarchy
                 // Level 2 = first abstract level above base
                 let result = hierarchy.register_abstract_concept(2, &community.centroid_indices);
-                if let Some(_l2_idx) = result {
+                if let Some(l2_idx) = result {
                     // Track coherence for this new abstraction
                     self.coherence.register(&community.centroid_indices);
                     self.total_abstractions_created += 1;
                     self.last_abstraction_tick = self.tick;
                     report.created += 1;
+                    if let Some(j) = journal.as_mut() {
+                        j.push(ConceptEvent {
+                            tick: self.tick,
+                            event_type: ConceptEventType::Created,
+                            level: 2,
+                            concept_idx: Some(l2_idx),
+                            details: format!(
+                                "L2 concept {} created from {} L1 components with cohesion {}",
+                                l2_idx,
+                                community.centroid_indices.len(),
+                                community.cohesion_score,
+                            ),
+                        });
+                    }
                 } else {
                     report.gated_by_capacity = true;
                 }
@@ -391,13 +431,46 @@ impl Abstractor {
                     level.activations[idx] = 0.0;
                 }
             }
+            // Record dissolution before removing from tracker
+            let coh = self.coherence.coherence(idx);
             self.coherence.remove(idx);
             self.total_abstractions_dissolved += 1;
             report.dissolved += 1;
+            if let Some(j) = journal.as_mut() {
+                j.push(ConceptEvent {
+                    tick: self.tick,
+                    event_type: ConceptEventType::Dissolved,
+                    level: 2,
+                    concept_idx: Some(idx),
+                    details: format!(
+                        "L2 concept {} dissolved (coherence={:.4} below threshold)",
+                        idx, coh,
+                    ),
+                });
+            }
         }
 
-        // Coherence tick
+        // Coherence tick — track natural decay
+        let before_scores: Vec<f64> = self.coherence.scores.clone();
         self.coherence.tick();
+        // Journal decay events for any concept that crossed a significant decay threshold
+        if let Some(j) = journal.as_mut() {
+            for (i, (before, after)) in before_scores.iter().zip(self.coherence.scores.iter()).enumerate() {
+                let threshold = 0.5;
+                if *before >= threshold && *after < threshold {
+                    j.push(ConceptEvent {
+                        tick: self.tick,
+                        event_type: ConceptEventType::Decayed,
+                        level: 2,
+                        concept_idx: Some(i),
+                        details: format!(
+                            "L2 concept {} coherence decayed from {:.4} to {:.4} (crossed 0.5)",
+                            i, before, after,
+                        ),
+                    });
+                }
+            }
+        }
 
         report
     }
@@ -911,7 +984,7 @@ mod tests {
         assert_eq!(hierarchy.levels[1].centroids.len(), 0);
 
         // Run abstraction cycle
-        let report = abstractor.cycle(&model, &mut hierarchy, &predictive);
+        let report = abstractor.cycle(&model, &mut hierarchy, &predictive, None);
 
         eprintln!("  Report: {:?}", report);
 
@@ -956,7 +1029,7 @@ mod tests {
         eprintln!("  Total cycles: {}", predictive.total_cycles);
 
         // Run abstraction cycle
-        let report = abstractor.cycle(&model, &mut hierarchy, &predictive);
+        let report = abstractor.cycle(&model, &mut hierarchy, &predictive, None);
 
         eprintln!("  Report: {:?}", report);
         eprintln!("  L2 concepts: {}", hierarchy.levels[1].centroids.len());
@@ -1082,7 +1155,7 @@ mod tests {
         // Phase 2: Abstractor forms L2 concept
         eprintln!("----- Phase 2: Abstraction -----");
         for cycle in 0..3 {
-            let report = abstractor.cycle(&model, &mut hierarchy, &predictive);
+            let report = abstractor.cycle(&model, &mut hierarchy, &predictive, None);
             eprintln!("  Cycle {}: {:?}", cycle, report);
 
             // Feed more data between cycles
@@ -1107,7 +1180,7 @@ mod tests {
         }
 
         for cycle in 0..20 {
-            let report = abstractor.cycle(&model, &mut hierarchy, &predictive);
+            let report = abstractor.cycle(&model, &mut hierarchy, &predictive, None);
             if !report.is_idle() {
                 eprintln!("  Cycle {}: {:?}", cycle, report);
             }

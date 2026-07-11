@@ -31,7 +31,7 @@
 use std::collections::HashMap;
 
 /// The role a learned keyword fills in the error structure.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum MappingRole {
     Action,
     Resource,
@@ -39,7 +39,7 @@ pub enum MappingRole {
 }
 
 /// A learned keyword mapping that has passed the validation gate.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct LearnedMapping {
     /// The raw token (e.g., "broker", "handshake", "expired")
     pub keyword: String,
@@ -53,6 +53,12 @@ pub struct LearnedMapping {
     pub confidence: f64,
     /// The category that produced this mapping
     pub source_category: String,
+    /// Total episodes recorded at the time this mapping was promoted (version metadata).
+    #[serde(default)]
+    pub promoted_at_episode: u32,
+    /// Forward-compatible metadata map for versioned attribute extensions.
+    #[serde(default)]
+    pub metadata: std::collections::HashMap<String, String>,
 }
 
 /// Tracks unknown token occurrences across solved episodes and promotes
@@ -64,7 +70,14 @@ pub struct LearnedMapping {
 ///   learner.record_episode(error_text, category);
 ///   // Use promoted mappings in structural parsing:
 ///   let structure = parse_error_structure_with_learner(text, &learner);
+///
+/// Persistence: call `save_to_file` / `load_from_file` to preserve
+/// promoted mappings and co-occurrence statistics across runs.
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct AbstractionLearner {
+    /// Schema version for forward/backward compatibility.
+    #[serde(default = "default_version")]
+    version: u64,
     /// token → Vec<(category, count)>
     co_occurrence: HashMap<String, Vec<(String, u32)>>,
     /// Promoted mappings that passed the validation gate
@@ -77,6 +90,8 @@ pub struct AbstractionLearner {
     min_purity: f64,
 }
 
+fn default_version() -> u64 { 1 }
+
 impl AbstractionLearner {
     /// Create a new learner with default thresholds.
     ///
@@ -85,6 +100,7 @@ impl AbstractionLearner {
     ///   - min_purity:   0.80  (≥80% of appearances must be same category)
     pub fn new() -> Self {
         AbstractionLearner {
+            version: 1,
             co_occurrence: HashMap::new(),
             promoted: Vec::new(),
             total_episodes: 0,
@@ -96,6 +112,7 @@ impl AbstractionLearner {
     /// Create a learner with custom thresholds.
     pub fn with_thresholds(min_episodes: u32, min_purity: f64) -> Self {
         AbstractionLearner {
+            version: 1,
             co_occurrence: HashMap::new(),
             promoted: Vec::new(),
             total_episodes: 0,
@@ -216,6 +233,8 @@ impl AbstractionLearner {
 
             // Avoid duplicates from multiple promotion cycles
             if !to_promote.iter().any(|m| m.keyword == token) {
+                let mut mapping_metadata = HashMap::new();
+                mapping_metadata.insert("version".to_string(), self.version.to_string());
                 to_promote.push(LearnedMapping {
                     keyword: token,
                     concrete,
@@ -223,6 +242,8 @@ impl AbstractionLearner {
                     role: role.clone(),
                     confidence,
                     source_category: dominant.0.clone(),
+                    promoted_at_episode: self.total_episodes,
+                    metadata: mapping_metadata,
                 });
             }
         }
@@ -522,6 +543,37 @@ impl AbstractionLearner {
         let lower = token.to_lowercase();
         KNOWN_KEYWORDS.binary_search(&lower.as_str()).is_ok()
     }
+
+    /// Get the schema version of this learner's persisted state.
+    pub fn version(&self) -> u64 {
+        self.version
+    }
+
+    /// Get metadata for all promoted mappings (for audit queries).
+    pub fn promoted_with_metadata(&self) -> Vec<(&LearnedMapping, u32, &HashMap<String, String>)> {
+        self.promoted
+            .iter()
+            .map(|m| (m, m.promoted_at_episode, &m.metadata))
+            .collect()
+    }
+
+    // ─── Persistence ──────────────────────────────────────────────────
+
+    /// Save the learner state (promotions + statistics) to a JSON file.
+    pub fn save_to_file(&self, path: &str) -> Result<(), String> {
+        let json = serde_json::to_string_pretty(self)
+            .map_err(|e| format!("AbstractionLearner serialization error: {}", e))?;
+        std::fs::write(path, &json).map_err(|e| format!("AbstractionLearner write error: {}", e))?;
+        Ok(())
+    }
+
+    /// Load the learner state from a JSON file.
+    pub fn load_from_file(path: &str) -> Result<Self, String> {
+        let json = std::fs::read_to_string(path)
+            .map_err(|e| format!("AbstractionLearner read error: {}", e))?;
+        serde_json::from_str(&json)
+            .map_err(|e| format!("AbstractionLearner deserialization error: {}", e))
+    }
 }
 
 /// Static set of all keywords from the built-in maps.
@@ -773,5 +825,62 @@ mod tests {
     fn test_concrete_for_token_normalization() {
         let c = AbstractionLearner::concrete_for_token("SSL-Cert");
         assert_eq!(c, "kw_ssl_cert");
+    }
+
+    #[test]
+    fn test_save_and_load_roundtrip() {
+        let tmp = std::env::temp_dir().join("test_abstraction_learner.json");
+        let path = tmp.to_str().unwrap().to_string();
+
+        let mut learner = AbstractionLearner::new();
+        learner.record_episode("broker connection refused", "connection_refused");
+        learner.record_episode("broker handshake expired", "connection_refused");
+        learner.record_episode("broker ssl error", "connection_refused");
+        let promoted_before = learner.promoted_count();
+
+        learner.save_to_file(&path).unwrap();
+
+        let loaded = AbstractionLearner::load_from_file(&path).unwrap();
+        assert_eq!(loaded.promoted_count(), promoted_before);
+        assert_eq!(loaded.episode_count(), 3);
+
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn test_promotion_version_metadata() {
+        let mut learner = AbstractionLearner::new();
+        assert_eq!(learner.version(), 1, "initial version should be 1");
+
+        // Record enough episodes to trigger promotion
+        for _ in 0..5 {
+            learner.record_episode("broker connection refused", "connection_refused");
+        }
+
+        // Check promoted mappings have version metadata
+        let meta = learner.promoted_with_metadata();
+        for (mapping, episode, md) in &meta {
+            assert!(mapping.promoted_at_episode > 0, "promoted_at_episode should be set");
+            assert_eq!(
+                md.get("version").unwrap(),
+                "1",
+                "metadata should contain version=1"
+            );
+            assert!(*episode <= learner.episode_count(), "episode should be <= total");
+        }
+
+        // Verify round-trip preserves metadata
+        let tmp = std::env::temp_dir().join("test_learner_version.json");
+        let path = tmp.to_str().unwrap().to_string();
+        learner.save_to_file(&path).unwrap();
+        let loaded = AbstractionLearner::load_from_file(&path).unwrap();
+        assert_eq!(loaded.version(), 1, "version should survive round-trip");
+        let loaded_meta = loaded.promoted_with_metadata();
+        assert_eq!(loaded_meta.len(), meta.len(), "same number of promotions");
+        for (lm, ep, md) in &loaded_meta {
+            assert_eq!(*ep, lm.promoted_at_episode, "episode should match");
+            assert_eq!(md.get("version").unwrap(), "1", "version should match");
+        }
+        let _ = std::fs::remove_file(&path);
     }
 }

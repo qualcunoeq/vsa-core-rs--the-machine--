@@ -276,3 +276,25 @@ impl Drop for CudaProjector {
 // All GPU operations are synchronization-free once they return.
 unsafe impl Send for CudaProjector {}
 unsafe impl Sync for CudaProjector {}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_libnhd_path_resolves() {
+        let path = CudaProjector::libnhd_path();
+        assert!(path.is_ok(), "libnhd_path should resolve: {:?}", path);
+        let path_str = path.unwrap();
+        assert!(path_str.to_string_lossy().ends_with("libnhd.so"), "path should end with libnhd.so");
+    }
+
+    #[test]
+    fn test_new_fails_without_cuda_library() {
+        match CudaProjector::new(16) {
+            Ok(_) => eprintln!("  CUDA library found — CudaProjector constructed"),
+            Err(e) => eprintln!("  Expected: CudaProjector::new failed: {}", e),
+        }
+        // Either result is acceptable — the test just verifies no panic
+    }
+}

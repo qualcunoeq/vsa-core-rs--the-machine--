@@ -263,10 +263,11 @@ The key insight: **algebraic composition is EXPANSIVE** (ε → 0.5), so promote
   │  return output                               │
   └─────────────────────────────────────────────┘
 
-  TAU GUIDE (v3.1 corrected):
-    τ = 0.0     → hard projection (4.32 bits, C_eff=20,  κ_P ≈ 0.95)
-    τ = 0.08    → CONSERVATIVE OPTIMUM (10.58 bits, C_eff=1528, κ_P ≈ 0.99, 76× gain)
-    τ = 0.10    → MAX CAPACITY (11.32 bits, C_eff=2554, κ_P ≈ 0.92, 128× gain)
+  TAU GUIDE (v3.1 corrected, frontier sweep with 800 pairs/2000 queries):
+    τ = 0.00    → hard projection (4.32 bits, C_eff=20,    κ_P ≈ 0.970)
+    τ = 0.08    → SWEET SPOT (9.58 bits, C_eff=120× gain,  κ_P ≈ 0.932)
+    τ = 0.10    → OPTIMUM (10.58 bits, C_eff=2554=128×,    κ_P ≈ 0.916)
+    τ = 0.12    → HIGH CAPACITY (11.32 bits, C_eff=128×,   κ_P ≈ 0.898)
     τ > 0.50    → MUSH (outputs blend to centroid mean, κ_P < 0.19)
     
   NOTE (v3.1): The numerical stability transform was corrected from

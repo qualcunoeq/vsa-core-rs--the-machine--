@@ -134,6 +134,39 @@ pub fn verb_lemma(word: &str) -> String {
             let stem = &lower[..lower.len() - 2];
             // "played" → "play", "walked" → "walk"
             // But not "bed", "red", etc.
+            let chars: Vec<char> = stem.chars().collect();
+            // Handle CVC double-consonant rule: "stopped" → "stop"
+            if chars.len() >= 2 && chars[chars.len() - 1] == chars[chars.len() - 2] {
+                return chars[..chars.len() - 1].iter().collect();
+            }
+            // Handle VCE verbs where only "d" was added for past tense.
+            // Base form ended in 'e', so stripping "ed" removed the 'e':
+            //   "solved" → "solve", "liked" → "like", "caused" → "cause"
+            // But NOT "walked" → "walk" (no trailing 'e' in base).
+            // Heuristic: if the stem ends with V+C (vowel + consonant with
+            // no special ending), the base likely had a silent 'e'.
+            if chars.len() >= 2 {
+                let last = chars[chars.len() - 1];
+                let prev = chars[chars.len() - 2];
+                // VCE pattern: last is a consonant (not w/x/y), prev is a vowel
+                if !matches!(last, 'a' | 'e' | 'i' | 'o' | 'u' | 'w' | 'x' | 'y')
+                    && matches!(prev, 'a' | 'e' | 'i' | 'o' | 'u')
+                {
+                    return format!("{}e", stem);
+                }
+                // Also handle consonant clusters where the last consonant
+                // is a sonorant (l, m, n, r, v, z) preceded by a vowel
+                // preceded by something: "solv" → "solve"
+                if chars.len() >= 3 {
+                    let prev2 = chars[chars.len() - 3];
+                    if matches!(last, 'l' | 'm' | 'n' | 'r' | 'v' | 'z')
+                        && !matches!(prev, 'a' | 'e' | 'i' | 'o' | 'u')
+                        && matches!(prev2, 'a' | 'e' | 'i' | 'o' | 'u')
+                    {
+                        return format!("{}e", stem);
+                    }
+                }
+            }
             stem.to_string()
         }
         // Regular -ing → ∅

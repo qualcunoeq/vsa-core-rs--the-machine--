@@ -921,6 +921,126 @@ pub fn soft_project(x: &Hypervector, clusters: &[MemoryCluster], tau: f64) -> Hy
     Hypervector { bits: result }
 }
 
+/// Soft projection accelerated by the Lightning Indexer.
+///
+/// When `indexer` is `Some` and has indexed centroids matching `clusters`:
+/// 1. Uses the indexer to find top‑k candidate centroids (256‑bit fingerprints,
+///    40× cheaper than full comparison).
+/// 2. Computes full 10240‑bit distances only for candidates.
+/// 3. Falls back to full `soft_project` if the best candidate is too far
+///    (similarity < `INDEXER_FALLBACK_SIM`), which happens when the
+///    256‑bit fingerprint is uninformative (≈3% of queries).
+///
+/// When `indexer` is `None` or the indexer has stale data, falls back to
+/// the standard `soft_project` for correctness.
+///
+/// # Panics
+///
+/// Panics if the indexer was rebuilt from a different set of centroids
+/// (must match `clusters` exactly in length and order).
+pub fn soft_project_indexed(
+    x: &Hypervector,
+    clusters: &[MemoryCluster],
+    indexer: Option<&crate::indexer::LightningIndexer>,
+    tau: f64,
+) -> Hypervector {
+    if clusters.is_empty() {
+        return *x;
+    }
+
+    // Unwrap indexer, fall back to full soft_project if None or empty.
+    let indexer = match indexer {
+        Some(idx) if !idx.is_empty() && idx.len() == clusters.len() => idx,
+        _ => return soft_project(x, clusters, tau),
+    };
+
+    if tau < 1e-12 {
+        // Hard projection: use indexer to find nearest centroid.
+        let candidates = indexer.search_with_similarity(x);
+        if candidates.is_empty() {
+            return soft_project(x, clusters, tau);
+        }
+        // Compute full distances only for candidates.
+        let mut best_i = candidates[0].0;
+        let mut best_d = 2.0;
+        for &(idx, _) in &candidates {
+            let d = x.normalized_hamming_distance(&clusters[idx].centroid);
+            if d.is_finite() && d < best_d {
+                best_d = d;
+                best_i = idx;
+            }
+        }
+        // Check if we should fall back (best candidate too far).
+        let best_sim = 1.0 - best_d;
+        if best_sim < crate::indexer::INDEXER_FALLBACK_SIM {
+            return soft_project(x, clusters, tau);
+        }
+        return clusters[best_i].centroid;
+    }
+
+    // ── Soft projection with indexer pre‑filter ──────────────────
+    let candidates = indexer.search_with_similarity(x);
+    if candidates.is_empty() {
+        return soft_project(x, clusters, tau);
+    }
+
+    // Compute full distances for candidates only.
+    let mut dists: Vec<(usize, f64)> = candidates
+        .iter()
+        .map(|&(idx, _)| (idx, x.normalized_hamming_distance(&clusters[idx].centroid)))
+        .filter(|(_, d)| d.is_finite())
+        .collect();
+
+    if dists.is_empty() {
+        return soft_project(x, clusters, tau);
+    }
+
+    // Check fallback condition: if the best candidate is too far,
+    // the indexer may have missed the true nearest centroid.
+    let best_candidate_sim = 1.0 - dists.iter().map(|(_, d)| d).cloned().fold(f64::INFINITY, f64::min);
+    if best_candidate_sim < crate::indexer::INDEXER_FALLBACK_SIM {
+        return soft_project(x, clusters, tau);
+    }
+
+    dists.sort_by(|a, b| compare_distance_candidate(a.0, a.1, b.0, b.1));
+    let min_d = dists[0].1;
+
+    // Softmax weights over candidate subset.
+    let mut weights: Vec<(usize, f64)> = Vec::with_capacity(dists.len());
+    let mut w_sum = 0.0_f64;
+    for &(idx, d) in &dists {
+        let w = (-(d * d - min_d * min_d) / tau).exp();
+        weights.push((idx, w));
+        w_sum += w;
+    }
+
+    if w_sum < 1e-30 {
+        return clusters[dists[0].0].centroid;
+    }
+    for (_, w) in weights.iter_mut() {
+        *w /= w_sum;
+    }
+
+    // Weighted majority per bit over candidate subset.
+    let mut result = [0u64; U64_BLOCKS];
+    for block in 0..U64_BLOCKS {
+        let mut word = 0u64;
+        for bit in 0..64 {
+            let mut w1 = 0.0;
+            for &(idx, w) in &weights {
+                let b = (clusters[idx].centroid.bits[block] >> bit) & 1;
+                w1 += w * b as f64;
+            }
+            if w1 > 0.5 {
+                word |= 1u64 << bit;
+            }
+        }
+        result[block] = word;
+    }
+
+    Hypervector { bits: result }
+}
+
 /// Like `soft_project` but with a threshold fallback: if no centroid is close
 /// enough (sim ≥ threshold_sim), returns the input unchanged.
 /// This is the soft-projection analogue of `anchor_through_clusters_with_threshold`.
@@ -4601,7 +4721,7 @@ mod tests {
 
         // ── Merge (use threshold large enough to cover centroid distance) ─
         let merge_threshold = initial_dist + 0.05;  // generous margin
-        let merges = brain.compact_clusters(merge_threshold);
+        let merges = brain.compact_clusters(merge_threshold, None);
         assert_eq!(merges, 1, "Should merge exactly 1 pair (threshold={:.4})", merge_threshold);
 
         // ── Post-merge verification ───────────────────────────────────
@@ -4748,7 +4868,7 @@ mod tests {
             // Run compactor every 50 ticks (same schedule as main.rs)
             if step > 0 && step % 50 == 0 && brain.drift_magnitude_ewma > DELTA_MAX {
                 let merge_thresh = brain.adaptive_novelty_threshold() + 0.03;
-                brain.compact_clusters(merge_thresh);
+                brain.compact_clusters(merge_thresh, None);
             }
 
             // Track stats

@@ -21,6 +21,7 @@ use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::TcpStream;
 use tokio::time::timeout;
 
+use crate::cognition::{DecisionRecord, SideEffectClass, ToolEvent};
 use crate::perception::SvoTriple;
 use crate::qa::{PlanStep, QaEngine};
 use crate::text_encoder::store_knowledge_triple;
@@ -29,6 +30,35 @@ use crate::VSABrain;
 // ═══════════════════════════════════════════════════════════════════════════
 // PROTOCOL TYPES
 // ═══════════════════════════════════════════════════════════════════════════
+
+/// Whether an action is simulated (internal what-if) or real (external execution).
+///
+/// Adding this to `ActionRequest` ensures type-level distinction — every
+/// action carries its simulation mode as a first-class field, preventing
+/// accidental real execution of what was meant to be a simulation.
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq)]
+pub enum SimulationMode {
+    /// Real action: executes against an external target (network, filesystem, etc.).
+    Real,
+    /// Simulated action: internal what-if without external side effects.
+    Simulated,
+}
+
+impl SimulationMode {
+    pub fn is_real(&self) -> bool {
+        matches!(self, SimulationMode::Real)
+    }
+
+    pub fn is_simulated(&self) -> bool {
+        matches!(self, SimulationMode::Simulated)
+    }
+}
+
+impl Default for SimulationMode {
+    fn default() -> Self {
+        SimulationMode::Simulated
+    }
+}
 
 /// The type of action the jump-box should execute.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq)]
@@ -73,6 +103,9 @@ pub struct ActionRequest {
     pub params: HashMap<String, String>,
     /// Maximum time to wait for this action to complete (seconds).
     pub timeout_secs: u64,
+    /// Whether this is a real or simulated action.
+    #[serde(default)]
+    pub simulation_mode: SimulationMode,
 }
 
 impl ActionRequest {
@@ -82,6 +115,7 @@ impl ActionRequest {
             target: target.to_string(),
             params: HashMap::new(),
             timeout_secs: 30,
+            simulation_mode: SimulationMode::Simulated,
         }
     }
 
@@ -100,44 +134,62 @@ impl ActionRequest {
         self
     }
 
-    /// Helper: build a ScanPort request.
+    /// Mark this action as real (external execution).
+    pub fn real(mut self) -> Self {
+        self.simulation_mode = SimulationMode::Real;
+        self
+    }
+
+    /// Mark this action as simulated (internal what-if).
+    pub fn simulated(mut self) -> Self {
+        self.simulation_mode = SimulationMode::Simulated;
+        self
+    }
+
+    /// Helper: build a ScanPort request (defaults to real execution).
     pub fn scan_port(target: &str, port: u16) -> Self {
         Self::new(ActionType::ScanPort, target)
             .with_param("port", &port.to_string())
+            .real()
     }
 
-    /// Helper: build a CheckService request.
+    /// Helper: build a CheckService request (defaults to real execution).
     pub fn check_service(target: &str, port: u16) -> Self {
         Self::new(ActionType::CheckService, target)
             .with_param("port", &port.to_string())
+            .real()
     }
 
-    /// Helper: build a BruteForce request.
+    /// Helper: build a BruteForce request (defaults to real execution).
     pub fn brute_force(target: &str, port: u16, users: &[&str], passwords: &[&str]) -> Self {
         Self::new(ActionType::BruteForce, target)
             .with_param("port", &port.to_string())
             .with_param("users", &users.join(","))
             .with_param("passwords", &passwords.join(","))
+            .real()
     }
 
-    /// Helper: build a ProbeHttp request.
+    /// Helper: build a ProbeHttp request (defaults to real execution).
     pub fn probe_http(target: &str, port: u16, path: &str) -> Self {
         Self::new(ActionType::ProbeHttp, target)
             .with_param("port", &port.to_string())
             .with_param("path", path)
             .with_param("method", "GET")
+            .real()
     }
 
-    /// Helper: build an ExecuteCommand request.
+    /// Helper: build an ExecuteCommand request (defaults to real execution).
     pub fn exec(target: &str, command: &str) -> Self {
         Self::new(ActionType::ExecuteCommand, target)
             .with_param("command", command)
+            .real()
     }
 
-    /// Helper: build a FetchDocumentation request.
+    /// Helper: build a FetchDocumentation request (defaults to real execution).
     pub fn fetch_docs(query: &str) -> Self {
         Self::new(ActionType::FetchDocumentation, "localhost")
             .with_param("query", query)
+            .real()
     }
 }
 
@@ -872,6 +924,128 @@ fn get_target_ip(brain: &VSABrain) -> String {
     "192.168.100.10".to_string()
 }
 
+/// Check autonomy budget, execute an action, record the decision.
+///
+/// This is the **central enforcement point** for Layer 5 bounded autonomy.
+/// Before execution: checks `budget.can_spend()`, creates a `DecisionRecord`.
+/// After execution: calls `budget.spend()`, fills in the record, stores it.
+/// Returns `None` if the budget blocked the action.
+pub async fn budgeted_execute<'a>(
+    brain: &'a mut VSABrain,
+    tick: u64,
+    intent: &str,
+    request: &ActionRequest,
+    actuator: &JumpBoxActuator,
+    reasoning: &str,
+    is_external_write: bool,
+) -> Option<(ActionResult, String)> {
+    // ── 1. Check budget ────────────────────────────────────────────
+    let action_risk = match request.action_type {
+        ActionType::ExecuteCommand | ActionType::ListenPort => 0.70,
+        ActionType::BruteForce => 0.60,
+        ActionType::ScanPort | ActionType::ScanHost | ActionType::CheckService
+        | ActionType::ProbeHttp => 0.30,
+        ActionType::CheckProcess | ActionType::FetchDocumentation => 0.10,
+    };
+    let duration_ms = request.timeout_secs * 1000;
+
+    let mut record = DecisionRecord::new(tick, intent, request.clone(), reasoning, &brain.autonomy_budget);
+    record.budget_allowed = brain.autonomy_budget.can_spend(action_risk, is_external_write);
+
+    if !record.budget_allowed {
+        // Budget blocked — record the denial and return None
+        let denial_msg = format!(
+            "Budget blocked: actions_used={}/{}, risk={:.2}/{:.2}, ext_writes={}/{}, time={}/{}ms",
+            brain.autonomy_budget.actions_used, brain.autonomy_budget.max_actions,
+            action_risk, brain.autonomy_budget.max_risk,
+            brain.autonomy_budget.external_writes_used, brain.autonomy_budget.max_external_writes,
+            brain.autonomy_budget.time_used_ms, brain.autonomy_budget.max_time_ms,
+        );
+        let denial = ActionResult::error(&denial_msg);
+        record.action_result = Some(denial.clone());
+        record.budget_after = brain.autonomy_budget.clone();
+        brain.decision_journal.push(record);
+        return None;
+    }
+
+    // ── 2. Execute the action ──────────────────────────────────────
+    let result = actuator.send_request(request).await;
+
+    // ── 3. Spend the budget ────────────────────────────────────────
+    let budget_ok = brain.autonomy_budget.spend(action_risk, duration_ms, is_external_write);
+
+    // ── 4. Record the tool event ───────────────────────────────────
+    let side_effect = match request.action_type {
+        ActionType::ScanPort | ActionType::ScanHost | ActionType::CheckService
+        | ActionType::ProbeHttp | ActionType::BruteForce => SideEffectClass::Network,
+        ActionType::CheckProcess | ActionType::FetchDocumentation => SideEffectClass::ReadOnly,
+        ActionType::ListenPort | ActionType::ExecuteCommand => SideEffectClass::ExternalWrite,
+    };
+    let tool_event = record_tool_event(
+        brain,
+        intent,
+        request,
+        &result,
+        side_effect,
+        1.0 - action_risk,
+    );
+    let tool_event_id = tool_event.id.clone();
+
+    // ── 5. Fill in the decision record ─────────────────────────────
+    record.action_result = Some(result.clone());
+    record.budget_after = brain.autonomy_budget.clone();
+    record.tool_event_id = Some(tool_event_id);
+    let budget_err = budget_ok.as_ref().err().map(|e| format!(" (budget warn: {})", e)).unwrap_or_default();
+    brain.decision_journal.push(record);
+
+    Some((result, budget_err))
+}
+
+/// Create a ToolEvent from an action request and result, record it on the brain.
+///
+/// This is the central wiring point for Layer 4 tool audit.  Call this after
+/// every action execution to persist the event and update reliability metrics.
+pub fn record_tool_event<'a>(
+    brain: &'a mut VSABrain,
+    intent: &str,
+    request: &ActionRequest,
+    result: &ActionResult,
+    side_effect: SideEffectClass,
+    confidence: f64,
+) -> &'a ToolEvent {
+    let event = ToolEvent {
+        id: String::new(), // auto-generated
+        intent: intent.to_string(),
+        request: request.clone(),
+        result: Some(result.clone()),
+        side_effect,
+        confidence,
+        memory_updates: Vec::new(),
+    };
+    // Infer side-effect class from action type if not specified
+    let side_effect = match request.action_type {
+        ActionType::ScanPort | ActionType::ScanHost | ActionType::CheckService
+        | ActionType::ProbeHttp => SideEffectClass::Network,
+        ActionType::BruteForce => SideEffectClass::Network,
+        ActionType::CheckProcess => SideEffectClass::ReadOnly,
+        ActionType::ListenPort => SideEffectClass::ExternalWrite,
+        ActionType::ExecuteCommand => SideEffectClass::ExternalWrite,
+        ActionType::FetchDocumentation => SideEffectClass::ReadOnly,
+    };
+    let mut event = ToolEvent {
+        id: String::new(),
+        intent: intent.to_string(),
+        request: request.clone(),
+        result: Some(result.clone()),
+        side_effect,
+        confidence,
+        memory_updates: Vec::new(),
+    };
+    let action_type_str = format!("{:?}", request.action_type);
+    brain.tool_reliability.record(&action_type_str, result.success);
+    brain.tool_event_store.push(event)
+}
+
 pub async fn run_attack_loop(
     brain: &mut VSABrain,
     qa: &mut QaEngine,
@@ -1030,8 +1204,39 @@ pub async fn run_attack_loop(
             step.achieves.0, step.achieves.1, step.achieves.2);
         eprintln!("  Confidence: {:.4}", step.confidence);
 
+        let step_intent = format!("{} {} {}", step.action.0, step.action.1, step.action.2);
         let request = plan_step_to_request(step, &target_ip);
-        let result = actuator.send_request(&request).await;
+        let is_ext_write = matches!(request.action_type, ActionType::ExecuteCommand | ActionType::ListenPort);
+        let executed = budgeted_execute(
+            brain,
+            step_num as u64,
+            &step_intent,
+            &request,
+            actuator,
+            &format!("Plan step for goal ({} {} {})", step.achieves.0, step.achieves.1, step.achieves.2),
+            is_ext_write,
+        ).await;
+
+        let (result, budget_warn) = match executed {
+            Some(r) => r,
+            None => {
+                eprintln!("  ✗ Budget blocked execution of: {}", step_intent);
+                results.push(AttackCycleResult {
+                    step_num,
+                    plan_step: Some(step.clone()),
+                    action_request: Some(request),
+                    action_result: ActionResult::error("budget exhausted"),
+                    observations_ingested: 0,
+                    goal_achieved: false,
+                    log: "Action blocked by autonomy budget".to_string(),
+                });
+                continue;
+            }
+        };
+
+        if !budget_warn.is_empty() {
+            eprintln!("  ⚠ Budget warning: {}", budget_warn);
+        }
 
         // ── 5. Check if this step directly achieves the goal ─────────────
         let step_achieves_goal = result.success

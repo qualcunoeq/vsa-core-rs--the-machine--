@@ -61,3 +61,46 @@ pub trait PerceptualEncoder {
         self.extract_relations(input, &entities)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct MockEncoder;
+
+    impl PerceptualEncoder for MockEncoder {
+        type Input = String;
+        fn extract_entities(&self, input: &String) -> Vec<Entity> {
+            input.split_whitespace().map(|s| s.to_string()).collect()
+        }
+        fn extract_relations(&self, _input: &String, entities: &[Entity]) -> Vec<SvoTriple> {
+            if entities.len() >= 2 {
+                vec![(entities[0].clone(), "relates_to".to_string(), entities[1].clone())]
+            } else {
+                vec![]
+            }
+        }
+    }
+
+    #[test]
+    fn test_encode_returns_triples() {
+        let encoder = MockEncoder;
+        let triples = encoder.encode(&"apple banana".to_string());
+        assert_eq!(triples.len(), 1);
+        assert_eq!(triples[0], ("apple".to_string(), "relates_to".to_string(), "banana".to_string()));
+    }
+
+    #[test]
+    fn test_encode_empty_input() {
+        let encoder = MockEncoder;
+        let triples = encoder.encode(&"".to_string());
+        assert!(triples.is_empty());
+    }
+
+    #[test]
+    fn test_encode_single_entity_no_relation() {
+        let encoder = MockEncoder;
+        let triples = encoder.encode(&"only_one".to_string());
+        assert!(triples.is_empty());
+    }
+}

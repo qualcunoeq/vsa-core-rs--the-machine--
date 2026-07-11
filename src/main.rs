@@ -794,7 +794,17 @@ async fn run_agent(
     });
 
     // 6. Spawn TCP Admin Socket override server
-    let qa_engine = Arc::new(RwLock::new(the_machine::qa::QaEngine::new()));
+    let mut qa_engine_initial = the_machine::qa::QaEngine::new();
+    // Set up episode store persistence path
+    qa_engine_initial.episode_store.path =
+        Some("data/episode_store.json".to_string());
+    // Try to load any existing episodes
+    if let Ok(store) = the_machine::cognition::EpisodeStore::load("data/episode_store.json") {
+        qa_engine_initial.episode_store = store;
+        eprintln!("Loaded {} existing episodes from data/episode_store.json",
+            qa_engine_initial.episode_store.episodes.len());
+    }
+    let qa_engine = Arc::new(RwLock::new(qa_engine_initial));
     {
         // Seed initial facts — general knowledge, no domain bias
         let mut qa_w = qa_engine.write().await;
@@ -991,6 +1001,9 @@ async fn run_agent(
         workspace.register_module("INTUITION", true);  // module 6
         workspace.register_module("SHADOW", true);     // module 7
         workspace.register_module("CONSENSUS", true);  // module 8
+
+        // Track episode count for calibration updates (avoids double-counting)
+        let mut last_calibration_ep_count: usize = qa_for_loop.read().await.episode_store.episodes.len();
 
         loop {
             sleep(Duration::from_secs(2)).await;
@@ -1222,7 +1235,7 @@ async fn run_agent(
                 // merge clusters that were spawned too eagerly during drift.
                 if brain_guard.drift_magnitude_ewma > the_machine::DELTA_MAX {
                     let merge_thresh = brain_guard.adaptive_novelty_threshold() + 0.03;
-                    let compactor_merges = brain_guard.compact_clusters(merge_thresh);
+                    let compactor_merges = brain_guard.compact_clusters(merge_thresh, None);
                     if compactor_merges > 0 {
                         total_removed += compactor_merges;
                         merged_clusters += compactor_merges;
@@ -1305,6 +1318,52 @@ async fn run_agent(
                     let brain_read = brain_subconscious.read().await;
                     let mut qa_write = qa_for_loop.write().await;
                     qa_write.sync_cluster_data(&brain_read);
+                }
+
+                // ██ Rebuild Lightning Indexer periodically ██
+                // Keeps the 256-bit fingerprints in sync with the current
+                // centroid set.  Fast O(K·4) operation.
+                {
+                    let mut brain_write = brain_subconscious.write().await;
+                    brain_write.rebuild_indexer();
+                }
+
+                // ██ Update EMA Anticipatory Routing centroids (Layer 1) ██
+                // Blends active centroids into routing centroids so routing
+                // decisions use slowly-moving targets.  Prevents oscillation.
+                {
+                    let mut brain_write = brain_subconscious.write().await;
+                    brain_write.update_routing_centroids();
+                }
+
+                // ██ Record confidence calibration from new QA episodes (Layer 3) ██
+                {
+                    let qa_read = qa_for_loop.read().await;
+                    let current_count = qa_read.episode_store.episodes.len();
+                    if current_count > last_calibration_ep_count {
+                        let mut brain_write = brain_subconscious.write().await;
+                        brain_write.confidence_calibration.record_store_from(
+                            &qa_read.episode_store,
+                            last_calibration_ep_count,
+                        );
+                        last_calibration_ep_count = current_count;
+                    }
+                }
+                if ticker > 0 && ticker % 50 == 0 {
+                    let qa_read = qa_for_loop.read().await;
+                    if let Some(ref ep_path) = qa_read.episode_store.path {
+                        if !qa_read.episode_store.episodes.is_empty() {
+                            if let Err(e) = qa_read.episode_store.save() {
+                                eprintln!("[tick {}] Failed to save episode store: {}", ticker, e);
+                            }
+                        }
+                    }
+                    // Record confidence calibration from all episodes (Layer 3)
+                    {
+                        let mut brain_write = brain_subconscious.write().await;
+                        brain_write.confidence_calibration.record_store(&qa_read.episode_store);
+                    }
+                    drop(qa_read);
                 }
 
                 // ── LAYER 0: Induce rules from Markov transitions ─────
@@ -1934,6 +1993,70 @@ async fn run_agent(
                             let step_param_hv =
                                 resonator_vocab.get_vector(&step.parameter).unwrap();
 
+                            // ── Autonomy budget gate (Layer 5) ────
+                            let (action_risk, is_external_write) = match step.action.as_str() {
+                                "execute_bash" | "sys_write" => (0.70, true),
+                                "sys_read" => (0.10, false),
+                                _ => (0.30, false),
+                            };
+                            // ── Autonomy budget check (Layer 5) ────────
+                            let budget_allowed = {
+                                let mut brain_write = brain_subconscious.write().await;
+                                brain_write.autonomy_budget.can_spend(action_risk, is_external_write)
+                            };
+
+                            if !budget_allowed {
+                                let action_ratio = {
+                                    let bg = brain_subconscious.read().await;
+                                    format!("{}/{}", bg.autonomy_budget.actions_used, bg.autonomy_budget.max_actions)
+                                };
+                                let msg = format!(
+                                    "Budget gate REJECTED {} {} — no remaining budget (actions={})",
+                                    step.action, step.parameter, action_ratio,
+                                );
+                                // Record the denial
+                                let action_req = the_machine::actuator::ActionRequest::new(
+                                    the_machine::actuator::ActionType::ExecuteCommand,
+                                    &step.parameter,
+                                );
+                                let mut brain_write = brain_subconscious.write().await;
+                                let mut record = the_machine::cognition::DecisionRecord::new(
+                                    ticker as u64,
+                                    &format!("main loop: {} {}", step.action, step.parameter),
+                                    action_req,
+                                    &format!("corrective plan step {}/{} (DENIED)", idx + 1, trajectory.steps.len()),
+                                    &brain_write.autonomy_budget,
+                                );
+                                record.budget_allowed = false;
+                                record.action_result = Some(the_machine::actuator::ActionResult::error(&msg));
+                                record.budget_after = brain_write.autonomy_budget.clone();
+                                brain_write.decision_journal.push(record);
+                                drop(brain_write);
+
+                                let _ = subconscious_log_tx.send(format!(
+                                    "AGENT {}: {}", id_str, msg
+                                ));
+                                continue;
+                            }
+
+                            // Create the decision record for the allowed action
+                            let mut decision_record = {
+                                let mut brain_write = brain_subconscious.write().await;
+                                let action_req = the_machine::actuator::ActionRequest::new(
+                                    the_machine::actuator::ActionType::ExecuteCommand,
+                                    &step.parameter,
+                                );
+                                let record = the_machine::cognition::DecisionRecord::new(
+                                    ticker as u64,
+                                    &format!("main loop: {} {}", step.action, step.parameter),
+                                    action_req,
+                                    &format!("corrective plan step {}/{}", idx + 1, trajectory.steps.len()),
+                                    &brain_write.autonomy_budget,
+                                );
+                                record
+                            };
+                            decision_record.budget_allowed = true;
+
                             // ── Defense energy gate ─────────────────
                             // Before dispatching, verify the action is
                             // safe given current threat + anxiety levels.
@@ -1955,6 +2078,31 @@ async fn run_agent(
                                     Err(gate_reason)
                                 }
                             };
+
+                            // ── Spend budget & finalize decision record after execution ──
+                            {
+                                let mut brain_write = brain_subconscious.write().await;
+                                let action_result = match &exec_res {
+                                    Ok(stdout) => the_machine::actuator::ActionResult {
+                                        success: true,
+                                        raw_output: stdout.clone(),
+                                        observations: Vec::new(),
+                                        error: None,
+                                        duration_ms: 2000,
+                                    },
+                                    Err(e) => the_machine::actuator::ActionResult {
+                                        success: false,
+                                        raw_output: String::new(),
+                                        observations: Vec::new(),
+                                        error: Some(e.clone()),
+                                        duration_ms: 2000,
+                                    },
+                                };
+                                decision_record.action_result = Some(action_result);
+                                let _ = brain_write.autonomy_budget.spend(action_risk, 2000, is_external_write);
+                                decision_record.budget_after = brain_write.autonomy_budget.clone();
+                                brain_write.decision_journal.push(decision_record);
+                            }
 
                             let v_outcome = Hypervector::encode_text_ngram(
                                 if exec_res.is_ok() { "SUCCESS" } else { "FAILURE" },

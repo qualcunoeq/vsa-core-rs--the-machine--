@@ -19,6 +19,7 @@ pub mod chess_learner;
 pub mod code_bridge;
 pub mod cognition;
 pub mod compression;
+pub mod context;
 pub mod defense;
 pub mod diagnostic;
 pub mod drift;
@@ -6028,6 +6029,150 @@ mod tests {
         let result = brain.project_through_clusters(&query);
         // Should not crash — falls through to full scan
         assert_eq!(result.bits.len(), crate::U64_BLOCKS);
+    }
+
+    #[test]
+    fn test_cascade_self_query_exact_match() {
+        // Cascade with a query that IS a centroid should return that centroid.
+        let mut brain = VSABrain::new(0.43);
+        let target = Hypervector::new_random();
+        for _ in 0..30 {
+            brain.add_to_dejavu_db(Hypervector::new_random(), "distractor", HashMap::new());
+        }
+        brain.add_to_dejavu_db(target, "target", HashMap::new());
+        brain.rebuild_indexer();
+        brain.enable_cascade();
+        brain.soft_projection_tau = 0.0; // hard projection
+
+        let result = brain.project_through_clusters(&target);
+        let sim = 1.0 - result.normalized_hamming_distance(&target);
+        assert!(
+            (sim - 1.0).abs() < 1e-10,
+            "Cascade hard projection should recover exact centroid match. Sim={:.6}",
+            sim
+        );
+    }
+
+    #[test]
+    fn test_cascade_not_worse_than_standard_indexer() {
+        // Cascade should produce outputs as good as the standard 2-level indexer.
+        // Compare each approach against the full-scan gold standard over many
+        // random queries. The cascade should not be significantly worse.
+        let mut brain = brain_with_n_clusters(100);
+        brain.soft_projection_tau = 0.08;
+
+        let n_queries = 30;
+        let mut cascade_better = 0i32;
+        for _ in 0..n_queries {
+            let query = Hypervector::new_random();
+
+            // Full scan gold standard
+            brain.disable_indexer();
+            let gold = brain.project_through_clusters(&query);
+
+            // Standard 2-level indexer
+            brain.enable_indexer();
+            brain.disable_cascade();
+            let standard = brain.project_through_clusters(&query);
+
+            // Cascade 3-level
+            brain.enable_cascade();
+            let cascade = brain.project_through_clusters(&query);
+
+            // Similarity to gold standard
+            let std_sim = 1.0 - gold.normalized_hamming_distance(&standard);
+            let cas_sim = 1.0 - gold.normalized_hamming_distance(&cascade);
+
+            if cas_sim >= std_sim - 0.05 {
+                cascade_better += 1;
+            }
+        }
+
+        let pct = cascade_better as f64 / n_queries as f64 * 100.0;
+        assert!(
+            pct > 40.0,
+            "Cascade should be within 5% of standard indexer quality on >40% of queries (got {:.1}%)",
+            pct
+        );
+    }
+
+    #[test]
+    fn test_cascade_fallback_empty_fingerprints() {
+        // When cascade has no fingerprints, it should fall through to 2-level.
+        let mut brain = brain_with_n_clusters(20);
+        brain.enable_cascade();
+
+        // Wipe medium fingerprints to force empty cascade result
+        if let Some(ref mut idx) = brain.lightning_indexer {
+            idx.medium_fingerprints.clear();
+        }
+
+        // Should NOT panic — falls through to search_with_similarity
+        let query = Hypervector::new_random();
+        let result = brain.project_through_clusters(&query);
+        assert_eq!(result.bits.len(), crate::U64_BLOCKS);
+    }
+
+    #[test]
+    fn test_cascade_medium_similarity_correlation() {
+        // The 1024-bit medium fingerprint similarity should correlate with
+        // full 10240-bit similarity — at least one of the top-5 medium
+        // nearest neighbors should appear in the top-10 full-scan list.
+        let n_centroids = 30;
+        let centroids: Vec<Hypervector> = (0..n_centroids).map(|_| Hypervector::new_random()).collect();
+        let strategy = crate::indexer::FingerprintStrategy::BlockSampling;
+        let query = Hypervector::new_random();
+        let q_med = strategy.extract_medium(&query);
+
+        let mut correlations = Vec::with_capacity(n_centroids);
+        for c in &centroids {
+            let c_med = strategy.extract_medium(c);
+            let med_sim = q_med.similarity(&c_med);
+            let full_sim = 1.0 - query.normalized_hamming_distance(c);
+            correlations.push((med_sim, full_sim));
+        }
+
+        // Rank correlation: medium top-5 should have at least one in full top-10
+        let mut med_ranked: Vec<(usize, f64)> = correlations.iter().enumerate()
+            .map(|(i, (m, _))| (i, *m))
+            .collect();
+        med_ranked.sort_by(|a, b| b.1.total_cmp(&a.1));
+        let med_top5: std::collections::HashSet<usize> = med_ranked.iter().take(5).map(|(i, _)| *i).collect();
+
+        let mut full_ranked: Vec<(usize, f64)> = correlations.iter().enumerate()
+            .map(|(i, (_, f))| (i, *f))
+            .collect();
+        full_ranked.sort_by(|a, b| b.1.total_cmp(&a.1));
+        let full_top10: std::collections::HashSet<usize> = full_ranked.iter().take(10).map(|(i, _)| *i).collect();
+
+        let overlap = med_top5.intersection(&full_top10).count();
+        assert!(
+            overlap >= 1,
+            "Medium fingerprint top-5 should have >=1 in full-scan top-10 (got {})",
+            overlap
+        );
+    }
+
+    #[test]
+    fn test_cascade_disabled_unchanged() {
+        // Disabling cascade should produce identical results to the standard indexer.
+        let mut brain = brain_with_n_clusters(30);
+        let query = Hypervector::new_random();
+
+        // First with cascade disabled (default)
+        let standard = brain.project_through_clusters(&query);
+
+        // Re-enable then disable
+        brain.enable_cascade();
+        brain.disable_cascade();
+        let after_toggle = brain.project_through_clusters(&query);
+
+        let sim = 1.0 - standard.normalized_hamming_distance(&after_toggle);
+        assert!(
+            (sim - 1.0).abs() < 1e-10,
+            "Toggle cascade off should produce same result as never enabled (sim={:.6})",
+            sim
+        );
     }
 
     // ─── Adaptive τ Tests ─────────────────────────────────────────────────

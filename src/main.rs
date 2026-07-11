@@ -900,6 +900,12 @@ async fn run_agent(
         for d in &synth_deltas {
             recent_deltas.push_back(*d);
         }
+        // Hierarchical context memory (GLM-5 Pattern 8: Keep-Recent + Fold).
+        // Keeps the last 16 states at full resolution in a recent buffer,
+        // folds older states into bundled chunks for approximate recall.
+        let mut context_memory = the_machine::context::HierarchicalContextMemory::with_capacities(16, 32);
+        context_memory.set_tick(0);
+
         let mut active_drift;
 
         // Seed initial predictions from synthetic states
@@ -2189,6 +2195,15 @@ async fn run_agent(
             if recent_states.len() > history_limit {
                 recent_states.pop_front();
             }
+
+            // Push into hierarchical context memory (GLM-5 Pattern 8: Keep-Recent + Fold).
+            // Recent items stay at full resolution for exact query; older items are
+            // automatically folded into bundled chunks when the pending fold fills.
+            context_memory.push(
+                current_world_state,
+                &format!("state_tick_{}", ticker),
+            );
+            context_memory.tick();
 
             let accumulated_action = if current_tick_actions.is_empty() {
                 Hypervector::new_zero()

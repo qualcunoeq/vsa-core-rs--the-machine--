@@ -430,10 +430,10 @@ impl LearnedProjector {
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct LightningIndexer {
     /// Low‑dim fingerprints for each centroid (256-bit).
-    fingerprints: Vec<LowDimVector>,
+    pub(crate) fingerprints: Vec<LowDimVector>,
 
     /// Medium‑dim fingerprints for each centroid (1024-bit, multi-resolution cascade).
-    medium_fingerprints: Vec<MediumDimVector>,
+    pub(crate) medium_fingerprints: Vec<MediumDimVector>,
 
     /// Number of top candidates to return from `search`.
     top_k: usize,

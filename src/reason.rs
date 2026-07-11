@@ -5960,6 +5960,10 @@ mod tests {
                 Hypervector { bits }
             })
             .collect();
+        assert!(
+            crate::centroids_are_a3q_admissible(&centroids),
+            "constructive witness fixture must satisfy runtime A3-Q admission"
+        );
 
         let clusters: Vec<MemoryCluster> = centroids.iter().map(|c| MemoryCluster {
             centroid: *c,
@@ -6370,9 +6374,9 @@ mod tests {
     //
     //   Exact ρ-admissibility excludes exact fixed points only. It does NOT
     //   imply quantitative decorrelation: near-periodic centroids can pass the
-    //   invariant while remaining almost fixed under ρ⁵². The formal theorem is
-    //   therefore conditional on A3-Q; this test checks the generic calibrated
-    //   witness construction, not an all-admissible deterministic proof.
+    //   invariant while remaining almost fixed under ρ⁵². The deterministic
+    //   theorem is over A3-Q runtime-admissible manifolds; this test checks the
+    //   generic calibrated witness construction used by that theorem.
     //
     // KEY INSIGHT: The comparison is against ALL k ≠ j, not just k = i.
     // The move toward ρ⁻⁵²(c_j) leaves distances to ALL other ρ⁻⁵²(c_k)
@@ -6508,7 +6512,7 @@ mod tests {
             "Weight ratio too low: {:.2} (need > 1.5 for soft projection to prefer c_j)",
             min_weight_ratio
         );
-        eprintln!("  ✓ Sub-Lemma S witness holds for this A3-Q/generic centroid set");
+        eprintln!("  ✓ Sub-Lemma S witness holds for this A3-Q-compatible centroid set");
         eprintln!("  ✓ Min w_j/w_i = {:.2} >> 1 → c_j dominates P_τ at witness point", min_weight_ratio);
     }
 

@@ -790,6 +790,17 @@ pub const MAX_CLUSTER_WEIGHT: u32 = 500;
 /// 1000 entries × ~2 KB each = ~2 MB per cluster, negligible memory.
 pub const MAX_ENTRIES_PER_CLUSTER: usize = 1000;
 
+/// ██ v3.4: A3-Q quantitative rotated-decorrelation contract ██
+///
+/// Exact rho-admissibility only excludes fixed points. Sub-Lemma S needs an
+/// executable admission gate proving that theorem-admitted centroids and their
+/// rho^-52 rotations remain quantitatively decorrelated. These margins are
+/// deliberately wider than random-vector sampling error at D=10240, but tight
+/// enough to reject near-periodic/adversarial centroids.
+pub const A3Q_DECORRELATION_MIN: f64 = 0.45;
+pub const A3Q_DECORRELATION_MAX: f64 = 0.55;
+pub const A3Q_REPAIR_ATTEMPTS: usize = 64;
+
 /// ██ FIX v2.5: Accumulator decay tick interval ██
 ///
 /// How often the accumulator decay is applied in the agent loop.
@@ -810,6 +821,72 @@ pub enum GateAction {
     NewCluster,
     /// Episode desirability ≤ 0.6: no action taken.
     Discard,
+}
+
+pub fn a3q_distance_in_band(distance: f64) -> bool {
+    (A3Q_DECORRELATION_MIN..=A3Q_DECORRELATION_MAX).contains(&distance)
+}
+
+pub fn hypervector_is_a3q_self_admissible(centroid: &Hypervector) -> bool {
+    [13usize, 26, 52]
+        .iter()
+        .all(|&shift| a3q_distance_in_band(centroid.normalized_hamming_distance(&centroid.rotate_left(shift))))
+}
+
+pub fn centroids_are_a3q_admissible(centroids: &[Hypervector]) -> bool {
+    if !centroids.iter().all(hypervector_is_a3q_self_admissible) {
+        return false;
+    }
+
+    for (source_idx, source) in centroids.iter().enumerate() {
+        for (target_idx, target) in centroids.iter().enumerate() {
+            if source_idx != target_idx {
+                let direct = source.normalized_hamming_distance(target);
+                if !a3q_distance_in_band(direct) {
+                    return false;
+                }
+            }
+
+            let rotated_target = target.rotate_left(HD_DIMENSION - 52);
+            let distance = source.normalized_hamming_distance(&rotated_target);
+            if !a3q_distance_in_band(distance) {
+                return false;
+            }
+        }
+    }
+
+    true
+}
+
+fn splitmix64(mut x: u64) -> u64 {
+    x = x.wrapping_add(0x9E37_79B9_7F4A_7C15);
+    let mut z = x;
+    z = (z ^ (z >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
+    z = (z ^ (z >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
+    z ^ (z >> 31)
+}
+
+fn a3q_centroid_seed(centroid: &Hypervector) -> u64 {
+    centroid
+        .bits
+        .iter()
+        .enumerate()
+        .fold(0xA3A3_5105_5EED_1024u64, |acc, (idx, &word)| {
+            splitmix64(acc ^ word ^ ((idx as u64) << 32))
+        })
+}
+
+fn a3q_repair_mask(base: &Hypervector, attempt: usize, salt: u64) -> Hypervector {
+    let mut bits = [0u64; U64_BLOCKS];
+    let seed = a3q_centroid_seed(base)
+        ^ salt
+        ^ ((attempt as u64).wrapping_mul(0xD1B5_4A32_D192_ED03));
+
+    for (idx, word) in bits.iter_mut().enumerate() {
+        *word = splitmix64(seed ^ (idx as u64).wrapping_mul(0x9E37_79B9_7F4A_7C15));
+    }
+
+    Hypervector { bits }
 }
 
 impl MemoryCluster {
@@ -1010,8 +1087,10 @@ impl MemoryCluster {
                 }
             }
         }
-        // Enforce ρ-admissible invariant: δ(c, ρ¹³(c)) > 0.
-        // Required for Assumption ρ in Theorem XXV.4.
+        // Enforce exact ρ-admissible invariant. Quantitative A3-Q admission is
+        // an explicit proof gate (`enforce_a3q_manifold()`), not an automatic
+        // learning-time mutation, because decorrelation repair can move a
+        // semantic centroid by ~0.5.
         // This is a no-op for non-pathological centroids.
         self.enforce_rho_admissible();
     }
@@ -1137,6 +1216,55 @@ impl MemoryCluster {
                 };
             }
         }
+    }
+
+    fn sync_accumulator_to_centroid_majority(&mut self) {
+        if self.accumulator.is_empty() {
+            return;
+        }
+
+        let threshold = self.total_weight / 2;
+        for i in 0..HD_DIMENSION {
+            let bit = (self.centroid.bits[i / 64] >> (i % 64)) & 1;
+            self.accumulator[i] = if bit == 1 {
+                threshold + 1
+            } else {
+                threshold
+            };
+        }
+    }
+
+    pub fn is_a3q_self_admissible(&self) -> bool {
+        hypervector_is_a3q_self_admissible(&self.centroid)
+    }
+
+    /// Enforce the quantitative self-rotation half of A3-Q.
+    ///
+    /// This upgrades exact fixed-point exclusion into an explicit admission
+    /// check: theorem-admitted centroids must be decorrelated from their rho^13,
+    /// rho^26, and rho^52 rotations. Pathological vectors are repaired by
+    /// XORing a deterministic dense mask and then synchronizing any resident
+    /// accumulator to the repaired centroid. Random/dense HDC centroids are
+    /// unchanged.
+    pub fn enforce_a3q_self_admissible(&mut self) -> bool {
+        self.enforce_rho_admissible();
+        if self.is_a3q_self_admissible() {
+            return true;
+        }
+
+        let base = self.centroid;
+        let salt = (self.total_weight as u64) ^ ((self.entries.len() as u64) << 32);
+        for attempt in 0..A3Q_REPAIR_ATTEMPTS {
+            let mask = a3q_repair_mask(&base, attempt, salt);
+            let candidate = base.bitwise_xor(&mask);
+            if hypervector_is_a3q_self_admissible(&candidate) {
+                self.centroid = candidate;
+                self.sync_accumulator_to_centroid_majority();
+                return true;
+            }
+        }
+
+        false
     }
 
     /// ██ FIX v2.5: Decay the accumulator to age out old evidence ██
@@ -1395,6 +1523,96 @@ impl VSABrain {
             self.experiences.drain(0..drain);
         }
         self.experiences.push(exp);
+    }
+
+    pub fn is_a3q_manifold_admissible(&self) -> bool {
+        let centroids: Vec<Hypervector> = self
+            .dejavu_clusters
+            .iter()
+            .map(|cluster| cluster.centroid)
+            .collect();
+        centroids_are_a3q_admissible(&centroids)
+    }
+
+    fn candidate_a3q_compatible(&self, idx: usize, candidate: &Hypervector) -> bool {
+        if !hypervector_is_a3q_self_admissible(candidate) {
+            return false;
+        }
+
+        let candidate_rotated = candidate.rotate_left(HD_DIMENSION - 52);
+        for (other_idx, other_cluster) in self.dejavu_clusters.iter().enumerate() {
+            if other_idx == idx {
+                continue;
+            }
+
+            let other = &other_cluster.centroid;
+            let direct = candidate.normalized_hamming_distance(other);
+            if !a3q_distance_in_band(direct) {
+                return false;
+            }
+
+            let other_rotated = other.rotate_left(HD_DIMENSION - 52);
+            let forward = candidate.normalized_hamming_distance(&other_rotated);
+            let reverse = other.normalized_hamming_distance(&candidate_rotated);
+            if !a3q_distance_in_band(forward) || !a3q_distance_in_band(reverse) {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    /// Enforce the full A3-Q contract over the active permanent manifold.
+    ///
+    /// After this succeeds, every active centroid is quantitatively
+    /// decorrelated from its rho^13/rho^26/rho^52 self-rotations and every
+    /// pair satisfies the rho^-52 rotated-distance band used by Sub-Lemma S.
+    /// This is the deterministic closure condition for Theorem XXV.5 over
+    /// runtime-admissible manifolds. The method returns false only if a
+    /// deterministic repair mask cannot be found within the bounded attempt
+    /// budget; normal dense HDC centroids pass without mutation.
+    pub fn enforce_a3q_manifold(&mut self) -> bool {
+        for cluster in &mut self.dejavu_clusters {
+            if !cluster.enforce_a3q_self_admissible() {
+                return false;
+            }
+        }
+
+        for _pass in 0..4 {
+            let mut changed = false;
+            for idx in 0..self.dejavu_clusters.len() {
+                if self.candidate_a3q_compatible(idx, &self.dejavu_clusters[idx].centroid) {
+                    continue;
+                }
+
+                let base = self.dejavu_clusters[idx].centroid;
+                let salt = ((idx as u64) << 48)
+                    ^ (self.tick_counter as u64)
+                    ^ ((self.dejavu_clusters.len() as u64) << 24);
+                let mut repaired = false;
+                for attempt in 0..A3Q_REPAIR_ATTEMPTS {
+                    let mask = a3q_repair_mask(&base, attempt, salt);
+                    let candidate = base.bitwise_xor(&mask);
+                    if self.candidate_a3q_compatible(idx, &candidate) {
+                        self.dejavu_clusters[idx].centroid = candidate;
+                        self.dejavu_clusters[idx].sync_accumulator_to_centroid_majority();
+                        repaired = true;
+                        changed = true;
+                        break;
+                    }
+                }
+
+                if !repaired {
+                    return false;
+                }
+            }
+
+            if !changed {
+                return self.is_a3q_manifold_admissible();
+            }
+        }
+
+        self.is_a3q_manifold_admissible()
     }
 
     pub fn seed_synthetic_regimes(&mut self) -> (Hypervector, Hypervector, Hypervector, Vec<Hypervector>) {
@@ -3306,6 +3524,41 @@ impl ContractionTelemetry {
 mod tests {
     use super::*;
 
+    fn near_period4_hypervector() -> Hypervector {
+        let mut bits = [0u64; U64_BLOCKS];
+        for word_idx in 0..U64_BLOCKS {
+            let mut word = 0u64;
+            for bit_idx in 0..64 {
+                let pos = word_idx * 64 + bit_idx;
+                if pos % 4 == 0 || pos % 4 == 1 {
+                    word |= 1u64 << bit_idx;
+                }
+            }
+            bits[word_idx] = word;
+        }
+        bits[0] ^= 1;
+        Hypervector { bits }
+    }
+
+    fn test_cluster_from_centroid(centroid: Hypervector) -> MemoryCluster {
+        let mut accumulator = vec![0u32; HD_DIMENSION];
+        for i in 0..HD_DIMENSION {
+            let bit = (centroid.bits[i / 64] >> (i % 64)) & 1;
+            accumulator[i] = bit as u32;
+        }
+
+        MemoryCluster {
+            centroid,
+            entries: Vec::new(),
+            reverberation: 0.0,
+            last_reinforced_tick: 0,
+            anchor: centroid,
+            accumulator,
+            total_weight: 1,
+            last_access_tick: 0,
+        }
+    }
+
     #[test]
     fn test_hamming_distance_ident() {
         let v1 = Hypervector::new_random();
@@ -3889,20 +4142,7 @@ mod tests {
         // remaining almost perfectly correlated with its ρ⁵² rotation. This is
         // the deterministic counterexample to the old "non-periodic ⇒
         // decorrelated" claim used by Sub-Lemma S.
-        let mut bits = [0u64; U64_BLOCKS];
-        for word_idx in 0..U64_BLOCKS {
-            let mut word = 0u64;
-            for bit_idx in 0..64 {
-                let pos = word_idx * 64 + bit_idx;
-                if pos % 4 == 0 || pos % 4 == 1 {
-                    word |= 1u64 << bit_idx;
-                }
-            }
-            bits[word_idx] = word;
-        }
-        bits[0] ^= 1; // Break exact period-4 fixedness by the smallest amount.
-
-        let centroid = Hypervector { bits };
+        let centroid = near_period4_hypervector();
         let d13 = centroid.normalized_hamming_distance(&centroid.rotate_left(13));
         let d26 = centroid.normalized_hamming_distance(&centroid.rotate_left(26));
         let d52 = centroid.normalized_hamming_distance(&centroid.rotate_left(52));
@@ -3939,6 +4179,74 @@ mod tests {
             d52_after < 0.001,
             "centroid is admissible but not quantitatively decorrelated: δ={:.8}",
             d52_after
+        );
+    }
+
+    #[test]
+    fn test_a3q_rejects_near_periodic_exact_admissible_centroid() {
+        let centroid = near_period4_hypervector();
+        assert!(
+            !hypervector_is_a3q_self_admissible(&centroid),
+            "near-period-4 counterexample must fail quantitative A3-Q"
+        );
+        assert!(
+            !centroids_are_a3q_admissible(&[centroid]),
+            "single-centroid manifold must fail A3-Q when self-rotation is near-fixed"
+        );
+    }
+
+    #[test]
+    fn test_a3q_self_enforcement_repairs_centroid_and_accumulator() {
+        let bad = near_period4_hypervector();
+        let mut cluster = test_cluster_from_centroid(bad);
+
+        assert!(!cluster.is_a3q_self_admissible());
+        assert!(
+            cluster.enforce_a3q_self_admissible(),
+            "deterministic mask repair should find a quantitative A3-Q centroid"
+        );
+        assert!(cluster.is_a3q_self_admissible());
+        assert_ne!(
+            cluster.centroid, bad,
+            "A3-Q repair must modify the near-periodic counterexample"
+        );
+
+        let threshold = cluster.total_weight / 2;
+        for i in 0..HD_DIMENSION {
+            let bit = (cluster.centroid.bits[i / 64] >> (i % 64)) & 1;
+            assert_eq!(
+                cluster.accumulator[i] > threshold,
+                bit == 1,
+                "accumulator bit {} must remain majority-consistent after repair",
+                i
+            );
+        }
+    }
+
+    #[test]
+    fn test_a3q_manifold_enforcement_repairs_pairwise_geometry() {
+        let bad = near_period4_hypervector();
+        let mut brain = VSABrain::new(0.43);
+        brain.dejavu_clusters.push(test_cluster_from_centroid(bad));
+        brain.dejavu_clusters.push(test_cluster_from_centroid(bad));
+
+        assert!(
+            !brain.is_a3q_manifold_admissible(),
+            "duplicate near-periodic centroids must fail runtime A3-Q"
+        );
+        assert!(
+            brain.enforce_a3q_manifold(),
+            "runtime repair should produce an A3-Q admissible manifold"
+        );
+        assert!(brain.is_a3q_manifold_admissible());
+
+        let direct = brain.dejavu_clusters[0]
+            .centroid
+            .normalized_hamming_distance(&brain.dejavu_clusters[1].centroid);
+        assert!(
+            a3q_distance_in_band(direct),
+            "direct pairwise centroid distance must be in A3-Q band, got {:.6}",
+            direct
         );
     }
 

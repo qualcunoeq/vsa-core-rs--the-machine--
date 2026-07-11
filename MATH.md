@@ -52,7 +52,7 @@ the architecture as a whole loses its guarantees.
 |---|------|-----------|-------------|-------------|
 | **A1** | **Bounded Drift** | $\delta(x_t, x_{t+1}) \leq r$ for consecutive world states, $r < 0.35$ | XXIII (tracking), X (compaction), IV (evidence) | Cluster proliferation unbounded (fission rate $K \cdot r/0.40$), centroid lag $O(r \cdot W)$ |
 | **A2** | **Centroid Separation** | $\delta(c_i, c_j) \geq s = 0.30$ for distinct concepts at equilibrium | X (compaction), XXV (singularity), VI (chain) | Semantic collapse: distinct concepts merge into one centroid, $\log_2 K$ capacity lost |
-| **A3** | **Rotation Decorrelation** | $\delta(c, \rho^k(c)) \approx 0.5$ for non-periodic $c$, $k \in \{13, 26, 52\}$ | Sub-Lemma S (XXV.5), VI (chain), VII (binding) | Periodic centroids become fixed points; $g = \text{nearest} \circ P_\tau$ fails to surject; transition matrix becomes reducible |
+| **A3** | **Quantitative Rotation Decorrelation** | For the active centroid set, rotated centroid distances needed by a proof satisfy explicit lower/upper margins, e.g. $\delta(c_i,\rho^{-52}(c_j)) \in [0.45,0.55]$ for all relevant $(i,j)$ | Sub-Lemma S (XXV.5), VI (chain), VII (binding) | Near-periodic or aligned centroids pass exact fixed-point checks but remain correlated; $g = \text{nearest} \circ P_\tau$ may fail to surject; transition matrix can become reducible |
 | **A4** | **Cleanup Oracle** | Resonator cleanup returns the intended symbol if pre-cleanup similarity $\geq \tau_{\text{clean}} = 0.56$ | QA engine, forward chain, causal composition | XOR unbinding noise accumulates; $n$-hop chains become unrecoverable after $n > \tau_{\text{clean}} / \eta$ hops |
 | **A5** | **Feedback Reliability** | Reward/error signals are correct with probability $p > 0.5$ | IX (epistemic/instrumental), XII (promotion), epistemic learning | Self-confirming memory loops: wrong rules get reinforced, correct rules decay |
 
@@ -101,7 +101,7 @@ A2 (Centroid Separation) ─┬── A10 (Covering Radius)
                           ├── A11 (No Dense Aliasing)
                           └── A16 (Cluster Quality)
 
-A3 (Rotation Decorrelation) ─┬── A12 (Sparse Collision)
+A3 (Quantitative Rotation Decorrelation) ─┬── A12 (Sparse Collision)
                               └── (used directly in Sub-Lemma S)
 
 A4 (Cleanup Oracle) ───┬── A18 (Chain Depth Bound)
@@ -120,7 +120,7 @@ A5 (Feedback Reliability) ─┬── A22 (Identifiability)
 |---|-----------|--------|----------|
 | A1 | Bounded Drift | **EMPIRICALLY CONSISTENT** | `test_drift_magnitude_ewma` confirms $r \leq 0.001$ for bond market data |
 | A2 | Centroid Separation | **EMPIRICALLY CONSISTENT** | Compactor invariant $[0.30, 0.70]$ holds across all 423 tests |
-| A3 | Rotation Decorrelation | **PROVEN for non-periodic** | $\rho^{13}, \rho^{26}, \rho^{52}$ invariants enforced in code; periodic vectors detected and corrected |
+| A3 | Quantitative Rotation Decorrelation | **CONTRACT, not implied by admissibility** | Exact $\rho^{13}, \rho^{26}, \rho^{52}$ fixed-point invariants are enforced in code, but `test_rho_admissible_does_not_imply_decorrelation` proves those checks do not imply $\delta(c,\rho^k(c)) \approx 0.5$ |
 | A4 | Cleanup Oracle | **EMPIRICALLY CONSISTENT** | $> 0.56$ threshold verified across 44 QA tests; max false-positive rate $< 10^{-4}$ |
 | A5 | Feedback Reliability | **UNVERIFIED** | No adversarial noise injection test exists for the reward signal path |
 | A6 | Piecewise-Stationary World | **DOMAIN-SPECIFIC** | Bond market regime changes on monthly/daily scale; $T_{\min} \approx 10^4$ ticks |
@@ -647,8 +647,9 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XXV.1 | Singularity of invariant measure | **PROVEN** | `test_invariant_measure_singularity` — volume fraction ≈ 2^{-8200} |
 | XXV.2 | Discrete attractor collapse | **PROVEN** | Corollary of XXV.1 — state confined to K Hamming balls |
 | XXV.3 | Learned quantized random dynamical system | **PROVEN** | Corollary of XXV.1 — full mathematical identity |
-| XXV.4 | Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** (conditional on Assumption $\rho$) | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ |
-| Sub-Lemma S (Thm XXV.5) | $g = \text{nearest}\circ P_\tau$ surjects from $\rho^{26}(W_i)$ | **PROVEN** (modulo decorrelation) | Constructive witness, 423 tests, 90/90 pairs, min $w_j/w_i=5.39$ |
+| XXV.4 | Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** (conditional on A3-Q) | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ once quantitative rotated-decorrelation is verified |
+| XXV.5a | No deterministic decorrelation from exact $\rho$-admissibility | **PROVEN** | `test_rho_admissible_does_not_imply_decorrelation` constructs an admissible near-period-4 centroid with $\delta(c,\rho^{52}(c))=2/D \ll 0.5$ |
+| Sub-Lemma S (Thm XXV.5) | $g = \text{nearest}\circ P_\tau$ surjects from $\rho^{26}(W_i)$ | **CONDITIONAL on A3-Q** | Constructive witness works for quantitatively decorrelated centroid sets; empirical generic test: 90/90 pairs, min $w_j/w_i=5.39$ |
 | XXVI.2 | Spectral gap (exponential mixing) | **PROVEN** | λ₂(P) ≤ κ < 1, mixing in ~77 cycles |
 | XXVII | Soft projection frontier | **CALIBRATED** | τ = 0.08 recommended (v3.1 corrected): κ_P ≈ 0.99, C_eff = 1528 (10.58 bits, 76× gain). τ = 0.10 high-capacity alternative (κ_P ≈ 0.89, C_eff = 1437, 72×). Previous τ=0.030 was a buggy artifact (see v3.1 fix notes). |
 | XXVII.2 | Optimal τ sensitivity | **MEASURED** | τ ∈ [0.06, 0.12] is the usable window. Below 0.06: C_eff < 300 (near-hard). Above 0.12: κ_P < 0.78 (mush). Optimum τ = 0.08 balances κ_P ≈ 1.0 with C_eff ≈ 1528. |
@@ -711,10 +712,10 @@ Since the original document was written, the following claims have been resolved
 
 | Rank | Item | Scope | Status |
 |------|------|-------|--------|
-| **1** | **Sub-Lemma S** (Surjectivity of $g$) | $\forall V_i, \forall j: \exists x \in V_i : g(x) = j$ | PROVEN modulo decorrelation (Thm XXV.5) |
+| **1** | **Sub-Lemma S** (Surjectivity of $g$) | $\forall V_i, \forall j: \exists x \in V_i : g(x) = j$ | CONDITIONAL on A3-Q; deterministic gap resolved negatively by XXV.5a |
 | **2** | **IX.1** (Grounding preservation) | One long-run divergence test | Engineering task — test not written |
 | **3** | **XII.1** (Promotion boundedness) | One adversarial frequency test | Engineering task — test not written |
-| **4** | **Decorrelation bound** (deterministic) | $\forall \mathcal{M}_t$, not just generic | Combinatorial geometry — open, non-critical |
+| **4** | **Decorrelation bound from exact $\rho$-admissibility** | $\forall \mathcal{M}_t$, not just generic | **IMPOSSIBLE under current invariants** — resolved by XXV.5a; use A3-Q as an explicit contract |
 | **5** | **Zero-overlap analogy** (A21/A30 failure) | Bridge the analogy gap without hand-coded keyword tables | **RESOLVED v3.2** — 3/3 correct with structural SVO centroids |
 | **6** | **Structural SVO centroids** | Replace trigram centroids with structural SVO centroids in L2 hierarchy | **RESOLVED v3.2** — implemented in `absorb_diagnosis` and `query_diagnostic_category` |
 
@@ -763,12 +764,12 @@ the learned structural centroids OUTPERFORM the hand-coded pattern list (3/3 vs 
 **Implication for A21 (Abstraction Preservation).** Relabeled from "empirically FALSE" (v3.1) to
 **"conditionally TRUE under structural SVO encoding"** (v3.2).
 
-**Detail on Sub-Lemma S (resolved v3.1).** The original Assumption $\rho$ bundled three distinct claims: (a) $\rho^{13}$ decorrelates Voronoi cells, (b) $\rho^{26}$ (the effective domain of the transition) is not collapsed by fixed-point centroids, and (c) the soft projection $P_\tau$ spreads output mass across all centroids. After decomposition:
-- Claim (a) is handled by the $\rho^{13}$ invariant: $\delta(c_k, \rho^{13}(c_k)) > 0$.
-- Claim (b) is handled by the $\rho^{26}$ and $\rho^{52}$ invariants: $\delta(c_k, \rho^{26}(c_k)) > 0$ (period-2) and $\delta(c_k, \rho^{52}(c_k)) > 0$ (period-4).
-- Claim (c) is Sub-Lemma S, now **proven constructively** (Theorem XXV.5) via Voronoi witness geometry, modulo a decorrelation assumption (Section XXV.4).
+**Detail on Sub-Lemma S (corrected v3.3).** The original Assumption $\rho$ bundled three distinct claims: (a) exact fixed-point exclusion under $\rho^{13}$, (b) exact fixed-point exclusion under $\rho^{26}$ and $\rho^{52}$, and (c) **quantitative** rotated decorrelation strong enough for the Sub-Lemma S witness margin. After correction:
+- Claims (a) and (b) are handled by the exact $\rho$-admissible invariant: $\delta(c_k,\rho^{13}(c_k))>0$, $\delta(c_k,\rho^{26}(c_k))>0$, and $\delta(c_k,\rho^{52}(c_k))>0$.
+- Claim (c) is **not implied** by exact admissibility. The deterministic counterexample in Theorem XXV.5a and `test_rho_admissible_does_not_imply_decorrelation` constructs a centroid that passes all three exact checks while $\delta(c,\rho^{52}(c))=2/D\ll0.5$.
+- Sub-Lemma S is therefore **conditional on A3-Q**, a quantitative rotated-decorrelation contract over the active centroid set. Under that contract, the constructive witness proof in Theorem XXV.5 applies. Without it, no deterministic all-admissible proof exists.
 
-The remaining open item is a **deterministic bound on the decorrelation** for all admissible $\mathcal{M}_t$ (not just generic configurations). This is a non-critical combinatorial geometry problem; the probabilistic 38$\sigma$ margin ($P < 10^{-318}$) is sufficient for all practical purposes.
+This closes the former "proven modulo decorrelation" gap by replacing an implicit probabilistic assumption with an explicit theorem boundary: exact $\rho$-admissibility prevents fixed-point collapse, but quantitative decorrelation is a separate contract.
 
 ---
 
@@ -1704,7 +1705,7 @@ A centroid set $\mathcal{M}_t$ is **$\rho$-admissible** if:
 
 $$\delta(c_k, \rho^{13}(c_k)) > 0 \quad\text{and}\quad \delta(c_k, \rho^{26}(c_k)) > 0 \quad\text{and}\quad \delta(c_k, \rho^{52}(c_k)) > 0 \quad \forall k \in \{1,\ldots,K\}$$
 
-All three shifts are required. The first two ensure the centroid is not a fixed point of the single-rotation or double-rotation dynamics (which would collapse the transition domain). The third ($\rho^{52}$) excludes period-4 vectors needed by the constructive proof of Sub-Lemma S. The cases are:
+All three shifts are required. The first two ensure the centroid is not a fixed point of the single-rotation or double-rotation dynamics (which would collapse the transition domain). The third ($\rho^{52}$) excludes period-4 vectors needed by the constructive witness construction in Sub-Lemma S. The cases are:
 
 | Shift | $\gcd(\text{shift}, 10240)$ | Fixed points (beyond constants) | Caught by |
 |-------|---------------------------|--------------------------------|-----------|
@@ -1716,6 +1717,34 @@ All three shifts are required. The first two ensure the centroid is not a fixed 
 
 **Enforcement.** Implemented in `MemoryCluster::enforce_rho_admissible()`, which checks all three shifts and flips bit 0 (for $\rho^{13}$ violations), bit 1 (for $\rho^{26}$ violations), or bit 2 (for $\rho^{52}$ violations) when $\delta = 0$. Cost: three XOR + popcount per centroid per compaction (~$0.9\mu$s). Never fires on real-world embeddings.
 
+#### Theorem XXV.5a (Exact $\rho$-Admissibility Does Not Imply Decorrelation)
+
+There is no deterministic lower bound of the form
+
+$$\delta(c,\rho^{52}(c)) \geq \beta \approx 0.5$$
+
+that follows from the exact $\rho$-admissible checks
+
+$$\delta(c,\rho^{13}(c))>0,\quad \delta(c,\rho^{26}(c))>0,\quad \delta(c,\rho^{52}(c))>0.$$
+
+**Proof.** Let $p$ be any period-4 vector, so $\rho^{52}(p)=p$ because $\gcd(52,10240)=4$. Flip one bit of $p$ to obtain $c$. Then $c$ is no longer an exact fixed point of $\rho^{52}$, so $\delta(c,\rho^{52}(c))>0$ and the exact admissibility check passes. However the single flipped bit appears in two positions when comparing $c$ to $\rho^{52}(c)$, so:
+
+$$\delta(c,\rho^{52}(c)) = \frac{2}{D} = \frac{2}{10240} \approx 0.000195.$$
+
+This is admissible but not decorrelated. Therefore exact non-fixedness cannot imply the quantitative $\approx0.5$ decorrelation margin used by the probabilistic Sub-Lemma S argument. The unit test `test_rho_admissible_does_not_imply_decorrelation` constructs this centroid explicitly. $\square$
+
+#### Corrected Contract: A3-Q
+
+For deterministic use of Sub-Lemma S, exact $\rho$-admissibility must be supplemented by a **quantitative rotated-decorrelation** contract. A sufficient form is:
+
+$$\delta(c_i,\rho^{-52}(c_j)) \in [\beta_-,\beta_+] \quad \forall i,j$$
+
+with $\beta_- \approx 0.45$ and $\beta_+ \approx 0.55$, plus the corresponding witness-direction non-alignment bound:
+
+$$\left|d(v_{ij},\rho^{-52}(c_k)) - d(c_i,\rho^{-52}(c_k))\right| \leq \epsilon_{\text{corr}} \quad \forall k\neq j$$
+
+where $\epsilon_{\text{corr}} < r_i - (\beta_+ - \beta_-)$ for the constructed witness $v_{ij}$. This is the deterministic replacement for the old "38$\sigma$ generic decorrelation" step. It is a contract on the active centroid geometry, not a consequence of exact periodicity checks.
+
 #### Layer 1: $\kappa_F$ is Uniformly Bounded (PROVEN)
 
 From Theorem I.2-R and the weight cap (MAX_CLUSTER_WEIGHT = 500):
@@ -1724,7 +1753,7 @@ $$\kappa_F(t) \leq 1 - \frac{1}{W_{\text{cap}}} = 1 - \frac{1}{500} = 0.998 \qua
 
 This holds independent of $\mathcal{M}_t$ because the weight cap is a hard clipping threshold on the accumulator. Weight can never exceed 500. The bound is strict (0.998 $<$ 1).
 
-#### Layer 2: $\lambda_2(P) < 1$ (Conditional — See Sub-Lemma S)
+#### Layer 2: $\lambda_2(P) < 1$ (Conditional on A3-Q)
 
 The centroid transition matrix $P$ on $\{1,\ldots,K\}$ has entries:
 
@@ -1732,7 +1761,7 @@ $$P_{ij} = \frac{|V_i \cap f^{-1}(j)|}{|V_i|}, \quad f(x) = \underset{k}{\arg\mi
 
 The challenge is guaranteeing $|V_i \cap f^{-1}(j)| > 0$ for all pairs $(i,j)$. This is the job of Sub-Lemma S.
 
-**Sub-Lemma S (Surjectivity of $\mathbf{g}$, Theorem XXV.5).** Let $g = \text{nearest} \circ P_\tau$ be the composed map from hypervectors to centroid indices. For a $\rho$-admissible centroid set $\mathcal{M}_t$ (satisfying $\rho^{13}$, $\rho^{26}$, and $\rho^{52}$ checks) with $\tau = 0.10$ and $D = 10240$, for any Voronoi cell $V_i$ of $\rho^{13}(\mathcal{M}_t)$ and any centroid index $j$:
+**Sub-Lemma S (Surjectivity of $\mathbf{g}$, Theorem XXV.5).** Let $g = \text{nearest} \circ P_\tau$ be the composed map from hypervectors to centroid indices. For a centroid set $\mathcal{M}_t$ that is exact $\rho$-admissible **and** satisfies A3-Q with $\tau = 0.10$ and $D = 10240$, for any Voronoi cell $V_i$ of $\rho^{13}(\mathcal{M}_t)$ and any centroid index $j$:
 
 $$\exists\, y \in \rho^{26}(W_i) : g(y) = j$$
 
@@ -1776,7 +1805,7 @@ $$\rho^{26}(W_i) \cap P_\tau^{-1}(V_j) \neq \emptyset \quad \forall i,j$$
 
 ### Constructive Proof (Theorem XXV.5)
 
-The proof constructs an explicit witness point $v_{ij} \in V_i$ for any pair $(i,j)$. The key insight is that the $\rho^{26}$ rotation decorrelates the witness from all centroids except the target, making the soft projection output dominated by $c_j$.
+The proof constructs an explicit witness point $v_{ij} \in V_i$ for any pair $(i,j)$. The key requirement is A3-Q: the $\rho^{26}$ transition-domain rotation must be quantitatively decorrelated from all non-target centroids so the soft projection output is dominated by $c_j$.
 
 **Phase 1: Witness construction.** For a pair $(i,j)$ with $d(c_i, c_j) > 0.30$ (guaranteed by the compactor invariant $[0.30, 0.70]$), let $r_i$ be the Voronoi radius of $W_i$:
 
@@ -1792,15 +1821,15 @@ where $\text{flip}(c, n)$ flips the $n$ bits of $c$ that differ from $\rho^{-52}
 
 $$d(y_{ij}, c_j) = d(\rho^{52}(v_{ij}), c_j) = d(v_{ij}, \rho^{-52}(c_j)) = d(c_i, \rho^{-52}(c_j)) - r_i$$
 
-The $\rho$-admissible-52 invariant ensures $d(c_i, \rho^{-52}(c_i)) > 0$ (no fixed points of $\rho^{52}$), and for $i \neq j$, $d(c_i, \rho^{-52}(c_j)) \approx 0.50$ (uncorrelated random vectors). Thus:
+Exact $\rho$-admissibility only ensures $d(c_i,\rho^{-52}(c_i))>0$. By Theorem XXV.5a this is not enough for decorrelation. Under A3-Q, however, $d(c_i,\rho^{-52}(c_j)) \in [\beta_-,\beta_+]$ with $\beta_\pm \approx 0.50$. Thus, for the calibrated regime:
 
 $$d(y_{ij}, c_j) \approx 0.50 - 0.15 = 0.35$$
 
-**Phase 3: Distance to other centroids.** For any $k \neq j$, the distance to $\rho^{-52}(c_k)$ is approximately unchanged by the move, because the move direction ($c_i \to \rho^{-52}(c_j)$) is uncorrelated with $\rho^{-52}(c_k)$:
+**Phase 3: Distance to other centroids.** For any $k \neq j$, A3-Q requires that the distance to $\rho^{-52}(c_k)$ is not adversarially reduced by the move direction ($c_i \to \rho^{-52}(c_j)$):
 
 $$d(v_{ij}, \rho^{-52}(c_k)) \approx d(c_i, \rho^{-52}(c_k)) \pm \epsilon_k$$
 
-where $\epsilon_k$ has mean 0 and standard deviation $\sqrt{r_i/D} \approx \sqrt{0.15/10240} \approx 0.004$. Therefore $d(y_{ij}, c_k) \approx 0.50 \pm 0.004$ for all $k \neq j$.
+where $|\epsilon_k|\leq\epsilon_{\text{corr}}$ deterministically under A3-Q. In the generic random-centroid model, $\epsilon_k$ has mean 0 and standard deviation $\sqrt{r_i/D} \approx \sqrt{0.15/10240} \approx 0.004$, which explains the empirical 38$\sigma$ margin, but the deterministic theorem uses the explicit $\epsilon_{\text{corr}}$ bound instead of probability.
 
 **Phase 4: Soft projection domination.** The soft projection weight assigned to centroid $c_k$ at point $y = y_{ij}$ is:
 
@@ -1817,9 +1846,9 @@ $$\frac{w_j}{w_k} \approx \frac{0.294}{0.082} \approx 3.59$$
 
 With $K = 10$ centroids, the total weight of all non-target centroids is $\sum_{k \neq j} w_k \approx 9 \cdot 0.082 \approx 0.74$, so $P_\tau(y) \approx 0.29 \cdot c_j + \text{(blend of 9 others)}$. The nearest centroid to this convex combination is $c_j$ because its coefficient dominates (0.29 vs 0.08 per other centroid). The effective margin against the nearest competing centroid is $0.294 - 0.082 \approx 0.212$, which is 53$\times$ the fluctuation standard deviation ($0.004$).
 
-**Phase 5: $\rho$-admissible-52 ensures $d(c_i, \rho^{-52}(c_i)) > 0$ for $k = i$.** The only subtle case is when $k = i$ (the source centroid itself). The distance $d(c_i, \rho^{-52}(c_i))$ could theoretically be very small if $c_i$ is a near-fixed-point of $\rho^{52}$. The $\rho^{52}$ invariant enforces $d(c_k, \rho^{52}(c_k)) > 0$, which by the isometry of $\rho$ is equivalent to $d(c_k, \rho^{-52}(c_k)) > 0$. At minimum, $d(c_i, \rho^{-52}(c_i)) \geq 2/10240$, so the witness construction is well-defined (there exist bits to flip toward $\rho^{-52}(c_i)$ without leaving $W_i$). The margin analysis above treats $k = i$ the same as any other $k \neq j$: $d(v_{ij}, \rho^{-52}(c_i)) \approx d(c_i, \rho^{-52}(c_i)) \pm 0.004$, and $d(c_i, \rho^{-52}(c_i)) \geq 2/10240 \approx 0.0002$, so even in the worst case $d(y_{ij}, c_i) \approx 0.0002 + 0.004 = 0.0042 \ll 0.35$, and $c_j$ still wins.
+**Phase 5: The near-fixed self case is excluded by A3-Q, not by exact admissibility.** The subtle case is $k=i$. Exact $\rho^{52}$ admissibility gives only $d(c_i,\rho^{-52}(c_i))\geq 2/D$, which is far too weak: a near-period-4 centroid can pass the exact check while remaining almost fixed. In that case $c_i$ may dominate the soft projection and the witness can fail. A3-Q explicitly rules out this geometry by requiring the self-rotated distance to lie near $0.5$ as well.
 
-**Formal bound on failure probability.** For a given pair $(i,j)$, the construction fails only if $d(y_{ij}, c_k) < d(y_{ij}, c_j)$ for some $k \neq j$. This requires the fluctuation $\epsilon_k$ to exceed $0.35 - 0.50 = -0.15$ (i.e., $d(y_{ij}, c_k)$ must decrease by at least 0.15 from its expectation). Since $\epsilon_k \sim \mathcal{N}(0, \sqrt{r_i/D})$ (by the Central Limit Theorem on $D$-bit independent flips), the probability is:
+**Generic-model failure probability.** For random centroid sets satisfying A3-Q with high probability, the construction fails only if $d(y_{ij}, c_k) < d(y_{ij}, c_j)$ for some $k \neq j$. This requires the fluctuation $\epsilon_k$ to exceed $0.35 - 0.50 = -0.15$ (i.e., $d(y_{ij}, c_k)$ must decrease by at least 0.15 from its expectation). Since $\epsilon_k \sim \mathcal{N}(0, \sqrt{r_i/D})$ in the independent random model, the probability is:
 
 $$P(\epsilon_k < -0.15) = \Phi\left(\frac{-0.15}{\sqrt{0.15/10240}}\right) = \Phi(-38.7) < 10^{-320}$$
 
@@ -1827,7 +1856,7 @@ By the union bound over $K-1$ centroids:
 
 $$P(\text{failure for pair } (i,j)) < (K-1) \cdot 10^{-320} < 10^{-318}$$
 
-For the worst-case centroid where $d(c_i, \rho^{-52}(c_i)) \approx 2/10240$, the margin is still $0.35 - 0.0042 \approx 0.3458$ with $\sigma = 0.004$, giving a 86$\sigma$ margin. $\square$
+This probability statement justifies why random tests pass with enormous margin. It is not a deterministic all-admissible proof; the deterministic theorem requires A3-Q. $\square$
 
 ---
 
@@ -1884,10 +1913,10 @@ The original Assumption $\rho$ has been decomposed into three precise items:
 | Item | Status | Mechanism |
 |------|--------|-----------|
 | $\rho$-admissible invariant | **PROVEN** system invariant | `enforce_rho_admissible()` — checks $\rho^{13}$, $\rho^{26}$, $\rho^{52}$ at compaction |
-| Sub-Lemma S — decorrelation assumption | **PROVEN** (modulo decorrelation) | Constructive witness + 38$\sigma$ probabilistic margin |
-| Sub-Lemma S — deterministic bound for ALL configurations | **OPEN** (non-critical) | Combinatorial geometry problem — deterministic decorrelation for worst-case centroid sets |
+| Exact admissibility $\Rightarrow$ quantitative decorrelation | **DISPROVEN** | Theorem XXV.5a + `test_rho_admissible_does_not_imply_decorrelation` |
+| Sub-Lemma S — A3-Q conditional proof | **CONDITIONAL** | Constructive witness + explicit quantitative rotated-decorrelation contract |
 
-**Deterministic bound of the decorrelation (open, non-critical).** Sub-Lemma S is proven via a constructive witness that reduces the problem to proving that the move direction $c_i \to \rho^{-52}(c_j)$ is approximately uncorrelated with $\rho^{-52}(c_k)$ for all $k \neq j$. This is a probabilistic argument that holds for **generic** centroid configurations by the isometry properties of $\rho$. A fully deterministic bound (for all admissible $\mathcal{M}_t$, including adversarial worst-case configurations) would require bounding the correlation between cyclic-shift directions for arbitrary centroid sets — a combinatorial geometry problem not addressed here. The probabilistic margin (38$\sigma$, $P < 10^{-318}$) is far below any practical concern.
+**Deterministic decorrelation resolution.** The desired deterministic bound for all exact $\rho$-admissible centroid sets is impossible: exact non-fixedness only gives $\delta>0$, and Theorem XXV.5a gives an admissible centroid with $\delta(c,\rho^{52}(c))=2/D$. The correct deterministic statement is conditional: if the active centroid set satisfies A3-Q, then the constructive Sub-Lemma S proof applies. Generic random centroid sets satisfy A3-Q with overwhelming probability, explaining the empirical margin, but that is not a theorem over all admissible sets.
 
 ### Summary of Theorem XXV
 
@@ -1896,9 +1925,10 @@ The original Assumption $\rho$ has been decomposed into three precise items:
 | **XXV.1** Singularity of $\mu^*$ | **PROVEN** | $d_{\text{eff}} \approx 150 \ll D$ (Hamming ball volume argument) |
 | **XXV.2** Discrete attractor collapse | **PROVEN** | Corollary of XXV.1 |
 | **XXV.3** Learned quantized RDS | **PROVEN** | Corollary of XXV.1 |
-| **XXV.4** Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** (conditional on Sub-Lemma S) | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ |
+| **XXV.4** Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** (conditional on A3-Q) | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ |
 | **$\rho$-admissible invariant** | **PROVEN** (system invariant) | `enforce_rho_admissible()` in lib.rs ($\rho^{13}$, $\rho^{26}$, $\rho^{52}$) |
-| **Sub-Lemma S** (Surjectivity) | **PROVEN** (modulo decorrelation) | Constructive witness, 423 tests, 90/90 pairs, min $w_j/w_i = 5.39$ |
+| **XXV.5a** Exact admissibility does not imply decorrelation | **PROVEN** | Near-period-4 counterexample, $\delta(c,\rho^{52}(c))=2/D$ |
+| **Sub-Lemma S** (Surjectivity) | **CONDITIONAL on A3-Q** | Constructive witness, empirical generic tests, min $w_j/w_i = 5.39$ |
 
 ### Dependency Closure
 
@@ -1929,8 +1959,8 @@ The distinction between "smooth ergodic sampler" and "discrete attractor collaps
 | **XXV.1** Singularity of $\mu^*$ | **PROVEN** | $d_{\text{eff}} \approx 150 \ll D$ (Hamming ball volume argument) |
 | **XXV.2** Discrete attractor collapse | **PROVEN** | Corollary of XXV.1 |
 | **XXV.3** Learned quantized RDS | **PROVEN** | Corollary of XXV.1 |
-| **XXV.4** Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** (conditional on Sub-Lemma S) | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ |
-| **Sub-Lemma S / $\rho$-admissible** | **PROVEN** (modulo decorrelation) | Constructive witness, 423 tests, $\rho^{13/26/52}$ invariant, min $w_j/w_i = 5.39$ |
+| **XXV.4** Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** (conditional on A3-Q) | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ |
+| **Sub-Lemma S / $\rho$-admissible** | **SPLIT** | Exact $\rho^{13/26/52}$ invariant proven; quantitative decorrelation requires A3-Q |
 
 ### Dependency Closure
 
@@ -1956,24 +1986,25 @@ The distinction between "smooth ergodic sampler" and "discrete attractor collaps
 
 ### Theorem XXV.5 (Sub-Lemma S — Constructive Witness Proof)
 
-Sub-Lemma S is the surjectivity condition that guarantees $\lambda_2(P) < 1$ in Theorem XXV.4. It is now **proven modulo a decorrelation assumption** via an explicit witness construction.
+Sub-Lemma S is the surjectivity condition that guarantees $\lambda_2(P) < 1$ in Theorem XXV.4. It is **conditional on A3-Q** via an explicit witness construction. The former attempt to derive A3-Q from exact $\rho$-admissibility is disproven by Theorem XXV.5a.
 
-**Statement.** For a $\rho$-admissible centroid set $\mathcal{M}_t$ (satisfying $\rho^{13}$, $\rho^{26}$, $\rho^{52}$ checks) with $\tau = 0.10$ and $D = 10240$, for any source Voronoi cell $V_i$ of $\rho^{13}(\mathcal{M}_t)$ and any target centroid index $j$:
+**Statement.** For an exact $\rho$-admissible centroid set $\mathcal{M}_t$ that also satisfies A3-Q, with $\tau = 0.10$ and $D = 10240$, for any source Voronoi cell $V_i$ of $\rho^{13}(\mathcal{M}_t)$ and any target centroid index $j$:
 
 $$\exists\, y \in \rho^{26}(W_i) : \text{nearest}(P_\tau(y)) = j$$
 
-**Proof technique.** Constructive witness: for any pair $(i,j)$, move from $c_i$ toward $\rho^{-52}(c_j)$ by $\delta = r_i$ (Voronoi radius, $> 0.15$), then rotate by $\rho^{52}$ into $\rho^{26}(W_i)$. The resulting point $y = \rho^{52}(v_{ij})$ satisfies $d(y, c_j) \approx 0.35$ while $d(y, c_k) \approx 0.50 \pm 0.004$ for all $k \neq j$ (decorrelation assumption). The soft projection weight ratio $w_j/w_k \approx 3.59$ ensures $c_j$ dominates.
+**Proof technique.** Constructive witness: for any pair $(i,j)$, move from $c_i$ toward $\rho^{-52}(c_j)$ by $\delta = r_i$ (Voronoi radius, $> 0.15$), then rotate by $\rho^{52}$ into $\rho^{26}(W_i)$. Under A3-Q, the resulting point $y = \rho^{52}(v_{ij})$ satisfies $d(y,c_j)$ below competing $d(y,c_k)$ by a deterministic margin, so the soft projection weight for $c_j$ dominates.
 
 **Proven algebraically:**
 - The witness $v \in V_i$ lies at distance exactly $d(c_i, \rho^{-52}(c_j)) - r_i$ from $\rho^{-52}(c_j)$ — exact by construction
 - The $\rho$-admissible-13/26/52 invariants exclude constant, period-2, and period-4 fixed points — enforced in code
 - All 423 tests pass, 90/90 witness points, min $w_j/w_i = 5.39$
 
-**Load-bearing step (probabilistic):**
-- For $k \neq j$, $d(v, \rho^{-52}(c_k)) \approx d(c_i, \rho^{-52}(c_k))$ because the move direction is approximately uncorrelated with $\rho^{-52}(c_k)$. Standard deviation of perturbation: $\sqrt{r_i/D} \approx 0.004$, giving $38\sigma$ margin.
-- This holds for **generic** centroid configurations by isometry properties of $\rho^{52}$. Adversarial violation requires simultaneous alignment of $K-1$ rotation directions — probability $< 10^{-318}$ per centroid.
+**Load-bearing step:**
+- Exact $\rho$-admissibility excludes only exact fixed points. It does not imply quantitative decorrelation.
+- A3-Q supplies the deterministic bound formerly assumed probabilistically: competing rotated distances and witness-direction perturbations must remain inside the explicit decorrelation margin.
+- Generic random centroid configurations satisfy this with the observed 38$\sigma$ margin, but adversarial exact-admissible configurations need not.
 
-**Remaining gap (non-critical):** A deterministic bound on decorrelation for ALL admissible $\mathcal{M}_t$ (not just generic). This is a combinatorial geometry problem — bounding correlation between cyclic-shift directions for arbitrary centroid configurations.
+**Former gap status:** Resolved negatively. A deterministic bound for **all** exact-admissible $\mathcal{M}_t$ does not exist; see Theorem XXV.5a.
 
 **Computational verification.** Verified independently by two tests:
 - `test_sublemma_s_surjectivity`: sampling-based surjectivity ($K=10$, 300 samples/cell, 100% coverage)
@@ -2033,10 +2064,8 @@ $$\|P^t_{i\cdot} - \pi\|_{\text{TV}} \leq C \cdot \lambda_2(P)^t$$
 
 with mixing time $\tau_{\text{mix}} \leq \frac{\log(1/\varepsilon)}{1 - \lambda_2(P)}$.
 
-**Resolution (v3.1).** Theorem XXV.4 closes the uniform contraction problem via $\hat{\kappa} = \lambda_2(P) \cdot (1 - 1/W_{\text{cap}}) < 1$, conditional on Sub-Lemma S. Sub-Lemma S is now proven constructively (Theorem XXV.5) modulo a decorrelation assumption. The remaining sub-problem is:
-> **Deterministic decorrelation bound:** Prove that for ALL admissible centroid sets $\mathcal{M}_t$ (not just generic), the move direction $c_i \to \rho^{-52}(c_j)$ is decorrelated from $\rho^{-52}(c_k)$ for all $k \neq j$, giving a deterministic (non-probabilistic) bound on the failure probability.
-
-This is equivalent to bounding the maximum correlation between cyclic-shift directions for arbitrary centroid configurations — a combinatorial geometry problem. The probabilistic bound ($P < 10^{-318}$ per pair) is sufficient for all practical purposes.
+**Resolution (v3.3).** Theorem XXV.4 closes the uniform contraction problem via $\hat{\kappa} = \lambda_2(P) \cdot (1 - 1/W_{\text{cap}}) < 1$, conditional on Sub-Lemma S and therefore A3-Q. The former deterministic-decorrelation sub-problem is resolved negatively: exact $\rho$-admissibility cannot imply quantitative decorrelation for all centroid sets. The correct theorem boundary is explicit:
+> **A3-Q required:** prove or measure quantitative rotated-decorrelation for the active centroid geometry, then Sub-Lemma S applies. Without A3-Q, adversarial exact-admissible configurations can violate the witness margin.
 
 ---
 
@@ -2408,7 +2437,7 @@ Runtime Telemetry (Layer 6)
 | 5. Capacity | XXVII.1, XXVII.2-R | Empirical sweep | `test_soft_projection_frontier_sweep` |
 | 6. Runtime | All above | Live telemetry | `ContractionTelemetry` in agent loop |
 
-**Bottom line:** The system is the most rigorously verified VSA architecture in the literature. Every claimed bound is either an algebraic identity, a Banach fixed point, or an empirically measured quantity with explicit error bounds. The uniform spectral gap (Theorem XXV.4) closes the last major open problem, conditional on Sub-Lemma S (now proven constructively modulo decorrelation, Theorem XXV.5). Two remaining engineering tasks (IX.1 grounding preservation, XII.1 promotion boundedness) and one formal combinatorial gap (deterministic decorrelation bound) remain — all non-critical.
+**Bottom line:** The system is the most rigorously verified VSA architecture in the literature. Every claimed bound is either an algebraic identity, a Banach fixed point, an explicitly conditional theorem, or an empirically measured quantity with explicit error bounds. The uniform spectral gap (Theorem XXV.4) is conditional on A3-Q. The former deterministic decorrelation gap is closed by a negative result: exact $\rho$-admissibility is not enough, so quantitative rotated-decorrelation must be treated as an explicit contract rather than an inferred theorem.
 
 ---
 

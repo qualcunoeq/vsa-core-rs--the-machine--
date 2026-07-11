@@ -1066,8 +1066,10 @@ impl MemoryCluster {
     /// ██ v3.1: Enforce ρ-admissible invariant (Assumption ρ, Theorem XXV.4) ██
     ///
     /// The operator f = nearest ∘ P_τ ∘ ρ¹³ has its centroid transition domain
-    /// in ρ²⁶(W_i), not W_i or ρ¹³(W_i).  The Sub-Lemma S constructive proof
-    /// requires that NO centroid is a fixed point of ρ¹³, ρ²⁶, or ρ⁵².
+    /// in ρ²⁶(W_i), not W_i or ρ¹³(W_i).  The Sub-Lemma S witness construction
+    /// requires that NO centroid is a fixed point of ρ¹³, ρ²⁶, or ρ⁵².  This
+    /// exact check does not imply quantitative decorrelation; A3-Q is tracked
+    /// separately in MATH.md.
     ///
     /// Fixed points of ρ¹³ (shift by 13):
     ///   gcd(13, 10240) = 1 → ρ¹³ generates C_10240.
@@ -1121,7 +1123,7 @@ impl MemoryCluster {
 
         // Check ρ⁵² (shift by 52) — catches period-4 vectors.
         // Uses bit 2 (different from bit 0 for ρ¹³, bit 1 for ρ²⁶).
-        // Required by Sub-Lemma S constructive proof (Theorem XXV.5):
+        // Required by the Sub-Lemma S witness construction (Theorem XXV.5):
         // the witness construction needs d(c_i, ρ⁻⁵²(c_i)) > 0.
         let r52 = self.centroid.rotate_left(52);
         if self.centroid.normalized_hamming_distance(&r52) == 0.0 {
@@ -3879,6 +3881,65 @@ mod tests {
         eprintln!("  ✓ Period-4 centroid perturbed");
 
         eprintln!("  All ρ-admissible invariant checks pass.");
+    }
+
+    #[test]
+    fn test_rho_admissible_does_not_imply_decorrelation() {
+        // A near-period-4 centroid can pass the exact fixed-point checks while
+        // remaining almost perfectly correlated with its ρ⁵² rotation. This is
+        // the deterministic counterexample to the old "non-periodic ⇒
+        // decorrelated" claim used by Sub-Lemma S.
+        let mut bits = [0u64; U64_BLOCKS];
+        for word_idx in 0..U64_BLOCKS {
+            let mut word = 0u64;
+            for bit_idx in 0..64 {
+                let pos = word_idx * 64 + bit_idx;
+                if pos % 4 == 0 || pos % 4 == 1 {
+                    word |= 1u64 << bit_idx;
+                }
+            }
+            bits[word_idx] = word;
+        }
+        bits[0] ^= 1; // Break exact period-4 fixedness by the smallest amount.
+
+        let centroid = Hypervector { bits };
+        let d13 = centroid.normalized_hamming_distance(&centroid.rotate_left(13));
+        let d26 = centroid.normalized_hamming_distance(&centroid.rotate_left(26));
+        let d52 = centroid.normalized_hamming_distance(&centroid.rotate_left(52));
+
+        assert!(d13 > 0.0, "near-period-4 centroid passes ρ¹³ admissibility");
+        assert!(d26 > 0.0, "near-period-4 centroid passes ρ²⁶ admissibility");
+        assert!(d52 > 0.0, "near-period-4 centroid passes ρ⁵² admissibility");
+        assert!(
+            d52 <= 2.0 / HD_DIMENSION as f64 + 1e-12,
+            "ρ-admissible does not imply decorrelation: δ(c,ρ⁵²(c))={:.8}",
+            d52
+        );
+
+        let mut cluster = MemoryCluster {
+            centroid,
+            entries: Vec::new(),
+            reverberation: 0.0,
+            last_reinforced_tick: 0,
+            anchor: Hypervector::new_zero(),
+            accumulator: Vec::new(),
+            total_weight: 1,
+            last_access_tick: 0,
+        };
+        cluster.enforce_rho_admissible();
+        assert_eq!(
+            cluster.centroid, centroid,
+            "exact fixed-point enforcement should not alter a near-fixed centroid"
+        );
+
+        let d52_after = cluster
+            .centroid
+            .normalized_hamming_distance(&cluster.centroid.rotate_left(52));
+        assert!(
+            d52_after < 0.001,
+            "centroid is admissible but not quantitatively decorrelated: δ={:.8}",
+            d52_after
+        );
     }
 
     #[test]

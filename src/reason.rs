@@ -6345,7 +6345,7 @@ mod tests {
     }
 
     // ──────────────────────────────────────────────────────────────────
-    // Sub-Lemma S — Constructive Proof (Theorem XXV.5)
+    // Sub-Lemma S — Constructive Witness Check (Theorem XXV.5)
     // ──────────────────────────────────────────────────────────────────
     //
     // For each (i,j) with i ≠ j, we explicitly construct a witness point
@@ -6366,14 +6366,13 @@ mod tests {
     //
     //   For random centroids, both distances are ≈ D/2 = 0.50 with std 1/√D ≈ 0.01.
     //   d_j ≈ 0.50 - 0.15 = 0.35. For k ≠ j: d_k ≈ 0.50 ± 0.004 (ε_k noise).
-    //   Margin = 0.15 / 0.004 ≈ 38σ — the probability of failure is bounded by
-    //   O(K² · exp(-δ²·D/2)) ≈ O(400 · exp(-115)) ≈ 7·10⁻⁴⁸.
+    //   Margin = 0.15 / 0.004 ≈ 38σ for generic random centroids.
     //
-    //   The ONLY pathological case is when d(c_i, ρ⁻⁵²(c_i)) is close to 0
-    //   (centroid is a near-fixed-point of ρ⁵²). This requires the centroid
-    //   to differ from its 52-bit rotation by ≤ 1 bit — probability ≈ 2⁻¹⁰²³⁹
-    //   for random vectors. The ρ⁵² admissibility check (δ(c, ρ⁵²(c)) > 0)
-    //   excludes exact fixed points; near-fixed-points don't occur in practice.
+    //   Exact ρ-admissibility excludes exact fixed points only. It does NOT
+    //   imply quantitative decorrelation: near-periodic centroids can pass the
+    //   invariant while remaining almost fixed under ρ⁵². The formal theorem is
+    //   therefore conditional on A3-Q; this test checks the generic calibrated
+    //   witness construction, not an all-admissible deterministic proof.
     //
     // KEY INSIGHT: The comparison is against ALL k ≠ j, not just k = i.
     // The move toward ρ⁻⁵²(c_j) leaves distances to ALL other ρ⁻⁵²(c_k)
@@ -6419,7 +6418,7 @@ mod tests {
         };
 
         eprintln!("\n  ╔══════════════════════════════════════════════════════╗");
-        eprintln!("  ║  Sub-Lemma S — Constructive Proof (Thm XXV.5)     ║");
+        eprintln!("  ║  Sub-Lemma S — Constructive Witness (Thm XXV.5)   ║");
         eprintln!("  ╚══════════════════════════════════════════════════════╝");
         eprintln!("  K = {}, τ = {:.2}", k, tau);
 
@@ -6500,7 +6499,7 @@ mod tests {
 
         assert_eq!(
             total_success, total_pairs,
-            "Sub-Lemma S constructive proof FAILED: {} of {} pairs found ({:.1}%)",
+            "Sub-Lemma S constructive witness FAILED for this centroid set: {} of {} pairs found ({:.1}%)",
             total_success, total_pairs,
             100.0 * total_success as f64 / total_pairs as f64
         );
@@ -6509,7 +6508,7 @@ mod tests {
             "Weight ratio too low: {:.2} (need > 1.5 for soft projection to prefer c_j)",
             min_weight_ratio
         );
-        eprintln!("  ✓ Sub-Lemma S proven constructively: ∀(i,j) ∃ y ∈ ρ²⁶(W_i), nearest(P_τ(y)) = j");
+        eprintln!("  ✓ Sub-Lemma S witness holds for this A3-Q/generic centroid set");
         eprintln!("  ✓ Min w_j/w_i = {:.2} >> 1 → c_j dominates P_τ at witness point", min_weight_ratio);
     }
 

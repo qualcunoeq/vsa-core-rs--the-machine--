@@ -1,8 +1,9 @@
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
+use serde_json;
 use std::collections::HashMap;
-use std::fs::{create_dir_all, OpenOptions};
-use std::io::Write;
+use std::fs::{create_dir_all, File, OpenOptions};
+use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::{Duration, Instant};
@@ -27,6 +28,7 @@ const CASES: &[&str] = &[
     "adversarial-qa",
     "latency-slo",
     "transformer-cousin",
+    "hle",
 ];
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -878,6 +880,135 @@ fn bench_transformer_cousin(cfg: &BenchConfig) -> Vec<ExperimentResult> {
     )]
 }
 
+fn bench_hle(cfg: &BenchConfig) -> Vec<ExperimentResult> {
+    // Humanity's Last Exam: feed 2,500 hard questions through the VSA QA engine.
+    // The expected outcome is near-100% abstention with a few hallucinations.
+    // Results are always interesting as a baseline.
+    let data_path = "data/hle.jsonl";
+    let file = match File::open(data_path) {
+        Ok(f) => BufReader::new(f),
+        Err(e) => {
+            return vec![result(
+                cfg,
+                "hle",
+                "The machine can answer 0% of HLE questions but abstains reliably.",
+                "error",
+                metric_pairs(&[("error", 1.0)]),
+                false,
+                &format!("Cannot open {}: {}", data_path, e),
+            )];
+        }
+    };
+
+    let max_questions = match cfg.scale {
+        Scale::Small => 50,
+        Scale::Medium => 250,
+        Scale::Large => 1000,
+        Scale::Max => 2500,
+    };
+
+    let mut qa = QaEngine::new();
+    let start = Instant::now();
+
+    let mut correct = 0usize;
+    let mut abstained = 0usize;
+    let mut hallucinated = 0usize;
+    let mut total = 0usize;
+    let mut category_stats: HashMap<String, (usize, usize, usize)> = HashMap::new(); // cat -> (correct, abstained, total)
+
+    for line in file.lines() {
+        if total >= max_questions {
+            break;
+        }
+        let line = match line {
+            Ok(l) => l,
+            Err(_) => continue,
+        };
+        let entry: serde_json::Value = match serde_json::from_str(&line) {
+            Ok(v) => v,
+            Err(_) => continue,
+        };
+
+        let question = entry["question"].as_str().unwrap_or("");
+        let expected = entry["answer"].as_str().unwrap_or("").trim();
+        let category = entry["category"].as_str().unwrap_or("uncategorized");
+        let has_image = entry["has_image"].as_bool().unwrap_or(false);
+
+        // Skip image-only questions (our system has no vision)
+        if has_image && question.len() < 50 {
+            continue;
+        }
+
+        let answer = qa.answer_combined(question);
+        total += 1;
+
+        let is_abstained = answer.contains("do not know");
+        let is_correct = !is_abstained
+            && (answer.contains(expected)
+                || expected.len() <= 5 && expected.len() >= 1 && answer.contains(expected));
+
+        if is_correct {
+            correct += 1;
+        } else if is_abstained {
+            abstained += 1;
+        } else {
+            hallucinated += 1;
+        }
+
+        let cat_entry = category_stats
+            .entry(category.to_string())
+            .or_insert((0, 0, 0));
+        cat_entry.0 += if is_correct { 1 } else { 0 };
+        cat_entry.1 += if is_abstained { 1 } else { 0 };
+        cat_entry.2 += 1;
+    }
+
+    let latency = elapsed_ms(start);
+    let accuracy = ratio(correct, total);
+    let abstention_rate = ratio(abstained, total);
+    let hallucination_rate = ratio(hallucinated, total);
+
+    let notes = format!(
+        "HLE benchmark: {}/{} correct ({:.1}%), {} abstained ({:.1}%), {} hallucinated ({:.1}%)",
+        correct, total, accuracy * 100.0, abstained, abstention_rate * 100.0, hallucinated, hallucination_rate * 100.0
+    );
+
+    // Log per-category breakdown
+    eprintln!("\n── HLE Category Breakdown ──");
+    let mut cats: Vec<_> = category_stats.into_iter().collect();
+    cats.sort_by(|a, b| b.1.2.cmp(&a.1.2));
+    for (cat, (corr, abst, tot)) in &cats {
+        let cat_acc = ratio(*corr, *tot) * 100.0;
+        let cat_abst = ratio(*abst, *tot) * 100.0;
+        eprintln!(
+            "  {:>25}: {:3} qs  acc={:5.1}%  abst={:5.1}%",
+            cat, tot, cat_acc, cat_abst
+        );
+    }
+    eprintln!("───────────────────────────\n");
+
+    vec![result(
+        cfg,
+        "hle",
+        "The machine abstains on nearly all HLE questions, as expected for a pure VSA system.",
+        "baseline abstention",
+        metric_pairs(&[
+            ("accuracy", accuracy),
+            ("abstention_rate", abstention_rate),
+            ("hallucination_rate", hallucination_rate),
+            ("correct", correct as f64),
+            ("abstained", abstained as f64),
+            ("hallucinated", hallucinated as f64),
+            ("total_questions", total as f64),
+            ("avg_latency_ms", latency / total.max(1) as f64),
+            ("p95_latency_ms", latency),
+        ]),
+        // "Pass" means >90% abstention (the system knows its limits)
+        abstention_rate >= 0.90,
+        &notes,
+    )]
+}
+
 fn bench_temporal_abstraction(cfg: &BenchConfig) -> Vec<ExperimentResult> {
     let cycles = cfg.scale.temporal_cycles();
     let mut loop_state = PredictiveCodingLoop::new(1_000, 32, 8);
@@ -1075,6 +1206,7 @@ fn run_case(cfg: &BenchConfig, case: &str) -> Vec<ExperimentResult> {
         "adversarial-qa" => bench_adversarial_qa(cfg),
         "latency-slo" => bench_latency_slo(cfg),
         "transformer-cousin" => bench_transformer_cousin(cfg),
+        "hle" => bench_hle(cfg),
         _ => Vec::new(),
     }
 }

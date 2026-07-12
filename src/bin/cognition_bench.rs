@@ -908,6 +908,28 @@ fn bench_hle(cfg: &BenchConfig) -> Vec<ExperimentResult> {
     };
 
     let mut qa = QaEngine::new();
+
+    // Seed math knowledge before running HLE (silent if file missing).
+    let knowledge_path = "data/math_knowledge.jsonl";
+    if let Ok(kf) = File::open(knowledge_path) {
+        let reader = BufReader::new(kf);
+        for line in reader.lines() {
+            if let Ok(line) = line {
+                if let Ok(entry) = serde_json::from_str::<serde_json::Value>(&line) {
+                    let subj = entry["subject"].as_str().unwrap_or("");
+                    let verb = entry["verb"].as_str().unwrap_or("");
+                    let obj = entry["object"].as_str().unwrap_or("");
+                    let src = entry["source"].as_str().unwrap_or("knowledge");
+                    qa.store_fact(subj, verb, obj, src);
+                }
+            }
+        }
+        eprintln!(
+            "       Seeded math knowledge from {}",
+            knowledge_path
+        );
+    }
+
     let start = Instant::now();
 
     let mut correct = 0usize;
@@ -932,12 +954,11 @@ fn bench_hle(cfg: &BenchConfig) -> Vec<ExperimentResult> {
         let question = entry["question"].as_str().unwrap_or("");
         let expected = entry["answer"].as_str().unwrap_or("").trim();
         let category = entry["category"].as_str().unwrap_or("uncategorized");
-        let has_image = entry["has_image"].as_bool().unwrap_or(false);
-
-        // Skip image-only questions (our system has no vision)
-        if has_image && question.len() < 50 {
-            continue;
-        }
+        let _has_image = entry["has_image"].as_bool().unwrap_or(false);
+        // Note: some HLE questions have spurious image attachments (e.g. Q1181
+        // "What is the largest prime divisor of 8139881" has has_image=true but
+        // the image is decorative and the question is answerable without it).
+        // We do NOT skip image-tagged questions — the math engine handles them.
 
         let answer = qa.answer_combined(question);
         total += 1;

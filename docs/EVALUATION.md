@@ -111,6 +111,26 @@ cargo run --release --bin cognition_bench -- --case all --scale large --seed 42 
 The runner defaults to `small` scale and `/tmp/cognition_bench.jsonl`, so local
 use stays limited unless a larger scale is explicitly requested.
 
+### Transformer-Cousin Behavioral Suite
+
+Use this as the first behavioral reference point for comparing the bitwise
+architecture against transformer-style expectations without calling an LLM:
+
+```bash
+cargo run --release --bin cognition_bench -- --case transformer-cousin --scale small --seed 42 --out results/cognition_bench/cousin.jsonl
+```
+
+The suite measures:
+
+- grounded QA accuracy over explicit facts;
+- multi-hop chain accuracy over causal rules;
+- abstention on unknown questions;
+- improvement after feedback insertion;
+- term-trace coverage for explanation/provenance.
+
+The primary summary metric is `aggregate_score`, with component metrics emitted
+alongside it in the standard `ExperimentResult` JSONL schema.
+
 ## Promotion Rules
 
 A mechanism can move closer to core architecture when:

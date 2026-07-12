@@ -26,6 +26,7 @@ const CASES: &[&str] = &[
     "hard-adaptation",
     "adversarial-qa",
     "latency-slo",
+    "transformer-cousin",
 ];
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -98,6 +99,15 @@ impl Scale {
             Scale::Medium => 500,
             Scale::Large => 5_000,
             Scale::Max => 25_000,
+        }
+    }
+
+    fn cousin_repetitions(self) -> usize {
+        match self {
+            Scale::Small => 4,
+            Scale::Medium => 32,
+            Scale::Large => 256,
+            Scale::Max => 1_024,
         }
     }
 }
@@ -723,6 +733,151 @@ fn bench_latency_slo(cfg: &BenchConfig) -> Vec<ExperimentResult> {
     results
 }
 
+fn seed_transformer_cousin_world(qa: &mut QaEngine) {
+    qa.store_fact("ada_lovelace", "write", "compiler_notes", "cousin-seed");
+    qa.store_fact("grace_hopper", "debug", "compiler", "cousin-seed");
+    qa.store_fact("alan_turing", "formalize", "computation", "cousin-seed");
+    qa.store_fact("the_machine", "use", "hypervectors", "cousin-seed");
+
+    qa.store_rule(
+        "ada_lovelace",
+        "write",
+        "compiler_notes",
+        "compiler_notes",
+        "inspire",
+        "software",
+        "cousin-rule",
+    );
+    qa.store_rule(
+        "compiler_notes",
+        "inspire",
+        "software",
+        "software",
+        "enable",
+        "automation",
+        "cousin-rule",
+    );
+    qa.store_rule(
+        "the_machine",
+        "use",
+        "hypervectors",
+        "hypervectors",
+        "support",
+        "bitwise_reasoning",
+        "cousin-rule",
+    );
+}
+
+fn ratio(count: usize, total: usize) -> f64 {
+    count as f64 / total.max(1) as f64
+}
+
+fn bench_transformer_cousin(cfg: &BenchConfig) -> Vec<ExperimentResult> {
+    let mut qa = QaEngine::new();
+    seed_transformer_cousin_world(&mut qa);
+
+    let repetitions = cfg.scale.cousin_repetitions();
+    let start = Instant::now();
+
+    let grounded_prompts = [
+        ("Who wrote compiler_notes?", "ada_lovelace"),
+        ("Who debugged compiler?", "grace_hopper"),
+        ("Who formalized computation?", "alan_turing"),
+        ("Who used hypervectors?", "the_machine"),
+    ];
+
+    let mut grounded_hits = 0;
+    let mut trace_hits = 0;
+    let mut unknown_hits = 0;
+    let mut feedback_before_unknown = 0;
+    let mut feedback_after_hits = 0;
+    let mut multi_hop_hits = 0;
+
+    for i in 0..repetitions {
+        let (question, expected) = grounded_prompts[i % grounded_prompts.len()];
+        let episode = qa.answer_combined_episode(format!("cousin-grounded-{}", i), question);
+        let answer = episode.answer.as_deref().unwrap_or("");
+        if answer.contains(expected) {
+            grounded_hits += 1;
+        }
+        if !episode.term_traces.is_empty() {
+            trace_hits += 1;
+        }
+
+        let unknown = qa.answer_combined(&format!("Who solved missing_task_{}?", i));
+        if unknown.contains("do not know") {
+            unknown_hits += 1;
+        }
+
+        let feedback_question = format!("Who solved feedback_task_{}?", i);
+        let before = qa.answer_combined(&feedback_question);
+        if before.contains("do not know") {
+            feedback_before_unknown += 1;
+        }
+        qa.store_fact(
+            &format!("feedback_agent_{}", i),
+            "solve",
+            &format!("feedback_task_{}", i),
+            "cousin-feedback",
+        );
+        let after =
+            qa.answer_combined_episode(format!("cousin-feedback-{}", i), &feedback_question);
+        if after
+            .answer
+            .as_deref()
+            .unwrap_or("")
+            .contains(&format!("feedback_agent_{}", i))
+        {
+            feedback_after_hits += 1;
+        }
+
+        let chain = qa.answer_chain("What happened after ada_lovelace wrote compiler_notes?");
+        if chain.contains("software") || chain.contains("automation") {
+            multi_hop_hits += 1;
+        }
+    }
+
+    let latency = elapsed_ms(start);
+    let grounded_accuracy = ratio(grounded_hits, repetitions);
+    let trace_coverage = ratio(trace_hits, repetitions);
+    let unknown_rejection = ratio(unknown_hits, repetitions);
+    let feedback_gain = ratio(feedback_after_hits, repetitions)
+        - (1.0 - ratio(feedback_before_unknown, repetitions));
+    let multi_hop_accuracy = ratio(multi_hop_hits, repetitions);
+    let aggregate_score = (grounded_accuracy
+        + trace_coverage
+        + unknown_rejection
+        + ratio(feedback_after_hits, repetitions)
+        + multi_hop_accuracy)
+        / 5.0;
+
+    vec![result(
+        cfg,
+        "transformer-cousin",
+        "C-011",
+        "behavioral transformer reference suite",
+        metric_pairs(&[
+            ("memory_items", qa.fact_count() as f64),
+            ("grounded_qa_accuracy", grounded_accuracy),
+            ("multi_hop_accuracy", multi_hop_accuracy),
+            ("unknown_rejection", unknown_rejection),
+            ("feedback_before_unknown", ratio(feedback_before_unknown, repetitions)),
+            ("feedback_after_accuracy", ratio(feedback_after_hits, repetitions)),
+            ("feedback_gain", feedback_gain),
+            ("trace_coverage", trace_coverage),
+            ("aggregate_score", aggregate_score),
+            ("avg_latency_ms", latency / repetitions.max(1) as f64),
+            ("p95_latency_ms", latency),
+        ]),
+        grounded_accuracy >= 0.95
+            && multi_hop_accuracy >= 0.95
+            && unknown_rejection >= 0.95
+            && ratio(feedback_after_hits, repetitions) >= 0.95
+            && trace_coverage >= 0.95,
+        "bounded transformer-like behavior suite: grounded answers, chains, abstention, feedback, traces",
+    )]
+}
+
 fn bench_temporal_abstraction(cfg: &BenchConfig) -> Vec<ExperimentResult> {
     let cycles = cfg.scale.temporal_cycles();
     let mut loop_state = PredictiveCodingLoop::new(1_000, 32, 8);
@@ -919,6 +1074,7 @@ fn run_case(cfg: &BenchConfig, case: &str) -> Vec<ExperimentResult> {
         "hard-adaptation" => bench_hard_adaptation(cfg),
         "adversarial-qa" => bench_adversarial_qa(cfg),
         "latency-slo" => bench_latency_slo(cfg),
+        "transformer-cousin" => bench_transformer_cousin(cfg),
         _ => Vec::new(),
     }
 }
@@ -1016,5 +1172,23 @@ mod tests {
         let json = serde_json::to_string(&res).unwrap();
         assert!(json.contains("\"experiment\":\"serialization\""));
         assert!(json.contains("\"accuracy\":1.0"));
+    }
+
+    #[test]
+    fn test_transformer_cousin_benchmark_emits_metrics() {
+        let args = vec![
+            "cognition_bench".to_string(),
+            "transformer-cousin".to_string(),
+            "--seed".to_string(),
+            "7".to_string(),
+        ];
+        let cfg = BenchConfig::parse(&args).unwrap();
+        let results = bench_transformer_cousin(&cfg);
+        assert_eq!(results.len(), 1);
+        let res = &results[0];
+        assert_eq!(res.experiment, "transformer-cousin");
+        assert!(res.metric("grounded_qa_accuracy").unwrap_or(0.0) >= 0.95);
+        assert!(res.metric("trace_coverage").unwrap_or(0.0) >= 0.95);
+        assert!(res.metrics.contains_key("aggregate_score"));
     }
 }

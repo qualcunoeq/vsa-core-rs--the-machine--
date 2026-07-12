@@ -6197,6 +6197,55 @@ mod tests {
         assert!(answer.contains("do not know"), "Non-math should fall through");
     }
 
+    #[test]
+    fn test_elementary_math_via_knowledge_base() {
+        use std::io::BufRead;
+        // Load the knowledge base and verify basic math Q&A works.
+        let mut qa = crate::qa::QaEngine::new();
+        let path = "data/math_knowledge.jsonl";
+        if let Ok(file) = std::fs::File::open(path) {
+            let reader = std::io::BufReader::new(file);
+            for line in reader.lines() {
+                if let Ok(line) = line {
+                    if let Ok(entry) = serde_json::from_str::<serde_json::Value>(&line) {
+                        let subj = entry["subject"].as_str().unwrap_or("");
+                        let verb = entry["verb"].as_str().unwrap_or("");
+                        let obj = entry["object"].as_str().unwrap_or("");
+                        let src = entry["source"].as_str().unwrap_or("kb");
+                        qa.store_fact(subj, verb, obj, src);
+                    }
+                }
+            }
+        }
+        // Math engine should handle: "What is 2 + 2?" (Layer 1)
+        let a1 = qa.answer_combined("What is 2 + 2?");
+        assert!(a1.contains("4"), "Math engine: 2+2=4, got: {}", a1);
+
+        // Math engine should handle: "What is sqrt(144)?"
+        let a2 = qa.answer_combined("What is sqrt(144)?");
+        assert!(a2.contains("12"), "Math engine: sqrt(144)=12, got: {}", a2);
+
+        // Knowledge base: "What is pi?" → fact lookup via verb-only
+        let a3 = qa.answer_combined("What is pi?");
+        assert!(
+            a3.contains("3.14") || a3.contains("circumference"),
+            "Knowledge: pi definition, got: {}",
+            a3
+        );
+
+        // Knowledge base: "What is a prime number?"
+        let a4 = qa.answer_combined("What is a prime number?");
+        assert!(
+            a4.contains("divisible") || a4.contains("itself"),
+            "Knowledge: prime number, got: {}",
+            a4
+        );
+
+        // Non-math should abstain
+        let a5 = qa.answer_combined("Who raised rates?");
+        assert!(a5.contains("do not know"), "Non-math abstention, got: {}", a5);
+    }
+
     // ─── Adaptive τ Tests ─────────────────────────────────────────────────
 
     #[test]

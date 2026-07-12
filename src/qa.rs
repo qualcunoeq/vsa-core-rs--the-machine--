@@ -1996,32 +1996,35 @@ impl QaEngine {
             clean_v.as_ref(),
             clean_o.as_ref(),
         ) {
-            (AnswerSlot::Subject, _, Some(verb), Some(object)) => Some(
-                self.fact_by_verb_object
-                    .get(&(
-                        Self::normalize_fact_verb(verb),
-                        Self::normalize_fact_object(object),
-                    ))
-                    .map(|idxs| {
-                        idxs.iter()
-                            .filter_map(|&idx| {
-                                let fact = self.facts.get(idx)?;
-                                let energy = self.reconstruction_energy(
-                                    &fact.thought,
-                                    &fact.subject,
-                                    verb,
-                                    object,
-                                );
-                                if energy >= MIN_CLEANUP_ENERGY {
-                                    Some((fact.subject.clone(), fact))
-                                } else {
-                                    None
-                                }
-                            })
-                            .collect::<Vec<_>>()
-                    })
-                    .unwrap_or_default(),
-            ),
+            (AnswerSlot::Subject, _, Some(verb), object_ref) => {
+                let object: &str = object_ref.map(|s| s.as_str()).unwrap_or("");
+                Some(
+                    self.fact_by_verb_object
+                        .get(&(
+                            Self::normalize_fact_verb(verb),
+                            Self::normalize_fact_object(object),
+                        ))
+                        .map(|idxs| {
+                            idxs.iter()
+                                .filter_map(|&idx| {
+                                    let fact = self.facts.get(idx)?;
+                                    let energy = self.reconstruction_energy(
+                                        &fact.thought,
+                                        &fact.subject,
+                                        verb,
+                                        object,
+                                    );
+                                    if energy >= MIN_CLEANUP_ENERGY {
+                                        Some((fact.subject.clone(), fact))
+                                    } else {
+                                        None
+                                    }
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                        .unwrap_or_default(),
+                )
+            },
             (AnswerSlot::Object, Some(subject), Some(verb), _) => Some(
                 self.fact_by_subject_verb
                     .get(&(

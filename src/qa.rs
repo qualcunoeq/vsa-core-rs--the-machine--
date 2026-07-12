@@ -2005,7 +2005,18 @@ impl QaEngine {
                     .map(|idxs| {
                         idxs.iter()
                             .filter_map(|&idx| {
-                                self.facts.get(idx).map(|fact| (fact.subject.clone(), fact))
+                                let fact = self.facts.get(idx)?;
+                                let energy = self.reconstruction_energy(
+                                    &fact.thought,
+                                    &fact.subject,
+                                    verb,
+                                    object,
+                                );
+                                if energy >= MIN_CLEANUP_ENERGY {
+                                    Some((fact.subject.clone(), fact))
+                                } else {
+                                    None
+                                }
                             })
                             .collect::<Vec<_>>()
                     })
@@ -2020,7 +2031,18 @@ impl QaEngine {
                     .map(|idxs| {
                         idxs.iter()
                             .filter_map(|&idx| {
-                                self.facts.get(idx).map(|fact| (fact.object.clone(), fact))
+                                let fact = self.facts.get(idx)?;
+                                let energy = self.reconstruction_energy(
+                                    &fact.thought,
+                                    subject,
+                                    verb,
+                                    &fact.object,
+                                );
+                                if energy >= MIN_CLEANUP_ENERGY {
+                                    Some((fact.object.clone(), fact))
+                                } else {
+                                    None
+                                }
                             })
                             .collect::<Vec<_>>()
                     })
@@ -2035,7 +2057,18 @@ impl QaEngine {
                     .map(|idxs| {
                         idxs.iter()
                             .filter_map(|&idx| {
-                                self.facts.get(idx).map(|fact| (fact.verb.clone(), fact))
+                                let fact = self.facts.get(idx)?;
+                                let energy = self.reconstruction_energy(
+                                    &fact.thought,
+                                    subject,
+                                    &fact.verb,
+                                    object,
+                                );
+                                if energy >= MIN_CLEANUP_ENERGY {
+                                    Some((fact.verb.clone(), fact))
+                                } else {
+                                    None
+                                }
                             })
                             .collect::<Vec<_>>()
                     })

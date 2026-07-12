@@ -2049,7 +2049,12 @@ impl QaEngine {
             return matches;
         }
 
-        // Scan all facts, collect EVERYTHING above threshold
+        // If no indexed match, return empty immediately.
+        // Full-scan fallback doesn't scale (O(N) per question with N = 10k+ facts)
+        // and rarely produces correct answers for unmatched patterns.
+        return Vec::new();
+
+        // (dead code below — preserved for reference)
         let mut results: Vec<(String, f64, &QaFact)> = Vec::new();
 
         for fact in &self.facts {

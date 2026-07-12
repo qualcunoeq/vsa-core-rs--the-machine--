@@ -1849,10 +1849,23 @@ impl QaEngine {
                         let after = rest[aux.len()..].trim(); // text after the aux verb
                         let words: Vec<&str> = after.split_whitespace().collect();
                         if words.len() >= 2 {
-                            (
-                                Some(crate::nlp::verb_lemma(words[0])),
-                                Some(words[1..].join(" ")),
-                            )
+                            // Handle "what is the X of Y" → X is the verb, "of Y" is object
+                            // Skip leading articles "the", "a", "an"
+                            let start_idx = if matches!(words[0], "the" | "a" | "an") && words.len() >= 3 {
+                                1
+                            } else {
+                                0
+                            };
+                            if start_idx > 0 && words.len() >= start_idx + 2 {
+                                // "the X of Y" → verb=X, object="of Y"
+                                (Some(crate::nlp::verb_lemma(words[start_idx])),
+                                 Some(words[start_idx + 1..].join(" ")))
+                            } else if start_idx > 0 && words.len() == start_idx + 1 {
+                                (Some(crate::nlp::verb_lemma(words[start_idx])), None)
+                            } else {
+                                (Some(crate::nlp::verb_lemma(words[0])),
+                                 Some(words[1..].join(" ")))
+                            }
                         } else if words.len() == 1 {
                             (Some(crate::nlp::verb_lemma(words[0])), None)
                         } else {

@@ -47,6 +47,7 @@ pub mod sleep;
 pub mod socket;
 pub mod temporal;
 pub mod system_encoder;
+pub mod math;
 pub mod meta_reasoning;
 pub mod text_encoder;
 pub mod workspace;
@@ -6173,6 +6174,27 @@ mod tests {
             "Toggle cascade off should produce same result as never enabled (sim={:.6})",
             sim
         );
+    }
+
+    // ─── Math Engine Integration Tests ─────────────────────────────────────
+
+    #[test]
+    fn test_math_engine_arithmetic_via_qa() {
+        let qa = crate::qa::QaEngine::new();
+        let answer = qa.answer_combined("What is 2 + 2?");
+        assert_eq!(answer, "4", "Math engine should answer 2+2=4");
+        let answer2 = qa.answer_combined("What is sqrt(144)?");
+        assert_eq!(answer2, "12", "Math engine should answer sqrt(144)=12");
+        let answer3 = qa.answer_combined("What is the largest prime divisor of 8139881?");
+        assert_eq!(answer3, "5003", "Math engine should factor 8139881");
+    }
+
+    #[test]
+    fn test_math_engine_non_math_passthrough() {
+        let qa = crate::qa::QaEngine::new();
+        // Non-math questions should still return "I do not know"
+        let answer = qa.answer_combined("Who raised rates?");
+        assert!(answer.contains("do not know"), "Non-math should fall through");
     }
 
     // ─── Adaptive τ Tests ─────────────────────────────────────────────────

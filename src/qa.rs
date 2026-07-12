@@ -2228,6 +2228,11 @@ impl QaEngine {
     ///   Multiple:     "The Fed raised rates and cut rates."
     ///   Contradiction: "The Fed raised rates. However, the Fed later lowered rates."
     pub fn answer_combined(&self, question: &str) -> String {
+        // Layer 1: Try math computation first (fast, no memory required).
+        if let Some(math_answer) = crate::math::MathEngine::try_answer(question) {
+            return math_answer;
+        }
+
         let results = self.answer_all(question);
         if results.is_empty() {
             return "I do not know the answer to that question.".to_string();

@@ -355,6 +355,49 @@ answer from wrong to right) is not reflected in the pre-post accuracy delta.
 Next check: add a `QaEngine` integration test that defines a task family, records
 pre-run, stores a new fact, records post-run, and verifies accuracy improvement.
 
+### C-015: Theorem Proving via VSA Rewriting
+
+Status: `provisional`
+
+Statement: The VSA substrate can support bounded theorem proving — not via
+search over proof trees (unification, resolution, AND-branching), but as
+deterministic rewriting along causal chains encoded as bound hypervector
+compositions.
+
+Owner modules: `src/qa.rs` (causal‑chain reasoning, `reason_chain()`),
+`src/reason.rs` (forward chaining), `MATH.md` (Sub‑Lemma S as linear causal
+steps).
+
+Current capability:
+- **Causal‑chain reasoning**: `reason_chain()` follows stored `IF A THEN B`
+  rules forward from a known SVO fact, returning a sequence of (subj, verb, obj)
+  up to 5 hops. Circular detection by max‑hops bound.
+- **Sub‑Lemma S proof**: encoded as a deterministic linear sequence of
+  ρ‑admissible invariants (ρ¹³, ρ²⁶, ρ⁵²) and constructive witness geometry.
+  Not a general proof — specific to one theorem.
+- **Pure rewriting, no proof search**: the system does not branch on
+  alternatives, backtrack, or unify terms. It applies rules in fixed order and
+  accepts the first match.
+
+Known gaps:
+- ❌ **AND‑branching**: No way to prove conjunctive sub‑goals independently and
+  combine results. A single `reason_chain()` is always linear.
+- ❌ **Proof search / resolution / unification**: No unification of schematic
+  variables, no refutation completeness, no proof‑tree representation.
+- ❌ **General theorem prover**: The VSA algebra lacks a sound inference calculus
+  (no modus ponens rule for bound hypervectors, no substitution).
+
+Baseline: pure string‑pattern rewriting with no causal structure.
+
+Failure condition: the system claims to prove a theorem that requires
+AND‑branching, unification, or proof search (e.g., ∀x P(x) → Q(x) with
+multiple simultaneous instantiations).
+
+Next check: add a test that distinguishes linear causal‑chain rewriting from
+true AND‑branching proof (e.g., prove "if A and B then C" where A and B are
+independent facts that must both be retrieved). Confirm the system correctly
+fails or abstains.
+
 ## Retired Or Negative Claims
 
 Negative results are useful research output.  Do not delete them just because

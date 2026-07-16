@@ -81,6 +81,8 @@ pub fn verb_lemma(word: &str) -> String {
         "raises" | "raised" | "raising" => "raise".to_string(),
         // cause
         "causes" | "caused" | "causing" => "cause".to_string(),
+        // show
+        "shows" | "showed" | "shown" | "showing" => "show".to_string(),
         // read
         "reads" | "read" | "reading" => "read".to_string(),
         // write
@@ -979,14 +981,27 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
     for i in 0..n {
         let pos = tokens[i].pos;
 
-        // Skip auxiliaries and be-verbs (they're handled in passive/copular)
+        // Skip auxiliaries, be-verbs before passives, and the passive
+        // participle itself (already handled in the passive pass above).
         if pos == PosTag::Aux
             || (pos == PosTag::Verb && is_be_form(&tokens[i].text) && i + 1 < n && tokens[i + 1].is_passive)
+            || tokens[i].is_passive
         {
             continue;
         }
 
         if pos == PosTag::Verb || pos == PosTag::Aux {
+            // Skip past participles used as adjectives:
+            //   "the given value", "the closed curve", "simple closed curve"
+            // The token before is a Det or Adj (not a Noun subject).
+            // But NOT past tense main verbs:
+            //   "Alice fed the cat" — "Alice" is a Noun (subject).
+            if is_past_participle(&tokens[i].text)
+                && i > 0
+                && (tokens[i - 1].pos == PosTag::Det || tokens[i - 1].pos == PosTag::Adj)
+            {
+                continue;
+            }
             let verb_idx = i;
             let verb_lemma_str = verb_lemma(&tokens[verb_idx].text);
 

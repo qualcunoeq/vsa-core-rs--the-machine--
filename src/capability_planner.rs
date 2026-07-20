@@ -300,6 +300,81 @@ pub struct PlanRepairCandidate {
     pub replacement: GoalCapabilityPlan,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct PlanCostDelta {
+    pub steps: i64,
+    pub dependency_edges: i64,
+    pub verification_steps: i64,
+}
+
+/// Diagnostic comparison between a stale plan and a proposed replacement.
+/// This does not rank or authorize either plan.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PlanRepairEvaluation {
+    pub plan_id: String,
+    pub old_cost: PlanCost,
+    pub replacement_cost: PlanCost,
+    pub cost_delta: PlanCostDelta,
+    pub added_capabilities: Vec<String>,
+    pub removed_capabilities: Vec<String>,
+    pub invalidated_fact_ids: Vec<String>,
+    pub replacement_fact_ids: Vec<String>,
+}
+
+impl PlanRepairCandidate {
+    pub fn evaluate_against(&self, old_plan: &GoalCapabilityPlan) -> PlanRepairEvaluation {
+        let old_steps = old_plan
+            .steps
+            .iter()
+            .map(|step| step.capability_id.clone())
+            .collect::<BTreeSet<_>>();
+        let replacement_steps = self
+            .replacement
+            .steps
+            .iter()
+            .map(|step| step.capability_id.clone())
+            .collect::<BTreeSet<_>>();
+        let added_capabilities = replacement_steps
+            .difference(&old_steps)
+            .cloned()
+            .collect();
+        let removed_capabilities = old_steps
+            .difference(&replacement_steps)
+            .cloned()
+            .collect();
+        let invalidated_fact_ids = self
+            .stale_plan
+            .invalidations
+            .iter()
+            .map(|invalidation| invalidation.fact_id.clone())
+            .collect();
+        let replacement_fact_ids = self
+            .replacement
+            .derived_fact_proofs
+            .iter()
+            .map(|proof| proof.fact_id.clone())
+            .collect::<BTreeSet<_>>()
+            .into_iter()
+            .collect();
+        PlanRepairEvaluation {
+            plan_id: self.plan_id.clone(),
+            old_cost: old_plan.cost,
+            replacement_cost: self.replacement.cost,
+            cost_delta: PlanCostDelta {
+                steps: self.replacement.cost.steps as i64 - old_plan.cost.steps as i64,
+                dependency_edges: self.replacement.cost.dependency_edges as i64
+                    - old_plan.cost.dependency_edges as i64,
+                verification_steps: self.replacement.cost.verification_steps as i64
+                    - old_plan.cost.verification_steps as i64,
+            },
+            added_capabilities,
+            removed_capabilities,
+            invalidated_fact_ids,
+            replacement_fact_ids,
+        }
+    }
+}
+
 /// Replan a stale goal using only facts that are currently active in the
 /// ledger. This deliberately returns a candidate rather than mutating the
 /// old plan or executing the replacement.
@@ -1161,5 +1236,12 @@ mod tests {
             candidate.replacement.derived_fact_proofs[0].fact_id,
             "derived-new"
         );
+        let evaluation = candidate.evaluate_against(&plan);
+        assert_eq!(evaluation.plan_id, "distance-plan");
+        assert_eq!(evaluation.cost_delta.steps, 0);
+        assert!(evaluation.added_capabilities.is_empty());
+        assert!(evaluation.removed_capabilities.is_empty());
+        assert_eq!(evaluation.invalidated_fact_ids, vec!["derived-old"]);
+        assert_eq!(evaluation.replacement_fact_ids, vec!["derived-new"]);
     }
 }

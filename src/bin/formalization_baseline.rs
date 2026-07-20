@@ -9,7 +9,8 @@ use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, env, fs};
 use the_machine::formalization::{
     assess_direct_instantiation, assess_prompt, score_formalization, AuthorizationDenialTrace,
-    FieldScore, FormalizationCorpus, FormalizationGoldCase, FormalizationScore,
+    FieldScore, FormalizationCorpus, FormalizationGoldCase, FormalizationScore, TargetCompletion,
+    TargetFieldStatus,
 };
 
 #[derive(Debug, Serialize)]
@@ -20,6 +21,17 @@ struct Aggregate {
     target_kind_matches: usize,
     target_subject_overlap: usize,
     target_semantic_equivalent: usize,
+    target_operation_detected: usize,
+    target_subject_complete: usize,
+    target_variable_complete: usize,
+    target_arguments_complete: usize,
+    target_domain_complete: usize,
+    target_requested_form_complete: usize,
+    target_provenance_complete: usize,
+    target_complete: usize,
+    target_operation_supported: usize,
+    target_verifier_available: usize,
+    target_incomplete_reasons: BTreeMap<String, usize>,
     authorization_correct: usize,
     definitions: Counts,
     facts: Counts,
@@ -85,6 +97,17 @@ impl Aggregate {
             target_kind_matches: 0,
             target_subject_overlap: 0,
             target_semantic_equivalent: 0,
+            target_operation_detected: 0,
+            target_subject_complete: 0,
+            target_variable_complete: 0,
+            target_arguments_complete: 0,
+            target_domain_complete: 0,
+            target_requested_form_complete: 0,
+            target_provenance_complete: 0,
+            target_complete: 0,
+            target_operation_supported: 0,
+            target_verifier_available: 0,
+            target_incomplete_reasons: BTreeMap::new(),
             authorization_correct: 0,
             definitions: Counts::default(),
             facts: Counts::default(),
@@ -114,6 +137,7 @@ impl Aggregate {
         should_authorize: bool,
         authorized: bool,
         denial: Option<AuthorizationDenialTrace>,
+        target_completion: &TargetCompletion,
     ) {
         self.cases += 1;
         self.exact_target += usize::from(score.target_exact);
@@ -122,6 +146,30 @@ impl Aggregate {
         self.target_subject_overlap += usize::from(score.target_comparison.subject_overlap);
         self.target_semantic_equivalent +=
             usize::from(score.target_comparison.semantically_equivalent);
+        let completeness = &target_completion.target.completeness;
+        self.target_operation_detected +=
+            usize::from(completeness.operation_kind == TargetFieldStatus::Complete);
+        self.target_subject_complete +=
+            usize::from(completeness.subject == TargetFieldStatus::Complete);
+        self.target_variable_complete +=
+            usize::from(completeness.target_variable == TargetFieldStatus::Complete);
+        self.target_arguments_complete +=
+            usize::from(completeness.arguments != TargetFieldStatus::Missing);
+        self.target_domain_complete +=
+            usize::from(completeness.domain != TargetFieldStatus::Missing);
+        self.target_requested_form_complete +=
+            usize::from(completeness.requested_form != TargetFieldStatus::Missing);
+        self.target_provenance_complete +=
+            usize::from(completeness.provenance == TargetFieldStatus::Complete);
+        self.target_complete += usize::from(target_completion.complete);
+        self.target_operation_supported += usize::from(target_completion.operation_supported);
+        self.target_verifier_available += usize::from(target_completion.verifier_available);
+        for reason in &target_completion.reasons {
+            *self
+                .target_incomplete_reasons
+                .entry(reason.clone())
+                .or_default() += 1;
+        }
         self.authorization_correct += usize::from(score.authorization_correct);
         self.definitions.add(score.definitions);
         self.facts.add(score.facts);
@@ -220,7 +268,12 @@ fn holdout(id: &str) -> bool {
 
 fn evaluate_case(
     case: &FormalizationGoldCase,
-) -> (FormalizationScore, bool, AuthorizationDenialTrace) {
+) -> (
+    FormalizationScore,
+    bool,
+    AuthorizationDenialTrace,
+    TargetCompletion,
+) {
     let trace = assess_prompt(&case.id, &case.prompt, "Math", false);
     let assessment = assess_direct_instantiation(&trace);
     let authorized = assessment.authorization_safe();
@@ -228,6 +281,7 @@ fn evaluate_case(
         score_formalization(case, &trace, authorized),
         authorized,
         assessment.denial_trace(case.authorization_expected),
+        trace.target_completion.clone(),
     )
 }
 
@@ -252,13 +306,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         by_transformation: BTreeMap::new(),
     };
     for case in &corpus.cases {
-        let (score, authorized, denial) = evaluate_case(case);
+        let (score, authorized, denial, target_completion) = evaluate_case(case);
         report.total.add(
             &case.id,
             &score,
             case.authorization_expected,
             authorized,
             Some(denial.clone()),
+            &target_completion,
         );
         let split = if holdout(&case.id) {
             &mut report.holdout
@@ -271,6 +326,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             case.authorization_expected,
             authorized,
             Some(denial.clone()),
+            &target_completion,
         );
         report
             .by_tier
@@ -282,6 +338,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 case.authorization_expected,
                 authorized,
                 Some(denial.clone()),
+                &target_completion,
             );
         report
             .by_transformation
@@ -293,6 +350,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 case.authorization_expected,
                 authorized,
                 Some(denial),
+                &target_completion,
             );
     }
     let output = serde_json::to_string_pretty(&report)?;

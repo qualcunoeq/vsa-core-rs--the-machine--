@@ -684,6 +684,90 @@ pub struct TargetComparison {
     pub semantically_equivalent: bool,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum OperationKind {
+    Evaluate,
+    Substitute,
+    Solve,
+    Simplify,
+    Compare,
+    Verify,
+    Unknown,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TargetFieldStatus {
+    Complete,
+    Missing,
+    Ambiguous,
+    NotRequired,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TargetCompleteness {
+    pub operation_kind: TargetFieldStatus,
+    pub subject: TargetFieldStatus,
+    pub target_variable: TargetFieldStatus,
+    pub arguments: TargetFieldStatus,
+    pub domain: TargetFieldStatus,
+    pub requested_form: TargetFieldStatus,
+    pub provenance: TargetFieldStatus,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TargetArgumentBinding {
+    pub parameter: String,
+    pub value: String,
+    pub provenance: String,
+    pub status: TargetFieldStatus,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FormalizedTarget {
+    pub operation: OperationKind,
+    pub subject: Option<String>,
+    pub target_variable: Option<String>,
+    pub arguments: Vec<TargetArgumentBinding>,
+    pub domain: Option<String>,
+    pub requested_form: Option<String>,
+    pub provenance: Option<String>,
+    pub completeness: TargetCompleteness,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct OperationCapability {
+    pub operation: OperationKind,
+    pub executor_available: bool,
+    pub verifier_available: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TargetCompletion {
+    pub target: FormalizedTarget,
+    pub reasons: Vec<String>,
+    pub operation_supported: bool,
+    pub verifier_available: bool,
+    pub complete: bool,
+}
+
+pub fn operation_capability(operation: OperationKind) -> OperationCapability {
+    let supported = matches!(
+        operation,
+        OperationKind::Evaluate
+            | OperationKind::Substitute
+            | OperationKind::Solve
+            | OperationKind::Simplify
+            | OperationKind::Compare
+    );
+    OperationCapability {
+        operation,
+        executor_available: supported,
+        verifier_available: supported,
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum FormalizedFact {
     Equation {
@@ -838,6 +922,8 @@ pub struct FormalizationTrace {
     pub formalized_facts: Vec<FormalizedFact>,
     pub facts_completeness: CompletenessStatus,
     pub target: Option<TargetAnnotation>,
+    pub formalized_target: FormalizedTarget,
+    pub target_completion: TargetCompletion,
     pub assumptions: Vec<AssumptionAnnotation>,
     pub constraints: Vec<ConstraintAnnotation>,
     pub formalized_constraints: Vec<FormalizedConstraint>,
@@ -1394,6 +1480,209 @@ fn completeness_for(
     }
 }
 
+fn operation_from_text(text: &str) -> OperationKind {
+    let lower = text.to_ascii_lowercase();
+    if lower.contains("simplify") {
+        OperationKind::Simplify
+    } else if lower.contains("substitute") || lower.contains("plug in") {
+        OperationKind::Substitute
+    } else if lower.contains("solve") || lower.contains("find the solution") {
+        OperationKind::Solve
+    } else if lower.contains("evaluate") || lower.contains("compute") || lower.contains("calculate")
+    {
+        OperationKind::Evaluate
+    } else if lower.contains("compare") {
+        OperationKind::Compare
+    } else if lower.contains("verify")
+        || lower.contains("check whether")
+        || lower.contains("check if")
+    {
+        OperationKind::Verify
+    } else {
+        OperationKind::Unknown
+    }
+}
+
+fn build_target_completion(
+    question: &str,
+    target: Option<&TargetAnnotation>,
+    formalized_facts: &[FormalizedFact],
+) -> TargetCompletion {
+    let target_text = target
+        .map(|value| value.statement.as_str())
+        .unwrap_or_default();
+    let subject = formalized_facts.first().map(|fact| match fact {
+        FormalizedFact::Equation {
+            lhs, relation, rhs, ..
+        } => format!("{lhs} {relation} {rhs}"),
+        FormalizedFact::Expression { expression, .. } => expression.clone(),
+        FormalizedFact::LogicalPremise { statement, .. } => statement.clone(),
+    });
+    let mut operation = operation_from_text(target_text);
+    if operation == OperationKind::Unknown
+        && (target_text.to_ascii_lowercase().contains("find")
+            || target_text.to_ascii_lowercase().contains("what is"))
+    {
+        operation = if subject
+            .as_ref()
+            .map(|value| value.contains('='))
+            .unwrap_or(false)
+        {
+            OperationKind::Solve
+        } else {
+            OperationKind::Evaluate
+        };
+    }
+    let explicit_target_variable = Regex::new(r"(?i)\bsolve\s+for\s+([A-Za-z_][A-Za-z0-9_]*)")
+        .expect("static target variable regex")
+        .captures(target_text)
+        .and_then(|captures| captures.get(1).map(|value| value.as_str().to_string()));
+    let target_variable = explicit_target_variable.or_else(|| {
+        if operation != OperationKind::Solve {
+            return None;
+        }
+        let symbols = Regex::new(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
+            .expect("static symbol regex")
+            .find_iter(subject.as_deref().unwrap_or_default())
+            .map(|value| value.as_str().to_string())
+            .filter(|symbol| symbol != "e")
+            .collect::<BTreeSet<_>>();
+        (symbols.len() == 1).then(|| symbols.into_iter().next().unwrap())
+    });
+    let mut arguments = Vec::new();
+    if let Some(captures) = Regex::new(r"\b([A-Za-z_][A-Za-z0-9_]*)\(([^()]*)\)")
+        .expect("static function argument regex")
+        .captures(target_text)
+    {
+        let value = captures
+            .get(2)
+            .map(|v| v.as_str().trim())
+            .unwrap_or_default();
+        arguments.push(TargetArgumentBinding {
+            parameter: "argument".into(),
+            value: value.into(),
+            provenance: target
+                .map(|v| v.source_fragment.clone())
+                .unwrap_or_default(),
+            status: if value.is_empty() {
+                TargetFieldStatus::Missing
+            } else {
+                TargetFieldStatus::Complete
+            },
+        });
+    }
+    if let Some(captures) = Regex::new(r"\bat\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^,?.]+)")
+        .expect("static at-argument regex")
+        .captures(target_text)
+    {
+        arguments.push(TargetArgumentBinding {
+            parameter: captures.get(1).unwrap().as_str().into(),
+            value: captures.get(2).unwrap().as_str().trim().into(),
+            provenance: target
+                .map(|v| v.source_fragment.clone())
+                .unwrap_or_default(),
+            status: TargetFieldStatus::Complete,
+        });
+    }
+    let lower = target_text.to_ascii_lowercase();
+    let domain = ["real", "integer", "natural", "positive", "complex"]
+        .iter()
+        .find(|word| lower.contains(**word))
+        .map(|word| (*word).to_string());
+    let requested_form = ["exact", "positive", "all", "approximate", "inequality"]
+        .iter()
+        .find(|word| lower.contains(**word))
+        .map(|word| (*word).to_string());
+    let completeness = TargetCompleteness {
+        operation_kind: if operation == OperationKind::Unknown {
+            TargetFieldStatus::Missing
+        } else {
+            TargetFieldStatus::Complete
+        },
+        subject: if subject.is_some() {
+            TargetFieldStatus::Complete
+        } else {
+            TargetFieldStatus::Missing
+        },
+        target_variable: if operation == OperationKind::Solve {
+            if target_variable.is_some() {
+                TargetFieldStatus::Complete
+            } else {
+                TargetFieldStatus::Missing
+            }
+        } else {
+            TargetFieldStatus::NotRequired
+        },
+        arguments: if matches!(
+            operation,
+            OperationKind::Evaluate | OperationKind::Substitute
+        ) && target_text.contains('(')
+        {
+            if arguments
+                .iter()
+                .all(|argument| argument.status == TargetFieldStatus::Complete)
+            {
+                TargetFieldStatus::Complete
+            } else {
+                TargetFieldStatus::Missing
+            }
+        } else {
+            TargetFieldStatus::NotRequired
+        },
+        domain: if operation == OperationKind::Solve && domain.is_some() {
+            TargetFieldStatus::Complete
+        } else {
+            TargetFieldStatus::NotRequired
+        },
+        requested_form: if requested_form.is_some() {
+            TargetFieldStatus::Complete
+        } else {
+            TargetFieldStatus::NotRequired
+        },
+        provenance: if target.is_some() {
+            TargetFieldStatus::Complete
+        } else {
+            TargetFieldStatus::Missing
+        },
+    };
+    let capability = operation_capability(operation);
+    let mut reasons = Vec::new();
+    for (name, status) in [
+        ("operation_kind", completeness.operation_kind),
+        ("subject", completeness.subject),
+        ("target_variable", completeness.target_variable),
+        ("arguments", completeness.arguments),
+        ("domain", completeness.domain),
+        ("requested_form", completeness.requested_form),
+        ("provenance", completeness.provenance),
+    ] {
+        if matches!(
+            status,
+            TargetFieldStatus::Missing | TargetFieldStatus::Ambiguous
+        ) {
+            reasons.push(format!("{name}_incomplete"));
+        }
+    }
+    let complete =
+        reasons.is_empty() && capability.executor_available && capability.verifier_available;
+    TargetCompletion {
+        target: FormalizedTarget {
+            operation,
+            subject,
+            target_variable,
+            arguments,
+            domain,
+            requested_form,
+            provenance: target.map(|value| value.source_fragment.clone()),
+            completeness,
+        },
+        reasons,
+        operation_supported: capability.executor_available,
+        verifier_available: capability.verifier_available,
+        complete,
+    }
+}
+
 /// Conservative, non-executing assessment used by the formalization report.
 /// It records missing modeling work instead of guessing a formal object.
 pub fn assess_prompt(
@@ -1613,6 +1902,8 @@ pub fn assess_prompt(
     obligations.dedup();
 
     let typed_facts = formalized_facts(&facts, question);
+    let target_completion = build_target_completion(question, target.as_ref(), &typed_facts);
+    let formalized_target = target_completion.target.clone();
     let typed_constraints = constraints
         .iter()
         .map(|constraint| FormalizedConstraint::DomainOrSideCondition {
@@ -1684,6 +1975,8 @@ pub fn assess_prompt(
         formalized_facts: typed_facts,
         facts_completeness,
         target,
+        formalized_target,
+        target_completion,
         assumptions,
         constraints,
         formalized_constraints: typed_constraints,

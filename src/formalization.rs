@@ -773,6 +773,65 @@ pub enum OperationFrame {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
+pub enum SubjectObjectType {
+    Expression,
+    Relation,
+    Function,
+    Definition,
+    Comparison,
+    Unknown,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SubjectCandidate {
+    pub object_id: String,
+    pub object: String,
+    pub object_type: SubjectObjectType,
+    pub source_spans: Vec<TextSpan>,
+    pub referenced_by_target: bool,
+    pub definition_available: bool,
+    pub evidence: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SubjectGap {
+    NoCandidateObject,
+    MultipleCandidateObjects,
+    ObjectMentionedButUndefined,
+    DefinitionNotLinked,
+    WrongObjectType,
+    ObjectExistsButTargetDoesNotReferenceIt,
+    CompoundObjectUnsupported,
+    ScopeResolutionFailure,
+}
+
+impl SubjectGap {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::NoCandidateObject => "no_candidate_object",
+            Self::MultipleCandidateObjects => "multiple_candidate_objects",
+            Self::ObjectMentionedButUndefined => "object_mentioned_but_undefined",
+            Self::DefinitionNotLinked => "definition_not_linked",
+            Self::WrongObjectType => "wrong_object_type",
+            Self::ObjectExistsButTargetDoesNotReferenceIt => {
+                "object_exists_but_target_does_not_reference_it"
+            }
+            Self::CompoundObjectUnsupported => "compound_object_unsupported",
+            Self::ScopeResolutionFailure => "scope_resolution_failure",
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SubjectResolution {
+    pub selected: Option<SubjectCandidate>,
+    pub alternatives: Vec<SubjectCandidate>,
+    pub blockers: Vec<SubjectGap>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum TargetFieldStatus {
     Complete,
     Missing,
@@ -863,6 +922,7 @@ pub struct FormalizedTarget {
     pub operation_status: OperationStatus,
     pub frame: Option<OperationFrame>,
     pub subject: Option<String>,
+    pub subject_resolution: SubjectResolution,
     pub target_variable: Option<String>,
     pub arguments: Vec<TargetArgumentBinding>,
     pub domain: Option<String>,
@@ -1689,6 +1749,155 @@ pub fn infer_answer_form(text: &str, operation: OperationKind) -> Option<AnswerF
     }
 }
 
+fn resolve_subject(
+    question: &str,
+    target_text: &str,
+    formalized_facts: &[FormalizedFact],
+) -> SubjectResolution {
+    let mut candidates = Vec::new();
+    let function_definition =
+        Regex::new(r"(?i)\b([A-Za-z_][A-Za-z0-9_]*)\s*\([^)]*\)\s*=\s*([^.;?]+)")
+            .expect("static function-definition regex");
+    for capture in function_definition.captures_iter(question) {
+        let Some(name) = capture.get(1) else { continue };
+        let Some(body) = capture.get(0) else { continue };
+        candidates.push(SubjectCandidate {
+            object_id: name.as_str().to_string(),
+            object: body.as_str().trim().to_string(),
+            object_type: SubjectObjectType::Function,
+            source_spans: vec![TextSpan {
+                source_fragment: body.as_str().to_string(),
+            }],
+            referenced_by_target: target_text
+                .to_ascii_lowercase()
+                .contains(&format!("{}(", name.as_str().to_ascii_lowercase())),
+            definition_available: true,
+            evidence: "explicit_function_definition".into(),
+        });
+    }
+    for (index, fact) in formalized_facts.iter().enumerate() {
+        let (object, object_type) = match fact {
+            FormalizedFact::Equation {
+                lhs, relation, rhs, ..
+            } => (
+                format!("{lhs} {relation} {rhs}"),
+                SubjectObjectType::Relation,
+            ),
+            FormalizedFact::Expression { expression, .. } => {
+                (expression.clone(), SubjectObjectType::Expression)
+            }
+            FormalizedFact::LogicalPremise { statement, .. } => {
+                (statement.clone(), SubjectObjectType::Definition)
+            }
+        };
+        if candidates
+            .iter()
+            .any(|candidate| candidate.object == object)
+        {
+            continue;
+        }
+        let referenced = target_text
+            .split_whitespace()
+            .any(|token| object.contains(token.trim_matches(|c: char| !c.is_alphanumeric())));
+        candidates.push(SubjectCandidate {
+            object_id: format!("fact_{index}"),
+            object: object.clone(),
+            object_type,
+            source_spans: vec![TextSpan {
+                source_fragment: object,
+            }],
+            referenced_by_target: referenced,
+            definition_available: true,
+            evidence: "typed_fact".into(),
+        });
+    }
+
+    let target_lower = target_text.to_ascii_lowercase();
+    let function_reference_without_definition = Regex::new(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\(")
+        .expect("static function-reference regex")
+        .captures_iter(target_text)
+        .map(|capture| capture.get(1).unwrap().as_str().to_ascii_lowercase())
+        .find(|name| {
+            !candidates
+                .iter()
+                .any(|candidate| candidate.object_id.to_ascii_lowercase() == *name)
+        });
+    if function_reference_without_definition.is_some() {
+        return SubjectResolution {
+            selected: None,
+            alternatives: candidates,
+            blockers: vec![SubjectGap::ObjectMentionedButUndefined],
+        };
+    }
+
+    let referenced_functions: Vec<_> = candidates
+        .iter()
+        .filter(|candidate| {
+            candidate.object_type == SubjectObjectType::Function && candidate.referenced_by_target
+        })
+        .cloned()
+        .collect();
+    if referenced_functions.len() == 1 {
+        return SubjectResolution {
+            selected: referenced_functions.into_iter().next(),
+            alternatives: candidates,
+            blockers: Vec::new(),
+        };
+    }
+
+    let referenced: Vec<_> = candidates
+        .iter()
+        .filter(|candidate| candidate.referenced_by_target)
+        .cloned()
+        .collect();
+    if referenced.len() == 1 {
+        return SubjectResolution {
+            selected: referenced.into_iter().next(),
+            alternatives: candidates,
+            blockers: Vec::new(),
+        };
+    }
+    if referenced.len() > 1 {
+        return SubjectResolution {
+            selected: None,
+            alternatives: referenced,
+            blockers: vec![SubjectGap::MultipleCandidateObjects],
+        };
+    }
+    if candidates.len() == 1 {
+        let candidate = candidates.into_iter().next().unwrap();
+        if target_lower.contains("solve")
+            || target_lower.contains("evaluate")
+            || target_lower.contains("simplify")
+            || target_lower.contains("substitute")
+        {
+            return SubjectResolution {
+                selected: Some(candidate),
+                alternatives: Vec::new(),
+                blockers: Vec::new(),
+            };
+        }
+        return SubjectResolution {
+            selected: None,
+            alternatives: vec![candidate],
+            blockers: vec![SubjectGap::ObjectExistsButTargetDoesNotReferenceIt],
+        };
+    }
+    if candidates.is_empty() {
+        SubjectResolution {
+            selected: None,
+            alternatives: Vec::new(),
+            blockers: vec![SubjectGap::NoCandidateObject],
+        }
+    } else {
+        SubjectResolution {
+            selected: None,
+            alternatives: candidates,
+            blockers: vec![SubjectGap::MultipleCandidateObjects],
+        }
+    }
+}
+
 fn build_target_completion(
     question: &str,
     target: Option<&TargetAnnotation>,
@@ -1697,13 +1906,11 @@ fn build_target_completion(
     let target_text = target
         .map(|value| value.statement.as_str())
         .unwrap_or_default();
-    let subject = formalized_facts.first().map(|fact| match fact {
-        FormalizedFact::Equation {
-            lhs, relation, rhs, ..
-        } => format!("{lhs} {relation} {rhs}"),
-        FormalizedFact::Expression { expression, .. } => expression.clone(),
-        FormalizedFact::LogicalPremise { statement, .. } => statement.clone(),
-    });
+    let subject_resolution = resolve_subject(question, target_text, formalized_facts);
+    let subject = subject_resolution
+        .selected
+        .as_ref()
+        .map(|candidate| candidate.object.clone());
     let mut operation = operation_from_text(target_text);
     if operation == OperationKind::Unknown
         && (target_text.to_ascii_lowercase().contains("find")
@@ -1795,51 +2002,15 @@ fn build_target_completion(
         .iter()
         .find(|word| lower.contains(**word))
         .map(|word| (*word).to_string());
-    let subject_status = match operation {
-        OperationKind::Evaluate
-        | OperationKind::Simplify
-        | OperationKind::Substitute
-        | OperationKind::InstantiateDefinition => {
-            if subject.is_some() {
-                TargetFieldStatus::Complete
-            } else {
-                TargetFieldStatus::Missing
-            }
-        }
-        OperationKind::Solve => {
-            if subject
-                .as_ref()
-                .map(|value| value.contains('='))
-                .unwrap_or(false)
-            {
-                TargetFieldStatus::Complete
-            } else if subject.is_some() {
-                TargetFieldStatus::Ambiguous
-            } else {
-                TargetFieldStatus::Missing
-            }
-        }
-        OperationKind::Compare => {
-            if subject
-                .as_ref()
-                .map(|value| value.contains(" vs ") || value.contains(" versus "))
-                .unwrap_or(false)
-            {
-                TargetFieldStatus::Complete
-            } else if subject.is_some() {
-                TargetFieldStatus::Ambiguous
-            } else {
-                TargetFieldStatus::Missing
-            }
-        }
-        OperationKind::Verify | OperationKind::Prove | OperationKind::Count => {
-            if subject.is_some() {
-                TargetFieldStatus::Complete
-            } else {
-                TargetFieldStatus::Missing
-            }
-        }
-        OperationKind::Unknown => TargetFieldStatus::Missing,
+    let subject_status = if subject.is_some() {
+        TargetFieldStatus::Complete
+    } else if subject_resolution
+        .blockers
+        .contains(&SubjectGap::MultipleCandidateObjects)
+    {
+        TargetFieldStatus::Ambiguous
+    } else {
+        TargetFieldStatus::Missing
     };
     let requires_arguments = match operation {
         OperationKind::Substitute | OperationKind::InstantiateDefinition => true,
@@ -1998,6 +2169,9 @@ fn build_target_completion(
             reasons.push(format!("{name}_{suffix}"));
         }
     }
+    for gap in &subject_resolution.blockers {
+        reasons.push(format!("subject_gap_{}", gap.label()));
+    }
     let complete =
         reasons.is_empty() && capability.executor_available && capability.verifier_available;
     let final_status = if reasons.is_empty() {
@@ -2031,6 +2205,7 @@ fn build_target_completion(
             operation_status,
             frame,
             subject,
+            subject_resolution,
             target_variable,
             arguments,
             domain,
@@ -2553,6 +2728,49 @@ mod tests {
             trace.target_completion.target.completeness.target_variable,
             TargetFieldStatus::Complete
         );
+    }
+
+    #[test]
+    fn subject_resolution_links_function_application_to_definition() {
+        let trace = assess_prompt(
+            "q",
+            "Let f(x)=x^2+1. Let g(x)=2x. What is f(3)?",
+            "Math",
+            false,
+        );
+        let resolution = &trace.target_completion.target.subject_resolution;
+        assert_eq!(
+            resolution
+                .selected
+                .as_ref()
+                .map(|candidate| candidate.object_id.as_str()),
+            Some("f")
+        );
+        assert_eq!(
+            resolution
+                .selected
+                .as_ref()
+                .map(|candidate| candidate.object_type),
+            Some(SubjectObjectType::Function)
+        );
+        assert!(resolution.selected.as_ref().unwrap().definition_available);
+        assert!(resolution.blockers.is_empty());
+    }
+
+    #[test]
+    fn subject_resolution_rejects_undefined_function_reference() {
+        let trace = assess_prompt("q", "What is h(3)?", "Math", false);
+        assert!(trace
+            .target_completion
+            .target
+            .subject_resolution
+            .blockers
+            .contains(&SubjectGap::ObjectMentionedButUndefined));
+        assert!(trace
+            .target_completion
+            .reasons
+            .iter()
+            .any(|reason| reason == "subject_gap_object_mentioned_but_undefined"));
     }
 
     #[test]

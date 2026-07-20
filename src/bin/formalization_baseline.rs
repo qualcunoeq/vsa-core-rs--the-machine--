@@ -43,6 +43,7 @@ struct Aggregate {
     object_candidates_found: usize,
     object_inventory_nonempty: usize,
     object_candidates_expected: usize,
+    object_type_metrics: BTreeMap<String, ObjectTypeMetrics>,
     target_operation_supported: usize,
     target_verifier_available: usize,
     target_incomplete_reasons: BTreeMap<String, usize>,
@@ -77,6 +78,12 @@ struct TargetGapRecord {
     status: String,
     missing_fields: Vec<String>,
     blocking_reasons: Vec<String>,
+}
+
+#[derive(Debug, Default, Serialize)]
+struct ObjectTypeMetrics {
+    found: usize,
+    grounded: usize,
 }
 
 #[derive(Debug, Default, Serialize)]
@@ -162,6 +169,7 @@ impl Aggregate {
             object_candidates_found: 0,
             object_inventory_nonempty: 0,
             object_candidates_expected: 0,
+            object_type_metrics: BTreeMap::new(),
             target_operation_supported: 0,
             target_verifier_available: 0,
             target_incomplete_reasons: BTreeMap::new(),
@@ -228,6 +236,21 @@ impl Aggregate {
         self.object_inventory_nonempty += usize::from(!inventory.objects.is_empty());
         self.object_candidates_expected +=
             score.definitions.expected + score.facts.expected + score.entities.expected;
+        for object in &inventory.objects {
+            let kind = format!("{:?}", object.kind).to_ascii_lowercase();
+            let metrics = self.object_type_metrics.entry(kind).or_default();
+            metrics.found += 1;
+            if target_completion
+                .target
+                .subject_resolution
+                .selected
+                .as_ref()
+                .map(|selected| selected.object_id == object.id)
+                .unwrap_or(false)
+            {
+                metrics.grounded += 1;
+            }
+        }
         match &target_completion.build_trace.binding_status {
             the_machine::formalization::BindingStatus::Complete => self.binding_complete += 1,
             the_machine::formalization::BindingStatus::Missing(_) => self.binding_missing += 1,

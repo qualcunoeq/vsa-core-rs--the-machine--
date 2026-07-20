@@ -853,6 +853,71 @@ pub struct ObjectInventory {
     pub relations: Vec<ObjectCandidate>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ReferenceRelation {
+    ExplicitMention,
+    FunctionApplication,
+    VariableUse,
+    DefinitionLink,
+    PronounReference,
+    DerivedFrom,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ObjectReference {
+    pub from: String,
+    pub to: String,
+    pub evidence: Vec<TextSpan>,
+    pub relation: ReferenceRelation,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub struct ObjectReferenceGraph {
+    pub objects: Vec<String>,
+    pub references: Vec<ObjectReference>,
+}
+
+fn build_reference_graph(target_text: &str, inventory: &ObjectInventory) -> ObjectReferenceGraph {
+    let mut references = Vec::new();
+    for object in &inventory.objects {
+        if object.kind == SubjectObjectType::Function
+            && target_text
+                .to_ascii_lowercase()
+                .contains(&format!("{}(", object.id.to_ascii_lowercase()))
+        {
+            references.push(ObjectReference {
+                from: target_text.into(),
+                to: object.id.clone(),
+                evidence: vec![TextSpan {
+                    source_fragment: target_text.into(),
+                }],
+                relation: ReferenceRelation::FunctionApplication,
+            });
+        }
+        if object
+            .defining_spans
+            .iter()
+            .any(|span| span.source_fragment.contains(&object.id))
+        {
+            references.push(ObjectReference {
+                from: object.id.clone(),
+                to: object.id.clone(),
+                evidence: object.defining_spans.clone(),
+                relation: ReferenceRelation::DefinitionLink,
+            });
+        }
+    }
+    ObjectReferenceGraph {
+        objects: inventory
+            .objects
+            .iter()
+            .map(|object| object.id.clone())
+            .collect(),
+        references,
+    }
+}
+
 fn inventory_from_resolution(resolution: &SubjectResolution) -> ObjectInventory {
     let mut subjects = resolution.alternatives.clone();
     if let Some(selected) = &resolution.selected {
@@ -1003,6 +1068,7 @@ pub struct FormalizedTarget {
     pub subject: Option<String>,
     pub subject_resolution: SubjectResolution,
     pub object_inventory: ObjectInventory,
+    pub reference_graph: ObjectReferenceGraph,
     pub target_variable: Option<String>,
     pub arguments: Vec<TargetArgumentBinding>,
     pub domain: Option<String>,
@@ -1988,6 +2054,7 @@ fn build_target_completion(
         .unwrap_or_default();
     let subject_resolution = resolve_subject(question, target_text, formalized_facts);
     let object_inventory = inventory_from_resolution(&subject_resolution);
+    let reference_graph = build_reference_graph(target_text, &object_inventory);
     let subject = subject_resolution
         .selected
         .as_ref()
@@ -2288,6 +2355,7 @@ fn build_target_completion(
             subject,
             subject_resolution,
             object_inventory,
+            reference_graph,
             target_variable,
             arguments,
             domain,
@@ -2855,6 +2923,15 @@ mod tests {
                 .len(),
             3
         );
+        assert!(trace
+            .target_completion
+            .target
+            .reference_graph
+            .references
+            .iter()
+            .any(|edge| {
+                edge.relation == ReferenceRelation::FunctionApplication && edge.to == "f"
+            }));
     }
 
     #[test]

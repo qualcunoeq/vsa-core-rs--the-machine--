@@ -33,6 +33,10 @@ struct Aggregate {
     target_constructed: usize,
     target_ambiguous: usize,
     target_incomplete: usize,
+    binding_complete: usize,
+    binding_missing: usize,
+    binding_ambiguous: usize,
+    binding_conflicting: usize,
     answer_form_present: usize,
     answer_form_correct: usize,
     operation_recognition_correct: usize,
@@ -78,6 +82,10 @@ struct OperationMetrics {
     target_complete: usize,
     target_ambiguous: usize,
     target_incomplete: usize,
+    binding_complete: usize,
+    binding_missing: usize,
+    binding_ambiguous: usize,
+    binding_conflicting: usize,
     answer_form_present: usize,
     answer_form_correct: usize,
     operation_recognition_correct: usize,
@@ -141,6 +149,10 @@ impl Aggregate {
             target_constructed: 0,
             target_ambiguous: 0,
             target_incomplete: 0,
+            binding_complete: 0,
+            binding_missing: 0,
+            binding_ambiguous: 0,
+            binding_conflicting: 0,
             answer_form_present: 0,
             answer_form_correct: 0,
             operation_recognition_correct: 0,
@@ -205,6 +217,14 @@ impl Aggregate {
         self.target_provenance_complete +=
             usize::from(completeness.provenance == TargetFieldStatus::Complete);
         self.target_complete += usize::from(target_completion.complete);
+        match &target_completion.build_trace.binding_status {
+            the_machine::formalization::BindingStatus::Complete => self.binding_complete += 1,
+            the_machine::formalization::BindingStatus::Missing(_) => self.binding_missing += 1,
+            the_machine::formalization::BindingStatus::Ambiguous(_) => self.binding_ambiguous += 1,
+            the_machine::formalization::BindingStatus::Conflicting(_) => {
+                self.binding_conflicting += 1
+            }
+        }
         match target_completion.build_trace.final_status {
             TargetStatus::Complete => self.target_constructed += 1,
             TargetStatus::Ambiguous(_) => self.target_ambiguous += 1,
@@ -277,6 +297,20 @@ impl Aggregate {
             target_completion.build_trace.final_status,
             TargetStatus::Incomplete(_)
         ));
+        match &target_completion.build_trace.binding_status {
+            the_machine::formalization::BindingStatus::Complete => {
+                operation_entry.binding_complete += 1
+            }
+            the_machine::formalization::BindingStatus::Missing(_) => {
+                operation_entry.binding_missing += 1
+            }
+            the_machine::formalization::BindingStatus::Ambiguous(_) => {
+                operation_entry.binding_ambiguous += 1
+            }
+            the_machine::formalization::BindingStatus::Conflicting(_) => {
+                operation_entry.binding_conflicting += 1
+            }
+        }
         operation_entry.answer_form_present += usize::from(form_present);
         operation_entry.answer_form_correct += usize::from(
             form_present

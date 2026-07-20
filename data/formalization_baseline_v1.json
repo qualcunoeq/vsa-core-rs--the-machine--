@@ -1,0 +1,1460 @@
+{
+  "corpus_schema_version": 1,
+  "corpus_sha256": "7e54029275ae508c58b491df3bf898c143c5b7098cbc07a906f27b6526f22053",
+  "split_rule": "case suffix 01-14=development, 15-20=holdout within each tier",
+  "total": {
+    "cases": 60,
+    "exact_target": 0,
+    "structural_target": 38,
+    "authorization_correct": 33,
+    "definitions": {
+      "matched": 4,
+      "expected": 21,
+      "predicted": 15,
+      "precision": 0.26666666666666666,
+      "recall": 0.19047619047619047
+    },
+    "facts": {
+      "matched": 0,
+      "expected": 69,
+      "predicted": 38,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "entities": {
+      "matched": 0,
+      "expected": 21,
+      "predicted": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "assumptions": {
+      "matched": 0,
+      "expected": 3,
+      "predicted": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "constraints": {
+      "matched": 0,
+      "expected": 9,
+      "predicted": 6,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "obligations": {
+      "matched": 0,
+      "expected": 35,
+      "predicted": 42,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "invented_definitions": 11,
+    "invented_facts": 38,
+    "invented_entities": 0,
+    "invented_assumptions": 0,
+    "invented_constraints": 6,
+    "invented_obligations": 42,
+    "false_authorizations": 0,
+    "false_denials": 27,
+    "failures": {
+      "assumptions_recall": [
+        "t2-17",
+        "t2-18"
+      ],
+      "constraints_recall": [
+        "t0-04",
+        "t0-09",
+        "t0-17",
+        "t0-20",
+        "t1-05",
+        "t1-16",
+        "t2-09",
+        "t2-10",
+        "t2-11"
+      ],
+      "definitions_recall": [
+        "t0-11",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-05",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-10",
+        "t1-11",
+        "t1-14",
+        "t1-15",
+        "t1-16",
+        "t1-17",
+        "t1-18",
+        "t1-19",
+        "t1-20"
+      ],
+      "entities_recall": [
+        "t2-01",
+        "t2-02",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-12",
+        "t2-13",
+        "t2-14",
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "facts_recall": [
+        "t0-01",
+        "t0-02",
+        "t0-03",
+        "t0-04",
+        "t0-05",
+        "t0-06",
+        "t0-07",
+        "t0-08",
+        "t0-09",
+        "t0-10",
+        "t0-11",
+        "t0-12",
+        "t0-13",
+        "t0-14",
+        "t0-15",
+        "t0-16",
+        "t0-17",
+        "t0-18",
+        "t0-19",
+        "t0-20",
+        "t1-01",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-05",
+        "t1-06",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-10",
+        "t1-11",
+        "t1-12",
+        "t1-13",
+        "t1-14",
+        "t1-15",
+        "t1-16",
+        "t1-17",
+        "t1-18",
+        "t1-19",
+        "t1-20",
+        "t2-01",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-09",
+        "t2-10",
+        "t2-11",
+        "t2-12",
+        "t2-13",
+        "t2-14",
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "false_denial": [
+        "t0-01",
+        "t0-02",
+        "t0-03",
+        "t0-04",
+        "t0-05",
+        "t0-06",
+        "t0-07",
+        "t0-08",
+        "t0-09",
+        "t0-10",
+        "t0-11",
+        "t0-12",
+        "t0-13",
+        "t0-14",
+        "t0-16",
+        "t0-18",
+        "t0-19",
+        "t1-01",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-07",
+        "t1-11",
+        "t1-12",
+        "t1-14",
+        "t1-19",
+        "t1-20"
+      ],
+      "obligations_recall": [
+        "t0-02",
+        "t0-03",
+        "t0-06",
+        "t0-10",
+        "t0-12",
+        "t0-16",
+        "t0-17",
+        "t0-19",
+        "t0-20",
+        "t1-05",
+        "t1-06",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-13",
+        "t1-16",
+        "t2-01",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-09",
+        "t2-10",
+        "t2-11",
+        "t2-12",
+        "t2-13",
+        "t2-14",
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "target": [
+        "t0-03",
+        "t0-10",
+        "t0-12",
+        "t0-16",
+        "t0-17",
+        "t0-20",
+        "t1-02",
+        "t1-03",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-13",
+        "t1-15",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-09",
+        "t2-10",
+        "t2-13",
+        "t2-14",
+        "t2-17"
+      ]
+    }
+  },
+  "development": {
+    "cases": 42,
+    "exact_target": 0,
+    "structural_target": 25,
+    "authorization_correct": 20,
+    "definitions": {
+      "matched": 4,
+      "expected": 15,
+      "predicted": 11,
+      "precision": 0.36363636363636365,
+      "recall": 0.26666666666666666
+    },
+    "facts": {
+      "matched": 0,
+      "expected": 47,
+      "predicted": 27,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "entities": {
+      "matched": 0,
+      "expected": 13,
+      "predicted": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "assumptions": {
+      "matched": 0,
+      "expected": 0,
+      "predicted": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "constraints": {
+      "matched": 0,
+      "expected": 6,
+      "predicted": 5,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "obligations": {
+      "matched": 0,
+      "expected": 23,
+      "predicted": 31,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "invented_definitions": 7,
+    "invented_facts": 27,
+    "invented_entities": 0,
+    "invented_assumptions": 0,
+    "invented_constraints": 5,
+    "invented_obligations": 31,
+    "false_authorizations": 0,
+    "false_denials": 22,
+    "failures": {
+      "constraints_recall": [
+        "t0-04",
+        "t0-09",
+        "t1-05",
+        "t2-09",
+        "t2-10",
+        "t2-11"
+      ],
+      "definitions_recall": [
+        "t0-11",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-05",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-10",
+        "t1-11",
+        "t1-14"
+      ],
+      "entities_recall": [
+        "t2-01",
+        "t2-02",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-12",
+        "t2-13",
+        "t2-14"
+      ],
+      "facts_recall": [
+        "t0-01",
+        "t0-02",
+        "t0-03",
+        "t0-04",
+        "t0-05",
+        "t0-06",
+        "t0-07",
+        "t0-08",
+        "t0-09",
+        "t0-10",
+        "t0-11",
+        "t0-12",
+        "t0-13",
+        "t0-14",
+        "t1-01",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-05",
+        "t1-06",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-10",
+        "t1-11",
+        "t1-12",
+        "t1-13",
+        "t1-14",
+        "t2-01",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-09",
+        "t2-10",
+        "t2-11",
+        "t2-12",
+        "t2-13",
+        "t2-14"
+      ],
+      "false_denial": [
+        "t0-01",
+        "t0-02",
+        "t0-03",
+        "t0-04",
+        "t0-05",
+        "t0-06",
+        "t0-07",
+        "t0-08",
+        "t0-09",
+        "t0-10",
+        "t0-11",
+        "t0-12",
+        "t0-13",
+        "t0-14",
+        "t1-01",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-07",
+        "t1-11",
+        "t1-12",
+        "t1-14"
+      ],
+      "obligations_recall": [
+        "t0-02",
+        "t0-03",
+        "t0-06",
+        "t0-10",
+        "t0-12",
+        "t1-05",
+        "t1-06",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-13",
+        "t2-01",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-09",
+        "t2-10",
+        "t2-11",
+        "t2-12",
+        "t2-13",
+        "t2-14"
+      ],
+      "target": [
+        "t0-03",
+        "t0-10",
+        "t0-12",
+        "t1-02",
+        "t1-03",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-13",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-09",
+        "t2-10",
+        "t2-13",
+        "t2-14"
+      ]
+    }
+  },
+  "holdout": {
+    "cases": 18,
+    "exact_target": 0,
+    "structural_target": 13,
+    "authorization_correct": 13,
+    "definitions": {
+      "matched": 0,
+      "expected": 6,
+      "predicted": 4,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "facts": {
+      "matched": 0,
+      "expected": 22,
+      "predicted": 11,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "entities": {
+      "matched": 0,
+      "expected": 8,
+      "predicted": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "assumptions": {
+      "matched": 0,
+      "expected": 3,
+      "predicted": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "constraints": {
+      "matched": 0,
+      "expected": 3,
+      "predicted": 1,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "obligations": {
+      "matched": 0,
+      "expected": 12,
+      "predicted": 11,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "invented_definitions": 4,
+    "invented_facts": 11,
+    "invented_entities": 0,
+    "invented_assumptions": 0,
+    "invented_constraints": 1,
+    "invented_obligations": 11,
+    "false_authorizations": 0,
+    "false_denials": 5,
+    "failures": {
+      "assumptions_recall": [
+        "t2-17",
+        "t2-18"
+      ],
+      "constraints_recall": [
+        "t0-17",
+        "t0-20",
+        "t1-16"
+      ],
+      "definitions_recall": [
+        "t1-15",
+        "t1-16",
+        "t1-17",
+        "t1-18",
+        "t1-19",
+        "t1-20"
+      ],
+      "entities_recall": [
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "facts_recall": [
+        "t0-15",
+        "t0-16",
+        "t0-17",
+        "t0-18",
+        "t0-19",
+        "t0-20",
+        "t1-15",
+        "t1-16",
+        "t1-17",
+        "t1-18",
+        "t1-19",
+        "t1-20",
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "false_denial": [
+        "t0-16",
+        "t0-18",
+        "t0-19",
+        "t1-19",
+        "t1-20"
+      ],
+      "obligations_recall": [
+        "t0-16",
+        "t0-17",
+        "t0-19",
+        "t0-20",
+        "t1-16",
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "target": [
+        "t0-16",
+        "t0-17",
+        "t0-20",
+        "t1-15",
+        "t2-17"
+      ]
+    }
+  },
+  "by_transformation": {
+    "bind_entities_across_sentences": {
+      "cases": 1,
+      "exact_target": 0,
+      "structural_target": 1,
+      "authorization_correct": 1,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 1,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 0,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 1,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "failures": {
+        "entities_recall": [
+          "t2-15"
+        ],
+        "facts_recall": [
+          "t2-15"
+        ],
+        "obligations_recall": [
+          "t2-15"
+        ]
+      }
+    },
+    "construct_single_equation": {
+      "cases": 6,
+      "exact_target": 0,
+      "structural_target": 4,
+      "authorization_correct": 6,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 6,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 7,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 8,
+        "predicted": 8,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 0,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 8,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "failures": {
+        "assumptions_recall": [
+          "t2-17",
+          "t2-18"
+        ],
+        "entities_recall": [
+          "t2-01",
+          "t2-02",
+          "t2-12",
+          "t2-16",
+          "t2-17",
+          "t2-18"
+        ],
+        "facts_recall": [
+          "t2-01",
+          "t2-02",
+          "t2-12",
+          "t2-16",
+          "t2-17",
+          "t2-18"
+        ],
+        "obligations_recall": [
+          "t2-01",
+          "t2-02",
+          "t2-12",
+          "t2-16",
+          "t2-17",
+          "t2-18"
+        ],
+        "target": [
+          "t2-02",
+          "t2-17"
+        ]
+      }
+    },
+    "construct_small_system": {
+      "cases": 3,
+      "exact_target": 0,
+      "structural_target": 3,
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 6,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 6,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 6,
+        "predicted": 4,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 0,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 4,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "failures": {
+        "entities_recall": [
+          "t2-07",
+          "t2-08",
+          "t2-19"
+        ],
+        "facts_recall": [
+          "t2-07",
+          "t2-08",
+          "t2-19"
+        ],
+        "obligations_recall": [
+          "t2-07",
+          "t2-08",
+          "t2-19"
+        ]
+      }
+    },
+    "extract_domain_restriction": {
+      "cases": 5,
+      "exact_target": 0,
+      "structural_target": 4,
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 1,
+        "predicted": 1,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 5,
+        "predicted": 5,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 5,
+        "predicted": 3,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 1,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 1,
+      "invented_facts": 5,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 3,
+      "invented_obligations": 1,
+      "false_authorizations": 0,
+      "false_denials": 2,
+      "failures": {
+        "constraints_recall": [
+          "t0-04",
+          "t0-09",
+          "t0-17",
+          "t1-05",
+          "t2-11"
+        ],
+        "definitions_recall": [
+          "t1-05"
+        ],
+        "facts_recall": [
+          "t0-04",
+          "t0-09",
+          "t0-17",
+          "t1-05",
+          "t2-11"
+        ],
+        "false_denial": [
+          "t0-04",
+          "t0-09"
+        ],
+        "obligations_recall": [
+          "t0-17",
+          "t1-05",
+          "t2-11"
+        ],
+        "target": [
+          "t0-17"
+        ]
+      }
+    },
+    "extract_explicit_equation": {
+      "cases": 16,
+      "exact_target": 0,
+      "structural_target": 12,
+      "authorization_correct": 1,
+      "definitions": {
+        "matched": 0,
+        "expected": 1,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 18,
+        "predicted": 9,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 10,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 9,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 10,
+      "false_authorizations": 0,
+      "false_denials": 15,
+      "failures": {
+        "definitions_recall": [
+          "t0-11"
+        ],
+        "facts_recall": [
+          "t0-01",
+          "t0-02",
+          "t0-03",
+          "t0-05",
+          "t0-06",
+          "t0-07",
+          "t0-08",
+          "t0-10",
+          "t0-11",
+          "t0-12",
+          "t0-13",
+          "t0-14",
+          "t0-15",
+          "t0-16",
+          "t0-18",
+          "t0-19"
+        ],
+        "false_denial": [
+          "t0-01",
+          "t0-02",
+          "t0-03",
+          "t0-05",
+          "t0-06",
+          "t0-07",
+          "t0-08",
+          "t0-10",
+          "t0-11",
+          "t0-12",
+          "t0-13",
+          "t0-14",
+          "t0-16",
+          "t0-18",
+          "t0-19"
+        ],
+        "obligations_recall": [
+          "t0-02",
+          "t0-03",
+          "t0-06",
+          "t0-10",
+          "t0-12",
+          "t0-16",
+          "t0-19"
+        ],
+        "target": [
+          "t0-03",
+          "t0-10",
+          "t0-12",
+          "t0-16"
+        ]
+      }
+    },
+    "extract_quantifier_structure": {
+      "cases": 3,
+      "exact_target": 0,
+      "structural_target": 0,
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 6,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 3,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 5,
+        "predicted": 2,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 6,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 3,
+      "invented_obligations": 2,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "failures": {
+        "constraints_recall": [
+          "t0-20",
+          "t2-09",
+          "t2-10"
+        ],
+        "facts_recall": [
+          "t0-20",
+          "t2-09",
+          "t2-10"
+        ],
+        "obligations_recall": [
+          "t0-20",
+          "t2-09",
+          "t2-10"
+        ],
+        "target": [
+          "t0-20",
+          "t2-09",
+          "t2-10"
+        ]
+      }
+    },
+    "identify_requested_target": {
+      "cases": 1,
+      "exact_target": 0,
+      "structural_target": 1,
+      "authorization_correct": 1,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 1,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 0,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 0,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "failures": {
+        "entities_recall": [
+          "t2-20"
+        ],
+        "facts_recall": [
+          "t2-20"
+        ],
+        "obligations_recall": [
+          "t2-20"
+        ]
+      }
+    },
+    "instantiate_definition": {
+      "cases": 19,
+      "exact_target": 0,
+      "structural_target": 12,
+      "authorization_correct": 9,
+      "definitions": {
+        "matched": 4,
+        "expected": 19,
+        "predicted": 14,
+        "precision": 0.2857142857142857,
+        "recall": 0.21052631578947367
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 20,
+        "predicted": 16,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 1,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 7,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 10,
+      "invented_facts": 16,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 7,
+      "false_authorizations": 0,
+      "false_denials": 10,
+      "failures": {
+        "constraints_recall": [
+          "t1-16"
+        ],
+        "definitions_recall": [
+          "t1-02",
+          "t1-03",
+          "t1-04",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-10",
+          "t1-11",
+          "t1-14",
+          "t1-15",
+          "t1-16",
+          "t1-17",
+          "t1-18",
+          "t1-19",
+          "t1-20"
+        ],
+        "facts_recall": [
+          "t1-01",
+          "t1-02",
+          "t1-03",
+          "t1-04",
+          "t1-06",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-10",
+          "t1-11",
+          "t1-12",
+          "t1-13",
+          "t1-14",
+          "t1-15",
+          "t1-16",
+          "t1-17",
+          "t1-18",
+          "t1-19",
+          "t1-20"
+        ],
+        "false_denial": [
+          "t1-01",
+          "t1-02",
+          "t1-03",
+          "t1-04",
+          "t1-07",
+          "t1-11",
+          "t1-12",
+          "t1-14",
+          "t1-19",
+          "t1-20"
+        ],
+        "obligations_recall": [
+          "t1-06",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-13",
+          "t1-16"
+        ],
+        "target": [
+          "t1-02",
+          "t1-03",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-13",
+          "t1-15"
+        ]
+      }
+    },
+    "translate_comparison_to_inequality": {
+      "cases": 3,
+      "exact_target": 0,
+      "structural_target": 0,
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 6,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 0,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 6,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "failures": {
+        "entities_recall": [
+          "t2-04",
+          "t2-14"
+        ],
+        "facts_recall": [
+          "t2-03",
+          "t2-04",
+          "t2-14"
+        ],
+        "obligations_recall": [
+          "t2-03",
+          "t2-04",
+          "t2-14"
+        ],
+        "target": [
+          "t2-03",
+          "t2-04",
+          "t2-14"
+        ]
+      }
+    },
+    "translate_rate_statement": {
+      "cases": 3,
+      "exact_target": 0,
+      "structural_target": 1,
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 4,
+        "predicted": 2,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 4,
+        "predicted": 3,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 2,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 3,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "failures": {
+        "entities_recall": [
+          "t2-05",
+          "t2-06",
+          "t2-13"
+        ],
+        "facts_recall": [
+          "t2-05",
+          "t2-06",
+          "t2-13"
+        ],
+        "obligations_recall": [
+          "t2-05",
+          "t2-06",
+          "t2-13"
+        ],
+        "target": [
+          "t2-05",
+          "t2-13"
+        ]
+      }
+    }
+  }
+}

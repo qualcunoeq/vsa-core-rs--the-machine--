@@ -8,6 +8,10 @@ name = "the_machine"
 path = "src/main.rs"
 
 [[bin]]
+name = "formalization_baseline"
+path = "src/bin/formalization_baseline.rs"
+
+[[bin]]
 name = "bond_pipeline"
 path = "src/bin/bond_pipeline.rs"
 

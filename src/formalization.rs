@@ -589,6 +589,10 @@ pub struct FormalizationScore {
     pub constraints: FieldScore,
     pub obligations: FieldScore,
     pub target_exact: bool,
+    /// Structural target agreement is deliberately weaker than textual
+    /// equality: a trace may include the full prompt sentence while the gold
+    /// target stores only the requested operation.
+    pub target_structural: bool,
     pub authorization_correct: bool,
 }
 
@@ -598,6 +602,14 @@ fn normalized_text(value: &str) -> String {
         .collect::<Vec<_>>()
         .join(" ")
         .to_ascii_lowercase()
+}
+
+fn target_tokens(value: &str) -> BTreeSet<String> {
+    normalized_text(value)
+        .split(|c: char| !c.is_ascii_alphanumeric() && c != '_')
+        .filter(|token| token.len() > 1)
+        .map(str::to_string)
+        .collect()
 }
 
 fn set_score(
@@ -617,6 +629,15 @@ pub fn score_formalization(
     trace: &FormalizationTrace,
     actual_authorization: bool,
 ) -> FormalizationScore {
+    let predicted_target = trace
+        .target
+        .as_ref()
+        .map(|v| v.statement.as_str())
+        .unwrap_or_default();
+    let gold_tokens = target_tokens(&gold.target.statement);
+    let predicted_tokens = target_tokens(predicted_target);
+    let target_structural = !gold_tokens.is_empty()
+        && gold_tokens.intersection(&predicted_tokens).count() * 2 >= gold_tokens.len();
     FormalizationScore {
         definitions: set_score(
             gold.definitions.iter().map(|v| v.label().to_string()),
@@ -642,12 +663,8 @@ pub fn score_formalization(
             gold.obligations.iter().map(|v| v.label().to_string()),
             trace.obligations.iter().map(|v| v.label().to_string()),
         ),
-        target_exact: gold.target.statement
-            == trace
-                .target
-                .as_ref()
-                .map(|v| v.statement.as_str())
-                .unwrap_or_default(),
+        target_exact: gold.target.statement == predicted_target,
+        target_structural,
         authorization_correct: gold.authorization_expected == actual_authorization,
     }
 }

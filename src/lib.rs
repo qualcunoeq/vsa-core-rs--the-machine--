@@ -58,6 +58,7 @@ pub mod perception;
 pub mod physics;
 pub mod planning;
 pub mod predictive;
+pub mod proportional_model;
 pub mod proposition;
 pub mod qa;
 pub mod reason;

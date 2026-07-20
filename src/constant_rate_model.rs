@@ -130,6 +130,12 @@ impl ModelConstructorRegistry {
             })
             .expect("linear-relationship model registry entry is valid");
         registry
+            .register(ModelConstructorEntry {
+                spec: crate::proportional_model::proportional_model_spec(),
+                matcher: crate::proportional_model::proportional_model_match,
+            })
+            .expect("proportional model registry entry is valid");
+        registry
     }
 
     pub fn register(
@@ -593,7 +599,7 @@ mod tests {
     #[test]
     fn registry_production_keeps_constant_rate_as_unique_route() {
         let registry = ModelConstructorRegistry::production();
-        assert_eq!(registry.entries().count(), 2);
+        assert_eq!(registry.entries().count(), 3);
         assert_eq!(
             registry.discover(POSITIVE).selection,
             ModelSelection::UniqueVersioned {
@@ -619,6 +625,22 @@ mod tests {
             trace.selection,
             ModelSelection::UniqueVersioned {
                 id: "linear_relationship_model".into(),
+                version: 1,
+            }
+        );
+        assert_eq!(trace.candidates.iter().filter(|candidate| candidate.eligible).count(), 1);
+    }
+
+    #[test]
+    fn registry_production_selects_proportional_model_without_overlap() {
+        let registry = ModelConstructorRegistry::production();
+        let trace = registry.discover(
+            "y is proportional to x with proportionality constant 3. Find y when x is 4.",
+        );
+        assert_eq!(
+            trace.selection,
+            ModelSelection::UniqueVersioned {
+                id: "proportional_model".into(),
                 version: 1,
             }
         );

@@ -223,7 +223,7 @@ impl ExactNumber {
         let (n, d) = self.as_pair();
         n as f64 / d as f64
     }
-    fn format(self) -> String {
+    pub fn format(self) -> String {
         match self {
             Self::Integer(n) => n.to_string(),
             Self::Rational {

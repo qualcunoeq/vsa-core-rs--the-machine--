@@ -20,6 +20,9 @@ substrate for specialized methods, not another executor.
   conditions before producing typed facts.
 - `MathematicalDerivationStep`/`MathematicalDerivationPlan` receipts that retain
   premise IDs, derived-fact provenance, and unresolved obligations.
+- `plan_one_step`, with hard candidate limits and explicit `Unique`,
+  `Consensus`, `Ambiguous`, and `None` outcomes; registry order cannot resolve
+  conflicting methods.
 
 Retrieval does not authorize execution.  The module deliberately has no CAS
 call and no semantic-similarity fallback.  A future method pack must be chosen

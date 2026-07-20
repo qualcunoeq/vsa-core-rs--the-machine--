@@ -382,6 +382,15 @@ pub struct RetrievedMethodCandidate {
     pub retrieval_evidence: Vec<String>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PlanSelectionKind {
+    Unique,
+    Consensus,
+    Ambiguous,
+    None,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum MethodRejection {
     TaskShapeMismatch,
@@ -447,6 +456,36 @@ pub struct MethodInstantiation {
     pub unresolved_side_conditions: Vec<SideCondition>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PlannerRejection {
+    pub method_id: MathMethodId,
+    pub reason: MethodRejection,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct OneStepPlan {
+    pub selection: PlanSelectionKind,
+    pub instantiations: Vec<MethodInstantiation>,
+    pub rejected_candidates: Vec<PlannerRejection>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct MathematicalPlannerLimits {
+    pub max_candidates: usize,
+    pub allow_inferred_premises: bool,
+    pub allow_unverified_intermediates: bool,
+}
+
+impl Default for MathematicalPlannerLimits {
+    fn default() -> Self {
+        Self {
+            max_candidates: 8,
+            allow_inferred_premises: false,
+            allow_unverified_intermediates: false,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct MathematicalMethodRegistry {
     methods: Vec<MathematicalMethodSpec>,
@@ -503,6 +542,58 @@ impl MathematicalMethodRegistry {
                 .then_with(|| a.method_id.cmp(&b.method_id))
         });
         out
+    }
+
+    /// Plan exactly one method application.  Retrieval remains a proposal
+    /// stage; every candidate must still instantiate against authoritative
+    /// facts and explicit obligations.  Distinct successful methods are never
+    /// resolved by registry order: equivalent produced facts yield consensus,
+    /// while disagreement is an ambiguity.
+    pub fn plan_one_step(
+        &self,
+        query: &MethodQuery,
+        facts: &[GroundedFact],
+        assumptions: &[MathAssumption],
+        conditions: &[EstablishedCondition],
+        limits: MathematicalPlannerLimits,
+    ) -> OneStepPlan {
+        let candidates = self.retrieve(query);
+        let mut instantiations = Vec::new();
+        let mut rejected_candidates = Vec::new();
+        for candidate in candidates.into_iter().take(limits.max_candidates) {
+            match self.instantiate_with_context(
+                &candidate.method_id,
+                facts,
+                assumptions,
+                conditions,
+            ) {
+                Ok(instantiation) => instantiations.push(instantiation),
+                Err(reason) => rejected_candidates.push(PlannerRejection {
+                    method_id: candidate.method_id,
+                    reason,
+                }),
+            }
+        }
+        let selection = match instantiations.len() {
+            0 => PlanSelectionKind::None,
+            1 => PlanSelectionKind::Unique,
+            _ => {
+                let first = &instantiations[0].produced_facts;
+                if instantiations
+                    .iter()
+                    .all(|candidate| candidate.produced_facts == *first)
+                {
+                    PlanSelectionKind::Consensus
+                } else {
+                    PlanSelectionKind::Ambiguous
+                }
+            }
+        };
+        OneStepPlan {
+            selection,
+            instantiations,
+            rejected_candidates,
+        }
     }
 
     /// Strict single-step instantiation.  Facts must be authoritative and
@@ -960,5 +1051,105 @@ mod tests {
             step.produced_facts[0].provenance.source_fragments,
             vec!["prompt"]
         );
+    }
+
+    fn definition_fact() -> GroundedFact {
+        GroundedFact::explicit(
+            "f1",
+            MathematicalFact::Definition {
+                symbol: "f".into(),
+                expression: "x".into(),
+            },
+            BTreeMap::from([
+                ("f".into(), "f".into()),
+                ("x".into(), "x".into()),
+                ("expr".into(), "x".into()),
+            ]),
+        )
+    }
+
+    fn definition_query() -> MethodQuery {
+        MethodQuery {
+            domain: MathDomain::Algebra,
+            task_shape: TaskShape::ComputeExplicitValue,
+            premise_kinds: BTreeSet::from([FactKind::Definition]),
+            target_kind: FactKind::Proposition,
+        }
+    }
+
+    #[test]
+    fn one_step_planner_returns_unique_only_after_instantiation() {
+        let mut registry = MathematicalMethodRegistry::new();
+        registry.register(definition_method()).unwrap();
+        let plan = registry.plan_one_step(
+            &definition_query(),
+            &[definition_fact()],
+            &[],
+            &[],
+            MathematicalPlannerLimits::default(),
+        );
+        assert_eq!(plan.selection, PlanSelectionKind::Unique);
+        assert_eq!(plan.instantiations.len(), 1);
+        assert!(plan.rejected_candidates.is_empty());
+    }
+
+    #[test]
+    fn one_step_planner_retains_missing_premise_rejection() {
+        let mut registry = MathematicalMethodRegistry::new();
+        let method = definition_method();
+        let id = method.id.clone();
+        registry.register(method).unwrap();
+        let plan = registry.plan_one_step(
+            &definition_query(),
+            &[],
+            &[],
+            &[],
+            MathematicalPlannerLimits::default(),
+        );
+        assert_eq!(plan.selection, PlanSelectionKind::None);
+        assert_eq!(
+            plan.rejected_candidates,
+            vec![PlannerRejection {
+                method_id: id,
+                reason: MethodRejection::MissingPremise
+            }]
+        );
+    }
+
+    #[test]
+    fn equivalent_methods_produce_consensus_not_registry_order() {
+        let mut registry = MathematicalMethodRegistry::new();
+        registry.register(definition_method()).unwrap();
+        let mut equivalent = definition_method();
+        equivalent.id = MathMethodId::new("algebra.definition.substitute.alt");
+        registry.register(equivalent).unwrap();
+        let plan = registry.plan_one_step(
+            &definition_query(),
+            &[definition_fact()],
+            &[],
+            &[],
+            MathematicalPlannerLimits::default(),
+        );
+        assert_eq!(plan.selection, PlanSelectionKind::Consensus);
+        assert_eq!(plan.instantiations.len(), 2);
+    }
+
+    #[test]
+    fn conflicting_methods_abstain_as_ambiguous() {
+        let mut registry = MathematicalMethodRegistry::new();
+        registry.register(definition_method()).unwrap();
+        let mut conflicting = definition_method();
+        conflicting.id = MathMethodId::new("algebra.definition.conflict");
+        conflicting.conclusion_patterns[0].template = "$f($x) = 0".into();
+        registry.register(conflicting).unwrap();
+        let plan = registry.plan_one_step(
+            &definition_query(),
+            &[definition_fact()],
+            &[],
+            &[],
+            MathematicalPlannerLimits::default(),
+        );
+        assert_eq!(plan.selection, PlanSelectionKind::Ambiguous);
+        assert_eq!(plan.instantiations.len(), 2);
     }
 }

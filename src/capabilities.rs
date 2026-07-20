@@ -20,6 +20,7 @@ pub enum InputRequirement {
     SingleEquationSubject,
     SingleTargetVariable,
     LinearRelation,
+    QuadraticRelation,
     ExplicitSubstitutionBindings,
     NoFreeVariables,
     VerifiedDerivedFact,
@@ -235,6 +236,42 @@ impl CapabilitySpec {
         }
     }
 
+    pub fn quadratic_equation_solve_v1() -> Self {
+        Self {
+            id: "quadratic_equation_solve".into(),
+            version: 1,
+            kind: CapabilityKind::Transformation,
+            dependencies: Vec::new(),
+            consumes: vec![CapabilityIoType::Equation, CapabilityIoType::TargetVariable],
+            produces: vec![CapabilityIoType::SolutionSet],
+            supported_object_types: vec![SubjectObjectType::Equation],
+            supported_operations: vec![OperationKind::Solve],
+            supported_answer_forms: vec![AnswerForm::SolutionSet, AnswerForm::ExactValue],
+            input_requirements: vec![
+                InputRequirement::SingleEquationSubject,
+                InputRequirement::SingleTargetVariable,
+                InputRequirement::QuadraticRelation,
+                InputRequirement::ReplayVerifier,
+            ],
+            fact_policy: None,
+            executor: "quadratic_equation::execute_quadratic_equation".into(),
+            verifier: "quadratic_equation::replay_quadratic_equation".into(),
+            regression_cases: vec![
+                "quadratic_equation::two_real_roots_execute_and_replay".into(),
+                "quadratic_equation::double_root_executes_and_replays".into(),
+                "quadratic_equation::linear_relation_is_denied".into(),
+                "quadratic_equation::complex_roots_are_denied".into(),
+            ],
+            quality_gate: CapabilityQualityGate {
+                positive_cases: 2,
+                negative_cases: 1,
+                adversarial_cases: 1,
+                false_authorizations: 0,
+                replay_failures: 0,
+            },
+        }
+    }
+
     pub fn substitution_v1() -> Self {
         Self {
             id: "substitution".into(),
@@ -282,6 +319,7 @@ impl CapabilityRegistry {
         registry.register(CapabilitySpec::function_application_v1());
         registry.register(CapabilitySpec::expression_evaluation_v1());
         registry.register(CapabilitySpec::linear_equation_solve_v1());
+        registry.register(CapabilitySpec::quadratic_equation_solve_v1());
         registry.register(CapabilitySpec::substitution_v1());
         registry
     }
@@ -451,6 +489,23 @@ impl CapabilityRegistry {
                             false
                         }
                     }
+                    InputRequirement::QuadraticRelation => {
+                        if subject.object_type != SubjectObjectType::Equation {
+                            true
+                        } else if let Some(variable) = target.target_variable.as_deref() {
+                            crate::algebra_island::parse_problem(&format!(
+                                "Solve for {variable}: {}",
+                                subject.object
+                            ))
+                            .map(|problem| {
+                                problem.operation
+                                    == crate::algebra_island::AlgebraOperation::SolveQuadraticEquation
+                            })
+                            .unwrap_or(false)
+                        } else {
+                            false
+                        }
+                    }
                     InputRequirement::ExplicitSubstitutionBindings => {
                         target.operation == OperationKind::Substitute
                             && !target.arguments.is_empty()
@@ -508,6 +563,7 @@ mod tests {
                 "expression_evaluation".to_string(),
                 "function_application".to_string(),
                 "linear_equation_solve".to_string(),
+                "quadratic_equation_solve".to_string(),
                 "substitution".to_string(),
             ]
         );
@@ -568,7 +624,7 @@ mod tests {
     }
 
     #[test]
-    fn linear_solver_is_selected_only_for_linear_equations() {
+    fn equation_solver_selection_is_degree_specific() {
         let registry = CapabilityRegistry::production();
         let trace = crate::formalization::assess_prompt(
             "cap-linear-1",
@@ -588,7 +644,7 @@ mod tests {
         );
         assert_eq!(
             registry.discover(&quadratic.target_completion.target).selection,
-            CapabilitySelection::None
+            CapabilitySelection::Unique("quadratic_equation_solve".into())
         );
     }
 

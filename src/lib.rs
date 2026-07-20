@@ -44,6 +44,7 @@ pub mod language_decoder;
 pub mod ledger;
 pub mod linear_equation;
 pub mod linear_relationship_model;
+pub mod quadratic_equation;
 pub mod math;
 pub mod math_ingest;
 pub mod math_method_mining;

@@ -28,6 +28,7 @@ pub mod drift;
 pub mod drives;
 pub mod experiment;
 pub mod forager;
+pub mod formalization;
 pub mod hierarchy;
 pub mod hnsw;
 pub mod indexer;

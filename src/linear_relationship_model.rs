@@ -7,7 +7,7 @@
 
 use crate::capabilities::CapabilityIoType;
 use crate::constant_rate_model::{
-    ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec,
+    ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec, ModelMatcherResult,
 };
 use serde::Serialize;
 
@@ -84,10 +84,12 @@ pub fn linear_relationship_model_spec() -> ModelConstructionSpec {
     }
 }
 
-pub fn linear_relationship_match(text: &str) -> Result<(), String> {
-    construct_linear_relationship_model(text)
-        .map(|_| ())
-        .map_err(|error| format!("{error:?}"))
+pub fn linear_relationship_match(text: &str) -> ModelMatcherResult {
+    let required = linear_relationship_model_spec().required_evidence;
+    match construct_linear_relationship_model(text) {
+        Ok(_) => ModelMatcherResult::eligible(required),
+        Err(error) => ModelMatcherResult::rejected(format!("{error:?}"), required),
+    }
 }
 
 pub fn construct_linear_relationship_model(

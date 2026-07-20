@@ -64,6 +64,10 @@ pub struct ModelCandidateTrace {
     pub id: String,
     pub version: u32,
     pub eligible: bool,
+    pub evidence_used: Vec<String>,
+    pub missing_evidence: Vec<String>,
+    pub introduced_assumptions: Vec<String>,
+    pub confidence_reason: String,
     pub rejection: Option<String>,
 }
 
@@ -73,11 +77,39 @@ pub struct ModelDiscoveryTrace {
     pub selection: ModelSelection,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ModelMatcherResult {
+    pub eligible: bool,
+    pub evidence_used: Vec<String>,
+    pub missing_evidence: Vec<String>,
+    pub rejection: Option<String>,
+}
+
+impl ModelMatcherResult {
+    pub fn eligible(evidence_used: Vec<String>) -> Self {
+        Self {
+            eligible: true,
+            evidence_used,
+            missing_evidence: Vec::new(),
+            rejection: None,
+        }
+    }
+
+    pub fn rejected(reason: impl Into<String>, missing_evidence: Vec<String>) -> Self {
+        Self {
+            eligible: false,
+            evidence_used: Vec::new(),
+            missing_evidence,
+            rejection: Some(reason.into()),
+        }
+    }
+}
+
 /// A registered model constructor is a proposal mechanism only.  It may
 /// become eligible from text evidence, but it never executes by virtue of
 /// being registered.  The downstream model contract and transformation
 /// verifier remain the authorization boundary.
-pub type ModelMatcher = fn(&str) -> Result<(), String>;
+pub type ModelMatcher = fn(&str) -> ModelMatcherResult;
 
 #[derive(Clone)]
 pub struct ModelConstructorEntry {
@@ -205,23 +237,34 @@ impl ModelConstructorRegistry {
         let mut eligible_ids = Vec::new();
         let mut seen_ids = BTreeSet::new();
         for entry in &self.entries {
-            let (eligible, rejection) = if !entry.spec.quality_gate.enabled() {
-                (false, Some("quality_gate_failed".to_string()))
+            let assessment = if !entry.spec.quality_gate.enabled() {
+                ModelMatcherResult::rejected(
+                    "quality_gate_failed",
+                    entry.spec.required_evidence.clone(),
+                )
             } else {
-                match (entry.matcher)(text) {
-                    Ok(()) => (true, None),
-                    Err(reason) => (false, Some(reason)),
-                }
+                (entry.matcher)(text)
             };
             let versioned_id = format!("{}@v{}", entry.spec.id, entry.spec.version);
-            if eligible && seen_ids.insert(versioned_id.clone()) {
+            if assessment.eligible && seen_ids.insert(versioned_id.clone()) {
                 eligible_ids.push((entry.spec.id.clone(), entry.spec.version, versioned_id));
             }
             candidates.push(ModelCandidateTrace {
                 id: entry.spec.id.clone(),
                 version: entry.spec.version,
-                eligible,
-                rejection,
+                evidence_used: assessment.evidence_used,
+                missing_evidence: assessment.missing_evidence,
+                introduced_assumptions: entry.spec.introduced_assumptions.clone(),
+                confidence_reason: if assessment.eligible {
+                    "all registered evidence requirements matched".into()
+                } else {
+                    assessment
+                        .rejection
+                        .clone()
+                        .unwrap_or_else(|| "candidate rejected".into())
+                },
+                eligible: assessment.eligible,
+                rejection: assessment.rejection,
             });
         }
         let selection = match eligible_ids.len() {
@@ -311,10 +354,12 @@ pub enum ConstantRateModelFailure {
     VerificationFailed,
 }
 
-fn constant_rate_match(text: &str) -> Result<(), String> {
-    construct_constant_rate_model(text)
-        .map(|_| ())
-        .map_err(|error| format!("{error:?}"))
+fn constant_rate_match(text: &str) -> ModelMatcherResult {
+    let required = constant_rate_model_spec().required_evidence;
+    match construct_constant_rate_model(text) {
+        Ok(_) => ModelMatcherResult::eligible(required),
+        Err(error) => ModelMatcherResult::rejected(format!("{error:?}"), required),
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -482,8 +527,8 @@ mod tests {
     const POSITIVE: &str =
         "A quantity changes at a constant rate of 3 per interval for 4 intervals. Find the total change.";
 
-    fn always_matches(_: &str) -> Result<(), String> {
-        Ok(())
+    fn always_matches(_: &str) -> ModelMatcherResult {
+        ModelMatcherResult::eligible(vec!["synthetic evidence".into()])
     }
 
     fn registry_spec(id: &str, version: u32) -> ModelConstructionSpec {
@@ -706,5 +751,21 @@ mod tests {
             trace.candidates[0].rejection.as_deref(),
             Some("quality_gate_failed")
         );
+    }
+
+    #[test]
+    fn registry_trace_exposes_evidence_and_missing_requirements() {
+        let trace = ModelConstructorRegistry::production().discover(
+            "y is proportional to x. Find y when x is 4.",
+        );
+        let candidate = trace
+            .candidates
+            .iter()
+            .find(|candidate| candidate.id == "proportional_model")
+            .expect("proportional candidate present");
+        assert!(!candidate.eligible);
+        assert!(!candidate.missing_evidence.is_empty());
+        assert!(candidate.confidence_reason.contains("PatternNotMatched"));
+        assert!(candidate.introduced_assumptions.is_empty());
     }
 }

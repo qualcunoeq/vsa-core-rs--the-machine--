@@ -91,6 +91,85 @@ pub struct CapabilityChainPreferenceReceipt {
     pub preference: CapabilityChainPreference,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainExplanationNote {
+    LowestCost { candidate_id: String },
+    EqualCost { candidate_ids: Vec<String> },
+    HigherCost { candidate_id: String, cost: PlanCost },
+    VerificationEvidence { candidate_id: String, cases: usize },
+    ContractBurden { candidate_id: String, requirements: usize },
+    QualityFailures { candidate_id: String, failures: usize },
+}
+
+/// Structured, deterministic explanation of a preference receipt. Notes are
+/// observations about tradeoffs; they do not alter authorization or ranking.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainPreferenceExplanation {
+    pub preference: CapabilityChainPreference,
+    pub preferred_because: Vec<CapabilityChainExplanationNote>,
+    pub tradeoffs: Vec<CapabilityChainExplanationNote>,
+    pub alternatives: Vec<String>,
+}
+
+impl CapabilityChainPreferenceReceipt {
+    pub fn explain(&self) -> CapabilityChainPreferenceExplanation {
+        let alternatives = self
+            .ranked_candidates
+            .iter()
+            .map(|candidate| candidate.candidate_id.clone())
+            .collect::<Vec<_>>();
+        let mut preferred_because = Vec::new();
+        let mut tradeoffs = Vec::new();
+        match &self.preference {
+            CapabilityChainPreference::Preferred(candidate_id) => {
+                preferred_because.push(CapabilityChainExplanationNote::LowestCost {
+                    candidate_id: candidate_id.clone(),
+                });
+                for candidate in &self.ranked_candidates {
+                    if &candidate.candidate_id != candidate_id {
+                        tradeoffs.push(CapabilityChainExplanationNote::HigherCost {
+                            candidate_id: candidate.candidate_id.clone(),
+                            cost: candidate.cost,
+                        });
+                    }
+                }
+            }
+            CapabilityChainPreference::Ambiguous(candidate_ids) => {
+                tradeoffs.push(CapabilityChainExplanationNote::EqualCost {
+                    candidate_ids: candidate_ids.clone(),
+                });
+            }
+            CapabilityChainPreference::NoCandidates => {}
+        }
+        for candidate in &self.ranked_candidates {
+            if candidate.diagnostics.verification_evidence > 0 {
+                tradeoffs.push(CapabilityChainExplanationNote::VerificationEvidence {
+                    candidate_id: candidate.candidate_id.clone(),
+                    cases: candidate.diagnostics.verification_evidence,
+                });
+            }
+            if candidate.diagnostics.contract_burden > 0 {
+                tradeoffs.push(CapabilityChainExplanationNote::ContractBurden {
+                    candidate_id: candidate.candidate_id.clone(),
+                    requirements: candidate.diagnostics.contract_burden,
+                });
+            }
+            if candidate.diagnostics.quality_failures > 0 {
+                tradeoffs.push(CapabilityChainExplanationNote::QualityFailures {
+                    candidate_id: candidate.candidate_id.clone(),
+                    failures: candidate.diagnostics.quality_failures,
+                });
+            }
+        }
+        CapabilityChainPreferenceExplanation {
+            preference: self.preference.clone(),
+            preferred_because,
+            tradeoffs,
+            alternatives,
+        }
+    }
+}
+
 impl CapabilityChainPlan {
     /// Compute deterministic chain cost for diagnostics and preference
     /// reporting. Cost never authorizes a plan or resolves an ambiguity.
@@ -2240,6 +2319,16 @@ mod tests {
             CapabilityChainPreference::Preferred("short".into())
         );
         assert_eq!(receipt.ranked_candidates[0].candidate_id, "short");
+        let explanation = receipt.explain();
+        assert!(explanation.preferred_because.contains(
+            &CapabilityChainExplanationNote::LowestCost {
+                candidate_id: "short".into()
+            }
+        ));
+        assert_eq!(
+            explanation.alternatives,
+            vec!["short".to_string(), "long".to_string()]
+        );
     }
 
     #[test]
@@ -2261,6 +2350,13 @@ mod tests {
             receipt.preference,
             CapabilityChainPreference::Ambiguous(vec!["a".into(), "b".into()])
         );
+        let explanation = receipt.explain();
+        assert!(explanation.preferred_because.is_empty());
+        assert!(explanation.tradeoffs.contains(
+            &CapabilityChainExplanationNote::EqualCost {
+                candidate_ids: vec!["a".into(), "b".into()]
+            }
+        ));
     }
 
     #[test]

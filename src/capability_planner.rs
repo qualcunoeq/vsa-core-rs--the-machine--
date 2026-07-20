@@ -59,6 +59,17 @@ pub enum CapabilityChainPlanningFailure {
 pub struct CapabilityChainRankedCandidate {
     pub candidate_id: String,
     pub cost: PlanCost,
+    pub diagnostics: CapabilityChainDiagnostics,
+}
+
+/// Secondary, non-authorizing signals for comparing capability chains. These
+/// expose verification coverage and contract burden without pretending that a
+/// scalar score can resolve a semantic tradeoff.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainDiagnostics {
+    pub verification_evidence: usize,
+    pub contract_burden: usize,
+    pub quality_failures: usize,
 }
 
 /// Diagnostic preference among already-valid capability chains. A preference
@@ -106,6 +117,32 @@ impl CapabilityChainPlan {
             verification_steps,
         })
     }
+
+    /// Compute non-authorizing quality diagnostics for a chain.
+    pub fn diagnostics(
+        &self,
+        registry: &CapabilityRegistry,
+    ) -> Result<CapabilityChainDiagnostics, CapabilityChainPlanningFailure> {
+        let mut verification_evidence = 0;
+        let mut contract_burden = 0;
+        let mut quality_failures = 0;
+        for capability_id in &self.steps {
+            let capability = registry
+                .get(capability_id)
+                .ok_or_else(|| CapabilityChainPlanningFailure::UnknownCapability(
+                    capability_id.clone(),
+                ))?;
+            verification_evidence += capability.regression_cases.len();
+            contract_burden += capability.input_requirements.len();
+            quality_failures += capability.quality_gate.false_authorizations;
+            quality_failures += capability.quality_gate.replay_failures;
+        }
+        Ok(CapabilityChainDiagnostics {
+            verification_evidence,
+            contract_burden,
+            quality_failures,
+        })
+    }
 }
 
 /// Rank already-valid candidate chains for diagnostics only. The caller
@@ -118,8 +155,13 @@ pub fn rank_capability_chains(
     let mut ranked = candidates
         .into_iter()
         .map(|(candidate_id, plan)| {
-            plan.cost(registry)
-                .map(|cost| CapabilityChainRankedCandidate { candidate_id, cost })
+            let cost = plan.cost(registry)?;
+            let diagnostics = plan.diagnostics(registry)?;
+            Ok(CapabilityChainRankedCandidate {
+                candidate_id,
+                cost,
+                diagnostics,
+            })
         })
         .collect::<Result<Vec<_>, _>>()?;
     ranked.sort_by(|left, right| {
@@ -2161,6 +2203,9 @@ mod tests {
         .unwrap();
         assert_eq!(ranked[0].candidate_id, "short");
         assert_eq!(ranked[0].cost.steps, 1);
+        assert_eq!(ranked[0].diagnostics.verification_evidence, 3);
+        assert_eq!(ranked[0].diagnostics.contract_burden, 2);
+        assert_eq!(ranked[0].diagnostics.quality_failures, 0);
         assert_eq!(ranked[1].cost.steps, 2);
     }
 

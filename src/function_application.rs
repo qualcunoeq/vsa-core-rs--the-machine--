@@ -5,7 +5,7 @@
 //! piecewise branches, recursive definitions, or symbolic parameters.
 
 use crate::algebra::{self, SymExpr};
-use crate::capabilities::CapabilityRegistry;
+use crate::capabilities::{CapabilityRegistry, CapabilitySelection};
 use crate::formalization::{FormalizedTarget, SubjectObjectType, TargetFieldStatus};
 use crate::math_ingest::substitute_vars;
 use regex::Regex;
@@ -116,12 +116,15 @@ pub fn authorize_function_application(
         .as_ref()
         .map(|subject| subject.object_type)
         .ok_or(FunctionApplicationFailure::DefinitionUnavailable)?;
-    if !CapabilityRegistry::production().accepts(
+    let registry = CapabilityRegistry::production();
+    if !registry.accepts(
         "function_application",
         object_type,
         target.operation,
         target.answer_form,
-    ) {
+    ) || registry.discover(target).selection
+        != CapabilitySelection::Unique("function_application".into())
+    {
         return Err(FunctionApplicationFailure::CapabilityContractRejected);
     }
     if !target

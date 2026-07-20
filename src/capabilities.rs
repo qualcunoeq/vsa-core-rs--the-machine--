@@ -8,6 +8,35 @@ use crate::formalization::{AnswerForm, OperationKind, SubjectObjectType};
 use serde::Serialize;
 use std::collections::BTreeMap;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum InputRequirement {
+    ExplicitFunctionDefinition,
+    ExactlyOneArgumentBinding,
+    ExplicitExpressionBody,
+    NoFreeVariables,
+    ReplayVerifier,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityQualityGate {
+    pub positive_cases: usize,
+    pub negative_cases: usize,
+    pub adversarial_cases: usize,
+    pub false_authorizations: usize,
+    pub replay_failures: usize,
+}
+
+impl CapabilityQualityGate {
+    pub fn enabled(&self) -> bool {
+        self.positive_cases > 0
+            && self.negative_cases > 0
+            && self.adversarial_cases > 0
+            && self.false_authorizations == 0
+            && self.replay_failures == 0
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilitySpec {
     pub id: String,
@@ -15,9 +44,41 @@ pub struct CapabilitySpec {
     pub supported_object_types: Vec<SubjectObjectType>,
     pub supported_operations: Vec<OperationKind>,
     pub supported_answer_forms: Vec<AnswerForm>,
+    pub input_requirements: Vec<InputRequirement>,
     pub executor: String,
     pub verifier: String,
     pub regression_cases: Vec<String>,
+    pub quality_gate: CapabilityQualityGate,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityRejection {
+    QualityGateFailed,
+    MissingSubject,
+    ObjectTypeMismatch,
+    OperationMismatch,
+    AnswerFormMismatch,
+    InputRequirementMissing(InputRequirement),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityCandidate {
+    pub id: String,
+    pub eligible: bool,
+    pub rejections: Vec<CapabilityRejection>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilitySelection {
+    Unique(String),
+    Ambiguous(Vec<String>),
+    None,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityDiscoveryTrace {
+    pub candidates: Vec<CapabilityCandidate>,
+    pub selection: CapabilitySelection,
 }
 
 impl CapabilitySpec {
@@ -28,6 +89,12 @@ impl CapabilitySpec {
             supported_object_types: vec![SubjectObjectType::Function],
             supported_operations: vec![OperationKind::Evaluate],
             supported_answer_forms: vec![AnswerForm::ExactValue, AnswerForm::SimplifiedExpression],
+            input_requirements: vec![
+                InputRequirement::ExplicitFunctionDefinition,
+                InputRequirement::ExactlyOneArgumentBinding,
+                InputRequirement::ExplicitExpressionBody,
+                InputRequirement::ReplayVerifier,
+            ],
             executor: "function_application::execute_function_application".into(),
             verifier: "function_application::replay_substitution".into(),
             regression_cases: vec![
@@ -35,6 +102,13 @@ impl CapabilitySpec {
                 "function_application::undefined_function_is_denied".into(),
                 "function_application::piecewise_like_definition_is_denied".into(),
             ],
+            quality_gate: CapabilityQualityGate {
+                positive_cases: 1,
+                negative_cases: 2,
+                adversarial_cases: 1,
+                false_authorizations: 0,
+                replay_failures: 0,
+            },
         }
     }
 }
@@ -75,6 +149,80 @@ impl CapabilityRegistry {
                 .map(|form| capability.supported_answer_forms.contains(&form))
                 .unwrap_or(false)
     }
+
+    pub fn discover(
+        &self,
+        target: &crate::formalization::FormalizedTarget,
+    ) -> CapabilityDiscoveryTrace {
+        let mut candidates = Vec::new();
+        for capability in self.capabilities.values() {
+            let mut rejections = Vec::new();
+            if !capability.quality_gate.enabled() {
+                rejections.push(CapabilityRejection::QualityGateFailed);
+            }
+            let Some(subject) = target.subject_resolution.selected.as_ref() else {
+                candidates.push(CapabilityCandidate {
+                    id: capability.id.clone(),
+                    eligible: false,
+                    rejections: vec![CapabilityRejection::MissingSubject],
+                });
+                continue;
+            };
+            if !capability
+                .supported_object_types
+                .contains(&subject.object_type)
+            {
+                rejections.push(CapabilityRejection::ObjectTypeMismatch);
+            }
+            if !capability.supported_operations.contains(&target.operation) {
+                rejections.push(CapabilityRejection::OperationMismatch);
+            }
+            if !target
+                .answer_form
+                .map(|form| capability.supported_answer_forms.contains(&form))
+                .unwrap_or(false)
+            {
+                rejections.push(CapabilityRejection::AnswerFormMismatch);
+            }
+            for requirement in &capability.input_requirements {
+                let satisfied = match requirement {
+                    InputRequirement::ExplicitFunctionDefinition => {
+                        subject.object_type == SubjectObjectType::Function
+                            && subject.definition_available
+                    }
+                    InputRequirement::ExactlyOneArgumentBinding => {
+                        target.arguments.len() == 1
+                            && target.arguments[0].status
+                                == crate::formalization::TargetFieldStatus::Complete
+                    }
+                    InputRequirement::ExplicitExpressionBody => subject.object.contains('='),
+                    InputRequirement::NoFreeVariables | InputRequirement::ReplayVerifier => true,
+                };
+                if !satisfied {
+                    rejections.push(CapabilityRejection::InputRequirementMissing(*requirement));
+                }
+            }
+            candidates.push(CapabilityCandidate {
+                id: capability.id.clone(),
+                eligible: rejections.is_empty(),
+                rejections,
+            });
+        }
+        let eligible: Vec<_> = candidates
+            .iter()
+            .filter(|candidate| candidate.eligible)
+            .map(|candidate| candidate.id.clone())
+            .collect();
+        let selection = match eligible.as_slice() {
+            [single] => CapabilitySelection::Unique(single.clone()),
+            [] => CapabilitySelection::None,
+            many => CapabilitySelection::Ambiguous(many.to_vec()),
+        };
+        CapabilityDiscoveryTrace {
+            candidates,
+            selection,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -104,5 +252,19 @@ mod tests {
             OperationKind::Evaluate,
             Some(AnswerForm::Proof)
         ));
+        let trace = registry.discover(
+            &crate::formalization::assess_prompt(
+                "cap-1",
+                "Let f(x)=x+1. What is f(2)?",
+                "Math",
+                false,
+            )
+            .target_completion
+            .target,
+        );
+        assert_eq!(
+            trace.selection,
+            CapabilitySelection::Unique("function_application".into())
+        );
     }
 }

@@ -692,6 +692,7 @@ pub enum OperationKind {
     Solve,
     Simplify,
     Compare,
+    InstantiateDefinition,
     Verify,
     Prove,
     Count,
@@ -706,6 +707,7 @@ impl OperationKind {
             Self::Solve => "solve",
             Self::Simplify => "simplify",
             Self::Compare => "compare",
+            Self::InstantiateDefinition => "instantiate_definition",
             Self::Verify => "verify",
             Self::Prove => "prove",
             Self::Count => "count",
@@ -759,6 +761,11 @@ pub enum OperationFrame {
         subject: String,
         bindings: Vec<TargetArgumentBinding>,
     },
+    InstantiateDefinition {
+        definition: String,
+        arguments: Vec<TargetArgumentBinding>,
+        requested_property: Option<String>,
+    },
     Unsupported {
         requested: String,
     },
@@ -784,6 +791,55 @@ pub struct TargetCompleteness {
     pub provenance: TargetFieldStatus,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum AnswerForm {
+    ExactValue,
+    Approximation,
+    SolutionSet,
+    SingleSelectedSolution,
+    Proof,
+    Counterexample,
+    SimplifiedExpression,
+    ComparisonResult,
+    Classification,
+    Explanation,
+}
+
+impl AnswerForm {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::ExactValue => "exact_value",
+            Self::Approximation => "approximation",
+            Self::SolutionSet => "solution_set",
+            Self::SingleSelectedSolution => "single_selected_solution",
+            Self::Proof => "proof",
+            Self::Counterexample => "counterexample",
+            Self::SimplifiedExpression => "simplified_expression",
+            Self::ComparisonResult => "comparison_result",
+            Self::Classification => "classification",
+            Self::Explanation => "explanation",
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TargetBuildTrace {
+    pub operation: OperationStatus,
+    pub subject: TargetFieldStatus,
+    pub bindings: TargetFieldStatus,
+    pub requested_form: TargetFieldStatus,
+    pub provenance: TargetFieldStatus,
+    pub final_status: TargetStatus,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TargetStatus {
+    Complete,
+    Incomplete(Vec<String>),
+    Ambiguous(Vec<String>),
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TargetArgumentBinding {
     pub parameter: String,
@@ -802,6 +858,7 @@ pub struct FormalizedTarget {
     pub arguments: Vec<TargetArgumentBinding>,
     pub domain: Option<String>,
     pub requested_form: Option<String>,
+    pub answer_form: Option<AnswerForm>,
     pub provenance: Option<TargetProvenance>,
     pub completeness: TargetCompleteness,
 }
@@ -820,6 +877,7 @@ pub struct TargetCompletion {
     pub operation_supported: bool,
     pub verifier_available: bool,
     pub complete: bool,
+    pub build_trace: TargetBuildTrace,
 }
 
 pub fn operation_capability(operation: OperationKind) -> OperationCapability {
@@ -1560,12 +1618,24 @@ fn operation_from_text(text: &str) -> OperationKind {
         OperationKind::Simplify
     } else if lower.contains("substitute") || lower.contains("plug in") {
         OperationKind::Substitute
-    } else if lower.contains("solve") || lower.contains("find the solution") {
+    } else if lower.contains("using the definition")
+        || lower.contains("according to the definition")
+        || lower.contains("what does ") && lower.contains(" return")
+    {
+        OperationKind::InstantiateDefinition
+    } else if lower.contains("solve")
+        || lower.contains("find the solution")
+        || lower.contains("which values")
+        || lower.contains("for which")
+        || lower.contains("find all roots")
+        || lower.contains("find the roots")
+    {
         OperationKind::Solve
     } else if lower.contains("evaluate") || lower.contains("compute") || lower.contains("calculate")
     {
         OperationKind::Evaluate
-    } else if lower.contains("compare") {
+    } else if lower.contains("compare") || lower.contains("equivalent") || lower.contains("same as")
+    {
         OperationKind::Compare
     } else if lower.contains("verify")
         || lower.contains("check whether")
@@ -1574,6 +1644,39 @@ fn operation_from_text(text: &str) -> OperationKind {
         OperationKind::Verify
     } else {
         OperationKind::Unknown
+    }
+}
+
+fn answer_form_from_text(text: &str, operation: OperationKind) -> Option<AnswerForm> {
+    let lower = text.to_ascii_lowercase();
+    if lower.contains("prove") || lower.contains("show that") {
+        Some(AnswerForm::Proof)
+    } else if lower.contains("counterexample") {
+        Some(AnswerForm::Counterexample)
+    } else if lower.contains("positive solution")
+        || lower.contains("negative solution")
+        || lower.contains("single solution")
+    {
+        Some(AnswerForm::SingleSelectedSolution)
+    } else if lower.contains("all solutions")
+        || lower.contains("all roots")
+        || lower.contains("solution set")
+    {
+        Some(AnswerForm::SolutionSet)
+    } else if lower.contains("approx") || lower.contains("decimal") {
+        Some(AnswerForm::Approximation)
+    } else if lower.contains("factor") || lower.contains("simplif") {
+        Some(AnswerForm::SimplifiedExpression)
+    } else if matches!(operation, OperationKind::Compare) || lower.contains("equivalent") {
+        Some(AnswerForm::ComparisonResult)
+    } else if lower.contains("classif") || lower.contains("whether") {
+        Some(AnswerForm::Classification)
+    } else if matches!(operation, OperationKind::Prove) {
+        Some(AnswerForm::Proof)
+    } else if matches!(operation, OperationKind::Evaluate | OperationKind::Solve) {
+        Some(AnswerForm::ExactValue)
+    } else {
+        None
     }
 }
 
@@ -1619,7 +1722,22 @@ fn build_target_completion(
             .expect("static symbol regex")
             .find_iter(subject.as_deref().unwrap_or_default())
             .map(|value| value.as_str().to_string())
-            .filter(|symbol| symbol != "e")
+            .filter(|symbol| {
+                !matches!(
+                    symbol.as_str(),
+                    "e" | "and"
+                        | "or"
+                        | "give"
+                        | "the"
+                        | "positive"
+                        | "negative"
+                        | "solution"
+                        | "solutions"
+                        | "find"
+                        | "for"
+                        | "which"
+                )
+            })
             .collect::<BTreeSet<_>>();
         (symbols.len() == 1).then(|| symbols.into_iter().next().unwrap())
     });
@@ -1659,6 +1777,7 @@ fn build_target_completion(
         });
     }
     let lower = target_text.to_ascii_lowercase();
+    let answer_form = answer_form_from_text(target_text, operation);
     let domain = ["real", "integer", "natural", "positive", "complex"]
         .iter()
         .find(|word| lower.contains(**word))
@@ -1667,17 +1786,91 @@ fn build_target_completion(
         .iter()
         .find(|word| lower.contains(**word))
         .map(|word| (*word).to_string());
+    let subject_status = match operation {
+        OperationKind::Evaluate
+        | OperationKind::Simplify
+        | OperationKind::Substitute
+        | OperationKind::InstantiateDefinition => {
+            if subject.is_some() {
+                TargetFieldStatus::Complete
+            } else {
+                TargetFieldStatus::Missing
+            }
+        }
+        OperationKind::Solve => {
+            if subject
+                .as_ref()
+                .map(|value| value.contains('='))
+                .unwrap_or(false)
+            {
+                TargetFieldStatus::Complete
+            } else if subject.is_some() {
+                TargetFieldStatus::Ambiguous
+            } else {
+                TargetFieldStatus::Missing
+            }
+        }
+        OperationKind::Compare => {
+            if subject
+                .as_ref()
+                .map(|value| value.contains(" vs ") || value.contains(" versus "))
+                .unwrap_or(false)
+            {
+                TargetFieldStatus::Complete
+            } else if subject.is_some() {
+                TargetFieldStatus::Ambiguous
+            } else {
+                TargetFieldStatus::Missing
+            }
+        }
+        OperationKind::Verify | OperationKind::Prove | OperationKind::Count => {
+            if subject.is_some() {
+                TargetFieldStatus::Complete
+            } else {
+                TargetFieldStatus::Missing
+            }
+        }
+        OperationKind::Unknown => TargetFieldStatus::Missing,
+    };
+    let requires_arguments = match operation {
+        OperationKind::Substitute | OperationKind::InstantiateDefinition => true,
+        OperationKind::Evaluate => {
+            target_text.contains('(')
+                || subject
+                    .as_deref()
+                    .map(|value| {
+                        Regex::new(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
+                            .expect("static free-variable regex")
+                            .is_match(value)
+                    })
+                    .unwrap_or(false)
+        }
+        _ => false,
+    };
+    let arguments_status = if !requires_arguments {
+        TargetFieldStatus::NotRequired
+    } else if arguments.is_empty() {
+        TargetFieldStatus::Missing
+    } else if arguments
+        .iter()
+        .any(|argument| argument.status == TargetFieldStatus::Ambiguous)
+    {
+        TargetFieldStatus::Ambiguous
+    } else if arguments
+        .iter()
+        .all(|argument| argument.status == TargetFieldStatus::Complete)
+    {
+        TargetFieldStatus::Complete
+    } else {
+        TargetFieldStatus::Missing
+    };
     let completeness = TargetCompleteness {
         operation_kind: if operation == OperationKind::Unknown {
             TargetFieldStatus::Missing
         } else {
             TargetFieldStatus::Complete
         },
-        subject: if subject.is_some() {
-            TargetFieldStatus::Complete
-        } else {
-            TargetFieldStatus::Missing
-        },
+        subject: subject_status,
         target_variable: if operation == OperationKind::Solve {
             if target_variable.is_some() {
                 TargetFieldStatus::Complete
@@ -1687,28 +1880,13 @@ fn build_target_completion(
         } else {
             TargetFieldStatus::NotRequired
         },
-        arguments: if matches!(
-            operation,
-            OperationKind::Evaluate | OperationKind::Substitute
-        ) && target_text.contains('(')
-        {
-            if arguments
-                .iter()
-                .all(|argument| argument.status == TargetFieldStatus::Complete)
-            {
-                TargetFieldStatus::Complete
-            } else {
-                TargetFieldStatus::Missing
-            }
-        } else {
-            TargetFieldStatus::NotRequired
-        },
+        arguments: arguments_status,
         domain: if operation == OperationKind::Solve && domain.is_some() {
             TargetFieldStatus::Complete
         } else {
             TargetFieldStatus::NotRequired
         },
-        requested_form: if requested_form.is_some() {
+        requested_form: if requested_form.is_some() || answer_form.is_some() {
             TargetFieldStatus::Complete
         } else {
             TargetFieldStatus::NotRequired
@@ -1746,6 +1924,15 @@ fn build_target_completion(
             subject,
             bindings: arguments.clone(),
         }),
+        OperationKind::InstantiateDefinition => {
+            subject
+                .clone()
+                .map(|definition| OperationFrame::InstantiateDefinition {
+                    definition,
+                    arguments: arguments.clone(),
+                    requested_property: answer_form.map(|form| form.label().to_string()),
+                })
+        }
         OperationKind::Prove | OperationKind::Count => Some(OperationFrame::Unsupported {
             requested: target_text.into(),
         }),
@@ -1799,6 +1986,21 @@ fn build_target_completion(
     }
     let complete =
         reasons.is_empty() && capability.executor_available && capability.verifier_available;
+    let final_status = if reasons.is_empty() {
+        TargetStatus::Complete
+    } else if reasons.iter().any(|reason| reason.contains("ambiguous")) {
+        TargetStatus::Ambiguous(reasons.clone())
+    } else {
+        TargetStatus::Incomplete(reasons.clone())
+    };
+    let build_trace = TargetBuildTrace {
+        operation: operation_status.clone(),
+        subject: completeness.subject,
+        bindings: completeness.arguments,
+        requested_form: completeness.requested_form,
+        provenance: completeness.provenance,
+        final_status,
+    };
     TargetCompletion {
         target: FormalizedTarget {
             operation,
@@ -1809,6 +2011,7 @@ fn build_target_completion(
             arguments,
             domain,
             requested_form,
+            answer_form,
             provenance,
             completeness,
         },
@@ -1816,6 +2019,7 @@ fn build_target_completion(
         operation_supported: capability.executor_available,
         verifier_available: capability.verifier_available,
         complete,
+        build_trace,
     }
 }
 
@@ -1954,6 +2158,18 @@ pub fn assess_prompt(
             "solve",
             "what is",
             "which",
+            "simplify",
+            "substitute",
+            "plug in",
+            "compare",
+            "equivalent",
+            "verify",
+            "check",
+            "prove",
+            "show that",
+            "how many",
+            "count",
+            "what does",
         ],
     ) {
         let request_clause = question
@@ -1997,6 +2213,16 @@ pub fn assess_prompt(
                         "check",
                         "prove",
                         "show",
+                        "simplify",
+                        "substitute",
+                        "plug in",
+                        "compare",
+                        "equivalent",
+                        "verify",
+                        "check",
+                        "how many",
+                        "count",
+                        "what does",
                     ],
                 )
             })
@@ -2247,6 +2473,61 @@ mod tests {
             ModelingDistance::DirectInstantiation
         );
         assert_eq!(audit.false_low_distance_reason, None);
+    }
+
+    #[test]
+    fn operation_frame_tracks_simplification_without_bindings() {
+        let trace = assess_prompt("q", "Simplify x + x.", "Math", false);
+        let target = &trace.target_completion;
+        assert_eq!(
+            target.target.operation_status,
+            OperationStatus::Recognized(OperationKind::Simplify)
+        );
+        assert!(matches!(
+            target.target.frame,
+            Some(OperationFrame::Simplify { .. })
+        ));
+        assert_eq!(
+            target.target.completeness.arguments,
+            TargetFieldStatus::NotRequired
+        );
+        assert!(matches!(
+            target.build_trace.final_status,
+            TargetStatus::Complete
+        ));
+    }
+
+    #[test]
+    fn operation_frame_distinguishes_unsupported_proof_from_unknown_request() {
+        let trace = assess_prompt("q", "Prove that x = x.", "Math", false);
+        let target = &trace.target_completion;
+        assert_eq!(
+            target.target.operation_status,
+            OperationStatus::Unsupported("prove".into())
+        );
+        assert!(!target.operation_supported);
+        assert!(matches!(
+            target.build_trace.final_status,
+            TargetStatus::Complete
+        ));
+    }
+
+    #[test]
+    fn answer_form_preserves_positive_root_selection() {
+        let trace = assess_prompt(
+            "q",
+            "Solve x^2 - 4 = 0 and give the positive solution.",
+            "Math",
+            false,
+        );
+        assert_eq!(
+            trace.target_completion.target.answer_form,
+            Some(AnswerForm::SingleSelectedSolution)
+        );
+        assert_eq!(
+            trace.target_completion.target.completeness.target_variable,
+            TargetFieldStatus::Complete
+        );
     }
 
     #[test]

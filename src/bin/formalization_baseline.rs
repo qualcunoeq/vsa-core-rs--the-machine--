@@ -33,6 +33,7 @@ struct Aggregate {
     target_verifier_available: usize,
     target_incomplete_reasons: BTreeMap<String, usize>,
     operation_confusion: BTreeMap<String, usize>,
+    operation_metrics: BTreeMap<String, OperationMetrics>,
     authorization_correct: usize,
     definitions: Counts,
     facts: Counts,
@@ -52,6 +53,15 @@ struct Aggregate {
     all_denial_blockers: BTreeMap<String, usize>,
     denial_cases: Vec<AuthorizationDenialTrace>,
     failures: BTreeMap<String, Vec<String>>,
+}
+
+#[derive(Debug, Default, Serialize)]
+struct OperationMetrics {
+    cases: usize,
+    target_complete: usize,
+    operation_supported: usize,
+    verifier_available: usize,
+    authorized: usize,
 }
 
 #[derive(Debug, Default, Serialize)]
@@ -110,6 +120,7 @@ impl Aggregate {
             target_verifier_available: 0,
             target_incomplete_reasons: BTreeMap::new(),
             operation_confusion: BTreeMap::new(),
+            operation_metrics: BTreeMap::new(),
             authorization_correct: 0,
             definitions: Counts::default(),
             facts: Counts::default(),
@@ -183,6 +194,18 @@ impl Aggregate {
             .operation_confusion
             .entry(format!("{gold_operation}->{predicted_operation}"))
             .or_default() += 1;
+        let operation_entry = self
+            .operation_metrics
+            .entry(predicted_operation.clone())
+            .or_default();
+        operation_entry.cases += 1;
+        operation_entry.target_complete += usize::from(matches!(
+            target_completion.build_trace.final_status,
+            the_machine::formalization::TargetStatus::Complete
+        ));
+        operation_entry.operation_supported += usize::from(target_completion.operation_supported);
+        operation_entry.verifier_available += usize::from(target_completion.verifier_available);
+        operation_entry.authorized += usize::from(authorized);
         self.authorization_correct += usize::from(score.authorization_correct);
         self.definitions.add(score.definitions);
         self.facts.add(score.facts);

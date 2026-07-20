@@ -377,12 +377,30 @@ pub enum PlanExecutionStatus {
     Failed,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum ExecutionFailureKind {
+    CapabilityUnavailable,
+    InputRejected,
+    VerificationFailed,
+    RuntimeFailure,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ExecutionFailureDiagnosis {
+    pub attempt_id: String,
+    pub plan_id: String,
+    pub failed_step: String,
+    pub kind: ExecutionFailureKind,
+    pub reason: String,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct PlanExecutionReceipt {
     pub attempt_id: String,
     pub plan_id: String,
     pub status: PlanExecutionStatus,
     pub failed_step: Option<String>,
+    pub failure_kind: Option<ExecutionFailureKind>,
     pub failure_reason: Option<String>,
     pub verification_receipt: Option<String>,
     pub produced_fact_ids: Vec<String>,
@@ -415,6 +433,7 @@ pub enum ExecutionFactCommitFailure {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
 pub struct PlanExecutionLedger {
     attempts: BTreeMap<String, PlanExecutionReceipt>,
+    diagnoses: BTreeMap<String, ExecutionFailureDiagnosis>,
 }
 
 impl PlanExecutionLedger {
@@ -439,6 +458,7 @@ impl PlanExecutionLedger {
             plan_id,
             status: PlanExecutionStatus::Running,
             failed_step: None,
+            failure_kind: None,
             failure_reason: None,
             verification_receipt: None,
             produced_fact_ids: Vec::new(),
@@ -482,6 +502,23 @@ impl PlanExecutionLedger {
         failed_step: impl Into<String>,
         reason: impl Into<String>,
     ) -> Result<PlanExecutionReceipt, PlanExecutionRejection> {
+        self.complete_failure_with_kind(
+            attempt_id,
+            failed_step,
+            ExecutionFailureKind::RuntimeFailure,
+            reason,
+        )
+    }
+
+    pub fn complete_failure_with_kind(
+        &mut self,
+        attempt_id: &str,
+        failed_step: impl Into<String>,
+        kind: ExecutionFailureKind,
+        reason: impl Into<String>,
+    ) -> Result<PlanExecutionReceipt, PlanExecutionRejection> {
+        let failed_step = failed_step.into();
+        let reason = reason.into();
         let receipt = self
             .attempts
             .get_mut(attempt_id)
@@ -492,9 +529,28 @@ impl PlanExecutionLedger {
             ));
         }
         receipt.status = PlanExecutionStatus::Failed;
-        receipt.failed_step = Some(failed_step.into());
-        receipt.failure_reason = Some(reason.into());
+        receipt.failed_step = Some(failed_step.clone());
+        receipt.failure_kind = Some(kind);
+        receipt.failure_reason = Some(reason.clone());
+        self.diagnoses.insert(
+            attempt_id.to_string(),
+            ExecutionFailureDiagnosis {
+                attempt_id: attempt_id.to_string(),
+                plan_id: receipt.plan_id.clone(),
+                failed_step,
+                kind,
+                reason,
+            },
+        );
         Ok(receipt.clone())
+    }
+
+    pub fn diagnosis(&self, attempt_id: &str) -> Option<&ExecutionFailureDiagnosis> {
+        self.diagnoses.get(attempt_id)
+    }
+
+    pub fn failure_diagnoses(&self) -> impl Iterator<Item = &ExecutionFailureDiagnosis> {
+        self.diagnoses.values()
     }
 
     /// Atomically publish verified outputs from a successful attempt into the
@@ -1498,6 +1554,15 @@ mod tests {
             .unwrap();
         assert_eq!(failed.status, PlanExecutionStatus::Failed);
         assert_eq!(failed.failed_step.as_deref(), Some("derived_fact_consumer"));
+        assert_eq!(
+            failed.failure_kind,
+            Some(ExecutionFailureKind::RuntimeFailure)
+        );
+        assert_eq!(
+            executions.diagnosis("attempt-fail").unwrap().reason,
+            "executor error"
+        );
+        assert_eq!(executions.failure_diagnoses().count(), 1);
 
         executions
             .start("attempt-success", "distance-plan", &plan, &index)

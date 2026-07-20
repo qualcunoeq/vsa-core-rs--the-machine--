@@ -230,6 +230,50 @@ impl DerivedFactIndex {
         self.entries.keys()
     }
 
+    pub fn fact(&self, id: &str) -> Option<&DerivedFact> {
+        self.entries
+            .values()
+            .flat_map(|facts| facts.iter())
+            .find(|fact| fact.id == id)
+    }
+
+    pub fn ancestors_of(&self, id: &str) -> Vec<String> {
+        self.fact(id)
+            .map(|fact| fact.parent_lineage.clone())
+            .unwrap_or_default()
+    }
+
+    /// Return all facts whose lineage depends on `id`.  Because lineage is
+    /// transitive, this also finds indirect dependents, not only immediate
+    /// children.
+    pub fn dependents_of(&self, id: &str) -> Vec<String> {
+        let mut dependents = BTreeSet::new();
+        for facts in self.entries.values() {
+            for fact in facts {
+                if fact.parent_lineage.iter().any(|parent| parent == id) {
+                    dependents.insert(fact.id.clone());
+                }
+            }
+        }
+        dependents.into_iter().collect()
+    }
+
+    /// Compute the transitive invalidation closure for a changed parent.
+    /// This is diagnostic/lifecycle information only; it never silently
+    /// deletes or rewrites facts.
+    pub fn invalidation_closure(&self, id: &str) -> Vec<String> {
+        let mut closure = BTreeSet::new();
+        let mut frontier = vec![id.to_string()];
+        while let Some(current) = frontier.pop() {
+            for dependent in self.dependents_of(&current) {
+                if closure.insert(dependent.clone()) {
+                    frontier.push(dependent);
+                }
+            }
+        }
+        closure.into_iter().collect()
+    }
+
     pub fn candidates(&self, key: &str) -> &[DerivedFact] {
         self.entries.get(key).map(Vec::as_slice).unwrap_or(&[])
     }
@@ -663,6 +707,42 @@ mod tests {
             index.select("x", &FactSelectionPolicy::exact_algebra()),
             Err(FactSelectionFailure::Conflict(conflict)) if conflict.key == "x"
         ));
+    }
+
+    #[test]
+    fn fact_index_exposes_dependency_and_invalidation_queries() {
+        let policy = FactPolicy::verified_transformation();
+        let base = derived_fact("base", "time = 5s", "prompt-time");
+        let intermediate = DerivedFact::derive_from(
+            "distance",
+            "distance = 50m",
+            &[&base],
+            "rate transformation",
+            &[],
+            Some("mechanics".into()),
+        )
+        .unwrap();
+        let conclusion = DerivedFact::derive_from(
+            "arrival",
+            "arrival = true",
+            &[&intermediate],
+            "threshold check",
+            &[],
+            Some("mechanics".into()),
+        )
+        .unwrap();
+        let mut index = DerivedFactIndex::default();
+        index.insert("time", base, &policy).unwrap();
+        index.insert("distance", intermediate, &policy).unwrap();
+        index.insert("arrival", conclusion, &policy).unwrap();
+
+        assert_eq!(
+            index.ancestors_of("arrival"),
+            vec!["base", "distance", "prompt-time"]
+        );
+        assert_eq!(index.dependents_of("base"), vec!["arrival", "distance"]);
+        assert_eq!(index.invalidation_closure("base"), vec!["arrival", "distance"]);
+        assert!(index.fact("missing").is_none());
     }
 
     fn derived_fact(id: &str, content: &str, parent: &str) -> DerivedFact {

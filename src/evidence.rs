@@ -110,6 +110,88 @@ pub enum FactIndexQueryFailure {
     Conflict(FactConflict),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum FactSelectionRejection {
+    LineageMissing,
+    ProofKindNotAllowed,
+    PrecisionNotAllowed,
+    DomainNotAllowed,
+    AssumptionsNotAllowed,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum FactSelectionFailure {
+    Conflict(FactConflict),
+    NoAcceptableFacts {
+        key: String,
+        rejections: Vec<(String, FactSelectionRejection)>,
+    },
+}
+
+/// Consumer-side policy for selecting facts from the ledger.  This is
+/// intentionally separate from `FactPolicy`: the latter governs whether a
+/// transformation may create/consume a lineage-bearing fact at all, while
+/// this policy describes which semantic quality a particular goal accepts.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct FactSelectionPolicy {
+    pub allowed_proof_kinds: Vec<DerivedProofKind>,
+    pub allowed_precision: Vec<FactPrecision>,
+    pub allowed_domains: Vec<String>,
+    pub require_lineage: bool,
+    pub allow_assumptions: bool,
+}
+
+impl FactSelectionPolicy {
+    pub fn exact_algebra() -> Self {
+        Self {
+            allowed_proof_kinds: vec![DerivedProofKind::ExactTransformation],
+            allowed_precision: vec![FactPrecision::Exact],
+            allowed_domains: Vec::new(),
+            require_lineage: true,
+            allow_assumptions: false,
+        }
+    }
+
+    pub fn measured_numerical() -> Self {
+        Self {
+            allowed_proof_kinds: vec![
+                DerivedProofKind::ExactTransformation,
+                DerivedProofKind::ApproximateTransformation,
+                DerivedProofKind::Measurement,
+            ],
+            allowed_precision: vec![FactPrecision::Exact, FactPrecision::Approximate, FactPrecision::Measured],
+            allowed_domains: Vec::new(),
+            require_lineage: true,
+            allow_assumptions: true,
+        }
+    }
+
+    pub fn evaluate(&self, fact: &DerivedFact) -> Result<(), FactSelectionRejection> {
+        if self.require_lineage && fact.parent_lineage.is_empty() {
+            return Err(FactSelectionRejection::LineageMissing);
+        }
+        if !self.allowed_proof_kinds.contains(&fact.proof_kind) {
+            return Err(FactSelectionRejection::ProofKindNotAllowed);
+        }
+        if !self.allowed_precision.contains(&fact.precision) {
+            return Err(FactSelectionRejection::PrecisionNotAllowed);
+        }
+        if !self.allowed_domains.is_empty()
+            && fact
+                .domain
+                .as_ref()
+                .map(|domain| self.allowed_domains.contains(domain))
+                != Some(true)
+        {
+            return Err(FactSelectionRejection::DomainNotAllowed);
+        }
+        if !self.allow_assumptions && !fact.assumptions.is_empty() {
+            return Err(FactSelectionRejection::AssumptionsNotAllowed);
+        }
+        Ok(())
+    }
+}
+
 /// A small relevance index for derived facts.  Keys are supplied by the
 /// producer (for example `distance` or `equation:lhs`) rather than guessed
 /// from prose.  Facts are accepted only after lineage validation.
@@ -166,6 +248,34 @@ impl DerivedFactIndex {
             Err(FactIndexQueryFailure::Conflict(self.conflict_for(key)))
         } else {
             Ok(candidates)
+        }
+    }
+
+    pub fn select(
+        &self,
+        key: &str,
+        policy: &FactSelectionPolicy,
+    ) -> Result<Vec<&DerivedFact>, FactSelectionFailure> {
+        let candidates = self
+            .usable(key)
+            .map_err(|failure| match failure {
+                FactIndexQueryFailure::Conflict(conflict) => FactSelectionFailure::Conflict(conflict),
+            })?;
+        let mut accepted = Vec::new();
+        let mut rejected = Vec::new();
+        for fact in candidates {
+            match policy.evaluate(fact) {
+                Ok(()) => accepted.push(fact),
+                Err(reason) => rejected.push((fact.id.clone(), reason)),
+            }
+        }
+        if accepted.is_empty() {
+            Err(FactSelectionFailure::NoAcceptableFacts {
+                key: key.to_string(),
+                rejections: rejected,
+            })
+        } else {
+            Ok(accepted)
         }
     }
 
@@ -518,6 +628,41 @@ mod tests {
             ),
             Err(FactDerivationRejection::NoParents)
         );
+    }
+
+    #[test]
+    fn fact_selection_policy_filters_quality_for_exact_consumers() {
+        let mut index = DerivedFactIndex::default();
+        let broad = FactPolicy::verified_transformation();
+        let exact = derived_fact("exact", "x = 5", "proof-exact");
+        let mut approximate = derived_fact("approx", "x = 5.01", "proof-approx");
+        approximate.proof_kind = DerivedProofKind::ApproximateTransformation;
+        approximate.precision = FactPrecision::Approximate;
+        index.insert("x", exact, &broad).unwrap();
+        index.insert("x-approx", approximate, &broad).unwrap();
+
+        let selected = index.select("x", &FactSelectionPolicy::exact_algebra()).unwrap();
+        assert_eq!(selected.iter().map(|fact| fact.id.as_str()).collect::<Vec<_>>(), vec!["exact"]);
+        assert!(matches!(
+            index.select("x-approx", &FactSelectionPolicy::exact_algebra()),
+            Err(FactSelectionFailure::NoAcceptableFacts { key, .. }) if key == "x-approx"
+        ));
+    }
+
+    #[test]
+    fn fact_selection_policy_never_selects_from_a_conflicted_key() {
+        let mut index = DerivedFactIndex::default();
+        let policy = FactPolicy::verified_transformation();
+        index
+            .insert("x", derived_fact("x1", "x = 5", "proof-a"), &policy)
+            .unwrap();
+        index
+            .insert("x", derived_fact("x2", "x = 7", "proof-b"), &policy)
+            .unwrap();
+        assert!(matches!(
+            index.select("x", &FactSelectionPolicy::exact_algebra()),
+            Err(FactSelectionFailure::Conflict(conflict)) if conflict.key == "x"
+        ));
     }
 
     fn derived_fact(id: &str, content: &str, parent: &str) -> DerivedFact {

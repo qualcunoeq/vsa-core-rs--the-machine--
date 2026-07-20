@@ -19,6 +19,7 @@ pub enum InputRequirement {
     SingleEquationSubject,
     SingleTargetVariable,
     LinearRelation,
+    ExplicitSubstitutionBindings,
     NoFreeVariables,
     ReplayVerifier,
 }
@@ -214,6 +215,39 @@ impl CapabilitySpec {
             },
         }
     }
+
+    pub fn substitution_v1() -> Self {
+        Self {
+            id: "substitution".into(),
+            version: 1,
+            dependencies: Vec::new(),
+            consumes: vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+            produces: vec![CapabilityIoType::Expression],
+            supported_object_types: vec![SubjectObjectType::Expression],
+            supported_operations: vec![OperationKind::Substitute],
+            supported_answer_forms: vec![AnswerForm::ExactValue, AnswerForm::SimplifiedExpression],
+            input_requirements: vec![
+                InputRequirement::ParseableExpressionSubject,
+                InputRequirement::ExplicitSubstitutionBindings,
+                InputRequirement::AllExpressionVariablesBound,
+                InputRequirement::ReplayVerifier,
+            ],
+            executor: "substitution::execute_substitution".into(),
+            verifier: "substitution::replay_substitution".into(),
+            regression_cases: vec![
+                "substitution::numeric_binding_executes_and_replays".into(),
+                "substitution::missing_binding_is_denied".into(),
+                "substitution::ambiguous_binding_is_denied".into(),
+            ],
+            quality_gate: CapabilityQualityGate {
+                positive_cases: 1,
+                negative_cases: 2,
+                adversarial_cases: 1,
+                false_authorizations: 0,
+                replay_failures: 0,
+            },
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
@@ -227,6 +261,7 @@ impl CapabilityRegistry {
         registry.register(CapabilitySpec::function_application_v1());
         registry.register(CapabilitySpec::expression_evaluation_v1());
         registry.register(CapabilitySpec::linear_equation_solve_v1());
+        registry.register(CapabilitySpec::substitution_v1());
         registry
     }
 
@@ -395,6 +430,14 @@ impl CapabilityRegistry {
                             false
                         }
                     }
+                    InputRequirement::ExplicitSubstitutionBindings => {
+                        target.operation == OperationKind::Substitute
+                            && !target.arguments.is_empty()
+                            && target.arguments.iter().all(|binding| {
+                                binding.status
+                                    == crate::formalization::TargetFieldStatus::Complete
+                            })
+                    }
                     InputRequirement::NoFreeVariables | InputRequirement::ReplayVerifier => true,
                 };
                 if !satisfied {
@@ -440,6 +483,7 @@ mod tests {
                 "expression_evaluation".to_string(),
                 "function_application".to_string(),
                 "linear_equation_solve".to_string(),
+                "substitution".to_string(),
             ]
         );
         assert!(registry.accepts(
@@ -541,5 +585,21 @@ mod tests {
         missing.register(function);
         let errors = missing.dependency_order().unwrap_err();
         assert!(errors.iter().any(|error| error == "missing_capability:missing"));
+    }
+
+    #[test]
+    fn substitution_is_selected_for_explicit_binding_targets() {
+        let target = crate::formalization::assess_prompt(
+            "cap-substitution-1",
+            "Substitute x=4 into x^2-1.",
+            "Math",
+            false,
+        )
+        .target_completion
+        .target;
+        assert_eq!(
+            CapabilityRegistry::production().discover(&target).selection,
+            CapabilitySelection::Unique("substitution".into())
+        );
     }
 }

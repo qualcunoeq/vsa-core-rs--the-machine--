@@ -1719,6 +1719,12 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
     {
         return None;
     }
+    if Regex::new(r"(?i)\bsubstitute\b.*\binto\b")
+        .expect("static substitution-binding regex")
+        .is_match(question)
+    {
+        return None;
+    }
     let relation = Regex::new(
         r"(?i)([A-Za-z0-9_(][A-Za-z0-9_()^*/+\-. ]*?)\s*(<=|>=|=|<|>)\s*([A-Za-z0-9_()^*/+\-. ]+)",
     )
@@ -1774,6 +1780,19 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
 
 fn extract_expression_payload(question: &str) -> Option<String> {
     let lower = question.to_ascii_lowercase();
+    if let Some((_, payload)) = lower.split_once(" into ") {
+        if lower.starts_with("substitute ") {
+            let offset = question.len() - payload.len();
+            let expression = question[offset..]
+                .split(['.', '?', '\n'])
+                .next()
+                .unwrap_or_default()
+                .trim();
+            if !expression.is_empty() {
+                return Some(expression.to_string());
+            }
+        }
+    }
     for verb in [
         "evaluate ",
         "compute ",
@@ -1911,7 +1930,7 @@ pub fn infer_answer_form(text: &str, operation: OperationKind) -> Option<AnswerF
         Some(AnswerForm::Classification)
     } else if matches!(operation, OperationKind::Prove) {
         Some(AnswerForm::Proof)
-    } else if matches!(operation, OperationKind::Evaluate | OperationKind::Solve) {
+    } else if matches!(operation, OperationKind::Evaluate | OperationKind::Solve | OperationKind::Substitute) {
         Some(AnswerForm::ExactValue)
     } else {
         None
@@ -2161,6 +2180,21 @@ fn build_target_completion(
     if let Some(captures) = Regex::new(r"\bat\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^,?.]+)")
         .expect("static at-argument regex")
         .captures(target_text)
+    {
+        arguments.push(TargetArgumentBinding {
+            parameter: captures.get(1).unwrap().as_str().into(),
+            value: captures.get(2).unwrap().as_str().trim().into(),
+            provenance: target
+                .map(|v| v.source_fragment.clone())
+                .unwrap_or_default(),
+            status: TargetFieldStatus::Complete,
+        });
+    }
+    if let Some(captures) = Regex::new(
+        r"(?i)\bsubstitute\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^,?.]+?)\s+into\b",
+    )
+    .expect("static substitution argument regex")
+    .captures(target_text)
     {
         arguments.push(TargetArgumentBinding {
             parameter: captures.get(1).unwrap().as_str().into(),

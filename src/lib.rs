@@ -66,6 +66,7 @@ pub mod self_model;
 pub mod sensory;
 pub mod simulator;
 pub mod sleep;
+pub mod substitution;
 pub mod socket;
 pub mod system_encoder;
 pub mod tactics;

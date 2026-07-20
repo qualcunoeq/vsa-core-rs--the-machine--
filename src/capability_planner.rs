@@ -600,6 +600,151 @@ impl ImprovementApprovalLedger {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum ImprovementDeploymentStatus {
+    Prepared,
+    Applied,
+    Failed,
+    RolledBack,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ImprovementDeploymentReceipt {
+    pub deployment_id: String,
+    pub approval_id: String,
+    pub experiment_id: String,
+    pub previous_revision: String,
+    pub proposed_revision: String,
+    pub status: ImprovementDeploymentStatus,
+    pub verification_receipt: Option<String>,
+    pub failure_reason: Option<String>,
+    pub rollback_reason: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum ImprovementDeploymentLedgerRejection {
+    DuplicateDeployment(String),
+    UnknownApproval(String),
+    ApprovalNotGranted(String),
+    UnknownDeployment(String),
+    DeploymentAlreadyTerminal(ImprovementDeploymentStatus),
+    MissingVerificationReceipt,
+    RollbackRequiresApplied,
+}
+
+/// A transactional deployment ledger.  It records the lifecycle of an
+/// approved change but deliberately does not mutate the running system.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct ImprovementDeploymentLedger {
+    deployments: BTreeMap<String, ImprovementDeploymentReceipt>,
+}
+
+impl ImprovementDeploymentLedger {
+    pub fn prepare(
+        &mut self,
+        deployment_id: impl Into<String>,
+        approvals: &ImprovementApprovalLedger,
+        approval_id: &str,
+        previous_revision: impl Into<String>,
+        proposed_revision: impl Into<String>,
+    ) -> Result<ImprovementDeploymentReceipt, ImprovementDeploymentLedgerRejection> {
+        let deployment_id = deployment_id.into();
+        if self.deployments.contains_key(&deployment_id) {
+            return Err(ImprovementDeploymentLedgerRejection::DuplicateDeployment(
+                deployment_id,
+            ));
+        }
+        let approval = approvals
+            .receipt(approval_id)
+            .ok_or_else(|| ImprovementDeploymentLedgerRejection::UnknownApproval(approval_id.into()))?;
+        if approval.decision != ImprovementApprovalDecision::Approved {
+            return Err(ImprovementDeploymentLedgerRejection::ApprovalNotGranted(
+                approval_id.into(),
+            ));
+        }
+        let receipt = ImprovementDeploymentReceipt {
+            deployment_id: deployment_id.clone(),
+            approval_id: approval_id.into(),
+            experiment_id: approval.experiment_id.clone(),
+            previous_revision: previous_revision.into(),
+            proposed_revision: proposed_revision.into(),
+            status: ImprovementDeploymentStatus::Prepared,
+            verification_receipt: None,
+            failure_reason: None,
+            rollback_reason: None,
+        };
+        self.deployments.insert(deployment_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn mark_applied(
+        &mut self,
+        deployment_id: &str,
+        verification_receipt: impl Into<String>,
+    ) -> Result<ImprovementDeploymentReceipt, ImprovementDeploymentLedgerRejection> {
+        let receipt = self
+            .deployments
+            .get_mut(deployment_id)
+            .ok_or_else(|| ImprovementDeploymentLedgerRejection::UnknownDeployment(deployment_id.into()))?;
+        if receipt.status != ImprovementDeploymentStatus::Prepared {
+            return Err(ImprovementDeploymentLedgerRejection::DeploymentAlreadyTerminal(
+                receipt.status,
+            ));
+        }
+        let verification_receipt = verification_receipt.into();
+        if verification_receipt.trim().is_empty() {
+            return Err(ImprovementDeploymentLedgerRejection::MissingVerificationReceipt);
+        }
+        receipt.status = ImprovementDeploymentStatus::Applied;
+        receipt.verification_receipt = Some(verification_receipt);
+        Ok(receipt.clone())
+    }
+
+    pub fn mark_failed(
+        &mut self,
+        deployment_id: &str,
+        reason: impl Into<String>,
+    ) -> Result<ImprovementDeploymentReceipt, ImprovementDeploymentLedgerRejection> {
+        let receipt = self
+            .deployments
+            .get_mut(deployment_id)
+            .ok_or_else(|| ImprovementDeploymentLedgerRejection::UnknownDeployment(deployment_id.into()))?;
+        if receipt.status != ImprovementDeploymentStatus::Prepared {
+            return Err(ImprovementDeploymentLedgerRejection::DeploymentAlreadyTerminal(
+                receipt.status,
+            ));
+        }
+        receipt.status = ImprovementDeploymentStatus::Failed;
+        receipt.failure_reason = Some(reason.into());
+        Ok(receipt.clone())
+    }
+
+    pub fn rollback(
+        &mut self,
+        deployment_id: &str,
+        reason: impl Into<String>,
+    ) -> Result<ImprovementDeploymentReceipt, ImprovementDeploymentLedgerRejection> {
+        let receipt = self
+            .deployments
+            .get_mut(deployment_id)
+            .ok_or_else(|| ImprovementDeploymentLedgerRejection::UnknownDeployment(deployment_id.into()))?;
+        if receipt.status != ImprovementDeploymentStatus::Applied {
+            return Err(ImprovementDeploymentLedgerRejection::RollbackRequiresApplied);
+        }
+        receipt.status = ImprovementDeploymentStatus::RolledBack;
+        receipt.rollback_reason = Some(reason.into());
+        Ok(receipt.clone())
+    }
+
+    pub fn receipt(&self, deployment_id: &str) -> Option<&ImprovementDeploymentReceipt> {
+        self.deployments.get(deployment_id)
+    }
+
+    pub fn receipts(&self) -> impl Iterator<Item = &ImprovementDeploymentReceipt> {
+        self.deployments.values()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum ImprovementExperimentLedgerRejection {
     DuplicateExperiment(String),
@@ -2075,6 +2220,42 @@ mod tests {
                 "duplicate",
             ),
             Err(ImprovementApprovalLedgerRejection::DuplicateApproval(_))
+        ));
+        let mut deployment_ledger = ImprovementDeploymentLedger::default();
+        let prepared = deployment_ledger
+            .prepare(
+                "deployment-1",
+                &approval_ledger,
+                "approval-1",
+                "resolver-v1",
+                "resolver-v2",
+            )
+            .unwrap();
+        assert_eq!(
+            prepared.status,
+            ImprovementDeploymentStatus::Prepared
+        );
+        assert!(matches!(
+            deployment_ledger.mark_applied("deployment-1", ""),
+            Err(ImprovementDeploymentLedgerRejection::MissingVerificationReceipt)
+        ));
+        let applied = deployment_ledger
+            .mark_applied("deployment-1", "post-deployment regression suite")
+            .unwrap();
+        assert_eq!(applied.status, ImprovementDeploymentStatus::Applied);
+        let rolled_back = deployment_ledger
+            .rollback("deployment-1", "post-deployment regression detected")
+            .unwrap();
+        assert_eq!(
+            rolled_back.status,
+            ImprovementDeploymentStatus::RolledBack
+        );
+        assert_eq!(deployment_ledger.receipts().count(), 1);
+        assert!(matches!(
+            deployment_ledger.mark_applied("deployment-1", "late retry"),
+            Err(ImprovementDeploymentLedgerRejection::DeploymentAlreadyTerminal(
+                ImprovementDeploymentStatus::RolledBack
+            ))
         ));
         assert_eq!(experiment_ledger.receipts().count(), 1);
         assert!(matches!(

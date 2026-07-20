@@ -6,7 +6,8 @@
 
 use crate::capabilities::CapabilityIoType;
 use crate::constant_rate_model::{
-    ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec, ModelMatcherResult,
+    ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec, ModelEvidenceContext,
+    ModelMatcherResult,
 };
 use serde::Serialize;
 
@@ -80,9 +81,9 @@ pub fn proportional_model_spec() -> ModelConstructionSpec {
     }
 }
 
-pub fn proportional_model_match(text: &str) -> ModelMatcherResult {
+pub fn proportional_model_match(context: &ModelEvidenceContext) -> ModelMatcherResult {
     let required = proportional_model_spec().required_evidence;
-    match construct_proportional_model(text) {
+    match construct_proportional_model(&context.original_text) {
         Ok(_) => ModelMatcherResult::eligible(required),
         Err(error) => ModelMatcherResult::rejected(format!("{error:?}"), required),
     }

@@ -83,6 +83,68 @@ pub struct ModelDiscoveryTrace {
     pub ambiguity: Option<ModelAmbiguityReceipt>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ModelEvidenceContext {
+    pub original_text: String,
+    pub supplemental_evidence: Vec<String>,
+}
+
+impl ModelEvidenceContext {
+    pub fn new(original_text: impl Into<String>) -> Self {
+        Self {
+            original_text: original_text.into(),
+            supplemental_evidence: Vec::new(),
+        }
+    }
+
+    pub fn all_text(&self) -> String {
+        std::iter::once(self.original_text.as_str())
+            .chain(self.supplemental_evidence.iter().map(String::as_str))
+            .collect::<Vec<_>>()
+            .join(" ")
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ClarificationAnswer {
+    pub question: String,
+    pub answer: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ModelEvidenceState {
+    pub original_text: String,
+    pub clarification_answers: Vec<ClarificationAnswer>,
+}
+
+impl ModelEvidenceState {
+    pub fn new(original_text: impl Into<String>) -> Self {
+        Self {
+            original_text: original_text.into(),
+            clarification_answers: Vec::new(),
+        }
+    }
+
+    pub fn add_answer(&mut self, request: &ClarificationRequest, answer: impl Into<String>) {
+        let answer = answer.into();
+        self.clarification_answers.push(ClarificationAnswer {
+            question: request.question.clone(),
+            answer,
+        });
+    }
+
+    pub fn context(&self) -> ModelEvidenceContext {
+        ModelEvidenceContext {
+            original_text: self.original_text.clone(),
+            supplemental_evidence: self
+                .clarification_answers
+                .iter()
+                .map(|answer| answer.answer.clone())
+                .collect(),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ModelAmbiguityReason {
@@ -163,7 +225,7 @@ impl ModelMatcherResult {
 /// become eligible from text evidence, but it never executes by virtue of
 /// being registered.  The downstream model contract and transformation
 /// verifier remain the authorization boundary.
-pub type ModelMatcher = fn(&str) -> ModelMatcherResult;
+pub type ModelMatcher = fn(&ModelEvidenceContext) -> ModelMatcherResult;
 
 #[derive(Clone)]
 pub struct ModelConstructorEntry {
@@ -287,6 +349,10 @@ impl ModelConstructorRegistry {
     /// Discover eligible model constructors.  Registry insertion order never
     /// resolves multiple matches: two eligible entries produce Ambiguous.
     pub fn discover(&self, text: &str) -> ModelDiscoveryTrace {
+        self.discover_with_context(&ModelEvidenceContext::new(text))
+    }
+
+    pub fn discover_with_context(&self, context: &ModelEvidenceContext) -> ModelDiscoveryTrace {
         let mut candidates = Vec::with_capacity(self.entries.len());
         let mut eligible_ids = Vec::new();
         let mut seen_ids = BTreeSet::new();
@@ -297,7 +363,7 @@ impl ModelConstructorRegistry {
                     entry.spec.required_evidence.clone(),
                 )
             } else {
-                (entry.matcher)(text)
+                (entry.matcher)(context)
             };
             let versioned_id = format!("{}@v{}", entry.spec.id, entry.spec.version);
             if assessment.eligible && seen_ids.insert(versioned_id.clone()) {
@@ -467,9 +533,9 @@ pub enum ConstantRateModelFailure {
     VerificationFailed,
 }
 
-fn constant_rate_match(text: &str) -> ModelMatcherResult {
+fn constant_rate_match(context: &ModelEvidenceContext) -> ModelMatcherResult {
     let required = constant_rate_model_spec().required_evidence;
-    match construct_constant_rate_model(text) {
+    match construct_constant_rate_model(&context.original_text) {
         Ok(_) => ModelMatcherResult::eligible(required),
         Err(error) => ModelMatcherResult::rejected(format!("{error:?}"), required),
     }
@@ -640,7 +706,7 @@ mod tests {
     const POSITIVE: &str =
         "A quantity changes at a constant rate of 3 per interval for 4 intervals. Find the total change.";
 
-    fn always_matches(_: &str) -> ModelMatcherResult {
+    fn always_matches(_: &ModelEvidenceContext) -> ModelMatcherResult {
         ModelMatcherResult::eligible(vec!["synthetic evidence".into()])
     }
 

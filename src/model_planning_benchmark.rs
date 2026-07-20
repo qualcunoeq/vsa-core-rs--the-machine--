@@ -11,7 +11,8 @@ use crate::capability_planner::{
 };
 use crate::constant_rate_model::{
     ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec,
-    ModelConstructorEntry, ModelConstructorRegistry, ModelMatcherResult,
+    ModelConstructorEntry, ModelConstructorRegistry, ModelEvidenceContext, ModelEvidenceState,
+    ModelMatcherResult,
 };
 use serde::Serialize;
 
@@ -157,8 +158,28 @@ pub fn production_results() -> Vec<ModelPlanningBenchmarkResult> {
 mod tests {
     use super::*;
 
-    fn always_matches(_: &str) -> ModelMatcherResult {
+    fn always_matches(_: &ModelEvidenceContext) -> ModelMatcherResult {
         ModelMatcherResult::eligible(vec!["synthetic discriminating evidence".into()])
+    }
+
+    fn continuous_match(context: &ModelEvidenceContext) -> ModelMatcherResult {
+        let base = context.original_text.contains("value increases by 5 each step");
+        let discrete = context.all_text().contains("discrete");
+        if base && !discrete {
+            ModelMatcherResult::eligible(vec!["value increases by 5 each step".into()])
+        } else {
+            ModelMatcherResult::rejected("discrete interpretation selected", vec!["continuous interpretation".into()])
+        }
+    }
+
+    fn discrete_match(context: &ModelEvidenceContext) -> ModelMatcherResult {
+        let base = context.original_text.contains("value increases by 5 each step");
+        let continuous = context.all_text().contains("continuous");
+        if base && !continuous {
+            ModelMatcherResult::eligible(vec!["value increases by 5 each step".into()])
+        } else {
+            ModelMatcherResult::rejected("continuous interpretation selected", vec!["discrete interpretation".into()])
+        }
     }
 
     fn synthetic_spec(id: &str) -> ModelConstructionSpec {
@@ -268,6 +289,40 @@ mod tests {
         }
         let trace = registry.discover("synthetic evidence");
         assert!(trace.ambiguity.is_some());
+    }
+
+    #[test]
+    fn clarification_answer_re_resolves_model_selection() {
+        let mut registry = ModelConstructorRegistry::new();
+        registry
+            .register(ModelConstructorEntry {
+                spec: synthetic_spec("continuous_model"),
+                matcher: continuous_match,
+            })
+            .unwrap();
+        registry
+            .register(ModelConstructorEntry {
+                spec: synthetic_spec("discrete_model"),
+                matcher: discrete_match,
+            })
+            .unwrap();
+        let prompt = "The value increases by 5 each step.";
+        let initial = registry.discover(prompt);
+        let ambiguity = initial.ambiguity.expect("initial ambiguity");
+        let mut state = ModelEvidenceState::new(prompt);
+        state.add_answer(
+            &ambiguity.clarification_request,
+            "Each step represents continuous time.",
+        );
+        let resolved = registry.discover_with_context(&state.context());
+        assert_eq!(
+            resolved.selection,
+            crate::constant_rate_model::ModelSelection::UniqueVersioned {
+                id: "continuous_model".into(),
+                version: 1,
+            }
+        );
+        assert!(resolved.ambiguity.is_none());
     }
 
     impl ModelPlanningBenchmarkResult {

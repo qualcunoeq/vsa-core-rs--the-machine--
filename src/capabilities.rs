@@ -23,6 +23,21 @@ pub enum InputRequirement {
     ReplayVerifier,
 }
 
+/// Typed artifacts at capability boundaries.  These are deliberately coarse
+/// enough for the registry and precise enough to prevent a planner from
+/// confusing an equation with an already-derived value.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CapabilityIoType {
+    FunctionDefinition,
+    Expression,
+    Equation,
+    BindingSet,
+    TargetVariable,
+    ExactValue,
+    SolutionSet,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityQualityGate {
     pub positive_cases: usize,
@@ -49,6 +64,8 @@ pub struct CapabilitySpec {
     /// Other enabled capabilities required by this capability's executor.
     /// Dependencies are capability IDs, not registry insertion positions.
     pub dependencies: Vec<String>,
+    pub consumes: Vec<CapabilityIoType>,
+    pub produces: Vec<CapabilityIoType>,
     pub supported_object_types: Vec<SubjectObjectType>,
     pub supported_operations: Vec<OperationKind>,
     pub supported_answer_forms: Vec<AnswerForm>,
@@ -96,6 +113,11 @@ impl CapabilitySpec {
             id: "function_application".into(),
             version: 1,
             dependencies: vec!["expression_evaluation".into()],
+            consumes: vec![
+                CapabilityIoType::FunctionDefinition,
+                CapabilityIoType::BindingSet,
+            ],
+            produces: vec![CapabilityIoType::ExactValue],
             supported_object_types: vec![SubjectObjectType::Function],
             supported_operations: vec![OperationKind::Evaluate],
             supported_answer_forms: vec![AnswerForm::ExactValue, AnswerForm::SimplifiedExpression],
@@ -127,6 +149,8 @@ impl CapabilitySpec {
             id: "expression_evaluation".into(),
             version: 1,
             dependencies: Vec::new(),
+            consumes: vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+            produces: vec![CapabilityIoType::ExactValue],
             supported_object_types: vec![SubjectObjectType::Expression],
             supported_operations: vec![OperationKind::Evaluate],
             supported_answer_forms: vec![AnswerForm::ExactValue],
@@ -158,6 +182,8 @@ impl CapabilitySpec {
             id: "linear_equation_solve".into(),
             version: 1,
             dependencies: Vec::new(),
+            consumes: vec![CapabilityIoType::Equation, CapabilityIoType::TargetVariable],
+            produces: vec![CapabilityIoType::SolutionSet],
             supported_object_types: vec![SubjectObjectType::Equation],
             supported_operations: vec![OperationKind::Solve],
             supported_answer_forms: vec![

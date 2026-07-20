@@ -4,7 +4,9 @@
 //! missing modeling steps.  It only expands the unique capability selected
 //! for an already-grounded target and returns its dependency-first closure.
 
-use crate::capabilities::{CapabilityRegistry, CapabilitySelection};
+use crate::capabilities::{
+    CapabilityIoType, CapabilityRegistry, CapabilitySelection,
+};
 use crate::formalization::{AnswerForm, FormalizedTarget, OperationKind, SubjectObjectType};
 use serde::Serialize;
 use std::collections::BTreeSet;
@@ -23,6 +25,8 @@ pub struct CapabilityPlanStep {
     pub version: u32,
     pub executor: String,
     pub verifier: String,
+    pub consumes: Vec<CapabilityIoType>,
+    pub produces: Vec<CapabilityIoType>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -63,6 +67,8 @@ fn dependency_steps(
         version: capability.version,
         executor: capability.executor.clone(),
         verifier: capability.verifier.clone(),
+        consumes: capability.consumes.clone(),
+        produces: capability.produces.clone(),
     });
     Ok(())
 }
@@ -129,6 +135,14 @@ mod tests {
         );
         assert_eq!(plan.steps[0].version, 1);
         assert!(!plan.steps[0].verifier.is_empty());
+        assert_eq!(
+            plan.steps[0].produces,
+            vec![CapabilityIoType::ExactValue]
+        );
+        assert_eq!(
+            plan.steps[1].consumes,
+            vec![CapabilityIoType::FunctionDefinition, CapabilityIoType::BindingSet]
+        );
     }
 
     #[test]

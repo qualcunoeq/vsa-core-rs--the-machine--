@@ -1710,6 +1710,15 @@ impl TraceQuestionSource for FormalizationTrace {
 }
 
 fn extract_explicit_relation(question: &str) -> Option<(String, String, String)> {
+    // In an evaluation request, `at x = value` is an argument binding rather
+    // than the relation being evaluated.  Let expression extraction preserve
+    // the expression subject and let target construction parse the binding.
+    if Regex::new(r"(?i)\b(?:evaluate|compute|calculate)\b.*\b(?:at|when)\s+[A-Za-z_][A-Za-z0-9_]*\s*=")
+        .expect("static evaluation-binding regex")
+        .is_match(question)
+    {
+        return None;
+    }
     let relation = Regex::new(
         r"(?i)([A-Za-z_][A-Za-z0-9_()^*/+\-. ]*?)\s*(<=|>=|=|<|>)\s*([A-Za-z0-9_()^*/+\-. ]+)",
     )

@@ -14,6 +14,8 @@ pub enum InputRequirement {
     ExplicitFunctionDefinition,
     ExactlyOneArgumentBinding,
     ExplicitExpressionBody,
+    ParseableExpressionSubject,
+    AllExpressionVariablesBound,
     NoFreeVariables,
     ReplayVerifier,
 }
@@ -111,6 +113,36 @@ impl CapabilitySpec {
             },
         }
     }
+
+    pub fn expression_evaluation_v1() -> Self {
+        Self {
+            id: "expression_evaluation".into(),
+            version: 1,
+            supported_object_types: vec![SubjectObjectType::Expression],
+            supported_operations: vec![OperationKind::Evaluate],
+            supported_answer_forms: vec![AnswerForm::ExactValue],
+            input_requirements: vec![
+                InputRequirement::ParseableExpressionSubject,
+                InputRequirement::AllExpressionVariablesBound,
+                InputRequirement::ReplayVerifier,
+            ],
+            executor: "expression_evaluation::execute_expression_evaluation".into(),
+            verifier: "expression_evaluation::replay_expression_evaluation".into(),
+            regression_cases: vec![
+                "expression_evaluation::numeric_expression_executes_and_replays".into(),
+                "expression_evaluation::bound_expression_executes_and_replays".into(),
+                "expression_evaluation::unbound_expression_is_denied".into(),
+                "expression_evaluation::unsupported_expression_is_denied".into(),
+            ],
+            quality_gate: CapabilityQualityGate {
+                positive_cases: 2,
+                negative_cases: 1,
+                adversarial_cases: 1,
+                false_authorizations: 0,
+                replay_failures: 0,
+            },
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
@@ -122,6 +154,7 @@ impl CapabilityRegistry {
     pub fn production() -> Self {
         let mut registry = Self::default();
         registry.register(CapabilitySpec::function_application_v1());
+        registry.register(CapabilitySpec::expression_evaluation_v1());
         registry
     }
 
@@ -196,6 +229,20 @@ impl CapabilityRegistry {
                                 == crate::formalization::TargetFieldStatus::Complete
                     }
                     InputRequirement::ExplicitExpressionBody => subject.object.contains('='),
+                    InputRequirement::ParseableExpressionSubject => {
+                        subject.object.parse::<f64>().is_ok()
+                            || crate::algebra::parse(subject.object.trim()).is_ok()
+                    }
+                    InputRequirement::AllExpressionVariablesBound => {
+                        if subject.object_type != SubjectObjectType::Expression {
+                            true
+                        } else {
+                            target.arguments.iter().all(|binding| {
+                                binding.status
+                                    == crate::formalization::TargetFieldStatus::Complete
+                            }) || !subject.object.chars().any(|c| c.is_ascii_alphabetic())
+                        }
+                    }
                     InputRequirement::NoFreeVariables | InputRequirement::ReplayVerifier => true,
                 };
                 if !satisfied {
@@ -266,5 +313,27 @@ mod tests {
             trace.selection,
             CapabilitySelection::Unique("function_application".into())
         );
+    }
+
+    #[test]
+    fn expression_evaluation_is_selected_for_expression_targets() {
+        let registry = CapabilityRegistry::production();
+        let trace = crate::formalization::assess_prompt(
+            "cap-expression-1",
+            "Evaluate 2*x+3 at x=4.",
+            "Math",
+            false,
+        );
+        let discovery = registry.discover(&trace.target_completion.target);
+        assert_eq!(
+            discovery.selection,
+            CapabilitySelection::Unique("expression_evaluation".into())
+        );
+        let expression = discovery
+            .candidates
+            .iter()
+            .find(|candidate| candidate.id == "expression_evaluation")
+            .unwrap();
+        assert!(expression.eligible);
     }
 }

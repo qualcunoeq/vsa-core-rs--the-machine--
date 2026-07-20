@@ -14,6 +14,7 @@ use the_machine::formalization::{
     TargetStatus,
 };
 use the_machine::function_application::execute_function_application;
+use the_machine::expression_evaluation::execute_expression_evaluation;
 
 #[derive(Debug, Serialize)]
 struct Aggregate {
@@ -46,6 +47,7 @@ struct Aggregate {
     object_candidates_expected: usize,
     object_type_metrics: BTreeMap<String, ObjectTypeMetrics>,
     function_shadow: FunctionShadowMetrics,
+    expression_shadow: FunctionShadowMetrics,
     target_operation_supported: usize,
     target_verifier_available: usize,
     target_incomplete_reasons: BTreeMap<String, usize>,
@@ -182,6 +184,7 @@ impl Aggregate {
             object_candidates_expected: 0,
             object_type_metrics: BTreeMap::new(),
             function_shadow: FunctionShadowMetrics::default(),
+            expression_shadow: FunctionShadowMetrics::default(),
             target_operation_supported: 0,
             target_verifier_available: 0,
             target_incomplete_reasons: BTreeMap::new(),
@@ -284,6 +287,35 @@ impl Aggregate {
                 Err(error) => {
                     *self
                         .function_shadow
+                        .failures
+                        .entry(format!("{error:?}"))
+                        .or_default() += 1;
+                }
+            }
+        }
+        let expression_candidate = target_completion.target.operation == OperationKind::Evaluate
+            && target_completion
+                .target
+                .subject_resolution
+                .selected
+                .as_ref()
+                .map(|subject| {
+                    subject.object_type
+                        == the_machine::formalization::SubjectObjectType::Expression
+                })
+                .unwrap_or(false);
+        if expression_candidate {
+            self.expression_shadow.candidates += 1;
+            match execute_expression_evaluation(&target_completion.target) {
+                Ok(receipt) => {
+                    self.expression_shadow.authorized += 1;
+                    self.expression_shadow.executed += 1;
+                    self.expression_shadow.replay_verified +=
+                        usize::from(receipt.replay_verified);
+                }
+                Err(error) => {
+                    *self
+                        .expression_shadow
                         .failures
                         .entry(format!("{error:?}"))
                         .or_default() += 1;

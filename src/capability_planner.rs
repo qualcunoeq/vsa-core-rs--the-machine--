@@ -315,6 +315,56 @@ pub fn explain_capability_chain_repair_preferences(
     }))
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainRepairValidationFailure {
+    ExecutionNotSucceeded(CapabilityChainExecutionStatus),
+    PlanMismatch,
+    IncompleteChain { expected: usize, recorded: usize },
+    MissingVerification { step: usize },
+}
+
+/// Receipt proving that a proposed replacement was executed separately and
+/// completed with verification. Validation does not install or authorize the
+/// repaired plan.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainRepairValidationReceipt {
+    pub source_execution_id: String,
+    pub repaired_execution_id: String,
+    pub failed_step: usize,
+    pub verified_steps: usize,
+}
+
+pub fn validate_capability_chain_repair(
+    candidate: &CapabilityChainRepairCandidate,
+    repaired_execution: &CapabilityChainExecutionReceipt,
+) -> Result<CapabilityChainRepairValidationReceipt, CapabilityChainRepairValidationFailure> {
+    if repaired_execution.status != CapabilityChainExecutionStatus::Succeeded {
+        return Err(CapabilityChainRepairValidationFailure::ExecutionNotSucceeded(
+            repaired_execution.status,
+        ));
+    }
+    if repaired_execution.plan != candidate.proposed_plan {
+        return Err(CapabilityChainRepairValidationFailure::PlanMismatch);
+    }
+    if repaired_execution.steps.len() != repaired_execution.plan.steps.len() {
+        return Err(CapabilityChainRepairValidationFailure::IncompleteChain {
+            expected: repaired_execution.plan.steps.len(),
+            recorded: repaired_execution.steps.len(),
+        });
+    }
+    for (step, receipt) in repaired_execution.steps.iter().enumerate() {
+        if receipt.verification_receipt.trim().is_empty() {
+            return Err(CapabilityChainRepairValidationFailure::MissingVerification { step });
+        }
+    }
+    Ok(CapabilityChainRepairValidationReceipt {
+        source_execution_id: candidate.execution_id.clone(),
+        repaired_execution_id: repaired_execution.execution_id.clone(),
+        failed_step: candidate.failed_step,
+        verified_steps: repaired_execution.steps.len(),
+    })
+}
+
 impl CapabilityChainPlan {
     /// Compute deterministic chain cost for diagnostics and preference
     /// reporting. Cost never authorizes a plan or resolves an ambiguity.
@@ -2601,6 +2651,29 @@ mod tests {
         );
         assert_eq!(proposals[0].evaluation.cost_delta.steps, 0);
         assert_eq!(proposals[0].failed_step, 0);
+        let mut repaired_ledger = CapabilityChainExecutionLedger::default();
+        repaired_ledger
+            .start("chain-repair-execution-1", proposals[0].proposed_plan.clone())
+            .unwrap();
+        repaired_ledger
+            .record_step(
+                "chain-repair-execution-1",
+                CapabilityChainStepReceipt {
+                    step_index: 0,
+                    capability_id: "alternate_simplification".into(),
+                    input_artifacts: vec!["raw-expression".into()],
+                    output_artifacts: vec!["simplified-expression".into()],
+                    verification_receipt: "alternate replay".into(),
+                },
+            )
+            .unwrap();
+        let repaired = repaired_ledger
+            .complete_success("chain-repair-execution-1")
+            .unwrap();
+        let validation = validate_capability_chain_repair(&proposals[0], &repaired).unwrap();
+        assert_eq!(validation.source_execution_id, "chain-repair-1");
+        assert_eq!(validation.repaired_execution_id, "chain-repair-execution-1");
+        assert_eq!(validation.verified_steps, 1);
     }
 
     #[test]

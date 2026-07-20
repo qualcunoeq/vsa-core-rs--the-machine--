@@ -7,6 +7,7 @@
 use crate::capabilities::{
     CapabilityIoType, CapabilityRegistry, CapabilitySelection,
 };
+use crate::constant_rate_model::{ModelArtifactType, ModelConstructorRegistry, ModelSelection};
 use crate::formalization::{AnswerForm, FormalizedTarget, OperationKind, SubjectObjectType};
 use serde::Serialize;
 use std::collections::BTreeSet;
@@ -24,6 +25,14 @@ pub enum CapabilityPlanningFailure {
     },
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum ModelPlanningFailure {
+    NoEligibleModel,
+    AmbiguousModels(Vec<String>),
+    MissingModelEntry(String),
+    CapabilityPlanning(CapabilityPlanningFailure),
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct PlanCost {
     pub steps: usize,
@@ -35,6 +44,7 @@ pub struct PlanCost {
 pub enum PlanSelectionReason {
     UniqueTargetCapability,
     UniqueGoalProducer,
+    UniqueModelThenGoalProducer,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -82,6 +92,27 @@ pub struct GoalCapabilityPlan {
     pub selection_reason: PlanSelectionReason,
     pub dependency_proofs: Vec<DependencyProof>,
     pub input_proofs: Vec<InputProof>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ModelPlanStep {
+    pub model_id: String,
+    pub version: u32,
+    pub model_artifacts: Vec<ModelArtifactType>,
+    pub downstream_artifacts: Vec<CapabilityIoType>,
+}
+
+/// A shadow-planning receipt for the first model-to-transformation bridge.
+/// Model construction remains a separate authorization boundary; this type
+/// only proves that a uniquely selected model declares enough typed outputs
+/// for a uniquely selected transformation plan.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ModelCapabilityPlan {
+    pub goal: CapabilityIoType,
+    pub model_step: ModelPlanStep,
+    pub capability_plan: GoalCapabilityPlan,
+    pub cost: PlanCost,
+    pub selection_reason: PlanSelectionReason,
 }
 
 fn plan_metadata(
@@ -267,11 +298,58 @@ pub fn plan_for_goal(
     })
 }
 
+/// Plan a uniquely selected text model into one uniquely selected capability
+/// producer.  No model is inferred when discovery is empty or ambiguous, and
+/// no missing downstream artifact is invented.
+pub fn plan_model_to_goal(
+    text: &str,
+    goal: CapabilityIoType,
+    model_registry: &ModelConstructorRegistry,
+    capability_registry: &CapabilityRegistry,
+) -> Result<ModelCapabilityPlan, ModelPlanningFailure> {
+    let discovery = model_registry.discover(text);
+    let (model_id, model_version) = match discovery.selection {
+        ModelSelection::UniqueVersioned { id, version } => (id, version),
+        ModelSelection::Ambiguous(ids) => return Err(ModelPlanningFailure::AmbiguousModels(ids)),
+        ModelSelection::None => return Err(ModelPlanningFailure::NoEligibleModel),
+    };
+    let entry = model_registry
+        .get_versioned(&model_id, model_version)
+        .ok_or_else(|| ModelPlanningFailure::MissingModelEntry(model_id.clone()))?;
+    let available_inputs = entry
+        .spec
+        .produced_artifacts
+        .iter()
+        .copied()
+        .collect::<BTreeSet<_>>();
+    let capability_plan = plan_for_goal(goal, &available_inputs, capability_registry)
+        .map_err(ModelPlanningFailure::CapabilityPlanning)?;
+    let model_step = ModelPlanStep {
+        model_id,
+        version: entry.spec.version,
+        model_artifacts: entry.spec.model_artifacts.clone(),
+        downstream_artifacts: entry.spec.produced_artifacts.clone(),
+    };
+    let cost = PlanCost {
+        steps: capability_plan.cost.steps + 1,
+        dependency_edges: capability_plan.cost.dependency_edges,
+        verification_steps: capability_plan.cost.verification_steps + 1,
+    };
+    Ok(ModelCapabilityPlan {
+        goal,
+        model_step,
+        capability_plan,
+        cost,
+        selection_reason: PlanSelectionReason::UniqueModelThenGoalProducer,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::capabilities::{CapabilityIoType, CapabilityRegistry};
     use crate::formalization::assess_prompt;
+    use crate::constant_rate_model::ModelConstructorRegistry;
 
     #[test]
     fn function_plan_expands_dependencies_first() {
@@ -364,6 +442,42 @@ mod tests {
             ),
             Err(CapabilityPlanningFailure::MissingInputs { .. })
         ));
+    }
+
+    #[test]
+    fn model_plan_composes_unique_constructor_with_expression_evaluation() {
+        let plan = plan_model_to_goal(
+            "A quantity changes at a constant rate of 3 per interval for 4 intervals. Find the total change.",
+            CapabilityIoType::ExactValue,
+            &ModelConstructorRegistry::production(),
+            &CapabilityRegistry::production(),
+        )
+        .unwrap();
+        assert_eq!(plan.model_step.model_id, "constant_rate_model");
+        assert_eq!(plan.model_step.version, 1);
+        assert!(plan
+            .model_step
+            .model_artifacts
+            .contains(&ModelArtifactType::Relation));
+        assert_eq!(
+            plan.capability_plan.selected_capability,
+            "expression_evaluation"
+        );
+        assert_eq!(plan.cost.steps, 2);
+        assert_eq!(plan.cost.verification_steps, 2);
+    }
+
+    #[test]
+    fn model_plan_rejects_text_without_a_unique_model() {
+        assert_eq!(
+            plan_model_to_goal(
+                "A quantity changes at a rate of 3 per interval for 4 intervals. Find the total change.",
+                CapabilityIoType::ExactValue,
+                &ModelConstructorRegistry::production(),
+                &CapabilityRegistry::production(),
+            ),
+            Err(ModelPlanningFailure::NoEligibleModel)
+        );
     }
 
     #[test]

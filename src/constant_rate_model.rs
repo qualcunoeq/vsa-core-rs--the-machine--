@@ -33,15 +33,28 @@ pub struct ModelConstructionSpec {
     pub version: u32,
     pub supported_language_pattern: String,
     pub required_evidence: Vec<String>,
+    pub model_artifacts: Vec<ModelArtifactType>,
     pub produced_artifacts: Vec<CapabilityIoType>,
     pub introduced_assumptions: Vec<String>,
     pub validation_rules: Vec<String>,
     pub quality_gate: ModelConstructionQualityGate,
 }
 
+/// Formal artifacts created by a model constructor.  These describe the
+/// model itself; `produced_artifacts` on the spec describes the typed values
+/// that downstream transformation capabilities may consume.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ModelArtifactType {
+    Quantity,
+    Relation,
+    Expression,
+    Target,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum ModelSelection {
-    Unique(String),
+    UniqueVersioned { id: String, version: u32 },
     Ambiguous(Vec<String>),
     None,
 }
@@ -78,6 +91,7 @@ pub enum ModelRegistryError {
     EmptyVersion,
     DuplicateVersionedId { id: String, version: u32 },
     MissingEvidence { id: String },
+    MissingModelArtifacts { id: String },
     MissingProducedArtifacts { id: String },
 }
 
@@ -128,6 +142,11 @@ impl ModelConstructorRegistry {
                 id: spec.id.clone(),
             });
         }
+        if spec.model_artifacts.is_empty() {
+            return Err(ModelRegistryError::MissingModelArtifacts {
+                id: spec.id.clone(),
+            });
+        }
         if spec.produced_artifacts.is_empty() {
             return Err(ModelRegistryError::MissingProducedArtifacts {
                 id: spec.id.clone(),
@@ -157,6 +176,16 @@ impl ModelConstructorRegistry {
         self.entries.iter()
     }
 
+    pub fn get(&self, id: &str) -> Option<&ModelConstructorEntry> {
+        self.entries.iter().find(|entry| entry.spec.id == id)
+    }
+
+    pub fn get_versioned(&self, id: &str, version: u32) -> Option<&ModelConstructorEntry> {
+        self.entries
+            .iter()
+            .find(|entry| entry.spec.id == id && entry.spec.version == version)
+    }
+
     /// Discover eligible model constructors.  Registry insertion order never
     /// resolves multiple matches: two eligible entries produce Ambiguous.
     pub fn discover(&self, text: &str) -> ModelDiscoveryTrace {
@@ -172,8 +201,9 @@ impl ModelConstructorRegistry {
                     Err(reason) => (false, Some(reason)),
                 }
             };
-            if eligible && seen_ids.insert(entry.spec.id.clone()) {
-                eligible_ids.push(entry.spec.id.clone());
+            let versioned_id = format!("{}@v{}", entry.spec.id, entry.spec.version);
+            if eligible && seen_ids.insert(versioned_id.clone()) {
+                eligible_ids.push((entry.spec.id.clone(), entry.spec.version, versioned_id));
             }
             candidates.push(ModelCandidateTrace {
                 id: entry.spec.id.clone(),
@@ -184,8 +214,16 @@ impl ModelConstructorRegistry {
         }
         let selection = match eligible_ids.len() {
             0 => ModelSelection::None,
-            1 => ModelSelection::Unique(eligible_ids.remove(0)),
-            _ => ModelSelection::Ambiguous(eligible_ids),
+            1 => {
+                let (id, version, _) = eligible_ids.remove(0);
+                ModelSelection::UniqueVersioned { id, version }
+            }
+            _ => ModelSelection::Ambiguous(
+                eligible_ids
+                    .into_iter()
+                    .map(|(_, _, versioned_id)| versioned_id)
+                    .collect(),
+            ),
         };
         ModelDiscoveryTrace { candidates, selection }
     }
@@ -209,7 +247,15 @@ pub fn constant_rate_model_spec() -> ModelConstructionSpec {
             "explicit duration".into(),
             "explicit total-change target".into(),
         ],
-        produced_artifacts: vec![CapabilityIoType::Expression],
+        model_artifacts: vec![
+            ModelArtifactType::Quantity,
+            ModelArtifactType::Relation,
+            ModelArtifactType::Expression,
+            ModelArtifactType::Target,
+        ],
+        // The expression is closed; its explicit empty binding environment is
+        // also a declared downstream artifact for expression evaluation.
+        produced_artifacts: vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
         introduced_assumptions: Vec::new(),
         validation_rules: vec![
             "rate and duration are finite numbers".into(),
@@ -375,7 +421,12 @@ pub fn execute_constant_rate_chain(
     text: &str,
 ) -> Result<ConstantRateChainReceipt, ConstantRateModelFailure> {
     let discovery = discover_models(text);
-    if discovery.selection != ModelSelection::Unique("constant_rate_model".into()) {
+    if discovery.selection
+        != (ModelSelection::UniqueVersioned {
+            id: "constant_rate_model".into(),
+            version: 1,
+        })
+    {
         return Err(ConstantRateModelFailure::PatternNotMatched);
     }
     let model_receipt = execute_constant_rate_model(text)?;
@@ -429,6 +480,7 @@ mod tests {
             version,
             supported_language_pattern: "test pattern".into(),
             required_evidence: vec!["explicit test evidence".into()],
+            model_artifacts: vec![ModelArtifactType::Relation],
             produced_artifacts: vec![CapabilityIoType::Expression],
             introduced_assumptions: Vec::new(),
             validation_rules: vec!["test validator".into()],
@@ -499,7 +551,10 @@ mod tests {
     fn model_discovery_requires_unique_evidence_match() {
         assert_eq!(
             discover_models(POSITIVE).selection,
-            ModelSelection::Unique("constant_rate_model".into())
+            ModelSelection::UniqueVersioned {
+                id: "constant_rate_model".into(),
+                version: 1,
+            }
         );
         assert_eq!(
             discover_models(
@@ -535,7 +590,10 @@ mod tests {
         assert_eq!(registry.entries().count(), 1);
         assert_eq!(
             registry.discover(POSITIVE).selection,
-            ModelSelection::Unique("constant_rate_model".into())
+            ModelSelection::UniqueVersioned {
+                id: "constant_rate_model".into(),
+                version: 1,
+            }
         );
         assert_eq!(
             registry
@@ -564,7 +622,7 @@ mod tests {
         let trace = registry.discover("evidence");
         assert_eq!(
             trace.selection,
-            ModelSelection::Ambiguous(vec!["a_model".into(), "z_model".into()])
+            ModelSelection::Ambiguous(vec!["a_model@v1".into(), "z_model@v1".into()])
         );
         assert!(trace.candidates.iter().all(|candidate| candidate.eligible));
     }

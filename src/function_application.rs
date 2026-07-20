@@ -5,7 +5,8 @@
 //! piecewise branches, recursive definitions, or symbolic parameters.
 
 use crate::algebra::{self, SymExpr};
-use crate::formalization::{AnswerForm, FormalizedTarget, SubjectObjectType, TargetFieldStatus};
+use crate::capabilities::CapabilityRegistry;
+use crate::formalization::{FormalizedTarget, SubjectObjectType, TargetFieldStatus};
 use crate::math_ingest::substitute_vars;
 use regex::Regex;
 use serde::Serialize;
@@ -33,6 +34,7 @@ pub enum FunctionApplicationFailure {
     ExpressionParseFailed(String),
     EvaluationFailed,
     ReplayVerificationFailed,
+    CapabilityContractRejected,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -108,6 +110,20 @@ pub fn authorize_function_application(
         return Err(FunctionApplicationFailure::OperationNotEvaluate);
     }
     let definition = target_function_definition(target)?;
+    let object_type = target
+        .subject_resolution
+        .selected
+        .as_ref()
+        .map(|subject| subject.object_type)
+        .ok_or(FunctionApplicationFailure::DefinitionUnavailable)?;
+    if !CapabilityRegistry::production().accepts(
+        "function_application",
+        object_type,
+        target.operation,
+        target.answer_form,
+    ) {
+        return Err(FunctionApplicationFailure::CapabilityContractRejected);
+    }
     if !target
         .reference_graph
         .references
@@ -115,13 +131,6 @@ pub fn authorize_function_application(
         .any(|edge| edge.relation == crate::formalization::ReferenceRelation::FunctionApplication)
     {
         return Err(FunctionApplicationFailure::FunctionApplicationReferenceMissing);
-    }
-    let answer_ok = matches!(
-        target.answer_form,
-        Some(AnswerForm::ExactValue | AnswerForm::SimplifiedExpression)
-    );
-    if !answer_ok {
-        return Err(FunctionApplicationFailure::UnsupportedArgument);
     }
     let (_, argument) = concrete_argument(target)?;
     algebra::parse(argument)

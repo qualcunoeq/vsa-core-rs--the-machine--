@@ -15,6 +15,7 @@ use the_machine::formalization::{
 };
 use the_machine::function_application::execute_function_application;
 use the_machine::expression_evaluation::execute_expression_evaluation;
+use the_machine::capabilities::{CapabilityRegistry, CapabilitySelection};
 
 #[derive(Debug, Serialize)]
 struct Aggregate {
@@ -48,6 +49,7 @@ struct Aggregate {
     object_type_metrics: BTreeMap<String, ObjectTypeMetrics>,
     function_shadow: FunctionShadowMetrics,
     expression_shadow: FunctionShadowMetrics,
+    capability_reachability: BTreeMap<String, CapabilityReachabilityMetrics>,
     target_operation_supported: usize,
     target_verifier_available: usize,
     target_incomplete_reasons: BTreeMap<String, usize>,
@@ -97,6 +99,16 @@ struct FunctionShadowMetrics {
     executed: usize,
     replay_verified: usize,
     failures: BTreeMap<String, usize>,
+}
+
+#[derive(Debug, Default, Serialize)]
+struct CapabilityReachabilityMetrics {
+    considered: usize,
+    eligible: usize,
+    uniquely_selected: usize,
+    ambiguous_selection: usize,
+    no_selection: usize,
+    rejections: BTreeMap<String, usize>,
 }
 
 #[derive(Debug, Default, Serialize)]
@@ -185,6 +197,7 @@ impl Aggregate {
             object_type_metrics: BTreeMap::new(),
             function_shadow: FunctionShadowMetrics::default(),
             expression_shadow: FunctionShadowMetrics::default(),
+            capability_reachability: BTreeMap::new(),
             target_operation_supported: 0,
             target_verifier_available: 0,
             target_incomplete_reasons: BTreeMap::new(),
@@ -224,6 +237,39 @@ impl Aggregate {
         gold_operation: &str,
     ) {
         self.cases += 1;
+        let discovery = CapabilityRegistry::production().discover(&target_completion.target);
+        for candidate in &discovery.candidates {
+            let metrics = self
+                .capability_reachability
+                .entry(candidate.id.clone())
+                .or_default();
+            metrics.considered += 1;
+            if candidate.eligible {
+                metrics.eligible += 1;
+            }
+            for rejection in &candidate.rejections {
+                *metrics.rejections.entry(format!("{rejection:?}")).or_default() += 1;
+            }
+        }
+        match &discovery.selection {
+            CapabilitySelection::Unique(id) => {
+                if let Some(metrics) = self.capability_reachability.get_mut(id) {
+                    metrics.uniquely_selected += 1;
+                }
+            }
+            CapabilitySelection::Ambiguous(ids) => {
+                for id in ids {
+                    if let Some(metrics) = self.capability_reachability.get_mut(id) {
+                        metrics.ambiguous_selection += 1;
+                    }
+                }
+            }
+            CapabilitySelection::None => {
+                for metrics in self.capability_reachability.values_mut() {
+                    metrics.no_selection += 1;
+                }
+            }
+        }
         self.exact_target += usize::from(score.target_exact);
         self.structural_target += usize::from(score.target_structural);
         self.target_kind_matches += usize::from(score.target_comparison.kind_matches);

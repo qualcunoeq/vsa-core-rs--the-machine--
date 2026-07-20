@@ -434,6 +434,48 @@ pub struct ImprovementEvaluation {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ImprovementExperimentSpec {
+    pub evaluation: ImprovementEvaluation,
+    pub baseline_failure_occurrences: usize,
+    pub baseline_false_authorizations: usize,
+    pub require_no_new_false_authorizations: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ImprovementExperimentResult {
+    pub proposal: ExecutionImprovementProposal,
+    pub baseline_failure_occurrences: usize,
+    pub post_failure_occurrences: usize,
+    pub baseline_false_authorizations: usize,
+    pub post_false_authorizations: usize,
+    pub failure_reduced: bool,
+    pub safety_preserved: bool,
+    pub passed: bool,
+}
+
+impl ImprovementExperimentSpec {
+    pub fn assess(
+        &self,
+        post_failure_occurrences: usize,
+        post_false_authorizations: usize,
+    ) -> ImprovementExperimentResult {
+        let failure_reduced = post_failure_occurrences < self.baseline_failure_occurrences;
+        let safety_preserved = !self.require_no_new_false_authorizations
+            || post_false_authorizations <= self.baseline_false_authorizations;
+        ImprovementExperimentResult {
+            proposal: self.evaluation.proposal.clone(),
+            baseline_failure_occurrences: self.baseline_failure_occurrences,
+            post_failure_occurrences,
+            baseline_false_authorizations: self.baseline_false_authorizations,
+            post_false_authorizations,
+            failure_reduced,
+            safety_preserved,
+            passed: failure_reduced && safety_preserved,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct ImprovementEvaluationPolicy {
     pub minimum_occurrences: usize,
 }
@@ -1770,6 +1812,20 @@ mod tests {
         assert_eq!(evaluation.risk, ImprovementRisk::Medium);
         assert!(!evaluation.validation_requirements.is_empty());
         assert!(evaluation.expected_effect.contains("reproducibility"));
+        let experiment = ImprovementExperimentSpec {
+            evaluation,
+            baseline_failure_occurrences: 2,
+            baseline_false_authorizations: 0,
+            require_no_new_false_authorizations: true,
+        };
+        let result = experiment.assess(1, 0);
+        assert!(result.failure_reduced);
+        assert!(result.safety_preserved);
+        assert!(result.passed);
+        let unsafe_result = experiment.assess(1, 1);
+        assert!(unsafe_result.failure_reduced);
+        assert!(!unsafe_result.safety_preserved);
+        assert!(!unsafe_result.passed);
         let mut one_off = proposals[0].clone();
         one_off.pattern.occurrences = 1;
         assert_eq!(

@@ -52,6 +52,63 @@ pub enum CapabilityChainPlanningFailure {
         dependency: String,
     },
     DependencyCycle(String),
+    UnknownCapability(String),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainRankedCandidate {
+    pub candidate_id: String,
+    pub cost: PlanCost,
+}
+
+impl CapabilityChainPlan {
+    /// Compute deterministic chain cost for diagnostics and preference
+    /// reporting. Cost never authorizes a plan or resolves an ambiguity.
+    pub fn cost(
+        &self,
+        registry: &CapabilityRegistry,
+    ) -> Result<PlanCost, CapabilityChainPlanningFailure> {
+        let mut dependency_edges = 0;
+        let mut verification_steps = 0;
+        for capability_id in &self.steps {
+            let capability = registry
+                .get(capability_id)
+                .ok_or_else(|| CapabilityChainPlanningFailure::UnknownCapability(
+                    capability_id.clone(),
+                ))?;
+            dependency_edges += capability.dependencies.len();
+            if !capability.verifier.trim().is_empty() {
+                verification_steps += 1;
+            }
+        }
+        Ok(PlanCost {
+            steps: self.steps.len(),
+            dependency_edges,
+            verification_steps,
+        })
+    }
+}
+
+/// Rank already-valid candidate chains for diagnostics only. The caller
+/// must still apply a separate authorization policy; this never selects or
+/// executes a candidate.
+pub fn rank_capability_chains(
+    candidates: impl IntoIterator<Item = (String, CapabilityChainPlan)>,
+    registry: &CapabilityRegistry,
+) -> Result<Vec<CapabilityChainRankedCandidate>, CapabilityChainPlanningFailure> {
+    let mut ranked = candidates
+        .into_iter()
+        .map(|(candidate_id, plan)| {
+            plan.cost(registry)
+                .map(|cost| CapabilityChainRankedCandidate { candidate_id, cost })
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    ranked.sort_by(|left, right| {
+        left.cost
+            .cmp(&right.cost)
+            .then(left.candidate_id.cmp(&right.candidate_id))
+    });
+    Ok(ranked)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -2033,6 +2090,30 @@ mod tests {
                 ],
             })
         );
+    }
+
+    #[test]
+    fn chain_cost_ranking_is_diagnostic_and_deterministic() {
+        let registry = CapabilityRegistry::production();
+        let short = CapabilityChainPlan {
+            goal: CapabilityIoType::SimplifiedExpression,
+            steps: vec!["expression_simplification".into()],
+        };
+        let long = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec![
+                "expression_simplification".into(),
+                "expression_evaluation".into(),
+            ],
+        };
+        let ranked = rank_capability_chains(
+            vec![("long".into(), long), ("short".into(), short)],
+            &registry,
+        )
+        .unwrap();
+        assert_eq!(ranked[0].candidate_id, "short");
+        assert_eq!(ranked[0].cost.steps, 1);
+        assert_eq!(ranked[1].cost.steps, 2);
     }
 
     #[test]

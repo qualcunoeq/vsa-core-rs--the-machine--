@@ -189,6 +189,47 @@ pub enum RepresentationReadiness {
     FalseDirectInstantiation,
 }
 
+/// Why a low-distance surface match is unsafe to treat as direct execution.
+/// This is deliberately a coarse, mutually-exclusive diagnostic label: the
+/// detailed blockers remain available on `DirectInstantiationAssessment`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum FalseLowDistanceReason {
+    DefinitionMentionedButNotOperational,
+    SuppliedObjectIncomplete,
+    TargetRequiresModelConstruction,
+    TargetRequiresTheoremSelection,
+    TargetRequiresProof,
+    SpecializedDefinitionUnrepresented,
+    QuantifiedStructureUnresolved,
+    ImplicitObjectConstruction,
+    CrossDomainInterpretationRequired,
+    VisualEvidenceRequired,
+    SurfaceEquationNotCentral,
+    SurfaceRuleNotApplicable,
+}
+
+impl FalseLowDistanceReason {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::DefinitionMentionedButNotOperational => {
+                "definition_mentioned_but_not_operational"
+            }
+            Self::SuppliedObjectIncomplete => "supplied_object_incomplete",
+            Self::TargetRequiresModelConstruction => "target_requires_model_construction",
+            Self::TargetRequiresTheoremSelection => "target_requires_theorem_selection",
+            Self::TargetRequiresProof => "target_requires_proof",
+            Self::SpecializedDefinitionUnrepresented => "specialized_definition_unrepresented",
+            Self::QuantifiedStructureUnresolved => "quantified_structure_unresolved",
+            Self::ImplicitObjectConstruction => "implicit_object_construction",
+            Self::CrossDomainInterpretationRequired => "cross_domain_interpretation_required",
+            Self::VisualEvidenceRequired => "visual_evidence_required",
+            Self::SurfaceEquationNotCentral => "surface_equation_not_central",
+            Self::SurfaceRuleNotApplicable => "surface_rule_not_applicable",
+        }
+    }
+}
+
 impl RepresentationReadiness {
     pub fn label(self) -> &'static str {
         match self {
@@ -205,6 +246,10 @@ pub struct DirectInstantiationAssessment {
     pub supplied_object: SuppliedObjectKind,
     pub target: InstantiationTargetKind,
     pub readiness: RepresentationReadiness,
+    /// Conservative lower bound used by future authorization.  A heuristic
+    /// direct-instantiation prediction must never lower this bound merely
+    /// because an equation/definition-shaped phrase was detected.
+    pub conservative_lower_bound: ModelingDistance,
     pub definition_isolated: bool,
     pub binders_identified: bool,
     pub domain_identified: bool,
@@ -215,6 +260,28 @@ pub struct DirectInstantiationAssessment {
     pub verifier_available: bool,
     pub missing_representation: Vec<String>,
     pub authorization_blockers: Vec<String>,
+    pub false_low_distance_reason: Option<FalseLowDistanceReason>,
+}
+
+impl DirectInstantiationAssessment {
+    /// The only predicate a future executor may use to authorize a
+    /// prompt-supplied direct application.  Surface distance alone is never
+    /// sufficient.
+    pub fn authorization_safe(&self) -> bool {
+        self.readiness == RepresentationReadiness::RepresentationReady
+            && self.conservative_lower_bound == ModelingDistance::DirectInstantiation
+            && self.definition_isolated
+            && self.binders_identified
+            && self.domain_identified
+            && self.target_identified
+            && self.quantifiers_preserved
+            && self.side_conditions_identified
+            && self.one_step_representable
+            && self.verifier_available
+            && self.missing_representation.is_empty()
+            && self.authorization_blockers.is_empty()
+            && self.false_low_distance_reason.is_none()
+    }
 }
 
 impl FormalizationStatus {
@@ -641,11 +708,66 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
     } else {
         RepresentationReadiness::NearReady
     };
+    let false_low_distance_reason =
+        if readiness == RepresentationReadiness::FalseDirectInstantiation {
+            Some(if trace.textual_attachment_reference {
+                FalseLowDistanceReason::VisualEvidenceRequired
+            } else if matches!(trace.task_shape, TaskShape::ProveIdentity)
+                || target == InstantiationTargetKind::ProveConsequence
+            {
+                FalseLowDistanceReason::TargetRequiresProof
+            } else if specialist_surface {
+                FalseLowDistanceReason::SpecializedDefinitionUnrepresented
+            } else if matches!(
+                supplied_object,
+                SuppliedObjectKind::ExplicitTheoremStatement
+                    | SuppliedObjectKind::ExplicitPhysicalLaw
+                    | SuppliedObjectKind::ExplicitLogicalPremises
+            ) {
+                FalseLowDistanceReason::TargetRequiresTheoremSelection
+            } else if !direct_target {
+                FalseLowDistanceReason::TargetRequiresModelConstruction
+            } else if !concrete_binding {
+                FalseLowDistanceReason::DefinitionMentionedButNotOperational
+            } else if !definition_isolated {
+                FalseLowDistanceReason::SuppliedObjectIncomplete
+            } else if !quantifiers_preserved {
+                FalseLowDistanceReason::QuantifiedStructureUnresolved
+            } else {
+                FalseLowDistanceReason::SurfaceRuleNotApplicable
+            })
+        } else {
+            None
+        };
+    // This is intentionally a lower bound, not a best guess.  A direct
+    // prediction with unresolved target/modeling evidence is at least one
+    // modeling step away; specialist/proof cases are higher still.  Runtime
+    // authorization must use this field rather than the surface classifier's
+    // original distance.
+    let conservative_lower_bound = if readiness == RepresentationReadiness::RepresentationReady {
+        ModelingDistance::DirectInstantiation
+    } else if matches!(trace.task_shape, TaskShape::ProveIdentity)
+        || target == InstantiationTargetKind::ProveConsequence
+    {
+        ModelingDistance::SpecialistReasoning
+    } else if specialist_surface
+        || matches!(
+            supplied_object,
+            SuppliedObjectKind::ExplicitTheoremStatement
+                | SuppliedObjectKind::ExplicitPhysicalLaw
+                | SuppliedObjectKind::ExplicitLogicalPremises
+        )
+    {
+        ModelingDistance::MethodSelection
+    } else {
+        ModelingDistance::OneModelingStep
+    };
     DirectInstantiationAssessment {
         question_id: trace.question_id.clone(),
         supplied_object,
         target,
         readiness,
+        conservative_lower_bound,
         definition_isolated,
         binders_identified,
         domain_identified,
@@ -656,6 +778,7 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
         verifier_available,
         missing_representation,
         authorization_blockers,
+        false_low_distance_reason,
     }
 }
 
@@ -1030,5 +1153,29 @@ mod tests {
             RepresentationReadiness::RepresentationReady
         );
         assert!(audit.verifier_available);
+        assert!(audit.authorization_safe());
+        assert_eq!(
+            audit.conservative_lower_bound,
+            ModelingDistance::DirectInstantiation
+        );
+        assert_eq!(audit.false_low_distance_reason, None);
+    }
+
+    #[test]
+    fn direct_audit_exposes_conservative_lower_bound_for_specialist_target() {
+        let trace = assess_prompt(
+            "q",
+            "Given f(x)=x^2, determine the asymptotic growth rate of the sequence.",
+            "Math",
+            false,
+        );
+        let audit = assess_direct_instantiation(&trace);
+        assert_eq!(
+            audit.readiness,
+            RepresentationReadiness::FalseDirectInstantiation
+        );
+        assert!(audit.conservative_lower_bound >= ModelingDistance::MethodSelection);
+        assert!(audit.false_low_distance_reason.is_some());
+        assert!(!audit.authorization_safe());
     }
 }

@@ -412,7 +412,22 @@ impl ModelConstructorRegistry {
         let mut eligible_ids = Vec::new();
         let mut seen_ids = BTreeSet::new();
         for entry in &self.entries {
-            let assessment = if !entry.spec.quality_gate.enabled() {
+            let assessment = if !entry.spec.evidence_policy.valid() {
+                ModelMatcherResult::rejected(
+                    "evidence_policy_invalid",
+                    entry.spec.required_evidence.clone(),
+                )
+            } else if context.evidence_items.is_empty()
+                || !context
+                    .evidence_items
+                    .iter()
+                    .any(|evidence| entry.spec.evidence_policy.evaluate(evidence).is_ok())
+            {
+                ModelMatcherResult::rejected(
+                    "evidence_policy_failed",
+                    entry.spec.required_evidence.clone(),
+                )
+            } else if !entry.spec.quality_gate.enabled() {
                 ModelMatcherResult::rejected(
                     "quality_gate_failed",
                     entry.spec.required_evidence.clone(),
@@ -1051,5 +1066,32 @@ mod tests {
         assert!(spec.accepts_evidence(&context.evidence_items[0]));
         assert!(spec.accepts_evidence(&context.evidence_items[1]));
         assert!(!spec.accepts_evidence(&context.evidence_items[2]));
+    }
+
+    #[test]
+    fn registry_blocks_matcher_when_context_has_only_inferred_evidence() {
+        let mut registry = ModelConstructorRegistry::new();
+        registry
+            .register(ModelConstructorEntry {
+                spec: registry_spec("policy_model", 1),
+                matcher: always_matches,
+            })
+            .unwrap();
+        let context = ModelEvidenceContext {
+            original_text: String::new(),
+            supplemental_evidence: vec!["derived relation".into()],
+            evidence_items: vec![EvidenceItem {
+                content: "derived relation".into(),
+                origin: EvidenceOrigin::Derived,
+                status: EvidenceStatus::Inferred,
+                provenance: "prior derivation".into(),
+            }],
+        };
+        let trace = registry.discover_with_context(&context);
+        assert_eq!(trace.selection, ModelSelection::None);
+        assert_eq!(
+            trace.candidates[0].rejection.as_deref(),
+            Some("evidence_policy_failed")
+        );
     }
 }

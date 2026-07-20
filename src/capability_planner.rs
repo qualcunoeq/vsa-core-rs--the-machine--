@@ -453,6 +453,71 @@ pub struct ImprovementExperimentResult {
     pub passed: bool,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum ImprovementExperimentDecision {
+    Passed,
+    Failed,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ImprovementExperimentReceipt {
+    pub experiment_id: String,
+    pub spec: ImprovementExperimentSpec,
+    pub result: ImprovementExperimentResult,
+    pub decision: ImprovementExperimentDecision,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum ImprovementExperimentLedgerRejection {
+    DuplicateExperiment(String),
+    ProposalMismatch,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct ImprovementExperimentLedger {
+    receipts: BTreeMap<String, ImprovementExperimentReceipt>,
+}
+
+impl ImprovementExperimentLedger {
+    pub fn record(
+        &mut self,
+        experiment_id: impl Into<String>,
+        spec: ImprovementExperimentSpec,
+        result: ImprovementExperimentResult,
+    ) -> Result<ImprovementExperimentReceipt, ImprovementExperimentLedgerRejection> {
+        let experiment_id = experiment_id.into();
+        if self.receipts.contains_key(&experiment_id) {
+            return Err(ImprovementExperimentLedgerRejection::DuplicateExperiment(
+                experiment_id,
+            ));
+        }
+        if spec.evaluation.proposal != result.proposal {
+            return Err(ImprovementExperimentLedgerRejection::ProposalMismatch);
+        }
+        let decision = if result.passed {
+            ImprovementExperimentDecision::Passed
+        } else {
+            ImprovementExperimentDecision::Failed
+        };
+        let receipt = ImprovementExperimentReceipt {
+            experiment_id: experiment_id.clone(),
+            spec,
+            result,
+            decision,
+        };
+        self.receipts.insert(experiment_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn receipt(&self, experiment_id: &str) -> Option<&ImprovementExperimentReceipt> {
+        self.receipts.get(experiment_id)
+    }
+
+    pub fn receipts(&self) -> impl Iterator<Item = &ImprovementExperimentReceipt> {
+        self.receipts.values()
+    }
+}
+
 impl ImprovementExperimentSpec {
     pub fn assess(
         &self,
@@ -1822,10 +1887,30 @@ mod tests {
         assert!(result.failure_reduced);
         assert!(result.safety_preserved);
         assert!(result.passed);
+        let mut experiment_ledger = ImprovementExperimentLedger::default();
+        let receipt = experiment_ledger
+            .record("runtime-reliability-1", experiment.clone(), result.clone())
+            .unwrap();
+        assert_eq!(
+            receipt.decision,
+            ImprovementExperimentDecision::Passed
+        );
+        assert_eq!(experiment_ledger.receipts().count(), 1);
+        assert!(matches!(
+            experiment_ledger.record("runtime-reliability-1", experiment.clone(), result),
+            Err(ImprovementExperimentLedgerRejection::DuplicateExperiment(_))
+        ));
         let unsafe_result = experiment.assess(1, 1);
         assert!(unsafe_result.failure_reduced);
         assert!(!unsafe_result.safety_preserved);
         assert!(!unsafe_result.passed);
+        let failed_receipt = experiment_ledger
+            .record("runtime-reliability-2", experiment, unsafe_result)
+            .unwrap();
+        assert_eq!(
+            failed_receipt.decision,
+            ImprovementExperimentDecision::Failed
+        );
         let mut one_off = proposals[0].clone();
         one_off.pattern.occurrences = 1;
         assert_eq!(

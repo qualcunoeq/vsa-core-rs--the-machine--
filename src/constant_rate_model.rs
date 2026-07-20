@@ -6,6 +6,7 @@
 
 use serde::Serialize;
 use crate::capabilities::CapabilityIoType;
+use std::collections::BTreeSet;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct ModelConstructionQualityGate {
@@ -34,6 +35,7 @@ pub struct ModelConstructionSpec {
     pub required_evidence: Vec<String>,
     pub produced_artifacts: Vec<CapabilityIoType>,
     pub introduced_assumptions: Vec<String>,
+    pub validation_rules: Vec<String>,
     pub quality_gate: ModelConstructionQualityGate,
 }
 
@@ -47,6 +49,7 @@ pub enum ModelSelection {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct ModelCandidateTrace {
     pub id: String,
+    pub version: u32,
     pub eligible: bool,
     pub rejection: Option<String>,
 }
@@ -55,6 +58,143 @@ pub struct ModelCandidateTrace {
 pub struct ModelDiscoveryTrace {
     pub candidates: Vec<ModelCandidateTrace>,
     pub selection: ModelSelection,
+}
+
+/// A registered model constructor is a proposal mechanism only.  It may
+/// become eligible from text evidence, but it never executes by virtue of
+/// being registered.  The downstream model contract and transformation
+/// verifier remain the authorization boundary.
+pub type ModelMatcher = fn(&str) -> Result<(), String>;
+
+#[derive(Clone)]
+pub struct ModelConstructorEntry {
+    pub spec: ModelConstructionSpec,
+    pub matcher: ModelMatcher,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum ModelRegistryError {
+    EmptyId,
+    EmptyVersion,
+    DuplicateVersionedId { id: String, version: u32 },
+    MissingEvidence { id: String },
+    MissingProducedArtifacts { id: String },
+}
+
+pub struct ModelConstructorRegistry {
+    entries: Vec<ModelConstructorEntry>,
+}
+
+impl std::fmt::Debug for ModelConstructorRegistry {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter
+            .debug_struct("ModelConstructorRegistry")
+            .field("entries", &self.entries.iter().map(|entry| &entry.spec).collect::<Vec<_>>())
+            .finish()
+    }
+}
+
+impl ModelConstructorRegistry {
+    pub fn new() -> Self {
+        Self { entries: Vec::new() }
+    }
+
+    /// The only constructor currently enabled for the production model
+    /// registry.  Additional constructors must earn their own quality gate.
+    pub fn production() -> Self {
+        let mut registry = Self::new();
+        registry
+            .register(ModelConstructorEntry {
+                spec: constant_rate_model_spec(),
+                matcher: constant_rate_match,
+            })
+            .expect("constant-rate model registry entry is valid");
+        registry
+    }
+
+    pub fn register(
+        &mut self,
+        entry: ModelConstructorEntry,
+    ) -> Result<(), ModelRegistryError> {
+        let spec = &entry.spec;
+        if spec.id.trim().is_empty() {
+            return Err(ModelRegistryError::EmptyId);
+        }
+        if spec.version == 0 {
+            return Err(ModelRegistryError::EmptyVersion);
+        }
+        if spec.required_evidence.is_empty() {
+            return Err(ModelRegistryError::MissingEvidence {
+                id: spec.id.clone(),
+            });
+        }
+        if spec.produced_artifacts.is_empty() {
+            return Err(ModelRegistryError::MissingProducedArtifacts {
+                id: spec.id.clone(),
+            });
+        }
+        if self
+            .entries
+            .iter()
+            .any(|existing| existing.spec.id == spec.id && existing.spec.version == spec.version)
+        {
+            return Err(ModelRegistryError::DuplicateVersionedId {
+                id: spec.id.clone(),
+                version: spec.version,
+            });
+        }
+        self.entries.push(entry);
+        self.entries.sort_by(|left, right| {
+            left.spec
+                .id
+                .cmp(&right.spec.id)
+                .then(left.spec.version.cmp(&right.spec.version))
+        });
+        Ok(())
+    }
+
+    pub fn entries(&self) -> impl Iterator<Item = &ModelConstructorEntry> {
+        self.entries.iter()
+    }
+
+    /// Discover eligible model constructors.  Registry insertion order never
+    /// resolves multiple matches: two eligible entries produce Ambiguous.
+    pub fn discover(&self, text: &str) -> ModelDiscoveryTrace {
+        let mut candidates = Vec::with_capacity(self.entries.len());
+        let mut eligible_ids = Vec::new();
+        let mut seen_ids = BTreeSet::new();
+        for entry in &self.entries {
+            let (eligible, rejection) = if !entry.spec.quality_gate.enabled() {
+                (false, Some("quality_gate_failed".to_string()))
+            } else {
+                match (entry.matcher)(text) {
+                    Ok(()) => (true, None),
+                    Err(reason) => (false, Some(reason)),
+                }
+            };
+            if eligible && seen_ids.insert(entry.spec.id.clone()) {
+                eligible_ids.push(entry.spec.id.clone());
+            }
+            candidates.push(ModelCandidateTrace {
+                id: entry.spec.id.clone(),
+                version: entry.spec.version,
+                eligible,
+                rejection,
+            });
+        }
+        let selection = match eligible_ids.len() {
+            0 => ModelSelection::None,
+            1 => ModelSelection::Unique(eligible_ids.remove(0)),
+            _ => ModelSelection::Ambiguous(eligible_ids),
+        };
+        ModelDiscoveryTrace { candidates, selection }
+    }
+}
+
+impl Default for ModelConstructorRegistry {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 pub fn constant_rate_model_spec() -> ModelConstructionSpec {
@@ -71,6 +211,11 @@ pub fn constant_rate_model_spec() -> ModelConstructionSpec {
         ],
         produced_artifacts: vec![CapabilityIoType::Expression],
         introduced_assumptions: Vec::new(),
+        validation_rules: vec![
+            "rate and duration are finite numbers".into(),
+            "duration is non-negative".into(),
+            "total-change target is explicit".into(),
+        ],
         quality_gate: ModelConstructionQualityGate {
             positive_cases: 1,
             negative_cases: 2,
@@ -85,27 +230,7 @@ pub fn constant_rate_model_spec() -> ModelConstructionSpec {
 /// constructor's strict evidence parser; registry order never resolves two
 /// eligible models.
 pub fn discover_models(text: &str) -> ModelDiscoveryTrace {
-    let spec = constant_rate_model_spec();
-    let (eligible, rejection) = if !spec.quality_gate.enabled() {
-        (false, Some("quality_gate_failed".into()))
-    } else {
-        match construct_constant_rate_model(text) {
-            Ok(_) => (true, None),
-            Err(error) => (false, Some(format!("{error:?}"))),
-        }
-    };
-    ModelDiscoveryTrace {
-        candidates: vec![ModelCandidateTrace {
-            id: spec.id.clone(),
-            eligible,
-            rejection,
-        }],
-        selection: if eligible {
-            ModelSelection::Unique(spec.id)
-        } else {
-            ModelSelection::None
-        },
-    }
+    ModelConstructorRegistry::production().discover(text)
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -126,6 +251,12 @@ pub enum ConstantRateModelFailure {
     InvalidDuration,
     MissingTarget,
     VerificationFailed,
+}
+
+fn constant_rate_match(text: &str) -> Result<(), String> {
+    construct_constant_rate_model(text)
+        .map(|_| ())
+        .map_err(|error| format!("{error:?}"))
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -288,6 +419,29 @@ mod tests {
     const POSITIVE: &str =
         "A quantity changes at a constant rate of 3 per interval for 4 intervals. Find the total change.";
 
+    fn always_matches(_: &str) -> Result<(), String> {
+        Ok(())
+    }
+
+    fn registry_spec(id: &str, version: u32) -> ModelConstructionSpec {
+        ModelConstructionSpec {
+            id: id.into(),
+            version,
+            supported_language_pattern: "test pattern".into(),
+            required_evidence: vec!["explicit test evidence".into()],
+            produced_artifacts: vec![CapabilityIoType::Expression],
+            introduced_assumptions: Vec::new(),
+            validation_rules: vec!["test validator".into()],
+            quality_gate: ModelConstructionQualityGate {
+                positive_cases: 1,
+                negative_cases: 1,
+                adversarial_cases: 1,
+                unauthorized_assumptions: 0,
+                replay_failures: 0,
+            },
+        }
+    }
+
     #[test]
     fn constructs_and_replays_explicit_constant_rate_model() {
         let receipt = execute_constant_rate_model(POSITIVE).unwrap();
@@ -329,6 +483,7 @@ mod tests {
     fn model_quality_gate_requires_positive_and_negative_evidence() {
         assert!(constant_rate_model_spec().quality_gate.enabled());
         assert_eq!(constant_rate_model_spec().introduced_assumptions.len(), 0);
+        assert!(!constant_rate_model_spec().validation_rules.is_empty());
         assert_eq!(shadow_cases().len(), 4);
     }
 
@@ -371,6 +526,83 @@ mod tests {
         assert_eq!(
             execute_constant_rate_chain(text),
             Err(ConstantRateModelFailure::PatternNotMatched)
+        );
+    }
+
+    #[test]
+    fn registry_production_keeps_constant_rate_as_unique_route() {
+        let registry = ModelConstructorRegistry::production();
+        assert_eq!(registry.entries().count(), 1);
+        assert_eq!(
+            registry.discover(POSITIVE).selection,
+            ModelSelection::Unique("constant_rate_model".into())
+        );
+        assert_eq!(
+            registry
+                .discover("A quantity changes at a rate of 3 per interval for 4 intervals.")
+                .selection,
+            ModelSelection::None
+        );
+    }
+
+    #[test]
+    fn registry_never_uses_insertion_order_to_resolve_ambiguity() {
+        let mut registry = ModelConstructorRegistry::new();
+        registry
+            .register(ModelConstructorEntry {
+                spec: registry_spec("z_model", 1),
+                matcher: always_matches,
+            })
+            .unwrap();
+        registry
+            .register(ModelConstructorEntry {
+                spec: registry_spec("a_model", 1),
+                matcher: always_matches,
+            })
+            .unwrap();
+
+        let trace = registry.discover("evidence");
+        assert_eq!(
+            trace.selection,
+            ModelSelection::Ambiguous(vec!["a_model".into(), "z_model".into()])
+        );
+        assert!(trace.candidates.iter().all(|candidate| candidate.eligible));
+    }
+
+    #[test]
+    fn registry_rejects_duplicate_versioned_entries() {
+        let mut registry = ModelConstructorRegistry::new();
+        let entry = ModelConstructorEntry {
+            spec: registry_spec("same_model", 1),
+            matcher: always_matches,
+        };
+        registry.register(entry.clone()).unwrap();
+        assert_eq!(
+            registry.register(entry),
+            Err(ModelRegistryError::DuplicateVersionedId {
+                id: "same_model".into(),
+                version: 1,
+            })
+        );
+    }
+
+    #[test]
+    fn registry_trace_exposes_quality_gate_rejection() {
+        let mut registry = ModelConstructorRegistry::new();
+        let mut spec = registry_spec("disabled_model", 1);
+        spec.quality_gate.replay_failures = 1;
+        registry
+            .register(ModelConstructorEntry {
+                spec,
+                matcher: always_matches,
+            })
+            .unwrap();
+
+        let trace = registry.discover("evidence");
+        assert_eq!(trace.selection, ModelSelection::None);
+        assert_eq!(
+            trace.candidates[0].rejection.as_deref(),
+            Some("quality_gate_failed")
         );
     }
 }

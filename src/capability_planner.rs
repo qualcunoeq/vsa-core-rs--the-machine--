@@ -284,6 +284,66 @@ impl PlanDependencyIndex {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum PlanRepairFailure {
+    PlanStillActive,
+    Planning(CapabilityPlanningFailure),
+    ReplacementStillStale(PlanLifecycle),
+}
+
+/// A proposal for replacing a stale plan. The caller must explicitly review
+/// and register/execute the replacement; construction has no side effects.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PlanRepairCandidate {
+    pub plan_id: String,
+    pub stale_plan: PlanLifecycle,
+    pub replacement: GoalCapabilityPlan,
+}
+
+/// Replan a stale goal using only facts that are currently active in the
+/// ledger. This deliberately returns a candidate rather than mutating the
+/// old plan or executing the replacement.
+pub fn replan_stale_plan(
+    plan_id: impl Into<String>,
+    plan: &GoalCapabilityPlan,
+    context: &ReasoningContext,
+    fact_index: &DerivedFactIndex,
+    registry: &CapabilityRegistry,
+) -> Result<PlanRepairCandidate, PlanRepairFailure> {
+    let plan_id = plan_id.into();
+    let stale_plan = plan.lifecycle(fact_index);
+    if stale_plan.is_active() {
+        return Err(PlanRepairFailure::PlanStillActive);
+    }
+    let active_context = ReasoningContext {
+        available_inputs: context.available_inputs.clone(),
+        derived_facts: context
+            .derived_facts
+            .iter()
+            .filter(|fact| {
+                fact_index
+                    .lifecycle(&fact.id)
+                    .map(|lifecycle| lifecycle.status == FactStatus::Active)
+                    .unwrap_or(false)
+            })
+            .cloned()
+            .collect(),
+    };
+    let replacement = plan_for_goal_with_context(plan.goal, &active_context, registry)
+        .map_err(PlanRepairFailure::Planning)?;
+    let replacement_lifecycle = replacement.lifecycle(fact_index);
+    if !replacement_lifecycle.is_active() {
+        return Err(PlanRepairFailure::ReplacementStillStale(
+            replacement_lifecycle,
+        ));
+    }
+    Ok(PlanRepairCandidate {
+        plan_id,
+        stale_plan,
+        replacement,
+    })
+}
+
 fn plan_lifecycle(proofs: &[DerivedFactProof], index: &DerivedFactIndex) -> PlanLifecycle {
     let fact_ids = proofs
         .iter()
@@ -1030,6 +1090,76 @@ mod tests {
         assert_eq!(
             stale[0].1.invalidations[0].issue,
             PlanFactIssue::Inactive(FactStatus::Invalidated)
+        );
+    }
+
+    #[test]
+    fn stale_plan_produces_active_repair_candidate_without_execution() {
+        let make_fact = |id: &str, content: &str| DerivedFact {
+            id: id.into(),
+            content: content.into(),
+            parent_lineage: vec!["constant-rate-model".into()],
+            provenance: "verified expression evaluation".into(),
+            proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+            precision: crate::evidence::FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: None,
+        };
+        let old_fact = make_fact("derived-old", "distance = 12");
+        let new_fact = make_fact("derived-new", "distance = 15");
+        let context = ReasoningContext::with_derived_facts(
+            BTreeSet::new(),
+            vec![old_fact.clone(), new_fact.clone()],
+        );
+        let mut index = DerivedFactIndex::default();
+        index
+            .insert(
+                "distance-old",
+                old_fact,
+                &FactPolicy::verified_transformation(),
+            )
+            .unwrap();
+        index
+            .insert(
+                "distance-new",
+                new_fact,
+                &FactPolicy::verified_transformation(),
+            )
+            .unwrap();
+        let plan = plan_for_goal_with_context(
+            CapabilityIoType::ExactValue,
+            &context,
+            &derived_fact_registry(),
+        )
+        .unwrap();
+        assert!(matches!(
+            replan_stale_plan(
+                "distance-plan",
+                &plan,
+                &context,
+                &index,
+                &derived_fact_registry(),
+            ),
+            Err(PlanRepairFailure::PlanStillActive)
+        ));
+
+        index
+            .invalidate("derived-old", "upstream input corrected", None)
+            .unwrap();
+        let candidate = replan_stale_plan(
+            "distance-plan",
+            &plan,
+            &context,
+            &index,
+            &derived_fact_registry(),
+        )
+        .unwrap();
+        assert_eq!(candidate.plan_id, "distance-plan");
+        assert_eq!(candidate.stale_plan.status, PlanStatus::Stale);
+        assert_eq!(candidate.replacement.lifecycle(&index).status, PlanStatus::Active);
+        assert_eq!(
+            candidate.replacement.derived_fact_proofs[0].fact_id,
+            "derived-new"
         );
     }
 }

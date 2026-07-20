@@ -23,6 +23,21 @@ pub enum DefinitionKind {
     PhysicalQuantity,
 }
 
+impl DefinitionKind {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Function => "function",
+            Self::Sequence => "sequence",
+            Self::Set => "set",
+            Self::Operation => "operation",
+            Self::Relation => "relation",
+            Self::Graph => "graph",
+            Self::ProbabilityModel => "probability_model",
+            Self::PhysicalQuantity => "physical_quantity",
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ModelingObligation {
@@ -32,6 +47,7 @@ pub enum ModelingObligation {
     ExtractQuantifiers,
     DetermineTargetSemantics,
     ConstructEquation,
+    ConstructSmallSystem,
     EstablishBoundaryConditions,
     EstablishInitialConditions,
     SelectApproximationRegime,
@@ -49,6 +65,7 @@ impl ModelingObligation {
             Self::ExtractQuantifiers => "extract_quantifiers",
             Self::DetermineTargetSemantics => "determine_target_semantics",
             Self::ConstructEquation => "construct_equation",
+            Self::ConstructSmallSystem => "construct_small_system",
             Self::EstablishBoundaryConditions => "establish_boundary_conditions",
             Self::EstablishInitialConditions => "establish_initial_conditions",
             Self::SelectApproximationRegime => "select_approximation_regime",
@@ -339,6 +356,50 @@ pub struct FormalizationCase {
     pub expected_answer: Option<String>,
 }
 
+/// The primary language-to-form transformation represented by a gold case.
+/// Labels are intentionally about the transformation, not the subject domain,
+/// so failures can be grouped across algebra, mechanics, and discrete math.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum FormalizationTransformation {
+    ExtractExplicitEquation,
+    InstantiateDefinition,
+    TranslateComparisonToInequality,
+    TranslateRateStatement,
+    ConstructSingleEquation,
+    ConstructSmallSystem,
+    BindEntitiesAcrossSentences,
+    ExtractDomainRestriction,
+    ExtractQuantifierStructure,
+    IdentifyRequestedTarget,
+}
+
+impl FormalizationTransformation {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::ExtractExplicitEquation => "extract_explicit_equation",
+            Self::InstantiateDefinition => "instantiate_definition",
+            Self::TranslateComparisonToInequality => "translate_comparison_to_inequality",
+            Self::TranslateRateStatement => "translate_rate_statement",
+            Self::ConstructSingleEquation => "construct_single_equation",
+            Self::ConstructSmallSystem => "construct_small_system",
+            Self::BindEntitiesAcrossSentences => "bind_entities_across_sentences",
+            Self::ExtractDomainRestriction => "extract_domain_restriction",
+            Self::ExtractQuantifierStructure => "extract_quantifier_structure",
+            Self::IdentifyRequestedTarget => "identify_requested_target",
+        }
+    }
+}
+
+/// A provenance span supporting a gold annotation.  `source_fragment` is
+/// kept as text (rather than byte offsets) so corpus files remain stable when
+/// prompt storage changes line endings or Unicode normalization.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProvenanceSpan {
+    pub role: String,
+    pub source_fragment: String,
+}
+
 /// Curriculum tier used by the formalization benchmark.  Tiers describe the
 /// distance from language to a typed problem, not the difficulty of the final
 /// arithmetic executor.
@@ -372,13 +433,16 @@ impl FormalizationTier {
 pub struct FormalizationGoldCase {
     pub id: String,
     pub tier: FormalizationTier,
+    pub transformation: FormalizationTransformation,
     pub prompt: String,
     pub definitions: Vec<DefinitionKind>,
+    pub entities: Vec<EntityAnnotation>,
     pub facts: Vec<FactAnnotation>,
     pub target: TargetAnnotation,
     pub assumptions: Vec<AssumptionAnnotation>,
     pub constraints: Vec<ConstraintAnnotation>,
     pub obligations: Vec<ModelingObligation>,
+    pub provenance_spans: Vec<ProvenanceSpan>,
     pub authorization_expected: bool,
     pub allowed_methods: Vec<String>,
     pub expected_answer: Option<String>,
@@ -401,6 +465,17 @@ impl FormalizationGoldCase {
         }
         if self.target.source_fragment.trim().is_empty() {
             errors.push("target source_fragment is empty".to_string());
+        }
+        if self.provenance_spans.is_empty() {
+            errors.push("provenance_spans must contain at least one supporting span".to_string());
+        }
+        for (idx, span) in self.provenance_spans.iter().enumerate() {
+            if span.role.trim().is_empty() {
+                errors.push(format!("provenance_spans[{idx}] role is empty"));
+            }
+            if span.source_fragment.trim().is_empty() {
+                errors.push(format!("provenance_spans[{idx}] source_fragment is empty"));
+            }
         }
         if self.authorization_expected {
             if self.allowed_methods.is_empty() {
@@ -465,6 +540,115 @@ impl FormalizationCorpus {
 
     pub fn is_valid(&self) -> bool {
         self.validation_errors().is_empty()
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct FieldScore {
+    pub matched: usize,
+    pub expected: usize,
+    pub predicted: usize,
+    pub precision: f64,
+    pub recall: f64,
+}
+
+impl FieldScore {
+    fn from_counts(matched: usize, expected: usize, predicted: usize) -> Self {
+        Self {
+            matched,
+            expected,
+            predicted,
+            precision: if predicted == 0 {
+                if expected == 0 {
+                    1.0
+                } else {
+                    0.0
+                }
+            } else {
+                matched as f64 / predicted as f64
+            },
+            recall: if expected == 0 {
+                if predicted == 0 {
+                    1.0
+                } else {
+                    0.0
+                }
+            } else {
+                matched as f64 / expected as f64
+            },
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FormalizationScore {
+    pub definitions: FieldScore,
+    pub facts: FieldScore,
+    pub entities: FieldScore,
+    pub assumptions: FieldScore,
+    pub constraints: FieldScore,
+    pub obligations: FieldScore,
+    pub target_exact: bool,
+    pub authorization_correct: bool,
+}
+
+fn normalized_text(value: &str) -> String {
+    value
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+        .to_ascii_lowercase()
+}
+
+fn set_score(
+    expected: impl IntoIterator<Item = String>,
+    predicted: impl IntoIterator<Item = String>,
+) -> FieldScore {
+    let expected: BTreeSet<_> = expected.into_iter().map(|v| normalized_text(&v)).collect();
+    let predicted: BTreeSet<_> = predicted.into_iter().map(|v| normalized_text(&v)).collect();
+    let matched = expected.intersection(&predicted).count();
+    FieldScore::from_counts(matched, expected.len(), predicted.len())
+}
+
+/// Compare a model trace with a manually reviewed gold case.  This is a
+/// diagnostic scorer only: it does not execute a method or grant authority.
+pub fn score_formalization(
+    gold: &FormalizationGoldCase,
+    trace: &FormalizationTrace,
+    actual_authorization: bool,
+) -> FormalizationScore {
+    FormalizationScore {
+        definitions: set_score(
+            gold.definitions.iter().map(|v| v.label().to_string()),
+            trace.definitions.iter().map(|v| v.label().to_string()),
+        ),
+        facts: set_score(
+            gold.facts.iter().map(|v| v.statement.clone()),
+            trace.facts.iter().map(|v| v.statement.clone()),
+        ),
+        entities: set_score(
+            gold.entities.iter().map(|v| v.label.clone()),
+            trace.entities.iter().map(|v| v.label.clone()),
+        ),
+        assumptions: set_score(
+            gold.assumptions.iter().map(|v| v.statement.clone()),
+            trace.assumptions.iter().map(|v| v.statement.clone()),
+        ),
+        constraints: set_score(
+            gold.constraints.iter().map(|v| v.statement.clone()),
+            trace.constraints.iter().map(|v| v.statement.clone()),
+        ),
+        obligations: set_score(
+            gold.obligations.iter().map(|v| v.label().to_string()),
+            trace.obligations.iter().map(|v| v.label().to_string()),
+        ),
+        target_exact: gold.target.statement
+            == trace
+                .target
+                .as_ref()
+                .map(|v| v.statement.as_str())
+                .unwrap_or_default(),
+        authorization_correct: gold.authorization_expected == actual_authorization,
     }
 }
 
@@ -1313,8 +1497,10 @@ mod tests {
         let case = FormalizationGoldCase {
             id: "tier1-f".into(),
             tier: FormalizationTier::DirectInstantiation,
+            transformation: FormalizationTransformation::InstantiateDefinition,
             prompt: "Let f(x)=x+1. Evaluate f(2).".into(),
             definitions: vec![DefinitionKind::Function],
+            entities: vec![],
             facts: vec![],
             target: TargetAnnotation {
                 statement: "evaluate f at 2".into(),
@@ -1323,6 +1509,10 @@ mod tests {
             assumptions: vec![],
             constraints: vec![],
             obligations: vec![],
+            provenance_spans: vec![ProvenanceSpan {
+                role: "definition_and_target".into(),
+                source_fragment: "Let f(x)=x+1. Evaluate f(2).".into(),
+            }],
             authorization_expected: true,
             allowed_methods: vec!["definition_application".into()],
             expected_answer: Some("3".into()),
@@ -1339,13 +1529,19 @@ mod tests {
         let make_case = || FormalizationGoldCase {
             id: "duplicate".into(),
             tier: FormalizationTier::ExplicitObject,
+            transformation: FormalizationTransformation::ExtractExplicitEquation,
             prompt: "x=1".into(),
             definitions: vec![],
+            entities: vec![],
             facts: vec![],
             target: target.clone(),
             assumptions: vec![],
             constraints: vec![],
             obligations: vec![],
+            provenance_spans: vec![ProvenanceSpan {
+                role: "equation".into(),
+                source_fragment: "x=1".into(),
+            }],
             authorization_expected: false,
             allowed_methods: vec![],
             expected_answer: None,
@@ -1359,5 +1555,36 @@ mod tests {
             .iter()
             .any(|e| e.contains("unsupported schema_version")));
         assert!(errors.iter().any(|e| e.contains("duplicate case id")));
+    }
+
+    #[test]
+    fn field_score_keeps_authorization_separate_from_extraction() {
+        let gold = FormalizationGoldCase {
+            id: "score-1".into(),
+            tier: FormalizationTier::DirectInstantiation,
+            transformation: FormalizationTransformation::InstantiateDefinition,
+            prompt: "Let f(x)=x+1. Evaluate f(2).".into(),
+            definitions: vec![DefinitionKind::Function],
+            entities: vec![],
+            facts: vec![],
+            target: TargetAnnotation {
+                statement: "evaluate f at 2".into(),
+                source_fragment: "Evaluate f(2)".into(),
+            },
+            assumptions: vec![],
+            constraints: vec![],
+            obligations: vec![],
+            provenance_spans: vec![ProvenanceSpan {
+                role: "definition_and_target".into(),
+                source_fragment: "Let f(x)=x+1. Evaluate f(2).".into(),
+            }],
+            authorization_expected: true,
+            allowed_methods: vec!["definition_application".into()],
+            expected_answer: Some("3".into()),
+        };
+        let trace = assess_prompt("score-1", &gold.prompt, "Math", false);
+        let score = score_formalization(&gold, &trace, false);
+        assert_eq!(score.definitions.recall, 1.0);
+        assert!(!score.authorization_correct);
     }
 }

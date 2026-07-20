@@ -54,6 +54,162 @@ pub enum CapabilityChainPlanningFailure {
     DependencyCycle(String),
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainExecutionStatus {
+    Running,
+    Succeeded,
+    Failed,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainStepReceipt {
+    pub step_index: usize,
+    pub capability_id: String,
+    pub input_artifacts: Vec<String>,
+    pub output_artifacts: Vec<String>,
+    pub verification_receipt: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainExecutionReceipt {
+    pub execution_id: String,
+    pub plan: CapabilityChainPlan,
+    pub status: CapabilityChainExecutionStatus,
+    pub steps: Vec<CapabilityChainStepReceipt>,
+    pub failed_step: Option<usize>,
+    pub failure_reason: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainExecutionRejection {
+    DuplicateExecution(String),
+    UnknownExecution(String),
+    ExecutionAlreadyTerminal(CapabilityChainExecutionStatus),
+    WrongStepIndex { expected: usize, actual: usize },
+    WrongCapability { expected: String, actual: String },
+    MissingVerificationReceipt,
+    IncompleteChain { expected: usize, recorded: usize },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainExecutionLedger {
+    executions: BTreeMap<String, CapabilityChainExecutionReceipt>,
+}
+
+impl CapabilityChainExecutionLedger {
+    pub fn start(
+        &mut self,
+        execution_id: impl Into<String>,
+        plan: CapabilityChainPlan,
+    ) -> Result<CapabilityChainExecutionReceipt, CapabilityChainExecutionRejection> {
+        let execution_id = execution_id.into();
+        if self.executions.contains_key(&execution_id) {
+            return Err(CapabilityChainExecutionRejection::DuplicateExecution(
+                execution_id,
+            ));
+        }
+        let receipt = CapabilityChainExecutionReceipt {
+            execution_id: execution_id.clone(),
+            plan,
+            status: CapabilityChainExecutionStatus::Running,
+            steps: Vec::new(),
+            failed_step: None,
+            failure_reason: None,
+        };
+        self.executions.insert(execution_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn record_step(
+        &mut self,
+        execution_id: &str,
+        step: CapabilityChainStepReceipt,
+    ) -> Result<CapabilityChainExecutionReceipt, CapabilityChainExecutionRejection> {
+        let receipt = self
+            .executions
+            .get_mut(execution_id)
+            .ok_or_else(|| CapabilityChainExecutionRejection::UnknownExecution(execution_id.into()))?;
+        if receipt.status != CapabilityChainExecutionStatus::Running {
+            return Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(
+                receipt.status,
+            ));
+        }
+        let expected_index = receipt.steps.len();
+        if step.step_index != expected_index {
+            return Err(CapabilityChainExecutionRejection::WrongStepIndex {
+                expected: expected_index,
+                actual: step.step_index,
+            });
+        }
+        if expected_index >= receipt.plan.steps.len() {
+            return Err(CapabilityChainExecutionRejection::IncompleteChain {
+                expected: receipt.plan.steps.len(),
+                recorded: receipt.steps.len(),
+            });
+        }
+        let expected_capability = receipt.plan.steps[expected_index].clone();
+        if step.capability_id != expected_capability {
+            return Err(CapabilityChainExecutionRejection::WrongCapability {
+                expected: expected_capability,
+                actual: step.capability_id,
+            });
+        }
+        if step.verification_receipt.trim().is_empty() {
+            return Err(CapabilityChainExecutionRejection::MissingVerificationReceipt);
+        }
+        receipt.steps.push(step);
+        Ok(receipt.clone())
+    }
+
+    pub fn complete_success(
+        &mut self,
+        execution_id: &str,
+    ) -> Result<CapabilityChainExecutionReceipt, CapabilityChainExecutionRejection> {
+        let receipt = self
+            .executions
+            .get_mut(execution_id)
+            .ok_or_else(|| CapabilityChainExecutionRejection::UnknownExecution(execution_id.into()))?;
+        if receipt.status != CapabilityChainExecutionStatus::Running {
+            return Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(
+                receipt.status,
+            ));
+        }
+        if receipt.steps.len() != receipt.plan.steps.len() {
+            return Err(CapabilityChainExecutionRejection::IncompleteChain {
+                expected: receipt.plan.steps.len(),
+                recorded: receipt.steps.len(),
+            });
+        }
+        receipt.status = CapabilityChainExecutionStatus::Succeeded;
+        Ok(receipt.clone())
+    }
+
+    pub fn complete_failure(
+        &mut self,
+        execution_id: &str,
+        failed_step: usize,
+        reason: impl Into<String>,
+    ) -> Result<CapabilityChainExecutionReceipt, CapabilityChainExecutionRejection> {
+        let receipt = self
+            .executions
+            .get_mut(execution_id)
+            .ok_or_else(|| CapabilityChainExecutionRejection::UnknownExecution(execution_id.into()))?;
+        if receipt.status != CapabilityChainExecutionStatus::Running {
+            return Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(
+                receipt.status,
+            ));
+        }
+        receipt.status = CapabilityChainExecutionStatus::Failed;
+        receipt.failed_step = Some(failed_step);
+        receipt.failure_reason = Some(reason.into());
+        Ok(receipt.clone())
+    }
+
+    pub fn receipt(&self, execution_id: &str) -> Option<&CapabilityChainExecutionReceipt> {
+        self.executions.get(execution_id)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct DerivedFactRejection {
     pub fact_id: String,
@@ -1877,6 +2033,67 @@ mod tests {
                 ],
             })
         );
+    }
+
+    #[test]
+    fn chain_execution_requires_ordered_verified_steps() {
+        let plan = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec![
+                "expression_simplification".into(),
+                "evaluate_simplified_expression".into(),
+            ],
+        };
+        let mut ledger = CapabilityChainExecutionLedger::default();
+        ledger.start("chain-execution-1", plan).unwrap();
+        assert!(matches!(
+            ledger.record_step(
+                "chain-execution-1",
+                CapabilityChainStepReceipt {
+                    step_index: 1,
+                    capability_id: "evaluate_simplified_expression".into(),
+                    input_artifacts: vec!["expr".into()],
+                    output_artifacts: vec!["value".into()],
+                    verification_receipt: "verified".into(),
+                },
+            ),
+            Err(CapabilityChainExecutionRejection::WrongStepIndex { .. })
+        ));
+        ledger
+            .record_step(
+                "chain-execution-1",
+                CapabilityChainStepReceipt {
+                    step_index: 0,
+                    capability_id: "expression_simplification".into(),
+                    input_artifacts: vec!["raw-expression".into()],
+                    output_artifacts: vec!["expr".into()],
+                    verification_receipt: "simplification replay".into(),
+                },
+            )
+            .unwrap();
+        assert!(matches!(
+            ledger.complete_success("chain-execution-1"),
+            Err(CapabilityChainExecutionRejection::IncompleteChain { .. })
+        ));
+        ledger
+            .record_step(
+                "chain-execution-1",
+                CapabilityChainStepReceipt {
+                    step_index: 1,
+                    capability_id: "evaluate_simplified_expression".into(),
+                    input_artifacts: vec!["expr".into()],
+                    output_artifacts: vec!["value".into()],
+                    verification_receipt: "evaluation replay".into(),
+                },
+            )
+            .unwrap();
+        let completed = ledger.complete_success("chain-execution-1").unwrap();
+        assert_eq!(completed.status, CapabilityChainExecutionStatus::Succeeded);
+        assert_eq!(completed.steps.len(), 2);
+        assert!(matches!(
+            ledger.complete_failure("chain-execution-1", 1, "late failure"),
+            Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(_))
+        ));
     }
 
     #[test]

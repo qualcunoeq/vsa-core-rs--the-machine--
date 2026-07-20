@@ -67,6 +67,10 @@ libloading = "0.8"
 log = "0.4"
 env_logger = "0.10"
 regex = "1"
+# Local image decoding for the vision memory.  We intentionally keep this
+# dependency free of GPU/ML runtimes: object labels are learned from supplied
+# examples, while the descriptor is deterministic and inspectable.
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif", "webp", "bmp", "tiff"] }
 
 [features]
 default = []

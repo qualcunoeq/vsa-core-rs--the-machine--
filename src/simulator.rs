@@ -160,7 +160,14 @@ impl ActionProposal {
     }
 
     /// Create an action with a text-encoded effect vector.
-    pub fn from_text(id: u8, label: &str, effect_text: &str, deficit_delta: f64, error_delta: f64, cost: f64) -> Self {
+    pub fn from_text(
+        id: u8,
+        label: &str,
+        effect_text: &str,
+        deficit_delta: f64,
+        error_delta: f64,
+        cost: f64,
+    ) -> Self {
         let effect = Hypervector::encode_text_ngram(effect_text, 3);
         ActionProposal::new(id, label, effect, deficit_delta, error_delta, cost)
     }
@@ -258,40 +265,52 @@ impl CounterfactualSimulator {
         // 0: NULL — do nothing (baseline).  Uses zero effect vector so
         // repeated application produces no state change.
         self.actions.push(ActionProposal::new(
-            0, "NULL", Hypervector::new_zero(),
-            0.0, 0.0, 0.0,
+            0,
+            "NULL",
+            Hypervector::new_zero(),
+            0.0,
+            0.0,
+            0.0,
         ));
 
         // 1: EXPLORE — shift toward high entropy, increase curiosity
         self.actions.push(ActionProposal::from_text(
-            1, "EXPLORE", "ACTION_SHIFT_EXPLORE",
-            -0.05,  // slightly reduces deficit (growth/curiosity need)
-            0.10,   // error may increase (exploring novel states)
-            0.20,   // moderate cost
+            1,
+            "EXPLORE",
+            "ACTION_SHIFT_EXPLORE",
+            -0.05, // slightly reduces deficit (growth/curiosity need)
+            0.10,  // error may increase (exploring novel states)
+            0.20,  // moderate cost
         ));
 
         // 2: TASK — focus attention on the current dominant L2 concept
         self.actions.push(ActionProposal::from_text(
-            2, "TASK", "ACTION_SHIFT_TASK",
-            0.05,   // slight deficit increase (other needs deferred)
-            -0.10,  // error decreases (focus reduces uncertainty)
-            0.15,   // low cost
+            2,
+            "TASK",
+            "ACTION_SHIFT_TASK",
+            0.05,  // slight deficit increase (other needs deferred)
+            -0.10, // error decreases (focus reduces uncertainty)
+            0.15,  // low cost
         ));
 
         // 3: REGULATE — prioritize homeostatic restoration
         self.actions.push(ActionProposal::from_text(
-            3, "REGULATE", "ACTION_RESTORE_HOMEOSTASIS",
-            -0.20,  // significantly reduces overall deficit
-            0.05,   // slight error increase (regulation distracts from prediction)
-            0.30,   // moderate cost
+            3,
+            "REGULATE",
+            "ACTION_RESTORE_HOMEOSTASIS",
+            -0.20, // significantly reduces overall deficit
+            0.05,  // slight error increase (regulation distracts from prediction)
+            0.30,  // moderate cost
         ));
 
         // 4: BROADCAST — send EpistemicUpdate to the broker
         self.actions.push(ActionProposal::from_text(
-            4, "BROADCAST", "ACTION_BROADCAST_EPISTEMIC",
-            0.10,   // slight deficit increase (communication overhead)
-            -0.05,  // error decreases (shared context improves prediction)
-            0.40,   // high cost (network + consensus)
+            4,
+            "BROADCAST",
+            "ACTION_BROADCAST_EPISTEMIC",
+            0.10,  // slight deficit increase (communication overhead)
+            -0.05, // error decreases (shared context improves prediction)
+            0.40,  // high cost (network + consensus)
         ));
     }
 
@@ -349,8 +368,11 @@ impl CounterfactualSimulator {
         global_broadcast: &Hypervector,
     ) -> SimulationReport {
         self.evaluate_internal(
-            current_identity, homeostatic_deficit, prediction_error,
-            global_broadcast, &self.weights,
+            current_identity,
+            homeostatic_deficit,
+            prediction_error,
+            global_broadcast,
+            &self.weights,
         )
     }
 
@@ -368,8 +390,11 @@ impl CounterfactualSimulator {
         weights: &[f64; 4],
     ) -> SimulationReport {
         self.evaluate_internal(
-            current_identity, homeostatic_deficit, prediction_error,
-            global_broadcast, weights,
+            current_identity,
+            homeostatic_deficit,
+            prediction_error,
+            global_broadcast,
+            weights,
         )
     }
 
@@ -418,7 +443,9 @@ impl CounterfactualSimulator {
 
         outcomes.sort_by(|a, b| a.total_score.partial_cmp(&b.total_score).unwrap());
         let best_outcome = outcomes.first().cloned().unwrap();
-        let best_action = self.actions.iter()
+        let best_action = self
+            .actions
+            .iter()
             .find(|a| a.id == best_outcome.action_id)
             .cloned()
             .unwrap();
@@ -477,12 +504,11 @@ impl CounterfactualSimulator {
             let decay = self.uncertainty_decay.powi(step as i32);
 
             // Step score (lower = better)
-            let step_score = decay * (
-                weights[0] * cum_deficit +
-                weights[1] * cum_error +
-                weights[2] * identity_shift +
-                weights[3] * action.cost
-            );
+            let step_score = decay
+                * (weights[0] * cum_deficit
+                    + weights[1] * cum_error
+                    + weights[2] * identity_shift
+                    + weights[3] * action.cost);
 
             states.push(sim_state);
             deficits.push(cum_deficit);
@@ -519,8 +545,17 @@ impl CounterfactualSimulator {
         prediction_error: f64,
         global_broadcast: &Hypervector,
     ) -> (u8, String, f64) {
-        let report = self.evaluate(current_identity, homeostatic_deficit, prediction_error, global_broadcast);
-        (report.best_action.id, report.best_action.label.clone(), report.best_outcome.total_score)
+        let report = self.evaluate(
+            current_identity,
+            homeostatic_deficit,
+            prediction_error,
+            global_broadcast,
+        );
+        (
+            report.best_action.id,
+            report.best_action.label.clone(),
+            report.best_outcome.total_score,
+        )
     }
 
     /// Summary string for diagnostics.
@@ -563,10 +598,14 @@ mod tests {
         let report1 = sim.evaluate(&identity, deficit, error, &broadcast);
         let report2 = sim.evaluate(&identity, deficit, error, &broadcast);
 
-        eprintln!("  Best action (run 1): {} (score={:.6})",
-            report1.best_action.label, report1.best_outcome.total_score);
-        eprintln!("  Best action (run 2): {} (score={:.6})",
-            report2.best_action.label, report2.best_outcome.total_score);
+        eprintln!(
+            "  Best action (run 1): {} (score={:.6})",
+            report1.best_action.label, report1.best_outcome.total_score
+        );
+        eprintln!(
+            "  Best action (run 2): {} (score={:.6})",
+            report2.best_action.label, report2.best_outcome.total_score
+        );
 
         // Same action should win
         assert_eq!(
@@ -581,19 +620,29 @@ mod tests {
         );
 
         // NULL action (id=0) should have lowest cost and minimal identity shift
-        let null_outcome = report1.ranked_outcomes.iter()
-            .find(|o| o.action_id == 0).unwrap();
-        eprintln!("  NULL action identity shifts: {:?}", null_outcome.identity_shifts);
+        let null_outcome = report1
+            .ranked_outcomes
+            .iter()
+            .find(|o| o.action_id == 0)
+            .unwrap();
+        eprintln!(
+            "  NULL action identity shifts: {:?}",
+            null_outcome.identity_shifts
+        );
         eprintln!("  NULL action total score: {:.6}", null_outcome.total_score);
 
         // With deficit=0.30, the REGULATE action (which reduces deficit)
         // should be competitive
         eprintln!("  Ranked outcomes:");
         for (i, o) in report1.ranked_outcomes.iter().enumerate() {
-            eprintln!("    {}. {}: total_score={:.6}, final_deficit={:.3}, final_error={:.3}",
-                i + 1, o.action_label, o.total_score,
+            eprintln!(
+                "    {}. {}: total_score={:.6}, final_deficit={:.3}, final_error={:.3}",
+                i + 1,
+                o.action_label,
+                o.total_score,
                 o.simulated_deficits.last().unwrap_or(&0.0),
-                o.simulated_errors.last().unwrap_or(&0.0));
+                o.simulated_errors.last().unwrap_or(&0.0)
+            );
         }
     }
 
@@ -610,15 +659,18 @@ mod tests {
         // Scenario 1: High deficit (0.80), low error (0.10)
         // REGULATE should win because it strongly reduces deficit
         let report_high_deficit = sim.evaluate(&identity, 0.80, 0.10, &broadcast);
-        eprintln!("  High deficit (0.80): winner = {} (score={:.6})",
-            report_high_deficit.best_action.label,
-            report_high_deficit.best_outcome.total_score);
+        eprintln!(
+            "  High deficit (0.80): winner = {} (score={:.6})",
+            report_high_deficit.best_action.label, report_high_deficit.best_outcome.total_score
+        );
 
         // REGULATE has deficit_delta=-0.20, which should make it the best
         // when deficit is high and error is low
         // (May not always be strict #1 due to cost weighting, but should be
         // in the top 2)
-        let regulate_rank = report_high_deficit.ranked_outcomes.iter()
+        let regulate_rank = report_high_deficit
+            .ranked_outcomes
+            .iter()
             .position(|o| o.action_id == 3);
         eprintln!("  REGULATE rank: {:?}", regulate_rank.map(|r| r + 1));
         assert!(
@@ -629,11 +681,14 @@ mod tests {
         // Scenario 2: Low deficit (0.10), high error (0.80)
         // TASK should win because it reduces error
         let report_high_error = sim.evaluate(&identity, 0.10, 0.80, &broadcast);
-        eprintln!("  High error (0.80): winner = {} (score={:.6})",
-            report_high_error.best_action.label,
-            report_high_error.best_outcome.total_score);
+        eprintln!(
+            "  High error (0.80): winner = {} (score={:.6})",
+            report_high_error.best_action.label, report_high_error.best_outcome.total_score
+        );
 
-        let task_rank = report_high_error.ranked_outcomes.iter()
+        let task_rank = report_high_error
+            .ranked_outcomes
+            .iter()
             .position(|o| o.action_id == 2);
         eprintln!("  TASK rank: {:?}", task_rank.map(|r| r + 1));
         assert!(
@@ -658,19 +713,25 @@ mod tests {
         // Each simulated outcome should have rollout_depth steps
         for outcome in &report.ranked_outcomes {
             assert_eq!(
-                outcome.simulated_states.len(), sim.rollout_depth,
-                "Each outcome should have {} simulated states", sim.rollout_depth
+                outcome.simulated_states.len(),
+                sim.rollout_depth,
+                "Each outcome should have {} simulated states",
+                sim.rollout_depth
             );
             assert_eq!(
-                outcome.step_scores.len(), sim.rollout_depth,
-                "Each outcome should have {} step scores", sim.rollout_depth
+                outcome.step_scores.len(),
+                sim.rollout_depth,
+                "Each outcome should have {} step scores",
+                sim.rollout_depth
             );
 
             // Step scores should be decaying (later steps matter less)
             // But identity shifts may increase, so total step score may
             // not be monotonic.  Check the raw scores.
-            eprintln!("  {} step scores: {:?}",
-                outcome.action_label, outcome.step_scores);
+            eprintln!(
+                "  {} step scores: {:?}",
+                outcome.action_label, outcome.step_scores
+            );
         }
 
         // Total score should be positive
@@ -695,29 +756,53 @@ mod tests {
         let report2 = sim.evaluate(&identity, 0.30, 0.30, &broadcast);
 
         // NULL identity shifts should be identical across runs
-        let null_shifts_1 = report1.ranked_outcomes.iter()
-            .find(|o| o.action_id == 0).unwrap().identity_shifts.clone();
-        let null_shifts_2 = report2.ranked_outcomes.iter()
-            .find(|o| o.action_id == 0).unwrap().identity_shifts.clone();
+        let null_shifts_1 = report1
+            .ranked_outcomes
+            .iter()
+            .find(|o| o.action_id == 0)
+            .unwrap()
+            .identity_shifts
+            .clone();
+        let null_shifts_2 = report2
+            .ranked_outcomes
+            .iter()
+            .find(|o| o.action_id == 0)
+            .unwrap()
+            .identity_shifts
+            .clone();
 
         for (i, (s1, s2)) in null_shifts_1.iter().zip(null_shifts_2.iter()).enumerate() {
             assert!(
                 (s1 - s2).abs() < 1e-12,
                 "NULL identity shift step {} must be deterministic: {} vs {}",
-                i, s1, s2
+                i,
+                s1,
+                s2
             );
         }
-        eprintln!("  NULL identity shifts (deterministic): {:?}", null_shifts_1);
+        eprintln!(
+            "  NULL identity shifts (deterministic): {:?}",
+            null_shifts_1
+        );
 
         // NULL total score should be deterministic
-        let score1 = report1.ranked_outcomes.iter()
-            .find(|o| o.action_id == 0).map(|o| o.total_score).unwrap();
-        let score2 = report2.ranked_outcomes.iter()
-            .find(|o| o.action_id == 0).map(|o| o.total_score).unwrap();
+        let score1 = report1
+            .ranked_outcomes
+            .iter()
+            .find(|o| o.action_id == 0)
+            .map(|o| o.total_score)
+            .unwrap();
+        let score2 = report2
+            .ranked_outcomes
+            .iter()
+            .find(|o| o.action_id == 0)
+            .map(|o| o.total_score)
+            .unwrap();
         assert!(
             (score1 - score2).abs() < 1e-12,
             "NULL total score must be deterministic: {} vs {}",
-            score1, score2
+            score1,
+            score2
         );
     }
 
@@ -740,7 +825,11 @@ mod tests {
             cost: 0.5,
         };
         sim.register_action(custom_action);
-        assert_eq!(sim.action_count(), 6, "Should have 6 actions after custom add");
+        assert_eq!(
+            sim.action_count(),
+            6,
+            "Should have 6 actions after custom add"
+        );
 
         // Unregister
         let removed = sim.unregister_action(10);
@@ -774,19 +863,21 @@ mod tests {
         // Register two custom actions:
         // A: moderately effective, low cost
         sim.register_action(ActionProposal::new(
-            0, "EFFICIENT",
+            0,
+            "EFFICIENT",
             Hypervector::encode_text_ngram("EFFICIENT_ACTION", 3),
-            -0.10,  // reduces deficit
-            -0.05,  // slightly reduces error
-            0.10,   // low cost
+            -0.10, // reduces deficit
+            -0.05, // slightly reduces error
+            0.10,  // low cost
         ));
         // B: very effective, high cost
         sim.register_action(ActionProposal::new(
-            1, "EXPENSIVE_BUT_EFFECTIVE",
+            1,
+            "EXPENSIVE_BUT_EFFECTIVE",
             Hypervector::encode_text_ngram("EXPENSIVE_ACTION", 3),
-            -0.25,  // strongly reduces deficit
-            -0.15,  // strongly reduces error
-            0.80,   // very high cost
+            -0.25, // strongly reduces deficit
+            -0.15, // strongly reduces error
+            0.80,  // very high cost
         ));
 
         let identity = Hypervector::encode_text_ngram("PRIORITY_TEST", 3);
@@ -796,23 +887,39 @@ mod tests {
         // offset its effectiveness, making A the winner
         let report = sim.evaluate(&identity, 0.50, 0.30, &broadcast);
 
-        eprintln!("  Winner: {} (score={:.6})",
-            report.best_action.label, report.best_outcome.total_score);
+        eprintln!(
+            "  Winner: {} (score={:.6})",
+            report.best_action.label, report.best_outcome.total_score
+        );
         eprintln!("  All outcomes:");
         for (i, o) in report.ranked_outcomes.iter().enumerate() {
-            eprintln!("    {}. {}: score={:.6}", i + 1, o.action_label, o.total_score);
+            eprintln!(
+                "    {}. {}: score={:.6}",
+                i + 1,
+                o.action_label,
+                o.total_score
+            );
         }
 
         // A (EFFICIENT) should beat B (EXPENSIVE_BUT_EFFECTIVE) due to cost
-        let score_a = report.ranked_outcomes.iter()
-            .find(|o| o.action_id == 0).map(|o| o.total_score).unwrap();
-        let score_b = report.ranked_outcomes.iter()
-            .find(|o| o.action_id == 1).map(|o| o.total_score).unwrap();
+        let score_a = report
+            .ranked_outcomes
+            .iter()
+            .find(|o| o.action_id == 0)
+            .map(|o| o.total_score)
+            .unwrap();
+        let score_b = report
+            .ranked_outcomes
+            .iter()
+            .find(|o| o.action_id == 1)
+            .map(|o| o.total_score)
+            .unwrap();
 
         assert!(
             score_a < score_b,
             "Efficient action should beat expensive one: {:.6} < {:.6}",
-            score_a, score_b
+            score_a,
+            score_b
         );
     }
 
@@ -830,13 +937,15 @@ mod tests {
 
         let identity = Hypervector::encode_text_ngram("DRIVEN_TEST", 3);
         let broadcast = Hypervector::new_zero();
-        let deficit = 0.90;  // very high deficit
-        let error = 0.10;    // low error
+        let deficit = 0.90; // very high deficit
+        let error = 0.10; // low error
 
         // First: default weights → NULL should win (as seen in other tests)
         let default_report = sim.evaluate(&identity, deficit, error, &broadcast);
-        eprintln!("  Default weights winner: {} (score={:.6})",
-            default_report.best_action.label, default_report.best_outcome.total_score);
+        eprintln!(
+            "  Default weights winner: {} (score={:.6})",
+            default_report.best_action.label, default_report.best_outcome.total_score
+        );
         assert_eq!(
             default_report.best_action.id, 0,
             "With default weights, NULL should win (id=0), got {}",
@@ -847,17 +956,22 @@ mod tests {
         // and almost ignore identity shift and cost.
         // [Δdeficit, Δerror, Δidentity, cost] = [0.80, 0.10, 0.05, 0.05]
         let driven_weights = [0.80, 0.10, 0.05, 0.05];
-        let driven_report = sim.evaluate_driven(
-            &identity, deficit, error, &broadcast, &driven_weights,
+        let driven_report =
+            sim.evaluate_driven(&identity, deficit, error, &broadcast, &driven_weights);
+        eprintln!(
+            "  Driven weights winner: {} (score={:.6})",
+            driven_report.best_action.label, driven_report.best_outcome.total_score
         );
-        eprintln!("  Driven weights winner: {} (score={:.6})",
-            driven_report.best_action.label, driven_report.best_outcome.total_score);
         eprintln!("  Driven outcome rankings:");
         for (i, o) in driven_report.ranked_outcomes.iter().enumerate() {
-            eprintln!("    {}. {}: score={:.6}, final_deficit={:.3}, final_error={:.3}",
-                i + 1, o.action_label, o.total_score,
+            eprintln!(
+                "    {}. {}: score={:.6}, final_deficit={:.3}, final_error={:.3}",
+                i + 1,
+                o.action_label,
+                o.total_score,
                 o.simulated_deficits.last().unwrap_or(&0.0),
-                o.simulated_errors.last().unwrap_or(&0.0));
+                o.simulated_errors.last().unwrap_or(&0.0)
+            );
         }
 
         // With high deficit and identity/cost de-emphasised, REGULATE (id=3)

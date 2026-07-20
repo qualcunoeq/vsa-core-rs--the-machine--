@@ -38,9 +38,7 @@ use tokio::net::TcpListener;
 use tokio::process::Command;
 use tokio::time::{timeout, Duration};
 
-use the_machine::actuator::{
-    ActionRequest, ActionType, ActionResult,
-};
+use the_machine::actuator::{ActionRequest, ActionResult, ActionType};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CLI ARGUMENTS
@@ -68,7 +66,9 @@ impl Config {
                 "--bind" => {
                     i += 1;
                     if i >= args.len() {
-                        return Err("--bind requires an argument (e.g., 192.168.100.2:7878)".to_string());
+                        return Err(
+                            "--bind requires an argument (e.g., 192.168.100.2:7878)".to_string()
+                        );
                     }
                     bind = args[i].clone();
                 }
@@ -106,12 +106,19 @@ impl Config {
                     ));
                 }
                 _ => {
-                    return Err(format!("Unknown argument: {}. Use --help for usage.", args[i]));
+                    return Err(format!(
+                        "Unknown argument: {}. Use --help for usage.",
+                        args[i]
+                    ));
                 }
             }
             i += 1;
         }
-        Ok(Config { bind, allowlist_path, log_path })
+        Ok(Config {
+            bind,
+            allowlist_path,
+            log_path,
+        })
     }
 }
 
@@ -126,9 +133,7 @@ const ACTION_TIMEOUT_SECS: u64 = 120;
 const DEFAULT_TOP_PORTS: &str = "100";
 
 /// Built-in default allowlist (used when no --allowlist file is provided).
-const BUILTIN_ALLOWED: &[&str] = &[
-    "192.168.100.10",
-];
+const BUILTIN_ALLOWED: &[&str] = &["192.168.100.10"];
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ENTRY POINT
@@ -156,11 +161,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         eprintln!("Logging to {} (ensure stderr is redirected)", log_path);
     }
 
-    env_logger::Builder::from_env(
-        env_logger::Env::default().default_filter_or("info")
-    )
-    .format_timestamp_secs()
-    .init();
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
+        .format_timestamp_secs()
+        .init();
 
     // ── Load allowlist ──────────────────────────────────────────────────
     let allowed_targets: Vec<String> = if let Some(ref path) = config.allowlist_path {
@@ -171,15 +174,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     if allowed_targets.is_empty() {
         log::warn!("Allowlist is EMPTY — no targets are reachable!");
-        log::warn!("Add targets to {} or use the built-in defaults.",
-            config.allowlist_path.as_deref().unwrap_or("--allowlist FILE"));
+        log::warn!(
+            "Add targets to {} or use the built-in defaults.",
+            config
+                .allowlist_path
+                .as_deref()
+                .unwrap_or("--allowlist FILE")
+        );
     }
 
     // ── Start server ────────────────────────────────────────────────────
     let listener = TcpListener::bind(&config.bind).await?;
 
     log::info!("Jump-box server starting on {}", config.bind);
-    log::info!("Allowed targets ({}): {:?}", allowed_targets.len(), allowed_targets);
+    log::info!(
+        "Allowed targets ({}): {:?}",
+        allowed_targets.len(),
+        allowed_targets
+    );
     log::info!("Action timeout: {}s", ACTION_TIMEOUT_SECS);
     log::warn!("This server executes shell commands.  Bind to a non-routable isolated-network IP.");
     log::info!("──────────────────────────────────────────");
@@ -266,8 +278,14 @@ async fn handle_connection(
         }
     };
 
-    log::info!("{}: {:?} target={} params={:?} timeout={}s",
-        addr, request.action_type, request.target, request.params, request.timeout_secs);
+    log::info!(
+        "{}: {:?} target={} params={:?} timeout={}s",
+        addr,
+        request.action_type,
+        request.target,
+        request.params,
+        request.timeout_secs
+    );
 
     // ── 3. Validate target ──────────────────────────────────────────────
     if let Err(msg) = validate_target(&request.target, &allowed_targets) {
@@ -300,8 +318,14 @@ async fn handle_connection(
     };
 
     // ── 5. Write response ───────────────────────────────────────────────
-    log::info!("{}: result: success={} duration={}ms error={:?} observations={}",
-        addr, result.success, result.duration_ms, result.error, result.observations.len());
+    log::info!(
+        "{}: result: success={} duration={}ms error={:?} observations={}",
+        addr,
+        result.success,
+        result.duration_ms,
+        result.error,
+        result.observations.len()
+    );
 
     if write_result(&mut writer, &result).await.is_err() {
         log::error!("{}: failed to write response", addr);
@@ -368,11 +392,13 @@ fn ip_in_cidr(ip: &str, cidr_base: &str, prefix_len: u8) -> bool {
         return false;
     }
 
-    let ip_int = ip_octets.iter()
+    let ip_int = ip_octets
+        .iter()
         .filter_map(|o| o.parse::<u32>().ok())
         .fold(0u32, |acc, octet| (acc << 8) | octet);
 
-    let base_int = base_octets.iter()
+    let base_int = base_octets
+        .iter()
         .filter_map(|o| o.parse::<u32>().ok())
         .fold(0u32, |acc, octet| (acc << 8) | octet);
 
@@ -412,30 +438,46 @@ async fn dispatch_action(request: &ActionRequest) -> Result<ActionResult, String
 // ═══════════════════════════════════════════════════════════════════════════
 
 async fn handle_scan_port(request: &ActionRequest) -> Result<ActionResult, String> {
-    let port = request.params.get("port")
+    let port = request
+        .params
+        .get("port")
         .ok_or_else(|| "missing param: port".to_string())?;
     run_command("nmap", &["-p", port, &request.target, "-oG", "-"]).await
 }
 
 async fn handle_scan_host(request: &ActionRequest) -> Result<ActionResult, String> {
-    let ports = request.params.get("ports")
+    let ports = request
+        .params
+        .get("ports")
         .map(|s| s.as_str())
         .unwrap_or(DEFAULT_TOP_PORTS);
-    run_command("nmap", &["-sV", "--top-ports", ports, &request.target, "-oG", "-"]).await
+    run_command(
+        "nmap",
+        &["-sV", "--top-ports", ports, &request.target, "-oG", "-"],
+    )
+    .await
 }
 
 async fn handle_check_service(request: &ActionRequest) -> Result<ActionResult, String> {
-    let port = request.params.get("port")
+    let port = request
+        .params
+        .get("port")
         .ok_or_else(|| "missing param: port".to_string())?;
     run_command("nmap", &["-sV", "-p", port, &request.target]).await
 }
 
 async fn handle_brute_force(request: &ActionRequest) -> Result<ActionResult, String> {
-    let port = request.params.get("port")
+    let port = request
+        .params
+        .get("port")
         .ok_or_else(|| "missing param: port".to_string())?;
-    let users_str = request.params.get("users")
+    let users_str = request
+        .params
+        .get("users")
         .ok_or_else(|| "missing param: users".to_string())?;
-    let passwords_str = request.params.get("passwords")
+    let passwords_str = request
+        .params
+        .get("passwords")
         .ok_or_else(|| "missing param: passwords".to_string())?;
 
     // Write credentials to temp files
@@ -452,16 +494,26 @@ async fn handle_brute_force(request: &ActionRequest) -> Result<ActionResult, Str
         _ => "ssh",
     };
 
-    let result = run_command("hydra", &[
-        "-L", &user_file,
-        "-P", &pass_file,
-        "-s", port,
-        &request.target,
-        service,
-        "-t", "4",
-        "-o", "/dev/null",
-        "-w", "10",
-    ]).await;
+    let result = run_command(
+        "hydra",
+        &[
+            "-L",
+            &user_file,
+            "-P",
+            &pass_file,
+            "-s",
+            port,
+            &request.target,
+            service,
+            "-t",
+            "4",
+            "-o",
+            "/dev/null",
+            "-w",
+            "10",
+        ],
+    )
+    .await;
 
     let _ = std::fs::remove_file(&user_file);
     let _ = std::fs::remove_file(&pass_file);
@@ -470,12 +522,18 @@ async fn handle_brute_force(request: &ActionRequest) -> Result<ActionResult, Str
 }
 
 async fn handle_probe_http(request: &ActionRequest) -> Result<ActionResult, String> {
-    let port = request.params.get("port")
+    let port = request
+        .params
+        .get("port")
         .ok_or_else(|| "missing param: port".to_string())?;
-    let path = request.params.get("path")
+    let path = request
+        .params
+        .get("path")
         .map(|s| s.as_str())
         .unwrap_or("/");
-    let method = request.params.get("method")
+    let method = request
+        .params
+        .get("method")
         .map(|s| s.as_str())
         .unwrap_or("GET");
 
@@ -489,7 +547,9 @@ async fn handle_probe_http(request: &ActionRequest) -> Result<ActionResult, Stri
 }
 
 async fn handle_check_process(request: &ActionRequest) -> Result<ActionResult, String> {
-    let name = request.params.get("process_name")
+    let name = request
+        .params
+        .get("process_name")
         .ok_or_else(|| "missing param: process_name".to_string())?;
 
     let result = run_command("pgrep", &["-a", name]).await;
@@ -497,20 +557,30 @@ async fn handle_check_process(request: &ActionRequest) -> Result<ActionResult, S
     match result {
         Ok(r) => {
             if !r.success || r.raw_output.trim().is_empty() {
-                run_command("sh", &["-c", &format!("ps aux | grep -v grep | grep '{}'", name)]).await
+                run_command(
+                    "sh",
+                    &["-c", &format!("ps aux | grep -v grep | grep '{}'", name)],
+                )
+                .await
             } else {
                 Ok(r)
             }
         }
         Err(e) => {
             log::warn!("pgrep failed ({}), trying ps fallback", e);
-            run_command("sh", &["-c", &format!("ps aux | grep -v grep | grep '{}'", name)]).await
+            run_command(
+                "sh",
+                &["-c", &format!("ps aux | grep -v grep | grep '{}'", name)],
+            )
+            .await
         }
     }
 }
 
 async fn handle_listen_port(request: &ActionRequest) -> Result<ActionResult, String> {
-    let port = request.params.get("port")
+    let port = request
+        .params
+        .get("port")
         .ok_or_else(|| "missing param: port".to_string())?;
 
     log::info!("Starting netcat listener on port {}", port);
@@ -533,7 +603,9 @@ async fn handle_listen_port(request: &ActionRequest) -> Result<ActionResult, Str
 }
 
 async fn handle_execute_command(request: &ActionRequest) -> Result<ActionResult, String> {
-    let command = request.params.get("command")
+    let command = request
+        .params
+        .get("command")
         .ok_or_else(|| "missing param: command".to_string())?;
 
     log::warn!("RAW COMMAND EXECUTION: {}", command);
@@ -544,16 +616,17 @@ async fn handle_execute_command(request: &ActionRequest) -> Result<ActionResult,
 /// Binaries allowed for `--help` documentation lookup.
 /// Constrained to standard system documentation tools only — prevents
 /// arbitrary binary execution from learned/observed query terms.
-const DOC_BINARY_ALLOWLIST: &[&str] = &[
-    "man", "apropos", "whatis", "perror", "errno",
-];
+const DOC_BINARY_ALLOWLIST: &[&str] = &["man", "apropos", "whatis", "perror", "errno"];
 
 async fn handle_fetch_documentation(request: &ActionRequest) -> Result<ActionResult, String> {
-    let query = request.params.get("query")
+    let query = request
+        .params
+        .get("query")
         .ok_or_else(|| "missing param: query".to_string())?;
 
     // Sanitize: remove dangerous characters
-    let safe_query: String = query.chars()
+    let safe_query: String = query
+        .chars()
         .filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_' || *c == '.')
         .collect();
 
@@ -677,8 +750,7 @@ fn write_temp_file(prefix: &str, content: &str) -> Result<String, String> {
     let mut path = std::env::temp_dir();
     path.push(format!("{}{}", prefix, uuid::Uuid::new_v4()));
 
-    std::fs::write(&path, content)
-        .map_err(|e| format!("failed to write temp file: {}", e))?;
+    std::fs::write(&path, content).map_err(|e| format!("failed to write temp file: {}", e))?;
 
     Ok(path.to_string_lossy().to_string())
 }
@@ -740,7 +812,11 @@ mod tests {
     fn test_load_allowlist() {
         let dir = std::env::temp_dir();
         let path = dir.join("test_allowlist.txt");
-        std::fs::write(&path, "192.168.100.10\n# comment\n10.0.0.0/8\n\n192.168.1.1").unwrap();
+        std::fs::write(
+            &path,
+            "192.168.100.10\n# comment\n10.0.0.0/8\n\n192.168.1.1",
+        )
+        .unwrap();
 
         let list = load_allowlist(path.to_str().unwrap()).unwrap();
         assert_eq!(list.len(), 3);
@@ -781,7 +857,10 @@ mod tests {
             "/etc/jumpbox/allowed_targets.txt".to_string(),
         ];
         let config = Config::parse(&args).unwrap();
-        assert_eq!(config.allowlist_path.unwrap(), "/etc/jumpbox/allowed_targets.txt");
+        assert_eq!(
+            config.allowlist_path.unwrap(),
+            "/etc/jumpbox/allowed_targets.txt"
+        );
     }
 
     #[test]
@@ -789,7 +868,7 @@ mod tests {
         let args = vec![
             "jump_box".to_string(),
             "--bind".to_string(),
-            "0.0.0.0:9999".to_string(),  // user's responsibility
+            "0.0.0.0:9999".to_string(), // user's responsibility
             "--allowlist".to_string(),
             "/tmp/allow.txt".to_string(),
             "--log".to_string(),

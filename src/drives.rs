@@ -68,7 +68,6 @@
 // 6. test_sleep_weight_shift         — Sleep shifts multipliers
 // 7. test_drive_equilibrium          — Low deficit + low error → all quiet
 
-
 // ═══════════════════════════════════════════════════════════════════════════
 // CONSTANTS
 // ═══════════════════════════════════════════════════════════════════════════
@@ -113,7 +112,12 @@ pub enum DriveId {
 
 impl DriveId {
     pub fn all() -> [DriveId; 4] {
-        [DriveId::PredictiveMastery, DriveId::Coherence, DriveId::Abstraction, DriveId::SelfPreservation]
+        [
+            DriveId::PredictiveMastery,
+            DriveId::Coherence,
+            DriveId::Abstraction,
+            DriveId::SelfPreservation,
+        ]
     }
 
     pub fn label(&self) -> &'static str {
@@ -128,10 +132,10 @@ impl DriveId {
     /// Which simulator weight index this drive modulates.
     pub fn simulator_weight_idx(&self) -> usize {
         match self {
-            DriveId::PredictiveMastery => 1,  // Δerror
-            DriveId::Coherence => 2,           // Δidentity
-            DriveId::Abstraction => 3,         // Δcost
-            DriveId::SelfPreservation => 0,    // Δdeficit
+            DriveId::PredictiveMastery => 1, // Δerror
+            DriveId::Coherence => 2,         // Δidentity
+            DriveId::Abstraction => 3,       // Δcost
+            DriveId::SelfPreservation => 0,  // Δdeficit
         }
     }
 }
@@ -196,7 +200,10 @@ pub struct IntrinsicMotivation {
 
 impl IntrinsicMotivation {
     pub fn new() -> Self {
-        let drives: Vec<DriveState> = DriveId::all().iter().map(|id| DriveState::new(*id)).collect();
+        let drives: Vec<DriveState> = DriveId::all()
+            .iter()
+            .map(|id| DriveState::new(*id))
+            .collect();
         IntrinsicMotivation {
             drives,
             tick: 0,
@@ -238,7 +245,12 @@ impl IntrinsicMotivation {
         // 2. Apply homeostatic suppression
         let (pm, coh, abs, sp) = if sp_intensity > SP_SUPPRESSION_THRESHOLD {
             // Survival mode: suppress all non-survival drives
-            (pm_intensity * 0.1, coh_intensity * 0.1, abs_intensity * 0.1, sp_intensity)
+            (
+                pm_intensity * 0.1,
+                coh_intensity * 0.1,
+                abs_intensity * 0.1,
+                sp_intensity,
+            )
         } else {
             (pm_intensity, coh_intensity, abs_intensity, sp_intensity)
         };
@@ -377,10 +389,14 @@ impl IntrinsicMotivation {
         let intensities = self.get_intensities();
         format!(
             "Drives: PM={:.2}(×{:.2}) COH={:.2}(×{:.2}) AB={:.2}(×{:.2}) SP={:.2}(×{:.2})",
-            intensities[0], mult[1],
-            intensities[1], mult[2],
-            intensities[2], mult[3],
-            intensities[3], mult[0],
+            intensities[0],
+            mult[1],
+            intensities[1],
+            mult[2],
+            intensities[2],
+            mult[3],
+            intensities[3],
+            mult[0],
         )
     }
 }
@@ -407,7 +423,8 @@ mod tests {
             assert!(
                 val >= 0.0 && val <= 1.0,
                 "Drive[{}] intensity must be in [0, 1]: {}",
-                i, val
+                i,
+                val
             );
         }
 
@@ -418,7 +435,8 @@ mod tests {
             assert!(
                 val >= 0.0 && val <= 1.0,
                 "Drive[{}] intensity must be in [0, 1]: {}",
-                i, val
+                i,
+                val
             );
         }
     }
@@ -441,7 +459,8 @@ mod tests {
         assert!(
             intensities_high[0] > intensities_low[0],
             "PM intensity should be higher when error is high: {} vs {}",
-            intensities_high[0], intensities_low[0]
+            intensities_high[0],
+            intensities_low[0]
         );
     }
 
@@ -463,7 +482,8 @@ mod tests {
         assert!(
             abs_high > abs_low,
             "AB intensity should be higher when L2 count is low: {} vs {}",
-            abs_high, abs_low
+            abs_high,
+            abs_low
         );
     }
 
@@ -480,10 +500,14 @@ mod tests {
         im.update(0.80, 0.05, 0.90, 0.20, 2);
         let survival = im.get_intensities();
 
-        eprintln!("  Normal intensities: PM={:.3} COH={:.3} AB={:.3} SP={:.3}",
-            normal[0], normal[1], normal[2], normal[3]);
-        eprintln!("  Survival intensities: PM={:.3} COH={:.3} AB={:.3} SP={:.3}",
-            survival[0], survival[1], survival[2], survival[3]);
+        eprintln!(
+            "  Normal intensities: PM={:.3} COH={:.3} AB={:.3} SP={:.3}",
+            normal[0], normal[1], normal[2], normal[3]
+        );
+        eprintln!(
+            "  Survival intensities: PM={:.3} COH={:.3} AB={:.3} SP={:.3}",
+            survival[0], survival[1], survival[2], survival[3]
+        );
 
         // SP should be higher in survival mode
         assert!(
@@ -498,7 +522,8 @@ mod tests {
         assert!(
             survival[0] <= normal[0] + 0.01,
             "PM should not increase in survival mode: {} vs {}",
-            survival[0], normal[0]
+            survival[0],
+            normal[0]
         );
     }
 
@@ -512,29 +537,36 @@ mod tests {
         let base = [0.30, 0.30, 0.20, 0.20];
 
         let eff_satisfied = im.effective_weights(&base);
-        eprintln!("  Satisfied effective weights: [{:.4}, {:.4}, {:.4}, {:.4}]",
-            eff_satisfied[0], eff_satisfied[1], eff_satisfied[2], eff_satisfied[3]);
+        eprintln!(
+            "  Satisfied effective weights: [{:.4}, {:.4}, {:.4}, {:.4}]",
+            eff_satisfied[0], eff_satisfied[1], eff_satisfied[2], eff_satisfied[3]
+        );
 
         // When satisfied, multipliers are near 0, so effective ≈ base
         for i in 0..4 {
             assert!(
                 (eff_satisfied[i] - base[i]).abs() < 0.05,
                 "Satisfied drive should not distort weight[{}]: {:.4} ≈ {:.4}",
-                i, eff_satisfied[i], base[i]
+                i,
+                eff_satisfied[i],
+                base[i]
             );
         }
 
         // Boost the PredictiveMastery multiplier (simulating sleep adjustment)
         im.adjust_multipliers(DriveId::PredictiveMastery, 0.5);
         let eff_boosted = im.effective_weights(&base);
-        eprintln!("  PM-boosted effective weights: [{:.4}, {:.4}, {:.4}, {:.4}]",
-            eff_boosted[0], eff_boosted[1], eff_boosted[2], eff_boosted[3]);
+        eprintln!(
+            "  PM-boosted effective weights: [{:.4}, {:.4}, {:.4}, {:.4}]",
+            eff_boosted[0], eff_boosted[1], eff_boosted[2], eff_boosted[3]
+        );
 
         // The PM-modulated weight (index 1 = Δerror) should be higher
         assert!(
             eff_boosted[1] > eff_satisfied[1],
             "PM boost should increase Δerror weight: {} > {}",
-            eff_boosted[1], eff_satisfied[1]
+            eff_boosted[1],
+            eff_satisfied[1]
         );
     }
 
@@ -549,8 +581,10 @@ mod tests {
         }
 
         let before = im.get_multipliers();
-        eprintln!("  Multipliers before sleep: [{:.4}, {:.4}, {:.4}, {:.4}]",
-            before[0], before[1], before[2], before[3]);
+        eprintln!(
+            "  Multipliers before sleep: [{:.4}, {:.4}, {:.4}, {:.4}]",
+            before[0], before[1], before[2], before[3]
+        );
 
         // Determine starved drive
         let starved = im.starved_drive();
@@ -559,21 +593,30 @@ mod tests {
         // Sleep: boost the starved drive
         im.adjust_multipliers(starved, SLEEP_BOOST);
         let after = im.get_multipliers();
-        eprintln!("  Multipliers after sleep: [{:.4}, {:.4}, {:.4}, {:.4}]",
-            after[0], after[1], after[2], after[3]);
+        eprintln!(
+            "  Multipliers after sleep: [{:.4}, {:.4}, {:.4}, {:.4}]",
+            after[0], after[1], after[2], after[3]
+        );
 
         // The starved drive's multiplier should have increased
         let idx = starved.simulator_weight_idx();
         assert!(
             after[idx] >= before[idx],
             "Sleep should increase starved drive multiplier: {} >= {}",
-            after[idx], before[idx]
+            after[idx],
+            before[idx]
         );
 
         // Reset for next wake cycle
         im.reset_cumulative();
-        assert_eq!(im.drives.iter().map(|d| d.cumulative_deprivation as u32).sum::<u32>(), 0,
-            "Cumulative deprivation should reset to 0");
+        assert_eq!(
+            im.drives
+                .iter()
+                .map(|d| d.cumulative_deprivation as u32)
+                .sum::<u32>(),
+            0,
+            "Cumulative deprivation should reset to 0"
+        );
     }
 
     /// Theorem D3: Low error + low deficit → all drives quiet.
@@ -585,15 +628,18 @@ mod tests {
         im.update(0.06, 0.05, 0.05, 0.02, 30);
         let intensities = im.get_intensities();
 
-        eprintln!("  Equilibrium intensities: PM={:.3} COH={:.3} AB={:.3} SP={:.3}",
-            intensities[0], intensities[1], intensities[2], intensities[3]);
+        eprintln!(
+            "  Equilibrium intensities: PM={:.3} COH={:.3} AB={:.3} SP={:.3}",
+            intensities[0], intensities[1], intensities[2], intensities[3]
+        );
 
         // All drives should be low
         for (i, &val) in intensities.iter().enumerate() {
             assert!(
                 val < 0.30,
                 "Drive[{}] should be low at equilibrium: {}",
-                i, val
+                i,
+                val
             );
         }
     }
@@ -605,8 +651,12 @@ mod tests {
 
         // Boost a multiplier
         im.adjust_multipliers(DriveId::Abstraction, 0.5);
-        let m_before = im.drives.iter()
-            .find(|d| d.id == DriveId::Abstraction).unwrap().multiplier;
+        let m_before = im
+            .drives
+            .iter()
+            .find(|d| d.id == DriveId::Abstraction)
+            .unwrap()
+            .multiplier;
         eprintln!("  AB multiplier before decay: {:.6}", m_before);
 
         // Run many updates (which apply decay)
@@ -614,15 +664,20 @@ mod tests {
             im.update(0.10, 0.05, 0.10, 0.03, 30);
         }
 
-        let m_after = im.drives.iter()
-            .find(|d| d.id == DriveId::Abstraction).unwrap().multiplier;
+        let m_after = im
+            .drives
+            .iter()
+            .find(|d| d.id == DriveId::Abstraction)
+            .unwrap()
+            .multiplier;
         eprintln!("  AB multiplier after 1000 ticks: {:.6}", m_after);
 
         // Multiplier should have decayed
         assert!(
             m_after < m_before,
             "Multiplier should decay over time: {} < {}",
-            m_after, m_before
+            m_after,
+            m_before
         );
     }
 }

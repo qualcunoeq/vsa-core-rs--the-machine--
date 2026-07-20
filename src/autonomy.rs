@@ -6,18 +6,31 @@ use crate::{Hypervector, HD_DIMENSION};
 // ─── Default SVO candidate lists ──────────────────────────────────────────
 
 pub const DEFAULT_SUBJECTS: &[&str] = &[
-    "System", "Agent", "Observer", "Process", "Component",
-    "Module", "Interface", "Environment",
+    "System",
+    "Agent",
+    "Observer",
+    "Process",
+    "Component",
+    "Module",
+    "Interface",
+    "Environment",
 ];
 
 pub const DEFAULT_VERBS: &[&str] = &[
-    "observe", "process", "respond", "adapt", "learn",
-    "connect", "analyze", "signal",
+    "observe", "process", "respond", "adapt", "learn", "connect", "analyze", "signal",
 ];
 
 pub const DEFAULT_OBJECTS: &[&str] = &[
-    "state", "pattern", "signal", "context", "relation",
-    "structure", "data", "event", "resource", "boundary",
+    "state",
+    "pattern",
+    "signal",
+    "context",
+    "relation",
+    "structure",
+    "data",
+    "event",
+    "resource",
+    "boundary",
 ];
 
 // ─── AutonomyDrive ────────────────────────────────────────────────────────
@@ -451,7 +464,11 @@ impl GoalFormulationEngine {
 
     /// Learn from past goal outcomes to improve future planning.
     /// Finds similar past goals and returns their success patterns.
-    pub fn get_similar_past_outcomes(&self, target: &Hypervector, threshold: f64) -> Vec<&GoalRecord> {
+    pub fn get_similar_past_outcomes(
+        &self,
+        target: &Hypervector,
+        threshold: f64,
+    ) -> Vec<&GoalRecord> {
         self.goal_history
             .iter()
             .filter(|record| {
@@ -509,10 +526,15 @@ impl DriveSystem {
         memory: &[Hypervector],
     ) -> DriveLabel {
         // 1. Check reactive drive (highest priority)
-        if threat > 0.3 || self.autonomy.evaluates_necessity_to_pivot(dissonance_vector) {
+        if threat > 0.3
+            || self
+                .autonomy
+                .evaluates_necessity_to_pivot(dissonance_vector)
+        {
             let dissonance_dist = dissonance_vector.count_ones() as f64 / 10048.0;
             let label = DriveLabel::Reactive(format!(
-                "Threat={:.2}, Dissonance={:.3}", threat, dissonance_dist
+                "Threat={:.2}, Dissonance={:.3}",
+                threat, dissonance_dist
             ));
             self.active_drive = label.clone();
             return label;
@@ -520,7 +542,9 @@ impl DriveSystem {
 
         // 2. Check goal-directed drive
         if self.goal_formulation.active_goal.is_some() {
-            let desc = self.goal_formulation.get_goal_description()
+            let desc = self
+                .goal_formulation
+                .get_goal_description()
                 .unwrap_or_else(|| "Unknown goal".to_string());
             let label = DriveLabel::GoalDirected(desc);
             self.active_drive = label.clone();
@@ -553,16 +577,28 @@ mod tests {
     use crate::action::ActionRegistry;
     use crate::resonator::{encode_svo, ResonatorVocabulary};
 
-    fn setup_env() -> (ResonatorVocabulary, ActionRegistry, Vec<String>, Vec<String>, Vec<String>) {
+    fn setup_env() -> (
+        ResonatorVocabulary,
+        ActionRegistry,
+        Vec<String>,
+        Vec<String>,
+        Vec<String>,
+    ) {
         let mut vocab = ResonatorVocabulary::new();
         let registry = ActionRegistry::new();
         let subjects: Vec<String> = DEFAULT_SUBJECTS.iter().map(|s| s.to_string()).collect();
         let verbs: Vec<String> = DEFAULT_VERBS.iter().map(|v| v.to_string()).collect();
         let objects: Vec<String> = DEFAULT_OBJECTS.iter().map(|o| o.to_string()).collect();
         // Ensure default terms are registered in vocab for factorization
-        for s in &subjects { vocab.register_term(s); }
-        for v in &verbs { vocab.register_term(v); }
-        for o in &objects { vocab.register_term(o); }
+        for s in &subjects {
+            vocab.register_term(s);
+        }
+        for v in &verbs {
+            vocab.register_term(v);
+        }
+        for o in &objects {
+            vocab.register_term(o);
+        }
         (vocab, registry, subjects, verbs, objects)
     }
 
@@ -605,10 +641,19 @@ mod tests {
         let drift_seq = vec![Hypervector::new_zero(); 1];
 
         let result = drive.formulate_intent(
-            &dissonance, &vocab, &registry,
-            &subjects, &verbs, &objects, 30,
-            &current_state, &goal_state, &drift_seq,
-            &[], 0.0, &[],
+            &dissonance,
+            &vocab,
+            &registry,
+            &subjects,
+            &verbs,
+            &objects,
+            30,
+            &current_state,
+            &goal_state,
+            &drift_seq,
+            &[],
+            0.0,
+            &[],
         );
 
         assert!(

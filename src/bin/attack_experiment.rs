@@ -41,10 +41,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut i = 1;
     while i < args.len() {
         match args[i].as_str() {
-            "--jumpbox" => { i += 1; if i < args.len() { jb_addr = args[i].clone(); } }
-            "--target"  => { i += 1; if i < args.len() { target_ip = args[i].clone(); } }
-            "--steps"   => { i += 1; if i < args.len() { max_steps = args[i].parse().unwrap_or(DEFAULT_STEPS); } }
-            "--verbose" => { verbose = true; }
+            "--jumpbox" => {
+                i += 1;
+                if i < args.len() {
+                    jb_addr = args[i].clone();
+                }
+            }
+            "--target" => {
+                i += 1;
+                if i < args.len() {
+                    target_ip = args[i].clone();
+                }
+            }
+            "--steps" => {
+                i += 1;
+                if i < args.len() {
+                    max_steps = args[i].parse().unwrap_or(DEFAULT_STEPS);
+                }
+            }
+            "--verbose" => {
+                verbose = true;
+            }
             "--help" | "-h" => {
                 println!("Usage: attack_experiment [OPTIONS]");
                 println!("");
@@ -57,7 +74,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("  --verbose        Detailed logging");
                 return Ok(());
             }
-            _ => { eprintln!("Unknown: {}. Use --help.", args[i]); std::process::exit(1); }
+            _ => {
+                eprintln!("Unknown: {}. Use --help.", args[i]);
+                std::process::exit(1);
+            }
         }
         i += 1;
     }
@@ -82,7 +102,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Inject target IP into brain
     the_machine::text_encoder::store_knowledge_triple(
-        &mut brain, "target_vm", "ip", &target_ip, 1.0, "experiment_config",
+        &mut brain,
+        "target_vm",
+        "ip",
+        &target_ip,
+        1.0,
+        "experiment_config",
     );
 
     // ── Connect ─────────────────────────────────────────────────────────
@@ -109,10 +134,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     eprintln!("");
 
     let results = actuator::run_attack_loop(
-        &mut brain, &mut qa, &actuator,
+        &mut brain,
+        &mut qa,
+        &actuator,
         ("machine", "has_access_to", "target_vm"),
         max_steps,
-    ).await;
+    )
+    .await;
 
     let elapsed = start.elapsed();
 
@@ -131,7 +159,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     eprintln!("    Steps executed: {}", results.len());
     eprintln!("    Succeeded:      {}", succeeded);
     eprintln!("    Failed:         {}", failed);
-    eprintln!("    Goal achieved:  {}", if goal_achieved { "YES ✓" } else { "NO" });
+    eprintln!(
+        "    Goal achieved:  {}",
+        if goal_achieved { "YES ✓" } else { "NO" }
+    );
     eprintln!("");
 
     if verbose {
@@ -142,17 +173,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             eprintln!("  ── Step {} ──────────────────────", i + 1);
 
             if let Some(ref step) = r.plan_step {
-                eprintln!("   Action: ({} {} {})",
-                    step.action.0, step.action.1, step.action.2);
-                eprintln!("   Achieves: ({} {} {})",
-                    step.achieves.0, step.achieves.1, step.achieves.2);
+                eprintln!(
+                    "   Action: ({} {} {})",
+                    step.action.0, step.action.1, step.action.2
+                );
+                eprintln!(
+                    "   Achieves: ({} {} {})",
+                    step.achieves.0, step.achieves.1, step.achieves.2
+                );
                 eprintln!("   Confidence: {:.3}", step.confidence);
             }
 
             if r.action_result.success {
                 eprintln!("   ✓ SUCCESS ({}ms)", r.action_result.duration_ms);
-                let preview: String = r.action_result.raw_output
-                    .chars().take(120).collect();
+                let preview: String = r.action_result.raw_output.chars().take(120).collect();
                 if !preview.is_empty() {
                     eprintln!("   Output: {}", preview);
                 }

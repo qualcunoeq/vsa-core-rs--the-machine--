@@ -1,8 +1,7 @@
-use crate::compression::{CountingBloomFilter, CappedVecDeque};
+use crate::analogy::{self, AnalogicalIndex, MetaIndex, RoleDictionary};
+use crate::compression::{CappedVecDeque, CountingBloomFilter};
 use crate::resonator::ResonatorVocabulary;
 use crate::Hypervector;
-use crate::analogy::{self, RoleDictionary,
-    AnalogicalIndex, MetaIndex};
 use scraper::{Html, Selector};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
@@ -210,8 +209,7 @@ impl VSAForager {
             for i in 0..chars.len() {
                 let c = chars[i];
                 if c == '.' || c == '?' || c == '!' {
-                    if i + 1 == chars.len()
-                        || (i + 1 < chars.len() && chars[i + 1].is_whitespace())
+                    if i + 1 == chars.len() || (i + 1 < chars.len() && chars[i + 1].is_whitespace())
                     {
                         let sentence: String = chars[start..=i].iter().collect();
                         let cleaned = sentence.trim().to_string();
@@ -258,10 +256,7 @@ impl VSAForager {
                 // fast-track this fact by tagging it for priority
                 // consolidation.
                 if *resonance >= 0.75 {
-                    metadata.insert(
-                        "priority".to_string(),
-                        "mission_critical".to_string(),
-                    );
+                    metadata.insert("priority".to_string(), "mission_critical".to_string());
 
                     // ── Dynamic vocabulary learning ─────────────
                     // Extract novel content words from the high-value
@@ -271,9 +266,7 @@ impl VSAForager {
                         let mut vocab_guard = vocab_arc.write().await;
                         for word in sentence.split_whitespace() {
                             let clean = word.trim_matches(|c: char| c.is_ascii_punctuation());
-                            if clean.len() >= 4
-                                && !clean.chars().all(|c| c.is_ascii_digit())
-                            {
+                            if clean.len() >= 4 && !clean.chars().all(|c| c.is_ascii_digit()) {
                                 vocab_guard.learn_term(clean);
                             }
                         }
@@ -470,7 +463,11 @@ impl VSAForager {
             // IDF(t) = ln( total_documents / (1 + doc_frequency(t)) )
             // Clamped so rare words get at most 10× influence, common
             // words get at least 1×.
-            let df = self.doc_frequency.get(&word.to_lowercase()).copied().unwrap_or(0);
+            let df = self
+                .doc_frequency
+                .get(&word.to_lowercase())
+                .copied()
+                .unwrap_or(0);
             let idf = ((total as f64) / (1.0 + df as f64)).ln().max(0.0);
             let copies = (idf * 2.0).round().max(1.0).min(10.0) as usize;
 
@@ -531,13 +528,16 @@ impl VSAForager {
                 // High-confidence factorization — set structured intent.
                 // Intent I = A ⊕ P where A = verb, P = object.
                 // The forager scores links against P.
-                let subj_hv = vocab.get_vector(&subj_str)
+                let subj_hv = vocab
+                    .get_vector(&subj_str)
                     .cloned()
                     .unwrap_or_else(|| Hypervector::encode_text_ngram(&subj_str, 3));
-                let verb_hv = vocab.get_vector(&verb_str)
+                let verb_hv = vocab
+                    .get_vector(&verb_str)
                     .cloned()
                     .unwrap_or_else(|| Hypervector::encode_text_ngram(&verb_str, 3));
-                let obj_hv = vocab.get_vector(&obj_str)
+                let obj_hv = vocab
+                    .get_vector(&obj_str)
                     .cloned()
                     .unwrap_or_else(|| Hypervector::encode_text_ngram(&obj_str, 3));
 
@@ -621,7 +621,10 @@ impl VSAForager {
                         // (the current URL is still in visited, but clearing
                         // the set lets us retry other links on the same page).
                         guard.visited.clear();
-                        let _ = log_tx.send("CRAWLER: Cleared visited set — will retry with fresh links.".to_string());
+                        let _ = log_tx.send(
+                            "CRAWLER: Cleared visited set — will retry with fresh links."
+                                .to_string(),
+                        );
                     }
                     sleep(Duration::from_secs(2)).await;
                 }

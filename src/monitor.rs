@@ -17,9 +17,9 @@ use std::time::{Duration, Instant};
 use tokio::sync::RwLock;
 use tokio::time;
 
-use crate::VSABrain;
 use crate::defense::DefenseSystem;
-use crate::retrieval::{DomainIndex, detect_cross_domain_anomalies};
+use crate::retrieval::{detect_cross_domain_anomalies, DomainIndex};
+use crate::VSABrain;
 
 /// State maintained across monitoring cycles.
 #[derive(Clone)]
@@ -48,10 +48,7 @@ impl MonitorState {
 /// Run one cycle of the monitoring loop: observe → ingest → detect → respond.
 ///
 /// Returns the number of threats detected in this cycle.
-async fn monitoring_cycle(
-    brain: &mut VSABrain,
-    defense: &DefenseSystem,
-) -> usize {
+async fn monitoring_cycle(brain: &mut VSABrain, defense: &DefenseSystem) -> usize {
     // ── 1. Observe: capture system state ─────────────────────────────────
     let scan_start = Instant::now();
     let triples_stored = crate::system_encoder::ingest_system_state(brain);
@@ -74,21 +71,29 @@ async fn monitoring_cycle(
 
     // ── 5. Log ───────────────────────────────────────────────────────────
     let n_clusters = brain.dejavu_clusters.len();
-    let n_entries: usize = brain.dejavu_clusters.iter()
-        .map(|c| c.entries.len()).sum();
+    let n_entries: usize = brain.dejavu_clusters.iter().map(|c| c.entries.len()).sum();
 
     eprintln!(
         "[monitor] cycle: scan={} triples in {:.1}s | {} clusters, {} entries | \
          threats={} in {:.1}s | defense_level={:.2}",
-        triples_stored, scan_time.as_secs_f64(),
-        n_clusters, n_entries,
-        threats.len(), detect_time.as_secs_f64(),
+        triples_stored,
+        scan_time.as_secs_f64(),
+        n_clusters,
+        n_entries,
+        threats.len(),
+        detect_time.as_secs_f64(),
         *defense.threat_level.read().await,
     );
 
     for (i, t) in threats.iter().enumerate() {
-        eprintln!("  threat {}/{}: [{}] severity={:.1} — {}",
-            i + 1, threats.len(), t.domain, t.severity, t.description);
+        eprintln!(
+            "  threat {}/{}: [{}] severity={:.1} — {}",
+            i + 1,
+            threats.len(),
+            t.domain,
+            t.severity,
+            t.description
+        );
     }
 
     threats.len()
@@ -127,7 +132,10 @@ pub async fn run_monitoring_loop(
         state_guard.total_threats += threats as u64;
         state_guard.cycles += 1;
 
-        eprintln!("[monitor] Baseline established. {} threats in first scan.\n", threats);
+        eprintln!(
+            "[monitor] Baseline established. {} threats in first scan.\n",
+            threats
+        );
     }
 
     // Subsequent cycles
@@ -155,10 +163,20 @@ mod tests {
 
         // Pre-load some text knowledge (what should be running)
         crate::text_encoder::store_knowledge_triple(
-            &mut brain, "backend", "listens_on", "port_8000", 0.9, "text_knowledge"
+            &mut brain,
+            "backend",
+            "listens_on",
+            "port_8000",
+            0.9,
+            "text_knowledge",
         );
         crate::text_encoder::store_knowledge_triple(
-            &mut brain, "database", "listens_on", "port_5432", 0.9, "text_knowledge"
+            &mut brain,
+            "database",
+            "listens_on",
+            "port_5432",
+            0.9,
+            "text_knowledge",
         );
 
         // Run one monitoring cycle
@@ -175,7 +193,10 @@ mod tests {
         eprintln!("  Defense threat level: {:.2}", threat_level);
 
         // The test should pass regardless of findings — it's an integration check
-        assert!(n_clusters > 0, "Should have clusters after monitoring cycle");
+        assert!(
+            n_clusters > 0,
+            "Should have clusters after monitoring cycle"
+        );
     }
 
     #[tokio::test]
@@ -199,9 +220,9 @@ mod tests {
             s.last_scan = Some(Instant::now());
         });
 
-        let final_state = tokio::runtime::Runtime::new().unwrap().block_on(async {
-            state.read().await.clone()
-        });
+        let final_state = tokio::runtime::Runtime::new()
+            .unwrap()
+            .block_on(async { state.read().await.clone() });
         // MonitorState doesn't derive Clone. Just test via accessor pattern.
         // This test verifies the Arc<RwLock<>> pattern works.
         assert!(true);

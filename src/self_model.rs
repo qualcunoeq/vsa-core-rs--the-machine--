@@ -70,8 +70,8 @@
 //   let stability = self_model.identity_stability();
 //   if stability > 0.10 { /* cognitive shock detected */ }
 
-use crate::Hypervector;
 use crate::drift::{CognitiveMode, HomeostaticRegulator, Need};
+use crate::Hypervector;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CONSTANTS
@@ -155,9 +155,7 @@ pub struct HomeostaticProfile {
 impl HomeostaticProfile {
     /// Extract a snapshot from a HomeostaticRegulator.
     pub fn from_homeostasis(h: &HomeostaticRegulator) -> Self {
-        let extract = |need: Need| -> f64 {
-            h.needs.get(&need).map_or(0.0, |s| s.deviation())
-        };
+        let extract = |need: Need| -> f64 { h.needs.get(&need).map_or(0.0, |s| s.deviation()) };
         let e = extract(Need::Energy);
         let c = extract(Need::Coherence);
         let i = extract(Need::Integration);
@@ -167,8 +165,13 @@ impl HomeostaticProfile {
         let integ = extract(Need::Integrity);
         let overall = (e + c + i + cn + g + a + integ) / 7.0;
         HomeostaticProfile {
-            energy: e, coherence: c, integration: i,
-            connection: cn, growth: g, autonomy: a, integrity: integ,
+            energy: e,
+            coherence: c,
+            integration: i,
+            connection: cn,
+            growth: g,
+            autonomy: a,
+            integrity: integ,
             overall_deficit: overall,
             crisis: h.crisis,
         }
@@ -177,9 +180,15 @@ impl HomeostaticProfile {
     /// Create a zero-deficit profile (all needs satisfied).
     pub fn satisfied() -> Self {
         HomeostaticProfile {
-            energy: 0.0, coherence: 0.0, integration: 0.0,
-            connection: 0.0, growth: 0.0, autonomy: 0.0, integrity: 0.0,
-            overall_deficit: 0.0, crisis: false,
+            energy: 0.0,
+            coherence: 0.0,
+            integration: 0.0,
+            connection: 0.0,
+            growth: 0.0,
+            autonomy: 0.0,
+            integrity: 0.0,
+            overall_deficit: 0.0,
+            crisis: false,
         }
     }
 
@@ -188,12 +197,12 @@ impl HomeostaticProfile {
     /// Each need deficit is FPE-encoded against its own role label, then
     /// bundled into a single body-state hypervector.
     pub fn encode(&self) -> Hypervector {
-        let role_energy    = Hypervector::encode_text_ngram("NEED_ENERGY", 3);
+        let role_energy = Hypervector::encode_text_ngram("NEED_ENERGY", 3);
         let role_coherence = Hypervector::encode_text_ngram("NEED_COHERENCE", 3);
         let role_integration = Hypervector::encode_text_ngram("NEED_INTEGRATION", 3);
         let role_connection = Hypervector::encode_text_ngram("NEED_CONNECTION", 3);
-        let role_growth    = Hypervector::encode_text_ngram("NEED_GROWTH", 3);
-        let role_autonomy  = Hypervector::encode_text_ngram("NEED_AUTONOMY", 3);
+        let role_growth = Hypervector::encode_text_ngram("NEED_GROWTH", 3);
+        let role_autonomy = Hypervector::encode_text_ngram("NEED_AUTONOMY", 3);
         let role_integrity = Hypervector::encode_text_ngram("NEED_INTEGRITY", 3);
 
         // FPE-encode each deficit into [0, 1] range
@@ -206,18 +215,22 @@ impl HomeostaticProfile {
         };
 
         // Role-bind each need: role ⊕ encode(deficit)
-        let bound_energy    = role_energy.bitwise_xor(&encode_deficit(self.energy));
+        let bound_energy = role_energy.bitwise_xor(&encode_deficit(self.energy));
         let bound_coherence = role_coherence.bitwise_xor(&encode_deficit(self.coherence));
         let bound_integration = role_integration.bitwise_xor(&encode_deficit(self.integration));
         let bound_connection = role_connection.bitwise_xor(&encode_deficit(self.connection));
-        let bound_growth    = role_growth.bitwise_xor(&encode_deficit(self.growth));
-        let bound_autonomy  = role_autonomy.bitwise_xor(&encode_deficit(self.autonomy));
+        let bound_growth = role_growth.bitwise_xor(&encode_deficit(self.growth));
+        let bound_autonomy = role_autonomy.bitwise_xor(&encode_deficit(self.autonomy));
         let bound_integrity = role_integrity.bitwise_xor(&encode_deficit(self.integrity));
 
         // Bundle all 7 need states
         let refs: Vec<&Hypervector> = vec![
-            &bound_energy, &bound_coherence, &bound_integration,
-            &bound_connection, &bound_growth, &bound_autonomy,
+            &bound_energy,
+            &bound_coherence,
+            &bound_integration,
+            &bound_connection,
+            &bound_growth,
+            &bound_autonomy,
             &bound_integrity,
         ];
         Hypervector::bundle(&refs)
@@ -241,7 +254,11 @@ struct WeightState {
 
 impl WeightState {
     fn new(confident: bool) -> Self {
-        let schedule = if confident { WEIGHTS_CONFIDENT } else { WEIGHTS_CONFUSED };
+        let schedule = if confident {
+            WEIGHTS_CONFIDENT
+        } else {
+            WEIGHTS_CONFUSED
+        };
         WeightState {
             current: schedule,
             target: schedule,
@@ -251,7 +268,11 @@ impl WeightState {
 
     /// Set the target schedule.  If different from current, begin transition.
     fn set_target(&mut self, confused: bool) {
-        let new_target = if confused { WEIGHTS_CONFUSED } else { WEIGHTS_CONFIDENT };
+        let new_target = if confused {
+            WEIGHTS_CONFUSED
+        } else {
+            WEIGHTS_CONFIDENT
+        };
         if (self.target[0] - new_target[0]).abs() > 1e-12 {
             self.target = new_target;
             self.transition_ticks = WEIGHT_TRANSITION_TICKS;
@@ -381,8 +402,8 @@ impl SelfModel {
         let focus_hv = &self.current_focus;
 
         // 4. Bind to semantic roles (non-commutative role binding)
-        let bound_mode  = role_mode().bitwise_xor(&mode_hv);
-        let bound_body  = role_body().bitwise_xor(&body_hv);
+        let bound_mode = role_mode().bitwise_xor(&mode_hv);
+        let bound_body = role_body().bitwise_xor(&body_hv);
         let bound_error = role_error().bitwise_xor(&error_hv);
         let bound_focus = role_focus().bitwise_xor(focus_hv);
 
@@ -396,10 +417,18 @@ impl SelfModel {
         let mut weighted_refs: Vec<&Hypervector> = Vec::with_capacity(50);
         let copy_count = |w: f64| -> usize { ((w * 32.0).round() as usize).max(1) };
 
-        for _ in 0..copy_count(alpha) { weighted_refs.push(&bound_mode); }
-        for _ in 0..copy_count(beta)  { weighted_refs.push(&bound_body); }
-        for _ in 0..copy_count(gamma) { weighted_refs.push(&bound_error); }
-        for _ in 0..copy_count(delta) { weighted_refs.push(&bound_focus); }
+        for _ in 0..copy_count(alpha) {
+            weighted_refs.push(&bound_mode);
+        }
+        for _ in 0..copy_count(beta) {
+            weighted_refs.push(&bound_body);
+        }
+        for _ in 0..copy_count(gamma) {
+            weighted_refs.push(&bound_error);
+        }
+        for _ in 0..copy_count(delta) {
+            weighted_refs.push(&bound_focus);
+        }
         for _ in 0..copy_count(TEMPORAL_CONTINUITY_WEIGHT) {
             weighted_refs.push(&bound_temporal);
         }
@@ -461,9 +490,9 @@ impl SelfModel {
         } else if clamped < 0.20 {
             4
         } else if clamped < ERROR_GATE_THRESHOLD {
-            5  // 0.20–0.25 (just below gate)
+            5 // 0.20–0.25 (just below gate)
         } else if clamped < 0.30 {
-            6  // 0.25–0.30 (just above gate)
+            6 // 0.25–0.30 (just above gate)
         } else if clamped < 0.40 {
             7
         } else if clamped < 0.60 {
@@ -542,11 +571,15 @@ impl SelfModel {
             "SelfModel: tick={}, mode={}, deficit={:.3}, error={:.3}, \
              stability={:.4}, α={:.2} β={:.2} γ={:.2} δ={:.2}, \
              crisis={}, confused={}",
-            self.tick, mode_label,
+            self.tick,
+            mode_label,
             self.homeostasis.overall_deficit,
             self.global_error,
             self.stability,
-            w[0], w[1], w[2], w[3],
+            w[0],
+            w[1],
+            w[2],
+            w[3],
             if self.homeostasis.crisis { "YES" } else { "no" },
             if self.is_confused() { "YES" } else { "no" },
         )
@@ -623,8 +656,10 @@ mod tests {
 
         // Record the weights before the gate crossing
         let weights_before = sm.current_weights();
-        eprintln!("  Weights before gate cross: [{:.4}, {:.4}, {:.4}, {:.4}]",
-            weights_before[0], weights_before[1], weights_before[2], weights_before[3]);
+        eprintln!(
+            "  Weights before gate cross: [{:.4}, {:.4}, {:.4}, {:.4}]",
+            weights_before[0], weights_before[1], weights_before[2], weights_before[3]
+        );
 
         // Now cross the gate: error jumps from 0.10 to 0.50
         // The weights should interpolate over 4 ticks
@@ -635,21 +670,26 @@ mod tests {
             let is_trans = sm.is_transitioning();
             if is_trans {
                 transition_detected = true;
-                eprintln!("  Tick {}+: weights=[{:.4}, {:.4}, {:.4}, {:.4}] transitioning={}",
-                    i, w[0], w[1], w[2], w[3], is_trans);
+                eprintln!(
+                    "  Tick {}+: weights=[{:.4}, {:.4}, {:.4}, {:.4}] transitioning={}",
+                    i, w[0], w[1], w[2], w[3], is_trans
+                );
             }
         }
 
         // After 4 ticks, transition should be complete
         let weights_after = sm.current_weights();
-        eprintln!("  Weights after transition: [{:.4}, {:.4}, {:.4}, {:.4}]",
-            weights_after[0], weights_after[1], weights_after[2], weights_after[3]);
+        eprintln!(
+            "  Weights after transition: [{:.4}, {:.4}, {:.4}, {:.4}]",
+            weights_after[0], weights_after[1], weights_after[2], weights_after[3]
+        );
 
         // Weights should have moved toward WEIGHTS_CONFUSED
         assert!(
             (weights_after[2] - WEIGHTS_CONFUSED[2]).abs() < 0.05,
             "Gamma should approach confused schedule: {} ≈ {}",
-            weights_after[2], WEIGHTS_CONFUSED[2]
+            weights_after[2],
+            WEIGHTS_CONFUSED[2]
         );
 
         // Transition should have completed
@@ -708,8 +748,13 @@ mod tests {
         // Inject shock: completely different focus, high error
         let shock_focus = Hypervector::encode_text_ngram("REGIME_CRISIS", 3);
         let shock_profile = HomeostaticProfile {
-            energy: 0.8, coherence: 0.3, integration: 0.4,
-            connection: 0.5, growth: 0.2, autonomy: 0.6, integrity: 0.7,
+            energy: 0.8,
+            coherence: 0.3,
+            integration: 0.4,
+            connection: 0.5,
+            growth: 0.2,
+            autonomy: 0.6,
+            integrity: 0.7,
             overall_deficit: 0.5,
             crisis: true,
         };
@@ -731,7 +776,8 @@ mod tests {
         assert!(
             stability_after > stability_before + 0.02,
             "Shock stability should exceed pre-shock baseline: {} > {}",
-            stability_after, stability_before
+            stability_after,
+            stability_before
         );
     }
 
@@ -748,8 +794,11 @@ mod tests {
             sm.tick(0.10, profile.clone(), mode, focus);
         }
 
-        eprintln!("  Trajectory length: {} (capacity: {})",
-            sm.trajectory.len(), TRAJECTORY_CAPACITY);
+        eprintln!(
+            "  Trajectory length: {} (capacity: {})",
+            sm.trajectory.len(),
+            TRAJECTORY_CAPACITY
+        );
 
         // Theorem S3: bounded
         assert!(
@@ -776,8 +825,13 @@ mod tests {
             sm2.tick(error, profile.clone(), mode, focus);
         }
 
-        let dist = sm1.current_identity.normalized_hamming_distance(&sm2.current_identity);
-        eprintln!("  Determinism check: distance between identical runs = {:.10}", dist);
+        let dist = sm1
+            .current_identity
+            .normalized_hamming_distance(&sm2.current_identity);
+        eprintln!(
+            "  Determinism check: distance between identical runs = {:.10}",
+            dist
+        );
 
         // Theorem S4: identical inputs → identical output
         assert!(
@@ -798,10 +852,16 @@ mod tests {
         sm.tick(0.15, profile, mode, focus);
 
         let narrative = sm.narrative_snapshot();
-        eprintln!("  Narrative: tick={}, mode={}, deficit={:.3}, error={:.3}, \
+        eprintln!(
+            "  Narrative: tick={}, mode={}, deficit={:.3}, error={:.3}, \
             stability={:.4}, confused={}",
-            narrative.tick, narrative.mode, narrative.overall_deficit,
-            narrative.error, narrative.stability, narrative.is_confused);
+            narrative.tick,
+            narrative.mode,
+            narrative.overall_deficit,
+            narrative.error,
+            narrative.stability,
+            narrative.is_confused
+        );
 
         assert_eq!(narrative.mode, "EXPLORER");
         assert!((narrative.error - 0.15).abs() < 0.001);
@@ -822,8 +882,15 @@ mod tests {
 
         // Should be on confident schedule
         let w = sm.current_weights();
-        eprintln!("  Confident weights: [{:.4}, {:.4}, {:.4}, {:.4}]", w[0], w[1], w[2], w[3]);
-        assert!((w[0] - 0.25).abs() < 0.05, "Alpha should be ~0.25 confident: {}", w[0]);
+        eprintln!(
+            "  Confident weights: [{:.4}, {:.4}, {:.4}, {:.4}]",
+            w[0], w[1], w[2], w[3]
+        );
+        assert!(
+            (w[0] - 0.25).abs() < 0.05,
+            "Alpha should be ~0.25 confident: {}",
+            w[0]
+        );
 
         // Cross gate, run through transition
         for _ in 0..WEIGHT_TRANSITION_TICKS + 1 {
@@ -832,9 +899,20 @@ mod tests {
 
         // Should now be on confused schedule
         let w2 = sm.current_weights();
-        eprintln!("  Confused weights: [{:.4}, {:.4}, {:.4}, {:.4}]", w2[0], w2[1], w2[2], w2[3]);
-        assert!((w2[0] - 0.35).abs() < 0.05, "Alpha should be ~0.35 confused: {}", w2[0]);
-        assert!((w2[2] - 0.10).abs() < 0.05, "Gamma should be ~0.10 confused: {}", w2[2]);
+        eprintln!(
+            "  Confused weights: [{:.4}, {:.4}, {:.4}, {:.4}]",
+            w2[0], w2[1], w2[2], w2[3]
+        );
+        assert!(
+            (w2[0] - 0.35).abs() < 0.05,
+            "Alpha should be ~0.35 confused: {}",
+            w2[0]
+        );
+        assert!(
+            (w2[2] - 0.10).abs() < 0.05,
+            "Gamma should be ~0.10 confused: {}",
+            w2[2]
+        );
 
         // Cross back below gate
         for _ in 0..WEIGHT_TRANSITION_TICKS + 1 {
@@ -842,7 +920,14 @@ mod tests {
         }
 
         let w3 = sm.current_weights();
-        eprintln!("  Back to confident: [{:.4}, {:.4}, {:.4}, {:.4}]", w3[0], w3[1], w3[2], w3[3]);
-        assert!((w3[0] - 0.25).abs() < 0.05, "Alpha should return to ~0.25: {}", w3[0]);
+        eprintln!(
+            "  Back to confident: [{:.4}, {:.4}, {:.4}, {:.4}]",
+            w3[0], w3[1], w3[2], w3[3]
+        );
+        assert!(
+            (w3[0] - 0.25).abs() < 0.05,
+            "Alpha should return to ~0.25: {}",
+            w3[0]
+        );
     }
 }

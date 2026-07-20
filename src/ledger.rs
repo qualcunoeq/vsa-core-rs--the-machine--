@@ -312,7 +312,11 @@ mod tests {
         assert_eq!(ledger.load_records(&state).unwrap().len(), 6);
 
         let removed = ledger.compact_ledger(&state, 0.70).unwrap();
-        assert!(removed >= 1, "Should have merged the duplicate: removed={}", removed);
+        assert!(
+            removed >= 1,
+            "Should have merged the duplicate: removed={}",
+            removed
+        );
         assert_eq!(ledger.load_records(&state).unwrap().len(), 5);
 
         let _ = std::fs::remove_file(temp_file);

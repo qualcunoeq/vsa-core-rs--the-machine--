@@ -19,8 +19,7 @@
 
 use std::time::Instant;
 use the_machine::diagnostic::{
-    absorb_diagnosis, classify_structural,
-    seed_diagnostic_knowledge, seed_error_classifier,
+    absorb_diagnosis, classify_structural, seed_diagnostic_knowledge, seed_error_classifier,
 };
 use the_machine::qa::QaEngine;
 use the_machine::Hypervector;
@@ -112,9 +111,18 @@ const EPISODES: &[&[&str]] = &[
 //
 // Each pair: (error_text, expected_category_name)
 const NOVEL_TESTS: &[(&str, &str)] = &[
-    ("KV store compaction stalled unexpectedly; index rebuild queued", "network_timeout"),
-    ("SELinux policy audit: type=1400 avc:  denied  { read } for pid=1234", "permission_denied"),
-    ("RAID controller reports battery charge critically low; cache flush failed", "disk_full"),
+    (
+        "KV store compaction stalled unexpectedly; index rebuild queued",
+        "network_timeout",
+    ),
+    (
+        "SELinux policy audit: type=1400 avc:  denied  { read } for pid=1234",
+        "permission_denied",
+    ),
+    (
+        "RAID controller reports battery charge critically low; cache flush failed",
+        "disk_full",
+    ),
 ];
 
 /// Feature vector for reporting.
@@ -140,12 +148,17 @@ fn trigram_jaccard(a: &str, b: &str) -> f64 {
     let tb = trigrams(b);
     let intersection = ta.intersection(&tb).count();
     let union = ta.union(&tb).count();
-    if union == 0 { 0.0 } else { intersection as f64 / union as f64 }
+    if union == 0 {
+        0.0
+    } else {
+        intersection as f64 / union as f64
+    }
 }
 
 fn measure_centroid_similarity(brain: &VSABrain, concept_name: &str) -> f64 {
     let concept_hv = Hypervector::encode_text_ngram(&format!("concept:{}", concept_name), 3);
-    brain.nearest_centroid_idx(&concept_hv)
+    brain
+        .nearest_centroid_idx(&concept_hv)
         .map(|(_, sim)| sim)
         .unwrap_or(0.0)
 }
@@ -163,7 +176,10 @@ fn main() {
     eprintln!();
     eprintln!("  Categories: {}", CATEGORIES.join(", "));
     eprintln!("  Episodes per category: {}", EPISODES[0].len());
-    eprintln!("  Total episodes: {}", EPISODES.iter().map(|e| e.len()).sum::<usize>());
+    eprintln!(
+        "  Total episodes: {}",
+        EPISODES.iter().map(|e| e.len()).sum::<usize>()
+    );
     eprintln!("  Novel test texts: {}", NOVEL_TESTS.len());
     eprintln!();
 
@@ -171,8 +187,10 @@ fn main() {
     // Phase 1: Run all 50 episodes
     // ═══════════════════════════════════════════════════════════════════════
 
-    eprintln!("── Phase 1: Running {} episodes ─────────────────", 
-        EPISODES.iter().map(|e| e.len()).sum::<usize>());
+    eprintln!(
+        "── Phase 1: Running {} episodes ─────────────────",
+        EPISODES.iter().map(|e| e.len()).sum::<usize>()
+    );
     eprintln!();
 
     let mut classified = 0;
@@ -189,7 +207,7 @@ fn main() {
 
             // Classify via the 3-level pipeline
             let (svo, level) = classifier.classify_deep(error_text);
-            
+
             // If Level 1+2 fail, try Level 3 (structural)
             let effective_level = match (svo, level) {
                 (Some(svo), level) => {
@@ -215,7 +233,9 @@ fn main() {
             let n = qa.forward_chain(0.75);
 
             // Check if cause was identified
-            let has_cause = qa.verify_fact("another_process", "is_listening_on", "same_port").0
+            let has_cause = qa
+                .verify_fact("another_process", "is_listening_on", "same_port")
+                .0
                 || qa.verify_fact("target_service", "is_not", "listening").0
                 || qa.verify_fact("required_file", "is", "missing").0
                 || qa.verify_fact("file_permissions", "are", "incorrect").0
@@ -228,27 +248,53 @@ fn main() {
             }
 
             // Absorb the diagnosis into the brain
-            absorb_diagnosis(&mut brain, &mut qa, &mut classifier,
-                error_text, category, 1.0);
+            absorb_diagnosis(
+                &mut brain,
+                &mut qa,
+                &mut classifier,
+                error_text,
+                category,
+                1.0,
+            );
 
             if ep_idx < 2 || ep_idx == variants.len() - 1 {
-                eprintln!("  [{}/{}] {}: {} (level={}, fwd={}, cause={})",
-                    cat_idx + 1, ep_idx + 1, category, short,
-                    effective_level, n, if has_cause { "✓" } else { "✗" });
+                eprintln!(
+                    "  [{}/{}] {}: {} (level={}, fwd={}, cause={})",
+                    cat_idx + 1,
+                    ep_idx + 1,
+                    category,
+                    short,
+                    effective_level,
+                    n,
+                    if has_cause { "✓" } else { "✗" }
+                );
             }
         }
-        eprintln!("  → {} done ({} episodes, {:.0}% classified)",
-            category, variants.len(),
-            classified as f64 / (cat_idx as f64 * 10.0 + variants.len() as f64).max(1.0) * 100.0);
+        eprintln!(
+            "  → {} done ({} episodes, {:.0}% classified)",
+            category,
+            variants.len(),
+            classified as f64 / (cat_idx as f64 * 10.0 + variants.len() as f64).max(1.0) * 100.0
+        );
     }
 
     eprintln!();
     eprintln!("  Phase 1 summary:");
-    eprintln!("    Classified: {}/{} ({:.0}%)", classified, classified + failed,
-        classified as f64 / (classified + failed) as f64 * 100.0);
-    eprintln!("    Brain: {} dejavu clusters, {} transient clusters",
-        brain.dejavu_clusters.len(), brain.transient_clusters.len());
-    eprintln!("    Associations: {}", brain.cross_cluster_associations.len());
+    eprintln!(
+        "    Classified: {}/{} ({:.0}%)",
+        classified,
+        classified + failed,
+        classified as f64 / (classified + failed) as f64 * 100.0
+    );
+    eprintln!(
+        "    Brain: {} dejavu clusters, {} transient clusters",
+        brain.dejavu_clusters.len(),
+        brain.transient_clusters.len()
+    );
+    eprintln!(
+        "    Associations: {}",
+        brain.cross_cluster_associations.len()
+    );
     eprintln!();
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -264,15 +310,21 @@ fn main() {
         let concept_hv = Hypervector::encode_text_ngram(&concept_hv_string, 3);
 
         // Find the number of clusters whose label matches this concept
-        let cluster_count = brain.dejavu_clusters.iter()
+        let cluster_count = brain
+            .dejavu_clusters
+            .iter()
             .filter(|c| {
-                c.entries.iter().any(|e| e.label == concept_hv_string || e.label == *category)
+                c.entries
+                    .iter()
+                    .any(|e| e.label == concept_hv_string || e.label == *category)
             })
             .count();
 
-    let ep_count = EPISODES[0].len(); // same for all categories
-    eprintln!("  {}: centroid sim={:.4}, clusters={}, episodes={}",
-        category, sim, cluster_count, ep_count);
+        let ep_count = EPISODES[0].len(); // same for all categories
+        eprintln!(
+            "  {}: centroid sim={:.4}, clusters={}, episodes={}",
+            category, sim, cluster_count, ep_count
+        );
     }
     eprintln!();
 
@@ -292,15 +344,22 @@ fn main() {
         for variants in EPISODES {
             for ep_text in *variants {
                 let j = trigram_jaccard(text, ep_text);
-                if j > max_jaccard { max_jaccard = j; }
+                if j > max_jaccard {
+                    max_jaccard = j;
+                }
             }
         }
-        eprintln!("  Max trigram Jaccard vs episodes: {:.4} (threshold=0.10)", max_jaccard);
+        eprintln!(
+            "  Max trigram Jaccard vs episodes: {:.4} (threshold=0.10)",
+            max_jaccard
+        );
 
         // Level 1+2: classifier
         let (svo, level) = classifier.classify_deep(text);
         match svo {
-            Some(canonical) => eprintln!("  Level {}/1-2: {} (should NOT match)", level, canonical.2),
+            Some(canonical) => {
+                eprintln!("  Level {}/1-2: {} (should NOT match)", level, canonical.2)
+            }
             None => eprintln!("  Level 1-2: no match ✓"),
         }
 
@@ -322,7 +381,10 @@ fn main() {
 
                 // Check which causes were identified
                 let mut causes = Vec::new();
-                if qa.verify_fact("another_process", "is_listening_on", "same_port").0 {
+                if qa
+                    .verify_fact("another_process", "is_listening_on", "same_port")
+                    .0
+                {
                     causes.push("port_conflict");
                 }
                 if qa.verify_fact("target_service", "is_not", "listening").0 {
@@ -345,7 +407,11 @@ fn main() {
                     if causes.contains(&expected_category) {
                         eprintln!("  ✓ Matches expected category: {}", expected_category);
                     } else {
-                        eprintln!("  ⚠ Mismatch: expected {}, got {}", expected_category, causes.join(", "));
+                        eprintln!(
+                            "  ⚠ Mismatch: expected {}, got {}",
+                            expected_category,
+                            causes.join(", ")
+                        );
                     }
                 }
             }
@@ -362,19 +428,33 @@ fn main() {
 
     let elapsed = start.elapsed();
     eprintln!("── Final Summary ────────────────────────────────");
-    eprintln!("  Episodes processed: {}", EPISODES.iter().map(|e| e.len()).sum::<usize>());
-    eprintln!("  Phase 1 classification rate: {:.0}%",
-        classified as f64 / (classified + failed) as f64 * 100.0);
+    eprintln!(
+        "  Episodes processed: {}",
+        EPISODES.iter().map(|e| e.len()).sum::<usize>()
+    );
+    eprintln!(
+        "  Phase 1 classification rate: {:.0}%",
+        classified as f64 / (classified + failed) as f64 * 100.0
+    );
     eprintln!("  Brain state:");
     eprintln!("    Dejavu clusters: {}", brain.dejavu_clusters.len());
     eprintln!("    Transient clusters: {}", brain.transient_clusters.len());
-    eprintln!("    Cross-cluster associations: {}", brain.cross_cluster_associations.len());
+    eprintln!(
+        "    Cross-cluster associations: {}",
+        brain.cross_cluster_associations.len()
+    );
     eprintln!("  Total time: {:?}", elapsed);
     eprintln!();
     eprintln!("  Key finding:");
     for category in CATEGORIES {
         let sim = measure_centroid_similarity(&brain, category);
-        let status = if sim >= 0.65 { "STABLE ✓" } else if sim >= 0.55 { "MARGINAL" } else { "UNSTABLE" };
+        let status = if sim >= 0.65 {
+            "STABLE ✓"
+        } else if sim >= 0.55 {
+            "MARGINAL"
+        } else {
+            "UNSTABLE"
+        };
         eprintln!("    {}: sim={:.4} [{}]", category, sim, status);
     }
     eprintln!();

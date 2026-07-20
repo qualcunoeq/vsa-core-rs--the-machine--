@@ -1,18 +1,20 @@
 use the_machine::{
     analogy::{AnalogicalIndex, MetaIndex, RoleDictionary},
-    autonomy::AutonomyDrive, broker::NeocortexBroker, forager::VSAForager,
-    reason::DeepThought, self_model::{SelfModel, HomeostaticProfile},
-    sensory::SensoryModality, socket::AdminSocketServer,
+    autonomy::AutonomyDrive,
+    broker::NeocortexBroker,
+    drift::{
+        fork_context, Archetype, ConsensusEngine, Context, DcpMessage, DcpRole, Emotion,
+        EmotionalField, IntuitionEngine, Mood, PscPredictor, ShadowSystem, Stance,
+    },
     drives::IntrinsicMotivation,
+    forager::VSAForager,
+    reason::DeepThought,
+    self_model::{HomeostaticProfile, SelfModel},
+    sensory::SensoryModality,
     simulator::CounterfactualSimulator,
     sleep::SleepCycle,
+    socket::AdminSocketServer,
     workspace::GlobalWorkspace,
-    drift::{
-        EmotionalField, Emotion, Stance, Mood,
-        Context, fork_context, IntuitionEngine,
-        Archetype, ShadowSystem, PscPredictor,
-        ConsensusEngine, DcpRole, DcpMessage,
-    },
     HiveMessage, Hypervector, VSABrain,
 };
 
@@ -101,7 +103,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let shared_states = Arc::new(RwLock::new(HashMap::<String, AgentState>::new()));
                 let shared_states_clone = Arc::clone(&shared_states);
 
-                run_agent(id, role, port, url, 9050, "HAROLD_FINCH_API_KEY_SECRET", Some(shared_states_clone), log_tx, None, None, None, None).await?;
+                run_agent(
+                    id,
+                    role,
+                    port,
+                    url,
+                    9050,
+                    "HAROLD_FINCH_API_KEY_SECRET",
+                    Some(shared_states_clone),
+                    log_tx,
+                    None,
+                    None,
+                    None,
+                    None,
+                )
+                .await?;
 
                 // Draw standalone agent HUD
                 println!("\x1B[2J\x1B[1;1H"); // clear screen
@@ -152,7 +168,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     } else if args.contains(&"--chess-train".to_string()) {
         // ----------------- CHESS SELF-PLAY TRAINING MODE -----------------
-        let num_games: usize = args.iter()
+        let num_games: usize = args
+            .iter()
             .position(|x| x == "--games")
             .and_then(|p| args.get(p + 1))
             .and_then(|s| s.parse().ok())
@@ -168,40 +185,49 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // If --validate flag is set, run validation games with mined rules
         if args.contains(&"--validate".to_string()) {
-            let val_games: usize = args.iter()
+            let val_games: usize = args
+                .iter()
                 .position(|x| x == "--val-games")
                 .and_then(|p| args.get(p + 1))
                 .and_then(|s| s.parse().ok())
                 .unwrap_or(100);
-            let skill_lvl: Option<usize> = args.iter()
+            let skill_lvl: Option<usize> = args
+                .iter()
                 .position(|x| x == "--skill-level")
                 .and_then(|p| args.get(p + 1))
                 .and_then(|s| s.parse().ok());
-            let val_depth: usize = args.iter()
+            let val_depth: usize = args
+                .iter()
                 .position(|x| x == "--val-depth")
                 .and_then(|p| args.get(p + 1))
                 .and_then(|s| s.parse().ok())
                 .unwrap_or(1);
-            the_machine::chess_learner::train_stage2(&mut brain, &mut qa, val_games, skill_lvl, None, val_depth);
+            the_machine::chess_learner::train_stage2(
+                &mut brain, &mut qa, val_games, skill_lvl, None, val_depth,
+            );
         }
     } else if args.contains(&"--curriculum".to_string()) {
         // ----------------- CURRICULUM MODE -----------------
-        let start_lvl: usize = args.iter()
+        let start_lvl: usize = args
+            .iter()
             .position(|x| x == "--start-level")
             .and_then(|p| args.get(p + 1))
             .and_then(|s| s.parse().ok())
             .unwrap_or(0);
-        let games_per: usize = args.iter()
+        let games_per: usize = args
+            .iter()
             .position(|x| x == "--games-per-level")
             .and_then(|p| args.get(p + 1))
             .and_then(|s| s.parse().ok())
             .unwrap_or(200);
-        let max_lvl: usize = args.iter()
+        let max_lvl: usize = args
+            .iter()
             .position(|x| x == "--max-level")
             .and_then(|p| args.get(p + 1))
             .and_then(|s| s.parse().ok())
             .unwrap_or(5);
-        let pretrain_games: usize = args.iter()
+        let pretrain_games: usize = args
+            .iter()
             .position(|x| x == "--pretrain")
             .and_then(|p| args.get(p + 1))
             .and_then(|s| s.parse().ok())
@@ -213,14 +239,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         if pretrain_games > 0 {
             eprintln!("Phase 1: Hybrid pre-training ({} games)...", pretrain_games);
             let trained_qa = the_machine::chess_learner::train_stage1(&mut brain, pretrain_games);
-            eprintln!("Phase 2: Stockfish curriculum ({} mined rules)...", 
-                trained_qa.l2_rules.len());
+            eprintln!(
+                "Phase 2: Stockfish curriculum ({} mined rules)...",
+                trained_qa.l2_rules.len()
+            );
             qa = Some(trained_qa);
         } else {
             eprintln!("Initializing VSABrain for curriculum training (no pre-training)...");
         }
 
-        let sf_depth: usize = args.iter()
+        let sf_depth: usize = args
+            .iter()
             .position(|x| x == "--sf-depth")
             .and_then(|p| args.get(p + 1))
             .and_then(|s| s.parse().ok())
@@ -267,17 +296,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // abductor accumulates frames across all crawl paths and reaches
         // the 3-confirmation threshold faster.
         let bootstrap_roles = RoleDictionary::new();
-        let bootstrap_primary = Arc::new(RwLock::new(
-            AnalogicalIndex::new(&bootstrap_roles)
-        ));
+        let bootstrap_primary = Arc::new(RwLock::new(AnalogicalIndex::new(&bootstrap_roles)));
         let bootstrap_meta = Arc::new(RwLock::new({
             let pri_ref = bootstrap_primary.read().await;
             MetaIndex::new(&*pri_ref, 64)
         }));
-        let bootstrap_frame_counter: Arc<RwLock<usize>> =
-            Arc::new(RwLock::new(0));
+        let bootstrap_frame_counter: Arc<RwLock<usize>> = Arc::new(RwLock::new(0));
         let bootstrap_seed_urls: Arc<RwLock<the_machine::compression::CappedVecDeque<String>>> =
-            Arc::new(RwLock::new(the_machine::compression::CappedVecDeque::new(50_000)));
+            Arc::new(RwLock::new(the_machine::compression::CappedVecDeque::new(
+                50_000,
+            )));
 
         // ── PRE-BOOTSTRAP: Fetch event-specific articles ──────────────
         // Before launching agents, we load frames from multiple articles
@@ -311,7 +339,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 &Hypervector::encode_text_ngram("rise", 3),
                 &Hypervector::encode_text_ngram("across the curve", 3),
             );
-            bootstrap_meta.write().await.inject_seed_rule("seed:rates_up→yields_up", ante, cons);
+            bootstrap_meta
+                .write()
+                .await
+                .inject_seed_rule("seed:rates_up→yields_up", ante, cons);
         }
         {
             let roles = RoleDictionary::new();
@@ -325,7 +356,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 &Hypervector::encode_text_ngram("rallies", 3),
                 &Hypervector::encode_text_ngram("on the news", 3),
             );
-            bootstrap_meta.write().await.inject_seed_rule("seed:rates_down→stocks_up", ante, cons);
+            bootstrap_meta
+                .write()
+                .await
+                .inject_seed_rule("seed:rates_down→stocks_up", ante, cons);
         }
         {
             let roles = RoleDictionary::new();
@@ -339,7 +373,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 &Hypervector::encode_text_ngram("tightens", 3),
                 &Hypervector::encode_text_ngram("monetary policy", 3),
             );
-            bootstrap_meta.write().await.inject_seed_rule("seed:inflation→fed_tightens", ante, cons);
+            bootstrap_meta.write().await.inject_seed_rule(
+                "seed:inflation→fed_tightens",
+                ante,
+                cons,
+            );
         }
 
         // ── PUSH DDG SEARCH URLS FOR SEED RULE CONSEQUENTS ─────────
@@ -380,7 +418,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             let text = {
                                 let document = scraper::Html::parse_document(&html);
                                 let sel = scraper::Selector::parse("p").unwrap();
-                                let paragraphs: Vec<String> = document.select(&sel)
+                                let paragraphs: Vec<String> = document
+                                    .select(&sel)
                                     .map(|el| el.text().collect::<String>())
                                     .filter(|t| t.len() > 40)
                                     .collect();
@@ -391,8 +430,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 let mut met_w = bootstrap_meta_ref.write().await;
                                 let mut fci_w = bootstrap_fci_ref.write().await;
                                 let result = the_machine::bridge::ingest_text(
-                                    &text, &mut *pri_w, &mut *met_w,
-                                    0.05, &mut *fci_w,
+                                    &text,
+                                    &mut *pri_w,
+                                    &mut *met_w,
+                                    0.05,
+                                    &mut *fci_w,
                                 );
                                 let _ = bootstrap_log.send(format!(
                                     "BOOTSTRAP: {} → {} frames ({} extracted, {} quality-rejected, {} skipped)",
@@ -408,43 +450,52 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     Err(e) => {
-                        let _ = bootstrap_log.send(format!(
-                            "BOOTSTRAP WARN: Failed to fetch {}: {}", url, e
-                        ));
+                        let _ = bootstrap_log
+                            .send(format!("BOOTSTRAP WARN: Failed to fetch {}: {}", url, e));
                     }
                 }
             }
             let _ = bootstrap_log.send(format!(
                 "BOOTSTRAP DONE: {} total frames loaded from {} URLs",
-                total_frames, bootstrap_urls.len(),
+                total_frames,
+                bootstrap_urls.len(),
             ));
-        bootstrap_done_signal.notify_one();
-    });
+            bootstrap_done_signal.notify_one();
+        });
 
-    // Wait for bootstrap to complete before launching agents
-    tokio::time::timeout(Duration::from_secs(120), bootstrap_done.notified()).await.ok();
+        // Wait for bootstrap to complete before launching agents
+        tokio::time::timeout(Duration::from_secs(120), bootstrap_done.notified())
+            .await
+            .ok();
 
-    let _ = log_tx.send("BOOTSTRAP: Complete — launching agents.".to_string());
+        let _ = log_tx.send("BOOTSTRAP: Complete — launching agents.".to_string());
 
-    // Launch a SINGLE Wikipedia agent with shared stores and a slow crawl
-    // speed (3s) to avoid rate-limiting.  One agent is enough — the shared
-    // stores accumulate frames from all crawl paths.
-    let log_tx_a = log_tx.clone();
-    let shared_states_a = Arc::clone(&shared_states);
-    let pri_a = Arc::clone(&bootstrap_primary);
-    let met_a = Arc::clone(&bootstrap_meta);
-    let fci_a = Arc::clone(&bootstrap_frame_counter);
-    let surl_a = Arc::clone(&bootstrap_seed_urls);
-    tokio::spawn(async move {
-        let _ = run_agent(
-            "Agent-1", "Finance", 9001,
-            "https://en.wikipedia.org/wiki/Monetary_policy_of_the_United_States",
-            9050, "HAROLD_FINCH_API_KEY_SECRET",
-            Some(shared_states_a), log_tx_a,
-            Some(pri_a), Some(met_a), Some(fci_a), Some(surl_a),
-        )
-        .await;
-    });
+        // Launch a SINGLE Wikipedia agent with shared stores and a slow crawl
+        // speed (3s) to avoid rate-limiting.  One agent is enough — the shared
+        // stores accumulate frames from all crawl paths.
+        let log_tx_a = log_tx.clone();
+        let shared_states_a = Arc::clone(&shared_states);
+        let pri_a = Arc::clone(&bootstrap_primary);
+        let met_a = Arc::clone(&bootstrap_meta);
+        let fci_a = Arc::clone(&bootstrap_frame_counter);
+        let surl_a = Arc::clone(&bootstrap_seed_urls);
+        tokio::spawn(async move {
+            let _ = run_agent(
+                "Agent-1",
+                "Finance",
+                9001,
+                "https://en.wikipedia.org/wiki/Monetary_policy_of_the_United_States",
+                9050,
+                "HAROLD_FINCH_API_KEY_SECRET",
+                Some(shared_states_a),
+                log_tx_a,
+                Some(pri_a),
+                Some(met_a),
+                Some(fci_a),
+                Some(surl_a),
+            )
+            .await;
+        });
 
         // TUI Render Loop for Multi-Agent Hive Mind Simulation
         // Also writes periodic status file for remote monitoring.
@@ -549,7 +600,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 last_status_write = now;
                 let mut status = String::new();
                 status.push_str(&format!("=== THE MACHINE STATUS @ {} ===\n", now));
-                status.push_str(&format!("Broker: {} clusters, {} clients\n", broker_clusters, broker_clients));
+                status.push_str(&format!(
+                    "Broker: {} clusters, {} clients\n",
+                    broker_clusters, broker_clients
+                ));
                 for id in &["Agent-1", "Agent-2", "Agent-3"] {
                     if let Some(agent) = states.get(*id) {
                         status.push_str(&format!(
@@ -757,17 +811,14 @@ async fn run_agent(
             )
         } else {
             let roles_for_integration = RoleDictionary::new();
-            let pri = Arc::new(RwLock::new(
-                AnalogicalIndex::new(&roles_for_integration)
-            ));
+            let pri = Arc::new(RwLock::new(AnalogicalIndex::new(&roles_for_integration)));
             let pri_ref = pri.read().await;
-            let met = Arc::new(RwLock::new(
-                MetaIndex::new(&*pri_ref, 64)
-            ));
+            let met = Arc::new(RwLock::new(MetaIndex::new(&*pri_ref, 64)));
             drop(pri_ref);
             let fci: Arc<RwLock<usize>> = Arc::new(RwLock::new(0));
-            let surl: Arc<RwLock<the_machine::compression::CappedVecDeque<String>>> =
-                Arc::new(RwLock::new(the_machine::compression::CappedVecDeque::new(50_000)));
+            let surl: Arc<RwLock<the_machine::compression::CappedVecDeque<String>>> = Arc::new(
+                RwLock::new(the_machine::compression::CappedVecDeque::new(50_000)),
+            );
             (pri, met, fci, surl)
         };
 
@@ -775,8 +826,7 @@ async fn run_agent(
     let mut forager = VSAForager::new(initial_intent, start_url.to_string(), 3000);
     // Share the semantic target parameter so the subconscious loop can
     // update it whenever a structured corrective intent is formulated.
-    let forager_target_parameter: Arc<RwLock<Option<Hypervector>>> =
-        Arc::new(RwLock::new(None));
+    let forager_target_parameter: Arc<RwLock<Option<Hypervector>>> = Arc::new(RwLock::new(None));
     forager.target_parameter = Arc::clone(&forager_target_parameter);
     forager.intent = Arc::clone(&active_intent);
     forager.current_url = Arc::clone(&shared_current_url);
@@ -797,20 +847,38 @@ async fn run_agent(
     // 6. Spawn TCP Admin Socket override server
     let mut qa_engine_initial = the_machine::qa::QaEngine::new();
     // Set up episode store persistence path
-    qa_engine_initial.episode_store.path =
-        Some("data/episode_store.json".to_string());
+    qa_engine_initial.episode_store.path = Some("data/episode_store.json".to_string());
     // Try to load any existing episodes
     if let Ok(store) = the_machine::cognition::EpisodeStore::load("data/episode_store.json") {
         qa_engine_initial.episode_store = store;
-        eprintln!("Loaded {} existing episodes from data/episode_store.json",
-            qa_engine_initial.episode_store.episodes.len());
+        eprintln!(
+            "Loaded {} existing episodes from data/episode_store.json",
+            qa_engine_initial.episode_store.episodes.len()
+        );
     }
     let qa_engine = Arc::new(RwLock::new(qa_engine_initial));
     {
         // Seed initial facts — general knowledge, no domain bias
         let mut qa_w = qa_engine.write().await;
-        qa_w.store_fact("the_system", "processes", "data", "The system processes incoming data.");
-        qa_w.store_fact("learning", "accumulates", "over time", "Learning accumulates over time.");
+        qa_w.store_fact(
+            "the_system",
+            "processes",
+            "data",
+            "The system processes incoming data.",
+        );
+        qa_w.store_fact(
+            "learning",
+            "accumulates",
+            "over time",
+            "Learning accumulates over time.",
+        );
+        // Seed symbolic physics formula facts so the VSA can reason about
+        // variable relationships like "F equals m*a", "V equals I*R", etc.
+        the_machine::qa::seed_symbolic_facts(&mut qa_w);
+        eprintln!(
+            "Seeded {} symbolic physics formula facts.",
+            qa_w.facts().len()
+        );
     }
     let qa_for_loop = Arc::clone(&qa_engine);
     let admin_server = AdminSocketServer::new(
@@ -903,13 +971,14 @@ async fn run_agent(
         // Hierarchical context memory (GLM-5 Pattern 8: Keep-Recent + Fold).
         // Keeps the last 16 states at full resolution in a recent buffer,
         // folds older states into bundled chunks for approximate recall.
-        let mut context_memory = the_machine::context::HierarchicalContextMemory::with_capacities(16, 32);
+        let mut context_memory =
+            the_machine::context::HierarchicalContextMemory::with_capacities(16, 32);
         context_memory.set_tick(0);
 
         let mut active_drift;
 
         // Seed initial predictions from synthetic states
-        let mut stable_error = 0.15;  // lower = higher confidence
+        let mut stable_error = 0.15; // lower = higher confidence
         let mut nominal_error = 0.25;
         let mut volatile_error = 0.35;
         let pred_seed = synth_nominal.rotate_left(13);
@@ -995,22 +1064,29 @@ async fn run_agent(
         // Initialize VSA n-gram chain for state transition prediction
         let mut ngram_chain = the_machine::narrative::NgramChain::bigram();
         ngram_chain.register_states(&[
-            "quiet", "companion", "regulated", "explorer",
-            "task", "resonant", "frontier", "full_council",
+            "quiet",
+            "companion",
+            "regulated",
+            "explorer",
+            "task",
+            "resonant",
+            "frontier",
+            "full_council",
         ]);
 
         // ██ DRIFT v3.1: DCP Consensus for multi-agent decision-making ██
         let mut dcp_engine = ConsensusEngine::new(50, 2);
-        let mut dcp_resolution: Option<(u64, Hypervector)> = None;  // (thread_id, resolved_hv)
+        let mut dcp_resolution: Option<(u64, Hypervector)> = None; // (thread_id, resolved_hv)
 
         // Register additional workspace modules for DRIFT subsystems
-        workspace.register_module("EMOTION", true);   // module 5
-        workspace.register_module("INTUITION", true);  // module 6
-        workspace.register_module("SHADOW", true);     // module 7
-        workspace.register_module("CONSENSUS", true);  // module 8
+        workspace.register_module("EMOTION", true); // module 5
+        workspace.register_module("INTUITION", true); // module 6
+        workspace.register_module("SHADOW", true); // module 7
+        workspace.register_module("CONSENSUS", true); // module 8
 
         // Track episode count for calibration updates (avoids double-counting)
-        let mut last_calibration_ep_count: usize = qa_for_loop.read().await.episode_store.episodes.len();
+        let mut last_calibration_ep_count: usize =
+            qa_for_loop.read().await.episode_store.episodes.len();
 
         loop {
             sleep(Duration::from_secs(2)).await;
@@ -1022,8 +1098,7 @@ async fn run_agent(
                 let bg = brain_subconscious.read().await;
                 let hot = bg.dejavu_clusters.iter().filter(|c| c.is_hot()).count();
                 let cold = bg.dejavu_clusters.len().saturating_sub(hot);
-                let total_entries: usize = bg.dejavu_clusters.iter()
-                    .map(|c| c.entries.len()).sum();
+                let total_entries: usize = bg.dejavu_clusters.iter().map(|c| c.entries.len()).sum();
                 let accum_kb = hot as f64 * 40.96;
                 let exp_len = bg.experiences.len();
                 let trans_len = bg.transient_clusters.len();
@@ -1041,7 +1116,7 @@ async fn run_agent(
                         doc_frequency_entries: 0,
                         experiences_len: exp_len,
                         broker_clusters: 0,
-                    }
+                    },
                 );
             }
 
@@ -1061,22 +1136,31 @@ async fn run_agent(
                 drop(bg);
 
                 // Feed signals into homeostasis
-                homeostasis.tick(&[
-                    (the_machine::drift::Need::Energy, 1.0 - *defense_subconscious.threat_level.read().await),
-                    (the_machine::drift::Need::Coherence, coherence),
-                    (the_machine::drift::Need::Growth, growth_signal),
-                    (the_machine::drift::Need::Autonomy, autonomy_signal),
-                    (the_machine::drift::Need::Integration, coherence * 0.8 + 0.2),
-                    (the_machine::drift::Need::Connection, 0.6),
-                    (the_machine::drift::Need::Integrity, 0.8),
-                ], true, 1);
+                homeostasis.tick(
+                    &[
+                        (
+                            the_machine::drift::Need::Energy,
+                            1.0 - *defense_subconscious.threat_level.read().await,
+                        ),
+                        (the_machine::drift::Need::Coherence, coherence),
+                        (the_machine::drift::Need::Growth, growth_signal),
+                        (the_machine::drift::Need::Autonomy, autonomy_signal),
+                        (the_machine::drift::Need::Integration, coherence * 0.8 + 0.2),
+                        (the_machine::drift::Need::Connection, 0.6),
+                        (the_machine::drift::Need::Integrity, 0.8),
+                    ],
+                    true,
+                    1,
+                );
 
                 // Compute cognitive mode from brain state
                 let in_coherence = coherence > 0.6;
                 let is_novel = ticker < 50 || ticker % 100 < 20;
                 let prev_mode = current_mode;
                 current_mode = the_machine::drift::CognitiveMode::from_bits(
-                    has_memory, !in_coherence, is_novel,
+                    has_memory,
+                    !in_coherence,
+                    is_novel,
                 );
                 // Observe mode transition for n-gram chain
                 if current_mode != prev_mode {
@@ -1103,12 +1187,18 @@ async fn run_agent(
             defense_subconscious.decrement_threat(0.01).await;
 
             // SVO candidate lists for semantic intent formulation & rule induction
-            let auto_subjects: Vec<String> =
-                the_machine::autonomy::DEFAULT_SUBJECTS.iter().map(|s| s.to_string()).collect();
-            let auto_verbs: Vec<String> =
-                the_machine::autonomy::DEFAULT_VERBS.iter().map(|v| v.to_string()).collect();
-            let auto_objects: Vec<String> =
-                the_machine::autonomy::DEFAULT_OBJECTS.iter().map(|o| o.to_string()).collect();
+            let auto_subjects: Vec<String> = the_machine::autonomy::DEFAULT_SUBJECTS
+                .iter()
+                .map(|s| s.to_string())
+                .collect();
+            let auto_verbs: Vec<String> = the_machine::autonomy::DEFAULT_VERBS
+                .iter()
+                .map(|v| v.to_string())
+                .collect();
+            let auto_objects: Vec<String> = the_machine::autonomy::DEFAULT_OBJECTS
+                .iter()
+                .map(|o| o.to_string())
+                .collect();
 
             // v9.0 Sensory Encoders integration
             let mut telemetry_mod = the_machine::sensory::SystemTelemetryModality::new("telemetry");
@@ -1151,7 +1241,9 @@ async fn run_agent(
                     agent_anxiety: anxiety_for_broker,
                 };
                 let mut writer_guard = writer_clone.lock().await;
-                let _ = NeocortexBroker::write_msg(&mut writer_guard, &request, &key_str_subconscious).await;
+                let _ =
+                    NeocortexBroker::write_msg(&mut writer_guard, &request, &key_str_subconscious)
+                        .await;
             }
 
             // Watchdog Panic Lockdown Check
@@ -1166,7 +1258,9 @@ async fn run_agent(
                     attacker_info: format!("Agent {} Admin Breach", id_str),
                 };
                 let mut writer_guard = writer_clone.lock().await;
-                let _ = NeocortexBroker::write_msg(&mut writer_guard, &request, &key_str_subconscious).await;
+                let _ =
+                    NeocortexBroker::write_msg(&mut writer_guard, &request, &key_str_subconscious)
+                        .await;
             }
 
             let port_rotated = defense_subconscious.evaluate_threat_response().await;
@@ -1212,7 +1306,9 @@ async fn run_agent(
                 drop(brain_guard);
                 let _ = subconscious_log_tx.send(format!(
                     "AGENT {}: Accumulator decay applied to {} hot clusters (factor={}).",
-                    id_str, decayed_count, the_machine::ACCUMULATOR_DECAY_FACTOR
+                    id_str,
+                    decayed_count,
+                    the_machine::ACCUMULATOR_DECAY_FACTOR
                 ));
             }
 
@@ -1226,9 +1322,8 @@ async fn run_agent(
                 let mut total_removed = 0usize;
                 let mut merged_clusters = 0usize;
                 for cluster in &mut brain_guard.dejavu_clusters {
-                    let removed = the_machine::compression::merge_entries(
-                        cluster, &config, ticker as u64,
-                    );
+                    let removed =
+                        the_machine::compression::merge_entries(cluster, &config, ticker as u64);
                     if removed > 0 {
                         total_removed += removed;
                         merged_clusters += 1;
@@ -1291,15 +1386,16 @@ async fn run_agent(
             // The theoretical margin is 0.010 at L_F = 1.0 (worst case).
             if ticker % 50 == 0 {
                 let mut brain_guard = brain_subconscious.write().await;
-                
+
                 // Measure κ_P from random pair projections
                 brain_guard.measure_kappa_p(20);
                 let kp = brain_guard.contraction_telemetry.kappa_p_mean;
                 let kf = brain_guard.contraction_telemetry.kappa_f_mean;
                 let kj = brain_guard.contraction_telemetry.kappa_joint;
-                
+
                 // Check tripwire
-                if let Some(warning) = brain_guard.contraction_telemetry
+                if let Some(warning) = brain_guard
+                    .contraction_telemetry
                     .check_tripwire(ticker as u64)
                 {
                     let _ = subconscious_log_tx.send(format!(
@@ -1307,12 +1403,12 @@ async fn run_agent(
                         id_str, warning
                     ));
                 }
-                
+
                 // Log periodic status
                 let n_p = brain_guard.contraction_telemetry.kappa_p_count;
                 let n_f = brain_guard.contraction_telemetry.kappa_f_count;
                 drop(brain_guard);
-                
+
                 let _ = subconscious_log_tx.send(format!(
                     "AGENT {}: CONTRACTION TELEMETRY — κ_P={:.4} (n={}), κ_F={:.4} (n={}), κ={:.6}",
                     id_str, kp, n_p, kf, n_f, kj
@@ -1349,10 +1445,9 @@ async fn run_agent(
                     let current_count = qa_read.episode_store.episodes.len();
                     if current_count > last_calibration_ep_count {
                         let mut brain_write = brain_subconscious.write().await;
-                        brain_write.confidence_calibration.record_store_from(
-                            &qa_read.episode_store,
-                            last_calibration_ep_count,
-                        );
+                        brain_write
+                            .confidence_calibration
+                            .record_store_from(&qa_read.episode_store, last_calibration_ep_count);
                         last_calibration_ep_count = current_count;
                     }
                 }
@@ -1368,7 +1463,9 @@ async fn run_agent(
                     // Record confidence calibration from all episodes (Layer 3)
                     {
                         let mut brain_write = brain_subconscious.write().await;
-                        brain_write.confidence_calibration.record_store(&qa_read.episode_store);
+                        brain_write
+                            .confidence_calibration
+                            .record_store(&qa_read.episode_store);
                     }
                     drop(qa_read);
 
@@ -1377,7 +1474,10 @@ async fn run_agent(
                         let brain_read = brain_subconscious.read().await;
                         if !brain_read.decision_journal.is_empty() {
                             if let Err(e) = brain_read.decision_journal.save() {
-                                eprintln!("[tick {}] Failed to save decision journal: {}", ticker, e);
+                                eprintln!(
+                                    "[tick {}] Failed to save decision journal: {}",
+                                    ticker, e
+                                );
                             }
                         }
                     }
@@ -1402,7 +1502,9 @@ async fn run_agent(
 
                     for i in 0..k.min(200) {
                         for j in 0..k.min(200) {
-                            if i == j { continue; }
+                            if i == j {
+                                continue;
+                            }
                             let p = temporal_cog.transitions.transition_probability(i, j);
                             let count = temporal_cog.transitions.counts[i][j];
                             if p >= 0.60 && count >= 20 {
@@ -1411,24 +1513,35 @@ async fn run_agent(
                                 if let (Some(ci), Some(cj)) = (c_i, c_j) {
                                     // Factorize centroid i (antecedent)
                                     let fact_i = the_machine::analogy::factorize_triple(
-                                        ci, &roles, &resonator_vocab,
-                                        &auto_subjects_clone, &auto_verbs_clone, &auto_objects_clone, 15,
+                                        ci,
+                                        &roles,
+                                        &resonator_vocab,
+                                        &auto_subjects_clone,
+                                        &auto_verbs_clone,
+                                        &auto_objects_clone,
+                                        15,
                                     );
                                     // Factorize centroid j (consequent)
                                     let fact_j = the_machine::analogy::factorize_triple(
-                                        cj, &roles, &resonator_vocab,
-                                        &auto_subjects_clone, &auto_verbs_clone, &auto_objects_clone, 15,
+                                        cj,
+                                        &roles,
+                                        &resonator_vocab,
+                                        &auto_subjects_clone,
+                                        &auto_verbs_clone,
+                                        &auto_objects_clone,
+                                        15,
                                     );
 
                                     match (fact_i, fact_j) {
-                                        (Some((s_i, v_i, o_i, e_i)), Some((s_j, v_j, o_j, e_j))) => {
+                                        (
+                                            Some((s_i, v_i, o_i, e_i)),
+                                            Some((s_j, v_j, o_j, e_j)),
+                                        ) => {
                                             if e_i >= 0.60 && e_j >= 0.60 {
                                                 // Clean factorization → store as QA rule
                                                 let mut qa_write = qa_for_loop.write().await;
                                                 qa_write.store_rule_with_confidence(
-                                                    &s_i, &v_i, &o_i,
-                                                    &s_j, &v_j, &o_j,
-                                                    "induced",
+                                                    &s_i, &v_i, &o_i, &s_j, &v_j, &o_j, "induced",
                                                     0.60, // starting confidence
                                                 );
                                                 drop(qa_write);
@@ -1439,17 +1552,21 @@ async fn run_agent(
                                                 ));
                                             } else {
                                                 // Noisy → store as proto-rule for later retry
-                                                let found = proto_rules.iter_mut().find(|pr|
+                                                let found = proto_rules.iter_mut().find(|pr| {
                                                     pr.0.normalized_hamming_distance(ci) < 0.15
-                                                    && pr.1.normalized_hamming_distance(cj) < 0.15
-                                                );
+                                                        && pr.1.normalized_hamming_distance(cj)
+                                                            < 0.15
+                                                });
                                                 if let Some(existing) = found {
-                                                    existing.2 = existing.2.saturating_add(count.min(50) as u32);
+                                                    existing.2 = existing
+                                                        .2
+                                                        .saturating_add(count.min(50) as u32);
                                                     existing.3 = (existing.3 + e_i.min(e_j)) / 2.0;
                                                     existing.4 = ticker;
                                                 } else if proto_rules.len() < MAX_PROTO_RULES {
                                                     proto_rules.push((
-                                                        *ci, *cj,
+                                                        *ci,
+                                                        *cj,
                                                         count.min(50) as u32,
                                                         e_i.min(e_j),
                                                         ticker,
@@ -1460,15 +1577,22 @@ async fn run_agent(
                                         }
                                         _ => {
                                             // Can't factorize — store as raw proto-rule
-                                            let found = proto_rules.iter_mut().find(|pr|
+                                            let found = proto_rules.iter_mut().find(|pr| {
                                                 pr.0.normalized_hamming_distance(ci) < 0.15
-                                                && pr.1.normalized_hamming_distance(cj) < 0.15
-                                            );
+                                                    && pr.1.normalized_hamming_distance(cj) < 0.15
+                                            });
                                             if let Some(existing) = found {
-                                                existing.2 = existing.2.saturating_add(count.min(50) as u32);
+                                                existing.2 =
+                                                    existing.2.saturating_add(count.min(50) as u32);
                                                 existing.4 = ticker;
                                             } else if proto_rules.len() < MAX_PROTO_RULES {
-                                                proto_rules.push((*ci, *cj, count.min(50) as u32, 0.0, ticker));
+                                                proto_rules.push((
+                                                    *ci,
+                                                    *cj,
+                                                    count.min(50) as u32,
+                                                    0.0,
+                                                    ticker,
+                                                ));
                                                 proto_updated += 1;
                                             }
                                         }
@@ -1489,24 +1613,44 @@ async fn run_agent(
                     // Re-try proto-rules that were last attempted >100 ticks ago
                     // and have accumulated more observations.
                     let mut promoted: Vec<usize> = Vec::new();
-                    for (pr_idx, (pr_ant, pr_con, pr_cnt, pr_energy, pr_tick)) in proto_rules.iter_mut().enumerate() {
+                    for (pr_idx, (pr_ant, pr_con, pr_cnt, pr_energy, pr_tick)) in
+                        proto_rules.iter_mut().enumerate()
+                    {
                         if *pr_cnt >= 30 && ticker.saturating_sub(*pr_tick) > 100 {
                             // Try factorizing again
                             let roles2 = the_machine::analogy::RoleDictionary::new();
                             let fact_i2 = the_machine::analogy::factorize_triple(
-                                pr_ant, &roles2, &resonator_vocab,
-                                &auto_subjects_clone, &auto_verbs_clone, &auto_objects_clone, 15,
+                                pr_ant,
+                                &roles2,
+                                &resonator_vocab,
+                                &auto_subjects_clone,
+                                &auto_verbs_clone,
+                                &auto_objects_clone,
+                                15,
                             );
                             let fact_j2 = the_machine::analogy::factorize_triple(
-                                pr_con, &roles2, &resonator_vocab,
-                                &auto_subjects_clone, &auto_verbs_clone, &auto_objects_clone, 15,
+                                pr_con,
+                                &roles2,
+                                &resonator_vocab,
+                                &auto_subjects_clone,
+                                &auto_verbs_clone,
+                                &auto_objects_clone,
+                                15,
                             );
-                            if let (Some((s_i2, v_i2, o_i2, e_i2)), Some((s_j2, v_j2, o_j2, e_j2))) = (fact_i2, fact_j2) {
+                            if let (
+                                Some((s_i2, v_i2, o_i2, e_i2)),
+                                Some((s_j2, v_j2, o_j2, e_j2)),
+                            ) = (fact_i2, fact_j2)
+                            {
                                 if e_i2 >= 0.65 && e_j2 >= 0.65 {
                                     let mut qa_write = qa_for_loop.write().await;
                                     qa_write.store_rule_with_confidence(
-                                        &s_i2, &v_i2, &o_i2,
-                                        &s_j2, &v_j2, &o_j2,
+                                        &s_i2,
+                                        &v_i2,
+                                        &o_i2,
+                                        &s_j2,
+                                        &v_j2,
+                                        &o_j2,
                                         "induced_from_proto",
                                         0.55, // slightly lower starting confidence for delayed induction
                                     );
@@ -1549,15 +1693,18 @@ async fn run_agent(
                                 let next_state = &validation_buffer[w + 1].0;
 
                                 // Does the rule's antecedent match this state?
-                                let ant_sim = 1.0 - state.normalized_hamming_distance(&rule.ante_hv);
+                                let ant_sim =
+                                    1.0 - state.normalized_hamming_distance(&rule.ante_hv);
                                 if ant_sim >= 0.56 {
                                     rule_total += 1;
                                     // Predict consequent
                                     let predicted = rule.rule_hv.bitwise_xor(&rule.ante_hv);
                                     // Compare against actual next state
-                                    let actual_sim = 1.0 - next_state.normalized_hamming_distance(&predicted);
+                                    let actual_sim =
+                                        1.0 - next_state.normalized_hamming_distance(&predicted);
                                     // Also check raw consequent similarity
-                                    let cons_sim = 1.0 - next_state.normalized_hamming_distance(&rule.cons_hv);
+                                    let cons_sim =
+                                        1.0 - next_state.normalized_hamming_distance(&rule.cons_hv);
                                     if actual_sim > 0.50 || cons_sim > 0.50 {
                                         rule_correct += 1;
                                     }
@@ -1608,6 +1755,22 @@ async fn run_agent(
                             ));
                         }
                     }
+
+                    // ── SYMBOLIC: Derive new facts from physics formulas ──
+                    // Scans stored facts for variable names that appear in
+                    // physics formulas, and derives symbolic relationships.
+                    // E.g., if the machine has a fact about "F" and "m" and "a",
+                    // it derives "F equals m*a" as a new symbolic fact.
+                    {
+                        let mut qa_write = qa_for_loop.write().await;
+                        let derived = the_machine::qa::derive_symbolic_facts(&mut qa_write);
+                        if derived > 0 {
+                            let _ = subconscious_log_tx.send(format!(
+                                "AGENT {}: SYMBOLIC: Derived {} new facts from physics formulas (total facts: {}).",
+                                id_str, derived, qa_write.facts().len(),
+                            ));
+                        }
+                    }
                 }
             }
 
@@ -1627,7 +1790,8 @@ async fn run_agent(
                 "throughput".to_string(),
                 if is_high_load_tick { 80.0 } else { 25.0 },
             );
-            telemetry.insert("error_rate".to_string(),
+            telemetry.insert(
+                "error_rate".to_string(),
                 if is_high_load_tick { 0.08 } else { 0.005 },
             );
             telemetry.insert("response_latency".to_string(), latency);
@@ -1700,7 +1864,10 @@ async fn run_agent(
             let _resolved_concept = {
                 let (label, _) = brain_guard.evaluate_deja_vu(&current_world_state);
                 if let Some(ref lbl) = label {
-                    if lbl.contains("HighLoad") || lbl.contains("high_load") || lbl.contains("crisis") {
+                    if lbl.contains("HighLoad")
+                        || lbl.contains("high_load")
+                        || lbl.contains("crisis")
+                    {
                         c_high_load
                     } else {
                         c_normal
@@ -1731,9 +1898,10 @@ async fn run_agent(
             let mut drift_seq: Vec<Hypervector> = Vec::with_capacity(2);
             for i in 0..2 {
                 drift_seq.push(
-                    deltas_vec.get(deltas_vec.len().saturating_sub(2).wrapping_add(i))
+                    deltas_vec
+                        .get(deltas_vec.len().saturating_sub(2).wrapping_add(i))
                         .copied()
-                        .unwrap_or(active_drift)
+                        .unwrap_or(active_drift),
                 );
             }
 
@@ -1789,21 +1957,22 @@ async fn run_agent(
             if ticker % 10 == 0 {
                 let clusters_snapshot = brain_guard.dejavu_clusters.clone();
 
-                let (reasoned_intent, best_slot, trace, desirable) = dt.reason(
-                    &current_world_state,
-                    &auto_subjects,
-                    &auto_verbs,
-                    &auto_objects,
-                    &clusters_snapshot,
-                    &historical_baseline,
-                    &crisis_concepts,
-                ).await;
+                let (reasoned_intent, best_slot, trace, desirable) = dt
+                    .reason(
+                        &current_world_state,
+                        &auto_subjects,
+                        &auto_verbs,
+                        &auto_objects,
+                        &clusters_snapshot,
+                        &historical_baseline,
+                        &crisis_concepts,
+                    )
+                    .await;
 
                 // Log the reasoning trace
                 for t in &trace {
-                    let _ = subconscious_log_tx.send(format!(
-                        "AGENT {}: DEEPTHOUGHT {}", id_str, t
-                    ));
+                    let _ =
+                        subconscious_log_tx.send(format!("AGENT {}: DEEPTHOUGHT {}", id_str, t));
                 }
 
                 if desirable && reasoned_intent.count_ones() > 0 {
@@ -1845,18 +2014,27 @@ async fn run_agent(
                 let mut intent_guard = intent_subconscious.write().await;
 
                 // Formulate corrective intent via planning layer
-                let chosen_intent = if let Some((corrective_intent, label)) = drive.formulate_intent(
-                    &dissonance, &resonator_vocab, &action_registry,
-                    &auto_subjects, &auto_verbs, &auto_objects, 30,
-                    &current_world_state, &c_normal, &drift_seq,
-                    &crisis_concepts, regime_volatility, &exps,
-                ) {
+                let chosen_intent = if let Some((corrective_intent, label)) = drive
+                    .formulate_intent(
+                        &dissonance,
+                        &resonator_vocab,
+                        &action_registry,
+                        &auto_subjects,
+                        &auto_verbs,
+                        &auto_objects,
+                        30,
+                        &current_world_state,
+                        &c_normal,
+                        &drift_seq,
+                        &crisis_concepts,
+                        regime_volatility,
+                        &exps,
+                    ) {
                     *drive_guard = label;
                     *intent_guard = corrective_intent;
                     corrective_intent
                 } else {
-                    *drive_guard =
-                        "Subconscious (Dissonance Pivot — fallback)".to_string();
+                    *drive_guard = "Subconscious (Dissonance Pivot — fallback)".to_string();
                     *intent_guard = dissonance;
                     dissonance
                 };
@@ -1873,18 +2051,27 @@ async fn run_agent(
 
                 // Phantom pain: try parsing the offset from crisis memory
                 let phantom = current_world_state.bitwise_xor(&stress_memory);
-                let chosen_intent = if let Some((corrective_intent, label)) = drive.formulate_intent(
-                    &phantom, &resonator_vocab, &action_registry,
-                    &auto_subjects, &auto_verbs, &auto_objects, 30,
-                    &current_world_state, &c_normal, &drift_seq,
-                    &crisis_concepts, regime_volatility, &exps,
-                ) {
+                let chosen_intent = if let Some((corrective_intent, label)) = drive
+                    .formulate_intent(
+                        &phantom,
+                        &resonator_vocab,
+                        &action_registry,
+                        &auto_subjects,
+                        &auto_verbs,
+                        &auto_objects,
+                        30,
+                        &current_world_state,
+                        &c_normal,
+                        &drift_seq,
+                        &crisis_concepts,
+                        regime_volatility,
+                        &exps,
+                    ) {
                     *drive_guard = label;
                     *intent_guard = corrective_intent;
                     corrective_intent
                 } else {
-                    *drive_guard =
-                        "Subconscious (Phantom Pain — fallback)".to_string();
+                    *drive_guard = "Subconscious (Phantom Pain — fallback)".to_string();
                     *intent_guard = phantom;
                     phantom
                 };
@@ -1938,15 +2125,15 @@ async fn run_agent(
                     if !deltas_vec.is_empty() {
                         let bundle_refs: Vec<&Hypervector> = deltas_vec.iter().collect();
                         let drift_pattern = Hypervector::bundle(&bundle_refs);
-                        let causal_subjects: Vec<String> = vec![
-                            "IF_RULE".to_string(), "CAUSE_RULE".to_string(),
-                        ];
+                        let causal_subjects: Vec<String> =
+                            vec!["IF_RULE".to_string(), "CAUSE_RULE".to_string()];
                         let causal_verbs: Vec<String> = vec![
-                            "Breach".to_string(), "Crisis".to_string(), "Attack".to_string(),
+                            "Breach".to_string(),
+                            "Crisis".to_string(),
+                            "Attack".to_string(),
                         ];
-                        let causal_objects: Vec<String> = vec![
-                            "consequence".to_string(), "crisis".to_string(),
-                        ];
+                        let causal_objects: Vec<String> =
+                            vec!["consequence".to_string(), "crisis".to_string()];
                         if let Some((rule_s, rule_v, rule_slot)) =
                             the_machine::resonator::factorize_recursive(
                                 &drift_pattern,
@@ -2019,13 +2206,19 @@ async fn run_agent(
                             // ── Autonomy budget check (Layer 5) ────────
                             let budget_allowed = {
                                 let mut brain_write = brain_subconscious.write().await;
-                                brain_write.autonomy_budget.can_spend(action_risk, is_external_write)
+                                brain_write
+                                    .autonomy_budget
+                                    .can_spend(action_risk, is_external_write)
                             };
 
                             if !budget_allowed {
                                 let action_ratio = {
                                     let bg = brain_subconscious.read().await;
-                                    format!("{}/{}", bg.autonomy_budget.actions_used, bg.autonomy_budget.max_actions)
+                                    format!(
+                                        "{}/{}",
+                                        bg.autonomy_budget.actions_used,
+                                        bg.autonomy_budget.max_actions
+                                    )
                                 };
                                 let msg = format!(
                                     "Budget gate REJECTED {} {} — no remaining budget (actions={})",
@@ -2041,18 +2234,22 @@ async fn run_agent(
                                     ticker as u64,
                                     &format!("main loop: {} {}", step.action, step.parameter),
                                     action_req,
-                                    &format!("corrective plan step {}/{} (DENIED)", idx + 1, trajectory.steps.len()),
+                                    &format!(
+                                        "corrective plan step {}/{} (DENIED)",
+                                        idx + 1,
+                                        trajectory.steps.len()
+                                    ),
                                     &brain_write.autonomy_budget,
                                 );
                                 record.budget_allowed = false;
-                                record.action_result = Some(the_machine::actuator::ActionResult::error(&msg));
+                                record.action_result =
+                                    Some(the_machine::actuator::ActionResult::error(&msg));
                                 record.budget_after = brain_write.autonomy_budget.clone();
                                 brain_write.decision_journal.push(record);
                                 drop(brain_write);
 
-                                let _ = subconscious_log_tx.send(format!(
-                                    "AGENT {}: {}", id_str, msg
-                                ));
+                                let _ =
+                                    subconscious_log_tx.send(format!("AGENT {}: {}", id_str, msg));
                                 continue;
                             }
 
@@ -2067,7 +2264,11 @@ async fn run_agent(
                                     ticker as u64,
                                     &format!("main loop: {} {}", step.action, step.parameter),
                                     action_req,
-                                    &format!("corrective plan step {}/{}", idx + 1, trajectory.steps.len()),
+                                    &format!(
+                                        "corrective plan step {}/{}",
+                                        idx + 1,
+                                        trajectory.steps.len()
+                                    ),
                                     &brain_write.autonomy_budget,
                                 );
                                 record
@@ -2116,14 +2317,22 @@ async fn run_agent(
                                     },
                                 };
                                 decision_record.action_result = Some(action_result);
-                                let _ = brain_write.autonomy_budget.spend(action_risk, 2000, is_external_write);
+                                let _ = brain_write.autonomy_budget.spend(
+                                    action_risk,
+                                    2000,
+                                    is_external_write,
+                                );
                                 decision_record.budget_after = brain_write.autonomy_budget.clone();
                                 brain_write.decision_journal.push(decision_record);
                             }
 
                             let v_outcome = Hypervector::encode_text_ngram(
-                                if exec_res.is_ok() { "SUCCESS" } else { "FAILURE" },
-                                3
+                                if exec_res.is_ok() {
+                                    "SUCCESS"
+                                } else {
+                                    "FAILURE"
+                                },
+                                3,
                             );
                             if let Some(act_hv) = action_registry.get_action_vector(&step.action) {
                                 let experience_hv = act_hv
@@ -2199,10 +2408,7 @@ async fn run_agent(
             // Push into hierarchical context memory (GLM-5 Pattern 8: Keep-Recent + Fold).
             // Recent items stay at full resolution for exact query; older items are
             // automatically folded into bundled chunks when the pending fold fills.
-            context_memory.push(
-                current_world_state,
-                &format!("state_tick_{}", ticker),
-            );
+            context_memory.push(current_world_state, &format!("state_tick_{}", ticker));
             context_memory.tick();
 
             let accumulated_action = if current_tick_actions.is_empty() {
@@ -2225,13 +2431,30 @@ async fn run_agent(
             reversed.reverse();
             let stable_drift = the_machine::planning::bundle_weighted_ewma(&reversed, 3);
             let newest_delta = current_deltas_vec.last().copied().unwrap_or(nominal_drift);
-            let amp_refs: Vec<&Hypervector> =
-                std::iter::repeat(&newest_delta).take(5).chain(std::iter::once(&nominal_drift)).collect();
+            let amp_refs: Vec<&Hypervector> = std::iter::repeat(&newest_delta)
+                .take(5)
+                .chain(std::iter::once(&nominal_drift))
+                .collect();
             let volatile_drift = Hypervector::bundle(&amp_refs);
 
-            pred_stable = Some(current_world_state.rotate_left(13).bitwise_xor(&accumulated_action).bitwise_xor(&stable_drift));
-            pred_nominal = Some(current_world_state.rotate_left(13).bitwise_xor(&accumulated_action).bitwise_xor(&nominal_drift));
-            pred_volatile = Some(current_world_state.rotate_left(13).bitwise_xor(&accumulated_action).bitwise_xor(&volatile_drift));
+            pred_stable = Some(
+                current_world_state
+                    .rotate_left(13)
+                    .bitwise_xor(&accumulated_action)
+                    .bitwise_xor(&stable_drift),
+            );
+            pred_nominal = Some(
+                current_world_state
+                    .rotate_left(13)
+                    .bitwise_xor(&accumulated_action)
+                    .bitwise_xor(&nominal_drift),
+            );
+            pred_volatile = Some(
+                current_world_state
+                    .rotate_left(13)
+                    .bitwise_xor(&accumulated_action)
+                    .bitwise_xor(&volatile_drift),
+            );
 
             // ── Experience feedback loop ─────────────────────────────
             // Every 50 ticks, cluster experiences to update crisis concepts.
@@ -2306,7 +2529,9 @@ async fn run_agent(
                 // Step 3: Every 10 ticks, materialize analogical predictions → VSABrain
                 if ticker % 10 == 0 {
                     // Get top predictions by plausibility
-                    let predictions: Vec<_> = pri_guard.predictions_sorted().into_iter()
+                    let predictions: Vec<_> = pri_guard
+                        .predictions_sorted()
+                        .into_iter()
                         .take(3)
                         .map(|p| p.predicted_vector)
                         .collect();
@@ -2340,7 +2565,8 @@ async fn run_agent(
 
                 // Use weighted abduced targets (returns Hypervector targets)
                 let abduced = met_guard.curiosity_targets_abduced_weighted(
-                    pri_guard.frames(), &met_guard.signature_stats,
+                    pri_guard.frames(),
+                    &met_guard.signature_stats,
                 );
 
                 let target_hv = abduced.first().map(|(hv, _, _)| *hv);
@@ -2365,26 +2591,33 @@ async fn run_agent(
                         auto_verbs.clone(),
                         auto_objects.clone(),
                     );
-                    if let Some((subj, verb, obj, energy)) =
-                        the_machine::analogy::factorize_triple(
-                            &hv, &roles, &resonator_vocab,
-                            &s_cands, &v_cands, &o_cands, 20,
-                        )
-                    {
+                    if let Some((subj, verb, obj, energy)) = the_machine::analogy::factorize_triple(
+                        &hv,
+                        &roles,
+                        &resonator_vocab,
+                        &s_cands,
+                        &v_cands,
+                        &o_cands,
+                        20,
+                    ) {
                         if energy > 0.55 {
                             let query = format!("{} {} {}", subj, verb, obj);
                             // Simple URL encoding: spaces → +, strip punctuation
-                            let encoded: String = query.chars()
-                                .map(|c| if c.is_whitespace() { '+' }
-                                     else if c.is_ascii_punctuation() { ' ' }
-                                     else { c })
+                            let encoded: String = query
+                                .chars()
+                                .map(|c| {
+                                    if c.is_whitespace() {
+                                        '+'
+                                    } else if c.is_ascii_punctuation() {
+                                        ' '
+                                    } else {
+                                        c
+                                    }
+                                })
                                 .collect();
-                            let encoded = encoded.split_whitespace()
-                                .collect::<Vec<_>>().join("+");
-                            let search_url = format!(
-                                "https://html.duckduckgo.com/html/?q={}",
-                                encoded
-                            );
+                            let encoded = encoded.split_whitespace().collect::<Vec<_>>().join("+");
+                            let search_url =
+                                format!("https://html.duckduckgo.com/html/?q={}", encoded);
                             let mut seeds = seed_urls_int.write().await;
                             seeds.push_back(search_url);
                             let _ = subconscious_log_tx.send(format!(
@@ -2408,14 +2641,22 @@ async fn run_agent(
                 let profile = HomeostaticProfile::from_homeostasis(&homeostasis);
                 let global_error = (stable_error + nominal_error + volatile_error) / 3.0;
                 let error_hv = Hypervector::encode_text_ngram(
-                    &format!("BLENDED_ERR_{}", (global_error * 10.0).round() as usize), 3);
+                    &format!("BLENDED_ERR_{}", (global_error * 10.0).round() as usize),
+                    3,
+                );
 
-                workspace.update_module(0, profile.encode());                         // HOMEOSTASIS
-                workspace.update_module(1, error_hv);                                 // PREDICTIVE
-                workspace.update_module(2, Hypervector::encode_text_ngram(            // FORAGER
-                    &curr_url.split('/').last().unwrap_or("idle"), 3));
-                workspace.update_module(3, historical_baseline);                      // MEMORY
-                workspace.update_module(4, *current_mode.to_hypervector());           // MODE
+                workspace.update_module(0, profile.encode()); // HOMEOSTASIS
+                workspace.update_module(1, error_hv); // PREDICTIVE
+                workspace.update_module(
+                    2,
+                    Hypervector::encode_text_ngram(
+                        // FORAGER
+                        &curr_url.split('/').last().unwrap_or("idle"),
+                        3,
+                    ),
+                );
+                workspace.update_module(3, historical_baseline); // MEMORY
+                workspace.update_module(4, *current_mode.to_hypervector()); // MODE
 
                 // ── EMOTIONAL FIELD: Derive mood from brain state ──────────────
                 // Map brain signals to (emotion, stance) → mood
@@ -2423,12 +2664,19 @@ async fn run_agent(
                     let anxiety = brain_guard.anxiety;
                     let coherence = 1.0 - anxiety;
                     let th = *defense_subconscious.threat_level.read().await;
-                    if anxiety > 0.7 { Emotion::Fear }
-                    else if th > 0.5 { Emotion::Fear }
-                    else if coherence < 0.3 { Emotion::Sadness }
-                    else if psc_predictor.chaos_score() > 0.5 { Emotion::Surprise }
-                    else if coherence > 0.8 { Emotion::Joy }
-                    else { Emotion::Neutral }
+                    if anxiety > 0.7 {
+                        Emotion::Fear
+                    } else if th > 0.5 {
+                        Emotion::Fear
+                    } else if coherence < 0.3 {
+                        Emotion::Sadness
+                    } else if psc_predictor.chaos_score() > 0.5 {
+                        Emotion::Surprise
+                    } else if coherence > 0.8 {
+                        Emotion::Joy
+                    } else {
+                        Emotion::Neutral
+                    }
                 };
                 current_stance = {
                     let mode_bits = current_mode.bits();
@@ -2438,16 +2686,24 @@ async fn run_agent(
                         the_machine::drift::CognitiveMode::Regulated => Stance::Guarded,
                         _ => {
                             // [memory, regulation, novelty]
-                            if mode_bits.2 { Stance::Curious }      // novelty bit set
-                            else if mode_bits.1 { Stance::Guarded } // regulation bit set
-                            else { Stance::Open }
+                            if mode_bits.2 {
+                                Stance::Curious
+                            }
+                            // novelty bit set
+                            else if mode_bits.1 {
+                                Stance::Guarded
+                            }
+                            // regulation bit set
+                            else {
+                                Stance::Open
+                            }
                         }
                     }
                 };
                 current_mood = emotional_field.resolve(current_emotion, current_stance);
-                let mood_hv = Hypervector::encode_text_ngram(
-                    &format!("MOOD_{:?}", current_mood), 3);
-                workspace.update_module(5, mood_hv);                                // EMOTION
+                let mood_hv =
+                    Hypervector::encode_text_ngram(&format!("MOOD_{:?}", current_mood), 3);
+                workspace.update_module(5, mood_hv); // EMOTION
             }
 
             // ── SELF-MODEL: Integrate all module states into unified identity ──
@@ -2463,8 +2719,10 @@ async fn run_agent(
             if ticker % 25 == 0 {
                 let _ = subconscious_log_tx.send(format!(
                     "AGENT {}: {} | winner={} (sim={:.3})",
-                    id_str, workspace.report(),
-                    attention_report.winner_label, attention_report.winner_similarity,
+                    id_str,
+                    workspace.report(),
+                    attention_report.winner_label,
+                    attention_report.winner_similarity,
                 ));
 
                 let stability = self_model.identity_stability();
@@ -2480,7 +2738,10 @@ async fn run_agent(
             if ticker % 25 == 0 {
                 let _ = subconscious_log_tx.send(format!(
                     "AGENT {}: AFFECT: {:?}+{:?}→{:?} | anxiety={:.2} threat={:.2}",
-                    id_str, current_emotion, current_stance, current_mood,
+                    id_str,
+                    current_emotion,
+                    current_stance,
+                    current_mood,
                     brain_guard.anxiety,
                     *defense_subconscious.threat_level.read().await,
                 ));
@@ -2505,7 +2766,11 @@ async fn run_agent(
                 let mode_tag = format!("MODE_{:?}", current_mode);
                 let mood_tag = format!("MOOD_{:?}", current_mood);
                 let emo_tag = format!("EMOTION_{:?}", current_emotion);
-                let anxiety_tag = if brain_guard.anxiety > 0.5 { "HIGH_ANXIETY" } else { "LOW_ANXIETY" };
+                let anxiety_tag = if brain_guard.anxiety > 0.5 {
+                    "HIGH_ANXIETY"
+                } else {
+                    "LOW_ANXIETY"
+                };
                 let domain_tags = [
                     mode_tag.as_str(),
                     mood_tag.as_str(),
@@ -2516,13 +2781,15 @@ async fn run_agent(
                 if ticker > 0 && ticker % 10 == 0 {
                     // Periodically check for recognized patterns
                     let probe = Hypervector::encode_text_ngram(
-                        &format!("STATE_{}_{:?}", ticker % 5, current_mood), 3);
+                        &format!("STATE_{}_{:?}", ticker % 5, current_mood),
+                        3,
+                    );
                     let matches = intuition_engine.recognize(&probe);
                     if !matches.is_empty() {
                         let (pattern, sim) = matches[0];
-                        let pat_hv = Hypervector::encode_text_ngram(
-                            &format!("INTUIT_{}", pattern.label), 3);
-                        workspace.update_module(6, pat_hv);  // INTUITION
+                        let pat_hv =
+                            Hypervector::encode_text_ngram(&format!("INTUIT_{}", pattern.label), 3);
+                        workspace.update_module(6, pat_hv); // INTUITION
                         if ticker % 50 == 0 {
                             let _ = subconscious_log_tx.send(format!(
                                 "AGENT {}: INTUITION: recognized '{}' (sim={:.3}, strength={})",
@@ -2543,12 +2810,38 @@ async fn run_agent(
                 let coherence = 1.0 - anxiety;
                 let th = *defense_subconscious.threat_level.read().await;
                 // Feed external signals based on brain state
-                let hero_signal = if coherence > 0.7 && th < 0.3 { 0.2 } else { 0.05 };
-                let shadow_signal = if th > 0.6 { 0.25 } else if anxiety > 0.6 { 0.15 } else { 0.05 };
-                let sage_signal = if current_mood == Mood::Analytical { 0.2 } else { 0.05 };
-                let trickster_signal = if current_mood == Mood::Playful { 0.2 } else { 0.05 };
-                let caregiver_signal = if current_mood == Mood::Warm { 0.15 } else { 0.05 };
-                let orphan_signal = if current_mood == Mood::Withdrawn { 0.2 } else { 0.05 };
+                let hero_signal = if coherence > 0.7 && th < 0.3 {
+                    0.2
+                } else {
+                    0.05
+                };
+                let shadow_signal = if th > 0.6 {
+                    0.25
+                } else if anxiety > 0.6 {
+                    0.15
+                } else {
+                    0.05
+                };
+                let sage_signal = if current_mood == Mood::Analytical {
+                    0.2
+                } else {
+                    0.05
+                };
+                let trickster_signal = if current_mood == Mood::Playful {
+                    0.2
+                } else {
+                    0.05
+                };
+                let caregiver_signal = if current_mood == Mood::Warm {
+                    0.15
+                } else {
+                    0.05
+                };
+                let orphan_signal = if current_mood == Mood::Withdrawn {
+                    0.2
+                } else {
+                    0.05
+                };
 
                 shadow_system.tick(&[
                     (Archetype::Hero, hero_signal),
@@ -2561,16 +2854,22 @@ async fn run_agent(
 
                 // Update workspace with dominant archetype
                 let dominant_arch = shadow_system.dominant();
-                let arch_hv = Hypervector::encode_text_ngram(
-                    &format!("ARCH_{:?}", dominant_arch), 3);
-                workspace.update_module(7, arch_hv);  // SHADOW
+                let arch_hv =
+                    Hypervector::encode_text_ngram(&format!("ARCH_{:?}", dominant_arch), 3);
+                workspace.update_module(7, arch_hv); // SHADOW
 
                 if ticker % 50 == 0 {
-                    let ints: Vec<f64> = shadow_system.archetypes.iter().map(|a| a.intensity).collect();
+                    let ints: Vec<f64> = shadow_system
+                        .archetypes
+                        .iter()
+                        .map(|a| a.intensity)
+                        .collect();
                     let int_str: Vec<String> = ints.iter().map(|v| format!("{:.2}", v)).collect();
                     let _ = subconscious_log_tx.send(format!(
                         "AGENT {}: SHADOW: dominant={:?} | intensities: [{}]",
-                        id_str, dominant_arch, int_str.join(", "),
+                        id_str,
+                        dominant_arch,
+                        int_str.join(", "),
                     ));
                 }
             }
@@ -2601,9 +2900,7 @@ async fn run_agent(
                     };
                     generator.generate(&state)
                 };
-                let _ = subconscious_log_tx.send(format!(
-                    "AGENT {}: 📖 {}", id_str, narrative
-                ));
+                let _ = subconscious_log_tx.send(format!("AGENT {}: 📖 {}", id_str, narrative));
 
                 // Add n-gram chain prediction
                 let current_mode_label = current_mode.label().to_lowercase();
@@ -2622,8 +2919,8 @@ async fn run_agent(
                 let role_self = Hypervector::encode_text_ngram("ROLE_SELF_STATE", 3);
                 let role_mood = Hypervector::encode_text_ngram("ROLE_MOOD", 3);
                 let role_mode = Hypervector::encode_text_ngram("ROLE_COG_MODE", 3);
-                let mood_hv = Hypervector::encode_text_ngram(
-                    &format!("MOOD_{:?}", current_mood), 3);
+                let mood_hv =
+                    Hypervector::encode_text_ngram(&format!("MOOD_{:?}", current_mood), 3);
                 let mode_hv = *current_mode.to_hypervector();
                 global_context.bind(&role_self, &self_model.current_identity);
                 global_context.bind(&role_mood, &mood_hv);
@@ -2654,9 +2951,9 @@ async fn run_agent(
                         format!("agent_{}", role_str),
                         DcpRole::Primary,
                         proposal_hv,
-                        0.9,                    // priority
-                        ticker as u64,           // message_id
-                        ticker as u64,           // timestamp/tick
+                        0.9,           // priority
+                        ticker as u64, // message_id
+                        ticker as u64, // timestamp/tick
                     );
                     let tid = dcp_engine.propose(msg, ticker as u64);
 
@@ -2681,7 +2978,7 @@ async fn run_agent(
 
                 // Update workspace with the latest resolution
                 if let Some((_tid, ref resolution)) = dcp_resolution {
-                    workspace.update_module(8, *resolution);  // CONSENSUS
+                    workspace.update_module(8, *resolution); // CONSENSUS
                 } else {
                     // If no consensus yet, use current identity as default
                     workspace.update_module(8, self_model.current_identity);
@@ -2697,7 +2994,9 @@ async fn run_agent(
                         if ticker % 60 == 0 {
                             let _ = subconscious_log_tx.send(format!(
                                 "AGENT {}: PSC: chaos={:.3}, horizon={}, pred_popcount={:.3}",
-                                id_str, chaos, horizon,
+                                id_str,
+                                chaos,
+                                horizon,
                                 prediction.count_ones() as f64 / 10240.0,
                             ));
                         }
@@ -2717,7 +3016,8 @@ async fn run_agent(
             if ticker % 25 == 0 {
                 let _ = subconscious_log_tx.send(format!(
                     "AGENT {}: {} | SIM: best={} (score={:.4})",
-                    id_str, drives.report(),
+                    id_str,
+                    drives.report(),
                     sim_report.best_action.label,
                     sim_report.best_outcome.total_score,
                 ));
@@ -2725,7 +3025,10 @@ async fn run_agent(
                 for (i, o) in sim_report.ranked_outcomes.iter().take(3).enumerate() {
                     let _ = subconscious_log_tx.send(format!(
                         "AGENT {}: SIM:   {}. {} — score={:.4}",
-                        id_str, i + 1, o.action_label, o.total_score,
+                        id_str,
+                        i + 1,
+                        o.action_label,
+                        o.total_score,
                     ));
                 }
             }
@@ -2736,21 +3039,31 @@ async fn run_agent(
                 sleeper.tick = ticker as u64;
 
                 // Check energy from homeostasis
-                let energy = homeostasis.needs.get(&the_machine::drift::Need::Energy)
-                    .map(|s| s.current).unwrap_or(0.5);
-                let integration = homeostasis.needs.get(&the_machine::drift::Need::Integration)
-                    .map(|s| s.current).unwrap_or(0.5);
+                let energy = homeostasis
+                    .needs
+                    .get(&the_machine::drift::Need::Energy)
+                    .map(|s| s.current)
+                    .unwrap_or(0.5);
+                let integration = homeostasis
+                    .needs
+                    .get(&the_machine::drift::Need::Integration)
+                    .map(|s| s.current)
+                    .unwrap_or(0.5);
                 let min_error = self_model.global_error.min(0.05);
 
                 let (should_sleep_now, reason) = sleeper.should_sleep(
-                    energy, integration, min_error, self_model.global_error,
+                    energy,
+                    integration,
+                    min_error,
+                    self_model.global_error,
                     workspace.is_idle(),
                 );
 
                 if should_sleep_now && !sleeper.sleeping {
                     // Run Phase 1+2: replay trajectory + narrative
                     let (transitions, narrative) = sleeper.phase1_replay(&self_model.trajectory);
-                    let _ = subconscious_log_tx.send(format!(
+                    let _ =
+                        subconscious_log_tx.send(format!(
                         "AGENT {}: SLEEP: triggered by {} — {} transitions, narrative pop={:.1}%",
                         id_str, reason, transitions.len(),
                         narrative.narrative_vector.count_ones() as f64 / 10240.0 * 100.0,
@@ -2763,9 +3076,8 @@ async fn run_agent(
                              I have {} significant transitions to process.",
                             transitions.len(),
                         );
-                        let _ = subconscious_log_tx.send(format!(
-                            "AGENT {}: 📖 {}", id_str, sleep_story
-                        ));
+                        let _ = subconscious_log_tx
+                            .send(format!("AGENT {}: 📖 {}", id_str, sleep_story));
                     }
 
                     // Sleep-phase drive adjustment: boost the most starved drive
@@ -2803,7 +3115,8 @@ async fn run_agent(
                         pg.frame_count(),
                         mg.abductor.rules().len(),
                         mg.abductor.trustworthy_rules().len(),
-                        mg.curiosity_targets_abduced_weighted(pg.frames(), &mg.signature_stats).len(),
+                        mg.curiosity_targets_abduced_weighted(pg.frames(), &mg.signature_stats)
+                            .len(),
                         sg.len(),
                     )
                 };

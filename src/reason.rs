@@ -236,8 +236,7 @@ impl ReasoningBlackboard {
             s => value.rotate_left(s.as_bytes().first().copied().unwrap_or(0) as usize),
         };
         self.variables.insert(name.to_string(), rotated);
-        self.trace
-            .push(format!("VAR_BIND: {} → [vector]", name));
+        self.trace.push(format!("VAR_BIND: {} → [vector]", name));
     }
 
     /// Retrieve the bound value of a variable, un‑rotating it.
@@ -459,8 +458,16 @@ impl CausalRule {
         // Build a variable re-indexing map: unify other's rotations to match self's
         let mut var_map: HashMap<String, usize> = HashMap::new();
         for var_name in &common {
-            let self_rho = self.variable_frame.get(*var_name).copied().unwrap_or(VAR_X_RHO);
-            let _other_rho = other.variable_frame.get(*var_name).copied().unwrap_or(VAR_X_RHO);
+            let self_rho = self
+                .variable_frame
+                .get(*var_name)
+                .copied()
+                .unwrap_or(VAR_X_RHO);
+            let _other_rho = other
+                .variable_frame
+                .get(*var_name)
+                .copied()
+                .unwrap_or(VAR_X_RHO);
             // Set target rotation to self's rotation (arbitrary but consistent)
             var_map.insert((*var_name).clone(), self_rho);
         }
@@ -672,8 +679,7 @@ impl CausalChainReasoner {
         let r2 = &self.rules[rule_b_idx];
 
         // Verify B‑ridge: consequent of R1 should match antecedent of R2
-        let bridge_sim =
-            1.0 - r1.consequent.normalized_hamming_distance(&r2.antecedent);
+        let bridge_sim = 1.0 - r1.consequent.normalized_hamming_distance(&r2.antecedent);
         if bridge_sim < RULE_MATCH_THRESHOLD {
             return None;
         }
@@ -762,8 +768,7 @@ impl CausalChainReasoner {
             let mut deeper: Vec<CausalRule> = Vec::new();
             for n in &novel {
                 for r in &self.rules {
-                    let bridge_sim =
-                        1.0 - n.consequent.normalized_hamming_distance(&r.antecedent);
+                    let bridge_sim = 1.0 - n.consequent.normalized_hamming_distance(&r.antecedent);
                     if bridge_sim >= RULE_MATCH_THRESHOLD {
                         let mut merged_frame = n.variable_frame.clone();
                         for (k, v) in &r.variable_frame {
@@ -896,10 +901,14 @@ pub fn soft_project(x: &Hypervector, clusters: &[MemoryCluster], tau: f64) -> Hy
         w_sum += w;
     }
 
-    if w_sum < 1e-30 { return clusters[dists[0].0].centroid; }
+    if w_sum < 1e-30 {
+        return clusters[dists[0].0].centroid;
+    }
 
     // Normalize weights — all K centroids participate
-    for (_, w) in weights.iter_mut() { *w /= w_sum; }
+    for (_, w) in weights.iter_mut() {
+        *w /= w_sum;
+    }
 
     // Weighted majority per bit over ALL centroids
     let mut result = [0u64; U64_BLOCKS];
@@ -961,8 +970,17 @@ pub fn soft_project_indexed(
         if !indexer.cascade_is_enabled() {
             return None;
         }
-        let results = indexer.search_cascade(x, &centroids, crate::indexer::CASCADE_MEDIUM_K, crate::indexer::CASCADE_FULL_K);
-        if results.is_empty() { None } else { Some(results) }
+        let results = indexer.search_cascade(
+            x,
+            &centroids,
+            crate::indexer::CASCADE_MEDIUM_K,
+            crate::indexer::CASCADE_FULL_K,
+        );
+        if results.is_empty() {
+            None
+        } else {
+            Some(results)
+        }
     };
 
     if tau < 1e-12 {
@@ -1016,7 +1034,12 @@ pub fn soft_project_indexed(
 
     // Check fallback condition: if the best candidate is too far,
     // the indexer may have missed the true nearest centroid.
-    let best_candidate_sim = 1.0 - dists.iter().map(|(_, d)| d).cloned().fold(f64::INFINITY, f64::min);
+    let best_candidate_sim = 1.0
+        - dists
+            .iter()
+            .map(|(_, d)| d)
+            .cloned()
+            .fold(f64::INFINITY, f64::min);
     if best_candidate_sim < crate::indexer::INDEXER_FALLBACK_SIM {
         return soft_project(x, clusters, tau);
     }
@@ -1081,7 +1104,9 @@ pub fn soft_anchor_through_clusters(
     let mut best_sim = -1.0;
     for c in clusters {
         let sim = 1.0 - result.normalized_hamming_distance(&c.centroid);
-        if sim > best_sim { best_sim = sim; }
+        if sim > best_sim {
+            best_sim = sim;
+        }
     }
     if best_sim >= threshold_sim {
         result
@@ -1172,7 +1197,14 @@ pub fn forward_chain_anchored(
 ) -> Vec<Hypervector> {
     // Use default similarity threshold (0.65, NHD 0.35)
     const DEFAULT_CLUSTER_SIM: f64 = 0.65;
-    forward_chain_anchored_with_threshold(causal, seed_fact, max_hops, vocab, clusters, DEFAULT_CLUSTER_SIM)
+    forward_chain_anchored_with_threshold(
+        causal,
+        seed_fact,
+        max_hops,
+        vocab,
+        clusters,
+        DEFAULT_CLUSTER_SIM,
+    )
 }
 
 /// Like `forward_chain_anchored` but with an explicit cluster similarity
@@ -1216,7 +1248,10 @@ pub fn forward_chain_anchored_with_threshold(
                 // state, fully annihilating any accumulated noise.
                 let anchored = if !clusters.is_empty() {
                     anchor_through_clusters_with_threshold(
-                        &cons_cleaned, clusters, cluster_sim_threshold)
+                        &cons_cleaned,
+                        clusters,
+                        cluster_sim_threshold,
+                    )
                 } else {
                     cons_cleaned
                 };
@@ -1391,7 +1426,7 @@ pub fn forward_chain_recursive(
     seed_fact: &Hypervector,
     vocab: Option<&ResonatorVocabulary>,
     clusters: &[MemoryCluster],
-    max_depth: usize,  // safety cap
+    max_depth: usize, // safety cap
 ) -> Vec<Hypervector> {
     let max_depth = max_depth.min(MAX_RECURSION_DEPTH);
     const CLUSTER_SIM: f64 = 0.65;
@@ -1421,8 +1456,7 @@ pub fn forward_chain_recursive(
                 // After snapping, the result is guaranteed to be within
                 // d_max(M) of a known centroid (Theorem XVI.1).
                 let anchored = if !clusters.is_empty() {
-                    anchor_through_clusters_with_threshold(
-                        &cons_cleaned, clusters, CLUSTER_SIM)
+                    anchor_through_clusters_with_threshold(&cons_cleaned, clusters, CLUSTER_SIM)
                 } else {
                     cons_cleaned
                 };
@@ -1455,11 +1489,7 @@ pub fn forward_chain_recursive(
 ///   2. Period-2 oscillation (A→B→A→B)
 ///   3. Period-3 oscillation (A→B→C→A→B→C)
 ///   4. Regression to seed (NHD < 0.12)
-fn is_oscillation(
-    derived: &[Hypervector],
-    candidate: &Hypervector,
-    seed: &Hypervector,
-) -> bool {
+fn is_oscillation(derived: &[Hypervector], candidate: &Hypervector, seed: &Hypervector) -> bool {
     const DUP_THRESHOLD: f64 = 0.08;
     const OSC_THRESHOLD: f64 = 0.15;
     const REGRESS_THRESHOLD: f64 = 0.12;
@@ -1561,9 +1591,7 @@ mod recursion_tests {
 
         // Run recursive chaining to various depths
         for depth in [5, 10, 20, 50] {
-            let result = forward_chain_recursive(
-                &causal, &a, Some(&vocab), &clusters, depth,
-            );
+            let result = forward_chain_recursive(&causal, &a, Some(&vocab), &clusters, depth);
 
             eprintln!("  Depth {}: {} hops achieved", depth, result.len());
 
@@ -1621,9 +1649,7 @@ mod recursion_tests {
         }
 
         // Run recursive chaining — should detect oscillation and terminate
-        let result = forward_chain_recursive(
-            &causal, &a, Some(&vocab), &clusters, 50,
-        );
+        let result = forward_chain_recursive(&causal, &a, Some(&vocab), &clusters, 50);
 
         eprintln!("  Oscillation test: {} hops produced", result.len());
 
@@ -1898,20 +1924,27 @@ impl DeepThought {
 
         let terminal_chain_state: Hypervector;
         if let Some((s, v, o, energy)) = svo {
-            self.blackboard
-                .trace
-                .push(format!("STEP 2: SVO factorization — {} {} {} (E={:.3})", s, v, o, energy));
+            self.blackboard.trace.push(format!(
+                "STEP 2: SVO factorization — {} {} {} (E={:.3})",
+                s, v, o, energy
+            ));
             let s_hv = {
                 let vg = self.vocab.read().await;
-                vg.get_vector(&s).cloned().unwrap_or_else(Hypervector::new_random)
+                vg.get_vector(&s)
+                    .cloned()
+                    .unwrap_or_else(Hypervector::new_random)
             };
             let v_hv = {
                 let vg = self.vocab.read().await;
-                vg.get_vector(&v).cloned().unwrap_or_else(Hypervector::new_random)
+                vg.get_vector(&v)
+                    .cloned()
+                    .unwrap_or_else(Hypervector::new_random)
             };
             let o_hv = {
                 let vg = self.vocab.read().await;
-                vg.get_vector(&o).cloned().unwrap_or_else(Hypervector::new_random)
+                vg.get_vector(&o)
+                    .cloned()
+                    .unwrap_or_else(Hypervector::new_random)
             };
             let thought = s_hv
                 .rotate_left(1 * CAUSAL_RHO)
@@ -1953,7 +1986,11 @@ impl DeepThought {
                 {
                     self.blackboard.trace.push(format!(
                         "  Hop {}: {} {} {} (E={:.3})",
-                        i + 1, s_hop, v_hop, o_hop, e_hop
+                        i + 1,
+                        s_hop,
+                        v_hop,
+                        o_hop,
+                        e_hop
                     ));
                 }
             }
@@ -1968,9 +2005,10 @@ impl DeepThought {
         let current_dist = world_state.normalized_hamming_distance(historical_baseline);
 
         if !composed.is_empty() {
-            self.blackboard
-                .trace
-                .push(format!("STEP 4: Composed {} transitive rule chains.", composed.len()));
+            self.blackboard.trace.push(format!(
+                "STEP 4: Composed {} transitive rule chains.",
+                composed.len()
+            ));
 
             // ██ Tier 3: Per-chain desirability + promotion pipeline ██
             // Evaluate each composed chain before attention.  Chains that
@@ -1978,11 +2016,13 @@ impl DeepThought {
             // frequent AND desirable graduate to permanent cluster storage.
             for c in &composed {
                 // Per-chain desirability
-                let predicted_dist = c.consequent.normalized_hamming_distance(historical_baseline);
+                let predicted_dist = c
+                    .consequent
+                    .normalized_hamming_distance(historical_baseline);
                 let chain_improves = predicted_dist < current_dist;
-                let chain_hits_crisis = crisis_concepts.iter().any(|cc| {
-                    1.0 - c.consequent.normalized_hamming_distance(cc) >= 0.65
-                });
+                let chain_hits_crisis = crisis_concepts
+                    .iter()
+                    .any(|cc| 1.0 - c.consequent.normalized_hamming_distance(cc) >= 0.65);
                 let chain_desirable = chain_improves && !chain_hits_crisis;
 
                 if chain_hits_crisis {
@@ -1999,10 +2039,9 @@ impl DeepThought {
                         c.label
                     ));
                 } else {
-                    self.blackboard.trace.push(format!(
-                        "  Chain: {} (desirable)",
-                        c.label
-                    ));
+                    self.blackboard
+                        .trace
+                        .push(format!("  Chain: {} (desirable)", c.label));
                 }
 
                 // Suppressed chains are skipped; all others get frequency
@@ -2030,15 +2069,13 @@ impl DeepThought {
                     // nearest cluster centroid if within threshold,
                     // annihilating the accumulated bridge noise.
                     let anchored_consequent = if !clusters.is_empty() {
-                        anchor_through_clusters_with_threshold(
-                            &c.consequent, clusters, 0.65)
+                        anchor_through_clusters_with_threshold(&c.consequent, clusters, 0.65)
                     } else {
                         c.consequent
                     };
                     let ante_label = c.label.split("→").next().unwrap_or(&c.label);
                     let mut brain_guard = self.brain.write().await;
-                    let stored = brain_guard.append_composed_rule(
-                        ante_label, &anchored_consequent);
+                    let stored = brain_guard.append_composed_rule(ante_label, &anchored_consequent);
                     drop(brain_guard);
                     if stored {
                         self.blackboard.trace.push(format!(
@@ -2052,8 +2089,7 @@ impl DeepThought {
 
             // ██ Bounded frequency map (LFU eviction) ██
             if self.composed_frequency.len() > MAX_TRACKED_COMPOSITIONS {
-                let mut entries: Vec<(String, usize)> =
-                    self.composed_frequency.drain().collect();
+                let mut entries: Vec<(String, usize)> = self.composed_frequency.drain().collect();
                 entries.sort_by_key(|(_, v)| *v);
                 entries.truncate(MAX_TRACKED_COMPOSITIONS / 2);
                 self.composed_frequency = entries.into_iter().collect();
@@ -2078,9 +2114,10 @@ impl DeepThought {
 
         // 5. Attend — consolidate the scratchpad into a single reasoned intent
         let (attended_intent, best_slot) = self.blackboard.attend(world_state);
-        self.blackboard
-            .trace
-            .push(format!("STEP 5: Attended over scratchpad — best slot {} selected.", best_slot));
+        self.blackboard.trace.push(format!(
+            "STEP 5: Attended over scratchpad — best slot {} selected.",
+            best_slot
+        ));
 
         let final_intent = if attended_intent.count_ones() == 0 {
             self.blackboard
@@ -2099,9 +2136,9 @@ impl DeepThought {
             let predicted_dist =
                 terminal_chain_state.normalized_hamming_distance(historical_baseline);
             // Crisis check: predicted state matches any known crisis?
-            let hits_crisis = crisis_concepts.iter().any(|c| {
-                1.0 - terminal_chain_state.normalized_hamming_distance(c) >= 0.65
-            });
+            let hits_crisis = crisis_concepts
+                .iter()
+                .any(|c| 1.0 - terminal_chain_state.normalized_hamming_distance(c) >= 0.65);
 
             let improves = predicted_dist < current_dist;
             if improves && !hits_crisis {
@@ -2201,7 +2238,11 @@ mod tests {
         let (attended, best_idx) = bb.attend(&v1);
         assert_eq!(best_idx, 0, "Should attend to slot 0 (apple)");
         let sim = 1.0 - attended.normalized_hamming_distance(&v1);
-        assert!(sim > 0.3, "Attended vector should be similar to v1, got {}", sim);
+        assert!(
+            sim > 0.3,
+            "Attended vector should be similar to v1, got {}",
+            sim
+        );
     }
 
     #[test]
@@ -2224,7 +2265,11 @@ mod tests {
         let bound_y = bb2.get_variable("y").unwrap();
         // ρ³(Romeo) should differ from ρ⁷(Romeo) and ρ³(Juliet)
         let d1 = bound_x.normalized_hamming_distance(&bound_y);
-        assert!(d1 > 0.40, "Different variables should be far apart: d={}", d1);
+        assert!(
+            d1 > 0.40,
+            "Different variables should be far apart: d={}",
+            d1
+        );
 
         // Binding same var twice yields same result
         let mut bb3 = ReasoningBlackboard::new(4);
@@ -2293,7 +2338,11 @@ mod tests {
         assert_eq!(chain.len(), 3, "Should derive 3 hops: B, C, D");
 
         let expected_d = Hypervector::encode_sentence("D");
-        let sim_d = 1.0 - chain.last().unwrap().normalized_hamming_distance(&expected_d);
+        let sim_d = 1.0
+            - chain
+                .last()
+                .unwrap()
+                .normalized_hamming_distance(&expected_d);
         assert!(sim_d > 0.40, "Final hop should resemble D, sim={}", sim_d);
     }
 
@@ -2308,8 +2357,16 @@ mod tests {
         assert_eq!(proof.len(), 2, "Should find 2 antecedents: B, A");
 
         let expected_a = Hypervector::encode_sentence("A");
-        let sim_a = 1.0 - proof.last().unwrap().normalized_hamming_distance(&expected_a);
-        assert!(sim_a > 0.40, "Root antecedent should resemble A, sim={}", sim_a);
+        let sim_a = 1.0
+            - proof
+                .last()
+                .unwrap()
+                .normalized_hamming_distance(&expected_a);
+        assert!(
+            sim_a > 0.40,
+            "Root antecedent should resemble A, sim={}",
+            sim_a
+        );
     }
 
     #[test]
@@ -2328,7 +2385,11 @@ mod tests {
 
         let expected = Hypervector::encode_sentence("bond yields up");
         let sim = 1.0 - result.unwrap().normalized_hamming_distance(&expected);
-        assert!(sim > 0.35, "Final consequence should resemble 'bond yields up', sim={}", sim);
+        assert!(
+            sim > 0.35,
+            "Final consequence should resemble 'bond yields up', sim={}",
+            sim
+        );
     }
 
     #[test]
@@ -2385,9 +2446,9 @@ mod tests {
                 &subjects,
                 &verbs,
                 &objects,
-                &[],   // empty clusters → no anchoring
-                &world_state,  // baseline = current state → dissonance = 0
-                &[],   // no crisis concepts
+                &[],          // empty clusters → no anchoring
+                &world_state, // baseline = current state → dissonance = 0
+                &[],          // no crisis concepts
             )
             .await;
         assert!(!trace.is_empty(), "Should produce a reasoning trace");
@@ -2418,9 +2479,7 @@ mod tests {
         // Use distinct words with ZERO trigram overlap so that each
         // rule only matches its exact antecedent.  Cross-similarity
         // between any two distinct labels must be well below 0.60.
-        let labels = [
-            "mercury", "venus", "jupiter", "saturn", "neptune",
-        ];
+        let labels = ["mercury", "venus", "jupiter", "saturn", "neptune"];
         dt.causal.add_rule_text(labels[0], labels[1], "r1");
         dt.causal.add_rule_text(labels[1], labels[2], "r2");
         dt.causal.add_rule_text(labels[2], labels[3], "r3");
@@ -2506,7 +2565,11 @@ mod tests {
         // Verify that the unanchored chain also reaches E (noise-free rules)
         let unanchored = dt.causal.forward_chain(&state_a, 5, None);
         if unanchored.len() >= 4 {
-            let sim_u = 1.0 - unanchored.last().unwrap().normalized_hamming_distance(&state_e);
+            let sim_u = 1.0
+                - unanchored
+                    .last()
+                    .unwrap()
+                    .normalized_hamming_distance(&state_e);
             // Both should be high, but anchored must not regress
             assert!(
                 sim_e >= sim_u - 0.01,
@@ -2514,7 +2577,10 @@ mod tests {
             );
         }
 
-        eprintln!("✓ test_anchored_5_hop_chain — anchored sim={:.4}, unanchored sim matching", sim_e);
+        eprintln!(
+            "✓ test_anchored_5_hop_chain — anchored sim={:.4}, unanchored sim matching",
+            sim_e
+        );
     }
 
     // ── Variable frame & unification tests ────────────────────────────────
@@ -2523,7 +2589,10 @@ mod tests {
     fn test_variable_frame_propositional() {
         // Propositional rules have empty variable_frame
         let rule = CausalRule::from_text("A", "B", "prop_rule");
-        assert!(rule.variable_frame.is_empty(), "Propositional rule has no frame");
+        assert!(
+            rule.variable_frame.is_empty(),
+            "Propositional rule has no frame"
+        );
     }
 
     #[test]
@@ -2548,14 +2617,23 @@ mod tests {
         let r2 = CausalRule::from_text("bank raises rates", "bond yields up", "r2");
 
         let unified = r1.unify_for_compose(&r2);
-        assert!(unified.is_some(), "Propositional rules should unify trivially");
+        assert!(
+            unified.is_some(),
+            "Propositional rules should unify trivially"
+        );
 
         let (u1, u2) = unified.unwrap();
         // Unified vectors should be identical to originals
         let sim_ante = 1.0 - u1.antecedent.normalized_hamming_distance(&r1.antecedent);
-        assert!(sim_ante > 0.99, "Propositional unification preserves antecedent");
+        assert!(
+            sim_ante > 0.99,
+            "Propositional unification preserves antecedent"
+        );
         let sim_cons = 1.0 - u2.consequent.normalized_hamming_distance(&r2.consequent);
-        assert!(sim_cons > 0.99, "Propositional unification preserves consequent");
+        assert!(
+            sim_cons > 0.99,
+            "Propositional unification preserves consequent"
+        );
     }
 
     #[test]
@@ -2573,7 +2651,10 @@ mod tests {
         let r2 = CausalRule::new_with_frame(ante2, cons2, "r2", frame.clone());
 
         let unified = r1.unify_for_compose(&r2);
-        assert!(unified.is_some(), "Rules with same variable frame should unify");
+        assert!(
+            unified.is_some(),
+            "Rules with same variable frame should unify"
+        );
     }
 
     #[test]
@@ -2596,7 +2677,10 @@ mod tests {
         // Different variable names → no overlap → unification fails
         // (the rules use different variable symbols, so no bridge alignment)
         let unified = r1.unify_for_compose(&r2);
-        assert!(unified.is_none(), "Different variable names should not unify");
+        assert!(
+            unified.is_none(),
+            "Different variable names should not unify"
+        );
     }
 
     #[test]
@@ -2624,7 +2708,10 @@ mod tests {
 
         // Compose with variable mismatch — should fail to unify
         let composed = reasoner.compose(0, 1);
-        assert!(composed.is_none(), "Compose should fail with incompatible variable frames");
+        assert!(
+            composed.is_none(),
+            "Compose should fail with incompatible variable frames"
+        );
     }
 
     #[test]
@@ -2895,14 +2982,15 @@ mod tests {
             nhd_h
         );
         assert_eq!(
-            cluster.total_weight, crate::MAX_CLUSTER_WEIGHT,
+            cluster.total_weight,
+            crate::MAX_CLUSTER_WEIGHT,
             "total_weight must be reset to MAX_CLUSTER_WEIGHT"
         );
         eprintln!("  ✓ hebbian_refine preserves centroid (NHD={:.10})", nhd_h);
 
         // Part 2: absorb_entry with identical observation triggers rescaling again
         let before_a = cluster.centroid;
-        cluster.absorb_entry(&centroid);  // identical observation, no drift
+        cluster.absorb_entry(&centroid); // identical observation, no drift
         let nhd_a = before_a.normalized_hamming_distance(&cluster.centroid);
         assert!(
             nhd_a < 1e-10,
@@ -2910,7 +2998,8 @@ mod tests {
             nhd_a
         );
         assert_eq!(
-            cluster.total_weight, crate::MAX_CLUSTER_WEIGHT,
+            cluster.total_weight,
+            crate::MAX_CLUSTER_WEIGHT,
             "total_weight must still be MAX_CLUSTER_WEIGHT"
         );
         eprintln!("  ✓ absorb_entry preserves centroid (NHD={:.10})", nhd_a);
@@ -2923,7 +3012,8 @@ mod tests {
             assert!(
                 nhd < 1e-10,
                 "Rescaling iteration {} must preserve centroid: NHD={:.10}",
-                i, nhd
+                i,
+                nhd
             );
         }
         eprintln!("  ✓ 10 consecutive rescaling events preserve centroid");
@@ -2977,7 +3067,8 @@ mod tests {
         for obs_i in 0..50 {
             // Each observation is interpolated between centroid and drift
             let obs_centroid_weight = 1.0 - (obs_i as f64 / 50.0);
-            let obs = interpolate_hypervector(&cluster.centroid, &drift_template, obs_centroid_weight);
+            let obs =
+                interpolate_hypervector(&cluster.centroid, &drift_template, obs_centroid_weight);
             last_action = cluster.novelty_gate(&obs, 0.9);
             if last_action == GateAction::NewCluster {
                 eprintln!("  Speciation triggered at observation {}", obs_i);
@@ -3000,12 +3091,8 @@ mod tests {
             "  Note: Gradual drift (NHD ≈ {:.2}/tick) does NOT trigger novelty gate",
             drift_nhd
         );
-        eprintln!(
-            "  because the centroid follows the drift.  True speciation requires"
-        );
-        eprintln!(
-            "  an abrupt shift of NHD ≥ 0.70 in a single observation."
-        );
+        eprintln!("  because the centroid follows the drift.  True speciation requires");
+        eprintln!("  an abrupt shift of NHD ≥ 0.70 in a single observation.");
     }
 
     // ── Helper functions ────────────────────────────────────────────
@@ -3106,9 +3193,8 @@ mod tests {
             .collect();
 
         // Measure ε(n) for ANCHORED forward chain
-        let anchored_results = forward_chain_anchored_with_threshold(
-            &causal, &states[0], 5, None, &clusters, 0.65,
-        );
+        let anchored_results =
+            forward_chain_anchored_with_threshold(&causal, &states[0], 5, None, &clusters, 0.65);
         let anchored_errors: Vec<f64> = anchored_results
             .iter()
             .enumerate()
@@ -3116,7 +3202,10 @@ mod tests {
             .collect();
 
         eprintln!("\n  Chain contractivity (σ ≈ 0.85):");
-        eprintln!("  {:<6}  {:<12}  {:<12}  {:<12}", "n", "ε_raw", "ε_anchored", "contractive?");
+        eprintln!(
+            "  {:<6}  {:<12}  {:<12}  {:<12}",
+            "n", "ε_raw", "ε_anchored", "contractive?"
+        );
         eprintln!("  {}", "-".repeat(46));
 
         for n in 0..raw_errors.len().min(anchored_errors.len()).min(4) {
@@ -3141,19 +3230,17 @@ mod tests {
 
         // Verify: anchored chain should stay below 0.50 (contractive)
         for &e in &anchored_errors {
-            assert!(
-                e < 0.50,
-                "Anchored error should stay below 0.50: {}",
-                e
-            );
+            assert!(e < 0.50, "Anchored error should stay below 0.50: {}", e);
         }
 
         // Verify: anchored error should be lower than raw (contractive property)
         for n in 0..raw_errors.len().min(anchored_errors.len()).min(4) {
             assert!(
-                anchored_errors[n] < raw_errors[n] + 0.05,  // allow small margin
+                anchored_errors[n] < raw_errors[n] + 0.05, // allow small margin
                 "Anchored chain should not be worse than raw at n={}: raw={}, anchored={}",
-                n + 1, raw_errors[n], anchored_errors[n],
+                n + 1,
+                raw_errors[n],
+                anchored_errors[n],
             );
         }
     }
@@ -3216,9 +3303,8 @@ mod tests {
             .collect();
 
         // Phase 1: Measure anchored error with initial clusters
-        let anchored_initial = forward_chain_anchored_with_threshold(
-            &causal, &states[0], 5, None, &clusters, 0.65,
-        );
+        let anchored_initial =
+            forward_chain_anchored_with_threshold(&causal, &states[0], 5, None, &clusters, 0.65);
         let initial_errors: Vec<f64> = anchored_initial
             .iter()
             .enumerate()
@@ -3247,9 +3333,8 @@ mod tests {
         }
 
         // Phase 3: Measure anchored error with evolved clusters
-        let anchored_evolved = forward_chain_anchored_with_threshold(
-            &causal, &states[0], 5, None, &clusters, 0.65,
-        );
+        let anchored_evolved =
+            forward_chain_anchored_with_threshold(&causal, &states[0], 5, None, &clusters, 0.65);
         let evolved_errors: Vec<f64> = anchored_evolved
             .iter()
             .enumerate()
@@ -3286,7 +3371,11 @@ mod tests {
 
         // The evolved errors should all stay below 0.50 (contractivity preserved)
         for &e in &evolved_errors {
-            assert!(e < 0.50, "Evolved anchored error should stay below 0.50: {}", e);
+            assert!(
+                e < 0.50,
+                "Evolved anchored error should stay below 0.50: {}",
+                e
+            );
         }
     }
 
@@ -3408,7 +3497,10 @@ mod tests {
         }
 
         eprintln!("\n  Expected Contraction (Conjecture XVIII.1):");
-        eprintln!("  {:<6}  {:<12}  {:<12}  {:<12}  {:<12}", "step", "ε(t)", "d_max", "κ(t)", "stable?");
+        eprintln!(
+            "  {:<6}  {:<12}  {:<12}  {:<12}  {:<12}",
+            "step", "ε(t)", "d_max", "κ(t)", "stable?"
+        );
         eprintln!("  {}", "-".repeat(60));
 
         for i in 0..errors.len().min(10) {
@@ -3430,7 +3522,10 @@ mod tests {
 
         // Verify: kappas should be < 1 (contraction)
         let mean_kappa = kappas.iter().sum::<f64>() / kappas.len() as f64;
-        eprintln!("\n  Mean κ = {:.4} (should be < 1 for contraction)", mean_kappa);
+        eprintln!(
+            "\n  Mean κ = {:.4} (should be < 1 for contraction)",
+            mean_kappa
+        );
 
         // Verify: final ε should converge to d_max, not 0.5
         let final_eps = *errors.last().unwrap_or(&1.0);
@@ -3487,30 +3582,33 @@ mod tests {
 
         // Shared initial cluster set
         let make_clusters = || -> Vec<MemoryCluster> {
-            states[1..=5].iter().map(|s| {
-                let mut acc = vec![0u32; HD_DIMENSION];
-                for (i, a) in acc.iter_mut().enumerate() {
-                    let word = s.bits[i / 64];
-                    let bit = (word >> (i % 64)) & 1;
-                    *a = bit as u32;
-                }
-                MemoryCluster {
-                    centroid: *s,
-                    anchor: *s,
-                    entries: Vec::new(),
-                    reverberation: 1.0,
-                    last_reinforced_tick: 0,
-                    accumulator: acc,
-                    total_weight: 1,
-                    last_access_tick: 0,
-                }
-            }).collect()
+            states[1..=5]
+                .iter()
+                .map(|s| {
+                    let mut acc = vec![0u32; HD_DIMENSION];
+                    for (i, a) in acc.iter_mut().enumerate() {
+                        let word = s.bits[i / 64];
+                        let bit = (word >> (i % 64)) & 1;
+                        *a = bit as u32;
+                    }
+                    MemoryCluster {
+                        centroid: *s,
+                        anchor: *s,
+                        entries: Vec::new(),
+                        reverberation: 1.0,
+                        last_reinforced_tick: 0,
+                        accumulator: acc,
+                        total_weight: 1,
+                        last_access_tick: 0,
+                    }
+                })
+                .collect()
         };
 
         // Both trajectories share the SAME manifold
         let mut clusters = make_clusters();
-        let mut x_a = states[0];                                 // clean start
-        let mut x_b = add_noise(&states[0], 0.10);               // noisy start
+        let mut x_a = states[0]; // clean start
+        let mut x_b = add_noise(&states[0], 0.10); // noisy start
         let x_b_initial = x_b;
 
         let mut state_distances = Vec::new();
@@ -3520,12 +3618,12 @@ mod tests {
             state_distances.push(d_state);
 
             // Apply joint dynamics — BOTH use the SAME clusters
-            let result_a = forward_chain_anchored_with_threshold(
-                &causal, &x_a, 3, None, &clusters, 0.65);
+            let result_a =
+                forward_chain_anchored_with_threshold(&causal, &x_a, 3, None, &clusters, 0.65);
             x_a = *result_a.last().unwrap_or(&x_a);
 
-            let result_b = forward_chain_anchored_with_threshold(
-                &causal, &x_b, 3, None, &clusters, 0.65);
+            let result_b =
+                forward_chain_anchored_with_threshold(&causal, &x_b, 3, None, &clusters, 0.65);
             x_b = *result_b.last().unwrap_or(&x_b);
 
             // Evolve SHARED manifold with the same input stream
@@ -3563,22 +3661,16 @@ mod tests {
 
         eprintln!("\n  Joint Space Contraction (Theorem XX.1):");
         eprintln!("  Both trajectories on SAME evolving manifold");
-        eprintln!(
-            "  {:<6}  {:<12}  {:<12}",
-            "step", "d(x_a, x_b)", "κ"
-        );
+        eprintln!("  {:<6}  {:<12}  {:<12}", "step", "d(x_a, x_b)", "κ");
         eprintln!("  {}", "-".repeat(34));
 
         for i in (0..state_distances.len()).step_by(5) {
-            let k = if i > 0 && state_distances[i-1] > 0.0 {
-                state_distances[i] / state_distances[i-1]
+            let k = if i > 0 && state_distances[i - 1] > 0.0 {
+                state_distances[i] / state_distances[i - 1]
             } else {
                 0.0
             };
-            eprintln!(
-                "  {:<6}  {:<12.4}  {:<12.4}",
-                i, state_distances[i], k
-            );
+            eprintln!("  {:<6}  {:<12.4}  {:<12.4}", i, state_distances[i], k);
         }
 
         eprintln!("\n  Initial separation: {:.4}", initial_sep);
@@ -3674,7 +3766,7 @@ mod tests {
         // Shared input stream (stationary)
         let input_stream: Vec<Vec<Hypervector>> = (0..40)
             .map(|step| {
-                let mode = step % 5;  // cycle through modes
+                let mode = step % 5; // cycle through modes
                 let base = states[1 + mode];
                 (0..3).map(|_| add_noise(&base, 0.05)).collect()
             })
@@ -3684,12 +3776,12 @@ mod tests {
 
         for step in 0..40 {
             // State convergence
-            let result_a = forward_chain_anchored_with_threshold(
-                &causal, &x_a, 3, None, &clusters_a, 0.65);
+            let result_a =
+                forward_chain_anchored_with_threshold(&causal, &x_a, 3, None, &clusters_a, 0.65);
             x_a = *result_a.last().unwrap_or(&x_a);
 
-            let result_b = forward_chain_anchored_with_threshold(
-                &causal, &x_b, 3, None, &clusters_b, 0.65);
+            let result_b =
+                forward_chain_anchored_with_threshold(&causal, &x_b, 3, None, &clusters_b, 0.65);
             x_b = *result_b.last().unwrap_or(&x_b);
 
             // Manifold convergence: absorb same inputs
@@ -3728,7 +3820,8 @@ mod tests {
             let mut d_centroid = 0.0_f64;
             let n = clusters_a.len().min(clusters_b.len());
             for i in 0..n {
-                d_centroid += clusters_a[i].centroid
+                d_centroid += clusters_a[i]
+                    .centroid
                     .normalized_hamming_distance(&clusters_b[i].centroid);
             }
             d_centroid /= n as f64;
@@ -3749,12 +3842,12 @@ mod tests {
             eprintln!("  {:<6}  {:<16.4}", i, centroid_distances[i]);
         }
 
-        eprintln!(
-            "\n  Initial manifold distance: {:.4}",
-            initial_d
-        );
+        eprintln!("\n  Initial manifold distance: {:.4}", initial_d);
         eprintln!("  Final manifold distance:   {:.4}", final_d);
-        eprintln!("  Convergence ratio:         {:.4} (should be < 1)", convergence);
+        eprintln!(
+            "  Convergence ratio:         {:.4} (should be < 1)",
+            convergence
+        );
 
         // The two manifolds should converge (not necessarily to 0, but they
         // should get closer than the initial noise level)
@@ -3772,9 +3865,7 @@ mod tests {
             start_noise
         );
 
-        eprintln!(
-            "  Verdict: Manifolds converge under shared input stream ✓"
-        );
+        eprintln!("  Verdict: Manifolds converge under shared input stream ✓");
     }
 
     /// ██ FRONTIER 1: ADVERSARIAL L_F (Theorem XXII.1) ██
@@ -3789,7 +3880,7 @@ mod tests {
         // We'll use random vectors as adversarial inputs — each one
         // pushes the centroid in a new random direction
         let mut rng = rand::thread_rng();
-        
+
         // Create a random seed mode
         let mut bits_0 = [0u64; 160];
         for block in bits_0.iter_mut() {
@@ -3925,7 +4016,10 @@ mod tests {
             margin
         );
 
-        eprintln!("  ✓ L_F bounded below 0.5, joint contraction holds (margin={:.4})", margin);
+        eprintln!(
+            "  ✓ L_F bounded below 0.5, joint contraction holds (margin={:.4})",
+            margin
+        );
     }
 
     /// ██ FRONTIER 1b: STRUCTURED ADVERSARIAL L_F (Theorem XXII.1-R) ██
@@ -3967,13 +4061,16 @@ mod tests {
         };
 
         // Phase 2: Adversarial split — simulate two counterfactual absorptions
-        let v1 = Hypervector::new_ones();   // all 1s
-        let v2 = Hypervector::new_zero();   // all 0s
+        let v1 = Hypervector::new_ones(); // all 1s
+        let v2 = Hypervector::new_zero(); // all 0s
 
         // Measure input distance: all-1s vs all-0s → every bit differs
         let delta_v = v1.normalized_hamming_distance(&v2);
-        assert!((delta_v - 1.0).abs() < 1e-10,
-            "all-ones vs all-zeros distance should be 1.0, got {}", delta_v);
+        assert!(
+            (delta_v - 1.0).abs() < 1e-10,
+            "all-ones vs all-zeros distance should be 1.0, got {}",
+            delta_v
+        );
 
         // Clone the cluster for each absorption
         let mut cluster_1 = cluster.clone();
@@ -4017,8 +4114,8 @@ mod tests {
         }
 
         // Joint contraction check with corrected bound
-        let left = 3.0 * (1.0 - 0.68);   // α·(1-κ_P)
-        let right = 1.0 * 0.95 * l_f;    // β·κ_F·L_F
+        let left = 3.0 * (1.0 - 0.68); // α·(1-κ_P)
+        let right = 1.0 * 0.95 * l_f; // β·κ_F·L_F
         let margin = left - right;
 
         eprintln!("\n  Joint contraction check:");
@@ -4028,7 +4125,8 @@ mod tests {
         assert!(
             margin > 0.0,
             "Joint contraction VIOLATED at L_F = {}: margin = {}",
-            l_f, margin
+            l_f,
+            margin
         );
         eprintln!("  ✓ Joint contraction holds (margin={:.4})", margin);
         eprintln!("  ✓ Corrected Theorem XXII.1-R verified: L_F ≤ 1.0\n");
@@ -4298,7 +4396,7 @@ mod tests {
         // Smooth drift: start at mode_a, each step flips N_FLIP bits toward mode_b
         let d = 10240;
         let n_steps = 1000;
-        let n_flip_per_step = 10usize;  // ≈ 0.001 drift/step
+        let n_flip_per_step = 10usize; // ≈ 0.001 drift/step
         let r_max = n_flip_per_step as f64 / d as f64;
 
         // Compute the bits that differ between mode_a and mode_b
@@ -4368,9 +4466,9 @@ mod tests {
                 let mut min_j = 1;
                 for i in 0..clusters.len() {
                     for j in (i + 1)..clusters.len() {
-                        let d = clusters[i].centroid.normalized_hamming_distance(
-                            &clusters[j].centroid,
-                        );
+                        let d = clusters[i]
+                            .centroid
+                            .normalized_hamming_distance(&clusters[j].centroid);
                         if d < min_dist {
                             min_dist = d;
                             min_i = i;
@@ -4399,22 +4497,39 @@ mod tests {
             if step % 200 == 0 || step == n_steps - 1 {
                 eprintln!(
                     "  step {:>4}: tracking error = {:.4}, clusters = {}",
-                    step, e_t, clusters.len()
+                    step,
+                    e_t,
+                    clusters.len()
                 );
             }
         }
 
-        let delta_max = 0.70 * (1.0 - 0.975) / 50.0;  // Theorem XXIII.4
+        let delta_max = 0.70 * (1.0 - 0.975) / 50.0; // Theorem XXIII.4
         eprintln!("\n  Results:");
         eprintln!("  Per-step drift r_max:          {:.6}", r_max);
         eprintln!("  Within-cluster δ_max:          {:.6}", delta_max);
-        eprintln!("  Regime:                        {} (Theorem XXIII.{})",
-            if r_max <= delta_max { "within-cluster" } else { "proliferation" },
-            if r_max <= delta_max { "4" } else { "3" });
-        eprintln!("  Max distance from input:       {:.4}", max_distance_from_input);
+        eprintln!(
+            "  Regime:                        {} (Theorem XXIII.{})",
+            if r_max <= delta_max {
+                "within-cluster"
+            } else {
+                "proliferation"
+            },
+            if r_max <= delta_max { "4" } else { "3" }
+        );
+        eprintln!(
+            "  Max distance from input:       {:.4}",
+            max_distance_from_input
+        );
         eprintln!("  Novelty threshold θ_novel:     0.70");
-        eprintln!("  Cluster count final:           {}", cluster_counts.last().unwrap_or(&0));
-        eprintln!("  Cluster count max:             {}", cluster_counts.iter().max().unwrap_or(&0));
+        eprintln!(
+            "  Cluster count final:           {}",
+            cluster_counts.last().unwrap_or(&0)
+        );
+        eprintln!(
+            "  Cluster count max:             {}",
+            cluster_counts.iter().max().unwrap_or(&0)
+        );
 
         // The tracking error should NEVER exceed θ_novel = 0.70, because
         // the novelty gate creates a new cluster before this threshold
@@ -4463,7 +4578,10 @@ mod tests {
         const ALPHA: f64 = crate::DRIFT_MAGNITUDE_ALPHA;
         // Number of bits to flip per tick to achieve drift rate δ_max
         let bits_per_tick = (DELTA_MAX * D).round() as u32; // 4 bits/tick
-        assert_eq!(bits_per_tick, 4, "δ_max = 0.00035 → ~3.6 bits, rounded to 4");
+        assert_eq!(
+            bits_per_tick, 4,
+            "δ_max = 0.00035 → ~3.6 bits, rounded to 4"
+        );
 
         // Helper: build a delta vector with exactly N bits set
         fn make_delta(n_bits: u32) -> Hypervector {
@@ -4482,7 +4600,10 @@ mod tests {
         for _ in 0..50 {
             brain.update_drift_magnitude(&zero);
         }
-        eprintln!("  Phase 1 (zero drift, 50 ticks): EWMA = {:.8}", brain.drift_magnitude_ewma);
+        eprintln!(
+            "  Phase 1 (zero drift, 50 ticks): EWMA = {:.8}",
+            brain.drift_magnitude_ewma
+        );
         assert!(
             brain.drift_magnitude_ewma < 0.00001,
             "Zero drift should keep EWMA near 0, got {}",
@@ -4496,10 +4617,16 @@ mod tests {
         for step in 0..100 {
             brain.update_drift_magnitude(&delta_at_max);
             if step % 25 == 0 {
-                eprintln!("  Phase 2 step {:>3}: EWMA = {:.8}", step, brain.drift_magnitude_ewma);
+                eprintln!(
+                    "  Phase 2 step {:>3}: EWMA = {:.8}",
+                    step, brain.drift_magnitude_ewma
+                );
             }
         }
-        eprintln!("  Phase 2 (δ_max drift, 100 ticks): EWMA = {:.8}", brain.drift_magnitude_ewma);
+        eprintln!(
+            "  Phase 2 (δ_max drift, 100 ticks): EWMA = {:.8}",
+            brain.drift_magnitude_ewma
+        );
         let steady_expected = bits_per_tick as f64 / D; // 4/10240 = 0.0003906
         assert!(
             (brain.drift_magnitude_ewma - steady_expected).abs() < 0.00005,
@@ -4515,11 +4642,17 @@ mod tests {
         for step in 0..100 {
             brain.update_drift_magnitude(&delta_at_2x);
             if step % 25 == 0 {
-                eprintln!("  Phase 3 step {:>3}: EWMA = {:.8}", step, brain.drift_magnitude_ewma);
+                eprintln!(
+                    "  Phase 3 step {:>3}: EWMA = {:.8}",
+                    step, brain.drift_magnitude_ewma
+                );
             }
         }
         let steady_2x = (bits_per_tick * 2) as f64 / D; // 8/10240 = 0.000781
-        eprintln!("  Phase 3 (2×δ_max drift, 100 ticks): EWMA = {:.8}", brain.drift_magnitude_ewma);
+        eprintln!(
+            "  Phase 3 (2×δ_max drift, 100 ticks): EWMA = {:.8}",
+            brain.drift_magnitude_ewma
+        );
         assert!(
             (brain.drift_magnitude_ewma - steady_2x).abs() < 0.0001,
             "EWMA should converge to ~0.00078, got {}",
@@ -4532,10 +4665,16 @@ mod tests {
         for step in 0..50 {
             brain.update_drift_magnitude(&zero);
             if step % 10 == 0 {
-                eprintln!("  Phase 4 step {:>3}: EWMA = {:.8}", step, brain.drift_magnitude_ewma);
+                eprintln!(
+                    "  Phase 4 step {:>3}: EWMA = {:.8}",
+                    step, brain.drift_magnitude_ewma
+                );
             }
         }
-        eprintln!("  Phase 4 (drift stops, 50 ticks): EWMA = {:.8}", brain.drift_magnitude_ewma);
+        eprintln!(
+            "  Phase 4 (drift stops, 50 ticks): EWMA = {:.8}",
+            brain.drift_magnitude_ewma
+        );
         assert!(
             brain.drift_magnitude_ewma < DELTA_MAX,
             "EWMA should decay below δ_max within 50 ticks, got {}",
@@ -4556,11 +4695,11 @@ mod tests {
     ///   3. Floor at THETA_ADAPT_MIN = 0.32 NHD (0.68 sim)
     #[test]
     fn test_adaptive_novelty_threshold() {
-        use crate::VSABrain;
         use crate::Hypervector;
+        use crate::VSABrain;
         use crate::DELTA_MAX;
-        use crate::THETA_MAIN_BASELINE;
         use crate::THETA_ADAPT_MIN;
+        use crate::THETA_MAIN_BASELINE;
 
         let mut brain = VSABrain::new(0.43);
 
@@ -4570,53 +4709,96 @@ mod tests {
         brain.drift_magnitude_ewma = 0.0;
         let theta = brain.adaptive_novelty_threshold();
         let sim = 1.0 - theta;
-        eprintln!("  Phase 1 (no drift):       θ={:.4} NHD, sim={:.4}", theta, sim);
-        assert!((theta - THETA_MAIN_BASELINE).abs() < 0.001,
-            "At zero drift, threshold should be {:.4} NHD, got {:.4}", THETA_MAIN_BASELINE, theta);
-        assert!((sim - 0.65).abs() < 0.001,
-            "At zero drift, similarity should be 0.65, got {:.4}", sim);
+        eprintln!(
+            "  Phase 1 (no drift):       θ={:.4} NHD, sim={:.4}",
+            theta, sim
+        );
+        assert!(
+            (theta - THETA_MAIN_BASELINE).abs() < 0.001,
+            "At zero drift, threshold should be {:.4} NHD, got {:.4}",
+            THETA_MAIN_BASELINE,
+            theta
+        );
+        assert!(
+            (sim - 0.65).abs() < 0.001,
+            "At zero drift, similarity should be 0.65, got {:.4}",
+            sim
+        );
 
         // ── Phase 2: Drift = δ_max → still baseline ────────────────
         brain.drift_magnitude_ewma = DELTA_MAX;
         let theta = brain.adaptive_novelty_threshold();
         let sim = 1.0 - theta;
-        eprintln!("  Phase 2 (δ=δ_max):        θ={:.4} NHD, sim={:.4}", theta, sim);
-        assert!((theta - THETA_MAIN_BASELINE).abs() < 0.001,
-            "At δ_max, threshold should still be {:.4} NHD, got {:.4}", THETA_MAIN_BASELINE, theta);
+        eprintln!(
+            "  Phase 2 (δ=δ_max):        θ={:.4} NHD, sim={:.4}",
+            theta, sim
+        );
+        assert!(
+            (theta - THETA_MAIN_BASELINE).abs() < 0.001,
+            "At δ_max, threshold should still be {:.4} NHD, got {:.4}",
+            THETA_MAIN_BASELINE,
+            theta
+        );
 
         // ── Phase 3: 2× δ_max → threshold drops toward floor ────────
         brain.drift_magnitude_ewma = DELTA_MAX * 2.0;
         let theta = brain.adaptive_novelty_threshold();
         let sim = 1.0 - theta;
-        let expected = (THETA_MAIN_BASELINE * (DELTA_MAX / (DELTA_MAX * 2.0)))
-            .max(THETA_ADAPT_MIN);
-        eprintln!("  Phase 3 (2×δ_max):        θ={:.4} NHD, sim={:.4} (expected θ={:.4})",
-            theta, sim, expected);
-        assert!((theta - expected).abs() < 0.001,
-            "At 2×δ_max, expected θ={:.4}, got {:.4}", expected, theta);
+        let expected = (THETA_MAIN_BASELINE * (DELTA_MAX / (DELTA_MAX * 2.0))).max(THETA_ADAPT_MIN);
+        eprintln!(
+            "  Phase 3 (2×δ_max):        θ={:.4} NHD, sim={:.4} (expected θ={:.4})",
+            theta, sim, expected
+        );
+        assert!(
+            (theta - expected).abs() < 0.001,
+            "At 2×δ_max, expected θ={:.4}, got {:.4}",
+            expected,
+            theta
+        );
         assert!(
             theta >= THETA_ADAPT_MIN - 0.001,
-            "Threshold should not drop below floor: got {:.4}", theta
+            "Threshold should not drop below floor: got {:.4}",
+            theta
         );
 
         // ── Phase 4: 4× δ_max → threshold at floor ──────────────────
         brain.drift_magnitude_ewma = DELTA_MAX * 4.0;
         let theta = brain.adaptive_novelty_threshold();
         let sim = 1.0 - theta;
-        eprintln!("  Phase 4 (4×δ_max):        θ={:.4} NHD, sim={:.4}", theta, sim);
-        assert!((theta - THETA_ADAPT_MIN).abs() < 0.001,
-            "At 4×δ_max, threshold should floor at {:.4}, got {:.4}", THETA_ADAPT_MIN, theta);
+        eprintln!(
+            "  Phase 4 (4×δ_max):        θ={:.4} NHD, sim={:.4}",
+            theta, sim
+        );
+        assert!(
+            (theta - THETA_ADAPT_MIN).abs() < 0.001,
+            "At 4×δ_max, threshold should floor at {:.4}, got {:.4}",
+            THETA_ADAPT_MIN,
+            theta
+        );
 
         // ── Phase 5: Dramatic drift (10× δ_max) → floor remains ────
         brain.drift_magnitude_ewma = DELTA_MAX * 10.0;
         let theta = brain.adaptive_novelty_threshold();
         let sim = 1.0 - theta;
-        eprintln!("  Phase 5 (10×δ_max):       θ={:.4} NHD, sim={:.4}", theta, sim);
-        assert!((theta - THETA_ADAPT_MIN).abs() < 0.001,
-            "At 10×δ_max, threshold should remain at floor {:.4}, got {:.4}", THETA_ADAPT_MIN, theta);
+        eprintln!(
+            "  Phase 5 (10×δ_max):       θ={:.4} NHD, sim={:.4}",
+            theta, sim
+        );
+        assert!(
+            (theta - THETA_ADAPT_MIN).abs() < 0.001,
+            "At 10×δ_max, threshold should remain at floor {:.4}, got {:.4}",
+            THETA_ADAPT_MIN,
+            theta
+        );
 
-        eprintln!("  ✓ δ_measured ≤ δ_max → baseline {:.2} sim", 1.0 - THETA_MAIN_BASELINE);
-        eprintln!("  ✓ δ_measured ≫ δ_max → floor at {:.2} sim", 1.0 - THETA_ADAPT_MIN);
+        eprintln!(
+            "  ✓ δ_measured ≤ δ_max → baseline {:.2} sim",
+            1.0 - THETA_MAIN_BASELINE
+        );
+        eprintln!(
+            "  ✓ δ_measured ≫ δ_max → floor at {:.2} sim",
+            1.0 - THETA_ADAPT_MIN
+        );
         eprintln!("  ✓ Adaptive gate produces correct similarity thresholds");
     }
 
@@ -4652,14 +4834,17 @@ mod tests {
         let mut bits_b = [0u64; 160];
         for block in 0..160 {
             bits_a[block] = rng.gen();
-            bits_b[block] = rng.gen();  // independent → ~0.50 NHD
+            bits_b[block] = rng.gen(); // independent → ~0.50 NHD
         }
         let centroid_a = Hypervector { bits: bits_a };
         let centroid_b = Hypervector { bits: bits_b };
         let initial_dist = centroid_a.normalized_hamming_distance(&centroid_b);
         eprintln!("\n  Compactor Round-Trip Verification (Theorem XXIII.3):");
         eprintln!("  Initial centroid distance:  {:.4}", initial_dist);
-        assert!(initial_dist > 0.35, "Centroids must be > 0.35 apart (separate clusters)");
+        assert!(
+            initial_dist > 0.35,
+            "Centroids must be > 0.35 apart (separate clusters)"
+        );
 
         let mut brain = VSABrain::new(0.43);
 
@@ -4687,7 +4872,8 @@ mod tests {
             let mut entries = Vec::new();
             for i in 0..n_entries {
                 let mut noisy = hv;
-                for _ in 0..3 { // 3-bit noise per entry
+                for _ in 0..3 {
+                    // 3-bit noise per entry
                     let block = rng2.gen_range(0..160);
                     let bit = rng2.gen_range(0..64);
                     noisy.bits[block] ^= 1u64 << bit;
@@ -4717,7 +4903,11 @@ mod tests {
         brain.dejavu_clusters.push(cluster_a);
         brain.dejavu_clusters.push(cluster_b);
 
-        assert_eq!(brain.dejavu_clusters.len(), 2, "Should have 2 clusters before merge");
+        assert_eq!(
+            brain.dejavu_clusters.len(),
+            2,
+            "Should have 2 clusters before merge"
+        );
 
         // Store pre-merge state for verification
         let pre_merge_count = brain.dejavu_clusters.len();
@@ -4727,24 +4917,34 @@ mod tests {
         let pre_weight_0 = brain.dejavu_clusters[0].total_weight;
         let pre_weight_1 = brain.dejavu_clusters[1].total_weight;
 
-        eprintln!("  Pre-merge: {} clusters, weights=[{}, {}], entries=[{}, {}]",
-            pre_merge_count, pre_weight_0, pre_weight_1,
-            pre_merge_entries_0, pre_merge_entries_1);
+        eprintln!(
+            "  Pre-merge: {} clusters, weights=[{}, {}], entries=[{}, {}]",
+            pre_merge_count, pre_weight_0, pre_weight_1, pre_merge_entries_0, pre_merge_entries_1
+        );
 
         // Store the original entries of cluster 1 for round-trip verification
         let j_anchor = brain.dejavu_clusters[1].anchor;
         let original_entries: Vec<DejavuEntry> = brain.dejavu_clusters[1].entries.clone();
-        let original_vectors: Vec<Hypervector> = original_entries.iter()
+        let original_vectors: Vec<Hypervector> = original_entries
+            .iter()
             .map(|e| e.reconstruct(&j_anchor))
             .collect();
 
         // ── Merge (use threshold large enough to cover centroid distance) ─
-        let merge_threshold = initial_dist + 0.05;  // generous margin
+        let merge_threshold = initial_dist + 0.05; // generous margin
         let merges = brain.compact_clusters(merge_threshold, None);
-        assert_eq!(merges, 1, "Should merge exactly 1 pair (threshold={:.4})", merge_threshold);
+        assert_eq!(
+            merges, 1,
+            "Should merge exactly 1 pair (threshold={:.4})",
+            merge_threshold
+        );
 
         // ── Post-merge verification ───────────────────────────────────
-        assert_eq!(brain.dejavu_clusters.len(), 1, "Should have 1 cluster after merge");
+        assert_eq!(
+            brain.dejavu_clusters.len(),
+            1,
+            "Should have 1 cluster after merge"
+        );
         let merged = &brain.dejavu_clusters[0];
 
         // Verify survivor anchor is preserved
@@ -4756,9 +4956,11 @@ mod tests {
         // Verify all entries are preserved (both original clusters' entries)
         let total_expected_entries = pre_merge_entries_0 + pre_merge_entries_1;
         assert_eq!(
-            merged.entries.len(), total_expected_entries,
+            merged.entries.len(),
+            total_expected_entries,
             "All entries should be preserved after re-encoding, got {} expected {}",
-            merged.entries.len(), total_expected_entries
+            merged.entries.len(),
+            total_expected_entries
         );
 
         // Verify round-trip: every original entry from cluster 1 can be
@@ -4770,7 +4972,8 @@ mod tests {
             assert!(
                 dist < 0.001,
                 "Entry {} round-trip error: reconstructed distance {:.6} (should be ~0)",
-                i, dist
+                i,
+                dist
             );
         }
 
@@ -4784,7 +4987,10 @@ mod tests {
         // Verify merged centroid is reasonable (within 0.10 of original centroids)
         let d_a = merged.centroid.normalized_hamming_distance(&centroid_a);
         let d_b = merged.centroid.normalized_hamming_distance(&centroid_b);
-        eprintln!("  Post-merge: centroid distance from A: {:.4}, from B: {:.4}", d_a, d_b);
+        eprintln!(
+            "  Post-merge: centroid distance from A: {:.4}, from B: {:.4}",
+            d_a, d_b
+        );
         // With equal weights, the merged centroid should be roughly
         // equidistant from both inputs (approx half the initial distance).
         assert!(
@@ -4795,7 +5001,10 @@ mod tests {
 
         eprintln!("  ✓ 2 → 1 cluster merged");
         eprintln!("  ✓ Survivor anchor preserved");
-        eprintln!("  ✓ All {} entries re-encoded and reconstructable", total_expected_entries);
+        eprintln!(
+            "  ✓ All {} entries re-encoded and reconstructable",
+            total_expected_entries
+        );
         eprintln!("  ✓ Accumulator weights summed correctly");
         eprintln!("  ✓ Merged centroid is semantically coherent");
     }
@@ -4849,7 +5058,10 @@ mod tests {
         // Drift rate: 3× δ_max ≈ 0.00105/tick = 10.8 bits/tick → use 11
         let n_flip_per_step = 11usize;
         let drift_rate = n_flip_per_step as f64 / d as f64;
-        eprintln!("  Drift rate:       {:.6} / tick ({} bits)", drift_rate, n_flip_per_step);
+        eprintln!(
+            "  Drift rate:       {:.6} / tick ({} bits)",
+            drift_rate, n_flip_per_step
+        );
         eprintln!("  δ_max:            {:.6}", DELTA_MAX);
         eprintln!("  δ/δ_max:          {:.2}×", drift_rate / DELTA_MAX);
 
@@ -4893,7 +5105,9 @@ mod tests {
             // Track stats
             let k = brain.dejavu_clusters.len();
             cluster_counts.push(k);
-            if k > max_clusters { max_clusters = k; }
+            if k > max_clusters {
+                max_clusters = k;
+            }
 
             // Get nearest cluster distance
             let mut best_nhd = 2.0_f64;
@@ -4903,11 +5117,15 @@ mod tests {
                     best_nhd = d_dist;
                 }
             }
-            if best_nhd > max_tracking_error { max_tracking_error = best_nhd; }
+            if best_nhd > max_tracking_error {
+                max_tracking_error = best_nhd;
+            }
 
             if step % 400 == 0 || step == n_steps - 1 {
-                eprintln!("  step {:>4}: clusters = {}, tracking error = {:.4}",
-                    step, k, best_nhd);
+                eprintln!(
+                    "  step {:>4}: clusters = {}, tracking error = {:.4}",
+                    step, k, best_nhd
+                );
             }
         }
 
@@ -4917,9 +5135,11 @@ mod tests {
         eprintln!("  Final cluster count:    {}", final_k);
         eprintln!("  Max cluster count:      {}", max_clusters);
         eprintln!("  Max tracking error:     {:.4}", max_tracking_error);
-        eprintln!("  Avoided cluster spawns: ~{:.0} (expected {} without compactor)",
+        eprintln!(
+            "  Avoided cluster spawns: ~{:.0} (expected {} without compactor)",
             total_drift / 0.35 - final_k as f64,
-            (total_drift / 0.35).ceil());
+            (total_drift / 0.35).ceil()
+        );
 
         // The max cluster count should be bounded.  Without the adaptive
         // gate + compactor, we'd expect ~total_drift / 0.35 clusters
@@ -4929,7 +5149,8 @@ mod tests {
         assert!(
             max_clusters < expected_naive,
             "Cluster count ({}) should be below naive bound ({}) without gate+compactor",
-            max_clusters, expected_naive
+            max_clusters,
+            expected_naive
         );
 
         // More importantly: the cluster count should DECREASE or STABILIZE
@@ -4943,8 +5164,10 @@ mod tests {
         let max_last_half = last_half.iter().max().unwrap_or(&0);
         let min_last_half = last_half.iter().min().unwrap_or(&0);
         let last_val = *last_half.last().unwrap_or(&0);
-        eprintln!("  Last 500 steps: max={}, min={}, final={}",
-            max_last_half, min_last_half, last_val);
+        eprintln!(
+            "  Last 500 steps: max={}, min={}, final={}",
+            max_last_half, min_last_half, last_val
+        );
 
         // The ratio of max_last_half to the last step should be close to 1
         // (stable, not growing).  Allow some slop for EWMA transients.
@@ -4953,10 +5176,14 @@ mod tests {
         assert!(
             *max_last_half <= final_k * 2 + 2,
             "Cluster count grew unbounded in last 500 steps: max={}, final={}",
-            max_last_half, final_k
+            max_last_half,
+            final_k
         );
 
-        eprintln!("  ✓ Cluster count is bounded (max={}, final={})", max_clusters, final_k);
+        eprintln!(
+            "  ✓ Cluster count is bounded (max={}, final={})",
+            max_clusters, final_k
+        );
         eprintln!("  ✓ Tracking error never exceeds 0.70 (by XXIII.1)");
         eprintln!("  ✓ Theorem XXIII.3: monotonic drift closed");
     }
@@ -5028,15 +5255,21 @@ mod tests {
         eprintln!("  Novelty threshold θ_novel:    0.70");
 
         // Check if we're in the oscillation window
-        let w_min = 10.0;  // expected minimum weight
+        let w_min = 10.0; // expected minimum weight
         let sigma_delta = (delta * (1.0 - delta) / w_min).sqrt();
         let window_lower = (0.30_f64).max(0.70 - 3.0 * sigma);
         let window_upper = (0.30 + 3.0 / w_min.sqrt()).min(1.0);
 
-        eprintln!("  Oscillation window:           [{:.4}, {:.4}]", window_lower, window_upper);
+        eprintln!(
+            "  Oscillation window:           [{:.4}, {:.4}]",
+            window_lower, window_upper
+        );
 
         let in_window = delta > window_lower && delta < window_upper;
-        eprintln!("  Δ in oscillation window?      {}", if in_window { "YES" } else { "no" });
+        eprintln!(
+            "  Δ in oscillation window?      {}",
+            if in_window { "YES" } else { "no" }
+        );
 
         // Create two clusters, one for each mode
         fn make_acc_cluster(s: &Hypervector) -> MemoryCluster {
@@ -5058,10 +5291,8 @@ mod tests {
             }
         }
 
-        let mut clusters: Vec<MemoryCluster> = vec![
-            make_acc_cluster(&mode_a),
-            make_acc_cluster(&mode_b),
-        ];
+        let mut clusters: Vec<MemoryCluster> =
+            vec![make_acc_cluster(&mode_a), make_acc_cluster(&mode_b)];
 
         // Simulate 3000 steps with alternating inputs
         let n_steps = 3000;
@@ -5101,9 +5332,9 @@ mod tests {
                 let mut min_j = 1;
                 for i in 0..clusters.len() {
                     for j in (i + 1)..clusters.len() {
-                        let d = clusters[i].centroid.normalized_hamming_distance(
-                            &clusters[j].centroid,
-                        );
+                        let d = clusters[i]
+                            .centroid
+                            .normalized_hamming_distance(&clusters[j].centroid);
                         if d < min_dist {
                             min_dist = d;
                             min_i = i;
@@ -5128,8 +5359,14 @@ mod tests {
 
         eprintln!("\n  Simulation completed: {} steps", n_steps);
         eprintln!("  Final cluster count:          {}", total_clusters);
-        eprintln!("  Max cluster count:            {}", cluster_count_history.iter().max().unwrap_or(&0));
-        eprintln!("  Min cluster count:            {}", cluster_count_history.iter().min().unwrap_or(&0));
+        eprintln!(
+            "  Max cluster count:            {}",
+            cluster_count_history.iter().max().unwrap_or(&0)
+        );
+        eprintln!(
+            "  Min cluster count:            {}",
+            cluster_count_history.iter().min().unwrap_or(&0)
+        );
 
         // Count oscillations: number of times cluster count changes
         let mut osc_count = 0;
@@ -5143,9 +5380,11 @@ mod tests {
         // Compute autocorrelation of cluster count to find oscillation period
         let mean_k: f64 = cluster_count_history.iter().map(|&x| x as f64).sum::<f64>()
             / cluster_count_history.len() as f64;
-        let variance: f64 = cluster_count_history.iter()
+        let variance: f64 = cluster_count_history
+            .iter()
             .map(|&x| (x as f64 - mean_k).powi(2))
-            .sum::<f64>() / cluster_count_history.len() as f64;
+            .sum::<f64>()
+            / cluster_count_history.len() as f64;
 
         if variance > 0.01 {
             let max_lag = (n_steps / 3).min(500);
@@ -5165,13 +5404,17 @@ mod tests {
             }
 
             // Find the first significant peak (lag where autocorrelation peaks)
-            let significant_peaks: Vec<(usize, f64)> = autcorr.iter()
+            let significant_peaks: Vec<(usize, f64)> = autcorr
+                .iter()
                 .filter(|(_, r)| *r > 0.3)
                 .map(|(l, r)| (*l, *r))
                 .collect();
 
             if let Some(&(first_peak_lag, _)) = significant_peaks.first() {
-                eprintln!("\n  Oscillation period ≈ {} steps (autocorrelation peak)", first_peak_lag);
+                eprintln!(
+                    "\n  Oscillation period ≈ {} steps (autocorrelation peak)",
+                    first_peak_lag
+                );
                 eprintln!("  ✓ Oscillation detected and period measured");
             } else {
                 // Check if we're in the window at all
@@ -5209,12 +5452,17 @@ mod tests {
         eprintln!("\n  ── Scenario B: Period formula components ──");
 
         // Create two modes with moderate separation (Δ ≈ 0.50)
-        let mut bx = [0u64; 160]; let mut by = [0u64; 160];
-        for block in 0..160 { bx[block] = rng.gen(); }
+        let mut bx = [0u64; 160];
+        let mut by = [0u64; 160];
+        for block in 0..160 {
+            bx[block] = rng.gen();
+        }
         for block in 0..160 {
             by[block] = bx[block];
             for bit in 0..64 {
-                if rng.gen::<f64>() < 0.50 { by[block] ^= 1u64 << bit; }
+                if rng.gen::<f64>() < 0.50 {
+                    by[block] ^= 1u64 << bit;
+                }
             }
         }
         let mx = Hypervector { bits: bx };
@@ -5228,44 +5476,68 @@ mod tests {
         for _ in 0..100 {
             let mut ca = make_acc_cluster(&mx);
             let mut cb = make_acc_cluster(&my);
-            ca.total_weight = 2; cb.total_weight = 2;
+            ca.total_weight = 2;
+            cb.total_weight = 2;
             ca.accumulator = vec![2u32; HD_DIMENSION];
             cb.accumulator = vec![2u32; HD_DIMENSION];
             for _ in 0..10 {
                 let obs = if rng.gen::<f64>() < 0.85 { mx } else { my };
                 let d1 = obs.normalized_hamming_distance(&ca.centroid);
                 let d2 = obs.normalized_hamming_distance(&cb.centroid);
-                if d1 < d2 { ca.absorb_entry(&obs); } else { cb.absorb_entry(&obs); }
+                if d1 < d2 {
+                    ca.absorb_entry(&obs);
+                } else {
+                    cb.absorb_entry(&obs);
+                }
             }
             let d = ca.centroid.normalized_hamming_distance(&cb.centroid);
             merge_tot += 1;
-            if d <= 0.30 { merge_ok += 1; }
+            if d <= 0.30 {
+                merge_ok += 1;
+            }
         }
         let p_me = merge_ok as f64 / merge_tot.max(1) as f64;
         let sigma_d = (delta_b * (1.0 - delta_b) / 2.0).sqrt();
         let p_mt = norm_cdf((0.30 - delta_b) / sigma_d);
         eprintln!("  Δ={:.4}, σ_δ(W=2)={:.4}", delta_b, sigma_d);
-        eprintln!("  P(merge) empirical: {:.4}  theoretical: {:.4}", p_me, p_mt);
+        eprintln!(
+            "  P(merge) empirical: {:.4}  theoretical: {:.4}",
+            p_me, p_mt
+        );
 
         // Phase 2 — measure P(split): drift merged centroid toward mx via 95/5 input
         let mut cm = make_acc_cluster(&mx);
-        for _ in 0..80 { let obs = if rng.gen::<f64>() < 0.95 { mx } else { my }; cm.absorb_entry(&obs); }
+        for _ in 0..80 {
+            let obs = if rng.gen::<f64>() < 0.95 { mx } else { my };
+            cm.absorb_entry(&obs);
+        }
         let dfar = cm.centroid.normalized_hamming_distance(&my);
         let p_st = 1.0 - norm_cdf((0.70 - dfar) / sigma_in);
         let mut split_ok = 0usize;
         for _ in 0..200 {
             let obs = add_noise_rate(&my, sigma_in, &mut rng);
-            if obs.normalized_hamming_distance(&cm.centroid) > 0.70 { split_ok += 1; }
+            if obs.normalized_hamming_distance(&cm.centroid) > 0.70 {
+                split_ok += 1;
+            }
         }
         let p_se = split_ok as f64 / 200.0;
         eprintln!("  δ_far(mode_y)={:.4}  σ_input={:.4}", dfar, sigma_in);
-        eprintln!("  P(split) empirical: {:.4}  theoretical: {:.4}", p_se, p_st);
+        eprintln!(
+            "  P(split) empirical: {:.4}  theoretical: {:.4}",
+            p_se, p_st
+        );
 
         // Phase 3 — expected period
-        let tc = 50.0; let rmin = 0.10;
+        let tc = 50.0;
+        let rmin = 0.10;
         let tm = tc / p_mt.max(0.001);
         let ts = 1.0 / (rmin * p_st.max(0.0001));
-        eprintln!("  T_osc ≈ {} + {} = {} steps (from formula)", tm as u64, ts as u64, (tm + ts) as u64);
+        eprintln!(
+            "  T_osc ≈ {} + {} = {} steps (from formula)",
+            tm as u64,
+            ts as u64,
+            (tm + ts) as u64
+        );
 
         // This is a calibration diagnostic, not a crisp invariant: the normal
         // approximation ignores the accumulator's discrete majority dynamics.
@@ -5314,7 +5586,9 @@ mod tests {
         let modes: Vec<Hypervector> = (0..k_modes)
             .map(|_| {
                 let mut bits = [0u64; 160];
-                for block in bits.iter_mut() { *block = rng.gen(); }
+                for block in bits.iter_mut() {
+                    *block = rng.gen();
+                }
                 Hypervector { bits }
             })
             .collect();
@@ -5327,9 +5601,14 @@ mod tests {
                 *a = bit as u32;
             }
             MemoryCluster {
-                centroid: *s, anchor: *s, entries: Vec::new(),
-                reverberation: 1.0, last_reinforced_tick: 0,
-                accumulator: acc, total_weight: 1, last_access_tick: 0,
+                centroid: *s,
+                anchor: *s,
+                entries: Vec::new(),
+                reverberation: 1.0,
+                last_reinforced_tick: 0,
+                accumulator: acc,
+                total_weight: 1,
+                last_access_tick: 0,
             }
         }
 
@@ -5353,7 +5632,10 @@ mod tests {
             let mut best_d = 2.0;
             for (i, c) in clusters.iter().enumerate() {
                 let d = obs.normalized_hamming_distance(&c.centroid);
-                if d < best_d { best_d = d; best_i = i; }
+                if d < best_d {
+                    best_d = d;
+                    best_i = i;
+                }
             }
             clusters[best_i].absorb_entry(&obs);
 
@@ -5364,7 +5646,10 @@ mod tests {
                 let mut best_d2 = 2.0;
                 for (j, c) in clusters.iter().enumerate() {
                     let d = obs.normalized_hamming_distance(&c.centroid);
-                    if d < best_d2 { best_d2 = d; best_j = j; }
+                    if d < best_d2 {
+                        best_d2 = d;
+                        best_j = j;
+                    }
                 }
                 samples.push(clusters[best_j].centroid);
             }
@@ -5379,7 +5664,9 @@ mod tests {
             for (j, c2) in clusters.iter().enumerate() {
                 if i != j {
                     let d = c.centroid.normalized_hamming_distance(&c2.centroid);
-                    if d < d_max_emp { d_max_emp = d; } // min inter-centroid distance
+                    if d < d_max_emp {
+                        d_max_emp = d;
+                    } // min inter-centroid distance
                 }
             }
         }
@@ -5390,9 +5677,13 @@ mod tests {
             let mut min_d = 2.0;
             for c in &clusters {
                 let d = s.normalized_hamming_distance(&c.centroid);
-                if d < min_d { min_d = d; }
+                if d < min_d {
+                    min_d = d;
+                }
             }
-            if min_d > max_proj_dist { max_proj_dist = min_d; }
+            if min_d > max_proj_dist {
+                max_proj_dist = min_d;
+            }
         }
         eprintln!("  Centroid count:               {}", clusters.len());
         eprintln!("  Min inter-centroid dist:      {:.4}", d_max_emp);
@@ -5402,7 +5693,7 @@ mod tests {
         // Each Hamming ball of radius r has volume ≤ 2^{D·H(r)} for r ≤ 0.5
         // where H(r) = -r·log2(r) - (1-r)·log2(1-r)
         // For r = d_max_emp:
-        let r = d_max_emp.max(0.01);  // avoid log(0)
+        let r = d_max_emp.max(0.01); // avoid log(0)
         let h_r = -r * r.log2() - (1.0 - r) * (1.0 - r).log2();
         let ball_vol_bits = HD_DIMENSION as f64 * h_r;
         let total_vol_bits = ball_vol_bits + (clusters.len() as f64).log2();
@@ -5424,27 +5715,41 @@ mod tests {
 
         // 4. Effective dimension
         let d_eff = total_vol_bits / (HD_DIMENSION as f64).log2();
-        eprintln!("  Effective dimension d_eff:    {:.1} (out of {})", d_eff, HD_DIMENSION);
+        eprintln!(
+            "  Effective dimension d_eff:    {:.1} (out of {})",
+            d_eff, HD_DIMENSION
+        );
 
         // 5. Pairwise distance analysis: all sampled states should cluster
         // around K centroids, so the pairwise distance distribution should
         // have K distinct modes (one per centroid pair)
         let mut pairwise_dists: Vec<f64> = Vec::new();
         for i in 0..samples.len() {
-            for j in (i+1)..samples.len() {
+            for j in (i + 1)..samples.len() {
                 pairwise_dists.push(samples[i].normalized_hamming_distance(&samples[j]));
             }
         }
-        let mean_pair = if pairwise_dists.is_empty() { 0.0 }
-            else { pairwise_dists.iter().sum::<f64>() / pairwise_dists.len() as f64 };
+        let mean_pair = if pairwise_dists.is_empty() {
+            0.0
+        } else {
+            pairwise_dists.iter().sum::<f64>() / pairwise_dists.len() as f64
+        };
         let min_pair = pairwise_dists.iter().cloned().fold(2.0_f64, f64::min);
         let max_pair = pairwise_dists.iter().cloned().fold(0.0_f64, f64::max);
 
-        eprintln!("  Pairwise NHD (samples):       mean={:.4}, min={:.4}, max={:.4}",
-            mean_pair, min_pair, max_pair);
+        eprintln!(
+            "  Pairwise NHD (samples):       mean={:.4}, min={:.4}, max={:.4}",
+            mean_pair, min_pair, max_pair
+        );
 
-        eprintln!("  Verdict: μ* is SINGULAR — support is K={} Hamming balls", clusters.len());
-        eprintln!("           with covering radius d_max ≈ {:.4}.", max_proj_dist);
+        eprintln!(
+            "  Verdict: μ* is SINGULAR — support is K={} Hamming balls",
+            clusters.len()
+        );
+        eprintln!(
+            "           with covering radius d_max ≈ {:.4}.",
+            max_proj_dist
+        );
         eprintln!("  ✓ Singularity confirmed (Theorem XXV.1)");
     }
 
@@ -5462,7 +5767,9 @@ mod tests {
         let mut centroids: Vec<Hypervector> = (0..k)
             .map(|_| {
                 let mut bits = [0u64; 160];
-                for block in bits.iter_mut() { *block = rng.gen(); }
+                for block in bits.iter_mut() {
+                    *block = rng.gen();
+                }
                 Hypervector { bits }
             })
             .collect();
@@ -5470,16 +5777,23 @@ mod tests {
         // Need MemoryCluster wrappers
         fn wrap(c: Hypervector) -> MemoryCluster {
             MemoryCluster {
-                centroid: c, anchor: c, entries: Vec::new(),
-                reverberation: 1.0, last_reinforced_tick: 0,
-                accumulator: Vec::new(), total_weight: 1, last_access_tick: 0,
+                centroid: c,
+                anchor: c,
+                entries: Vec::new(),
+                reverberation: 1.0,
+                last_reinforced_tick: 0,
+                accumulator: Vec::new(),
+                total_weight: 1,
+                last_access_tick: 0,
             }
         }
         let clusters: Vec<MemoryCluster> = centroids.iter().map(|c| wrap(*c)).collect();
 
         // Generate many test inputs near each centroid and in between
-        let mut outputs_hard: std::collections::HashSet<[u64; 160]> = std::collections::HashSet::new();
-        let mut outputs_soft: std::collections::HashSet<[u64; 160]> = std::collections::HashSet::new();
+        let mut outputs_hard: std::collections::HashSet<[u64; 160]> =
+            std::collections::HashSet::new();
+        let mut outputs_soft: std::collections::HashSet<[u64; 160]> =
+            std::collections::HashSet::new();
 
         // After the v3.1 numerical stability fix (Theorem XXVII.2),
         // the weights are sharper, so higher τ is needed for the same
@@ -5509,17 +5823,35 @@ mod tests {
         eprintln!("\n  Soft Projection Breaks Singularity (Theorem XXVII.1):");
         eprintln!("  K = {} centroids", k);
         eprintln!("  Distinct hard projections (τ=0):  {}", n_hard);
-        eprintln!("  Distinct soft projections (τ={:.2}): {}", tau_test, n_soft);
-        eprintln!("  Capacity increase:              {}×", n_soft as f64 / n_hard.max(1) as f64);
+        eprintln!(
+            "  Distinct soft projections (τ={:.2}): {}",
+            tau_test, n_soft
+        );
+        eprintln!(
+            "  Capacity increase:              {}×",
+            n_soft as f64 / n_hard.max(1) as f64
+        );
 
         // Hard projection should produce at most K distinct outputs
-        assert!(n_hard <= k, "Hard projection produced {} > K outputs", n_hard);
+        assert!(
+            n_hard <= k,
+            "Hard projection produced {} > K outputs",
+            n_hard
+        );
 
         // Soft projection should produce MORE than K distinct outputs
-        assert!(n_soft > k, "Soft projection produced only {} ≤ K outputs — singularity not broken (τ={:.2})", n_soft, tau_test);
+        assert!(
+            n_soft > k,
+            "Soft projection produced only {} ≤ K outputs — singularity not broken (τ={:.2})",
+            n_soft,
+            tau_test
+        );
 
         // Soft projection should produce more than hard projection
-        assert!(n_soft > n_hard, "Soft projection should increase output variety");
+        assert!(
+            n_soft > n_hard,
+            "Soft projection should increase output variety"
+        );
 
         eprintln!("  ✓ Singularity broken: {} > {} > K", n_soft, n_hard);
 
@@ -5549,8 +5881,10 @@ mod tests {
         let mean_out = sum_out / n_trials as f64;
         let contraction_ratio = mean_out / mean_in;
 
-        eprintln!("  Contraction with τ={:.4}:      mean_in={:.4}, mean_out={:.4}, ratio={:.3}",
-            tau_test, mean_in, mean_out, contraction_ratio);
+        eprintln!(
+            "  Contraction with τ={:.4}:      mean_in={:.4}, mean_out={:.4}, ratio={:.3}",
+            tau_test, mean_in, mean_out, contraction_ratio
+        );
 
         // The ratio mean_out / mean_in is the empirical contraction factor κ_P^τ.
         // The hard projection has κ_P ≈ 0.68 (strong contraction via information destruction).
@@ -5558,7 +5892,10 @@ mod tests {
         // This is the fundamental trade-off: contraction IS the projection onto a finite set.
         // Breaking the singularity means giving up some contraction.
         eprintln!("  Hard projection κ_P:           ≈ 0.68 (strong contraction, singular)");
-        eprintln!("  Soft projection κ_P^τ:         ≈ {:.3} (near-neutral, continuous)", contraction_ratio);
+        eprintln!(
+            "  Soft projection κ_P^τ:         ≈ {:.3} (near-neutral, continuous)",
+            contraction_ratio
+        );
 
         // The soft projection is nearly distance-preserving (κ ≈ 1.0).
         // This is the fundamental trade-off: breaking the singularity means
@@ -5570,20 +5907,21 @@ mod tests {
             contraction_ratio
         );
 
-        eprintln!("  ✓ Soft projection is near-neutral (κ=1) at τ={:.4}", tau_test);
+        eprintln!(
+            "  ✓ Soft projection is near-neutral (κ=1) at τ={:.4}",
+            tau_test
+        );
     }
 
     /// Measure κ_P^τ for a soft projection at temperature τ.
     /// Projects `n_pairs` random interpolated pairs and returns the mean
     /// distance ratio δ(P(x), P(y)) / δ(x, y).
-    fn measure_soft_kappa_p_for_tau(
-        clusters: &[MemoryCluster],
-        tau: f64,
-        n_pairs: usize,
-    ) -> f64 {
+    fn measure_soft_kappa_p_for_tau(clusters: &[MemoryCluster], tau: f64, n_pairs: usize) -> f64 {
         let mut rng = rand::thread_rng();
         let k = clusters.len();
-        if k < 2 { return 0.0; }
+        if k < 2 {
+            return 0.0;
+        }
 
         let mut sum_in = 0.0_f64;
         let mut sum_out = 0.0_f64;
@@ -5605,7 +5943,9 @@ mod tests {
 
         let mean_in = sum_in / n_pairs as f64;
         let mean_out = sum_out / n_pairs as f64;
-        if mean_in < 1e-10 { return 1.0; }
+        if mean_in < 1e-10 {
+            return 1.0;
+        }
         mean_out / mean_in
     }
 
@@ -5618,10 +5958,11 @@ mod tests {
     ) -> usize {
         let mut rng = rand::thread_rng();
         let k = clusters.len();
-        if k < 2 { return 0; }
+        if k < 2 {
+            return 0;
+        }
 
-        let mut outputs: std::collections::HashSet<[u64; 160]> =
-            std::collections::HashSet::new();
+        let mut outputs: std::collections::HashSet<[u64; 160]> = std::collections::HashSet::new();
 
         for _ in 0..n_queries {
             let i = rng.gen_range(0..k);
@@ -5648,12 +5989,7 @@ mod tests {
     /// only activates at extremes where κ_P measurably degrades performance.
     /// At τ=0.08 (calibrated optimum): κ_P ≈ 0.99, C_eff ≈ 1528 (76× gain).
     /// At τ=0.10: κ_P ≈ 0.89, C_eff ≈ 1437 (72× gain) — still sweet.
-    fn integrity_weighted_capacity(
-        c_eff: usize,
-        kappa_p: f64,
-        kappa_f: f64,
-        tripwire: f64,
-    ) -> f64 {
+    fn integrity_weighted_capacity(c_eff: usize, kappa_p: f64, kappa_f: f64, tripwire: f64) -> f64 {
         let kappa_joint = kappa_p * kappa_f;
 
         // Structural breach: zero score
@@ -5705,23 +6041,30 @@ mod tests {
         let k = 20;
         let k_f_current = 0.95;
         let tripwire = 0.995;
-        let n_pairs = 800;       // enough for κ_P estimate
-        let n_queries = 2000;    // enough for C_eff estimate
+        let n_pairs = 800; // enough for κ_P estimate
+        let n_queries = 2000; // enough for C_eff estimate
 
         // Create K well-separated random centroids
         let centroids: Vec<Hypervector> = (0..k)
             .map(|_| {
                 let mut bits = [0u64; 160];
-                for block in bits.iter_mut() { *block = rng.gen(); }
+                for block in bits.iter_mut() {
+                    *block = rng.gen();
+                }
                 Hypervector { bits }
             })
             .collect();
 
         fn wrap(c: Hypervector) -> MemoryCluster {
             MemoryCluster {
-                centroid: c, anchor: c, entries: Vec::new(),
-                reverberation: 1.0, last_reinforced_tick: 0,
-                accumulator: Vec::new(), total_weight: 1, last_access_tick: 0,
+                centroid: c,
+                anchor: c,
+                entries: Vec::new(),
+                reverberation: 1.0,
+                last_reinforced_tick: 0,
+                accumulator: Vec::new(),
+                total_weight: 1,
+                last_access_tick: 0,
             }
         }
         let clusters: Vec<MemoryCluster> = centroids.iter().map(|c| wrap(*c)).collect();
@@ -5736,14 +6079,25 @@ mod tests {
         eprintln!("\n  ╔══════════════════════════════════════════════════════╗");
         eprintln!("  ║  PHASE 1: BROAD SURVEY — τ ∈ [0, 1.0]              ║");
         eprintln!("  ╚══════════════════════════════════════════════════════╝");
-        eprintln!("  K = {}, κ_F = {:.2}, tripwire = {:.3}", k, k_f_current, tripwire);
-        eprintln!("  Hard baseline: κ_P = {:.4}, C_eff = {} ({:.2} bits)", 
-            kappa_hard, cap_hard, (cap_hard as f64).log2());
+        eprintln!(
+            "  K = {}, κ_F = {:.2}, tripwire = {:.3}",
+            k, k_f_current, tripwire
+        );
+        eprintln!(
+            "  Hard baseline: κ_P = {:.4}, C_eff = {} ({:.2} bits)",
+            kappa_hard,
+            cap_hard,
+            (cap_hard as f64).log2()
+        );
         eprintln!();
-        eprintln!("  {:>8} | {:>10} | {:>12} | {:>10} | {:>10} | {:>10} | {:>8}",
-            "τ", "κ_P^τ", "κ_joint", "C_eff", "C_eff/bits", "E(τ)", "Status");
-        eprintln!("  {:->8}-+-{:->10}-+-{:->12}-+-{:->10}-+-{:->10}-+-{:->10}-+-{:->8}", 
-            "", "", "", "", "", "", "");
+        eprintln!(
+            "  {:>8} | {:>10} | {:>12} | {:>10} | {:>10} | {:>10} | {:>8}",
+            "τ", "κ_P^τ", "κ_joint", "C_eff", "C_eff/bits", "E(τ)", "Status"
+        );
+        eprintln!(
+            "  {:->8}-+-{:->10}-+-{:->12}-+-{:->10}-+-{:->10}-+-{:->10}-+-{:->8}",
+            "", "", "", "", "", "", ""
+        );
 
         let broad_tau_values = [0.0, 0.001, 0.003, 0.005, 0.01, 0.02, 0.05, 0.1, 0.5, 1.0];
         let mut best_e_tau = 0.0_f64;
@@ -5758,7 +6112,9 @@ mod tests {
             let e_score = integrity_weighted_capacity(c_eff, kappa_p, k_f_current, tripwire);
 
             let status = if kappa_joint >= tripwire {
-                if structural_limit > 0.99 { structural_limit = tau; }
+                if structural_limit > 0.99 {
+                    structural_limit = tau;
+                }
                 "⚠ BREACH"
             } else if c_eff > cap_hard * 3 {
                 "✓ GAIN"
@@ -5768,8 +6124,10 @@ mod tests {
                 "≈ same"
             };
 
-            eprintln!("  {:>8.4} | {:>10.4} | {:>12.6} | {:>10} | {:>10.2} | {:>10.1} | {:>8}",
-                tau, kappa_p, kappa_joint, c_eff, c_eff_bits, e_score, status);
+            eprintln!(
+                "  {:>8.4} | {:>10.4} | {:>12.6} | {:>10} | {:>10.2} | {:>10.1} | {:>8}",
+                tau, kappa_p, kappa_joint, c_eff, c_eff_bits, e_score, status
+            );
 
             if e_score > best_e_score {
                 best_e_score = e_score;
@@ -5778,8 +6136,14 @@ mod tests {
         }
 
         eprintln!();
-        eprintln!("  Phase 1 best by E(τ): τ = {:.4} (score = {:.1})", best_e_tau, best_e_score);
-        eprintln!("  Structural limit (κ ≥ {:.3}): τ ≈ {:.4}", tripwire, structural_limit);
+        eprintln!(
+            "  Phase 1 best by E(τ): τ = {:.4} (score = {:.1})",
+            best_e_tau, best_e_score
+        );
+        eprintln!(
+            "  Structural limit (κ ≥ {:.3}): τ ≈ {:.4}",
+            tripwire, structural_limit
+        );
 
         // ═══════════════════════════════════════════════════════════════
         // PHASE 2: High-resolution zoom on the transition window
@@ -5793,10 +6157,14 @@ mod tests {
         eprintln!("  ║  PHASE 2: HIGH-RESOLUTION ZOOM — τ ∈ [0.02, 0.30] ║");
         eprintln!("  ╚══════════════════════════════════════════════════════╝");
         eprintln!();
-        eprintln!("  {:>8} | {:>10} | {:>12} | {:>10} | {:>10} | {:>10} | {:>10}",
-            "τ", "κ_P^τ", "κ_joint", "C_eff", "C_eff/bits", "E(τ)", "Gain×");
-        eprintln!("  {:->8}-+-{:->10}-+-{:->12}-+-{:->10}-+-{:->10}-+-{:->10}-+-{:->10}", 
-            "", "", "", "", "", "", "");
+        eprintln!(
+            "  {:>8} | {:>10} | {:>12} | {:>10} | {:>10} | {:>10} | {:>10}",
+            "τ", "κ_P^τ", "κ_joint", "C_eff", "C_eff/bits", "E(τ)", "Gain×"
+        );
+        eprintln!(
+            "  {:->8}-+-{:->10}-+-{:->12}-+-{:->10}-+-{:->10}-+-{:->10}-+-{:->10}",
+            "", "", "", "", "", "", ""
+        );
 
         let zoom_tau_values = [0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15, 0.20, 0.25, 0.30];
         let mut best_zoom_tau = 0.0_f64;
@@ -5819,8 +6187,10 @@ mod tests {
 
             let status = if struct_limit_here { "⚠" } else { "" };
 
-            eprintln!("  {:>8.4} | {:>10.4} | {:>12.6} | {:>10} | {:>10.2} | {:>10.1} | {:>10.1}{}",
-                tau, kappa_p, kappa_joint, c_eff, c_eff_bits, e_score, gain_x, status);
+            eprintln!(
+                "  {:>8.4} | {:>10.4} | {:>12.6} | {:>10} | {:>10.2} | {:>10.1} | {:>10.1}{}",
+                tau, kappa_p, kappa_joint, c_eff, c_eff_bits, e_score, gain_x, status
+            );
 
             if e_score > best_zoom_score {
                 best_zoom_score = e_score;
@@ -5829,17 +6199,30 @@ mod tests {
         }
 
         eprintln!();
-        eprintln!("  Phase 2 best by E(τ): τ = {:.4} (score = {:.1})", best_zoom_tau, best_zoom_score);
+        eprintln!(
+            "  Phase 2 best by E(τ): τ = {:.4} (score = {:.1})",
+            best_zoom_tau, best_zoom_score
+        );
         if zoom_structural_limit < 1.0 {
-            eprintln!("  Structural limit in zoom window: τ ≈ {:.4}", zoom_structural_limit);
+            eprintln!(
+                "  Structural limit in zoom window: τ ≈ {:.4}",
+                zoom_structural_limit
+            );
         } else {
-            eprintln!("  No structural breach in zoom window (κ_joint < {:.3} for all τ ≤ 0.03)", tripwire);
+            eprintln!(
+                "  No structural breach in zoom window (κ_joint < {:.3} for all τ ≤ 0.03)",
+                tripwire
+            );
         }
 
         // ═══════════════════════════════════════════════════════════════
         // FINAL RECOMMENDATION
         // ═══════════════════════════════════════════════════════════════
-        let recommended_tau = if best_zoom_score > 0.0 { best_zoom_tau } else { best_e_tau };
+        let recommended_tau = if best_zoom_score > 0.0 {
+            best_zoom_tau
+        } else {
+            best_e_tau
+        };
         let rec_kappa = measure_soft_kappa_p_for_tau(&clusters, recommended_tau, n_pairs * 2);
         let rec_cap = measure_sampled_capacity_for_tau(&clusters, recommended_tau, n_queries * 2);
         let rec_joint = rec_kappa * k_f_current;
@@ -5850,24 +6233,38 @@ mod tests {
         eprintln!("  ╚══════════════════════════════════════════════════════╝");
         eprintln!("  Optimal τ = {:.4}", recommended_tau);
         eprintln!("    κ_P        = {:.4}  (near-neutral ✓)", rec_kappa);
-        eprintln!("    κ_joint    = {:.6}  (tripwire = {:.3})", rec_joint, tripwire);
+        eprintln!(
+            "    κ_joint    = {:.6}  (tripwire = {:.3})",
+            rec_joint, tripwire
+        );
         eprintln!("    C_eff      = {} distinct outputs", rec_cap);
-        eprintln!("    C_eff/bits = {:.2} bits  (vs {:.2} hard baseline)", 
-            (rec_cap as f64).log2(), (cap_hard as f64).log2());
-        eprintln!("    Gain       = {:.1}× capacity multiplier", rec_cap as f64 / cap_hard as f64);
+        eprintln!(
+            "    C_eff/bits = {:.2} bits  (vs {:.2} hard baseline)",
+            (rec_cap as f64).log2(),
+            (cap_hard as f64).log2()
+        );
+        eprintln!(
+            "    Gain       = {:.1}× capacity multiplier",
+            rec_cap as f64 / cap_hard as f64
+        );
 
         if rec_joint >= tripwire {
-            eprintln!("  ⚠ WARNING: Joint contraction at tripwire — reduce τ or increase κ_F margin.");
+            eprintln!(
+                "  ⚠ WARNING: Joint contraction at tripwire — reduce τ or increase κ_F margin."
+            );
         } else {
-            eprintln!("  ✓ Safe operating point with {:.1}% headroom to tripwire.",
-                (1.0 - rec_joint / tripwire) * 100.0);
+            eprintln!(
+                "  ✓ Safe operating point with {:.1}% headroom to tripwire.",
+                (1.0 - rec_joint / tripwire) * 100.0
+            );
         }
 
         // Verify capacity increase
         assert!(
             rec_cap > cap_hard,
             "Soft projection must increase capacity: {} ≤ {}",
-            rec_cap, cap_hard
+            rec_cap,
+            cap_hard
         );
         eprintln!("  ✓ Frontier sweep complete");
     }
@@ -5887,23 +6284,30 @@ mod tests {
         let k = 300;
         let m_sectors = 1024; // 10-bit LSH
         let top_m = 3;
-        let tau_test = 0.0;    // hard projection first
-        let tau_soft = 0.08;   // then test at calibrated sweet spot
+        let tau_test = 0.0; // hard projection first
+        let tau_soft = 0.08; // then test at calibrated sweet spot
 
         // Create K random centroids
         let centroids: Vec<Hypervector> = (0..k)
             .map(|_| {
                 let mut bits = [0u64; 160];
-                for block in bits.iter_mut() { *block = rng.gen(); }
+                for block in bits.iter_mut() {
+                    *block = rng.gen();
+                }
                 Hypervector { bits }
             })
             .collect();
 
         fn wrap(c: Hypervector) -> MemoryCluster {
             MemoryCluster {
-                centroid: c, anchor: c, entries: Vec::new(),
-                reverberation: 1.0, last_reinforced_tick: 0,
-                accumulator: Vec::new(), total_weight: 1, last_access_tick: 0,
+                centroid: c,
+                anchor: c,
+                entries: Vec::new(),
+                reverberation: 1.0,
+                last_reinforced_tick: 0,
+                accumulator: Vec::new(),
+                total_weight: 1,
+                last_access_tick: 0,
             }
         }
         let clusters: Vec<MemoryCluster> = centroids.iter().map(|c| wrap(*c)).collect();
@@ -5913,7 +6317,8 @@ mod tests {
         eprintln!("  K = {} centroids, M = {} LSH sectors", k, m_sectors);
 
         // Compute LSH sector for each centroid
-        let sectors: Vec<usize> = centroids.iter()
+        let sectors: Vec<usize> = centroids
+            .iter()
             .map(|c| crate::resonator::lsh_sector(c))
             .collect();
 
@@ -5941,16 +6346,26 @@ mod tests {
         eprintln!("  LSH collisions (far pairs > 0.70 NHD):");
         eprintln!("    Total far pairs:              {}", far_pairs);
         eprintln!("    Co-located far pairs:         {}", co_located_far_pairs);
-        eprintln!("    Collision probability:         {:.6} (expected 1/1024 ≈ {:.6})",
+        eprintln!(
+            "    Collision probability:         {:.6} (expected 1/1024 ≈ {:.6})",
             co_located_far_pairs as f64 / far_pairs.max(1) as f64,
-            1.0 / m_sectors as f64);
-        eprintln!("    Max sector occupancy:          {}", max_sector_occupancy);
-        eprintln!("    Empty sectors:                 {} / {}", empty_sectors, m_sectors);
+            1.0 / m_sectors as f64
+        );
+        eprintln!(
+            "    Max sector occupancy:          {}",
+            max_sector_occupancy
+        );
+        eprintln!(
+            "    Empty sectors:                 {} / {}",
+            empty_sectors, m_sectors
+        );
 
         // The expected number of co-located far pairs under uniform LSH is:
         // E = (number of far pairs) / M ≈ (K²/2) / 1024 ≈ 44 for K=300
-        eprintln!("    Expected (uniform):            ≈ {:.0}",
-            far_pairs as f64 / m_sectors as f64);
+        eprintln!(
+            "    Expected (uniform):            ≈ {:.0}",
+            far_pairs as f64 / m_sectors as f64
+        );
 
         // Phase 1 prefilter effectiveness
         eprintln!("\n  Phase 1 prefilter effectiveness (K={}):", k);
@@ -5970,18 +6385,29 @@ mod tests {
             }
         }
         let p1_rate = phase1_hits as f64 / n_queries as f64;
-        eprintln!("    Phase 1 hit rate:              {:.1}% (expected ≈ {:.0}%)",
+        eprintln!(
+            "    Phase 1 hit rate:              {:.1}% (expected ≈ {:.0}%)",
             p1_rate * 100.0,
-            (1.0 - (1.0 - 1.0 / m_sectors as f64).powi(k as i32)) * 100.0);
+            (1.0 - (1.0 - 1.0 / m_sectors as f64).powi(k as i32)) * 100.0
+        );
 
         // Memory overhead estimate
-        let mem_centroids = k * 1280;            // 1280 bytes per centroid
+        let mem_centroids = k * 1280; // 1280 bytes per centroid
         let mem_accumulators = k.min(100) * 40960; // 40 KB per hot accumulator
         eprintln!("\n  Memory estimate:");
-        eprintln!("    Centroids (K={}):              {:.1} KB", k, mem_centroids as f64 / 1024.0);
-        eprintln!("    Hot accumulators (max 100):    {:.1} KB", mem_accumulators as f64 / 1024.0);
-        eprintln!("    Total:                         {:.1} KB",
-            (mem_centroids + mem_accumulators) as f64 / 1024.0);
+        eprintln!(
+            "    Centroids (K={}):              {:.1} KB",
+            k,
+            mem_centroids as f64 / 1024.0
+        );
+        eprintln!(
+            "    Hot accumulators (max 100):    {:.1} KB",
+            mem_accumulators as f64 / 1024.0
+        );
+        eprintln!(
+            "    Total:                         {:.1} KB",
+            (mem_centroids + mem_accumulators) as f64 / 1024.0
+        );
         eprintln!("    Theorem III.1 bound:           ~10.6 MB (safe)");
 
         // Verify the structural bound
@@ -5989,14 +6415,14 @@ mod tests {
         assert!(
             k <= max_bound,
             "K={} exceeds structural bound M·(1+S)={}",
-            k, max_bound
+            k,
+            max_bound
         );
         eprintln!("  ✓ Structural bound K ≤ M·(1+S) = {} holds", max_bound);
 
         // ── Soft projection at scale ───────────────────────────────
         eprintln!("\n  Soft projection at scale (τ = {:.3}):", tau_soft);
-        let mut outputs: std::collections::HashSet<[u64; 160]> =
-            std::collections::HashSet::new();
+        let mut outputs: std::collections::HashSet<[u64; 160]> = std::collections::HashSet::new();
         for _ in 0..500 {
             let q = Hypervector::new_random();
             let p = super::soft_project(&q, &clusters, tau_soft);
@@ -6005,8 +6431,11 @@ mod tests {
         let c_eff_soft = outputs.len();
         let c_eff_bits = (c_eff_soft as f64).log2();
         eprintln!("    Distinct outputs from 500 queries: {}", c_eff_soft);
-        eprintln!("    C_eff = {:.2} bits (vs log2(K) = {:.2})",
-            c_eff_bits, (k as f64).log2());
+        eprintln!(
+            "    C_eff = {:.2} bits (vs log2(K) = {:.2})",
+            c_eff_bits,
+            (k as f64).log2()
+        );
 
         // Hard projection at scale (τ = 0)
         let mut outputs_hard: std::collections::HashSet<[u64; 160]> =
@@ -6017,16 +6446,23 @@ mod tests {
             outputs_hard.insert(p.bits);
         }
         let c_eff_hard = outputs_hard.len();
-        eprintln!("    Hard projection distinct:        {} (≤ K = {})", c_eff_hard, k);
+        eprintln!(
+            "    Hard projection distinct:        {} (≤ K = {})",
+            c_eff_hard, k
+        );
 
         // Soft projection should increase capacity even at scale
         assert!(
             c_eff_soft > c_eff_hard,
             "Soft projection should increase capacity at scale: {} ≤ {}",
-            c_eff_soft, c_eff_hard
+            c_eff_soft,
+            c_eff_hard
         );
-        eprintln!("  ✓ Soft projection increases capacity {:.1}× at K={}",
-            c_eff_soft as f64 / c_eff_hard.max(1) as f64, k);
+        eprintln!(
+            "  ✓ Soft projection increases capacity {:.1}× at K={}",
+            c_eff_soft as f64 / c_eff_hard.max(1) as f64,
+            k
+        );
         eprintln!("  ✓ Cluster proliferation bound holds at K > 200");
     }
 
@@ -6086,7 +6522,10 @@ mod tests {
             let mut best_d = std::f64::MAX;
             for (i, c) in clusters.iter().enumerate() {
                 let d = p.normalized_hamming_distance(&c.centroid);
-                if d < best_d { best_d = d; best_idx = i; }
+                if d < best_d {
+                    best_d = d;
+                    best_idx = i;
+                }
             }
             best_idx
         };
@@ -6095,7 +6534,9 @@ mod tests {
         let centroids: Vec<Hypervector> = (0..k)
             .map(|_| {
                 let mut bits = [0u64; 160];
-                for block in bits.iter_mut() { *block = rng.gen(); }
+                for block in bits.iter_mut() {
+                    *block = rng.gen();
+                }
                 Hypervector { bits }
             })
             .collect();
@@ -6104,32 +6545,43 @@ mod tests {
             "constructive witness fixture must satisfy runtime A3-Q admission"
         );
 
-        let clusters: Vec<MemoryCluster> = centroids.iter().map(|c| MemoryCluster {
-            centroid: *c,
-            entries: Vec::new(),
-            reverberation: 1.0,
-            last_reinforced_tick: 0,
-            anchor: Hypervector::new_zero(),
-            accumulator: Vec::new(),
-            total_weight: 1,
-            last_access_tick: 0,
-        }).collect();
+        let clusters: Vec<MemoryCluster> = centroids
+            .iter()
+            .map(|c| MemoryCluster {
+                centroid: *c,
+                entries: Vec::new(),
+                reverberation: 1.0,
+                last_reinforced_tick: 0,
+                anchor: Hypervector::new_zero(),
+                accumulator: Vec::new(),
+                total_weight: 1,
+                last_access_tick: 0,
+            })
+            .collect();
 
         // Voronoi safe radii: r_i = min_{j≠i} δ(c_i, c_j)/2
-        let r_i: Vec<f64> = (0..k).map(|i| {
-            let mut r = std::f64::MAX;
-            for j in 0..k {
-                if i != j {
-                    r = r.min(centroids[i].normalized_hamming_distance(&centroids[j]) / 2.0);
+        let r_i: Vec<f64> = (0..k)
+            .map(|i| {
+                let mut r = std::f64::MAX;
+                for j in 0..k {
+                    if i != j {
+                        r = r.min(centroids[i].normalized_hamming_distance(&centroids[j]) / 2.0);
+                    }
                 }
-            }
-            r * 0.95
-        }).collect();
+                r * 0.95
+            })
+            .collect();
 
-        eprintln!("\n  Sub-Lemma S (ρ²⁶(W_i) sampling): g = nearest ∘ P_τ, τ={}, K={}", tau, k);
+        eprintln!(
+            "\n  Sub-Lemma S (ρ²⁶(W_i) sampling): g = nearest ∘ P_τ, τ={}, K={}",
+            tau, k
+        );
         eprintln!("  Sample z ∈ B(c_i, r_i) ⊆ W_i via random perturbation, then y = ρ²⁶(z)");
-        eprintln!("  N = {} samples/cell, P(miss) ≈ {:.2e}",
-            n_samples, k as f64 * (1.0 - 1.0 / k as f64).powi(n_samples));
+        eprintln!(
+            "  N = {} samples/cell, P(miss) ≈ {:.2e}",
+            n_samples,
+            k as f64 * (1.0 - 1.0 / k as f64).powi(n_samples)
+        );
         eprintln!();
 
         let mut all_ok = true;
@@ -6163,8 +6615,14 @@ mod tests {
 
             if !missing.is_empty() {
                 all_ok = false;
-                eprintln!("  ρ²⁶(W_{}) (r_i={:.4}): MISSING {:?} (got {} of {})",
-                    i, r_i[i], missing, outputs.len(), k);
+                eprintln!(
+                    "  ρ²⁶(W_{}) (r_i={:.4}): MISSING {:?} (got {} of {})",
+                    i,
+                    r_i[i],
+                    missing,
+                    outputs.len(),
+                    k
+                );
                 // Extra samples
                 for _ in 0..(n_samples * 3) {
                     let mut z_bits = centroids[i].bits;
@@ -6186,17 +6644,28 @@ mod tests {
                     all_ok = true;
                     eprintln!("    → Hit all after extra sampling");
                 } else {
-                    eprintln!("    → Still missing {:?} after {} extra samples", missing2, n_samples * 3);
+                    eprintln!(
+                        "    → Still missing {:?} after {} extra samples",
+                        missing2,
+                        n_samples * 3
+                    );
                 }
             } else {
-                eprintln!("  ρ²⁶(W_{}) (r_i={:.4}): ✓ all {}/{} outputs reached",
-                    i, r_i[i], outputs.len(), k);
+                eprintln!(
+                    "  ρ²⁶(W_{}) (r_i={:.4}): ✓ all {}/{} outputs reached",
+                    i,
+                    r_i[i],
+                    outputs.len(),
+                    k
+                );
             }
         }
 
-        assert!(all_ok,
+        assert!(
+            all_ok,
             "Sub-Lemma S violated: ρ²⁶(W_i) → g → centroids is NOT surjective for all cells. \
-             This would mean the centroid chain is reducible. Re-examine τ parameter.");
+             This would mean the centroid chain is reducible. Re-examine τ parameter."
+        );
         eprintln!("\n  ✓ Sub-Lemma S confirmed: g surjects all K centroids from every ρ²⁶(W_i).");
     }
 
@@ -6223,21 +6692,26 @@ mod tests {
         let centroids: Vec<Hypervector> = (0..k)
             .map(|_| {
                 let mut bits = [0u64; 160];
-                for block in bits.iter_mut() { *block = rng.gen(); }
+                for block in bits.iter_mut() {
+                    *block = rng.gen();
+                }
                 Hypervector { bits }
             })
             .collect();
 
-        let clusters: Vec<MemoryCluster> = centroids.iter().map(|c| MemoryCluster {
-            centroid: *c,
-            entries: Vec::new(),
-            reverberation: 1.0,
-            last_reinforced_tick: 0,
-            anchor: Hypervector::new_zero(),
-            accumulator: Vec::new(),
-            total_weight: 1,
-            last_access_tick: 0,
-        }).collect();
+        let clusters: Vec<MemoryCluster> = centroids
+            .iter()
+            .map(|c| MemoryCluster {
+                centroid: *c,
+                entries: Vec::new(),
+                reverberation: 1.0,
+                last_reinforced_tick: 0,
+                anchor: Hypervector::new_zero(),
+                accumulator: Vec::new(),
+                total_weight: 1,
+                last_access_tick: 0,
+            })
+            .collect();
 
         // Helper: g(y) = nearest(P_τ(y))
         let g = |y: &Hypervector| -> usize {
@@ -6246,7 +6720,10 @@ mod tests {
             let mut best_d = std::f64::MAX;
             for (i, c) in clusters.iter().enumerate() {
                 let d = p.normalized_hamming_distance(&c.centroid);
-                if d < best_d { best_d = d; best_idx = i; }
+                if d < best_d {
+                    best_d = d;
+                    best_idx = i;
+                }
             }
             best_idx
         };
@@ -6267,7 +6744,8 @@ mod tests {
             for word in z_bits.iter_mut() {
                 let mut mask = 0u64;
                 for bit in 0..64 {
-                    if rng.gen::<f64>() < 0.20 {  // 20% perturbation, stays in W_0 roughly
+                    if rng.gen::<f64>() < 0.20 {
+                        // 20% perturbation, stays in W_0 roughly
                         mask |= 1u64 << bit;
                     }
                 }
@@ -6297,7 +6775,11 @@ mod tests {
         eprintln!();
         eprintln!("  ── P_τ Lipschitz (avg output d_H per input bit flip) ──");
         eprintln!("    Avg L = {:.6}  (max = {:.6})", avg_lip, max_lip);
-        eprintln!("    Avg L·D = {:.2} bits  (max = {:.2} bits)", avg_lip * 10240.0, max_lip * 10240.0);
+        eprintln!(
+            "    Avg L·D = {:.2} bits  (max = {:.2} bits)",
+            avg_lip * 10240.0,
+            max_lip * 10240.0
+        );
 
         // ── Measure 2: φ sensitivity within ρ²⁶(W_i) ──
         eprintln!();
@@ -6338,8 +6820,12 @@ mod tests {
         }
 
         let phi_change_rate = total_phi_change as f64 / phi_samples as f64;
-        eprintln!("    φ changes: {}/{} ({:.4}%)",
-            total_phi_change, phi_samples, phi_change_rate * 100.0);
+        eprintln!(
+            "    φ changes: {}/{} ({:.4}%)",
+            total_phi_change,
+            phi_samples,
+            phi_change_rate * 100.0
+        );
 
         // ── Measure 3: Connectedness check ρ²⁶(W_0) ──
         eprintln!();
@@ -6383,7 +6869,10 @@ mod tests {
             }
         }
 
-        eprintln!("    δ(ρ²⁶(c_0), ρ²⁶(W_0)): min = {:.4}, max observed = {:.4}", min_dist_in_cell, max_dist_in_cell);
+        eprintln!(
+            "    δ(ρ²⁶(c_0), ρ²⁶(W_0)): min = {:.4}, max observed = {:.4}",
+            min_dist_in_cell, max_dist_in_cell
+        );
 
         // ── Measure 4: How many distinct φ labels reachable from ρ²⁶(W_0)? ──
         eprintln!();
@@ -6397,7 +6886,8 @@ mod tests {
             for word in z_bits.iter_mut() {
                 let mut mask = 0u64;
                 for bit in 0..64 {
-                    if rng.gen::<f64>() < 0.235 {  // Voronoi radius typical
+                    if rng.gen::<f64>() < 0.235 {
+                        // Voronoi radius typical
                         mask |= 1u64 << bit;
                     }
                 }
@@ -6413,8 +6903,14 @@ mod tests {
         eprintln!("    Distinct labels reached: {}/{}", labels.len(), k);
         eprintln!("    Label distribution: {:?}", label_counts);
         eprintln!();
-        eprintln!("    → Topological condition {}",
-            if labels.len() == k { "SATISFIED ✓" } else { "NOT SATISFIED ✗" });
+        eprintln!(
+            "    → Topological condition {}",
+            if labels.len() == k {
+                "SATISFIED ✓"
+            } else {
+                "NOT SATISFIED ✗"
+            }
+        );
 
         // ── Measure 5: φ sensitivity gradient (random-walk) ──
         eprintln!();
@@ -6429,7 +6925,8 @@ mod tests {
             let mut current = centroids[0].rotate_left(26);
             let mut prev_label = g(&current);
             let mut transitions = 0_usize;
-            let mut distinct_in_walk: std::collections::HashSet<usize> = std::collections::HashSet::new();
+            let mut distinct_in_walk: std::collections::HashSet<usize> =
+                std::collections::HashSet::new();
             distinct_in_walk.insert(prev_label);
 
             for _step in 0..walk_length {
@@ -6446,7 +6943,8 @@ mod tests {
                     let d_to_c0 = next.normalized_hamming_distance(&c0_rotated);
                     let mut in_cell = true;
                     for j in 1..k {
-                        let d_to_cj = next.normalized_hamming_distance(&centroids[j].rotate_left(26));
+                        let d_to_cj =
+                            next.normalized_hamming_distance(&centroids[j].rotate_left(26));
                         if d_to_cj < d_to_c0 - 1e-12 {
                             in_cell = false;
                             break;
@@ -6464,12 +6962,18 @@ mod tests {
                         break;
                     }
                 }
-                if !found { break; } // stuck
+                if !found {
+                    break;
+                } // stuck
             }
 
             total_label_transitions += transitions;
-            eprintln!("    Walk {}: {} label transitions, {} distinct labels reached",
-                walk + 1, transitions, distinct_in_walk.len());
+            eprintln!(
+                "    Walk {}: {} label transitions, {} distinct labels reached",
+                walk + 1,
+                transitions,
+                distinct_in_walk.len()
+            );
         }
 
         let avg_transitions = total_label_transitions as f64 / n_walks as f64;
@@ -6478,9 +6982,15 @@ mod tests {
         // Conclusion
         eprintln!();
         if labels.len() == k {
-            eprintln!("  ✓ Topological argument SUPPORTED: φ covers all {} labels from ρ²⁶(W_0)", k);
-            eprintln!("    Lipschitz L = {:.6} (avg), φ jump rate = {:.4}% per bit flip",
-                avg_lip, phi_change_rate * 100.0);
+            eprintln!(
+                "  ✓ Topological argument SUPPORTED: φ covers all {} labels from ρ²⁶(W_0)",
+                k
+            );
+            eprintln!(
+                "    Lipschitz L = {:.6} (avg), φ jump rate = {:.4}% per bit flip",
+                avg_lip,
+                phi_change_rate * 100.0
+            );
             eprintln!("    (Connected domain + non-constant φ → surjectivity)");
         } else {
             eprintln!("  ⚠ φ does NOT cover all labels — topological argument needs refinement");
@@ -6533,21 +7043,26 @@ mod tests {
         let centroids: Vec<Hypervector> = (0..k)
             .map(|_| {
                 let mut bits = [0u64; 160];
-                for block in bits.iter_mut() { *block = rng.gen(); }
+                for block in bits.iter_mut() {
+                    *block = rng.gen();
+                }
                 Hypervector { bits }
             })
             .collect();
 
-        let clusters: Vec<MemoryCluster> = centroids.iter().map(|c| MemoryCluster {
-            centroid: *c,
-            entries: Vec::new(),
-            reverberation: 1.0,
-            last_reinforced_tick: 0,
-            anchor: Hypervector::new_zero(),
-            accumulator: Vec::new(),
-            total_weight: 1,
-            last_access_tick: 0,
-        }).collect();
+        let clusters: Vec<MemoryCluster> = centroids
+            .iter()
+            .map(|c| MemoryCluster {
+                centroid: *c,
+                entries: Vec::new(),
+                reverberation: 1.0,
+                last_reinforced_tick: 0,
+                anchor: Hypervector::new_zero(),
+                accumulator: Vec::new(),
+                total_weight: 1,
+                last_access_tick: 0,
+            })
+            .collect();
 
         let g = |y: &Hypervector| -> usize {
             let p = super::soft_project(y, &clusters, tau);
@@ -6555,7 +7070,10 @@ mod tests {
             let mut best_d = std::f64::MAX;
             for (i, c) in clusters.iter().enumerate() {
                 let d = p.normalized_hamming_distance(&c.centroid);
-                if d < best_d { best_d = d; best_idx = i; }
+                if d < best_d {
+                    best_d = d;
+                    best_idx = i;
+                }
             }
             best_idx
         };
@@ -6574,10 +7092,13 @@ mod tests {
             let r_i = (0..k)
                 .filter(|&j| j != i)
                 .map(|j| centroids[i].normalized_hamming_distance(&centroids[j]))
-                .fold(std::f64::MAX, |a, b| a.min(b)) / 2.0;
+                .fold(std::f64::MAX, |a, b| a.min(b))
+                / 2.0;
 
             for j in 0..k {
-                if i == j { continue; }
+                if i == j {
+                    continue;
+                }
                 total_pairs += 1;
 
                 // ρ⁻⁵²(c_j) = rotate right by 52 (left by 10240-52 = 10188)
@@ -6585,7 +7106,7 @@ mod tests {
                 let c52_inv_i = centroids[i].rotate_left(10188);
 
                 // Build v_j: move from c_i toward ρ⁻⁵²(c_j) by δ = r_i
-                let delta = r_i * 0.95;  // slight safety margin
+                let delta = r_i * 0.95; // slight safety margin
                 let n_flip = (delta * 10240.0) as usize;
                 let mut v_bits = centroids[i].bits;
 
@@ -6593,7 +7114,9 @@ mod tests {
                 let mut flipped = 0;
                 'outer: for block in 0..160 {
                     for bit in 0..64 {
-                        if flipped >= n_flip { break 'outer; }
+                        if flipped >= n_flip {
+                            break 'outer;
+                        }
                         let ci_bit = (centroids[i].bits[block] >> bit) & 1;
                         let cj_bit = (c52_inv_j.bits[block] >> bit) & 1;
                         if ci_bit != cj_bit {
@@ -6606,10 +7129,12 @@ mod tests {
 
                 // Verify v ∈ V_i (closer to c_i than to any other centroid)
                 let d_vi = v.normalized_hamming_distance(&centroids[i]);
-                let in_Vi = (0..k).filter(|&kk| kk != i).all(|kk| {
-                    v.normalized_hamming_distance(&centroids[kk]) > d_vi - 1e-12
-                });
-                if !in_Vi { continue; }
+                let in_Vi = (0..k)
+                    .filter(|&kk| kk != i)
+                    .all(|kk| v.normalized_hamming_distance(&centroids[kk]) > d_vi - 1e-12);
+                if !in_Vi {
+                    continue;
+                }
 
                 // y = ρ⁵²(v) = rotate_left(v, 52)
                 let y = v.rotate_left(52);
@@ -6625,7 +7150,9 @@ mod tests {
                 let w_j = (-(dists[j] * dists[j] - min_d * min_d) / tau).exp();
                 let w_i = (-(dists[i] * dists[i] - min_d * min_d) / tau).exp();
                 let ratio = if w_i > 1e-100 { w_j / w_i } else { 1000.0 };
-                if ratio < min_weight_ratio { min_weight_ratio = ratio; }
+                if ratio < min_weight_ratio {
+                    min_weight_ratio = ratio;
+                }
 
                 if phi_val == j {
                     total_success += 1;
@@ -6636,7 +7163,10 @@ mod tests {
         eprintln!();
         eprintln!("  Pairs tested: {}", total_pairs);
         eprintln!("  Witnesses found: {}", total_success);
-        eprintln!("  Success rate: {:.1}%", 100.0 * total_success as f64 / total_pairs as f64);
+        eprintln!(
+            "  Success rate: {:.1}%",
+            100.0 * total_success as f64 / total_pairs as f64
+        );
         eprintln!("  Min weight ratio (w_j/w_i): {:.2}", min_weight_ratio);
         eprintln!();
 
@@ -6652,7 +7182,9 @@ mod tests {
             min_weight_ratio
         );
         eprintln!("  ✓ Sub-Lemma S witness holds for this A3-Q-compatible centroid set");
-        eprintln!("  ✓ Min w_j/w_i = {:.2} >> 1 → c_j dominates P_τ at witness point", min_weight_ratio);
+        eprintln!(
+            "  ✓ Min w_j/w_i = {:.2} >> 1 → c_j dominates P_τ at witness point",
+            min_weight_ratio
+        );
     }
-
 }

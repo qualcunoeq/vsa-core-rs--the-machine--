@@ -138,7 +138,12 @@ impl EpisodeBuffer {
     }
 
     /// Retrieve episodes similar to a query vector, within a similarity threshold.
-    pub fn retrieve_similar(&self, query: &Hypervector, min_sim: f64, max_results: usize) -> Vec<(usize, f64, &EpisodeRecord)> {
+    pub fn retrieve_similar(
+        &self,
+        query: &Hypervector,
+        min_sim: f64,
+        max_results: usize,
+    ) -> Vec<(usize, f64, &EpisodeRecord)> {
         let mut scored: Vec<(usize, f64, &EpisodeRecord)> = Vec::new();
 
         for (i, slot) in self.episodes.iter().enumerate() {
@@ -344,7 +349,11 @@ impl TransitionModel {
             }
 
             // Check convergence (L1 distance)
-            let diff: f64 = pi.iter().zip(next_pi.iter()).map(|(a, b)| (a - b).abs()).sum();
+            let diff: f64 = pi
+                .iter()
+                .zip(next_pi.iter())
+                .map(|(a, b)| (a - b).abs())
+                .sum();
             pi = next_pi;
             if diff < 1e-6 {
                 break;
@@ -435,12 +444,18 @@ impl TemporalCognition {
     /// Observe a new state: record it in the episode buffer and update transitions.
     ///
     /// Returns the prediction made BEFORE this observation (for computing error).
-    pub fn observe(&mut self, state: &Hypervector, centroid_idx: usize, action: Option<Hypervector>, utility: f64) -> Option<(usize, f64)> {
+    pub fn observe(
+        &mut self,
+        state: &Hypervector,
+        centroid_idx: usize,
+        action: Option<Hypervector>,
+        utility: f64,
+    ) -> Option<(usize, f64)> {
         // Make prediction before recording
         let prediction = if self.transitions.initialized {
-            self.transitions.prev_centroid.and_then(|prev| {
-                self.transitions.predict_next(prev)
-            })
+            self.transitions
+                .prev_centroid
+                .and_then(|prev| self.transitions.predict_next(prev))
         } else {
             None
         };
@@ -459,7 +474,8 @@ impl TemporalCognition {
 
         // Check for anomaly
         let is_anomaly = if let Some(prev) = self.transitions.prev_centroid {
-            self.transitions.is_anomalous(prev, centroid_idx, ANOMALY_PROBABILITY_THRESHOLD)
+            self.transitions
+                .is_anomalous(prev, centroid_idx, ANOMALY_PROBABILITY_THRESHOLD)
         } else {
             false
         };
@@ -485,17 +501,18 @@ impl TemporalCognition {
 
     /// Predict the next state (centroid index) from the most recent observation.
     pub fn predict_next(&self) -> Option<(usize, f64)> {
-        self.transitions.prev_centroid.and_then(|prev| {
-            self.transitions.predict_next(prev)
-        })
+        self.transitions
+            .prev_centroid
+            .and_then(|prev| self.transitions.predict_next(prev))
     }
 
     /// Multi-step prediction from the current state.
     pub fn predict_sequence(&self, horizon: usize) -> Vec<(usize, f64)> {
-        self.transitions.prev_centroid.map_or_else(
-            Vec::new,
-            |prev| self.transitions.predict_sequence(prev, horizon),
-        )
+        self.transitions
+            .prev_centroid
+            .map_or_else(Vec::new, |prev| {
+                self.transitions.predict_sequence(prev, horizon)
+            })
     }
 
     /// Get the last N episode records.
@@ -561,12 +578,18 @@ mod tests {
         assert_eq!(tc_mut.episodes.total_recorded, 150);
 
         // Transition counts should be bounded by K²
-        let total_counts: u32 = tc_mut.transitions.counts.iter()
+        let total_counts: u32 = tc_mut
+            .transitions
+            .counts
+            .iter()
             .flat_map(|r| r.iter())
             .sum();
         eprintln!("  Episodes recorded: {}", tc_mut.episodes.total_recorded);
         eprintln!("  Total transition counts: {}", total_counts);
-        eprintln!("  Fill rate: {:.2}%", tc_mut.episodes.count as f64 / tc_mut.episodes.capacity as f64 * 100.0);
+        eprintln!(
+            "  Fill rate: {:.2}%",
+            tc_mut.episodes.count as f64 / tc_mut.episodes.capacity as f64 * 100.0
+        );
 
         // Memory is bounded by construction
     }
@@ -710,15 +733,16 @@ mod tests {
         let query = &states[7];
         let similar = tc.episodes.retrieve_similar(query, 0.80, 5);
         eprintln!("  Retrieved {} similar episodes", similar.len());
-        assert!(
-            similar.len() >= 1,
-            "Should find at least 1 similar episode"
-        );
+        assert!(similar.len() >= 1, "Should find at least 1 similar episode");
 
         // The most similar should be the query itself (if it was recorded)
         let best_sim = similar.first().map(|(_, s, _)| *s).unwrap_or(0.0);
         eprintln!("  Best similarity: {:.4}", best_sim);
-        assert!(best_sim > 0.9, "Self-similarity should be high: {}", best_sim);
+        assert!(
+            best_sim > 0.9,
+            "Self-similarity should be high: {}",
+            best_sim
+        );
     }
 
     /// Test anomaly detection: low-probability transitions are flagged.
@@ -754,7 +778,9 @@ mod tests {
         eprintln!("  P(1|0) = {:.4}", p_1_given_0);
 
         // 0→3 is anomalous if P(3|0) < threshold
-        let is_anom = tc.transitions.is_anomalous(0, 3, ANOMALY_PROBABILITY_THRESHOLD);
+        let is_anom = tc
+            .transitions
+            .is_anomalous(0, 3, ANOMALY_PROBABILITY_THRESHOLD);
         eprintln!("  Is 0→3 anomalous? {}", is_anom);
         assert!(
             is_anom || p_3_given_0 < 0.10,
@@ -783,10 +809,17 @@ mod tests {
 
         // For a uniform cycle, π should be approximately uniform
         let sum: f64 = pi.iter().take(k).sum();
-        assert!((sum - 1.0).abs() < 0.01, "Stationary distribution should sum to 1: {}", sum);
+        assert!(
+            (sum - 1.0).abs() < 0.01,
+            "Stationary distribution should sum to 1: {}",
+            sum
+        );
 
         for p in pi.iter().take(k) {
-            assert!(*p > 0.0, "All states should have non-zero stationary probability");
+            assert!(
+                *p > 0.0,
+                "All states should have non-zero stationary probability"
+            );
         }
     }
 

@@ -34,12 +34,12 @@
 //
 // ────────────────────────────────────────────────────────────────────────────
 
-use crate::drift::{CognitiveMode, Need, Emotion, Stance, Mood, Archetype};
+use crate::drift::{Archetype, CognitiveMode, Emotion, Mood, Need, Stance};
+use crate::drives::{DriveId, IntrinsicMotivation};
 use crate::resonator::ResonatorVocabulary;
 use crate::self_model::{SelfModel, SelfNarrative};
-use crate::workspace::{GlobalWorkspace, AttentionReport};
-use crate::drives::{IntrinsicMotivation, DriveId};
 use crate::sleep::WakeNarrative;
+use crate::workspace::{AttentionReport, GlobalWorkspace};
 use crate::Hypervector;
 use std::collections::HashMap;
 
@@ -93,53 +93,65 @@ pub struct SystemState<'a> {
 pub fn pluralize(noun: &str) -> String {
     // Irregular plurals (most common in financial/technical domains)
     match noun.to_lowercase().as_str() {
-        "crisis"    => "crises".to_string(),
-        "analysis"  => "analyses".to_string(),
-        "thesis"    => "theses".to_string(),
+        "crisis" => "crises".to_string(),
+        "analysis" => "analyses".to_string(),
+        "thesis" => "theses".to_string(),
         "hypothesis" => "hypotheses".to_string(),
-        "index"     => "indices".to_string(),
-        "vertex"    => "vertices".to_string(),
-        "matrix"    => "matrices".to_string(),
-        "appendix"  => "appendices".to_string(),
-        "datum"     => "data".to_string(),
+        "index" => "indices".to_string(),
+        "vertex" => "vertices".to_string(),
+        "matrix" => "matrices".to_string(),
+        "appendix" => "appendices".to_string(),
+        "datum" => "data".to_string(),
         "criterion" => "criteria".to_string(),
         "phenomenon" => "phenomena".to_string(),
-        "foot"      => "feet".to_string(),
-        "tooth"     => "teeth".to_string(),
-        "mouse"     => "mice".to_string(),
-        "goose"     => "geese".to_string(),
-        "child"     => "children".to_string(),
-        "man"       => "men".to_string(),
-        "woman"     => "women".to_string(),
-        "person"    => "people".to_string(),
-        "ox"        => "oxen".to_string(),
-        "leaf"      => "leaves".to_string(),
-        "knife"     => "knives".to_string(),
-        "life"      => "lives".to_string(),
-        "shelf"     => "shelves".to_string(),
-        "wolf"      => "wolves".to_string(),
-        "self"      => "selves".to_string(),
+        "foot" => "feet".to_string(),
+        "tooth" => "teeth".to_string(),
+        "mouse" => "mice".to_string(),
+        "goose" => "geese".to_string(),
+        "child" => "children".to_string(),
+        "man" => "men".to_string(),
+        "woman" => "women".to_string(),
+        "person" => "people".to_string(),
+        "ox" => "oxen".to_string(),
+        "leaf" => "leaves".to_string(),
+        "knife" => "knives".to_string(),
+        "life" => "lives".to_string(),
+        "shelf" => "shelves".to_string(),
+        "wolf" => "wolves".to_string(),
+        "self" => "selves".to_string(),
         // -f → -ves
-        s if s.ends_with("fe") => format!("{}ves", &s[..s.len()-2]),
-        s if s.ends_with("f") && !s.ends_with("ff") => format!("{}ves", &s[..s.len()-1]),
+        s if s.ends_with("fe") => format!("{}ves", &s[..s.len() - 2]),
+        s if s.ends_with("f") && !s.ends_with("ff") => format!("{}ves", &s[..s.len() - 1]),
         // -is → -es (already handled above for known ones, catch-all)
-        s if s.ends_with("is") => format!("{}es", &s[..s.len()-2]),
+        s if s.ends_with("is") => format!("{}es", &s[..s.len() - 2]),
         // -on → -a
-        s if s.ends_with("on") => format!("{}a", &s[..s.len()-2]),
+        s if s.ends_with("on") => format!("{}a", &s[..s.len() - 2]),
         // -ex → -ices
-        s if s.ends_with("ex") => format!("{}ices", &s[..s.len()-2]),
+        s if s.ends_with("ex") => format!("{}ices", &s[..s.len() - 2]),
         // -us → -i
-        s if s.ends_with("us") => format!("{}i", &s[..s.len()-2]),
+        s if s.ends_with("us") => format!("{}i", &s[..s.len() - 2]),
         // -um → -a
-        s if s.ends_with("um") => format!("{}a", &s[..s.len()-2]),
+        s if s.ends_with("um") => format!("{}a", &s[..s.len() - 2]),
         // -ix → -ices
-        s if s.ends_with("ix") => format!("{}ices", &s[..s.len()-2]),
+        s if s.ends_with("ix") => format!("{}ices", &s[..s.len() - 2]),
         // General rules
-        s if s.ends_with("sh") || s.ends_with("ch") || s.ends_with("ss")
-            || s.ends_with("x") || s.ends_with("z") => format!("{}es", s),
-        s if s.ends_with("y") && s.len() > 2
-            && !matches!(s.chars().nth(s.len()-2), Some('a'|'e'|'i'|'o'|'u'))
-            => format!("{}ies", &s[..s.len()-1]),
+        s if s.ends_with("sh")
+            || s.ends_with("ch")
+            || s.ends_with("ss")
+            || s.ends_with("x")
+            || s.ends_with("z") =>
+        {
+            format!("{}es", s)
+        }
+        s if s.ends_with("y")
+            && s.len() > 2
+            && !matches!(
+                s.chars().nth(s.len() - 2),
+                Some('a' | 'e' | 'i' | 'o' | 'u')
+            ) =>
+        {
+            format!("{}ies", &s[..s.len() - 1])
+        }
         s => format!("{}s", s),
     }
 }
@@ -150,112 +162,118 @@ pub fn past_tense(verb: &str) -> String {
     match lower.as_str() {
         // Strong verbs (irregular past)
         "be" | "am" | "is" | "are" => "was".to_string(),
-        "begin"   => "began".to_string(),
-        "break"   => "broke".to_string(),
-        "bring"   => "brought".to_string(),
-        "build"   => "built".to_string(),
-        "buy"     => "bought".to_string(),
-        "catch"   => "caught".to_string(),
-        "choose"  => "chose".to_string(),
-        "come"    => "came".to_string(),
-        "cut"     => "cut".to_string(),
-        "deal"    => "dealt".to_string(),
-        "do"      => "did".to_string(),
-        "draw"    => "drew".to_string(),
-        "drink"   => "drank".to_string(),
-        "drive"   => "drove".to_string(),
-        "eat"     => "ate".to_string(),
-        "fall"    => "fell".to_string(),
-        "feed"    => "fed".to_string(),
-        "feel"    => "felt".to_string(),
-        "fight"   => "fought".to_string(),
-        "find"    => "found".to_string(),
-        "fly"     => "flew".to_string(),
-        "forget"  => "forgot".to_string(),
-        "get"     => "got".to_string(),
-        "give"    => "gave".to_string(),
-        "go"      => "went".to_string(),
-        "grow"    => "grew".to_string(),
-        "have"    => "had".to_string(),
-        "hear"    => "heard".to_string(),
-        "hide"    => "hid".to_string(),
-        "hit"     => "hit".to_string(),
-        "hold"    => "held".to_string(),
-        "keep"    => "kept".to_string(),
-        "know"    => "knew".to_string(),
-        "lead"    => "led".to_string(),
-        "leave"   => "left".to_string(),
-        "lend"    => "lent".to_string(),
-        "let"     => "let".to_string(),
-        "lie"     => "lay".to_string(),
-        "lose"    => "lost".to_string(),
-        "make"    => "made".to_string(),
-        "mean"    => "meant".to_string(),
-        "meet"    => "met".to_string(),
-        "pay"     => "paid".to_string(),
-        "put"     => "put".to_string(),
-        "quit"    => "quit".to_string(),
-        "read"    => "read".to_string(),
-        "ride"    => "rode".to_string(),
-        "ring"    => "rang".to_string(),
-        "rise"    => "rose".to_string(),
-        "run"     => "ran".to_string(),
-        "say"     => "said".to_string(),
-        "see"     => "saw".to_string(),
-        "seek"    => "sought".to_string(),
-        "sell"    => "sold".to_string(),
-        "send"    => "sent".to_string(),
-        "set"     => "set".to_string(),
-        "shake"   => "shook".to_string(),
-        "shine"   => "shone".to_string(),
-        "shoot"   => "shot".to_string(),
-        "show"    => "showed".to_string(),
-        "shut"    => "shut".to_string(),
-        "sing"    => "sang".to_string(),
-        "sink"    => "sank".to_string(),
-        "sit"     => "sat".to_string(),
-        "sleep"   => "slept".to_string(),
-        "speak"   => "spoke".to_string(),
-        "spend"   => "spent".to_string(),
-        "stand"   => "stood".to_string(),
-        "steal"   => "stole".to_string(),
-        "stick"   => "stuck".to_string(),
-        "strike"  => "struck".to_string(),
-        "swim"    => "swam".to_string(),
-        "take"    => "took".to_string(),
-        "teach"   => "taught".to_string(),
-        "tell"    => "told".to_string(),
-        "think"   => "thought".to_string(),
-        "throw"   => "threw".to_string(),
+        "begin" => "began".to_string(),
+        "break" => "broke".to_string(),
+        "bring" => "brought".to_string(),
+        "build" => "built".to_string(),
+        "buy" => "bought".to_string(),
+        "catch" => "caught".to_string(),
+        "choose" => "chose".to_string(),
+        "come" => "came".to_string(),
+        "cut" => "cut".to_string(),
+        "deal" => "dealt".to_string(),
+        "do" => "did".to_string(),
+        "draw" => "drew".to_string(),
+        "drink" => "drank".to_string(),
+        "drive" => "drove".to_string(),
+        "eat" => "ate".to_string(),
+        "fall" => "fell".to_string(),
+        "feed" => "fed".to_string(),
+        "feel" => "felt".to_string(),
+        "fight" => "fought".to_string(),
+        "find" => "found".to_string(),
+        "fly" => "flew".to_string(),
+        "forget" => "forgot".to_string(),
+        "get" => "got".to_string(),
+        "give" => "gave".to_string(),
+        "go" => "went".to_string(),
+        "grow" => "grew".to_string(),
+        "have" => "had".to_string(),
+        "hear" => "heard".to_string(),
+        "hide" => "hid".to_string(),
+        "hit" => "hit".to_string(),
+        "hold" => "held".to_string(),
+        "keep" => "kept".to_string(),
+        "know" => "knew".to_string(),
+        "lead" => "led".to_string(),
+        "leave" => "left".to_string(),
+        "lend" => "lent".to_string(),
+        "let" => "let".to_string(),
+        "lie" => "lay".to_string(),
+        "lose" => "lost".to_string(),
+        "make" => "made".to_string(),
+        "mean" => "meant".to_string(),
+        "meet" => "met".to_string(),
+        "pay" => "paid".to_string(),
+        "put" => "put".to_string(),
+        "quit" => "quit".to_string(),
+        "read" => "read".to_string(),
+        "ride" => "rode".to_string(),
+        "ring" => "rang".to_string(),
+        "rise" => "rose".to_string(),
+        "run" => "ran".to_string(),
+        "say" => "said".to_string(),
+        "see" => "saw".to_string(),
+        "seek" => "sought".to_string(),
+        "sell" => "sold".to_string(),
+        "send" => "sent".to_string(),
+        "set" => "set".to_string(),
+        "shake" => "shook".to_string(),
+        "shine" => "shone".to_string(),
+        "shoot" => "shot".to_string(),
+        "show" => "showed".to_string(),
+        "shut" => "shut".to_string(),
+        "sing" => "sang".to_string(),
+        "sink" => "sank".to_string(),
+        "sit" => "sat".to_string(),
+        "sleep" => "slept".to_string(),
+        "speak" => "spoke".to_string(),
+        "spend" => "spent".to_string(),
+        "stand" => "stood".to_string(),
+        "steal" => "stole".to_string(),
+        "stick" => "stuck".to_string(),
+        "strike" => "struck".to_string(),
+        "swim" => "swam".to_string(),
+        "take" => "took".to_string(),
+        "teach" => "taught".to_string(),
+        "tell" => "told".to_string(),
+        "think" => "thought".to_string(),
+        "throw" => "threw".to_string(),
         "understand" => "understood".to_string(),
-        "wake"    => "woke".to_string(),
-        "wear"    => "wore".to_string(),
-        "win"     => "won".to_string(),
-        "write"   => "wrote".to_string(),
-        "bind"    => "bound".to_string(),
-        "encode"  => "encoded".to_string(),
-        "decode"  => "decoded".to_string(),
+        "wake" => "woke".to_string(),
+        "wear" => "wore".to_string(),
+        "win" => "won".to_string(),
+        "write" => "wrote".to_string(),
+        "bind" => "bound".to_string(),
+        "encode" => "encoded".to_string(),
+        "decode" => "decoded".to_string(),
         "factorize" => "factorized".to_string(),
-        "bundle"  => "bundled".to_string(),
+        "bundle" => "bundled".to_string(),
         "project" => "projected".to_string(),
         "register" => "registered".to_string(),
         "observe" => "observed".to_string(),
-        "detect"  => "detected".to_string(),
+        "detect" => "detected".to_string(),
         "consolidate" => "consolidated".to_string(),
-        "prune"   => "pruned".to_string(),
-        "crawl"   => "crawled".to_string(),
+        "prune" => "pruned".to_string(),
+        "crawl" => "crawled".to_string(),
         "trigger" => "triggered".to_string(),
         "process" => "processed".to_string(),
-        "form"    => "formed".to_string(),
-        "learn"   => "learned".to_string(),
-        "adjust"  => "adjusted".to_string(),
-        "shift"   => "shifted".to_string(),
+        "form" => "formed".to_string(),
+        "learn" => "learned".to_string(),
+        "adjust" => "adjusted".to_string(),
+        "shift" => "shifted".to_string(),
         // Regular: ends in e → +d
         s if s.ends_with("e") => format!("{}d", s),
         // Regular: ends in consonant+y → +ied
-        s if s.ends_with("y") && s.len() > 2
-            && !matches!(s.chars().nth(s.len()-2), Some('a'|'e'|'i'|'o'|'u'))
-            => format!("{}ied", &s[..s.len()-1]),
+        s if s.ends_with("y")
+            && s.len() > 2
+            && !matches!(
+                s.chars().nth(s.len() - 2),
+                Some('a' | 'e' | 'i' | 'o' | 'u')
+            ) =>
+        {
+            format!("{}ied", &s[..s.len() - 1])
+        }
         // Regular: ends in consonant-vowel-consonant and short syllable → double +ed
         // This is a simplification; for the system's vocabulary it's rare
         // Regular: +ed
@@ -273,16 +291,28 @@ pub fn present_tense(verb: &str, third_person_singular: bool) -> String {
     }
     let lower = verb.to_lowercase();
     match lower.as_str() {
-        "be"  => "is".to_string(),
+        "be" => "is".to_string(),
         "have" => "has".to_string(),
-        "do"   => "does".to_string(),
-        "go"   => "goes".to_string(),
-        s if s.ends_with("sh") || s.ends_with("ch") || s.ends_with("ss")
-            || s.ends_with("x") || s.ends_with("z") || s.ends_with("o")
-            => format!("{}es", s),
-        s if s.ends_with("y") && s.len() > 2
-            && !matches!(s.chars().nth(s.len()-2), Some('a'|'e'|'i'|'o'|'u'))
-            => format!("{}ies", &s[..s.len()-1]),
+        "do" => "does".to_string(),
+        "go" => "goes".to_string(),
+        s if s.ends_with("sh")
+            || s.ends_with("ch")
+            || s.ends_with("ss")
+            || s.ends_with("x")
+            || s.ends_with("z")
+            || s.ends_with("o") =>
+        {
+            format!("{}es", s)
+        }
+        s if s.ends_with("y")
+            && s.len() > 2
+            && !matches!(
+                s.chars().nth(s.len() - 2),
+                Some('a' | 'e' | 'i' | 'o' | 'u')
+            ) =>
+        {
+            format!("{}ies", &s[..s.len() - 1])
+        }
         s => format!("{}s", s),
     }
 }
@@ -375,13 +405,13 @@ pub fn verbalize_stability(stability: f64) -> &'static str {
 /// Label for a homeostatic need, in lowercase human form.
 pub fn need_label_lower(need: &Need) -> &'static str {
     match need {
-        Need::Energy      => "energy",
-        Need::Coherence   => "coherence",
+        Need::Energy => "energy",
+        Need::Coherence => "coherence",
         Need::Integration => "integration",
-        Need::Connection  => "connection",
-        Need::Growth      => "growth",
-        Need::Autonomy    => "autonomy",
-        Need::Integrity   => "integrity",
+        Need::Connection => "connection",
+        Need::Growth => "growth",
+        Need::Autonomy => "autonomy",
+        Need::Integrity => "integrity",
     }
 }
 
@@ -389,29 +419,29 @@ pub fn need_label_lower(need: &Need) -> &'static str {
 pub fn drive_label(drive: &DriveId) -> &'static str {
     match drive {
         DriveId::PredictiveMastery => "predictive mastery",
-        DriveId::Coherence         => "coherence",
-        DriveId::Abstraction       => "abstraction",
-        DriveId::SelfPreservation  => "self-preservation",
+        DriveId::Coherence => "coherence",
+        DriveId::Abstraction => "abstraction",
+        DriveId::SelfPreservation => "self-preservation",
     }
 }
 
 /// Human-readable label for an emotion.
 pub fn emotion_label(emotion: &Emotion) -> &'static str {
     match emotion {
-        Emotion::Joy      => "joy",
-        Emotion::Sadness  => "sadness",
-        Emotion::Anger    => "anger",
-        Emotion::Fear     => "fear",
+        Emotion::Joy => "joy",
+        Emotion::Sadness => "sadness",
+        Emotion::Anger => "anger",
+        Emotion::Fear => "fear",
         Emotion::Surprise => "surprise",
-        Emotion::Disgust  => "disgust",
-        Emotion::Neutral  => "neutral",
+        Emotion::Disgust => "disgust",
+        Emotion::Neutral => "neutral",
     }
 }
 
 /// Human-readable label for a stance.
 pub fn stance_label(stance: &Stance) -> &'static str {
     match stance {
-        Stance::Open    => "open",
+        Stance::Open => "open",
         Stance::Guarded => "guarded",
         Stance::Curious => "curious",
         Stance::Distant => "distant",
@@ -421,27 +451,27 @@ pub fn stance_label(stance: &Stance) -> &'static str {
 /// Human-readable label for a mood.
 pub fn mood_label(mood: &Mood) -> &'static str {
     match mood {
-        Mood::Warm       => "warm",
-        Mood::Playful    => "playful",
-        Mood::Somber     => "somber",
-        Mood::Alert      => "alert",
-        Mood::Defensive  => "defensive",
-        Mood::Withdrawn  => "withdrawn",
-        Mood::Curious    => "curious",
+        Mood::Warm => "warm",
+        Mood::Playful => "playful",
+        Mood::Somber => "somber",
+        Mood::Alert => "alert",
+        Mood::Defensive => "defensive",
+        Mood::Withdrawn => "withdrawn",
+        Mood::Curious => "curious",
         Mood::Analytical => "analytical",
-        Mood::Neutral    => "neutral",
+        Mood::Neutral => "neutral",
     }
 }
 
 /// Human-readable label for an archetype.
 pub fn archetype_label(arch: &Archetype) -> &'static str {
     match arch {
-        Archetype::Hero      => "hero",
-        Archetype::Shadow    => "shadow",
-        Archetype::Sage      => "sage",
+        Archetype::Hero => "hero",
+        Archetype::Shadow => "shadow",
+        Archetype::Sage => "sage",
         Archetype::Trickster => "trickster",
         Archetype::Caregiver => "caregiver",
-        Archetype::Orphan    => "orphan",
+        Archetype::Orphan => "orphan",
     }
 }
 
@@ -455,11 +485,15 @@ pub fn archetype_label(arch: &Archetype) -> &'static str {
 pub fn is_antonym(a: &str, b: &str) -> bool {
     let a = a.trim().to_lowercase();
     let b = b.trim().to_lowercase();
-    if a == b { return false; }
+    if a == b {
+        return false;
+    }
     // Normalize both to lemma first
     let a_lemma = crate::nlp::verb_lemma(&a);
     let b_lemma = crate::nlp::verb_lemma(&b);
-    if a_lemma == b_lemma { return false; }
+    if a_lemma == b_lemma {
+        return false;
+    }
 
     // Antonynm pairs (both directions)
     let pairs: &[(&str, &str)] = &[
@@ -543,7 +577,9 @@ pub fn is_antonym(a: &str, b: &str) -> bool {
 pub fn is_object_antonym(a: &str, b: &str) -> bool {
     let a_lower = a.trim().to_lowercase();
     let b_lower = b.trim().to_lowercase();
-    if a_lower == b_lower { return false; }
+    if a_lower == b_lower {
+        return false;
+    }
     let pairs: &[(&str, &str)] = &[
         ("rates", "rates"), // same object but verb changes — handled by verb antonym
         ("tight", "loose"),
@@ -562,9 +598,9 @@ pub fn is_object_antonym(a: &str, b: &str) -> bool {
         ("gain", "loss"),
         ("credit", "debit"),
     ];
-    pairs.iter().any(|(x, y)| {
-        (x == &a_lower && y == &b_lower) || (x == &b_lower && y == &a_lower)
-    })
+    pairs
+        .iter()
+        .any(|(x, y)| (x == &a_lower && y == &b_lower) || (x == &b_lower && y == &a_lower))
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -605,11 +641,19 @@ pub struct DepRel {
 
 impl DepRel {
     pub fn new(rel: &'static str, value: &str) -> Self {
-        DepRel { rel, value: value.to_string(), inflection: InflectionRules::EMPTY }
+        DepRel {
+            rel,
+            value: value.to_string(),
+            inflection: InflectionRules::EMPTY,
+        }
     }
 
     pub fn with_inflection(rel: &'static str, value: &str, inflection: InflectionRules) -> Self {
-        DepRel { rel, value: value.to_string(), inflection }
+        DepRel {
+            rel,
+            value: value.to_string(),
+            inflection,
+        }
     }
 }
 
@@ -636,7 +680,9 @@ pub struct DepGraph {
 
 impl DepGraph {
     pub fn new() -> Self {
-        DepGraph { relations: Vec::new() }
+        DepGraph {
+            relations: Vec::new(),
+        }
     }
 
     /// Add a dependency relation. Duplicates of the same type overwrite.
@@ -651,7 +697,10 @@ impl DepGraph {
 
     /// Get the value for a relation type.
     pub fn get(&self, rel: &str) -> Option<&str> {
-        self.relations.iter().find(|r| r.rel == rel).map(|r| r.value.as_str())
+        self.relations
+            .iter()
+            .find(|r| r.rel == rel)
+            .map(|r| r.value.as_str())
     }
 
     /// Check if a relation type exists.
@@ -672,17 +721,17 @@ impl DepGraph {
     pub fn linearize(&self) -> String {
         // Define the English linearization order
         let order: &[&str] = &[
-            "nsubj",    // 1. Subject
-            "aux",      // 2. Auxiliary verb
-            "neg",      // 3. Negation
-            "advmod",   // 4. Adverb
-            "verb",     // 5. Root verb
-            "dobj",     // 6. Direct object
-            "iobj",     // 7. Indirect object
-            "obl",      // 8. Oblique
-            "conj",     // 9. Conjunction
-            "temp",     // 10. Temporal
-            "loc",      // 11. Location
+            "nsubj",  // 1. Subject
+            "aux",    // 2. Auxiliary verb
+            "neg",    // 3. Negation
+            "advmod", // 4. Adverb
+            "verb",   // 5. Root verb
+            "dobj",   // 6. Direct object
+            "iobj",   // 7. Indirect object
+            "obl",    // 8. Oblique
+            "conj",   // 9. Conjunction
+            "temp",   // 10. Temporal
+            "loc",    // 11. Location
         ];
 
         let mut words: Vec<String> = Vec::new();
@@ -720,7 +769,9 @@ impl DepGraph {
 }
 
 impl Default for DepGraph {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 /// Build a dependency graph from the system state describing what the
@@ -747,7 +798,11 @@ pub fn build_action_dep_graph(state: &SystemState) -> DepGraph {
     // Add attention focus as direct object
     if state.attention.winner_id.is_some() && state.attention.winner_label != "none" {
         let label = state.attention.winner_label.to_lowercase();
-        deps.add(DepRel::with_inflection("dobj", &label, InflectionRules::def()));
+        deps.add(DepRel::with_inflection(
+            "dobj",
+            &label,
+            InflectionRules::def(),
+        ));
     }
 
     // Add temporal: tick number
@@ -773,7 +828,11 @@ pub fn build_state_dep_graph(state: &SystemState) -> DepGraph {
     // Mode as attribute
     let mode_str = state.self_model.mode.label().to_lowercase();
     deps.add(DepRel::new("verb", "be"));
-    deps.add(DepRel::with_inflection("amod", &mode_str, InflectionRules::indef()));
+    deps.add(DepRel::with_inflection(
+        "amod",
+        &mode_str,
+        InflectionRules::indef(),
+    ));
 
     // Deficit level
     let deficit_bucket = resolve_slot(&SlotSource::DeficitBucket, state);
@@ -783,7 +842,10 @@ pub fn build_state_dep_graph(state: &SystemState) -> DepGraph {
     // Error level
     let error_bucket = resolve_slot(&SlotSource::ErrorBucket, state);
     deps.add(DepRel::new("conj", "and"));
-    deps.add(DepRel::new("obl", &format!("{} prediction error", error_bucket)));
+    deps.add(DepRel::new(
+        "obl",
+        &format!("{} prediction error", error_bucket),
+    ));
 
     deps
 }
@@ -1137,11 +1199,23 @@ pub struct SlotDef {
 
 impl SlotDef {
     pub const fn new(key: &'static str, source: SlotSource) -> Self {
-        SlotDef { key, source, inflection: InflectionRules::EMPTY }
+        SlotDef {
+            key,
+            source,
+            inflection: InflectionRules::EMPTY,
+        }
     }
 
-    pub const fn with_inflection(key: &'static str, source: SlotSource, inflection: InflectionRules) -> Self {
-        SlotDef { key, source, inflection }
+    pub const fn with_inflection(
+        key: &'static str,
+        source: SlotSource,
+        inflection: InflectionRules,
+    ) -> Self {
+        SlotDef {
+            key,
+            source,
+            inflection,
+        }
     }
 }
 
@@ -1190,29 +1264,40 @@ fn resolve_slot(source: &SlotSource, state: &SystemState) -> String {
     match source {
         SlotSource::Literal(s) => s.to_string(),
 
-        SlotSource::CognitiveMode => {
-            state.self_model.mode.label().to_lowercase()
-        }
+        SlotSource::CognitiveMode => state.self_model.mode.label().to_lowercase(),
 
         SlotSource::NeedLabel(need) => need_label_lower(need).to_string(),
 
         SlotSource::DeficitBucket => {
             let d = state.self_model.homeostasis.overall_deficit;
-            if d < 0.20 { "low".to_string() }
-            else if d < 0.40 { "moderate".to_string() }
-            else if d < 0.60 { "elevated".to_string() }
-            else if d < 0.80 { "high".to_string() }
-            else { "critical".to_string() }
+            if d < 0.20 {
+                "low".to_string()
+            } else if d < 0.40 {
+                "moderate".to_string()
+            } else if d < 0.60 {
+                "elevated".to_string()
+            } else if d < 0.80 {
+                "high".to_string()
+            } else {
+                "critical".to_string()
+            }
         }
 
         SlotSource::ErrorBucket => {
             let e = state.self_model.global_error;
-            if e < 0.05 { "very low".to_string() }
-            else if e < 0.15 { "low".to_string() }
-            else if e < 0.25 { "moderate".to_string() }
-            else if e < 0.40 { "elevated".to_string() }
-            else if e < 0.60 { "high".to_string() }
-            else { "very high".to_string() }
+            if e < 0.05 {
+                "very low".to_string()
+            } else if e < 0.15 {
+                "low".to_string()
+            } else if e < 0.25 {
+                "moderate".to_string()
+            } else if e < 0.40 {
+                "elevated".to_string()
+            } else if e < 0.60 {
+                "high".to_string()
+            } else {
+                "very high".to_string()
+            }
         }
 
         SlotSource::StabilityDescriptor => {
@@ -1230,7 +1315,8 @@ fn resolve_slot(source: &SlotSource, state: &SystemState) -> String {
                 (Need::Autonomy, profile.autonomy),
                 (Need::Integrity, profile.integrity),
             ];
-            needs.into_iter()
+            needs
+                .into_iter()
                 .max_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal))
                 .map(|(n, _)| need_label_lower(&n).to_string())
                 .unwrap_or_default()
@@ -1247,7 +1333,8 @@ fn resolve_slot(source: &SlotSource, state: &SystemState) -> String {
                 (Need::Autonomy, profile.autonomy),
                 (Need::Integrity, profile.integrity),
             ];
-            needs.into_iter()
+            needs
+                .into_iter()
                 .min_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal))
                 .map(|(n, _)| need_label_lower(&n).to_string())
                 .unwrap_or_default()
@@ -1260,8 +1347,15 @@ fn resolve_slot(source: &SlotSource, state: &SystemState) -> String {
 
         SlotSource::StrongestDrive => {
             // Find the drive with highest intensity
-            state.drives.drives.iter()
-                .max_by(|a, b| a.intensity.partial_cmp(&b.intensity).unwrap_or(std::cmp::Ordering::Equal))
+            state
+                .drives
+                .drives
+                .iter()
+                .max_by(|a, b| {
+                    a.intensity
+                        .partial_cmp(&b.intensity)
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                })
                 .map(|d| drive_label(&d.id).to_string())
                 .unwrap_or_else(|| "none".to_string())
         }
@@ -1287,37 +1381,33 @@ fn resolve_slot(source: &SlotSource, state: &SystemState) -> String {
         SlotSource::RulesTotal => "(rules)".to_string(),
         SlotSource::RulesTrusted => "(trusted)".to_string(),
 
-        SlotSource::DominantArchetype => {
-            state.dominant_archetype
-                .as_ref()
-                .map(archetype_label)
-                .unwrap_or("unknown")
-                .to_string()
-        }
+        SlotSource::DominantArchetype => state
+            .dominant_archetype
+            .as_ref()
+            .map(archetype_label)
+            .unwrap_or("unknown")
+            .to_string(),
 
-        SlotSource::Emotion => {
-            state.emotion
-                .as_ref()
-                .map(emotion_label)
-                .unwrap_or("neutral")
-                .to_string()
-        }
+        SlotSource::Emotion => state
+            .emotion
+            .as_ref()
+            .map(emotion_label)
+            .unwrap_or("neutral")
+            .to_string(),
 
-        SlotSource::Stance => {
-            state.stance
-                .as_ref()
-                .map(stance_label)
-                .unwrap_or("open")
-                .to_string()
-        }
+        SlotSource::Stance => state
+            .stance
+            .as_ref()
+            .map(stance_label)
+            .unwrap_or("open")
+            .to_string(),
 
-        SlotSource::Mood => {
-            state.mood
-                .as_ref()
-                .map(mood_label)
-                .unwrap_or("neutral")
-                .to_string()
-        }
+        SlotSource::Mood => state
+            .mood
+            .as_ref()
+            .map(mood_label)
+            .unwrap_or("neutral")
+            .to_string(),
 
         SlotSource::AttentionWinner => {
             if state.attention.winner_id.is_some() {
@@ -1344,38 +1434,31 @@ fn resolve_slot(source: &SlotSource, state: &SystemState) -> String {
             format!("{}", state.sleep_l3_formed)
         }
 
-        SlotSource::SleepReason => {
-            state.sleep_reason.clone().unwrap_or_else(|| "unknown".to_string())
-        }
+        SlotSource::SleepReason => state
+            .sleep_reason
+            .clone()
+            .unwrap_or_else(|| "unknown".to_string()),
 
         SlotSource::WorkspaceIdle => {
-            if state.workspace.is_idle() { "idle".to_string() } else { "active".to_string() }
+            if state.workspace.is_idle() {
+                "idle".to_string()
+            } else {
+                "active".to_string()
+            }
         }
 
-        SlotSource::ModeStatement => {
-            make_mode_statement(&state.self_model.mode)
-        }
+        SlotSource::ModeStatement => make_mode_statement(&state.self_model.mode),
     }
 }
 
 /// Generate a first-person statement describing a cognitive mode.
 fn make_mode_statement(mode: &CognitiveMode) -> String {
     match mode {
-        CognitiveMode::Quiet => {
-            "I am quiet. Nothing demands my attention right now."
-        }
-        CognitiveMode::Companion => {
-            "I am remembering. I am drawing on past experience."
-        }
-        CognitiveMode::Regulated => {
-            "I am regulating. I am correcting my internal balance."
-        }
-        CognitiveMode::Explorer => {
-            "I am exploring. I sense novelty and want to understand it."
-        }
-        CognitiveMode::Task => {
-            "I am focused on a task. Memory and regulation guide me."
-        }
+        CognitiveMode::Quiet => "I am quiet. Nothing demands my attention right now.",
+        CognitiveMode::Companion => "I am remembering. I am drawing on past experience.",
+        CognitiveMode::Regulated => "I am regulating. I am correcting my internal balance.",
+        CognitiveMode::Explorer => "I am exploring. I sense novelty and want to understand it.",
+        CognitiveMode::Task => "I am focused on a task. Memory and regulation guide me.",
         CognitiveMode::Resonant => {
             "I am in a resonant state. New patterns connect to things I have seen before."
         }
@@ -1385,7 +1468,8 @@ fn make_mode_statement(mode: &CognitiveMode) -> String {
         CognitiveMode::FullCouncil => {
             "I am fully engaged. Memory, regulation, and novelty are all active."
         }
-    }.to_string()
+    }
+    .to_string()
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1458,10 +1542,18 @@ impl InflectionRules {
 // ═══════════════════════════════════════════════════════════════════════════
 
 // Frame conditions
-fn cond_first_tick(s: &SystemState) -> bool { s.is_first_tick }
-fn cond_sleeping(s: &SystemState) -> bool { s.is_sleeping }
-fn cond_sleep_narrative(s: &SystemState) -> bool { s.sleep_narrative.is_some() }
-fn cond_crisis(s: &SystemState) -> bool { s.self_model.homeostasis.crisis }
+fn cond_first_tick(s: &SystemState) -> bool {
+    s.is_first_tick
+}
+fn cond_sleeping(s: &SystemState) -> bool {
+    s.is_sleeping
+}
+fn cond_sleep_narrative(s: &SystemState) -> bool {
+    s.sleep_narrative.is_some()
+}
+fn cond_crisis(s: &SystemState) -> bool {
+    s.self_model.homeostasis.crisis
+}
 fn cond_high_error(s: &SystemState) -> bool {
     s.self_model.global_error >= 0.40 && !s.self_model.homeostasis.crisis
 }
@@ -1471,7 +1563,9 @@ fn cond_shock(s: &SystemState) -> bool {
 fn cond_workspace_idle(s: &SystemState) -> bool {
     s.workspace.is_idle() && !s.self_model.homeostasis.crisis
 }
-fn cond_always(_: &SystemState) -> bool { true }
+fn cond_always(_: &SystemState) -> bool {
+    true
+}
 
 /// The complete list of narrative frames, ordered by priority (descending).
 ///
@@ -1641,7 +1735,10 @@ impl NarrativeGenerator {
         let mut frames = all_frames();
         // Sort by priority descending
         frames.sort_by(|a, b| b.priority.cmp(&a.priority));
-        NarrativeGenerator { frames, vocab: None }
+        NarrativeGenerator {
+            frames,
+            vocab: None,
+        }
     }
 
     /// Set the resonator vocabulary for term factorization.
@@ -1711,18 +1808,31 @@ impl Default for NarrativeGenerator {
 /// It produces a short sentence without needing a full NarrativeGenerator.
 pub fn quick_narrative(sn: &SelfNarrative) -> String {
     let mode_lower = sn.mode.to_lowercase();
-    let deficit_bucket = if sn.overall_deficit < 0.20 { "low" }
-        else if sn.overall_deficit < 0.40 { "moderate" }
-        else if sn.overall_deficit < 0.60 { "elevated" }
-        else if sn.overall_deficit < 0.80 { "high" }
-        else { "critical" };
+    let deficit_bucket = if sn.overall_deficit < 0.20 {
+        "low"
+    } else if sn.overall_deficit < 0.40 {
+        "moderate"
+    } else if sn.overall_deficit < 0.60 {
+        "elevated"
+    } else if sn.overall_deficit < 0.80 {
+        "high"
+    } else {
+        "critical"
+    };
 
-    let error_bucket = if sn.error < 0.05 { "very low" }
-        else if sn.error < 0.15 { "low" }
-        else if sn.error < 0.25 { "moderate" }
-        else if sn.error < 0.40 { "elevated" }
-        else if sn.error < 0.60 { "high" }
-        else { "very high" };
+    let error_bucket = if sn.error < 0.05 {
+        "very low"
+    } else if sn.error < 0.15 {
+        "low"
+    } else if sn.error < 0.25 {
+        "moderate"
+    } else if sn.error < 0.40 {
+        "elevated"
+    } else if sn.error < 0.60 {
+        "high"
+    } else {
+        "very high"
+    };
 
     if sn.crisis {
         format!(
@@ -1734,20 +1844,32 @@ pub fn quick_narrative(sn: &SelfNarrative) -> String {
         format!(
             "I am confused. My prediction error is {} and I am in {} mode. \
              My identity is {}.",
-            error_bucket, mode_lower,
-            if sn.stability < 0.05 { "stable" }
-            else if sn.stability < 0.10 { "shifting gradually" }
-            else if sn.stability < 0.20 { "changing significantly" }
-            else { "in shock" },
+            error_bucket,
+            mode_lower,
+            if sn.stability < 0.05 {
+                "stable"
+            } else if sn.stability < 0.10 {
+                "shifting gradually"
+            } else if sn.stability < 0.20 {
+                "changing significantly"
+            } else {
+                "in shock"
+            },
         )
     } else {
         format!(
             "I am in {} mode. My deficit is {} and my prediction error is {}. \
              I am {}.",
-            mode_lower, deficit_bucket, error_bucket,
-            if sn.stability < 0.05 { "stable" }
-            else if sn.stability < 0.10 { "shifting gradually" }
-            else { "changing" },
+            mode_lower,
+            deficit_bucket,
+            error_bucket,
+            if sn.stability < 0.05 {
+                "stable"
+            } else if sn.stability < 0.10 {
+                "shifting gradually"
+            } else {
+                "changing"
+            },
         )
     }
 }
@@ -1775,7 +1897,7 @@ mod tests {
         assert_eq!(pluralize("box"), "boxes");
         assert_eq!(pluralize("church"), "churches");
         assert_eq!(pluralize("fly"), "flies");
-        assert_eq!(pluralize("key"), "keys");  // vowel+y → +s
+        assert_eq!(pluralize("key"), "keys"); // vowel+y → +s
         assert_eq!(pluralize("child"), "children");
         assert_eq!(pluralize("leaf"), "leaves");
         assert_eq!(pluralize("knife"), "knives");
@@ -1798,7 +1920,7 @@ mod tests {
         assert_eq!(past_tense("trigger"), "triggered");
         assert_eq!(past_tense("observe"), "observed");
         assert_eq!(past_tense("study"), "studied"); // consonant+y → ied
-        assert_eq!(past_tense("play"), "played");   // vowel+y → ed
+        assert_eq!(past_tense("play"), "played"); // vowel+y → ed
     }
 
     #[test]
@@ -1827,7 +1949,10 @@ mod tests {
     #[test]
     fn test_morphology_capitalize() {
         assert_eq!(capitalize_sentence("hello world"), "Hello world");
-        assert_eq!(capitalize_sentence("already capitalized"), "Already capitalized");
+        assert_eq!(
+            capitalize_sentence("already capitalized"),
+            "Already capitalized"
+        );
         assert_eq!(capitalize_sentence(""), "");
         assert_eq!(capitalize_sentence("123 hello"), "123 Hello");
     }
@@ -1996,7 +2121,9 @@ mod tests {
             assert!(
                 statement.to_lowercase().contains(keyword),
                 "Mode {:?} statement should contain '{}': got '{}'",
-                mode, keyword, statement,
+                mode,
+                keyword,
+                statement,
             );
         }
     }
@@ -2009,11 +2136,18 @@ mod tests {
         // Calling generate with a dummy state should always produce output
         // (the default mode frame has cond_always)
         let mut sm = Box::new(SelfModel::new());
-        sm.tick(0.0, HomeostaticProfile::satisfied(), CognitiveMode::Quiet, Hypervector::new_zero());
-        let ws_ref: &'static mut GlobalWorkspace = Box::leak(Box::new(GlobalWorkspace::with_defaults()));
+        sm.tick(
+            0.0,
+            HomeostaticProfile::satisfied(),
+            CognitiveMode::Quiet,
+            Hypervector::new_zero(),
+        );
+        let ws_ref: &'static mut GlobalWorkspace =
+            Box::leak(Box::new(GlobalWorkspace::with_defaults()));
         let attention_ref: &'static AttentionReport = Box::leak(Box::new(AttentionReport::new()));
         let sm_ref: &'static mut SelfModel = Box::leak(sm);
-        let drives_ref: &'static mut IntrinsicMotivation = Box::leak(Box::new(IntrinsicMotivation::new()));
+        let drives_ref: &'static mut IntrinsicMotivation =
+            Box::leak(Box::new(IntrinsicMotivation::new()));
 
         let state = SystemState {
             self_model: sm_ref,
@@ -2034,7 +2168,10 @@ mod tests {
         };
 
         let narrative = generator.generate(&state);
-        assert!(!narrative.is_empty(), "Generator should always produce output");
+        assert!(
+            !narrative.is_empty(),
+            "Generator should always produce output"
+        );
     }
 
     #[test]
@@ -2049,9 +2186,15 @@ mod tests {
         let state = test_state();
         let generator = NarrativeGenerator::new();
         let summary = generator.generate_summary(&state);
-        assert!(summary.starts_with("NARRATIVE:"), "Summary should start with NARRATIVE:");
+        assert!(
+            summary.starts_with("NARRATIVE:"),
+            "Summary should start with NARRATIVE:"
+        );
         assert!(summary.contains("mode="), "Summary should contain mode");
-        assert!(summary.contains("deficit="), "Summary should contain deficit");
+        assert!(
+            summary.contains("deficit="),
+            "Summary should contain deficit"
+        );
     }
 
     #[test]
@@ -2065,8 +2208,12 @@ mod tests {
     #[test]
     fn test_archetype_labels_all() {
         let archs = [
-            Archetype::Hero, Archetype::Shadow, Archetype::Sage,
-            Archetype::Trickster, Archetype::Caregiver, Archetype::Orphan,
+            Archetype::Hero,
+            Archetype::Shadow,
+            Archetype::Sage,
+            Archetype::Trickster,
+            Archetype::Caregiver,
+            Archetype::Orphan,
         ];
         for arch in &archs {
             let label = archetype_label(arch);

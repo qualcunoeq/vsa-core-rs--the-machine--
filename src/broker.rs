@@ -1,13 +1,15 @@
-use crate::{ledger::LongTermLedger, DejavuEntry, HiveMessage, Hypervector, MemoryCluster, HD_DIMENSION};
 use crate::analogy::WeightProvider;
+use crate::{
+    ledger::LongTermLedger, DejavuEntry, HiveMessage, Hypervector, MemoryCluster, HD_DIMENSION,
+};
+use hmac::{Hmac, Mac};
+use rand::Rng;
+use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
 use tokio::sync::{Mutex, RwLock};
-use rand::Rng;
-use sha2::{Digest, Sha256};
-use hmac::{Hmac, Mac};
 
 type HmacSha256 = Hmac<Sha256>;
 
@@ -127,7 +129,11 @@ impl SimilarityCache {
             }
         }
 
-        SimilarityCache { sims, agent_ids, centroids }
+        SimilarityCache {
+            sims,
+            agent_ids,
+            centroids,
+        }
     }
 
     /// Return the cached similarity between agents `i` and `j`.
@@ -296,7 +302,7 @@ impl NeocortexBroker {
             sector_index: Arc::new(RwLock::new(HashMap::new())),
             failure_serial: Arc::new(RwLock::new(0)),
             dcp_consensus: Arc::new(tokio::sync::RwLock::new(
-                crate::drift::ConsensusEngine::new(100, 2)
+                crate::drift::ConsensusEngine::new(100, 2),
             )),
         }
     }
@@ -332,7 +338,10 @@ impl NeocortexBroker {
         }
         let len = u32::from_be_bytes(len_bytes) as usize;
         if len < 16 {
-            return Err(std::io::Error::new(std::io::ErrorKind::InvalidData, "Payload too short to contain salt"));
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "Payload too short to contain salt",
+            ));
         }
         let mut buf = vec![0u8; len];
         reader.read_exact(&mut buf).await?;
@@ -569,9 +578,10 @@ impl NeocortexBroker {
         let entries = index.entry(sector).or_insert_with(Vec::new);
 
         // Check if this centroid already exists (merge detection)
-        if let Some(existing) = entries.iter_mut().find(|e| {
-            e.centroid.normalized_hamming_distance(&entry.centroid) <= 0.10
-        }) {
+        if let Some(existing) = entries
+            .iter_mut()
+            .find(|e| e.centroid.normalized_hamming_distance(&entry.centroid) <= 0.10)
+        {
             // Reconverged!  Merge the weight into the existing entry.
             existing.weight = (existing.weight + entry.weight) / 2.0;
             for id in &entry.agent_ids {
@@ -637,7 +647,9 @@ impl NeocortexBroker {
             let mut best_sim = -1.0;
             for (g_idx, group) in groups.iter().enumerate() {
                 for &member in group {
-                    let nhd = centroids[i].1.normalized_hamming_distance(&centroids[member].1);
+                    let nhd = centroids[i]
+                        .1
+                        .normalized_hamming_distance(&centroids[member].1);
                     let sim = 1.0 - nhd;
                     if sim > best_sim {
                         best_sim = sim;
@@ -663,11 +675,15 @@ impl NeocortexBroker {
                 group_weight += centroids[idx].2;
             }
             let centroid = Hypervector::bundle(&group_centroids);
-            self.register_sub_sector(sector, SubSectorEntry {
-                centroid,
-                weight: group_weight / group.len() as f64,
-                agent_ids: group_agents,
-            }).await;
+            self.register_sub_sector(
+                sector,
+                SubSectorEntry {
+                    centroid,
+                    weight: group_weight / group.len() as f64,
+                    agent_ids: group_agents,
+                },
+            )
+            .await;
         }
     }
 
@@ -720,12 +736,9 @@ impl NeocortexBroker {
 
         if tied.len() > 1 {
             // Bundle identity vectors via constitution
-            let identity_refs: Vec<&Hypervector> = tied
-                .iter()
-                .map(|&i| &agent_centroids[i].1)
-                .collect();
-            let tiebreaker =
-                Hypervector::bundle_with_constitution(&identity_refs, constitution);
+            let identity_refs: Vec<&Hypervector> =
+                tied.iter().map(|&i| &agent_centroids[i].1).collect();
+            let tiebreaker = Hypervector::bundle_with_constitution(&identity_refs, constitution);
             let winner_offset = tiebreaker.count_ones() % tied.len();
             return agent_centroids[tied[winner_offset]].0.clone();
         }
@@ -844,9 +857,7 @@ impl NeocortexBroker {
                     .get(&s.agent_id)
                     .map_or(true, |&t| current_epoch - t <= MAX_SILENT_EPOCHS)
             })
-            .filter(|s| {
-                cohort_snapshot.get(&s.agent_id).copied() == Some(cohort_id)
-            })
+            .filter(|s| cohort_snapshot.get(&s.agent_id).copied() == Some(cohort_id))
             .collect();
 
         // ── 7. Need at least 2 agents in this cohort for quorum ─────
@@ -919,11 +930,11 @@ impl NeocortexBroker {
         // ── 12. Collect all non-abstaining cohort centroids ──────────
         let cohorts_snapshot: Vec<(usize, Hypervector, f64)> = {
             let map = self.cohort_centroids.read().await;
-                    let mut v: Vec<_> = map
-                        .iter()
-                        .map(|(&cid, pair)| (cid, pair.0.clone(), pair.1))
-                        .collect();
-                    v.sort_by_key(|&(cid, _, _)| cid); // stable order
+            let mut v: Vec<_> = map
+                .iter()
+                .map(|(&cid, pair)| (cid, pair.0.clone(), pair.1))
+                .collect();
+            v.sort_by_key(|&(cid, _, _)| cid); // stable order
             v
         };
 
@@ -1166,14 +1177,17 @@ impl NeocortexBroker {
                     cs == incoming_sector
                 })
                 .map(|c| {
-                    let label = c.entries.first()
+                    let label = c
+                        .entries
+                        .first()
                         .map(|e| e.label.as_str())
                         .unwrap_or("cluster");
                     (label, c.centroid, c.reverberation)
                 })
                 .collect();
             if sector_entries.len() >= 2 {
-                self.check_sector_divergence(incoming_sector, &sector_entries).await;
+                self.check_sector_divergence(incoming_sector, &sector_entries)
+                    .await;
             }
         }
 
@@ -1247,7 +1261,12 @@ impl NeocortexBroker {
                                 cache.agent_ids.clear();
                             }
                         }
-                        broker_compactor.inter_cohort_cache.write().await.agent_ids.clear();
+                        broker_compactor
+                            .inter_cohort_cache
+                            .write()
+                            .await
+                            .agent_ids
+                            .clear();
 
                         let _ = compaction_log.send(format!(
                             "COMPACTOR: Pruned {} dead agent(s) from state maps: {:?}.",
@@ -1258,7 +1277,10 @@ impl NeocortexBroker {
                 }
 
                 // ── Ledger compaction ───────────────────────────────
-                let records = match broker_compactor.ledger.load_records(&broker_compactor.concept) {
+                let records = match broker_compactor
+                    .ledger
+                    .load_records(&broker_compactor.concept)
+                {
                     Ok(r) => r,
                     Err(_) => continue,
                 };
@@ -1281,10 +1303,8 @@ impl NeocortexBroker {
                         format!("growth threshold ({} new records)", growth)
                     };
 
-                    let _ = compaction_log.send(format!(
-                        "COMPACTOR: Initiating sleep cycle — {}.",
-                        reason
-                    ));
+                    let _ = compaction_log
+                        .send(format!("COMPACTOR: Initiating sleep cycle — {}.", reason));
 
                     // Phase 1: Acquire the file mutex for the entire
                     // read-cluster-write cycle so that no concurrent
@@ -1334,7 +1354,9 @@ impl NeocortexBroker {
                 let mut writer = writer;
 
                 // 1. Process Handshake
-                let (agent_id, _agent_role) = match Self::read_msg(&mut reader, &broker_clone.key).await {
+                let (agent_id, _agent_role) = match Self::read_msg(&mut reader, &broker_clone.key)
+                    .await
+                {
                     Ok(Some(HiveMessage::HandshakeRequest { agent_id: id, role })) => {
                         let _ = log_tx_clone
                             .send(format!("BROKER: Connection from Agent {} ({})", id, role));
@@ -1374,7 +1396,9 @@ impl NeocortexBroker {
                         let response = HiveMessage::HandshakeResponse {
                             permanent_clusters: current_clusters,
                         };
-                        if let Err(_) = Self::write_msg(&mut writer, &response, &broker_clone.key).await {
+                        if let Err(_) =
+                            Self::write_msg(&mut writer, &response, &broker_clone.key).await
+                        {
                             return;
                         }
                         (id, role)
@@ -1730,13 +1754,7 @@ mod tests {
         }
 
         /// Register a new agent (simulates TCP handshake).
-        async fn add_agent(
-            &mut self,
-            agent_id: &str,
-            role: &str,
-            anxiety: f64,
-            mode: usize,
-        ) {
+        async fn add_agent(&mut self, agent_id: &str, role: &str, anxiety: f64, mode: usize) {
             self.broker.assign_cohort(agent_id, role).await;
             let base = self.get_or_create_base(role).await;
             self.agents.insert(
@@ -2017,7 +2035,11 @@ mod tests {
         // (Limited to 5 to keep N1/N2 within MAX_SILENT_EPOCHS=10.)
         for i in 0..5 {
             // Connect
-            h.add_agent("FLAP", "Signal", 0.8 /* high anxiety */, 2 /* divergent */).await;
+            h.add_agent(
+                "FLAP", "Signal", 0.8, /* high anxiety */
+                2,   /* divergent */
+            )
+            .await;
             let _resp = h.submit("FLAP").await;
             // After submit, verify News cohort is still in cohort_centroids.
             {
@@ -2121,10 +2143,7 @@ mod tests {
         // N1 should be gone from agent_states.
         {
             let states = h.broker.agent_states.read().await;
-            assert!(
-                !states.contains_key("N1"),
-                "Dead agent N1 was not pruned"
-            );
+            assert!(!states.contains_key("N1"), "Dead agent N1 was not pruned");
         }
         // N1 should also be gone from cohort_of_agent.
         {

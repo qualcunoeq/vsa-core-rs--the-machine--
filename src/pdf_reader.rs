@@ -27,25 +27,50 @@ pub fn extract_text(path: &str) -> Result<String, String> {
 pub fn extract_definitions(text: &str, _source: &str) -> Vec<(String, String, String)> {
     let mut facts = Vec::new();
     let text = text.replace('\r', " ");
-    let lines: Vec<&str> = text.split('\n')
+    let lines: Vec<&str> = text
+        .split('\n')
         .map(|l| l.trim())
         .filter(|l| l.len() >= 15 && l.len() <= 400)
         .collect();
 
     let strip_patterns = [
-        "openstax", "creative commons", "cnx.org", "want to cite",
-        "all rights reserved", "access for free",
+        "openstax",
+        "creative commons",
+        "cnx.org",
+        "want to cite",
+        "all rights reserved",
+        "access for free",
     ];
 
     for line in &lines {
         let lower = line.to_lowercase();
-        if strip_patterns.iter().any(|p| lower.contains(p)) { continue; }
-        if lower.starts_with("figure ") || lower.starts_with("table ")
-            || lower.starts_with("example ") || lower.starts_with("exercise ")
-            || lower.starts_with("solution") || lower.starts_with("checkpoint") { continue; }
-        let math_count = line.chars().filter(|c| matches!(c, '{' | '}' | '[' | ']' | '^' | '_' | '$' | '\\')).count();
-        if math_count > 8 { continue; }
-        if !line.chars().next().map(|c| c.is_alphabetic()).unwrap_or(false) { continue; }
+        if strip_patterns.iter().any(|p| lower.contains(p)) {
+            continue;
+        }
+        if lower.starts_with("figure ")
+            || lower.starts_with("table ")
+            || lower.starts_with("example ")
+            || lower.starts_with("exercise ")
+            || lower.starts_with("solution")
+            || lower.starts_with("checkpoint")
+        {
+            continue;
+        }
+        let math_count = line
+            .chars()
+            .filter(|c| matches!(c, '{' | '}' | '[' | ']' | '^' | '_' | '$' | '\\'))
+            .count();
+        if math_count > 8 {
+            continue;
+        }
+        if !line
+            .chars()
+            .next()
+            .map(|c| c.is_alphabetic())
+            .unwrap_or(false)
+        {
+            continue;
+        }
 
         // Pattern 1: "X is a/an/the Y"
         if let Some(subj) = try_extract_is_definition(line) {
@@ -80,12 +105,19 @@ pub fn extract_definitions(text: &str, _source: &str) -> Vec<(String, String, St
 fn try_extract_is_definition(line: &str) -> Option<(String, String, String)> {
     // Pattern: "X is a/an/the Y"
     let parts: Vec<&str> = line.splitn(2, " is ").collect();
-    if parts.len() != 2 { return None; }
+    if parts.len() != 2 {
+        return None;
+    }
     let term = parts[0].trim();
     let rest = parts[1].trim();
     if rest.starts_with("a ") || rest.starts_with("an ") || rest.starts_with("the ") {
-        let defn = rest.split(" that").next().unwrap_or(rest)
-            .split(" which").next().unwrap_or(rest);
+        let defn = rest
+            .split(" that")
+            .next()
+            .unwrap_or(rest)
+            .split(" which")
+            .next()
+            .unwrap_or(rest);
         // Strip leading articles from the term for cleaner matching
         // "A derivative" → "derivative", "The derivative at a point" → "derivative at a point"
         let clean_term = term
@@ -106,13 +138,26 @@ fn try_extract_is_definition(line: &str) -> Option<(String, String, String)> {
 
 fn try_extract_is_called(line: &str) -> Option<(String, String, String)> {
     let parts: Vec<&str> = line.splitn(2, " is called ").collect();
-    if parts.len() != 2 { return None; }
+    if parts.len() != 2 {
+        return None;
+    }
     let desc = parts[0].trim();
     let name_raw = parts[1].trim();
-    let name = name_raw.trim_start_matches("a ").trim_start_matches("an ").trim_start_matches("the ");
-    let name = name.split(" which").next().unwrap_or(name)
-        .split(" that").next().unwrap_or(name)
-        .split(',').next().unwrap_or(name).trim();
+    let name = name_raw
+        .trim_start_matches("a ")
+        .trim_start_matches("an ")
+        .trim_start_matches("the ");
+    let name = name
+        .split(" which")
+        .next()
+        .unwrap_or(name)
+        .split(" that")
+        .next()
+        .unwrap_or(name)
+        .split(',')
+        .next()
+        .unwrap_or(name)
+        .trim();
     let d = normalize(desc);
     let n = normalize(name);
     if !d.is_empty() && !n.is_empty() && n.len() > 2 {
@@ -123,13 +168,25 @@ fn try_extract_is_called(line: &str) -> Option<(String, String, String)> {
 
 fn try_extract_are_called(line: &str) -> Option<(String, String, String)> {
     let parts: Vec<&str> = line.splitn(2, " are called ").collect();
-    if parts.len() != 2 { return None; }
+    if parts.len() != 2 {
+        return None;
+    }
     let desc = parts[0].trim();
     let name_raw = parts[1].trim();
-    let name = name_raw.trim_start_matches("a ").trim_start_matches("an ").trim_start_matches("the ");
+    let name = name_raw
+        .trim_start_matches("a ")
+        .trim_start_matches("an ")
+        .trim_start_matches("the ");
     let d = normalize(desc);
-    let n = normalize(name.split(" which").next().unwrap_or(name)
-        .split(" that").next().unwrap_or(name).trim());
+    let n = normalize(
+        name.split(" which")
+            .next()
+            .unwrap_or(name)
+            .split(" that")
+            .next()
+            .unwrap_or(name)
+            .trim(),
+    );
     if !d.is_empty() && !n.is_empty() && n.len() > 2 {
         return Some((n, "are".to_string(), d));
     }
@@ -138,12 +195,23 @@ fn try_extract_are_called(line: &str) -> Option<(String, String, String)> {
 
 fn try_extract_verb_definition(line: &str, verb: &str) -> Option<(String, String, String)> {
     let search = format!(" {} ", verb);
-    if !line.contains(&search) { return None; }
+    if !line.contains(&search) {
+        return None;
+    }
     let parts: Vec<&str> = line.splitn(2, &search).collect();
-    if parts.len() != 2 { return None; }
+    if parts.len() != 2 {
+        return None;
+    }
     let subj = parts[0].trim();
-    let obj = parts[1].trim().split(" which").next().unwrap_or(parts[1])
-        .split(" that").next().unwrap_or(parts[1]).trim();
+    let obj = parts[1]
+        .trim()
+        .split(" which")
+        .next()
+        .unwrap_or(parts[1])
+        .split(" that")
+        .next()
+        .unwrap_or(parts[1])
+        .trim();
     let s = normalize(subj);
     let o = normalize(obj);
     if !s.is_empty() && !o.is_empty() && s.len() > 2 {
@@ -154,14 +222,20 @@ fn try_extract_verb_definition(line: &str, verb: &str) -> Option<(String, String
 
 fn normalize(s: &str) -> String {
     let s = s.to_lowercase();
-    let result: String = s.chars()
+    let result: String = s
+        .chars()
         .map(|c| if c.is_alphanumeric() { c } else { '_' })
         .collect();
-    let result: String = result.split('_')
+    let result: String = result
+        .split('_')
         .filter(|w| !w.is_empty())
         .collect::<Vec<_>>()
         .join("_");
-    if result.len() > 100 { result[..100].to_string() } else { result }
+    if result.len() > 100 {
+        result[..100].to_string()
+    } else {
+        result
+    }
 }
 
 #[cfg(test)]
@@ -182,9 +256,20 @@ mod tests {
                      The coefficient is the number multiplied by a variable.\n\
                      This process is called factoring.\n";
         let facts = extract_definitions(text, "test.pdf");
-        assert!(facts.len() >= 2, "Should extract at least 2 definitions, got {}: {:?}", facts.len(), facts);
-        assert!(facts.iter().any(|f| f.2.contains("variable")), "Should find variable");
-        assert!(facts.iter().any(|f| f.2.contains("coefficient")), "Should find coefficient");
+        assert!(
+            facts.len() >= 2,
+            "Should extract at least 2 definitions, got {}: {:?}",
+            facts.len(),
+            facts
+        );
+        assert!(
+            facts.iter().any(|f| f.2.contains("variable")),
+            "Should find variable"
+        );
+        assert!(
+            facts.iter().any(|f| f.2.contains("coefficient")),
+            "Should find coefficient"
+        );
     }
 
     #[test]

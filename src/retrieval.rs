@@ -13,9 +13,9 @@
 // reasons about the difference.
 // ────────────────────────────────────────────────────────────────────────────
 
-use std::collections::{HashMap, HashSet};
-use crate::VSABrain;
 use crate::perception::SvoTriple;
+use crate::VSABrain;
+use std::collections::{HashMap, HashSet};
 
 /// A query across one or more domains.
 #[derive(Debug, Clone)]
@@ -72,7 +72,9 @@ impl DomainIndex {
             let mut domain_counts: HashMap<String, usize> = HashMap::new();
 
             for entry in &cluster.entries {
-                let domain = entry.metadata.get("domain")
+                let domain = entry
+                    .metadata
+                    .get("domain")
                     .or_else(|| entry.metadata.get("source"))
                     .cloned()
                     .unwrap_or_else(|| "unknown".to_string());
@@ -81,7 +83,10 @@ impl DomainIndex {
 
             if let Some((domain, _)) = domain_counts.into_iter().max_by_key(|&(_, count)| count) {
                 self.cluster_to_domain.insert(idx, domain.clone());
-                self.domain_to_clusters.entry(domain).or_insert_with(Vec::new).push(idx);
+                self.domain_to_clusters
+                    .entry(domain)
+                    .or_insert_with(Vec::new)
+                    .push(idx);
             }
         }
     }
@@ -95,7 +100,10 @@ impl DomainIndex {
 
     /// Get cluster indices for a given domain.
     pub fn clusters_for_domain(&self, domain: &str) -> Vec<usize> {
-        self.domain_to_clusters.get(domain).cloned().unwrap_or_default()
+        self.domain_to_clusters
+            .get(domain)
+            .cloned()
+            .unwrap_or_default()
     }
 
     /// Get the domain label for a cluster index.
@@ -164,8 +172,8 @@ pub fn retrieve_cross_domain(
             let confidence: f64 = entry.label.parse().unwrap_or(0.5);
 
             // Cluster density bonus: entries in denser clusters are more reliable
-            let density_bonus = (cluster.entries.len() as f64)
-                / (crate::MAX_ENTRIES_PER_CLUSTER as f64).max(1.0);
+            let density_bonus =
+                (cluster.entries.len() as f64) / (crate::MAX_ENTRIES_PER_CLUSTER as f64).max(1.0);
 
             let adjusted_conf = (confidence * 0.7 + density_bonus * 0.3).clamp(0.0, 1.0);
 
@@ -183,7 +191,11 @@ pub fn retrieve_cross_domain(
     }
 
     // Sort by confidence descending
-    results.sort_by(|a, b| b.confidence.partial_cmp(&a.confidence).unwrap_or(std::cmp::Ordering::Equal));
+    results.sort_by(|a, b| {
+        b.confidence
+            .partial_cmp(&a.confidence)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
     results
 }
 
@@ -195,13 +207,13 @@ pub fn detect_cross_domain_anomalies(
     brain: &VSABrain,
     index: &DomainIndex,
 ) -> Vec<crate::defense::ThreatEvent> {
-    use crate::defense::{ThreatEvent, ThreatClass};
+    use crate::defense::{ThreatClass, ThreatEvent};
 
     let mut events = Vec::new();
 
     // Get all system_state connections
     let sys_query = CrossDomainQuery {
-        entity: String::new(),       // match everything
+        entity: String::new(), // match everything
         relation: Some("connected_to".to_string()),
         object: None,
         domains: vec!["system_state".to_string()],
@@ -213,7 +225,10 @@ pub fn detect_cross_domain_anomalies(
     for r in &sys_results {
         let target = r.triple.2.clone();
         let process = r.triple.0.clone();
-        conns_by_target.entry(target).or_insert_with(Vec::new).push(process);
+        conns_by_target
+            .entry(target)
+            .or_insert_with(Vec::new)
+            .push(process);
     }
 
     // Get all text_knowledge about listening services
@@ -227,13 +242,13 @@ pub fn detect_cross_domain_anomalies(
 
     // For each text knowledge service, check if the system has a matching process
     for tr in &txt_results {
-        let expected_service = tr.triple.0.clone();    // "backend"
-        let port = tr.triple.2.clone();                // "port_8000"
+        let expected_service = tr.triple.0.clone(); // "backend"
+        let port = tr.triple.2.clone(); // "port_8000"
 
         // Check if the expected service is listed as a process in system state
-        let matching_process = sys_results.iter().any(|sr| {
-            sr.triple.0.contains(&expected_service)
-        });
+        let matching_process = sys_results
+            .iter()
+            .any(|sr| sr.triple.0.contains(&expected_service));
 
         if !matching_process {
             // The expected service doesn't seem to be running
@@ -264,19 +279,47 @@ pub fn detect_cross_domain_anomalies(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::VSABrain;
     use crate::text_encoder::store_knowledge_triple;
+    use crate::VSABrain;
 
     fn setup_brain_with_text_and_system() -> (VSABrain, DomainIndex) {
         let mut brain = VSABrain::new(0.12);
 
         // Text knowledge: what should be running
-        store_knowledge_triple(&mut brain, "backend", "listens_on", "port_8000", 0.9, "text_knowledge");
-        store_knowledge_triple(&mut brain, "database", "listens_on", "port_5432", 0.9, "text_knowledge");
+        store_knowledge_triple(
+            &mut brain,
+            "backend",
+            "listens_on",
+            "port_8000",
+            0.9,
+            "text_knowledge",
+        );
+        store_knowledge_triple(
+            &mut brain,
+            "database",
+            "listens_on",
+            "port_5432",
+            0.9,
+            "text_knowledge",
+        );
 
         // System state: what is actually running (normal case)
-        store_knowledge_triple(&mut brain, "backend", "connected_to", "port_8000", 0.95, "system_state");
-        store_knowledge_triple(&mut brain, "database", "connected_to", "port_5432", 0.95, "system_state");
+        store_knowledge_triple(
+            &mut brain,
+            "backend",
+            "connected_to",
+            "port_8000",
+            0.95,
+            "system_state",
+        );
+        store_knowledge_triple(
+            &mut brain,
+            "database",
+            "connected_to",
+            "port_5432",
+            0.95,
+            "system_state",
+        );
 
         // Build domain index
         let mut index = DomainIndex::new();
@@ -307,8 +350,10 @@ mod tests {
         let results = retrieve_cross_domain(&query, &brain, &index);
         eprintln!("  Results for 'port_8000': {} found", results.len());
         for r in &results {
-            eprintln!("    [{}] ({}, {}, {}) conf={:.3}",
-                r.domain, r.triple.0, r.triple.1, r.triple.2, r.confidence);
+            eprintln!(
+                "    [{}] ({}, {}, {}) conf={:.3}",
+                r.domain, r.triple.0, r.triple.1, r.triple.2, r.confidence
+            );
         }
         assert_eq!(results.len(), 2, "Should find port_8000 in both domains");
     }
@@ -321,11 +366,15 @@ mod tests {
             entity: "port_8000".to_string(),
             relation: None,
             object: None,
-            domains: vec!["text_knowledge".to_string()],  // only text
+            domains: vec!["text_knowledge".to_string()], // only text
         };
 
         let results = retrieve_cross_domain(&query, &brain, &index);
-        assert_eq!(results.len(), 1, "Should find port_8000 only in text_knowledge");
+        assert_eq!(
+            results.len(),
+            1,
+            "Should find port_8000 only in text_knowledge"
+        );
         assert_eq!(results[0].domain, "text_knowledge");
     }
 
@@ -350,10 +399,24 @@ mod tests {
         let mut brain = VSABrain::new(0.12);
 
         // Text knowledge: what should be running
-        store_knowledge_triple(&mut brain, "backend", "listens_on", "port_8000", 0.9, "text_knowledge");
+        store_knowledge_triple(
+            &mut brain,
+            "backend",
+            "listens_on",
+            "port_8000",
+            0.9,
+            "text_knowledge",
+        );
 
         // System state: something unexpected on port 8000
-        store_knowledge_triple(&mut brain, "process_curl", "connected_to", "port_8000", 0.95, "system_state");
+        store_knowledge_triple(
+            &mut brain,
+            "process_curl",
+            "connected_to",
+            "port_8000",
+            0.95,
+            "system_state",
+        );
 
         let mut index = DomainIndex::new();
         index.build_from_brain(&brain);
@@ -361,12 +424,21 @@ mod tests {
         let events = detect_cross_domain_anomalies(&brain, &index);
         eprintln!("  Anomaly events: {} found", events.len());
         for e in &events {
-            eprintln!("    [{}] severity={:.1}: {}", e.domain, e.severity, e.description);
+            eprintln!(
+                "    [{}] severity={:.1}: {}",
+                e.domain, e.severity, e.description
+            );
         }
 
-        assert!(!events.is_empty(), "Should detect anomaly: curl on backend's port");
+        assert!(
+            !events.is_empty(),
+            "Should detect anomaly: curl on backend's port"
+        );
         let has_anomaly = events.iter().any(|e| e.description.contains("Mismatch"));
-        assert!(has_anomaly, "Should report mismatch between expected and actual");
+        assert!(
+            has_anomaly,
+            "Should report mismatch between expected and actual"
+        );
     }
 
     #[test]
@@ -374,16 +446,33 @@ mod tests {
         let mut brain = VSABrain::new(0.12);
 
         // Text knowledge: backend on port 8000
-        store_knowledge_triple(&mut brain, "backend", "listens_on", "port_8000", 0.9, "text_knowledge");
+        store_knowledge_triple(
+            &mut brain,
+            "backend",
+            "listens_on",
+            "port_8000",
+            0.9,
+            "text_knowledge",
+        );
 
         // System state: actual backend is indeed on port 8000
-        store_knowledge_triple(&mut brain, "backend", "connected_to", "port_8000", 0.95, "system_state");
+        store_knowledge_triple(
+            &mut brain,
+            "backend",
+            "connected_to",
+            "port_8000",
+            0.95,
+            "system_state",
+        );
 
         let mut index = DomainIndex::new();
         index.build_from_brain(&brain);
 
         let events = detect_cross_domain_anomalies(&brain, &index);
         eprintln!("  Events when matching: {} found", events.len());
-        assert!(events.is_empty(), "No anomaly when backend actually runs on port 8000");
+        assert!(
+            events.is_empty(),
+            "No anomaly when backend actually runs on port 8000"
+        );
     }
 }

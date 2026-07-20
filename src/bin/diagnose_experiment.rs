@@ -25,10 +25,7 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 use std::time::Instant;
-use the_machine::actuator::{
-    self, ActionRequest, ActionType, ActionResult,
-    JumpBoxActuator,
-};
+use the_machine::actuator::{self, ActionRequest, ActionResult, ActionType, JumpBoxActuator};
 use the_machine::diagnostic::{seed_diagnostic_knowledge, seed_error_classifier, CanonicalSvo};
 use the_machine::qa::QaEngine;
 use the_machine::text_encoder::{ingest_text, store_knowledge_triple};
@@ -47,9 +44,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut i = 1;
     while i < args.len() {
         match args[i].as_str() {
-            "--jumpbox" => { i += 1; if i < args.len() { jb_addr = args[i].clone(); } }
-            "--target"  => { i += 1; if i < args.len() { target_ip = args[i].clone(); } }
-            "--steps"   => { i += 1; if i < args.len() { max_steps = args[i].parse().unwrap_or(20); } }
+            "--jumpbox" => {
+                i += 1;
+                if i < args.len() {
+                    jb_addr = args[i].clone();
+                }
+            }
+            "--target" => {
+                i += 1;
+                if i < args.len() {
+                    target_ip = args[i].clone();
+                }
+            }
+            "--steps" => {
+                i += 1;
+                if i < args.len() {
+                    max_steps = args[i].parse().unwrap_or(20);
+                }
+            }
             "--help" | "-h" => {
                 println!("Usage: diagnose_experiment [OPTIONS]");
                 println!("");
@@ -58,7 +70,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("  --target  IP     Target VM (default: {})", DEFAULT_TARGET);
                 return Ok(());
             }
-            _ => { eprintln!("Unknown: {}. Use --help.", args[i]); std::process::exit(1); }
+            _ => {
+                eprintln!("Unknown: {}. Use --help.", args[i]);
+                std::process::exit(1);
+            }
         }
         i += 1;
     }
@@ -81,15 +96,30 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Seed error classifier with known error types and their textual triggers.
     let classifier = seed_error_classifier();
-    eprintln!("  → Error classifier: {} types, {} total triggers, VSA assoc: {}",
+    eprintln!(
+        "  → Error classifier: {} types, {} total triggers, VSA assoc: {}",
         classifier.type_count(),
         classifier.type_count() * 5, // approximate
         "built"
     );
 
     // Inject target info
-    store_knowledge_triple(&mut brain, "target_vm", "ip", &target_ip, 1.0, "experiment_config");
-    store_knowledge_triple(&mut brain, "service", "name", "nginx", 1.0, "experiment_config");
+    store_knowledge_triple(
+        &mut brain,
+        "target_vm",
+        "ip",
+        &target_ip,
+        1.0,
+        "experiment_config",
+    );
+    store_knowledge_triple(
+        &mut brain,
+        "service",
+        "name",
+        "nginx",
+        1.0,
+        "experiment_config",
+    );
 
     // ── Connect to jump-box ────────────────────────────────────────────
     let jb_parts: Vec<&str> = jb_addr.split(':').collect();
@@ -98,7 +128,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let actuator = JumpBoxActuator::new(jb_host, jb_port);
 
     // SSH prefix for running commands on the target VM via the jump-box
-    let ssh = format!("ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@{} ", target_ip);
+    let ssh = format!(
+        "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@{} ",
+        target_ip
+    );
 
     eprintln!("[2/4] Connecting to jump-box at {}...", jb_addr);
     let test_req = ActionRequest::exec(&target_ip, "echo jumpbox_ready");
@@ -114,7 +147,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     eprintln!("  Apache: {} (port 80)", apache_status.raw_output.trim());
 
     // Step 2: Try to start nginx — it will fail because port 80 is in use
-    let try_nginx = ActionRequest::exec(&target_ip, &format!("{} '/usr/sbin/nginx 2>&1; echo EXIT_CODE: $?'", ssh));
+    let try_nginx = ActionRequest::exec(
+        &target_ip,
+        &format!("{} '/usr/sbin/nginx 2>&1; echo EXIT_CODE: $?'", ssh),
+    );
     let nginx_try = actuator.send_request(&try_nginx).await;
     eprintln!("  Nginx start attempt: {}", nginx_try.raw_output.trim());
 
@@ -123,8 +159,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let error_capture = actuator.send_request(&read_error).await;
     eprintln!("  Error log: {} bytes", error_capture.raw_output.len());
 
-    store_knowledge_triple(&mut brain, "error_log", "path",
-        "/var/log/nginx/error.log", 1.0, "experiment_config");
+    store_knowledge_triple(
+        &mut brain,
+        "error_log",
+        "path",
+        "/var/log/nginx/error.log",
+        1.0,
+        "experiment_config",
+    );
 
     // ── Run the diagnostic loop ─────────────────────────────────────────
     eprintln!("[4/4] Running diagnostic loop...");
@@ -166,8 +208,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 eprintln!("  → Forward chain: {} facts derived from error", n);
 
                 // Check: did we identify a cause?
-                let (has_cause, _) = qa.verify_fact("another_process", "is_listening_on", "same_port");
-                eprintln!("  → Port conflict hypothesis: {}", if has_cause { "FORMED ✓" } else { "NOT FORMED" });
+                let (has_cause, _) =
+                    qa.verify_fact("another_process", "is_listening_on", "same_port");
+                eprintln!(
+                    "  → Port conflict hypothesis: {}",
+                    if has_cause {
+                        "FORMED ✓"
+                    } else {
+                        "NOT FORMED"
+                    }
+                );
 
                 // Also check for other causes
                 let (has_refused, _) = qa.verify_fact("target_service", "is_not", "listening");
@@ -194,13 +244,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Now check port 80 to verify the hypothesis
     eprintln!("");
     eprintln!("── Verifying hypothesis ───────────────────────");
-    let check_port = ActionRequest::exec(&target_ip, &format!("{} 'ss -tlnp | grep \":80 \"'", ssh));
+    let check_port =
+        ActionRequest::exec(&target_ip, &format!("{} 'ss -tlnp | grep \":80 \"'", ssh));
     let port_check = actuator.send_request(&check_port).await;
 
     if port_check.success {
         eprintln!("  Port 80 status: {}", port_check.raw_output.trim());
-        store_knowledge_triple(&mut brain, "machine", "knows", "process_on_port",
-            1.0, "diagnostic_result");
+        store_knowledge_triple(
+            &mut brain,
+            "machine",
+            "knows",
+            "process_on_port",
+            1.0,
+            "diagnostic_result",
+        );
         qa.store_fact("machine", "knows", "process_on_port", "port_check");
 
         // Forward chain with verification knowledge
@@ -210,7 +267,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Check if we can now plan a fix
     let (can_fix, _) = qa.verify_fact("machine", "can", "fix_problem");
-    eprintln!("  → Can fix problem: {}", if can_fix { "YES ✓" } else { "NO" });
+    eprintln!(
+        "  → Can fix problem: {}",
+        if can_fix { "YES ✓" } else { "NO" }
+    );
 
     // Plan the fix
     eprintln!("");
@@ -226,11 +286,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     } else {
         eprintln!("  Plan found ({} steps):", fix_plan.len());
         for (i, step) in fix_plan.iter().enumerate() {
-            eprintln!("    {}. ({}, {}, {}) → ({}, {}, {}) [conf={:.3}]",
+            eprintln!(
+                "    {}. ({}, {}, {}) → ({}, {}, {}) [conf={:.3}]",
                 i + 1,
-                step.action.0, step.action.1, step.action.2,
-                step.achieves.0, step.achieves.1, step.achieves.2,
-                step.confidence);
+                step.action.0,
+                step.action.1,
+                step.action.2,
+                step.achieves.0,
+                step.achieves.1,
+                step.achieves.2,
+                step.confidence
+            );
         }
     }
 
@@ -244,14 +310,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Start nginx (it will now succeed since port 80 is free)
     eprintln!("  Step 2: Starting nginx...");
-    let start_nginx = ActionRequest::exec(&target_ip, &format!("{} '/usr/sbin/nginx 2>&1 || echo nginx_running'", ssh));
+    let start_nginx = ActionRequest::exec(
+        &target_ip,
+        &format!("{} '/usr/sbin/nginx 2>&1 || echo nginx_running'", ssh),
+    );
     let nginx_result = actuator.send_request(&start_nginx).await;
     eprintln!("  → Nginx: {}", nginx_result.raw_output.trim());
 
     // Verify fix
     eprintln!("");
     eprintln!("── Verifying fix ─────────────────────────────");
-    let verify_nginx = ActionRequest::exec(&target_ip, &format!("{} 'pgrep nginx >/dev/null && echo active || echo inactive'", ssh));
+    let verify_nginx = ActionRequest::exec(
+        &target_ip,
+        &format!(
+            "{} 'pgrep nginx >/dev/null && echo active || echo inactive'",
+            ssh
+        ),
+    );
     let verify = actuator.send_request(&verify_nginx).await;
     let nginx_running = verify.raw_output.trim() == "active";
 
@@ -263,7 +338,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // Check nginx version
-    let nginx_version = ActionRequest::exec(&target_ip, &format!("{} '/usr/sbin/nginx -v 2>&1'", ssh));
+    let nginx_version =
+        ActionRequest::exec(&target_ip, &format!("{} '/usr/sbin/nginx -v 2>&1'", ssh));
     let version_result = actuator.send_request(&nginx_version).await;
     eprintln!("  nginx version: {}", version_result.raw_output.trim());
 

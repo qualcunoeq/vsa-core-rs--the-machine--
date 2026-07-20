@@ -13,12 +13,12 @@
 // its own environment can detect anomalies before they become compromises.
 // ────────────────────────────────────────────────────────────────────────────
 
+use crate::perception::{Entity, PerceptualEncoder, SvoTriple};
+use crate::Hypervector;
+use crate::VSABrain;
 use std::collections::HashMap;
 use std::fs;
 use std::io::{BufRead, BufReader};
-use crate::Hypervector;
-use crate::VSABrain;
-use crate::perception::{Entity, PerceptualEncoder, SvoTriple};
 
 // ─── Data Types ────────────────────────────────────────────────────────────
 
@@ -38,12 +38,12 @@ pub struct ProcessInfo {
 #[derive(Debug, Clone)]
 pub struct ConnectionInfo {
     pub pid: u32,
-    pub protocol: String,       // "tcp", "tcp6", "udp"
+    pub protocol: String, // "tcp", "tcp6", "udp"
     pub local_addr: String,
     pub local_port: u16,
     pub remote_addr: String,
     pub remote_port: u16,
-    pub state: String,          // "established", "listen", "close_wait", etc.
+    pub state: String, // "established", "listen", "close_wait", etc.
 }
 
 /// A captured open file descriptor.
@@ -51,8 +51,8 @@ pub struct ConnectionInfo {
 pub struct FileDescInfo {
     pub pid: u32,
     pub fd_number: u32,
-    pub target: String,         // resolved symlink path
-    pub fd_type: String,        // "file", "socket", "pipe", "anon_inode"
+    pub target: String,  // resolved symlink path
+    pub fd_type: String, // "file", "socket", "pipe", "anon_inode"
 }
 
 /// A full system state snapshot at a point in time.
@@ -144,11 +144,13 @@ pub fn read_processes_filtered(max_pids: Option<usize>) -> Vec<ProcessInfo> {
         let status = read_status(pid);
         let ppid: u32 = status.get("PPid").and_then(|s| s.parse().ok()).unwrap_or(0);
         let proc_name = status.get("Name").cloned().unwrap_or_default();
-        let uid_str = status.get("Uid")
+        let uid_str = status
+            .get("Uid")
             .and_then(|s| s.split_whitespace().next())
             .unwrap_or("0");
         let uid: u32 = uid_str.parse().unwrap_or(0);
-        let state = status.get("State")
+        let state = status
+            .get("State")
             .map(|s| s.split_whitespace().next().unwrap_or("?"))
             .unwrap_or("?")
             .to_string();
@@ -192,9 +194,9 @@ fn decode_tcp_addr(encoded: &str) -> (String, u16) {
 
     // Hex IP is in little-endian byte order (e.g., "0100007F" → 127.0.0.1)
     let ip = if hex_ip.len() == 8 {
-        let bytes: Vec<u8> = (0..4).map(|i| {
-            u8::from_str_radix(&hex_ip[i*2..i*2+2], 16).unwrap_or(0)
-        }).collect();
+        let bytes: Vec<u8> = (0..4)
+            .map(|i| u8::from_str_radix(&hex_ip[i * 2..i * 2 + 2], 16).unwrap_or(0))
+            .collect();
         format!("{}.{}.{}.{}", bytes[0], bytes[1], bytes[2], bytes[3])
     } else {
         "0.0.0.0".to_string()
@@ -232,7 +234,9 @@ fn read_process_tcp(pid: u32) -> Vec<ConnectionInfo> {
     let mut conns = Vec::new();
     for line in BufReader::new(file).lines().flatten().skip(1) {
         let parts: Vec<&str> = line.split_whitespace().collect();
-        if parts.len() < 4 { continue; }
+        if parts.len() < 4 {
+            continue;
+        }
 
         let (local_ip, local_port) = decode_tcp_addr(parts[1]);
         let (remote_ip, remote_port) = decode_tcp_addr(parts[2]);
@@ -260,7 +264,8 @@ pub fn read_all_connections_filtered(max_procs: Option<usize>) -> Vec<Connection
     }
     // Dedup by (pid, local_addr, local_port, remote_addr, remote_port)
     all_conns.sort_by(|a, b| {
-        a.pid.cmp(&b.pid)
+        a.pid
+            .cmp(&b.pid)
             .then(a.local_addr.cmp(&b.local_addr))
             .then(a.local_port.cmp(&b.local_port))
             .then(a.remote_addr.cmp(&b.remote_addr))
@@ -360,13 +365,24 @@ impl From<SysStateSnapshot> for Vec<SvoTriple> {
         // Process triples
         for p in &snapshot.processes {
             let pid_str = format!("process_{}", p.pid);
-            triples.push((pid_str.clone(), "is_child_of".to_string(), format!("process_{}", p.ppid)));
+            triples.push((
+                pid_str.clone(),
+                "is_child_of".to_string(),
+                format!("process_{}", p.ppid),
+            ));
             triples.push((pid_str.clone(), "is_running".to_string(), p.name.clone()));
-            triples.push((pid_str.clone(), "run_by_user".to_string(), p.username.clone()));
+            triples.push((
+                pid_str.clone(),
+                "run_by_user".to_string(),
+                p.username.clone(),
+            ));
             triples.push((pid_str.clone(), "state".to_string(), p.state.clone()));
             if !p.cmdline.is_empty() {
-                triples.push((pid_str.clone(), "executing".to_string(),
-                    p.cmdline.chars().take(80).collect::<String>()));
+                triples.push((
+                    pid_str.clone(),
+                    "executing".to_string(),
+                    p.cmdline.chars().take(80).collect::<String>(),
+                ));
             }
         }
 
@@ -374,10 +390,16 @@ impl From<SysStateSnapshot> for Vec<SvoTriple> {
         for c in &snapshot.connections {
             let pid_str = format!("process_{}", c.pid);
             let conn_id = format!("conn_{}_{}:{}", c.pid, c.remote_addr, c.remote_port);
-            triples.push((pid_str, "connected_to".to_string(),
-                format!("{}:{}", c.remote_addr, c.remote_port)));
-            triples.push((conn_id.clone(), "local".to_string(),
-                format!("{}:{}", c.local_addr, c.local_port)));
+            triples.push((
+                pid_str,
+                "connected_to".to_string(),
+                format!("{}:{}", c.remote_addr, c.remote_port),
+            ));
+            triples.push((
+                conn_id.clone(),
+                "local".to_string(),
+                format!("{}:{}", c.local_addr, c.local_port),
+            ));
             triples.push((conn_id, "protocol".to_string(), c.protocol.clone()));
         }
 
@@ -529,7 +551,7 @@ pub fn ingest_system_state(brain: &mut VSABrain) -> usize {
             subject,
             verb,
             object,
-            0.9,        // high confidence — this is direct observation
+            0.9, // high confidence — this is direct observation
             "system_state",
         );
         count += 1;
@@ -601,8 +623,10 @@ mod tests {
 
         // Verify basic fields are populated
         if let Some(first) = procs.first() {
-            eprintln!("  First process: pid={}, name={}, state={}",
-                first.pid, first.name, first.state);
+            eprintln!(
+                "  First process: pid={}, name={}, state={}",
+                first.pid, first.name, first.state
+            );
         }
     }
 
@@ -614,10 +638,16 @@ mod tests {
         for p in &procs {
             conns.extend(read_process_tcp(p.pid));
         }
-        eprintln!("  Found {} TCP connections from {} processes", conns.len(), procs.len());
+        eprintln!(
+            "  Found {} TCP connections from {} processes",
+            conns.len(),
+            procs.len()
+        );
         for c in conns.iter().take(5) {
-            eprintln!("    pid={}, {}:{} → {}:{}, state={}",
-                c.pid, c.local_addr, c.local_port, c.remote_addr, c.remote_port, c.state);
+            eprintln!(
+                "    pid={}, {}:{} → {}:{}, state={}",
+                c.pid, c.local_addr, c.local_port, c.remote_addr, c.remote_port, c.state
+            );
         }
     }
 
@@ -633,8 +663,12 @@ mod tests {
         for p in &procs {
             fds.extend(read_process_fds(p.pid));
         }
-        eprintln!("  Snapshot: {} processes, {} connections, {} fds",
-            procs.len(), conns.len(), fds.len());
+        eprintln!(
+            "  Snapshot: {} processes, {} connections, {} fds",
+            procs.len(),
+            conns.len(),
+            fds.len()
+        );
         assert!(!procs.is_empty(), "Should have processes");
     }
 
@@ -657,7 +691,11 @@ mod tests {
             timestamp: std::time::SystemTime::now(),
         };
         let triples: Vec<SvoTriple> = snapshot.into();
-        assert!(triples.len() > 3, "Should extract several triples, got {}", triples.len());
+        assert!(
+            triples.len() > 3,
+            "Should extract several triples, got {}",
+            triples.len()
+        );
         eprintln!("  Extracted {} triples from system state", triples.len());
         for t in triples.iter().take(10) {
             eprintln!("    ({}, {}, {})", t.0, t.1, t.2);
@@ -695,7 +733,11 @@ mod tests {
             "  Stored {} triples → {} clusters, {} total entries",
             count,
             brain.dejavu_clusters.len(),
-            brain.dejavu_clusters.iter().map(|c| c.entries.len()).sum::<usize>(),
+            brain
+                .dejavu_clusters
+                .iter()
+                .map(|c| c.entries.len())
+                .sum::<usize>(),
         );
     }
 
@@ -710,7 +752,11 @@ mod tests {
             entities.push(format!("process_{}", p.ppid));
         }
         assert!(!entities.is_empty(), "Should extract entities");
-        eprintln!("  SystemEncoder: {} entities from {} processes", entities.len(), procs.len());
+        eprintln!(
+            "  SystemEncoder: {} entities from {} processes",
+            entities.len(),
+            procs.len()
+        );
     }
 
     #[test]

@@ -1,9 +1,9 @@
 use crate::Hypervector;
-use rand::Rng;
 use rand::rngs::StdRng;
+use rand::Rng;
 use rand::SeedableRng;
-use std::collections::BinaryHeap;
 use std::cmp::Ordering;
+use std::collections::BinaryHeap;
 
 // ─── Constants ────────────────────────────────────────────────────────────
 
@@ -108,7 +108,7 @@ impl HnswConfig {
 /// a min-heap behavior for `smaller` and max-heap for `farther`.
 #[derive(Clone, Copy, Debug)]
 pub struct DistIdx {
-    pub distance: f64,    // normalized Hamming distance [0, 1]
+    pub distance: f64, // normalized Hamming distance [0, 1]
     pub index: usize,
 }
 
@@ -123,7 +123,9 @@ impl PartialEq for DistIdx {
 impl PartialOrd for DistIdx {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         // Reversed: smaller distance = higher priority for min-heap
-        self.distance.partial_cmp(&other.distance).map(|o| o.reverse())
+        self.distance
+            .partial_cmp(&other.distance)
+            .map(|o| o.reverse())
     }
 }
 
@@ -170,12 +172,19 @@ impl HnswSearchResult {
 
     /// Get the closest result
     pub fn closest(&self) -> Option<(usize, f64)> {
-        self.indices.first().copied().zip(self.distances.first().copied())
+        self.indices
+            .first()
+            .copied()
+            .zip(self.distances.first().copied())
     }
 
     /// Get all (index, distance) pairs
     pub fn pairs(&self) -> Vec<(usize, f64)> {
-        self.indices.iter().copied().zip(self.distances.iter().copied()).collect()
+        self.indices
+            .iter()
+            .copied()
+            .zip(self.distances.iter().copied())
+            .collect()
     }
 }
 
@@ -440,10 +449,12 @@ impl HnswIndex {
 
         let ep = match self.enter_point {
             Some(ep) => ep,
-            None => return HnswSearchResult {
-                indices: Vec::new(),
-                distances: Vec::new(),
-            },
+            None => {
+                return HnswSearchResult {
+                    indices: Vec::new(),
+                    distances: Vec::new(),
+                }
+            }
         };
 
         let max_level = self.max_level;
@@ -489,7 +500,11 @@ impl HnswIndex {
 
         // Extract from the max-heap (gives farthest first)
         let mut sorted: Vec<DistIdx> = results.into_iter().collect();
-        sorted.sort_by(|a, b| b.distance.partial_cmp(&a.distance).unwrap_or(std::cmp::Ordering::Equal));
+        sorted.sort_by(|a, b| {
+            b.distance
+                .partial_cmp(&a.distance)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
 
         for item in sorted {
             indices.push(item.index);
@@ -550,7 +565,11 @@ impl HnswIndex {
         // 6. Phase 1: Traverse from top to max(self.max_level, level+1) with ef=1
         let mut curr_ep = ep;
         for l in (level + 1..=top_level).rev() {
-            let l_actual = if l <= self.max_level { l } else { self.max_level };
+            let l_actual = if l <= self.max_level {
+                l
+            } else {
+                self.max_level
+            };
             let ep_dist = self.distance_to_vector(vector, curr_ep);
             let mut candidates: BinaryHeap<DistIdx> = BinaryHeap::new();
             candidates.push(DistIdx::new(ep_dist, curr_ep));
@@ -631,7 +650,11 @@ impl HnswIndex {
     // ─── Neighbor Selection ─────────────────────────────────────────
 
     /// Simple neighbor selection: take the closest `M` candidates.
-    fn select_neighbors_simple(&self, candidates: &BinaryHeap<DistIdx>, layer: usize) -> Vec<usize> {
+    fn select_neighbors_simple(
+        &self,
+        candidates: &BinaryHeap<DistIdx>,
+        layer: usize,
+    ) -> Vec<usize> {
         let max_conn = if layer == 0 {
             self.config.m_max0
         } else {
@@ -641,12 +664,13 @@ impl HnswIndex {
         // candidates is a max-heap of negative distances (farthest first)
         // We need to convert to a sorted list of closest first
         let mut all: Vec<DistIdx> = candidates.iter().cloned().collect();
-        all.sort_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap_or(std::cmp::Ordering::Equal));
+        all.sort_by(|a, b| {
+            a.distance
+                .partial_cmp(&b.distance)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
 
-        all.into_iter()
-            .take(max_conn)
-            .map(|d| d.index)
-            .collect()
+        all.into_iter().take(max_conn).map(|d| d.index).collect()
     }
 
     /// Heuristic neighbor selection: picks diverse neighbors that cover
@@ -670,7 +694,11 @@ impl HnswIndex {
 
         // Convert max-heap to a sorted list (closest first)
         let mut all_pairs: Vec<DistIdx> = candidates.iter().cloned().collect();
-        all_pairs.sort_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap_or(std::cmp::Ordering::Equal));
+        all_pairs.sort_by(|a, b| {
+            a.distance
+                .partial_cmp(&b.distance)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
 
         let mut result = Vec::new();
         let mut queue: Vec<DistIdx> = all_pairs;
@@ -730,7 +758,11 @@ impl HnswIndex {
             .map(|&n| DistIdx::new(self.distance_between(node_idx, n), n))
             .collect();
 
-        pairs.sort_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap_or(std::cmp::Ordering::Equal));
+        pairs.sort_by(|a, b| {
+            a.distance
+                .partial_cmp(&b.distance)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
 
         if self.config.use_heuristic {
             // Re-run the heuristic selection
@@ -757,11 +789,8 @@ impl HnswIndex {
             self.graphs[node_idx][layer] = result;
         } else {
             // Simple: keep the closest max_conn
-            self.graphs[node_idx][layer] = pairs
-                .into_iter()
-                .take(max_conn)
-                .map(|d| d.index)
-                .collect();
+            self.graphs[node_idx][layer] =
+                pairs.into_iter().take(max_conn).map(|d| d.index).collect();
         }
     }
 
@@ -795,7 +824,9 @@ impl HnswIndex {
 
     /// Get a copy of a stored vector as a crate::Hypervector.
     pub fn get_hypervector(&self, index: usize) -> Option<Hypervector> {
-        self.vectors.get(index).map(|bits| Hypervector { bits: *bits })
+        self.vectors
+            .get(index)
+            .map(|bits| Hypervector { bits: *bits })
     }
 
     /// Get metadata for an entry.
@@ -848,21 +879,28 @@ impl HnswIndex {
         }
 
         // Build (index, dmu_score) pairs
-        let mut scored: Vec<(usize, f64)> = base.indices.iter().map(|&idx| {
-            let dist = self.distance_to_vector(query, idx);
-            let age = current_tick.saturating_sub(
-                self.metadata.get(idx)
+        let mut scored: Vec<(usize, f64)> = base
+            .indices
+            .iter()
+            .map(|&idx| {
+                let dist = self.distance_to_vector(query, idx);
+                let age = current_tick.saturating_sub(
+                    self.metadata
+                        .get(idx)
+                        .and_then(|m| m.as_ref())
+                        .map(|m| m.creation_tick)
+                        .unwrap_or(0),
+                );
+                let retrievals = self
+                    .metadata
+                    .get(idx)
                     .and_then(|m| m.as_ref())
-                    .map(|m| m.creation_tick)
-                    .unwrap_or(0)
-            );
-            let retrievals = self.metadata.get(idx)
-                .and_then(|m| m.as_ref())
-                .map(|m| m.retrieval_count)
-                .unwrap_or(0);
-            let score = crate::drift::dmu_score(dist, age, retrievals, salience, dmu_params);
-            (idx, score)
-        }).collect();
+                    .map(|m| m.retrieval_count)
+                    .unwrap_or(0);
+                let score = crate::drift::dmu_score(dist, age, retrievals, salience, dmu_params);
+                (idx, score)
+            })
+            .collect();
 
         // Sort by DMU score descending
         scored.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
@@ -913,14 +951,19 @@ impl HnswIndex {
         buf.write_all(&1u64.to_le_bytes()).unwrap();
 
         // Config (all stored as u64 for consistent 8-byte alignment)
-        buf.write_all(&(self.config.m as u64).to_le_bytes()).unwrap();
-        buf.write_all(&(self.config.m_max0 as u64).to_le_bytes()).unwrap();
-        buf.write_all(&(self.config.ef_construction as u64).to_le_bytes()).unwrap();
-        buf.write_all(&(self.config.ef_search as u64).to_le_bytes()).unwrap();
+        buf.write_all(&(self.config.m as u64).to_le_bytes())
+            .unwrap();
+        buf.write_all(&(self.config.m_max0 as u64).to_le_bytes())
+            .unwrap();
+        buf.write_all(&(self.config.ef_construction as u64).to_le_bytes())
+            .unwrap();
+        buf.write_all(&(self.config.ef_search as u64).to_le_bytes())
+            .unwrap();
         buf.write_all(&self.config.ml.to_le_bytes()).unwrap();
 
         // Number of vectors
-        buf.write_all(&(self.vectors.len() as u64).to_le_bytes()).unwrap();
+        buf.write_all(&(self.vectors.len() as u64).to_le_bytes())
+            .unwrap();
 
         // Vectors
         for v in &self.vectors {
@@ -931,7 +974,8 @@ impl HnswIndex {
 
         // Graph structure (all lengths stored as u64 for alignment)
         for node_graph in &self.graphs {
-            buf.write_all(&(node_graph.len() as u64).to_le_bytes()).unwrap();
+            buf.write_all(&(node_graph.len() as u64).to_le_bytes())
+                .unwrap();
             for layer in node_graph {
                 buf.write_all(&(layer.len() as u64).to_le_bytes()).unwrap();
                 for &neighbor in layer {
@@ -943,14 +987,14 @@ impl HnswIndex {
         // Entry point and max level
         let ep_val = self.enter_point.unwrap_or(0) as u64;
         buf.write_all(&ep_val.to_le_bytes()).unwrap();
-        buf.write_all(&(self.max_level as u64).to_le_bytes()).unwrap();
+        buf.write_all(&(self.max_level as u64).to_le_bytes())
+            .unwrap();
 
         buf
     }
 
     /// Deserialize the index from a byte buffer.
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, String> {
-        
         let pos = &mut 0usize;
 
         let _read_u32 = |buf: &[u8], pos: &mut usize| -> Result<u32, String> {
@@ -1071,7 +1115,9 @@ impl HnswIndex {
             vector_bytes,
             edge_bytes,
             metadata_bytes,
-            graph_overhead_bytes: self.graphs.iter()
+            graph_overhead_bytes: self
+                .graphs
+                .iter()
                 .map(|g| g.len() * std::mem::size_of::<Vec<usize>>())
                 .sum(),
             total_bytes_estimate: vector_bytes + edge_bytes + metadata_bytes,
@@ -1121,7 +1167,9 @@ mod tests {
         let mut bits = [0u64; 160];
         let mut x = seed;
         for i in 0..160 {
-            x = x.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            x = x
+                .wrapping_mul(6364136223846793005)
+                .wrapping_add(1442695040888963407);
             bits[i] = x;
         }
         bits
@@ -1184,7 +1232,12 @@ mod tests {
             let (nearest_idx, dist) = result.closest().unwrap();
             total_dist += dist;
             // Results should be within a reasonable distance of the query
-            assert!(dist < 0.60, "Distance should be <0.60 for vector {}, got {}", i, dist);
+            assert!(
+                dist < 0.60,
+                "Distance should be <0.60 for vector {}, got {}",
+                i,
+                dist
+            );
         }
         assert!(found_any, "Should find at least some results");
     }
@@ -1210,7 +1263,12 @@ mod tests {
 
         // Verify we get 5 results with reasonable distances
         for (i, dist) in result.indices.iter().zip(result.distances.iter()) {
-            assert!(*dist < 0.60, "Distance for result {} should be <0.60, got {}", i, dist);
+            assert!(
+                *dist < 0.60,
+                "Distance for result {} should be <0.60, got {}",
+                i,
+                dist
+            );
         }
     }
 
@@ -1294,7 +1352,11 @@ mod tests {
         let d_diff = HnswIndex::hypervector_distance(&v1, &v3);
 
         assert!(d_same < 0.001, "Same vector distance should be ~0");
-        assert!(d_diff > 0.40 && d_diff < 0.60, "Random vectors should have distance ~0.5, got {}", d_diff);
+        assert!(
+            d_diff > 0.40 && d_diff < 0.60,
+            "Random vectors should have distance ~0.5, got {}",
+            d_diff
+        );
     }
 
     #[test]
@@ -1338,13 +1400,19 @@ mod tests {
             .enumerate()
             .map(|(i, v)| DistIdx::new(HnswIndex::distance(&query, v), i))
             .collect();
-        linear.sort_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap_or(std::cmp::Ordering::Equal));
+        linear.sort_by(|a, b| {
+            a.distance
+                .partial_cmp(&b.distance)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
         let linear_top10: Vec<usize> = linear.into_iter().take(10).map(|d| d.index).collect();
 
         // The top-1 should be within 3 positions of the linear scan top-1
         // (HNSW is approximate — it finds an element very close to the true nearest)
         let true_nearest = linear_top10[0];
-        let hnsw_rank = linear_top10.iter().position(|&x| x == hnsw_result.indices[0])
+        let hnsw_rank = linear_top10
+            .iter()
+            .position(|&x| x == hnsw_result.indices[0])
             .unwrap_or(usize::MAX);
         assert!(
             hnsw_rank < 3,
@@ -1353,7 +1421,11 @@ mod tests {
         );
 
         // Most of the top-10 should overlap (HNSW is approximate)
-        let overlap = hnsw_result.indices.iter().filter(|x| linear_top10.contains(x)).count();
+        let overlap = hnsw_result
+            .indices
+            .iter()
+            .filter(|x| linear_top10.contains(x))
+            .count();
         assert!(
             overlap >= 4,
             "HNSW should have >=4/10 overlap with linear scan, got {}/10",

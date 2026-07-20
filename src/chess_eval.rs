@@ -56,8 +56,18 @@ pub fn parse_fen(fen: &str) -> Vec<(char, u8, u8)> {
 /// Quick piece name (e.g., "wP" for white pawn, "bK" for black king).
 pub(crate) fn piece_label(ch: char) -> &'static str {
     match ch {
-        'P' => "wP", 'N' => "wN", 'B' => "wB", 'R' => "wR", 'Q' => "wQ", 'K' => "wK",
-        'p' => "bP", 'n' => "bN", 'b' => "bB", 'r' => "bR", 'q' => "bQ", 'k' => "bK",
+        'P' => "wP",
+        'N' => "wN",
+        'B' => "wB",
+        'R' => "wR",
+        'Q' => "wQ",
+        'K' => "wK",
+        'p' => "bP",
+        'n' => "bN",
+        'b' => "bB",
+        'r' => "bR",
+        'q' => "bQ",
+        'k' => "bK",
         _ => "??",
     }
 }
@@ -142,11 +152,7 @@ pub fn encode_position(fen: &str) -> Hypervector {
 
     // Piece-square encoding — each piece contributes one term
     for &(ch, rank, file) in &pieces {
-        let square = format!(
-            "{}{}",
-            (b'a' + file) as char,
-            rank + 1
-        );
+        let square = format!("{}{}", (b'a' + file) as char, rank + 1);
         let label = format!("{}_{}", piece_label(ch), square);
         hvs.push(Hypervector::encode_text_ngram(&label, 3));
     }
@@ -163,7 +169,11 @@ pub fn encode_position(fen: &str) -> Hypervector {
 
     // Side to move (extracted from FEN's 2nd token: "w" or "b")
     let side = fen.split_whitespace().nth(1).unwrap_or("w");
-    let side_label = if side == "w" { "stm_white" } else { "stm_black" };
+    let side_label = if side == "w" {
+        "stm_white"
+    } else {
+        "stm_black"
+    };
     hvs.push(Hypervector::encode_text_ngram(side_label, 3));
 
     // Castle rights (extracted from FEN's 3rd token: "KQkq", "Kkq", "-", etc.)
@@ -188,14 +198,20 @@ pub fn encode_position(fen: &str) -> Hypervector {
 /// Build an 8×8 board from parsed FEN pieces: board[rank][file] = Some(ch).
 /// rank 0 = rank 1 (white's back rank), rank 7 = rank 8.
 /// Returns (board, white_king_sq, black_king_sq) for convenience.
-fn build_board(pieces: &[(char, u8, u8)]) -> ([[Option<char>; 8]; 8], Option<(u8, u8)>, Option<(u8, u8)>) {
+fn build_board(
+    pieces: &[(char, u8, u8)],
+) -> ([[Option<char>; 8]; 8], Option<(u8, u8)>, Option<(u8, u8)>) {
     let mut board = [[None; 8]; 8];
     let mut wk = None;
     let mut bk = None;
     for &(ch, rank, file) in pieces {
         board[rank as usize][file as usize] = Some(ch);
-        if ch == 'K' { wk = Some((rank, file)); }
-        if ch == 'k' { bk = Some((rank, file)); }
+        if ch == 'K' {
+            wk = Some((rank, file));
+        }
+        if ch == 'k' {
+            bk = Some((rank, file));
+        }
     }
     (board, wk, bk)
 }
@@ -229,8 +245,14 @@ fn pawn_attacks(ch: char, rank: u8, file: u8) -> Vec<(u8, u8)> {
 /// Knight L-shaped moves.
 fn knight_attacks(rank: u8, file: u8) -> Vec<(u8, u8)> {
     let offsets = [
-        (2, 1), (2, -1), (-2, 1), (-2, -1),
-        (1, 2), (1, -2), (-1, 2), (-1, -2),
+        (2, 1),
+        (2, -1),
+        (-2, 1),
+        (-2, -1),
+        (1, 2),
+        (1, -2),
+        (-1, 2),
+        (-1, -2),
     ];
     let mut sqs = Vec::with_capacity(8);
     for &(dr, df) in &offsets {
@@ -248,7 +270,9 @@ fn king_attacks(rank: u8, file: u8) -> Vec<(u8, u8)> {
     let mut sqs = Vec::with_capacity(8);
     for dr in [-1, 0, 1] {
         for df in [-1, 0, 1] {
-            if dr == 0 && df == 0 { continue; }
+            if dr == 0 && df == 0 {
+                continue;
+            }
             let nr = rank as i8 + dr;
             let nf = file as i8 + df;
             if nr >= 0 && nr < 8 && nf >= 0 && nf < 8 {
@@ -276,7 +300,12 @@ fn raycast(rank: u8, file: u8, dr: i8, df: i8, board: &[[Option<char>; 8]; 8]) -
 }
 
 /// All squares a piece attacks (including moves, not just captures).
-pub(crate) fn compute_attacks(ch: char, rank: u8, file: u8, board: &[[Option<char>; 8]; 8]) -> Vec<(u8, u8)> {
+pub(crate) fn compute_attacks(
+    ch: char,
+    rank: u8,
+    file: u8,
+    board: &[[Option<char>; 8]; 8],
+) -> Vec<(u8, u8)> {
     match piece_type(ch) {
         'P' => pawn_attacks(ch, rank, file),
         'N' => knight_attacks(rank, file),
@@ -296,8 +325,16 @@ pub(crate) fn compute_attacks(ch: char, rank: u8, file: u8, board: &[[Option<cha
         }
         'Q' => {
             let mut sqs = Vec::new();
-            for &(dr, df) in &[(1, 0), (-1, 0), (0, 1), (0, -1),
-                               (1, 1), (1, -1), (-1, 1), (-1, -1)] {
+            for &(dr, df) in &[
+                (1, 0),
+                (-1, 0),
+                (0, 1),
+                (0, -1),
+                (1, 1),
+                (1, -1),
+                (-1, 1),
+                (-1, -1),
+            ] {
                 sqs.extend(raycast(rank, file, dr, df, board));
             }
             sqs
@@ -309,17 +346,26 @@ pub(crate) fn compute_attacks(ch: char, rank: u8, file: u8, board: &[[Option<cha
 
 /// Count pawn shields for king safety: number of friendly pawns within 3 squares
 /// of the king (on the same or adjacent files).
-fn king_pawn_shield(king_rank: u8, king_file: u8, color_is_white: bool, board: &[[Option<char>; 8]; 8]) -> u32 {
+fn king_pawn_shield(
+    king_rank: u8,
+    king_file: u8,
+    color_is_white: bool,
+    board: &[[Option<char>; 8]; 8],
+) -> u32 {
     let pawn_ch = if color_is_white { 'P' } else { 'p' };
     let mut count = 0;
     let rank_dir: i8 = if color_is_white { 1 } else { -1 };
     // Check squares: king's file and adjacent files, up to 3 ranks ahead
     for df in -1..=1 {
         let nf = king_file as i8 + df;
-        if nf < 0 || nf >= 8 { continue; }
+        if nf < 0 || nf >= 8 {
+            continue;
+        }
         for dr in 1..=3 {
             let nr = king_rank as i8 + dr * rank_dir;
-            if nr < 0 || nr >= 8 { continue; }
+            if nr < 0 || nr >= 8 {
+                continue;
+            }
             if board[nr as usize][nf as usize] == Some(pawn_ch) {
                 count += 1;
             }
@@ -339,9 +385,15 @@ fn is_passed_pawn(rank: u8, file: u8, is_white: bool, board: &[[Option<char>; 8]
     };
     for df in -1..=1 {
         let nf = file as i8 + df;
-        if nf < 0 || nf >= 8 { continue; }
+        if nf < 0 || nf >= 8 {
+            continue;
+        }
         let mut r = start as i8;
-        while if is_white { r < end as i8 } else { r > end as i8 } {
+        while if is_white {
+            r < end as i8
+        } else {
+            r > end as i8
+        } {
             if r >= 0 && r < 8 {
                 if board[r as usize][nf as usize] == Some(enemy_pawn) {
                     return false;
@@ -370,7 +422,8 @@ pub fn extract_chess_triples(fen: &str) -> Vec<(String, String, String)> {
     let mut triples: Vec<(String, String, String)> = Vec::new();
 
     // Dictionary of pieces for quick lookup: (label, ch, rank, file)
-    let piece_info: Vec<(&str, char, u8, u8)> = pieces.iter()
+    let piece_info: Vec<(&str, char, u8, u8)> = pieces
+        .iter()
         .map(|&(ch, r, f)| (piece_label(ch), ch, r, f))
         .collect();
 
@@ -405,11 +458,7 @@ pub fn extract_chess_triples(fen: &str) -> Vec<(String, String, String)> {
                     // Empty square → control of key squares (center + extended center)
                     if (tr == 3 || tr == 4) && (tf >= 2 && tf <= 5) {
                         let sq = square_name(tr, tf);
-                        triples.push((
-                            attacker_label.to_string(),
-                            "controls".to_string(),
-                            sq,
-                        ));
+                        triples.push((attacker_label.to_string(), "controls".to_string(), sq));
                     }
                 }
             }
@@ -419,11 +468,19 @@ pub fn extract_chess_triples(fen: &str) -> Vec<(String, String, String)> {
     // ── Pass 2: King safety ───────────────────────────────────────────
     if let Some((kr, kf)) = wk_sq {
         let shield = king_pawn_shield(kr, kf, true, &board);
-        triples.push(("wK".to_string(), "shielded_by".to_string(), format!("{}", shield)));
+        triples.push((
+            "wK".to_string(),
+            "shielded_by".to_string(),
+            format!("{}", shield),
+        ));
     }
     if let Some((kr, kf)) = bk_sq {
         let shield = king_pawn_shield(kr, kf, false, &board);
-        triples.push(("bK".to_string(), "shielded_by".to_string(), format!("{}", shield)));
+        triples.push((
+            "bK".to_string(),
+            "shielded_by".to_string(),
+            format!("{}", shield),
+        ));
     }
 
     // ── Pass 3: Passed pawns ──────────────────────────────────────────
@@ -431,7 +488,11 @@ pub fn extract_chess_triples(fen: &str) -> Vec<(String, String, String)> {
         if piece_type(ch) == 'P' {
             let is_white = ch.is_uppercase();
             if is_passed_pawn(rank, file, is_white, &board) {
-                triples.push((label.to_string(), "passed".to_string(), square_name(rank, file)));
+                triples.push((
+                    label.to_string(),
+                    "passed".to_string(),
+                    square_name(rank, file),
+                ));
             }
         }
     }
@@ -439,28 +500,56 @@ pub fn extract_chess_triples(fen: &str) -> Vec<(String, String, String)> {
     // ── Pass 4: Castling status ───────────────────────────────────────
     let castle_token = fen.split_whitespace().nth(2).unwrap_or("-");
     if castle_token.contains('K') {
-        triples.push(("white".to_string(), "can_castle".to_string(), "kingside".to_string()));
+        triples.push((
+            "white".to_string(),
+            "can_castle".to_string(),
+            "kingside".to_string(),
+        ));
     }
     if castle_token.contains('Q') {
-        triples.push(("white".to_string(), "can_castle".to_string(), "queenside".to_string()));
+        triples.push((
+            "white".to_string(),
+            "can_castle".to_string(),
+            "queenside".to_string(),
+        ));
     }
     if castle_token.contains('k') {
-        triples.push(("black".to_string(), "can_castle".to_string(), "kingside".to_string()));
+        triples.push((
+            "black".to_string(),
+            "can_castle".to_string(),
+            "kingside".to_string(),
+        ));
     }
     if castle_token.contains('q') {
-        triples.push(("black".to_string(), "can_castle".to_string(), "queenside".to_string()));
+        triples.push((
+            "black".to_string(),
+            "can_castle".to_string(),
+            "queenside".to_string(),
+        ));
     }
 
     // ── Pass 5: Material balance ──────────────────────────────────────
     let mat = compute_material_balance(&pieces);
-    triples.push(("white".to_string(), "material".to_string(), format!("{:+}", mat)));
+    triples.push((
+        "white".to_string(),
+        "material".to_string(),
+        format!("{:+}", mat),
+    ));
 
     // ── Pass 6: Side to move ──────────────────────────────────────────
     let side = fen.split_whitespace().nth(1).unwrap_or("w");
     if side == "w" {
-        triples.push(("white".to_string(), "to_move".to_string(), "true".to_string()));
+        triples.push((
+            "white".to_string(),
+            "to_move".to_string(),
+            "true".to_string(),
+        ));
     } else {
-        triples.push(("black".to_string(), "to_move".to_string(), "true".to_string()));
+        triples.push((
+            "black".to_string(),
+            "to_move".to_string(),
+            "true".to_string(),
+        ));
     }
 
     triples
@@ -525,9 +614,13 @@ pub struct TrackedPosition {
 fn is_isolated_pawn(_rank: u8, file: u8, is_white: bool, pieces: &[(char, u8, u8)]) -> bool {
     let my_pawn = if is_white { 'P' } else { 'p' };
     for df in -1..=1 {
-        if df == 0 { continue; }
+        if df == 0 {
+            continue;
+        }
         let nf = file as i8 + df;
-        if nf < 0 || nf >= 8 { continue; }
+        if nf < 0 || nf >= 8 {
+            continue;
+        }
         for &(ch, _, pf) in pieces {
             if ch == my_pawn && pf as i8 == nf {
                 return false; // friendly pawn on adjacent file
@@ -549,7 +642,10 @@ fn is_doubled_pawn(rank: u8, file: u8, is_white: bool, pieces: &[(char, u8, u8)]
 }
 
 /// Count mobility (total attacked squares) for each side.
-fn compute_mobility_counts(pieces: &[(char, u8, u8)], board: &[[Option<char>; 8]; 8]) -> (u32, u32) {
+fn compute_mobility_counts(
+    pieces: &[(char, u8, u8)],
+    board: &[[Option<char>; 8]; 8],
+) -> (u32, u32) {
     let mut white_sqs = 0u32;
     let mut black_sqs = 0u32;
     for &(ch, rank, file) in pieces {
@@ -588,9 +684,9 @@ fn build_attack_map(
     board: &[[Option<char>; 8]; 8],
 ) -> (Vec<Vec<usize>>, Vec<Vec<usize>>, Vec<Vec<usize>>) {
     let n = pieces.len();
-    let mut attacks_from = vec![Vec::new(); n];  // piece[i] attacks these enemy indices
-    let mut attacks_to = vec![Vec::new(); n];    // enemy indices that attack piece[i]
-    let mut defenses_to = vec![Vec::new(); n];   // friendly indices that defend piece[i]
+    let mut attacks_from = vec![Vec::new(); n]; // piece[i] attacks these enemy indices
+    let mut attacks_to = vec![Vec::new(); n]; // enemy indices that attack piece[i]
+    let mut defenses_to = vec![Vec::new(); n]; // friendly indices that defend piece[i]
 
     for (i, &(ch, rank, file)) in pieces.iter().enumerate() {
         let attacked_sqs = compute_attacks(ch, rank, file, &board);
@@ -630,7 +726,11 @@ fn detect_hanging(
         if n_attackers > 0 && n_attackers > n_defenders {
             let label = piece_label(ch);
             let diff = n_attackers - n_defenders;
-            triples.push((label.to_string(), "hanging".to_string(), format!("{}", diff)));
+            triples.push((
+                label.to_string(),
+                "hanging".to_string(),
+                format!("{}", diff),
+            ));
         }
     }
     triples
@@ -648,7 +748,11 @@ fn detect_undefended(
         // Undefended = attacked but not defended
         if attacks_to[i].len() > 0 && defenses_to[i].is_empty() {
             let label = piece_label(ch);
-            triples.push((label.to_string(), "undefended".to_string(), "true".to_string()));
+            triples.push((
+                label.to_string(),
+                "undefended".to_string(),
+                "true".to_string(),
+            ));
         }
     }
     triples
@@ -664,7 +768,8 @@ fn detect_forks(
         let n_attacked = attacks_from[i].len();
         if n_attacked >= 2 {
             let label = piece_label(ch);
-            let total_value: i32 = attacks_from[i].iter()
+            let total_value: i32 = attacks_from[i]
+                .iter()
                 .map(|&j| piece_value(pieces[j].0))
                 .sum();
             triples.push((
@@ -682,7 +787,9 @@ fn detect_forks(
 fn direction_toward_king(rank: u8, file: u8, king_rank: u8, king_file: u8) -> Option<(i8, i8)> {
     let dr = king_rank as i8 - rank as i8;
     let df = king_file as i8 - file as i8;
-    if dr == 0 && df == 0 { return None; }
+    if dr == 0 && df == 0 {
+        return None;
+    }
     let adr = dr.abs();
     let adf = df.abs();
     if (dr == 0 || df == 0 || adr == adf) && (adr <= 7 && adf <= 7) {
@@ -704,11 +811,16 @@ fn detect_pins(
 ) -> Vec<(String, String, String)> {
     let mut triples = Vec::new();
     let mut pin_check = |ch: char, rank: u8, file: u8, king_sq: Option<(u8, u8)>| {
-        let king = match king_sq { Some(k) => k, None => return };
+        let king = match king_sq {
+            Some(k) => k,
+            None => return,
+        };
         // Check direction from this piece toward its king
         if let Some((udr, udf)) = direction_toward_king(rank, file, king.0, king.1) {
             // If this piece is NOT the king itself
-            if piece_type(ch) == 'K' { return; }
+            if piece_type(ch) == 'K' {
+                return;
+            }
             // Check if there's an enemy slider behind this piece (away from king)
             let check_rank = rank as i8 - udr;
             let check_file = file as i8 - udf;
@@ -718,14 +830,18 @@ fn detect_pins(
                         let bt = piece_type(behind_ch);
                         // Sliding pieces that attack along this direction
                         let can_pin = if udr != 0 && udf != 0 {
-                            bt == 'B' || bt == 'Q'  // diagonal
+                            bt == 'B' || bt == 'Q' // diagonal
                         } else {
-                            bt == 'R' || bt == 'Q'  // orthogonal
+                            bt == 'R' || bt == 'Q' // orthogonal
                         };
                         if can_pin {
                             let label = piece_label(ch);
                             let pinner = piece_label(behind_ch);
-                            triples.push((label.to_string(), "pinned_by".to_string(), pinner.to_string()));
+                            triples.push((
+                                label.to_string(),
+                                "pinned_by".to_string(),
+                                pinner.to_string(),
+                            ));
                         }
                     }
                 }
@@ -751,8 +867,12 @@ fn detect_open_files(board: &[[Option<char>; 8]; 8]) -> Vec<(String, String, Str
         let mut black_pawn = false;
         for rank in 0..8u8 {
             if let Some(ch) = board[rank as usize][file as usize] {
-                if ch == 'P' { white_pawn = true; }
-                if ch == 'p' { black_pawn = true; }
+                if ch == 'P' {
+                    white_pawn = true;
+                }
+                if ch == 'p' {
+                    black_pawn = true;
+                }
             }
         }
         let fn_name = format!("{}", (b'a' + file) as char);
@@ -777,7 +897,9 @@ fn detect_king_exposure(
             let is_white = ch.is_uppercase();
             for df in -1..=1 {
                 let nf = file as i8 + df;
-                if nf < 0 || nf >= 8 { continue; }
+                if nf < 0 || nf >= 8 {
+                    continue;
+                }
                 // Check if any pawn exists on this file
                 let mut has_friendly_pawn = false;
                 let mut has_enemy_pawn = false;
@@ -795,12 +917,18 @@ fn detect_king_exposure(
                 let fn_name = format!("{}", (b'a' + nf as u8) as char);
                 if !has_friendly_pawn && !has_enemy_pawn {
                     // Open file next to king
-                    triples.push((format!("{}_king", if is_white { "w" } else { "b" }),
-                        "adjacent_open".to_string(), fn_name));
+                    triples.push((
+                        format!("{}_king", if is_white { "w" } else { "b" }),
+                        "adjacent_open".to_string(),
+                        fn_name,
+                    ));
                 } else if !has_friendly_pawn {
                     // Semi-open file next to king (enemy pawn only)
-                    triples.push((format!("{}_king", if is_white { "w" } else { "b" }),
-                        "adjacent_semi_open".to_string(), fn_name));
+                    triples.push((
+                        format!("{}_king", if is_white { "w" } else { "b" }),
+                        "adjacent_semi_open".to_string(),
+                        fn_name,
+                    ));
                 }
             }
         }
@@ -817,11 +945,17 @@ fn detect_imprisoned(
     for &(ch, rank, file) in pieces {
         // Only bishops and knights get imprisoned (pawns/rooks/queens/kings naturally have moves)
         let pt = piece_type(ch);
-        if pt != 'B' && pt != 'N' { continue; }
+        if pt != 'B' && pt != 'N' {
+            continue;
+        }
         let sqs = compute_attacks(ch, rank, file, board);
         if sqs.is_empty() {
             let label = piece_label(ch);
-            triples.push((label.to_string(), "imprisoned".to_string(), "true".to_string()));
+            triples.push((
+                label.to_string(),
+                "imprisoned".to_string(),
+                "true".to_string(),
+            ));
         }
     }
     triples
@@ -851,9 +985,17 @@ fn detect_dominant_rooks(
             }
             let label = piece_label(ch);
             if !has_friendly_pawn && !has_enemy_pawn {
-                triples.push((label.to_string(), "on_open_file".to_string(), "true".to_string()));
+                triples.push((
+                    label.to_string(),
+                    "on_open_file".to_string(),
+                    "true".to_string(),
+                ));
             } else if !has_friendly_pawn {
-                triples.push((label.to_string(), "on_semi_open_file".to_string(), "true".to_string()));
+                triples.push((
+                    label.to_string(),
+                    "on_semi_open_file".to_string(),
+                    "true".to_string(),
+                ));
             }
         }
     }
@@ -869,12 +1011,14 @@ fn detect_dominant_rooks(
 ///   2: king_safety — pawn shield, castling, king exposure (open files near king)
 ///   3: activity   — open files, imprisoned pieces, dominant rooks (replaces old mobility)
 ///   4: structure  — passed/isolated/doubled pawns, side to move
-pub fn extract_rich_tracked_triples(fen: &str) -> (
-    Vec<(String, String, String)>,  // material
-    Vec<(String, String, String)>,  // tactics + attack/defense
-    Vec<(String, String, String)>,  // king_safety (enhanced)
-    Vec<(String, String, String)>,  // activity
-    Vec<(String, String, String)>,  // structure (enhanced)
+pub fn extract_rich_tracked_triples(
+    fen: &str,
+) -> (
+    Vec<(String, String, String)>, // material
+    Vec<(String, String, String)>, // tactics + attack/defense
+    Vec<(String, String, String)>, // king_safety (enhanced)
+    Vec<(String, String, String)>, // activity
+    Vec<(String, String, String)>, // structure (enhanced)
 ) {
     let pieces = parse_fen(fen);
     let (board, wk_sq, bk_sq) = build_board(&pieces);
@@ -890,7 +1034,11 @@ pub fn extract_rich_tracked_triples(fen: &str) -> (
 
     // ── Track 0: Material ──────────────────────────────────────────────────
     let mat = compute_material_balance(&pieces);
-    material_triples.push(("white".to_string(), "material".to_string(), format!("{:+}", mat)));
+    material_triples.push((
+        "white".to_string(),
+        "material".to_string(),
+        format!("{:+}", mat),
+    ));
 
     // ── Track 1: Tactics (attack/defense pairs + tactical patterns) ────────
     // Old attack/defense pairs (dense, informative)
@@ -905,12 +1053,14 @@ pub fn extract_rich_tracked_triples(fen: &str) -> (
                     if piece_type(target_ch) != 'P' || piece_type(ch) != 'P' {
                         tactics_triples.push((
                             attacker_label.to_string(),
-                            "defends".to_string(), target_label.to_string(),
+                            "defends".to_string(),
+                            target_label.to_string(),
                         ));
                     }
                 } else {
                     tactics_triples.push((
-                        attacker_label.to_string(), "attacks".to_string(),
+                        attacker_label.to_string(),
+                        "attacks".to_string(),
                         target_label.to_string(),
                     ));
                 }
@@ -929,21 +1079,42 @@ pub fn extract_rich_tracked_triples(fen: &str) -> (
     // ── Track 2: King Safety (enhanced with exposure) ───────────────────────
     if let Some((kr, kf)) = wk_sq {
         let shield = king_pawn_shield(kr, kf, true, &board);
-        king_triples.push(("wK".to_string(), "shielded_by".to_string(), fmt_shield(shield)));
+        king_triples.push((
+            "wK".to_string(),
+            "shielded_by".to_string(),
+            fmt_shield(shield),
+        ));
     }
     if let Some((kr, kf)) = bk_sq {
         let shield = king_pawn_shield(kr, kf, false, &board);
-        king_triples.push(("bK".to_string(), "shielded_by".to_string(), fmt_shield(shield)));
+        king_triples.push((
+            "bK".to_string(),
+            "shielded_by".to_string(),
+            fmt_shield(shield),
+        ));
     }
     // King exposure (NEW)
     let exposure = detect_king_exposure(&pieces, &board);
     king_triples.extend(exposure);
     // Castling
     let castle_token = fen.split_whitespace().nth(2).unwrap_or("-");
-    for (side, token) in [("white", 'K'), ("white", 'Q'), ("black", 'k'), ("black", 'q')] {
+    for (side, token) in [
+        ("white", 'K'),
+        ("white", 'Q'),
+        ("black", 'k'),
+        ("black", 'q'),
+    ] {
         if castle_token.contains(token) {
-            king_triples.push((side.to_string(), "can_castle".to_string(),
-                if token.is_uppercase() { "kingside" } else { "queenside" }.to_string()));
+            king_triples.push((
+                side.to_string(),
+                "can_castle".to_string(),
+                if token.is_uppercase() {
+                    "kingside"
+                } else {
+                    "queenside"
+                }
+                .to_string(),
+            ));
         }
     }
 
@@ -961,33 +1132,64 @@ pub fn extract_rich_tracked_triples(fen: &str) -> (
             let label = piece_label(ch);
             let is_white = ch.is_uppercase();
             if is_passed_pawn(rank, file, is_white, &board) {
-                structure_triples.push((label.to_string(), "passed".to_string(), square_name(rank, file)));
+                structure_triples.push((
+                    label.to_string(),
+                    "passed".to_string(),
+                    square_name(rank, file),
+                ));
             }
             if is_isolated_pawn(rank, file, is_white, &pieces) {
-                structure_triples.push((label.to_string(), "isolated".to_string(), square_name(rank, file)));
+                structure_triples.push((
+                    label.to_string(),
+                    "isolated".to_string(),
+                    square_name(rank, file),
+                ));
             }
             if is_doubled_pawn(rank, file, is_white, &pieces) {
-                structure_triples.push((label.to_string(), "doubled".to_string(), square_name(rank, file)));
+                structure_triples.push((
+                    label.to_string(),
+                    "doubled".to_string(),
+                    square_name(rank, file),
+                ));
             }
         }
     }
     // Side to move
     let side = fen.split_whitespace().nth(1).unwrap_or("w");
     if side == "w" {
-        structure_triples.push(("white".to_string(), "to_move".to_string(), "true".to_string()));
+        structure_triples.push((
+            "white".to_string(),
+            "to_move".to_string(),
+            "true".to_string(),
+        ));
     } else {
-        structure_triples.push(("black".to_string(), "to_move".to_string(), "true".to_string()));
+        structure_triples.push((
+            "black".to_string(),
+            "to_move".to_string(),
+            "true".to_string(),
+        ));
     }
 
-    (material_triples, tactics_triples, king_triples, activity_triples, structure_triples)
+    (
+        material_triples,
+        tactics_triples,
+        king_triples,
+        activity_triples,
+        structure_triples,
+    )
 }
 
 /// Format pawn shield count into a relation-friendly string.
 fn fmt_shield(count: u32) -> String {
-    if count == 0 { "none".to_string() }
-    else if count <= 2 { "weak".to_string() }
-    else if count <= 4 { "moderate".to_string() }
-    else { "strong".to_string() }
+    if count == 0 {
+        "none".to_string()
+    } else if count <= 2 {
+        "weak".to_string()
+    } else if count <= 4 {
+        "moderate".to_string()
+    } else {
+        "strong".to_string()
+    }
 }
 
 /// Encode a chess position using the rich 5-track feature set.
@@ -995,26 +1197,29 @@ pub fn encode_rich_tracked_position(fen: &str) -> TrackedPosition {
     let (material, tactics, king_safety, activity, structure) = extract_rich_tracked_triples(fen);
     TrackedPosition {
         material: encode_triple_bundle(&material),
-        attacks: encode_triple_bundle(&tactics),     // reused field: now "tactics"
+        attacks: encode_triple_bundle(&tactics), // reused field: now "tactics"
         king_safety: encode_triple_bundle(&king_safety),
-        mobility: encode_triple_bundle(&activity),   // reused field: now "activity"
+        mobility: encode_triple_bundle(&activity), // reused field: now "activity"
         structure: encode_triple_bundle(&structure),
         tactics: Hypervector::new_zero(),
     }
 }
 
 /// Extract categorized chess triples for tracked encoding.
-pub fn extract_tracked_triples(fen: &str) -> (
-    Vec<(String, String, String)>,  // material
-    Vec<(String, String, String)>,  // attacks + defenses
-    Vec<(String, String, String)>,  // king_safety
-    Vec<(String, String, String)>,  // mobility
-    Vec<(String, String, String)>,  // structure
-    Vec<(String, String, String)>,  // tactics (forks, pins, hanging)
+pub fn extract_tracked_triples(
+    fen: &str,
+) -> (
+    Vec<(String, String, String)>, // material
+    Vec<(String, String, String)>, // attacks + defenses
+    Vec<(String, String, String)>, // king_safety
+    Vec<(String, String, String)>, // mobility
+    Vec<(String, String, String)>, // structure
+    Vec<(String, String, String)>, // tactics (forks, pins, hanging)
 ) {
     let pieces = parse_fen(fen);
     let (board, wk_sq, bk_sq) = build_board(&pieces);
-    let piece_info: Vec<(&str, char, u8, u8)> = pieces.iter()
+    let piece_info: Vec<(&str, char, u8, u8)> = pieces
+        .iter()
         .map(|&(ch, r, f)| (piece_label(ch), ch, r, f))
         .collect();
 
@@ -1027,7 +1232,11 @@ pub fn extract_tracked_triples(fen: &str) -> (
 
     // ── Material ────────────────────────────────────────────────────────────
     let mat = compute_material_balance(&pieces);
-    material_triples.push(("white".to_string(), "material".to_string(), format!("{:+}", mat)));
+    material_triples.push((
+        "white".to_string(),
+        "material".to_string(),
+        format!("{:+}", mat),
+    ));
 
     // ── Attack/defense relations ────────────────────────────────────────────
     for &(attacker_label, ch, rank, file) in &piece_info {
@@ -1065,31 +1274,63 @@ pub fn extract_tracked_triples(fen: &str) -> (
     // ── King safety ─────────────────────────────────────────────────────────
     if let Some((kr, kf)) = wk_sq {
         let shield = king_pawn_shield(kr, kf, true, &board);
-        king_triples.push(("wK".to_string(), "shielded_by".to_string(), format!("{}", shield)));
+        king_triples.push((
+            "wK".to_string(),
+            "shielded_by".to_string(),
+            format!("{}", shield),
+        ));
     }
     if let Some((kr, kf)) = bk_sq {
         let shield = king_pawn_shield(kr, kf, false, &board);
-        king_triples.push(("bK".to_string(), "shielded_by".to_string(), format!("{}", shield)));
+        king_triples.push((
+            "bK".to_string(),
+            "shielded_by".to_string(),
+            format!("{}", shield),
+        ));
     }
     // Castling
     let castle_token = fen.split_whitespace().nth(2).unwrap_or("-");
     if castle_token.contains('K') {
-        king_triples.push(("white".to_string(), "can_castle".to_string(), "kingside".to_string()));
+        king_triples.push((
+            "white".to_string(),
+            "can_castle".to_string(),
+            "kingside".to_string(),
+        ));
     }
     if castle_token.contains('Q') {
-        king_triples.push(("white".to_string(), "can_castle".to_string(), "queenside".to_string()));
+        king_triples.push((
+            "white".to_string(),
+            "can_castle".to_string(),
+            "queenside".to_string(),
+        ));
     }
     if castle_token.contains('k') {
-        king_triples.push(("black".to_string(), "can_castle".to_string(), "kingside".to_string()));
+        king_triples.push((
+            "black".to_string(),
+            "can_castle".to_string(),
+            "kingside".to_string(),
+        ));
     }
     if castle_token.contains('q') {
-        king_triples.push(("black".to_string(), "can_castle".to_string(), "queenside".to_string()));
+        king_triples.push((
+            "black".to_string(),
+            "can_castle".to_string(),
+            "queenside".to_string(),
+        ));
     }
 
     // ── Mobility ────────────────────────────────────────────────────────────
     let (w_mob, b_mob) = compute_mobility_counts(&pieces, &board);
-    mobility_triples.push(("white".to_string(), "mobility".to_string(), format!("{}", w_mob)));
-    mobility_triples.push(("black".to_string(), "mobility".to_string(), format!("{}", b_mob)));
+    mobility_triples.push((
+        "white".to_string(),
+        "mobility".to_string(),
+        format!("{}", w_mob),
+    ));
+    mobility_triples.push((
+        "black".to_string(),
+        "mobility".to_string(),
+        format!("{}", b_mob),
+    ));
 
     // ── Structure: pawns + center control + side to move ────────────────────
     for &(label, ch, rank, file) in &piece_info {
@@ -1097,24 +1338,44 @@ pub fn extract_tracked_triples(fen: &str) -> (
             let is_white = ch.is_uppercase();
             // Passed pawn
             if is_passed_pawn(rank, file, is_white, &board) {
-                structure_triples.push((label.to_string(), "passed".to_string(), square_name(rank, file)));
+                structure_triples.push((
+                    label.to_string(),
+                    "passed".to_string(),
+                    square_name(rank, file),
+                ));
             }
             // Isolated pawn
             if is_isolated_pawn(rank, file, is_white, &pieces) {
-                structure_triples.push((label.to_string(), "isolated".to_string(), square_name(rank, file)));
+                structure_triples.push((
+                    label.to_string(),
+                    "isolated".to_string(),
+                    square_name(rank, file),
+                ));
             }
             // Doubled pawn
             if is_doubled_pawn(rank, file, is_white, &pieces) {
-                structure_triples.push((label.to_string(), "doubled".to_string(), square_name(rank, file)));
+                structure_triples.push((
+                    label.to_string(),
+                    "doubled".to_string(),
+                    square_name(rank, file),
+                ));
             }
         }
     }
     // Side to move goes in structure (it affects structural decisions)
     let side = fen.split_whitespace().nth(1).unwrap_or("w");
     if side == "w" {
-        structure_triples.push(("white".to_string(), "to_move".to_string(), "true".to_string()));
+        structure_triples.push((
+            "white".to_string(),
+            "to_move".to_string(),
+            "true".to_string(),
+        ));
     } else {
-        structure_triples.push(("black".to_string(), "to_move".to_string(), "true".to_string()));
+        structure_triples.push((
+            "black".to_string(),
+            "to_move".to_string(),
+            "true".to_string(),
+        ));
     }
 
     // ── Tactics: forks, pins, hanging ────────────────────────────────────
@@ -1124,7 +1385,14 @@ pub fn extract_tracked_triples(fen: &str) -> (
     tactics_triples.extend(detect_pins(&pieces, &board, wk_sq, bk_sq));
     tactics_triples.extend(detect_hanging(&pieces, &attacks_to, &defenses_to));
 
-    (material_triples, attack_triples, king_triples, mobility_triples, structure_triples, tactics_triples)
+    (
+        material_triples,
+        attack_triples,
+        king_triples,
+        mobility_triples,
+        structure_triples,
+        tactics_triples,
+    )
 }
 
 /// Encode a set of triples into a single bundled hypervector.
@@ -1147,7 +1415,8 @@ fn encode_triple_bundle(triples: &[(String, String, String)]) -> Hypervector {
 /// Encode a chess position as 5 separate track hypervectors.
 /// Each track bundles triples within its own category.
 pub fn encode_tracked_position(fen: &str) -> TrackedPosition {
-    let (material, attacks, king_safety, mobility, structure, tactics) = extract_tracked_triples(fen);
+    let (material, attacks, king_safety, mobility, structure, tactics) =
+        extract_tracked_triples(fen);
 
     TrackedPosition {
         material: encode_triple_bundle(&material),
@@ -1224,13 +1493,12 @@ fn compute_r_squared(actual: &[f64], predicted: &[f64]) -> f64 {
         return 0.0;
     }
     let mean_actual: f64 = actual.iter().sum::<f64>() / n as f64;
-    let ss_res: f64 = actual.iter()
+    let ss_res: f64 = actual
+        .iter()
         .zip(predicted.iter())
         .map(|(a, p)| (a - p).powi(2))
         .sum();
-    let ss_tot: f64 = actual.iter()
-        .map(|a| (a - mean_actual).powi(2))
-        .sum();
+    let ss_tot: f64 = actual.iter().map(|a| (a - mean_actual).powi(2)).sum();
     if ss_tot == 0.0 {
         return 0.0;
     }
@@ -1239,8 +1507,8 @@ fn compute_r_squared(actual: &[f64], predicted: &[f64]) -> f64 {
 
 /// Shuffle records using Fisher-Yates (deterministic seed for reproducibility).
 pub fn shuffle_records(records: &mut [PositionRecord]) {
-    use rand::SeedableRng;
     use rand::Rng;
+    use rand::SeedableRng;
     let mut rng = rand::rngs::StdRng::seed_from_u64(42);
     let n = records.len();
     for i in (1..n).rev() {
@@ -1262,7 +1530,11 @@ pub fn cross_validate(records: &mut [PositionRecord], k_folds: usize) -> CVResul
 ///   4. Collect metrics
 ///
 /// Uses the piece-square encoder.
-pub fn cross_validate_knn(records: &mut [PositionRecord], k_folds: usize, k_nearest: usize) -> CVResult {
+pub fn cross_validate_knn(
+    records: &mut [PositionRecord],
+    k_folds: usize,
+    k_nearest: usize,
+) -> CVResult {
     cross_validate_knn_with_encoder(records, k_folds, k_nearest, encode_position)
 }
 
@@ -1284,7 +1556,11 @@ pub fn cross_validate_knn_with_encoder(
     for fold in 0..k_folds {
         let fold_start = Instant::now();
         let test_start = fold * fold_size;
-        let test_end = if fold == k_folds - 1 { n } else { test_start + fold_size };
+        let test_end = if fold == k_folds - 1 {
+            n
+        } else {
+            test_start + fold_size
+        };
 
         // Training set
         let mut train_hvs: Vec<(Hypervector, f64)> = Vec::with_capacity(n - fold_size);
@@ -1306,7 +1582,8 @@ pub fn cross_validate_knn_with_encoder(
             let actual = records[i].eval_score;
 
             // Compute distances to ALL training centroids
-            let mut sims: Vec<(f64, f64)> = train_hvs.iter()
+            let mut sims: Vec<(f64, f64)> = train_hvs
+                .iter()
                 .map(|(centroid_hv, eval)| {
                     let sim = 1.0 - test_hv.normalized_hamming_distance(centroid_hv);
                     (sim, *eval)
@@ -1318,11 +1595,16 @@ pub fn cross_validate_knn_with_encoder(
 
             // Take k nearest, weighted by similarity
             let k = k_nearest.min(sims.len());
-            let (weight_sum, eval_sum): (f64, f64) = sims[..k].iter()
+            let (weight_sum, eval_sum): (f64, f64) = sims[..k]
+                .iter()
                 .map(|(sim, eval)| (sim, eval))
                 .fold((0.0, 0.0), |(ws, es), (s, e)| (ws + s, es + s * e));
 
-            let predicted = if weight_sum > 0.0 { eval_sum / weight_sum } else { 0.0 };
+            let predicted = if weight_sum > 0.0 {
+                eval_sum / weight_sum
+            } else {
+                0.0
+            };
             let avg_sim: f64 = sims[..k].iter().map(|(s, _)| s).sum::<f64>() / k as f64;
 
             actual_vals.push(actual);
@@ -1332,23 +1614,33 @@ pub fn cross_validate_knn_with_encoder(
 
         // Metrics
         let r2 = compute_r_squared(&actual_vals, &predicted_vals);
-        let mae: f64 = actual_vals.iter()
+        let mae: f64 = actual_vals
+            .iter()
             .zip(predicted_vals.iter())
             .map(|(a, p)| (a - p).abs())
-            .sum::<f64>() / actual_vals.len() as f64;
+            .sum::<f64>()
+            / actual_vals.len() as f64;
 
-        let sign_acc = actual_vals.iter()
+        let sign_acc = actual_vals
+            .iter()
             .zip(predicted_vals.iter())
             .filter(|(a, p)| a.signum() == p.signum())
-            .count() as f64 / actual_vals.len() as f64;
+            .count() as f64
+            / actual_vals.len() as f64;
 
         let mean_sim: f64 = avg_sims.iter().sum::<f64>() / avg_sims.len() as f64;
 
         let elapsed = fold_start.elapsed();
         eprintln!(
             "  Fold {}/{}: R²={:.4} MAE={:.2} sign={:.1}% sim={:.4} n={} ({:.1}s)",
-            fold + 1, k_folds, r2, mae, sign_acc * 100.0, mean_sim,
-            actual_vals.len(), elapsed.as_secs_f64(),
+            fold + 1,
+            k_folds,
+            r2,
+            mae,
+            sign_acc * 100.0,
+            mean_sim,
+            actual_vals.len(),
+            elapsed.as_secs_f64(),
         );
 
         fold_results.push(FoldResult {
@@ -1360,13 +1652,24 @@ pub fn cross_validate_knn_with_encoder(
     }
 
     let total_n: usize = fold_results.iter().map(|r| r.n).sum();
-    let avg_r2 = fold_results.iter().map(|r| r.r_squared * r.n as f64).sum::<f64>() / total_n as f64;
+    let avg_r2 = fold_results
+        .iter()
+        .map(|r| r.r_squared * r.n as f64)
+        .sum::<f64>()
+        / total_n as f64;
     let avg_mae = fold_results.iter().map(|r| r.mae * r.n as f64).sum::<f64>() / total_n as f64;
-    let avg_sign = fold_results.iter().map(|r| r.sign_accuracy * r.n as f64).sum::<f64>() / total_n as f64;
+    let avg_sign = fold_results
+        .iter()
+        .map(|r| r.sign_accuracy * r.n as f64)
+        .sum::<f64>()
+        / total_n as f64;
 
     eprintln!(
         "  Total (k={}): R²={:.4} MAE={:.2} sign={:.1}%",
-        k_nearest, avg_r2, avg_mae, avg_sign * 100.0,
+        k_nearest,
+        avg_r2,
+        avg_mae,
+        avg_sign * 100.0,
     );
 
     CVResult {
@@ -1408,7 +1711,8 @@ pub fn cross_validate_tracked_knn(
 
     // Pre-encode all positions as tracked (first encoding pass)
     // This separates encoding from CV computation for fair timing.
-    let tracked: Vec<TrackedPosition> = records.iter()
+    let tracked: Vec<TrackedPosition> = records
+        .iter()
         .map(|r| encode_tracked_position(&r.fen))
         .collect();
 
@@ -1417,7 +1721,11 @@ pub fn cross_validate_tracked_knn(
     for fold in 0..k_folds {
         let fold_start = Instant::now();
         let test_start = fold * fold_size;
-        let test_end = if fold == k_folds - 1 { n } else { test_start + fold_size };
+        let test_end = if fold == k_folds - 1 {
+            n
+        } else {
+            test_start + fold_size
+        };
 
         // Collect training tracked positions
         let mut train_data: Vec<(usize, f64)> = Vec::with_capacity(n - fold_size);
@@ -1437,7 +1745,8 @@ pub fn cross_validate_tracked_knn(
 
             // Compute per-track similarities with ALL training positions
             // combined_sim = Σ w_i * track_sim_i
-            let mut combined: Vec<(f64, f64)> = train_data.iter()
+            let mut combined: Vec<(f64, f64)> = train_data
+                .iter()
                 .map(|&(train_idx, eval)| {
                     let train_pos = &tracked[train_idx];
                     let sims = tracked_similarity(test_pos, train_pos);
@@ -1455,11 +1764,16 @@ pub fn cross_validate_tracked_knn(
 
             // Take k nearest, weighted by combined similarity
             let k = k_nearest.min(combined.len());
-            let (weight_sum, eval_sum): (f64, f64) = combined[..k].iter()
+            let (weight_sum, eval_sum): (f64, f64) = combined[..k]
+                .iter()
                 .map(|(sim, eval)| (sim, eval))
                 .fold((0.0, 0.0), |(ws, es), (s, e)| (ws + s, es + s * e));
 
-            let predicted = if weight_sum > 0.0 { eval_sum / weight_sum } else { 0.0 };
+            let predicted = if weight_sum > 0.0 {
+                eval_sum / weight_sum
+            } else {
+                0.0
+            };
 
             actual_vals.push(actual);
             predicted_vals.push(predicted);
@@ -1467,21 +1781,30 @@ pub fn cross_validate_tracked_knn(
 
         // Metrics
         let r2 = compute_r_squared(&actual_vals, &predicted_vals);
-        let mae: f64 = actual_vals.iter()
+        let mae: f64 = actual_vals
+            .iter()
             .zip(predicted_vals.iter())
             .map(|(a, p)| (a - p).abs())
-            .sum::<f64>() / actual_vals.len() as f64;
+            .sum::<f64>()
+            / actual_vals.len() as f64;
 
-        let sign_acc = actual_vals.iter()
+        let sign_acc = actual_vals
+            .iter()
             .zip(predicted_vals.iter())
             .filter(|(a, p)| a.signum() == p.signum())
-            .count() as f64 / actual_vals.len() as f64;
+            .count() as f64
+            / actual_vals.len() as f64;
 
         let elapsed = fold_start.elapsed();
         eprintln!(
             "  Fold {}/{}: R²={:.4} MAE={:.2} sign={:.1}% n={} ({:.1}s)",
-            fold + 1, k_folds, r2, mae, sign_acc * 100.0,
-            actual_vals.len(), elapsed.as_secs_f64(),
+            fold + 1,
+            k_folds,
+            r2,
+            mae,
+            sign_acc * 100.0,
+            actual_vals.len(),
+            elapsed.as_secs_f64(),
         );
 
         fold_results.push(FoldResult {
@@ -1493,13 +1816,24 @@ pub fn cross_validate_tracked_knn(
     }
 
     let total_n: usize = fold_results.iter().map(|r| r.n).sum();
-    let avg_r2 = fold_results.iter().map(|r| r.r_squared * r.n as f64).sum::<f64>() / total_n as f64;
+    let avg_r2 = fold_results
+        .iter()
+        .map(|r| r.r_squared * r.n as f64)
+        .sum::<f64>()
+        / total_n as f64;
     let avg_mae = fold_results.iter().map(|r| r.mae * r.n as f64).sum::<f64>() / total_n as f64;
-    let avg_sign = fold_results.iter().map(|r| r.sign_accuracy * r.n as f64).sum::<f64>() / total_n as f64;
+    let avg_sign = fold_results
+        .iter()
+        .map(|r| r.sign_accuracy * r.n as f64)
+        .sum::<f64>()
+        / total_n as f64;
 
     eprintln!(
         "  Total (tracked k={}): R²={:.4} MAE={:.2} sign={:.1}%",
-        k_nearest, avg_r2, avg_mae, avg_sign * 100.0,
+        k_nearest,
+        avg_r2,
+        avg_mae,
+        avg_sign * 100.0,
     );
 
     CVResult {
@@ -1533,7 +1867,8 @@ pub fn cross_validate_tracked_knn_euclidean(
 
     shuffle_records(records);
 
-    let tracked: Vec<TrackedPosition> = records.iter()
+    let tracked: Vec<TrackedPosition> = records
+        .iter()
         .map(|r| encode_tracked_position(&r.fen))
         .collect();
 
@@ -1542,7 +1877,11 @@ pub fn cross_validate_tracked_knn_euclidean(
     for fold in 0..k_folds {
         let fold_start = Instant::now();
         let test_start = fold * fold_size;
-        let test_end = if fold == k_folds - 1 { n } else { test_start + fold_size };
+        let test_end = if fold == k_folds - 1 {
+            n
+        } else {
+            test_start + fold_size
+        };
 
         let mut train_data: Vec<(usize, f64)> = Vec::with_capacity(n - fold_size);
         for i in 0..test_start {
@@ -1562,7 +1901,8 @@ pub fn cross_validate_tracked_knn_euclidean(
             // For each training position, compute Euclidean distance in
             // 5-dimensional similarity space, then convert to similarity.
             // dist² = Σ w_i² * (1 - sim_i)²
-            let mut combined: Vec<(f64, f64)> = train_data.iter()
+            let mut combined: Vec<(f64, f64)> = train_data
+                .iter()
                 .map(|&(train_idx, eval)| {
                     let train_pos = &tracked[train_idx];
                     let sims = tracked_similarity(test_pos, train_pos);
@@ -1578,11 +1918,16 @@ pub fn cross_validate_tracked_knn_euclidean(
 
             combined.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
             let k = k_nearest.min(combined.len());
-            let (weight_sum, eval_sum): (f64, f64) = combined[..k].iter()
+            let (weight_sum, eval_sum): (f64, f64) = combined[..k]
+                .iter()
                 .map(|(sim, eval)| (sim, eval))
                 .fold((0.0, 0.0), |(ws, es), (s, e)| (ws + s, es + s * e));
 
-            let predicted = if weight_sum > 0.0 { eval_sum / weight_sum } else { 0.0 };
+            let predicted = if weight_sum > 0.0 {
+                eval_sum / weight_sum
+            } else {
+                0.0
+            };
 
             actual_vals.push(actual);
             predicted_vals.push(predicted);
@@ -1590,20 +1935,29 @@ pub fn cross_validate_tracked_knn_euclidean(
 
         // Metrics
         let r2 = compute_r_squared(&actual_vals, &predicted_vals);
-        let mae: f64 = actual_vals.iter()
+        let mae: f64 = actual_vals
+            .iter()
             .zip(predicted_vals.iter())
             .map(|(a, p)| (a - p).abs())
-            .sum::<f64>() / actual_vals.len() as f64;
-        let sign_acc = actual_vals.iter()
+            .sum::<f64>()
+            / actual_vals.len() as f64;
+        let sign_acc = actual_vals
+            .iter()
             .zip(predicted_vals.iter())
             .filter(|(a, p)| a.signum() == p.signum())
-            .count() as f64 / actual_vals.len() as f64;
+            .count() as f64
+            / actual_vals.len() as f64;
 
         let elapsed = fold_start.elapsed();
         eprintln!(
             "  Fold {}/{}: R²={:.4} MAE={:.2} sign={:.1}% n={} ({:.1}s)",
-            fold + 1, k_folds, r2, mae, sign_acc * 100.0,
-            actual_vals.len(), elapsed.as_secs_f64(),
+            fold + 1,
+            k_folds,
+            r2,
+            mae,
+            sign_acc * 100.0,
+            actual_vals.len(),
+            elapsed.as_secs_f64(),
         );
 
         fold_results.push(FoldResult {
@@ -1615,13 +1969,24 @@ pub fn cross_validate_tracked_knn_euclidean(
     }
 
     let total_n: usize = fold_results.iter().map(|r| r.n).sum();
-    let avg_r2 = fold_results.iter().map(|r| r.r_squared * r.n as f64).sum::<f64>() / total_n as f64;
+    let avg_r2 = fold_results
+        .iter()
+        .map(|r| r.r_squared * r.n as f64)
+        .sum::<f64>()
+        / total_n as f64;
     let avg_mae = fold_results.iter().map(|r| r.mae * r.n as f64).sum::<f64>() / total_n as f64;
-    let avg_sign = fold_results.iter().map(|r| r.sign_accuracy * r.n as f64).sum::<f64>() / total_n as f64;
+    let avg_sign = fold_results
+        .iter()
+        .map(|r| r.sign_accuracy * r.n as f64)
+        .sum::<f64>()
+        / total_n as f64;
 
     eprintln!(
         "  Total (euclidean k={}): R²={:.4} MAE={:.2} sign={:.1}%",
-        k_nearest, avg_r2, avg_mae, avg_sign * 100.0,
+        k_nearest,
+        avg_r2,
+        avg_mae,
+        avg_sign * 100.0,
     );
 
     CVResult {
@@ -1672,7 +2037,9 @@ fn invert_5x5(m: &[[f64; 5]; 5]) -> [[f64; 5]; 5] {
         if aug[max_row][col].abs() < 1e-15 {
             // Singular — return identity
             let mut inv = [[0.0; 5]; 5];
-            for i in 0..5 { inv[i][i] = 1.0; }
+            for i in 0..5 {
+                inv[i][i] = 1.0;
+            }
             return inv;
         }
         aug.swap(col, max_row);
@@ -1709,10 +2076,7 @@ fn invert_5x5(m: &[[f64; 5]; 5]) -> [[f64; 5]; 5] {
 /// * `actual` — vector of length n with true Stockfish evaluations.
 ///
 /// Returns 5 weights that sum to 1.0 (non-negative, clipped then normalized).
-fn learn_weights_ols(
-    per_track_preds: &[Vec<f64>; 5],
-    actual: &[f64],
-) -> [f64; 5] {
+fn learn_weights_ols(per_track_preds: &[Vec<f64>; 5], actual: &[f64]) -> [f64; 5] {
     let n = actual.len();
     debug_assert!(n > 0);
     for track in 0..5 {
@@ -1752,13 +2116,17 @@ fn learn_weights_ols(
 
     // Clip negative weights to zero (positivity constraint)
     for w in weights.iter_mut() {
-        if *w < 0.0 { *w = 0.0; }
+        if *w < 0.0 {
+            *w = 0.0;
+        }
     }
 
     // Normalize to sum = 1.0
     let sum: f64 = weights.iter().sum();
     if sum > 1e-12 {
-        for w in weights.iter_mut() { *w /= sum; }
+        for w in weights.iter_mut() {
+            *w /= sum;
+        }
     } else {
         weights = [0.2, 0.2, 0.2, 0.2, 0.2]; // fallback
     }
@@ -1778,7 +2146,8 @@ fn cross_validate_track_predictions(
     let mut predictions = Vec::with_capacity(test_indices.len());
 
     for &ti in test_indices {
-        let mut sims: Vec<(f64, f64)> = train_indices.iter()
+        let mut sims: Vec<(f64, f64)> = train_indices
+            .iter()
             .map(|&tj| {
                 let s = tracked_similarity(&tracked[ti], &tracked[tj]);
                 (s[track], records[tj].eval_score)
@@ -1787,7 +2156,8 @@ fn cross_validate_track_predictions(
 
         sims.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
         let k = k_nearest.min(sims.len());
-        let (ws, es) = sims[..k].iter()
+        let (ws, es) = sims[..k]
+            .iter()
             .fold((0.0, 0.0), |(ws, es), (s, e)| (ws + s, es + s * e));
         let pred = if ws > 0.0 { es / ws } else { 0.0 };
         predictions.push(pred);
@@ -1820,45 +2190,62 @@ pub fn learn_and_evaluate_track_weights(
 
     // Step 1: Pre-encode
     eprintln!("  Encoding {} positions as tracked...", n);
-    let tracked: Vec<TrackedPosition> = records.iter()
+    let tracked: Vec<TrackedPosition> = records
+        .iter()
         .map(|r| encode_tracked_position(&r.fen))
         .collect();
 
     // Step 2: Cross-validate to collect per-track predictions
     let mut all_actual = Vec::new();
-    let mut all_preds: [Vec<f64>; 5] = [
-        Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new(),
-    ];
+    let mut all_preds: [Vec<f64>; 5] = [Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new()];
 
     for fold in 0..k_folds {
         let test_start = fold * fold_size;
-        let test_end = if fold == k_folds - 1 { n } else { test_start + fold_size };
+        let test_end = if fold == k_folds - 1 {
+            n
+        } else {
+            test_start + fold_size
+        };
 
-        let train_indices: Vec<usize> = (0..test_start)
-            .chain(test_end..n)
-            .collect();
+        let train_indices: Vec<usize> = (0..test_start).chain(test_end..n).collect();
         let test_indices: Vec<usize> = (test_start..test_end).collect();
 
-        let fold_actual: Vec<f64> = test_indices.iter()
+        let fold_actual: Vec<f64> = test_indices
+            .iter()
             .map(|&i| records[i].eval_score)
             .collect();
         all_actual.extend(&fold_actual);
 
         for track in 0..5 {
             let preds = cross_validate_track_predictions(
-                records, &tracked, &test_indices, &train_indices, track, k_nearest,
+                records,
+                &tracked,
+                &test_indices,
+                &train_indices,
+                track,
+                k_nearest,
             );
             all_preds[track].extend(preds);
         }
 
-        eprintln!("  Fold {}/{}: collected {} predictions",
-            fold + 1, k_folds, fold_actual.len());
+        eprintln!(
+            "  Fold {}/{}: collected {} predictions",
+            fold + 1,
+            k_folds,
+            fold_actual.len()
+        );
     }
 
     // Step 3: Learn weights via OLS
     let weights = learn_weights_ols(&all_preds, &all_actual);
 
-    let track_names = ["material", "attacks", "king_safety", "mobility", "structure"];
+    let track_names = [
+        "material",
+        "attacks",
+        "king_safety",
+        "mobility",
+        "structure",
+    ];
     eprintln!("\n  Learned weights:");
     for (i, name) in track_names.iter().enumerate() {
         eprintln!("    {}: {:.4}", name, weights[i]);
@@ -1943,7 +2330,10 @@ mod tests {
         let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         let hv = encode_position(fen);
         // HV should have bits set (bundle of 32+ piece terms + aux features)
-        assert!(hv.count_ones() > 100, "Encoded position should have many bits set");
+        assert!(
+            hv.count_ones() > 100,
+            "Encoded position should have many bits set"
+        );
     }
 
     #[test]
@@ -1957,7 +2347,11 @@ mod tests {
         let dist = hv1.normalized_hamming_distance(&hv2);
 
         eprintln!("  NHD(starting, e4): {:.6}", dist);
-        assert!(dist < 0.15, "One-pawn-move positions should be close: NHD={}", dist);
+        assert!(
+            dist < 0.15,
+            "One-pawn-move positions should be close: NHD={}",
+            dist
+        );
     }
 
     #[test]
@@ -1971,7 +2365,11 @@ mod tests {
         let dist = hv1.normalized_hamming_distance(&hv2);
 
         eprintln!("  NHD(starting, two_kings): {:.6}", dist);
-        assert!(dist > 0.10, "Very different positions should be far: NHD={}", dist);
+        assert!(
+            dist > 0.10,
+            "Very different positions should be far: NHD={}",
+            dist
+        );
     }
 
     #[test]
@@ -1980,7 +2378,11 @@ mod tests {
         let hv1 = encode_position(fen);
         let hv2 = encode_position(fen);
         let dist = hv1.normalized_hamming_distance(&hv2);
-        assert!(dist < 0.001, "Same position should be near-identical: NHD={}", dist);
+        assert!(
+            dist < 0.001,
+            "Same position should be near-identical: NHD={}",
+            dist
+        );
     }
 
     #[test]
@@ -1998,8 +2400,11 @@ mod tests {
 
         eprintln!(
             "  k=25: R²={:.4} MAE={:.2} sign={:.1}% ({:.1}s)",
-            result.r_squared, result.mae,
-            result.sign_accuracy * 100.0, elapsed.as_secs_f64());
+            result.r_squared,
+            result.mae,
+            result.sign_accuracy * 100.0,
+            elapsed.as_secs_f64()
+        );
 
         eprintln!("\n═══════════════════════════════════════════════════");
         eprintln!("  CHESS PHASE 1 — BASELINE RESULT");
@@ -2095,12 +2500,20 @@ mod tests {
         let triples = extract_chess_triples(fen);
         eprintln!("  Starting position: {} triples", triples.len());
         // Each piece attacks some squares — should produce relations
-        assert!(triples.len() > 10, "Starting position should produce many triples: got {}", triples.len());
+        assert!(
+            triples.len() > 10,
+            "Starting position should produce many triples: got {}",
+            triples.len()
+        );
         // Should include castling info
-        let has_castle = triples.iter().any(|(s, v, _)| s == "white" && v == "can_castle");
+        let has_castle = triples
+            .iter()
+            .any(|(s, v, _)| s == "white" && v == "can_castle");
         assert!(has_castle, "Should include castling rights");
         // Should include material balance
-        let has_material = triples.iter().any(|(s, v, _)| s == "white" && v == "material");
+        let has_material = triples
+            .iter()
+            .any(|(s, v, _)| s == "white" && v == "material");
         assert!(has_material, "Should include material balance");
     }
 
@@ -2114,15 +2527,18 @@ mod tests {
         let triples = extract_chess_triples(fen);
         eprintln!("  Triple count: {}", triples.len());
         // Should have at least some attack relations
-        let attacks: Vec<&(String, String, String)> = triples.iter()
-            .filter(|(_, v, _)| v == "attacks")
-            .collect();
+        let attacks: Vec<&(String, String, String)> =
+            triples.iter().filter(|(_, v, _)| v == "attacks").collect();
         eprintln!("  Attack triples: {}", attacks.len());
         // Pawn on d4 attacks e5? No, d4 to e5 is a capture — but that's a pawn capture move
         // Actually pawn on d4 doesn't attack e5 (d4 pawn attacks c5 and e5, yes it does!)
         // So there should be at least 1 attack from d4 to e5 (if e5 has a black pawn)
         // Let me just check the count is reasonable
-        assert!(attacks.len() >= 1, "Should detect at least 1 attack relation: got {}", attacks.len());
+        assert!(
+            attacks.len() >= 1,
+            "Should detect at least 1 attack relation: got {}",
+            attacks.len()
+        );
     }
 
     #[test]
@@ -2130,7 +2546,11 @@ mod tests {
         let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         let hv = encode_position_from_triples(fen);
         // Should produce a non-zero hypervector
-        assert!(hv.count_ones() > 50, "Triple encoding should have many bits set: got {}", hv.count_ones());
+        assert!(
+            hv.count_ones() > 50,
+            "Triple encoding should have many bits set: got {}",
+            hv.count_ones()
+        );
     }
 
     #[test]
@@ -2139,7 +2559,11 @@ mod tests {
         let hv1 = encode_position_from_triples(fen);
         let hv2 = encode_position_from_triples(fen);
         let dist = hv1.normalized_hamming_distance(&hv2);
-        assert!(dist < 0.001, "Same position should be near-identical with triples: NHD={}", dist);
+        assert!(
+            dist < 0.001,
+            "Same position should be near-identical with triples: NHD={}",
+            dist
+        );
     }
 
     #[test]
@@ -2151,7 +2575,11 @@ mod tests {
         let hv2 = encode_position_from_triples(fen2);
         let dist = hv1.normalized_hamming_distance(&hv2);
         eprintln!("  Triple NHD(starting, e4): {:.6}", dist);
-        assert!(dist < 0.20, "Similar positions should be close in triple space: NHD={}", dist);
+        assert!(
+            dist < 0.20,
+            "Similar positions should be close in triple space: NHD={}",
+            dist
+        );
     }
 
     #[test]
@@ -2163,7 +2591,11 @@ mod tests {
         let dist = hv1.normalized_hamming_distance(&hv2);
         eprintln!("  Triple NHD(starting, two_kings): {:.6}", dist);
         // Even in triple space, very different positions should be far
-        assert!(dist > 0.05, "Very different positions should be far: NHD={}", dist);
+        assert!(
+            dist > 0.05,
+            "Very different positions should be far: NHD={}",
+            dist
+        );
     }
 
     #[test]
@@ -2186,7 +2618,10 @@ mod tests {
             .min(n);
         let mut subset: Vec<PositionRecord> = all_records.into_iter().take(subset_size).collect();
 
-        eprintln!("Using subset of {} positions for CV comparison", subset_size);
+        eprintln!(
+            "Using subset of {} positions for CV comparison",
+            subset_size
+        );
 
         // Shuffle once for fair comparison (same train/test splits)
         shuffle_records(&mut subset);
@@ -2194,13 +2629,15 @@ mod tests {
         // ── Piece-square baseline ───────────────────────────────────────────
         eprintln!("\n─── BASELINE: Piece-square encoding ───");
         let start = Instant::now();
-        let base_result = cross_validate_knn_with_encoder(&mut subset.clone(), 5, 25, encode_position);
+        let base_result =
+            cross_validate_knn_with_encoder(&mut subset.clone(), 5, 25, encode_position);
         let base_time = start.elapsed();
 
         // ── SVO triple encoding ─────────────────────────────────────────────
         eprintln!("\n─── EXPERIMENTAL: SVO-triple encoding ───");
         let start = Instant::now();
-        let triple_result = cross_validate_knn_with_encoder(&mut subset, 5, 25, encode_position_from_triples);
+        let triple_result =
+            cross_validate_knn_with_encoder(&mut subset, 5, 25, encode_position_from_triples);
         let triple_time = start.elapsed();
 
         // ── Comparison ──────────────────────────────────────────────────────
@@ -2216,9 +2653,13 @@ mod tests {
         eprintln!("  Experimental (SVO triples, k=25):");
         eprintln!("    R²:          {:.4}", triple_result.r_squared);
         eprintln!("    MAE:         {:.2} pawns", triple_result.mae);
-        eprintln!("    Sign acc:    {:.1}%", triple_result.sign_accuracy * 100.0);
+        eprintln!(
+            "    Sign acc:    {:.1}%",
+            triple_result.sign_accuracy * 100.0
+        );
         eprintln!("    Time:        {:.1}s", triple_time.as_secs_f64());
-        let improvement = (triple_result.r_squared - base_result.r_squared) / base_result.r_squared.abs().max(0.01);
+        let improvement = (triple_result.r_squared - base_result.r_squared)
+            / base_result.r_squared.abs().max(0.01);
         eprintln!("  Relative ΔR²: {:.1}%", improvement * 100.0);
         eprintln!("═══════════════════════════════════════════════════\n");
         eprintln!("  Interpretation:");
@@ -2250,7 +2691,10 @@ mod tests {
             .unwrap_or(500)
             .min(n);
         let mut subset: Vec<PositionRecord> = all_records.into_iter().take(subset_size).collect();
-        eprintln!("Using subset of {} positions for CV comparison", subset_size);
+        eprintln!(
+            "Using subset of {} positions for CV comparison",
+            subset_size
+        );
 
         // Shuffle once for fair comparison
         shuffle_records(&mut subset);
@@ -2258,13 +2702,19 @@ mod tests {
         // ── 1. Piece-square baseline ─────────────────────────────────────────
         eprintln!("\n─── [1/3] BASELINE: Piece-square encoding ───");
         let start = Instant::now();
-        let base_result = cross_validate_knn_with_encoder(&mut subset.clone(), 3, 25, encode_position);
+        let base_result =
+            cross_validate_knn_with_encoder(&mut subset.clone(), 3, 25, encode_position);
         let base_time = start.elapsed();
 
         // ── 2. SVO-triple monolithic ────────────────────────────────────────
         eprintln!("\n─── [2/3] MONOLITHIC: All triples bundled ───");
         let start = Instant::now();
-        let triple_result = cross_validate_knn_with_encoder(&mut subset.clone(), 3, 25, encode_position_from_triples);
+        let triple_result = cross_validate_knn_with_encoder(
+            &mut subset.clone(),
+            3,
+            25,
+            encode_position_from_triples,
+        );
         let triple_time = start.elapsed();
 
         // ── 3. SVO-triple tracked ────────────────────────────────────────────
@@ -2281,24 +2731,39 @@ mod tests {
         eprintln!("  1. Piece-squares (baseline):");
         eprintln!("     R²:          {:.4}", base_result.r_squared);
         eprintln!("     MAE:         {:.2} pawns", base_result.mae);
-        eprintln!("     Sign acc:    {:.1}%", base_result.sign_accuracy * 100.0);
+        eprintln!(
+            "     Sign acc:    {:.1}%",
+            base_result.sign_accuracy * 100.0
+        );
         eprintln!("     Time:        {:.1}s", base_time.as_secs_f64());
         eprintln!("  2. SVO monolithic (all triples):");
         eprintln!("     R²:          {:.4}", triple_result.r_squared);
         eprintln!("     MAE:         {:.2} pawns", triple_result.mae);
-        eprintln!("     Sign acc:    {:.1}%", triple_result.sign_accuracy * 100.0);
+        eprintln!(
+            "     Sign acc:    {:.1}%",
+            triple_result.sign_accuracy * 100.0
+        );
         eprintln!("     Time:        {:.1}s", triple_time.as_secs_f64());
         eprintln!("  3. SVO tracked (5 tracks, equal weights):");
         eprintln!("     R²:          {:.4}", tracked_result.r_squared);
         eprintln!("     MAE:         {:.2} pawns", tracked_result.mae);
-        eprintln!("     Sign acc:    {:.1}%", tracked_result.sign_accuracy * 100.0);
+        eprintln!(
+            "     Sign acc:    {:.1}%",
+            tracked_result.sign_accuracy * 100.0
+        );
         eprintln!("     Time:        {:.1}s", tracked_time.as_secs_f64());
-        let imp_mono = (triple_result.r_squared - base_result.r_squared) / base_result.r_squared.abs().max(0.01);
-        let imp_track = (tracked_result.r_squared - base_result.r_squared) / base_result.r_squared.abs().max(0.01);
+        let imp_mono = (triple_result.r_squared - base_result.r_squared)
+            / base_result.r_squared.abs().max(0.01);
+        let imp_track = (tracked_result.r_squared - base_result.r_squared)
+            / base_result.r_squared.abs().max(0.01);
         eprintln!("  ΔR² monolithic vs baseline:  {:.1}%", imp_mono * 100.0);
         eprintln!("  ΔR² tracked vs baseline:     {:.1}%", imp_track * 100.0);
-        let track_vs_mono = (tracked_result.r_squared - triple_result.r_squared) / triple_result.r_squared.abs().max(0.01);
-        eprintln!("  ΔR² tracked vs monolithic:   {:.1}%", track_vs_mono * 100.0);
+        let track_vs_mono = (tracked_result.r_squared - triple_result.r_squared)
+            / triple_result.r_squared.abs().max(0.01);
+        eprintln!(
+            "  ΔR² tracked vs monolithic:   {:.1}%",
+            track_vs_mono * 100.0
+        );
         eprintln!("═══════════════════════════════════════════════════\n");
         eprintln!("  Interpretation:");
         eprintln!("  If tracked > monolithic: minority feature drowning IS the");
@@ -2314,12 +2779,28 @@ mod tests {
         let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         let tp = encode_tracked_position(fen);
         // Each track should be non-zero
-        assert!(tp.material.count_ones() > 10, "Material track should have bits");
-        assert!(tp.attacks.count_ones() > 10, "Attack track should have bits");
-        assert!(tp.king_safety.count_ones() > 0, "King safety track should have bits");
-        assert!(tp.mobility.count_ones() > 0, "Mobility track should have bits");
-        assert!(tp.structure.count_ones() > 0, "Structure track should have bits");
-        eprintln!("  Track sizes: mat={} att={} king={} mob={} str={}",
+        assert!(
+            tp.material.count_ones() > 10,
+            "Material track should have bits"
+        );
+        assert!(
+            tp.attacks.count_ones() > 10,
+            "Attack track should have bits"
+        );
+        assert!(
+            tp.king_safety.count_ones() > 0,
+            "King safety track should have bits"
+        );
+        assert!(
+            tp.mobility.count_ones() > 0,
+            "Mobility track should have bits"
+        );
+        assert!(
+            tp.structure.count_ones() > 0,
+            "Structure track should have bits"
+        );
+        eprintln!(
+            "  Track sizes: mat={} att={} king={} mob={} str={}",
             tp.material.count_ones(),
             tp.attacks.count_ones(),
             tp.king_safety.count_ones(),
@@ -2334,10 +2815,22 @@ mod tests {
         let tp1 = encode_tracked_position(fen);
         let tp2 = encode_tracked_position(fen);
         let sims = tracked_similarity(&tp1, &tp2);
-        let names = ["material", "attacks", "king", "mobility", "structure", "tactics"];
+        let names = [
+            "material",
+            "attacks",
+            "king",
+            "mobility",
+            "structure",
+            "tactics",
+        ];
         for (i, sim) in sims.iter().enumerate() {
             let name = names[i];
-            assert!(*sim > 0.999, "{} track should be near-identical: sim={}", name, sim);
+            assert!(
+                *sim > 0.999,
+                "{} track should be near-identical: sim={}",
+                name,
+                sim
+            );
         }
     }
 
@@ -2350,7 +2843,14 @@ mod tests {
         let sims = tracked_similarity(&tp1, &tp2);
         eprintln!("  Track sims (e4 vs two kings): {:?}", sims);
         // Most tracks should show very low similarity
-        let names = ["material", "attacks", "king", "mobility", "structure", "tactics"];
+        let names = [
+            "material",
+            "attacks",
+            "king",
+            "mobility",
+            "structure",
+            "tactics",
+        ];
         for (i, &sim) in sims.iter().enumerate() {
             let name = names[i];
             eprintln!("    {}: {:.4}", name, sim);
@@ -2376,10 +2876,15 @@ mod tests {
         eprintln!("Using subset of {} positions", subset_size);
 
         // Learn weights on the subset
-        let (weights, result) = learn_and_evaluate_track_weights(
-            &mut subset, 3, 25);
+        let (weights, result) = learn_and_evaluate_track_weights(&mut subset, 3, 25);
 
-        let track_names = ["material", "attacks", "king_safety", "mobility", "structure"];
+        let track_names = [
+            "material",
+            "attacks",
+            "king_safety",
+            "mobility",
+            "structure",
+        ];
         eprintln!("\n═══════════════════════════════════════════════════");
         eprintln!("  TRACK WEIGHT LEARNING RESULT");
         eprintln!("  Positions: {}", subset_size);
@@ -2388,11 +2893,16 @@ mod tests {
         for (i, name) in track_names.iter().enumerate() {
             eprintln!("    {}: {:.4}", name, weights[i]);
         }
-        eprintln!("  Best-performing track (highest weight): {} ({:.4})",
-            track_names[weights.iter().enumerate()
+        eprintln!(
+            "  Best-performing track (highest weight): {} ({:.4})",
+            track_names[weights
+                .iter()
+                .enumerate()
                 .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
-                .map(|(i, _)| i).unwrap_or(0)],
-            weights.iter().cloned().fold(0.0f64, f64::max));
+                .map(|(i, _)| i)
+                .unwrap_or(0)],
+            weights.iter().cloned().fold(0.0f64, f64::max)
+        );
         eprintln!("  CV R² with learned weights: {:.4}", result.r_squared);
         eprintln!("  CV MAE: {:.2} pawns", result.mae);
         eprintln!("  CV Sign acc: {:.1}%", result.sign_accuracy * 100.0);
@@ -2404,11 +2914,21 @@ mod tests {
         // Quick smoke test: rich features on a few positions
         let fen1 = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         let (mat, tac, king, act, str_) = extract_rich_tracked_triples(fen1);
-        eprintln!("  Starting pos: mat={} tac={} king={} act={} str={}",
-            mat.len(), tac.len(), king.len(), act.len(), str_.len());
+        eprintln!(
+            "  Starting pos: mat={} tac={} king={} act={} str={}",
+            mat.len(),
+            tac.len(),
+            king.len(),
+            act.len(),
+            str_.len()
+        );
         assert!(mat.len() >= 1);
         // Should have some king safety info
-        assert!(king.len() >= 1, "King safety should have at least 1 triple: got {}", king.len());
+        assert!(
+            king.len() >= 1,
+            "King safety should have at least 1 triple: got {}",
+            king.len()
+        );
 
         // Position with known tactical features: queen forked by knight
         let fen2 = "r1bqkb1r/pppp1ppp/2n5/4n3/2B1P3/8/PPPP1PPP/RNBQK1NR w KQkq - 0 5";
@@ -2416,7 +2936,10 @@ mod tests {
         let forks: Vec<_> = tac2.iter().filter(|(_, v, _)| v == "forks").collect();
         eprintln!("  Fork pos: {} triples, {} forks", tac2.len(), forks.len());
         // Should detect at least one fork (both knights attack pieces)
-        assert!(forks.len() >= 0, "May or may not have forks (varies by position detail)");
+        assert!(
+            forks.len() >= 0,
+            "May or may not have forks (varies by position detail)"
+        );
     }
 
     #[test]
@@ -2442,7 +2965,8 @@ mod tests {
         // ── 1. Piece-square baseline ────────────────────────────────────────
         eprintln!("\n─── [1/4] PIECE-SQUARES (baseline) ───");
         let start = Instant::now();
-        let base_result = cross_validate_knn_with_encoder(&mut subset.clone(), 3, 25, encode_position);
+        let base_result =
+            cross_validate_knn_with_encoder(&mut subset.clone(), 3, 25, encode_position);
         let base_time = start.elapsed();
 
         // ── 2. V1 tracked with learned weights ──────────────────────────────
@@ -2459,7 +2983,8 @@ mod tests {
         let n = subset.len();
         let fold_size = n / 3;
         shuffle_records(&mut subset);
-        let tracked_rich: Vec<TrackedPosition> = subset.iter()
+        let tracked_rich: Vec<TrackedPosition> = subset
+            .iter()
             .map(|r| encode_rich_tracked_position(&r.fen))
             .collect();
 
@@ -2476,7 +3001,8 @@ mod tests {
             for track in 0..5 {
                 let mut preds = Vec::new();
                 for &ti in &test {
-                    let mut sims: Vec<(f64, f64)> = train.iter()
+                    let mut sims: Vec<(f64, f64)> = train
+                        .iter()
                         .map(|&tj| {
                             let s = tracked_similarity(&tracked_rich[ti], &tracked_rich[tj]);
                             (s[track], subset[tj].eval_score)
@@ -2484,17 +3010,28 @@ mod tests {
                         .collect();
                     sims.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
                     let k = 25.min(sims.len());
-                    let (ws, es) = sims[..k].iter()
+                    let (ws, es) = sims[..k]
+                        .iter()
                         .fold((0.0, 0.0), |(ws, es), (s, e)| (ws + s, es + s * e));
                     preds.push(if ws > 0.0 { es / ws } else { 0.0 });
                 }
                 all_preds[track].extend(preds);
             }
-            eprintln!("  Fold {}/3: collected {} predictions", fold + 1, fold_actual.len());
+            eprintln!(
+                "  Fold {}/3: collected {} predictions",
+                fold + 1,
+                fold_actual.len()
+            );
         }
 
         let v2_weights = learn_weights_ols(&all_preds, &all_actual);
-        let track_names = ["material", "tactics", "king_safety", "activity", "structure"];
+        let track_names = [
+            "material",
+            "tactics",
+            "king_safety",
+            "activity",
+            "structure",
+        ];
         eprintln!("  V2 Learned weights:");
         for (i, name) in track_names.iter().enumerate() {
             eprintln!("    {}: {:.4}", name, v2_weights[i]);
@@ -2507,7 +3044,8 @@ mod tests {
         // Evaluate V2 rich tracked with learned weights
         eprintln!("\n─── [4/4] V2 RICH TRACKED: evaluating ───");
         // Re-encode and run tracked CV with rich positions
-        let tracked_rich2: Vec<TrackedPosition> = subset.iter()
+        let tracked_rich2: Vec<TrackedPosition> = subset
+            .iter()
             .map(|r| encode_rich_tracked_position(&r.fen))
             .collect();
 
@@ -2522,17 +3060,22 @@ mod tests {
             let mut predicted_vals = Vec::new();
             for ti in ts..te {
                 let actual = subset[ti].eval_score;
-                let mut combined: Vec<(f64, f64)> = train.iter()
+                let mut combined: Vec<(f64, f64)> = train
+                    .iter()
                     .map(|&tj| {
                         let s = tracked_similarity(&tracked_rich2[ti], &tracked_rich2[tj]);
-                        let cs = v2_weights[0]*s[0] + v2_weights[1]*s[1] + v2_weights[2]*s[2]
-                                + v2_weights[3]*s[3] + v2_weights[4]*s[4];
+                        let cs = v2_weights[0] * s[0]
+                            + v2_weights[1] * s[1]
+                            + v2_weights[2] * s[2]
+                            + v2_weights[3] * s[3]
+                            + v2_weights[4] * s[4];
                         (cs, subset[tj].eval_score)
                     })
                     .collect();
                 combined.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
                 let k = 25.min(combined.len());
-                let (ws, es) = combined[..k].iter()
+                let (ws, es) = combined[..k]
+                    .iter()
                     .fold((0.0, 0.0), |(ws, es), (s, e)| (ws + s, es + s * e));
                 let pred = if ws > 0.0 { es / ws } else { 0.0 };
                 actual_vals.push(actual);
@@ -2540,12 +3083,27 @@ mod tests {
             }
 
             let r2 = compute_r_squared(&actual_vals, &predicted_vals);
-            let mae: f64 = actual_vals.iter().zip(predicted_vals.iter())
-                .map(|(a, p)| (a - p).abs()).sum::<f64>() / actual_vals.len() as f64;
-            let sign_acc = actual_vals.iter().zip(predicted_vals.iter())
-                .filter(|(a, p)| a.signum() == p.signum()).count() as f64 / actual_vals.len() as f64;
-            eprintln!("  Fold {}/3: R²={:.4} MAE={:.2} sign={:.1}% n={} ({:.1}s)",
-                fold + 1, r2, mae, sign_acc * 100.0, actual_vals.len(), fold_start.elapsed().as_secs_f64());
+            let mae: f64 = actual_vals
+                .iter()
+                .zip(predicted_vals.iter())
+                .map(|(a, p)| (a - p).abs())
+                .sum::<f64>()
+                / actual_vals.len() as f64;
+            let sign_acc = actual_vals
+                .iter()
+                .zip(predicted_vals.iter())
+                .filter(|(a, p)| a.signum() == p.signum())
+                .count() as f64
+                / actual_vals.len() as f64;
+            eprintln!(
+                "  Fold {}/3: R²={:.4} MAE={:.2} sign={:.1}% n={} ({:.1}s)",
+                fold + 1,
+                r2,
+                mae,
+                sign_acc * 100.0,
+                actual_vals.len(),
+                fold_start.elapsed().as_secs_f64()
+            );
             fold_results.push((r2, mae, sign_acc, actual_vals.len()));
         }
 
@@ -2565,15 +3123,23 @@ mod tests {
         eprintln!("    R²:          {:.4}", base_result.r_squared);
         eprintln!("  V1 Tracked (old feats, learned weights):");
         eprintln!("    R²:          {:.4}", v1_result.r_squared);
-        eprintln!("    Weights:     mat={:.3} att={:.3} king={:.3} mob={:.3} str={:.3}",
-            v1_weights[0], v1_weights[1], v1_weights[2], v1_weights[3], v1_weights[4]);
+        eprintln!(
+            "    Weights:     mat={:.3} att={:.3} king={:.3} mob={:.3} str={:.3}",
+            v1_weights[0], v1_weights[1], v1_weights[2], v1_weights[3], v1_weights[4]
+        );
         eprintln!("  V2 Rich tracked (pins/forks/exposure/activity):");
         eprintln!("    R²:          {:.4}", v2_result_r2);
-        eprintln!("    Weights:     mat={:.3} tac={:.3} king={:.3} act={:.3} str={:.3}",
-            v2_weights[0], v2_weights[1], v2_weights[2], v2_weights[3], v2_weights[4]);
-        let imp_v1 = (v1_result.r_squared - base_result.r_squared) / base_result.r_squared.abs().max(0.01) * 100.0;
-        let imp_v2 = (v2_result_r2 - base_result.r_squared) / base_result.r_squared.abs().max(0.01) * 100.0;
-        let imp_v2_v1 = (v2_result_r2 - v1_result.r_squared) / v1_result.r_squared.abs().max(0.01) * 100.0;
+        eprintln!(
+            "    Weights:     mat={:.3} tac={:.3} king={:.3} act={:.3} str={:.3}",
+            v2_weights[0], v2_weights[1], v2_weights[2], v2_weights[3], v2_weights[4]
+        );
+        let imp_v1 = (v1_result.r_squared - base_result.r_squared)
+            / base_result.r_squared.abs().max(0.01)
+            * 100.0;
+        let imp_v2 =
+            (v2_result_r2 - base_result.r_squared) / base_result.r_squared.abs().max(0.01) * 100.0;
+        let imp_v2_v1 =
+            (v2_result_r2 - v1_result.r_squared) / v1_result.r_squared.abs().max(0.01) * 100.0;
         eprintln!("  ΔR² V1 tracked vs baseline:  {:.1}%", imp_v1);
         eprintln!("  ΔR² V2 rich vs baseline:     {:.1}%", imp_v2);
         eprintln!("  ΔR² V2 rich vs V1 tracked:   {:.1}%", imp_v2_v1);
@@ -2605,8 +3171,10 @@ mod tests {
 
         // Learn weights from V1 tracked (linear)
         let (weights, _) = learn_and_evaluate_track_weights(&mut subset.clone(), 3, 25);
-        eprintln!("  Learned weights: [{:.4}, {:.4}, {:.4}, {:.4}, {:.4}]",
-            weights[0], weights[1], weights[2], weights[3], weights[4]);
+        eprintln!(
+            "  Learned weights: [{:.4}, {:.4}, {:.4}, {:.4}, {:.4}]",
+            weights[0], weights[1], weights[2], weights[3], weights[4]
+        );
 
         // Linear combination
         eprintln!("\n─── LINEAR: weighted sum ───");
@@ -2628,15 +3196,22 @@ mod tests {
         eprintln!("  Linear combination:");
         eprintln!("    R²:          {:.4}", linear_result.r_squared);
         eprintln!("    MAE:         {:.2}", linear_result.mae);
-        eprintln!("    Sign acc:    {:.1}%", linear_result.sign_accuracy * 100.0);
+        eprintln!(
+            "    Sign acc:    {:.1}%",
+            linear_result.sign_accuracy * 100.0
+        );
         eprintln!("    Time:        {:.1}s", linear_time.as_secs_f64());
         eprintln!("  Euclidean distance:");
         eprintln!("    R²:          {:.4}", euclidean_result.r_squared);
         eprintln!("    MAE:         {:.2}", euclidean_result.mae);
-        eprintln!("    Sign acc:    {:.1}%", euclidean_result.sign_accuracy * 100.0);
+        eprintln!(
+            "    Sign acc:    {:.1}%",
+            euclidean_result.sign_accuracy * 100.0
+        );
         eprintln!("    Time:        {:.1}s", euclidean_time.as_secs_f64());
         let improvement = (euclidean_result.r_squared - linear_result.r_squared)
-            / linear_result.r_squared.abs().max(0.01) * 100.0;
+            / linear_result.r_squared.abs().max(0.01)
+            * 100.0;
         eprintln!("  ΔR² Euclidean vs Linear: {:.1}%", improvement);
         eprintln!("═══════════════════════════════════════════════════\n");
         eprintln!("  Interpretation:");

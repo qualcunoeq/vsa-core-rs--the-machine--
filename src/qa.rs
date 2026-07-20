@@ -36,7 +36,7 @@ use crate::nlp;
 use crate::resonator;
 use crate::Hypervector;
 use std::cmp::Ordering;
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CONSTANTS
@@ -60,56 +60,183 @@ const QUESTION_OBJECT: &[&str] = &["what", "whom", "which"];
 /// only genuine matches pass.
 const MIN_CLEANUP_ENERGY: f64 = 0.56;
 
-    /// Minimum fraction of a fact's non-verb meaningful words (len > 3) that
-    /// must appear in the question text for the fact to be considered relevant.
-    /// Set at 0.35 to balance between filtering hallucinated facts (typical
-    /// 0.0–0.33 overlap) and keeping correct definitional answers (~0.35–0.45).
-    const MIN_FACT_RELEVANCE: f64 = 0.35;
+/// Minimum fraction of a fact's non-verb meaningful words (len > 3) that
+/// must appear in the question text for the fact to be considered relevant.
+/// Set at 0.35 to balance between filtering hallucinated facts (typical
+/// 0.0–0.33 overlap) and keeping correct definitional answers (~0.35–0.45).
+const MIN_FACT_RELEVANCE: f64 = 0.35;
+
+/// Semantic backoff is allowed to answer only when a candidate covers most
+/// of the question's normalized concepts.  Two overlapping words are a good
+/// way to *find* a candidate in a large corpus, but not enough evidence to
+/// claim that the fact entails a benchmark question.
+const MIN_SEMANTIC_CONCEPT_MATCHES: usize = 3;
+const MIN_SEMANTIC_CONCEPT_COVERAGE: f64 = 0.75;
+const MIN_SEMANTIC_SURFACE_ANCHORS: usize = 2;
 
 /// Objects that are almost always KB parsing artifacts, never
 /// meaningful mathematical knowledge. These are English function
 /// words (determiners, prepositions) that appear as fact objects
 /// due to bad parsing of source material.
 const KB_ARTIFACT_OBJECTS: &[&str] = &[
-    "the", "a", "an", "in", "on", "at", "by", "to", "of", "for",
-    "with", "no", "not", "or", "and", "but", "if", "than", "that",
-    "this", "from", "into", "onto", "upon", "all", "any", "each",
-    "every", "some", "most", "few", "much", "many", "such", "same",
-    "its", "his", "her", "their", "our", "your", "my",
+    "the", "a", "an", "in", "on", "at", "by", "to", "of", "for", "with", "no", "not", "or", "and",
+    "but", "if", "than", "that", "this", "from", "into", "onto", "upon", "all", "any", "each",
+    "every", "some", "most", "few", "much", "many", "such", "same", "its", "his", "her", "their",
+    "our", "your", "my",
 ];
 
 /// Function words and generic adjectives that should not count as
 /// evidence of topical overlap between a fact and a question.
 /// Excluding these tightens the fact_is_relevant check.
 const STOP_WORDS: &[&str] = &[
-    "which", "what", "when", "where", "why", "how", "who", "whom", "whose",
-    "this", "that", "these", "those", "there", "here",
-    "then", "than", "thus", "hence", "also", "very", "just",
-    "always", "never", "sometimes", "often", "usually",
-    "even", "only", "also", "still", "already", "quite",
-    "some", "any", "all", "every", "each", "both", "few", "many", "much",
-    "such", "same", "other", "another",
-    "good", "bad", "big", "small", "large", "little", "great",
-    "new", "old", "first", "last", "next", "previous",
-    "different", "same", "similar", "common", "simple", "complex",
-    "high", "low", "long", "short", "wide", "narrow",
-    "known", "given", "called", "named", "said", "shown",
-    "using", "based", "related", "associated",
-    "following", "above", "below", "about", "across",
-    "though", "although", "because", "since", "while",
-    "without", "within", "between", "among", "against",
-    "until", "during", "before", "after", "beyond",
-    "through", "throughout", "through", "along", "around",
-    "back", "down", "off", "over", "out", "up",
-    "possible", "necessary", "important", "general",
-    "main", "major", "total", "average", "typical",
-    "specific", "particular", "certain", "various",
-    "significant", "substantial", "considerable",
-    "approximate", "estimated", "available", "relative",
-    "direct", "indirect", "positive", "negative",
-    "true", "false", "correct", "incorrect",
-    "process", "result", "value", "number",
-    "case", "example", "instance", "situation",
+    "which",
+    "what",
+    "when",
+    "where",
+    "why",
+    "how",
+    "who",
+    "whom",
+    "whose",
+    "this",
+    "that",
+    "these",
+    "those",
+    "there",
+    "here",
+    "then",
+    "than",
+    "thus",
+    "hence",
+    "also",
+    "very",
+    "just",
+    "always",
+    "never",
+    "sometimes",
+    "often",
+    "usually",
+    "even",
+    "only",
+    "also",
+    "still",
+    "already",
+    "quite",
+    "some",
+    "any",
+    "all",
+    "every",
+    "each",
+    "both",
+    "few",
+    "many",
+    "much",
+    "such",
+    "same",
+    "other",
+    "another",
+    "good",
+    "bad",
+    "big",
+    "small",
+    "large",
+    "little",
+    "great",
+    "new",
+    "old",
+    "first",
+    "last",
+    "next",
+    "previous",
+    "different",
+    "same",
+    "similar",
+    "common",
+    "simple",
+    "complex",
+    "high",
+    "low",
+    "long",
+    "short",
+    "wide",
+    "narrow",
+    "known",
+    "given",
+    "called",
+    "named",
+    "said",
+    "shown",
+    "using",
+    "based",
+    "related",
+    "associated",
+    "following",
+    "above",
+    "below",
+    "about",
+    "across",
+    "though",
+    "although",
+    "because",
+    "since",
+    "while",
+    "without",
+    "within",
+    "between",
+    "among",
+    "against",
+    "until",
+    "during",
+    "before",
+    "after",
+    "beyond",
+    "through",
+    "throughout",
+    "through",
+    "along",
+    "around",
+    "back",
+    "down",
+    "off",
+    "over",
+    "out",
+    "up",
+    "possible",
+    "necessary",
+    "important",
+    "general",
+    "main",
+    "major",
+    "total",
+    "average",
+    "typical",
+    "specific",
+    "particular",
+    "certain",
+    "various",
+    "significant",
+    "substantial",
+    "considerable",
+    "approximate",
+    "estimated",
+    "available",
+    "relative",
+    "direct",
+    "indirect",
+    "positive",
+    "negative",
+    "true",
+    "false",
+    "correct",
+    "incorrect",
+    "process",
+    "result",
+    "value",
+    "number",
+    "case",
+    "example",
+    "instance",
+    "situation",
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -134,6 +261,18 @@ pub struct QaFact {
     /// True if a later fact contradicts this one (same subject/object
     /// but opposite verb, or same subject/verb but opposite object).
     pub is_contradicted: bool,
+}
+
+/// Auditable factual retrieval evidence for an external benchmark.  This is
+/// deliberately a record of an asserted store entry, not an inferred claim.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct FactualRetrievalTrace {
+    pub answer: String,
+    pub subject: String,
+    pub verb: String,
+    pub object: String,
+    pub source: String,
+    pub confidence: f64,
 }
 
 /// Which SVO slot is the answer.
@@ -188,9 +327,8 @@ fn cartesian_proof_product(lists: &[Vec<ProofTree>], cap: usize) -> Vec<Vec<Proo
     let mut result: Vec<Vec<ProofTree>> = vec![Vec::new()];
 
     for list in &sorted {
-        let mut new_result: Vec<Vec<ProofTree>> = Vec::with_capacity(
-            (result.len() * list.len()).min(cap),
-        );
+        let mut new_result: Vec<Vec<ProofTree>> =
+            Vec::with_capacity((result.len() * list.len()).min(cap));
 
         'outer: for prefix in &result {
             for item in list {
@@ -451,7 +589,8 @@ impl Term {
                     match part {
                         TemplatePart::Literal(s) => result.push_str(s),
                         TemplatePart::Placeholder(var) => {
-                            let val = subst.get(var.as_str())
+                            let val = subst
+                                .get(var.as_str())
                                 .cloned()
                                 .unwrap_or_else(|| var.clone());
                             result.push_str(&val);
@@ -528,7 +667,11 @@ impl Term {
                                 let next_lit = placeholder_idx.and_then(|idx| {
                                     parts[idx + 1..].iter().find_map(|p| {
                                         if let TemplatePart::Literal(l) = p {
-                                            if l.is_empty() { None } else { Some(l.clone()) }
+                                            if l.is_empty() {
+                                                None
+                                            } else {
+                                                Some(l.clone())
+                                            }
                                         } else {
                                             None
                                         }
@@ -539,7 +682,8 @@ impl Term {
                                     // Find next_str in goal starting from pos
                                     if let Some(found) = goal[pos..].find(&next_str) {
                                         let val = &goal[pos..pos + found];
-                                        trial_subst.insert(var.as_str().to_string(), val.to_string());
+                                        trial_subst
+                                            .insert(var.as_str().to_string(), val.to_string());
                                         pos += found;
                                     } else {
                                         return false; // next literal not found
@@ -693,14 +837,30 @@ impl ProofTree {
     /// The final conclusion (subject, verb, object) of this proof tree.
     pub fn conclusion(&self) -> (&str, &str, &str) {
         match self {
-            ProofTree::Axiom { subject, verb, object, .. }
-            | ProofTree::AndIntro { conclusion_subject: subject, conclusion_verb: verb, conclusion_object: object, .. }
-            | ProofTree::ImplElim { conclusion_subject: subject, conclusion_verb: verb, conclusion_object: object, .. } => {
-                (subject.as_str(), verb.as_str(), object.as_str())
+            ProofTree::Axiom {
+                subject,
+                verb,
+                object,
+                ..
             }
-            ProofTree::NotProvable { subject, verb, object, .. } => {
-                (subject.as_str(), verb.as_str(), object.as_str())
+            | ProofTree::AndIntro {
+                conclusion_subject: subject,
+                conclusion_verb: verb,
+                conclusion_object: object,
+                ..
             }
+            | ProofTree::ImplElim {
+                conclusion_subject: subject,
+                conclusion_verb: verb,
+                conclusion_object: object,
+                ..
+            } => (subject.as_str(), verb.as_str(), object.as_str()),
+            ProofTree::NotProvable {
+                subject,
+                verb,
+                object,
+                ..
+            } => (subject.as_str(), verb.as_str(), object.as_str()),
             ProofTree::UnifiedProof { inner, .. } => inner.conclusion(),
         }
     }
@@ -711,7 +871,7 @@ impl ProofTree {
             ProofTree::Axiom { confidence, .. } => *confidence,
             ProofTree::AndIntro { confidence: c, .. } => *c,
             ProofTree::ImplElim { confidence: c, .. } => *c,
-            ProofTree::NotProvable { .. } => 1.0,  // absence always succeeds
+            ProofTree::NotProvable { .. } => 1.0, // absence always succeeds
             ProofTree::UnifiedProof { inner, .. } => inner.confidence(),
         }
     }
@@ -720,34 +880,89 @@ impl ProofTree {
     pub fn format(&self, indent: usize) -> String {
         let pad = "  ".repeat(indent);
         match self {
-            ProofTree::Axiom { subject, verb, object, confidence } => {
-                let obj = if object.is_empty() { String::new() } else { format!(" {}", object) };
-                format!("{}∴ {} {}{} ✓ (conf={:.2})",
-                    pad, subject, verb, obj, confidence)
+            ProofTree::Axiom {
+                subject,
+                verb,
+                object,
+                confidence,
+            } => {
+                let obj = if object.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {}", object)
+                };
+                format!(
+                    "{}∴ {} {}{} ✓ (conf={:.2})",
+                    pad, subject, verb, obj, confidence
+                )
             }
-            ProofTree::AndIntro { conclusion_subject, conclusion_verb, conclusion_object, rule_source, subproofs, confidence } => {
-                let obj = if conclusion_object.is_empty() { String::new() } else { format!(" {}", conclusion_object) };
-                let mut s = format!("{}∴ {} {}{} [AND, src={}, conf={:.2}]\n",
-                    pad, conclusion_subject, conclusion_verb, obj, rule_source, confidence);
+            ProofTree::AndIntro {
+                conclusion_subject,
+                conclusion_verb,
+                conclusion_object,
+                rule_source,
+                subproofs,
+                confidence,
+            } => {
+                let obj = if conclusion_object.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {}", conclusion_object)
+                };
+                let mut s = format!(
+                    "{}∴ {} {}{} [AND, src={}, conf={:.2}]\n",
+                    pad, conclusion_subject, conclusion_verb, obj, rule_source, confidence
+                );
                 for sub in subproofs {
                     s.push_str(&sub.format(indent + 1));
                     s.push('\n');
                 }
                 s
             }
-            ProofTree::ImplElim { antecedent_subject, antecedent_verb, antecedent_object, conclusion_subject, conclusion_verb, conclusion_object, rule_source, ante_proof, confidence } => {
-                let a_obj = if antecedent_object.is_empty() { String::new() } else { format!(" {}", antecedent_object) };
-                let c_obj = if conclusion_object.is_empty() { String::new() } else { format!(" {}", conclusion_object) };
-                let mut s = format!("{}∴ {} {}{} [MP, src={}]\n", pad, conclusion_subject, conclusion_verb, c_obj, rule_source);
-                s.push_str(&format!("{}  IF: {} {}{}\n", pad, antecedent_subject, antecedent_verb, a_obj));
+            ProofTree::ImplElim {
+                antecedent_subject,
+                antecedent_verb,
+                antecedent_object,
+                conclusion_subject,
+                conclusion_verb,
+                conclusion_object,
+                rule_source,
+                ante_proof,
+                confidence,
+            } => {
+                let a_obj = if antecedent_object.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {}", antecedent_object)
+                };
+                let c_obj = if conclusion_object.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {}", conclusion_object)
+                };
+                let mut s = format!(
+                    "{}∴ {} {}{} [MP, src={}]\n",
+                    pad, conclusion_subject, conclusion_verb, c_obj, rule_source
+                );
+                s.push_str(&format!(
+                    "{}  IF: {} {}{}\n",
+                    pad, antecedent_subject, antecedent_verb, a_obj
+                ));
                 s.push_str(&ante_proof.format(indent + 1));
                 s.push('\n');
                 s
             }
-            ProofTree::NotProvable { subject, verb, object } => {
-                let obj = if object.is_empty() { String::new() } else { format!(" {}", object) };
-                format!("{}∴ NOT({} {}{}) [NAF] ✓",
-                    pad, subject, verb, obj)
+            ProofTree::NotProvable {
+                subject,
+                verb,
+                object,
+            } => {
+                let obj = if object.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {}", object)
+                };
+                format!("{}∴ NOT({} {}{}) [NAF] ✓", pad, subject, verb, obj)
             }
             ProofTree::UnifiedProof { inner, bindings } => {
                 let mut s = format!("{}[Unified: ", pad);
@@ -796,22 +1011,39 @@ impl ProofTree {
     ///   Then: [inner explanation]"
     pub fn explain(&self) -> String {
         match self {
-            ProofTree::Axiom { subject, verb, object, confidence } => {
+            ProofTree::Axiom {
+                subject,
+                verb,
+                object,
+                confidence,
+            } => {
                 let s = verbalize_token(subject);
                 let v = verbalize_relation(verb);
-                let o = if object.is_empty() { String::new() } else { format!(" {}", object) };
+                let o = if object.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {}", object)
+                };
                 format!(
                     "I know that {} {}{} (confidence: {:.2}). This is a fact stored directly in memory.",
                     s, v, o, confidence,
                 )
             }
             ProofTree::AndIntro {
-                conclusion_subject, conclusion_verb, conclusion_object,
-                rule_source, subproofs, confidence,
+                conclusion_subject,
+                conclusion_verb,
+                conclusion_object,
+                rule_source,
+                subproofs,
+                confidence,
             } => {
                 let s = verbalize_token(conclusion_subject);
                 let v = verbalize_relation(conclusion_verb);
-                let o = if conclusion_object.is_empty() { String::new() } else { format!(" {}", conclusion_object) };
+                let o = if conclusion_object.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {}", conclusion_object)
+                };
                 let mut lines = vec![format!(
                     "I conclude that {} {}{}. This follows from the rule '{}', which requires ALL of the following to be true:",
                     s, v, o, rule_source,
@@ -829,16 +1061,30 @@ impl ProofTree {
                 lines.join("\n")
             }
             ProofTree::ImplElim {
-                antecedent_subject, antecedent_verb, antecedent_object,
-                conclusion_subject, conclusion_verb, conclusion_object,
-                rule_source, ante_proof, confidence,
+                antecedent_subject,
+                antecedent_verb,
+                antecedent_object,
+                conclusion_subject,
+                conclusion_verb,
+                conclusion_object,
+                rule_source,
+                ante_proof,
+                confidence,
             } => {
                 let s = verbalize_token(conclusion_subject);
                 let v = verbalize_relation(conclusion_verb);
-                let o = if conclusion_object.is_empty() { String::new() } else { format!(" {}", conclusion_object) };
+                let o = if conclusion_object.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {}", conclusion_object)
+                };
                 let ante_s_v = verbalize_token(antecedent_subject);
                 let ante_v_v = verbalize_relation(antecedent_verb);
-                let ante_o_v = if antecedent_object.is_empty() { String::new() } else { format!(" {}", antecedent_object) };
+                let ante_o_v = if antecedent_object.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {}", antecedent_object)
+                };
                 let mut lines = vec![format!(
                     "I conclude that {} {}{}. This uses the rule '{}', which says:",
                     s, v, o, rule_source,
@@ -858,10 +1104,18 @@ impl ProofTree {
                 ));
                 lines.join("\n")
             }
-            ProofTree::NotProvable { subject, verb, object } => {
+            ProofTree::NotProvable {
+                subject,
+                verb,
+                object,
+            } => {
                 let s = verbalize_token(subject);
                 let v = verbalize_relation(verb);
-                let o = if object.is_empty() { String::new() } else { format!(" {}", object) };
+                let o = if object.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {}", object)
+                };
                 format!(
                     "I checked whether ({} {}{}) is provable. No evidence was found, so I treat it as false by negation-as-failure.",
                     s, v, o,
@@ -878,10 +1132,7 @@ impl ProofTree {
                         .iter()
                         .map(|(k, v)| format!("{} → {}", k, v))
                         .collect();
-                    lines.push(format!(
-                        "I matched variables: {}.",
-                        binding_strs.join(", "),
-                    ));
+                    lines.push(format!("I matched variables: {}.", binding_strs.join(", "),));
                 }
                 let inner_text = inner.explain();
                 for inner_line in inner_text.lines() {
@@ -1066,6 +1317,11 @@ pub struct MinedRule {
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct QaEngine {
     facts: Vec<QaFact>,
+    /// Provenance-bearing passages are the only factual answer source. The
+    /// legacy SVO bank remains an index/candidate generator, never sufficient
+    /// evidence for an externally returned answer.
+    #[serde(default)]
+    factual_evidence: crate::knowledge::CuratedKnowledgeStore,
     /// Exact normalized SVO index for fast, non-fuzzy fact verification.
     #[serde(skip_serializing, default)]
     fact_index: HashMap<(String, String, String), usize>,
@@ -1082,6 +1338,15 @@ pub struct QaEngine {
     /// (replaces the O(n) scan in `store_fact`).
     #[serde(skip_serializing, default)]
     fact_by_subject: HashMap<String, Vec<usize>>,
+    /// Meaningful fact-token index used for bounded lexical fallback when a
+    /// natural-language question cannot be parsed into an exact SVO lookup.
+    #[serde(skip_serializing, default)]
+    fact_by_term: HashMap<String, Vec<usize>>,
+    /// Concept-normalized term index for the semantic retrieval backoff.
+    /// It is deliberately separate from the exact SVO indices: this path is
+    /// allowed to bridge small lexical gaps, but never changes exact matching.
+    #[serde(skip_serializing, default)]
+    fact_by_concept: HashMap<String, Vec<usize>>,
     /// Causal rules for multi-hop reasoning.
     rules: Vec<CausalRule>,
     /// AND-rules for conjunctive theorem proving.
@@ -1143,6 +1408,11 @@ pub struct QaEngine {
     /// textbook formulas and bootstrap knowledge.
     #[serde(default)]
     pub rule_engine: crate::math_ingest::RuleEngine,
+
+    /// Theorem proving environment with trusted theorem schemas.
+    /// Optional — loaded when `load_theorem_environment()` is called.
+    #[serde(skip)]
+    pub theorem_env: Option<crate::proposition::TheoremEnvironment>,
 }
 
 impl QaEngine {
@@ -1150,6 +1420,7 @@ impl QaEngine {
     pub fn new() -> Self {
         QaEngine {
             facts: Vec::new(),
+            factual_evidence: crate::knowledge::CuratedKnowledgeStore::default(),
             formula_registry: crate::math_ingest::FormulaRegistry::new(),
             rule_engine: crate::math_ingest::RuleEngine::new(),
             fact_index: HashMap::new(),
@@ -1157,6 +1428,8 @@ impl QaEngine {
             fact_by_subject_verb: HashMap::new(),
             fact_by_subject_object: HashMap::new(),
             fact_by_subject: HashMap::new(),
+            fact_by_term: HashMap::new(),
+            fact_by_concept: HashMap::new(),
             rules: Vec::new(),
             and_rules: Vec::new(),
             schematic_rules: Vec::new(),
@@ -1171,7 +1444,191 @@ impl QaEngine {
             opponent_responses: Vec::new(),
             episode_store: crate::cognition::EpisodeStore::new(),
             lightning_indexer: Some(crate::indexer::LightningIndexer::with_default_top_k()),
+            theorem_env: None,
         }
+    }
+
+    /// Load the theorem proving environment (12+ hand-curated schemas).
+    /// Must be called explicitly — existing tests are unaffected.
+    pub fn load_theorem_environment(&mut self) {
+        let env = crate::proposition::TheoremEnvironment::with_initial_theorems();
+        eprintln!("[qa] TheoremEnvironment loaded: {} theorems", env.len(),);
+        self.theorem_env = Some(env);
+    }
+
+    /// Try to answer a "prove" or "verify" style question using the theorem prover.
+    pub fn theorem_prover_answer(
+        question: &str,
+        theorem_env: &crate::proposition::TheoremEnvironment,
+    ) -> Option<String> {
+        // This backend is deliberately a *formal* algebra prover, not a
+        // natural-language proof assistant.  In particular, an HLE question
+        // can mention "prove" and contain an ODE equality while asking for a
+        // Banach-space construction.  Passing that prose to the algebra
+        // parser/proof search can create pathological recursive terms.
+        let after_prove = Self::formal_theorem_statement(question)?;
+
+        // Strip "given / when / if" clauses for equation parsing
+        let eq_only = if let Some(idx) = after_prove.find(" given ") {
+            &after_prove[..idx]
+        } else if let Some(idx) = after_prove.find(" when ") {
+            &after_prove[..idx]
+        } else if let Some(idx) = after_prove.find(" if ") {
+            &after_prove[..idx]
+        } else {
+            after_prove
+        };
+
+        if !eq_only.contains('=') {
+            return None;
+        }
+
+        if let Ok((lhs, rhs)) = crate::algebra::parse_equation(eq_only) {
+            let goal_prop = crate::proposition::Proposition::eq(lhs, rhs);
+            let mut ctx = crate::proposition::LocalContext::new();
+
+            // Parse context from "given / when / if" clauses
+            let context_text = if question.contains(" given ") {
+                question.split(" given ").nth(1).unwrap_or("")
+            } else if question.contains(" when ") {
+                question.split(" when ").nth(1).unwrap_or("")
+            } else if question.contains(" if ") {
+                question.split(" if ").nth(1).unwrap_or("")
+            } else {
+                ""
+            };
+
+            for part in context_text.split(|c: char| c == ',' || c == ';' || c == '.') {
+                let part = part.trim();
+                if part.is_empty() {
+                    continue;
+                }
+                // Check for >= BEFORE parse_equation (which would split at = inside >=)
+                if part.contains(">=") {
+                    if let Some(pos) = part.find(">=") {
+                        let left = part[..pos].trim();
+                        let right = part[pos + 2..].trim();
+                        if let (Ok(l), Ok(r)) =
+                            (crate::algebra::parse(left), crate::algebra::parse(right))
+                        {
+                            ctx.add_hypothesis(crate::proposition::Proposition::ge(l, r));
+                        }
+                    }
+                } else if part.contains("<=") {
+                    if let Some(pos) = part.find("<=") {
+                        let left = part[..pos].trim();
+                        let right = part[pos + 2..].trim();
+                        if let (Ok(l), Ok(r)) =
+                            (crate::algebra::parse(left), crate::algebra::parse(right))
+                        {
+                            ctx.add_hypothesis(crate::proposition::Proposition::le(l, r));
+                        }
+                    }
+                } else if part.contains("<") {
+                    if let Some(pos) = part.find("<") {
+                        let left = part[..pos].trim();
+                        let right = part[pos + 1..].trim();
+                        if let (Ok(l), Ok(r)) =
+                            (crate::algebra::parse(left), crate::algebra::parse(right))
+                        {
+                            ctx.add_hypothesis(crate::proposition::Proposition::lt(l, r));
+                        }
+                    }
+                } else if let Ok((h_lhs, h_rhs)) = crate::algebra::parse_equation(part) {
+                    ctx.add_hypothesis(crate::proposition::Proposition::eq(h_lhs, h_rhs));
+                }
+            }
+
+            let goal = crate::tactics::Goal::new(ctx, goal_prop);
+            match crate::tactics::prove(&goal, theorem_env, 10) {
+                Ok(proof) => {
+                    let checker = crate::kernel::ProofChecker::new(theorem_env.clone());
+                    match checker.check(&goal.context, &proof, &goal.proposition) {
+                        Ok(_) => Some(format!("✓ Proved: {}", goal.proposition)),
+                        Err(e) => Some(format!("❌ Proof rejected by kernel: {}", e)),
+                    }
+                }
+                Err(e) => Some(format!("❌ Could not prove: {}", e)),
+            }
+        } else {
+            None
+        }
+    }
+
+    /// Return the algebra statement of an explicitly-formal proof prompt.
+    ///
+    /// The theorem kernel accepts a compact expression language, so reject
+    /// prose, multiline prompts, and deeply nested terms before parsing.  The
+    /// same eligibility check is used by the router, ensuring unsupported
+    /// specialist requests abstain rather than entering proof search.
+    pub fn formal_theorem_statement(question: &str) -> Option<&str> {
+        let question = question.trim();
+        let lower = question.to_ascii_lowercase();
+        let prefix_len = if lower.starts_with("prove that ") {
+            "prove that ".len()
+        } else if lower.starts_with("show that ") {
+            "show that ".len()
+        } else if lower.starts_with("verify that ") {
+            "verify that ".len()
+        } else if lower.starts_with("prove ") {
+            "prove ".len()
+        } else if lower.starts_with("verify ") {
+            "verify ".len()
+        } else {
+            return None;
+        };
+        let statement = question.get(prefix_len..)?.trim();
+        if statement.is_empty()
+            || statement.len() > 256
+            || statement.contains('\n')
+            || !statement.contains('=')
+        {
+            return None;
+        }
+        // Keep the accepted surface exactly within the algebra parser's
+        // intended language.  Identifiers such as `sin` and `f` remain valid;
+        // arbitrary explanatory prose and TeX/ODE notation do not.
+        if !statement.chars().all(|ch| {
+            ch.is_ascii_alphanumeric()
+                || matches!(
+                    ch,
+                    '_' | '+'
+                        | '-'
+                        | '*'
+                        | '/'
+                        | '^'
+                        | '='
+                        | '('
+                        | ')'
+                        | ','
+                        | '.'
+                        | '<'
+                        | '>'
+                        | ' '
+                        | '\t'
+                )
+        }) {
+            return None;
+        }
+        let mut depth = 0usize;
+        for ch in statement.chars() {
+            match ch {
+                '(' => {
+                    depth += 1;
+                    if depth > 16 {
+                        return None;
+                    }
+                }
+                ')' => {
+                    if depth == 0 {
+                        return None;
+                    }
+                    depth -= 1;
+                }
+                _ => {}
+            }
+        }
+        (depth == 0 && statement.split_whitespace().count() <= 24).then_some(statement)
     }
 
     fn normalize_fact_subject(subject: &str) -> String {
@@ -1191,6 +1648,68 @@ impl QaEngine {
             .trim()
             .trim_matches(|ch: char| !ch.is_alphanumeric() && ch != '_')
             .to_string()
+    }
+
+    /// A fact must have all three non-empty, normalized fields to participate
+    /// in storage and retrieval.  This keeps partially parsed corpus records
+    /// from becoming thousands of indistinguishable empty index entries.
+    pub fn has_usable_fact_fields(subject: &str, verb: &str, object: &str) -> bool {
+        !Self::normalize_fact_subject(subject).is_empty()
+            && !Self::normalize_fact_verb(verb).is_empty()
+            && !Self::normalize_fact_object(object).is_empty()
+    }
+
+    fn meaningful_terms(text: &str) -> Vec<String> {
+        text.to_lowercase()
+            .split(|ch: char| !ch.is_alphanumeric() && ch != '_')
+            .flat_map(|token| token.split('_'))
+            .filter(|token| token.len() >= 3 && !STOP_WORDS.contains(token))
+            .map(str::to_string)
+            .collect()
+    }
+
+    fn fact_terms(fact: &QaFact) -> HashSet<String> {
+        Self::meaningful_terms(&format!("{} {} {}", fact.subject, fact.verb, fact.object))
+            .into_iter()
+            .collect()
+    }
+
+    /// Normalize a content word into a small, auditable concept vocabulary.
+    /// This is intentionally a precision-oriented alias table rather than an
+    /// unconstrained synonym generator: the latter caused HLE false positives.
+    fn concept_term(term: &str) -> String {
+        let term = term.to_lowercase();
+        let lemma = crate::nlp::verb_lemma(&term);
+        match lemma.as_str() {
+            "raise" | "increase" | "hike" | "boost" | "elevate" => "raise".to_string(),
+            "cut" | "lower" | "reduce" | "decrease" | "decline" => "cut".to_string(),
+            "create" | "invent" | "devise" | "produce" => "create".to_string(),
+            "develop" | "formulate" | "derive" => "develop".to_string(),
+            "discover" | "find" | "identify" => "discover".to_string(),
+            "define" | "describe" | "characterize" => "define".to_string(),
+            _ => {
+                // Lightweight nominal lemmatization makes "rates" and
+                // "rate" share a retrieval key without conflating stems.
+                if term.len() > 4 && term.ends_with("ies") {
+                    format!("{}y", &term[..term.len() - 3])
+                } else if term.len() > 3 && term.ends_with('s') && !term.ends_with("ss") {
+                    term[..term.len() - 1].to_string()
+                } else {
+                    term
+                }
+            }
+        }
+    }
+
+    fn concept_terms(text: &str) -> HashSet<String> {
+        Self::meaningful_terms(text)
+            .into_iter()
+            .map(|term| Self::concept_term(&term))
+            .collect()
+    }
+
+    fn fact_concept_terms(fact: &QaFact) -> HashSet<String> {
+        Self::concept_terms(&format!("{} {} {}", fact.subject, fact.verb, fact.object))
     }
 
     fn fact_text_matches(fact: &QaFact, subject: &str, verb: &str, object: &str) -> bool {
@@ -1213,7 +1732,12 @@ impl QaEngine {
         self.fact_by_subject_verb.clear();
         self.fact_by_subject_object.clear();
         self.fact_by_subject.clear();
+        self.fact_by_term.clear();
+        self.fact_by_concept.clear();
         for (idx, fact) in self.facts.iter().enumerate() {
+            if !Self::has_usable_fact_fields(&fact.subject, &fact.verb, &fact.object) {
+                continue;
+            }
             let subject = Self::normalize_fact_subject(&fact.subject);
             let verb = Self::normalize_fact_verb(&fact.verb);
             let object = Self::normalize_fact_object(&fact.object);
@@ -1231,15 +1755,21 @@ impl QaEngine {
                 .entry((subject.clone(), object))
                 .or_default()
                 .push(idx);
-            self.fact_by_subject
-                .entry(subject)
-                .or_default()
-                .push(idx);
+            self.fact_by_subject.entry(subject).or_default().push(idx);
+            for term in Self::fact_terms(fact) {
+                self.fact_by_term.entry(term).or_default().push(idx);
+            }
+            for concept in Self::fact_concept_terms(fact) {
+                self.fact_by_concept.entry(concept).or_default().push(idx);
+            }
         }
     }
 
     fn index_fact(&mut self, idx: usize) {
         if let Some(fact) = self.facts.get(idx) {
+            if !Self::has_usable_fact_fields(&fact.subject, &fact.verb, &fact.object) {
+                return;
+            }
             let subject = Self::normalize_fact_subject(&fact.subject);
             let verb = Self::normalize_fact_verb(&fact.verb);
             let object = Self::normalize_fact_object(&fact.object);
@@ -1257,10 +1787,13 @@ impl QaEngine {
                 .entry((subject.clone(), object))
                 .or_default()
                 .push(idx);
-            self.fact_by_subject
-                .entry(subject)
-                .or_default()
-                .push(idx);
+            self.fact_by_subject.entry(subject).or_default().push(idx);
+            for term in Self::fact_terms(fact) {
+                self.fact_by_term.entry(term).or_default().push(idx);
+            }
+            for concept in Self::fact_concept_terms(fact) {
+                self.fact_by_concept.entry(concept).or_default().push(idx);
+            }
         }
     }
 
@@ -2332,6 +2865,10 @@ impl QaEngine {
     /// object but opposite verb, or same subject + same verb but
     /// opposite object), the OLDER fact is marked as `is_contradicted`.
     pub fn store_fact(&mut self, subject: &str, verb: &str, object: &str, source: &str) {
+        if !Self::has_usable_fact_fields(subject, verb, object) {
+            return;
+        }
+
         // Use cluster-resolved vectors when available (falls back to raw
         // n-gram if no cluster data has been synced).
         let s_hv = self.resolve_term(subject);
@@ -2395,6 +2932,41 @@ impl QaEngine {
             is_contradicted: false, // newly stored facts start clean
         });
         self.index_fact(self.facts.len() - 1);
+        // Keep legacy callers working, but represent their assertion as a
+        // citable passage. Imported/cache-like sources are candidates only;
+        // local/manual assertions are curated and retain their source and
+        // explicit direct-assertion condition.
+        let quality = if source.to_ascii_lowercase().contains("candidate")
+            || source.to_ascii_lowercase().contains("wikipedia")
+            || source.to_ascii_lowercase().contains("extract")
+            || source.to_ascii_lowercase().contains("cache")
+        {
+            crate::knowledge::KnowledgeQuality::Candidate
+        } else {
+            crate::knowledge::KnowledgeQuality::Curated
+        };
+        self.factual_evidence
+            .insert(crate::knowledge::KnowledgeRecord {
+                id: format!("fact-{}", tick),
+                statement: format!("{} {} {}", subject, verb, object),
+                formula: None,
+                source: source.to_string(),
+                domain: "factual".to_string(),
+                variables: Vec::new(),
+                assumptions: vec![
+                    "direct assertion; scope is limited to the stored statement".to_string()
+                ],
+                units: HashMap::new(),
+                quality,
+                entailment_examples: Vec::new(),
+            });
+    }
+
+    /// Store a fully structured factual passage.  Callers importing external
+    /// material must provide source, quality, assumptions and units directly;
+    /// Candidate entries remain searchable but cannot answer a question.
+    pub fn store_evidence(&mut self, record: crate::knowledge::KnowledgeRecord) {
+        self.factual_evidence.insert(record);
     }
 
     fn store_derived_fact(
@@ -2456,7 +3028,8 @@ impl QaEngine {
 
     /// Sync formulas from the registry into the rule engine as ComputationRules.
     pub fn sync_formulas_to_rules(&mut self) {
-        self.formula_registry.sync_to_rule_engine(&mut self.rule_engine);
+        self.formula_registry
+            .sync_to_rule_engine(&mut self.rule_engine);
     }
 
     pub fn fact_count(&self) -> usize {
@@ -2631,20 +3204,25 @@ impl QaEngine {
                         if words.len() >= 2 {
                             // Handle "what is the X of Y" → X is the verb, "of Y" is object
                             // Skip leading articles "the", "a", "an"
-                            let start_idx = if matches!(words[0], "the" | "a" | "an") && words.len() >= 3 {
-                                1
-                            } else {
-                                0
-                            };
+                            let start_idx =
+                                if matches!(words[0], "the" | "a" | "an") && words.len() >= 3 {
+                                    1
+                                } else {
+                                    0
+                                };
                             if start_idx > 0 && words.len() >= start_idx + 2 {
                                 // "the X of Y" → verb=X, object="of Y"
-                                (Some(crate::nlp::verb_lemma(words[start_idx])),
-                                 Some(words[start_idx + 1..].join(" ")))
+                                (
+                                    Some(crate::nlp::verb_lemma(words[start_idx])),
+                                    Some(words[start_idx + 1..].join(" ")),
+                                )
                             } else if start_idx > 0 && words.len() == start_idx + 1 {
                                 (Some(crate::nlp::verb_lemma(words[start_idx])), None)
                             } else {
-                                (Some(crate::nlp::verb_lemma(words[0])),
-                                 Some(words[1..].join(" ")))
+                                (
+                                    Some(crate::nlp::verb_lemma(words[0])),
+                                    Some(words[1..].join(" ")),
+                                )
                             }
                         } else if words.len() == 1 {
                             (Some(crate::nlp::verb_lemma(words[0])), None)
@@ -2763,7 +3341,8 @@ impl QaEngine {
         // Exclude STOP_WORDS (function words, generic adjectives) because
         // they appear in almost every question and provide no topical signal.
         if !so_words.is_empty() {
-            let any_overlap = so_words.iter()
+            let any_overlap = so_words
+                .iter()
                 .any(|w| q_lower.contains(*w) && !STOP_WORDS.contains(w));
             if !any_overlap {
                 return false;
@@ -2779,8 +3358,7 @@ impl QaEngine {
             .collect();
 
         let cleaned_subject = fact.subject.replace('_', " ");
-        let subject_is_novel = cleaned_subject.len() > 3
-            && !q_lower.contains(&cleaned_subject);
+        let subject_is_novel = cleaned_subject.len() > 3 && !q_lower.contains(&cleaned_subject);
 
         let mut matches = 0usize;
         let mut novel = 0usize;
@@ -2806,6 +3384,209 @@ impl QaEngine {
         ratio >= MIN_FACT_RELEVANCE
     }
 
+    /// Entailment gate for semantic backoff.  The vector/alias score chooses
+    /// what to inspect; this method decides whether the stored assertion is
+    /// allowed to answer.  It intentionally requires a source, a complete
+    /// non-contradicted triple, and direct topical support.  It cannot infer a
+    /// new relation merely because two concepts are nearby in VSA space.
+    fn fact_entails_semantic_query(fact: &QaFact, question: &str) -> bool {
+        !fact.source.trim().is_empty()
+            && !fact.is_contradicted
+            && !Self::normalize_fact_subject(&fact.subject).is_empty()
+            && !Self::normalize_fact_verb(&fact.verb).is_empty()
+            && !Self::normalize_fact_object(&fact.object).is_empty()
+            && Self::fact_is_relevant(fact, question, "")
+    }
+
+    /// Retrieve one high-confidence fact when the SVO parser cannot form an
+    /// exact index key.  This remains bounded: it consults only postings for
+    /// meaningful question terms and abstains on ties or weak lexical overlap.
+    pub fn retrieve_facts_lexically<'a>(&'a self, question: &str) -> Vec<(String, &'a QaFact)> {
+        let (answer_slot, _, _, _) = Self::parse_question(question);
+        self.retrieve_facts_lexically_for_slot(question, &answer_slot)
+    }
+
+    fn retrieve_facts_lexically_for_slot<'a>(
+        &'a self,
+        question: &str,
+        answer_slot: &AnswerSlot,
+    ) -> Vec<(String, &'a QaFact)> {
+        let question_lower = question.trim().to_lowercase();
+        if !QUESTION_SUBJECT
+            .iter()
+            .any(|word| question_lower.starts_with(word))
+        {
+            return Vec::new();
+        }
+
+        let query_terms: HashSet<String> = Self::meaningful_terms(&question_lower)
+            .into_iter()
+            .collect();
+        if query_terms.len() < 4 {
+            return Vec::new();
+        }
+
+        let mut candidate_matches: HashMap<usize, usize> = HashMap::new();
+        let mut candidate_scores: HashMap<usize, f64> = HashMap::new();
+        for term in &query_terms {
+            let Some(indices) = self.fact_by_term.get(term) else {
+                continue;
+            };
+            // Rare terms are much stronger evidence than corpus-wide words.
+            let idf = ((self.facts.len() + 1) as f64 / (indices.len() + 1) as f64).ln() + 1.0;
+            for &idx in indices {
+                *candidate_matches.entry(idx).or_default() += 1;
+                *candidate_scores.entry(idx).or_default() += idf;
+            }
+        }
+
+        let mut candidates: Vec<(usize, usize, f64)> = candidate_matches
+            .into_iter()
+            .filter_map(|(idx, matches)| {
+                let fact = self.facts.get(idx)?;
+                (matches >= 4
+                    && !KB_ARTIFACT_OBJECTS.contains(&fact.object.trim())
+                    && Self::fact_is_relevant(fact, question, ""))
+                .then(|| (idx, matches, candidate_scores[&idx]))
+            })
+            .collect();
+        candidates.sort_by(|left, right| {
+            right
+                .2
+                .partial_cmp(&left.2)
+                .unwrap_or(Ordering::Equal)
+                .then_with(|| right.1.cmp(&left.1))
+                .then_with(|| self.facts[left.0].tick.cmp(&self.facts[right.0].tick))
+        });
+
+        let Some(&(best_idx, _, best_score)) = candidates.first() else {
+            return Vec::new();
+        };
+        // Do not guess when the top two facts are effectively tied.
+        if candidates
+            .get(1)
+            .is_some_and(|(_, _, second_score)| *second_score >= best_score / 3.0)
+        {
+            return Vec::new();
+        }
+
+        let fact = &self.facts[best_idx];
+        let answer = match answer_slot {
+            AnswerSlot::Subject => fact.subject.clone(),
+            AnswerSlot::Verb => fact.verb.clone(),
+            AnswerSlot::Object => fact.object.clone(),
+        };
+        vec![(answer, fact)]
+    }
+
+    /// Retrieve a single fact through concept-normalized candidate generation
+    /// followed by a hybrid lexical/VSA rerank.  Exact SVO lookup remains the
+    /// primary path; callers use this only when it has no answer.
+    ///
+    /// The safety contract is intentionally conservative: a candidate must
+    /// cover at least three concepts, cover 75% of the question concepts,
+    /// retain two direct lexical anchors, and pass the normal topical
+    /// relevance check.  Concept similarity ranks candidates; it never by
+    /// itself establishes that a fact entails a question.
+    pub fn retrieve_facts_semantically<'a>(&'a self, question: &str) -> Vec<(String, &'a QaFact)> {
+        let question_lower = question.trim().to_lowercase();
+        if !QUESTION_SUBJECT
+            .iter()
+            .any(|word| question_lower.starts_with(word))
+        {
+            return Vec::new();
+        }
+
+        let (answer_slot, _, _, _) = Self::parse_question(question);
+        let query_concepts = Self::concept_terms(&question_lower);
+        if query_concepts.len() < 2 {
+            return Vec::new();
+        }
+        let query_surface: HashSet<String> = Self::meaningful_terms(&question_lower)
+            .into_iter()
+            .collect();
+
+        let mut concept_matches: HashMap<usize, usize> = HashMap::new();
+        let mut retrieval_score: HashMap<usize, f64> = HashMap::new();
+        for concept in &query_concepts {
+            let Some(indices) = self.fact_by_concept.get(concept) else {
+                continue;
+            };
+            let idf = ((self.facts.len() + 1) as f64 / (indices.len() + 1) as f64).ln() + 1.0;
+            for &idx in indices {
+                *concept_matches.entry(idx).or_default() += 1;
+                *retrieval_score.entry(idx).or_default() += idf;
+            }
+        }
+
+        let mut candidates: Vec<(usize, String, f64)> = concept_matches
+            .into_iter()
+            .filter_map(|(idx, matches)| {
+                let fact = self.facts.get(idx)?;
+                if matches < MIN_SEMANTIC_CONCEPT_MATCHES
+                    || (matches as f64 / query_concepts.len() as f64)
+                        < MIN_SEMANTIC_CONCEPT_COVERAGE
+                    || KB_ARTIFACT_OBJECTS.contains(&fact.object.trim())
+                    || !Self::fact_entails_semantic_query(fact, question)
+                {
+                    return None;
+                }
+
+                let fact_concepts = Self::fact_concept_terms(fact);
+                let fact_surface = Self::fact_terms(fact);
+                let surface_overlap = query_surface.intersection(&fact_surface).count() as f64;
+                if surface_overlap < MIN_SEMANTIC_SURFACE_ANCHORS as f64 {
+                    return None;
+                }
+                // VSA similarity is a soft reranking signal, not acceptance
+                // evidence.  It lets cluster-backed concept resolution break
+                // ties without turning unrelated n-gram neighbours into facts.
+                let vector_similarity = query_concepts
+                    .iter()
+                    .map(|query_term| {
+                        let query_hv = self.term_concept_vector(query_term);
+                        fact_concepts
+                            .iter()
+                            .map(|fact_term| {
+                                1.0 - query_hv.normalized_hamming_distance(
+                                    &self.term_concept_vector(fact_term),
+                                )
+                            })
+                            .fold(0.0_f64, f64::max)
+                    })
+                    .sum::<f64>()
+                    / query_concepts.len() as f64;
+                let score = retrieval_score[&idx] + 0.35 * surface_overlap + vector_similarity;
+                let answer = match answer_slot {
+                    AnswerSlot::Subject => fact.subject.clone(),
+                    AnswerSlot::Verb => fact.verb.clone(),
+                    AnswerSlot::Object => fact.object.clone(),
+                };
+                Some((idx, answer, score))
+            })
+            .collect();
+
+        candidates.sort_by(|left, right| {
+            right
+                .2
+                .partial_cmp(&left.2)
+                .unwrap_or(Ordering::Equal)
+                .then_with(|| self.facts[left.0].tick.cmp(&self.facts[right.0].tick))
+        });
+        let Some((best_idx, best_answer, best_score)) = candidates.first() else {
+            return Vec::new();
+        };
+        if candidates
+            .iter()
+            .skip(1)
+            .any(|(_, answer, score)| answer != best_answer && *score >= *best_score / 1.15)
+        {
+            return Vec::new();
+        }
+
+        vec![(best_answer.clone(), &self.facts[*best_idx])]
+    }
+
     /// Answer a question returning ALL matching facts, not just the best.
     ///
     /// Useful for multi-answer questions like "What did the Fed do?"
@@ -2823,35 +3604,35 @@ impl QaEngine {
         // "solved"→"solve"). These verbs generate massive numbers of false positive
         // index matches against the 42MB math knowledge base.
         const DISCOURSE_VERBS: &[&str] = &[
-            "follow",   // from "following" (determiner, not verb)
-            "define",   // from "defined" / "defining" in problem statements
-            "write",    // from "written" / "writes" in problem descriptions
-            "solve",    // from "solved" in puzzle descriptions
-            "consider", // from imperative "Consider X"
-            "recall",   // from imperative "Recall X"
-            "note",     // from "Note that X"
-            "denote",   // from "Denote X as Y"
-            "suppose",  // from "Suppose X"
-            "assume",   // from "Assume X"
-            "give",     // from "given" (past participle used as adjective)
-            "view",     // from "viewed as" / "viewing" in problem context
-            "call",     // from "called" / "known as" in problem context
-            "pass",     // from "pass through" / "passed" in descriptions
-            "work",     // from "working together" / "worked"
-            "start",    // from "starting at" / "started"
-            "present",  // from "presented below" / "presented in"
-            "say",      // from "says" / "said that" in narrative
+            "follow",     // from "following" (determiner, not verb)
+            "define",     // from "defined" / "defining" in problem statements
+            "write",      // from "written" / "writes" in problem descriptions
+            "solve",      // from "solved" in puzzle descriptions
+            "consider",   // from imperative "Consider X"
+            "recall",     // from imperative "Recall X"
+            "note",       // from "Note that X"
+            "denote",     // from "Denote X as Y"
+            "suppose",    // from "Suppose X"
+            "assume",     // from "Assume X"
+            "give",       // from "given" (past participle used as adjective)
+            "view",       // from "viewed as" / "viewing" in problem context
+            "call",       // from "called" / "known as" in problem context
+            "pass",       // from "pass through" / "passed" in descriptions
+            "work",       // from "working together" / "worked"
+            "start",      // from "starting at" / "started"
+            "present",    // from "presented below" / "presented in"
+            "say",        // from "says" / "said that" in narrative
             "correspond", // from "corresponded to" / "corresponding"
-            "exist",    // from "there exists" / "existed"
-            "express",  // from "expressed as"
-            "isolate",  // from "isolated"
-            "play",     // from "played" / "playing" in descriptions
-            "show",     // from "shown" / "showned" / "shows"
-            "close",    // from "closed curve" / "closed set"
-            "set",      // from "set of" / "set with" (ambiguous noun/verb)
-            "require",  // from "required" / "requiring" in problem context
-            "satisfy",  // from "satisfied" / "satisfying" in problem context
-            "associate", // from "associated with"
+            "exist",      // from "there exists" / "existed"
+            "express",    // from "expressed as"
+            "isolate",    // from "isolated"
+            "play",       // from "played" / "playing" in descriptions
+            "show",       // from "shown" / "showned" / "shows"
+            "close",      // from "closed curve" / "closed set"
+            "set",        // from "set of" / "set with" (ambiguous noun/verb)
+            "require",    // from "required" / "requiring" in problem context
+            "satisfy",    // from "satisfied" / "satisfying" in problem context
+            "associate",  // from "associated with"
         ];
         if let Some(ref v) = known_verb {
             let v_lemma = crate::nlp::verb_lemma(v);
@@ -2862,7 +3643,10 @@ impl QaEngine {
             // is always an auxiliary, never the main query verb. Reject it.
             if v_lemma == "do" && !known_subj.is_empty() {
                 let subj_lower = known_subj.to_lowercase();
-                if matches!(subj_lower.as_str(), "how" | "what" | "why" | "when" | "where") {
+                if matches!(
+                    subj_lower.as_str(),
+                    "how" | "what" | "why" | "when" | "where"
+                ) {
                     return Vec::new();
                 }
             }
@@ -2934,7 +3718,7 @@ impl QaEngine {
                         })
                         .unwrap_or_default(),
                 )
-            },
+            }
             (AnswerSlot::Object, Some(subject), Some(verb), _) => Some(
                 self.fact_by_subject_verb
                     .get(&(
@@ -2996,13 +3780,14 @@ impl QaEngine {
 
         if let Some(mut matches) = exact_matches {
             matches.sort_by(|a, b| a.1.tick.cmp(&b.1.tick));
-            return matches;
+            if !matches.is_empty() {
+                return matches;
+            }
         }
 
-        // If no indexed match, return empty immediately.
-        // Full-scan fallback doesn't scale (O(N) per question with N = 10k+ facts)
-        // and rarely produces correct answers for unmatched patterns.
-        return Vec::new();
+        // Only after the exact SVO path has failed do we permit the
+        // concept-normalized retrieval/reranking backoff.
+        return self.retrieve_facts_semantically(question);
 
         // (dead code below — preserved for reference)
         let mut results: Vec<(String, f64, &QaFact)> = Vec::new();
@@ -3039,6 +3824,38 @@ impl QaEngine {
         // Sort by tick (oldest first) for chronological output
         results.sort_by(|a, b| a.2.tick.cmp(&b.2.tick));
         results.into_iter().map(|(t, _, f)| (t, f)).collect()
+    }
+
+    /// Return the first factual candidate and its reconstruction confidence
+    /// for benchmark/audit output.  Specialist tools are intentionally not
+    /// represented here: their provenance belongs to their own domain cache.
+    pub fn factual_retrieval_trace(&self, question: &str) -> Option<FactualRetrievalTrace> {
+        let (answer, fact) = self.answer_all(question).into_iter().next()?;
+        let (answer_slot, known_subj, known_verb, known_obj) = Self::parse_question(question);
+        let subject = if answer_slot == AnswerSlot::Subject || known_subj.is_empty() {
+            fact.subject.as_str()
+        } else {
+            known_subj.as_str()
+        };
+        let normalized_verb = known_verb.as_deref().map(crate::nlp::verb_lemma);
+        let verb = if answer_slot == AnswerSlot::Verb {
+            fact.verb.as_str()
+        } else {
+            normalized_verb.as_deref().unwrap_or(&fact.verb)
+        };
+        let object = if answer_slot == AnswerSlot::Object {
+            fact.object.as_str()
+        } else {
+            known_obj.as_deref().unwrap_or(&fact.object)
+        };
+        Some(FactualRetrievalTrace {
+            answer,
+            subject: fact.subject.clone(),
+            verb: fact.verb.clone(),
+            object: fact.object.clone(),
+            source: fact.source.clone(),
+            confidence: self.reconstruction_energy(&fact.thought, subject, verb, object),
+        })
     }
 
     fn traces_for_question(&self, question: &str) -> Vec<ResolveTrace> {
@@ -3139,8 +3956,8 @@ impl QaEngine {
                 traces.push(self.resolve_term_trace(trimmed));
             }
         }
-        let episode = crate::cognition::CognitiveEpisode::new(id, &input)
-            .with_answer(answer, confidence);
+        let episode =
+            crate::cognition::CognitiveEpisode::new(id, &input).with_answer(answer, confidence);
         let mut episode = episode;
         episode.term_traces = traces;
         let ep_clone = episode.clone();
@@ -3196,70 +4013,77 @@ impl QaEngine {
     ///   Multiple:     "The Fed raised rates and cut rates."
     ///   Contradiction: "The Fed raised rates. However, the Fed later lowered rates."
     pub fn answer_combined(&self, question: &str) -> String {
-        // Layer 1: Try math computation first (fast, no memory required).
-        if let Some(math_answer) = crate::math::MathEngine::try_answer(question) {
-            return math_answer;
+        // Multiple-choice questions are solved from their stem, then converted
+        // to the benchmark's required label only if the result is an exact,
+        // normalized option match.  This also lets factual QA participate when
+        // no specialist tool can answer the stem.
+        if let Some((stem, choices)) = crate::router::QuestionRouter::split_answer_choices(question)
+        {
+            let answer = self.answer_combined(&stem);
+            return crate::router::QuestionRouter::select_answer_choice(&answer, &choices)
+                // A multiple-choice response is a constrained claim.  If the
+                // independently obtained answer does not establish exactly
+                // one option, returning free-form text would be an unsupported
+                // selection in benchmark/evaluation contexts.
+                .unwrap_or_else(|| "I do not know the answer to that question.".to_string());
         }
 
-        let results = self.answer_all(question);
-        if results.is_empty() {
-            return "I do not know the answer to that question.".to_string();
+        // MathEngine is a deterministic, successful-only recognizer.  Run it
+        // before routing/factual retrieval so valid arithmetic and number
+        // theory prompts (for example, largest-prime-divisor questions) can
+        // never be displaced by an associative-memory guess.
+        if let Some(answer) = crate::router::QuestionRouter::safe_math_answer(question) {
+            return answer;
         }
 
-        // Split into contradicted vs uncontradicted facts
-        let (contradicted, clean): (Vec<_>, Vec<_>) = results
-            .into_iter()
-            .partition(|(_, fact)| fact.is_contradicted);
-
-        if contradicted.is_empty() && clean.is_empty() {
-            return "I do not know the answer to that question.".to_string();
+        // Delegate computational and structured questions before attempting
+        // associative fact retrieval.  QaEngine remains the fallback for
+        // factual and causal-memory questions.
+        if let Some(answer) = crate::router::QuestionRouter::answer(question) {
+            return answer;
         }
 
-        // If there are both contradicted and clean facts, order them temporally
-        // Clean facts come first (older, stable), then contradicted (overridden)
-        let mut all_clean: Vec<String> = Vec::new();
-        let mut all_contra: Vec<String> = Vec::new();
-
-        for (token, fact) in &clean {
-            all_clean.push(self.format_answer(&AnswerSlot::Subject, token, fact));
-        }
-        for (token, fact) in &contradicted {
-            all_contra.push(self.format_answer_contradicted(token, fact));
-        }
-
-        // Build the combined output
-        match (all_clean.len(), all_contra.len()) {
-            (0, 1) => all_contra.remove(0),
-            (0, _) => {
-                // Only contradicted facts: "At first, X. However, later Y."
-                self.conjoin_with_contrast(&all_contra)
-            }
-            (1, 0) => all_clean.remove(0),
-            (_, 0) => {
-                // Multiple clean facts: "X, Y, and Z."
-                let last = all_clean.pop().unwrap();
-                format!(
-                    "{}, and {}.",
-                    all_clean.join(", "),
-                    last.trim_end_matches('.')
-                )
-            }
-            (_, _) => {
-                // Mixed: clean facts first, then contradicted
-                let clean_part = if all_clean.len() == 1 {
-                    all_clean.remove(0)
-                } else {
-                    let last = all_clean.pop().unwrap();
-                    format!(
-                        "{}, and {}.",
-                        all_clean.join(", "),
-                        last.trim_end_matches('.')
-                    )
-                };
-                let contra_part = self.conjoin_with_contrast(&all_contra);
-                format!("{} {}", clean_part.trim_end_matches('.'), contra_part)
+        // Proof search is opt-in because the theorem environment is a
+        // deliberately curated capability.  When loaded, it is the routed
+        // handler for theorem questions; otherwise the question can fall
+        // through to normal factual retrieval.
+        if let Some(theorem_env) = &self.theorem_env {
+            if let Some(prove_answer) = Self::theorem_prover_answer(question, theorem_env) {
+                return prove_answer;
             }
         }
+
+        // Factual output is evidence-first.  The SVO indices may still be
+        // used internally to build/query a passage, but a raw triple without
+        // provenance, quality and applicability metadata cannot answer.
+        if let Some(answer) = self.answer_from_factual_evidence(question) {
+            return answer;
+        }
+
+        "I do not know the answer to that question.".to_string()
+    }
+
+    fn answer_from_factual_evidence(&self, question: &str) -> Option<String> {
+        let record = self
+            .factual_evidence
+            .retrieve_entailed_passage(question, "factual")?;
+        if let Some(tick) = record
+            .id
+            .strip_prefix("fact-")
+            .and_then(|value| value.parse::<u64>().ok())
+        {
+            let fact = self
+                .facts
+                .iter()
+                .find(|fact| fact.tick == tick && !fact.is_contradicted)?;
+            let (slot, _, _, _) = Self::parse_question(question);
+            return Some(match slot {
+                AnswerSlot::Subject => fact.subject.clone(),
+                AnswerSlot::Verb => fact.verb.clone(),
+                AnswerSlot::Object => fact.object.clone(),
+            });
+        }
+        Some(record.statement.clone())
     }
 
     /// Join contradicted facts with contrastive discourse markers.
@@ -3613,6 +4437,9 @@ impl QaEngine {
         let json = std::fs::read_to_string(path).map_err(|e| format!("Read error: {}", e))?;
         let mut engine: Self =
             serde_json::from_str(&json).map_err(|e| format!("Deserialization error: {}", e))?;
+        engine
+            .facts
+            .retain(|fact| Self::has_usable_fact_fields(&fact.subject, &fact.verb, &fact.object));
         engine.rebuild_fact_index();
         engine.rebuild_rule_index();
         Ok(engine)
@@ -3754,7 +4581,8 @@ impl QaEngine {
                         if idx >= self.cluster_centroids.len() {
                             continue;
                         }
-                        let sim = 1.0 - vec.normalized_hamming_distance(&self.cluster_centroids[idx]);
+                        let sim =
+                            1.0 - vec.normalized_hamming_distance(&self.cluster_centroids[idx]);
                         if sim > best_sim && sim.is_finite() {
                             best_sim = sim;
                             best_i = idx;
@@ -3957,7 +4785,14 @@ impl QaEngine {
         source: &str,
     ) {
         let confidence = if source == "induced" { 0.60 } else { 1.0 };
-        self.store_and_rule_with_confidence(antecedents, cons_subject, cons_verb, cons_object, source, confidence);
+        self.store_and_rule_with_confidence(
+            antecedents,
+            cons_subject,
+            cons_verb,
+            cons_object,
+            source,
+            confidence,
+        );
     }
 
     /// Store an AND-rule with an explicit confidence value.
@@ -4088,13 +4923,11 @@ impl QaEngine {
         let ants: Vec<SchematicAntecedent> = antecedents
             .iter()
             .zip(negated.iter())
-            .map(|(&(s, v, o), &neg)| {
-                SchematicAntecedent {
-                    subject: Term::from_str(s),
-                    verb: Term::from_str(v),
-                    object: Term::from_str(o),
-                    negated: neg,
-                }
+            .map(|(&(s, v, o), &neg)| SchematicAntecedent {
+                subject: Term::from_str(s),
+                verb: Term::from_str(v),
+                object: Term::from_str(o),
+                negated: neg,
             })
             .collect();
 
@@ -4182,7 +5015,13 @@ impl QaEngine {
         max_depth: usize,
     ) -> Vec<ProofTree> {
         let mut results: Vec<ProofTree> = Vec::new();
-        self.prove_collect(goal_subject, goal_verb, goal_object, max_depth, &mut results);
+        self.prove_collect(
+            goal_subject,
+            goal_verb,
+            goal_object,
+            max_depth,
+            &mut results,
+        );
         // Sort by confidence descending, then cap
         results.sort_by(|a, b| b.confidence().partial_cmp(&a.confidence()).unwrap());
         results.truncate(MAX_TOTAL_PROOFS);
@@ -4310,7 +5149,8 @@ impl QaEngine {
 
                 if backtrack_ok {
                     // Full cartesian product over ALL antecedent proofs, capped
-                    let combinations = cartesian_proof_product(&antecedents_proofs, MAX_PROOFS_PER_RULE);
+                    let combinations =
+                        cartesian_proof_product(&antecedents_proofs, MAX_PROOFS_PER_RULE);
                     for subproofs in combinations {
                         let min_sub_conf = subproofs
                             .iter()
@@ -4421,8 +5261,7 @@ impl QaEngine {
         max_depth: usize,
     ) -> Vec<(Vec<ProofTree>, Substitution)> {
         // Start with one empty path
-        let mut paths: Vec<(Vec<ProofTree>, Substitution)> =
-            vec![(Vec::new(), base_subst.clone())];
+        let mut paths: Vec<(Vec<ProofTree>, Substitution)> = vec![(Vec::new(), base_subst.clone())];
 
         for ante in &rule.antecedents {
             let mut new_paths: Vec<(Vec<ProofTree>, Substitution)> = Vec::new();
@@ -4521,7 +5360,8 @@ impl QaEngine {
                         continue;
                     }
                     // Take best proof for this path
-                    ante_proofs.sort_by(|a, b| b.confidence().partial_cmp(&a.confidence()).unwrap());
+                    ante_proofs
+                        .sort_by(|a, b| b.confidence().partial_cmp(&a.confidence()).unwrap());
                     let mut proofs = existing_proofs.clone();
                     proofs.push(ante_proofs.into_iter().next().unwrap());
                     new_paths.push((proofs, subst.clone()));
@@ -4563,40 +5403,61 @@ impl Default for QaEngine {
 /// Call this after creating a QaEngine to ensure basic concept definitions
 /// exist alongside the bootstrap bootstrap formulas in the registry.
 pub fn seed_concept_definitions(qa: &mut QaEngine) {
-    qa.store_fact("proof", "be",
+    qa.store_fact(
+        "proof",
+        "be",
         "a logical argument that establishes the truth of a mathematical statement",
-        "concept_definition");
-    qa.store_fact("proof", "involve",
+        "concept_definition",
+    );
+    qa.store_fact(
+        "proof",
+        "involve",
         "deductive reasoning from axioms and assumptions",
-        "concept_definition");
+        "concept_definition",
+    );
 
     qa.store_fact("geometry", "be",
         "the branch of mathematics concerned with properties and relations of points, lines, surfaces, and solids",
         "concept_definition");
-    qa.store_fact("geometry", "study",
+    qa.store_fact(
+        "geometry",
+        "study",
         "shapes, sizes, and the spatial properties of objects",
-        "concept_definition");
+        "concept_definition",
+    );
 
     qa.store_fact("topology", "be",
         "the branch of mathematics concerned with properties of space preserved under continuous deformations",
         "concept_definition");
-    qa.store_fact("topology", "study",
+    qa.store_fact(
+        "topology",
+        "study",
         "invariant properties under stretching, bending, and twisting",
-        "concept_definition");
+        "concept_definition",
+    );
 
     qa.store_fact("trigonometry", "be",
         "the branch of mathematics that studies relationships between angles and sides of triangles",
         "concept_definition");
-    qa.store_fact("trigonometry", "deal_with",
+    qa.store_fact(
+        "trigonometry",
+        "deal_with",
         "trigonometric functions such as sine, cosine, and tangent",
-        "concept_definition");
+        "concept_definition",
+    );
 
-    qa.store_fact("theorem", "be",
+    qa.store_fact(
+        "theorem",
+        "be",
         "a mathematical statement that has been proven to be true",
-        "concept_definition");
-    qa.store_fact("theorem", "require",
+        "concept_definition",
+    );
+    qa.store_fact(
+        "theorem",
+        "require",
         "a proof based on axioms and previously established results",
-        "concept_definition");
+        "concept_definition",
+    );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -4849,6 +5710,88 @@ mod tests {
         assert_eq!(engine.fact_count(), 1);
     }
 
+    #[test]
+    fn test_store_fact_rejects_incomplete_triples() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("valid", "has", "value", "test");
+        engine.store_fact("", "has", "value", "test");
+        engine.store_fact("valid", "", "value", "test");
+        engine.store_fact("valid", "has", "   ", "test");
+
+        assert_eq!(engine.fact_count(), 1);
+    }
+
+    #[test]
+    fn test_lexical_fallback_retrieves_complete_fact_without_exact_object_key() {
+        let mut engine = QaEngine::new();
+        engine.store_fact(
+            "isaac_newton",
+            "developed",
+            "foundational_calculus_principles",
+            "test",
+        );
+
+        let answer =
+            engine.retrieve_facts_lexically("Who developed foundational calculus principles?");
+        assert!(
+            answer.iter().any(|(token, _)| token == "isaac_newton"),
+            "lexical fallback should retrieve isaac_newton, got: {:?}",
+            answer
+        );
+    }
+
+    #[test]
+    fn test_lexical_fallback_abstains_on_tied_candidates() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("charlie", "authored", "foundational_calculus_text", "test");
+        engine.store_fact("david", "authored", "foundational_calculus_text", "test");
+
+        let answer = engine.retrieve_facts_lexically("Who authored foundational calculus text?");
+        assert!(
+            answer.is_empty(),
+            "ambiguous lexical matches must abstain, got: {:?}",
+            answer
+        );
+    }
+
+    #[test]
+    fn test_semantic_retrieval_bridges_relation_and_plural_gap() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("the_fed", "raise", "interest_rates", "test");
+        engine.store_fact("tax_board", "raise", "tax_rates", "test");
+
+        let answer = engine.answer_all("Who hiked interest rates?");
+        assert_eq!(answer.len(), 1, "semantic retrieval should select one fact");
+        assert_eq!(answer[0].0, "the_fed");
+    }
+
+    #[test]
+    fn test_semantic_retrieval_abstains_when_answers_are_ambiguous() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("central_bank_a", "raise", "interest_rates", "test");
+        engine.store_fact("central_bank_b", "raise", "interest_rates", "test");
+
+        assert!(
+            engine
+                .retrieve_facts_semantically("Who hiked interest rates?")
+                .is_empty(),
+            "semantic retrieval must abstain on equally supported answers"
+        );
+    }
+
+    #[test]
+    fn test_semantic_retrieval_requires_question_coverage_not_just_overlap() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("the_fed", "raise", "interest_rates", "test");
+
+        assert!(
+            engine
+                .retrieve_facts_semantically("Who hiked interest rates amid inflation pressure?")
+                .is_empty(),
+            "unmatched qualifiers must make semantic retrieval abstain rather than infer an answer"
+        );
+    }
+
     // ── Tick + Contradiction Tests ───────────────────────────────────
 
     #[test]
@@ -4905,6 +5848,77 @@ mod tests {
     }
 
     #[test]
+    fn test_candidate_svo_fact_cannot_answer_without_curated_evidence() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("the_fed", "raise", "rates", "Wikipedia extraction cache");
+        assert!(engine
+            .answer_combined("Who raised rates?")
+            .contains("do not know"));
+    }
+
+    #[test]
+    fn test_structured_evidence_passage_can_answer_with_provenance() {
+        let mut engine = QaEngine::new();
+        engine.store_evidence(crate::knowledge::KnowledgeRecord {
+            id: "curated-fed".to_string(),
+            statement: "the_fed raised rates".to_string(),
+            formula: None,
+            source: "Federal Reserve release".to_string(),
+            domain: "factual".to_string(),
+            variables: Vec::new(),
+            assumptions: vec!["statement refers to the cited release date".to_string()],
+            units: HashMap::new(),
+            quality: crate::knowledge::KnowledgeQuality::Trusted,
+            entailment_examples: Vec::new(),
+        });
+        assert_eq!(
+            engine.answer_combined("Who raised rates?"),
+            "the_fed raised rates"
+        );
+    }
+
+    #[test]
+    fn test_factual_retrieval_trace_preserves_provenance_and_triple() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("the_fed", "raise", "rates", "test-corpus");
+
+        let trace = engine
+            .factual_retrieval_trace("Who raised rates?")
+            .expect("stored fact should produce an auditable retrieval trace");
+        assert_eq!(trace.answer, "the_fed");
+        assert_eq!(trace.subject, "the_fed");
+        assert_eq!(trace.verb, "raise");
+        assert_eq!(trace.object, "rates");
+        assert_eq!(trace.source, "test-corpus");
+        assert!(trace.confidence >= MIN_CLEANUP_ENERGY);
+    }
+
+    #[test]
+    fn test_answer_combined_tries_safe_math_before_factual_retrieval() {
+        let engine = QaEngine::new();
+        assert_eq!(
+            engine.answer_combined("What is the largest prime divisor of 8139881"),
+            "5003"
+        );
+    }
+
+    #[test]
+    fn test_answer_combined_selects_factual_answer_choice() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("the_fed", "raise", "rates", "s1");
+        let question = "Who raised rates?\n\nAnswer Choices:\nA. ecb\nB. the_fed\nC. treasury";
+        assert_eq!(engine.answer_combined(question), "B");
+    }
+
+    #[test]
+    fn test_answer_combined_abstains_when_no_choice_is_entailed() {
+        let mut engine = QaEngine::new();
+        engine.store_fact("the_fed", "raise", "rates", "s1");
+        let question = "Who raised rates?\n\nAnswer Choices:\nA. ecb\nB. treasury";
+        assert!(engine.answer_combined(question).contains("do not know"));
+    }
+
+    #[test]
     fn test_answer_combined_episode_preserves_answer_and_traces_terms() {
         let mut engine = QaEngine::new();
         engine.store_fact("the_fed", "raise", "rates", "s1");
@@ -4947,14 +5961,8 @@ mod tests {
 
         // Must also be in the engine's episode store
         assert_eq!(engine.episode_store.episodes.len(), 1);
-        assert_eq!(
-            engine.episode_store.episodes[0].answer,
-            episode.answer
-        );
-        assert_eq!(
-            engine.episode_store.episodes[0].input,
-            "Who raised rates?"
-        );
+        assert_eq!(engine.episode_store.episodes[0].answer, episode.answer);
+        assert_eq!(engine.episode_store.episodes[0].input, "Who raised rates?");
     }
 
     #[test]
@@ -4982,7 +5990,10 @@ mod tests {
 
         assert_eq!(engine.episode_store.episodes.len(), 3);
         assert_eq!(
-            engine.episode_store.outcomes_for_input("Who raised rates?").len(),
+            engine
+                .episode_store
+                .outcomes_for_input("Who raised rates?")
+                .len(),
             2
         );
     }
@@ -5334,16 +6345,14 @@ mod tests {
         let mut brain = VSABrain::new(0.43);
         brain.dejavu_clusters.push(MemoryCluster {
             centroid: shared_centroid,
-            entries: vec![
-                crate::DejavuEntry {
-                    vector: fed_ngram,
-                    label: "the_fed".to_string(),
-                    metadata: std::collections::HashMap::new(),
-                    delta_encoded: false,
-                    weight: 1,
-                    creation_tick: 0,
-                },
-            ],
+            entries: vec![crate::DejavuEntry {
+                vector: fed_ngram,
+                label: "the_fed".to_string(),
+                metadata: std::collections::HashMap::new(),
+                delta_encoded: false,
+                weight: 1,
+                creation_tick: 0,
+            }],
             reverberation: 0.0,
             last_reinforced_tick: 0,
             anchor: shared_centroid,
@@ -5380,7 +6389,9 @@ mod tests {
             nearest.is_some(),
             "Federal Reserve should have a nearest centroid"
         );
-        let sim = nearest.map(|c| 1.0 - raw.normalized_hamming_distance(&c)).unwrap();
+        let sim = nearest
+            .map(|c| 1.0 - raw.normalized_hamming_distance(&c))
+            .unwrap();
         eprintln!("  'Federal Reserve' → nearest centroid sim: {:.6}", sim);
         assert!(
             sim > 0.55,
@@ -8130,7 +9141,9 @@ mod tests {
         // AND-rule: IF is_warm AND is_raining THEN ground_is_wet
         qa.store_and_rule(
             &[("is_warm", "is", ""), ("is_raining", "is", "")],
-            "ground", "is", "wet",
+            "ground",
+            "is",
+            "wet",
             "weather_logic",
         );
 
@@ -8142,7 +9155,10 @@ mod tests {
         assert_eq!(s, "ground");
         assert_eq!(v, "is");
         assert_eq!(o, "wet");
-        assert!(p.confidence() > 0.0, "proof should have positive confidence");
+        assert!(
+            p.confidence() > 0.0,
+            "proof should have positive confidence"
+        );
 
         let formatted = p.format(0);
         assert!(formatted.contains("th"), "proof should contain '∴'");
@@ -8158,13 +9174,18 @@ mod tests {
         // AND-rule requires BOTH antecedents
         qa.store_and_rule(
             &[("is_warm", "is", ""), ("is_raining", "is", "")],
-            "ground", "is", "wet",
+            "ground",
+            "is",
+            "wet",
             "weather_logic",
         );
 
         // Prove "ground is wet" — should FAIL because "is_raining is" is not a known fact
         let proof = qa.prove("ground", "is", "wet", 10);
-        assert!(proof.is_none(), "AND-rule should fail when one antecedent is missing");
+        assert!(
+            proof.is_none(),
+            "AND-rule should fail when one antecedent is missing"
+        );
     }
 
     #[test]
@@ -8178,20 +9199,27 @@ mod tests {
         // Level-1: IF a_is_1 AND b_is_2 THEN d_is_4
         qa.store_and_rule(
             &[("a", "is", "1"), ("b", "is", "2")],
-            "d", "is", "4",
+            "d",
+            "is",
+            "4",
             "and_intro_1",
         );
 
         // Level-2: IF d_is_4 AND c_is_3 THEN e_is_5
         qa.store_and_rule(
             &[("d", "is", "4"), ("c", "is", "3")],
-            "e", "is", "5",
+            "e",
+            "is",
+            "5",
             "and_intro_2",
         );
 
         // Prove "e is 5" — requires two levels of AND-rule chaining
         let proof = qa.prove("e", "is", "5", 10);
-        assert!(proof.is_some(), "multi-level AND-rule chain should prove e_is_5");
+        assert!(
+            proof.is_some(),
+            "multi-level AND-rule chain should prove e_is_5"
+        );
 
         // Check the proof structure
         let p = proof.unwrap();
@@ -8202,7 +9230,10 @@ mod tests {
 
         // Format should reveal both levels
         let formatted = p.format(0);
-        assert!(formatted.contains("d"), "proof should mention intermediate d");
+        assert!(
+            formatted.contains("d"),
+            "proof should mention intermediate d"
+        );
         assert!(formatted.contains("a"), "proof should mention axiom a");
         assert!(formatted.contains("b"), "proof should mention axiom b");
         assert!(formatted.contains("c"), "proof should mention axiom c");
@@ -8223,18 +9254,25 @@ mod tests {
         // AND-rule: IF p_true AND r_true THEN s_true
         qa.store_and_rule(
             &[("p", "true", ""), ("r", "true", "")],
-            "s", "true", "",
+            "s",
+            "true",
+            "",
             "and_final",
         );
 
         // Prove "s true" — requires forward chain through single-antecedent rules
         // to prove r, then AND with p
         let proof = qa.prove("s", "true", "", 10);
-        assert!(proof.is_some(),
-            "should prove s_true via p_true → q_true → r_true AND with p_true");
+        assert!(
+            proof.is_some(),
+            "should prove s_true via p_true → q_true → r_true AND with p_true"
+        );
 
         let formatted = proof.unwrap().format(0);
-        assert!(formatted.contains("modus_ponens"), "proof should reference single-antecedent rules");
+        assert!(
+            formatted.contains("modus_ponens"),
+            "proof should reference single-antecedent rules"
+        );
     }
 
     #[test]
@@ -8267,12 +9305,18 @@ mod tests {
         let mut qa = QaEngine::new();
         qa.store_fact("fact", "is", "known", "test");
         let proof = qa.prove("fact", "is", "known", 0);
-        assert!(proof.is_some(), "depth 0 should still find directly known facts (base case)");
+        assert!(
+            proof.is_some(),
+            "depth 0 should still find directly known facts (base case)"
+        );
 
         // With depth 0 and a rule-requiring proof, should fail
         qa.store_rule("a", "implies", "b", "b", "implies", "c", "chain");
         let proof_chain = qa.prove("b", "implies", "c", 0);
-        assert!(proof_chain.is_none(), "depth 0 should fail for rule-requiring proof");
+        assert!(
+            proof_chain.is_none(),
+            "depth 0 should fail for rule-requiring proof"
+        );
     }
 
     #[test]
@@ -8286,56 +9330,116 @@ mod tests {
         qa.store_fact("gcd_13_10240", "equals", "1", "number_theory");
         qa.store_fact("rho_26", "is_cyclic_shift_by", "26", "definition");
         qa.store_fact("gcd_26_10240", "equals", "2", "number_theory");
-        qa.store_fact("sublemma_s_test", "passed", "computationally", "verification");
+        qa.store_fact(
+            "sublemma_s_test",
+            "passed",
+            "computationally",
+            "verification",
+        );
 
         // ── Step 2: Single-antecedent (modus ponens) rules ──
         // ρ¹³ gcd=1 → generates full group
-        qa.store_rule("gcd_13_10240", "equals", "1",
-            "rho_13", "generates", "full_group_C_10240", "gcd_1_implies_generator");
+        qa.store_rule(
+            "gcd_13_10240",
+            "equals",
+            "1",
+            "rho_13",
+            "generates",
+            "full_group_C_10240",
+            "gcd_1_implies_generator",
+        );
         // generates full group → fixed points = constant vectors only
-        qa.store_rule("rho_13", "generates", "full_group_C_10240",
-            "rho_13_fixedpoints", "constant_vectors_only", "", "generator_only_constants");
+        qa.store_rule(
+            "rho_13",
+            "generates",
+            "full_group_C_10240",
+            "rho_13_fixedpoints",
+            "constant_vectors_only",
+            "",
+            "generator_only_constants",
+        );
         // constant vectors → ρ¹³ check satisfied
-        qa.store_rule("rho_13_fixedpoints", "constant_vectors_only", "",
-            "rho_13_invariant", "satisfied", "", "rho_13_ok");
+        qa.store_rule(
+            "rho_13_fixedpoints",
+            "constant_vectors_only",
+            "",
+            "rho_13_invariant",
+            "satisfied",
+            "",
+            "rho_13_ok",
+        );
 
         // ρ²⁶ gcd=2 → period-2 fixed points
-        qa.store_rule("gcd_26_10240", "equals", "2",
-            "rho_26_fixedpoints", "period_2_vectors", "", "gcd_2_implies_period2");
+        qa.store_rule(
+            "gcd_26_10240",
+            "equals",
+            "2",
+            "rho_26_fixedpoints",
+            "period_2_vectors",
+            "",
+            "gcd_2_implies_period2",
+        );
         // period-2 vectors → ρ²⁶ check added
-        qa.store_rule("rho_26_fixedpoints", "period_2_vectors", "",
-            "rho_26_invariant", "added_to_enforce", "", "add_rho26_check");
+        qa.store_rule(
+            "rho_26_fixedpoints",
+            "period_2_vectors",
+            "",
+            "rho_26_invariant",
+            "added_to_enforce",
+            "",
+            "add_rho26_check",
+        );
 
         // ── Step 3: AND-rules (conjunctive) ──
         // Both invariants must hold
         qa.store_and_rule(
-            &[("rho_13_invariant", "satisfied", ""), ("rho_26_invariant", "added_to_enforce", "")],
-            "invariants", "enforced", "",
+            &[
+                ("rho_13_invariant", "satisfied", ""),
+                ("rho_26_invariant", "added_to_enforce", ""),
+            ],
+            "invariants",
+            "enforced",
+            "",
             "merge_rho_checks",
         );
 
         // All premises: invariants + test
         qa.store_and_rule(
-            &[("invariants", "enforced", ""), ("sublemma_s_test", "passed", "computationally")],
-            "all_premises_met", "true", "",
+            &[
+                ("invariants", "enforced", ""),
+                ("sublemma_s_test", "passed", "computationally"),
+            ],
+            "all_premises_met",
+            "true",
+            "",
             "premises_assembled",
         );
 
         // Final conclusion
         qa.store_and_rule(
             &[("all_premises_met", "true", "")],
-            "sublemma_s", "holds", "",
+            "sublemma_s",
+            "holds",
+            "",
             "premises_satisfied",
         );
 
-        qa.store_rule("sublemma_s", "holds", "",
-            "spectral_gap", "closed", "",
-            "theorem_XXV4_complete");
+        qa.store_rule(
+            "sublemma_s",
+            "holds",
+            "",
+            "spectral_gap",
+            "closed",
+            "",
+            "theorem_XXV4_complete",
+        );
 
         // ── Step 4: Prove the theorem backward from the goal ──
         let proof = qa.prove("spectral_gap", "closed", "", 15);
-        assert!(proof.is_some(),
-            "Sub-Lemma S should be provable with AND-rules + backward chaining");
+        assert!(
+            proof.is_some(),
+            "Sub-Lemma S should be provable with AND-rules + backward chaining"
+        );
 
         let p = proof.unwrap();
         let (s, v, o) = p.conclusion();
@@ -8345,12 +9449,18 @@ mod tests {
 
         // Verify the proof structure contains AND-branching
         let formatted = p.format(0);
-        assert!(formatted.contains("merged_rho_checks") || formatted.contains("merge"),
-            "proof should show AND-rule for invariant merging");
-        assert!(formatted.contains("definition") || formatted.contains("rho_13"),
-            "proof should trace back to ρ¹³ definition");
-        assert!(formatted.contains("spectral_gap"),
-            "proof should end with the theorem conclusion");
+        assert!(
+            formatted.contains("merged_rho_checks") || formatted.contains("merge"),
+            "proof should show AND-rule for invariant merging"
+        );
+        assert!(
+            formatted.contains("definition") || formatted.contains("rho_13"),
+            "proof should trace back to ρ¹³ definition"
+        );
+        assert!(
+            formatted.contains("spectral_gap"),
+            "proof should end with the theorem conclusion"
+        );
 
         eprintln!("\n  ╔══════════════════════════════════════════════════╗");
         eprintln!("  ║  The Machine Proves Sub-Lemma S (AND-rule)     ║");
@@ -8371,11 +9481,7 @@ mod tests {
         assert_eq!(qa.and_rule_count(), 0);
         assert_eq!(qa.known_fact_count(), 0);
 
-        qa.store_and_rule(
-            &[("a", "is", "1")],
-            "b", "is", "2",
-            "test",
-        );
+        qa.store_and_rule(&[("a", "is", "1")], "b", "is", "2", "test");
         assert_eq!(qa.and_rule_count(), 1);
 
         qa.store_fact("x", "y", "z", "test");
@@ -8396,13 +9502,18 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "color", "red"), ("?X", "object", "?Y")],
             &[false, false],
-            "?Y", "property", "red",
+            "?Y",
+            "property",
+            "red",
             "color_shape_transitivity",
         );
 
         // Prove property(sphere, red) — ?X=ball, ?Y=sphere
         let proof = qa.prove("sphere", "property", "red", 10);
-        assert!(proof.is_some(), "unification should prove property(sphere, red)");
+        assert!(
+            proof.is_some(),
+            "unification should prove property(sphere, red)"
+        );
         let p = proof.unwrap();
         let (s, v, o) = p.conclusion();
         assert_eq!(s, "sphere");
@@ -8420,13 +9531,18 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "parent", "?Y"), ("?Y", "parent", "?Z")],
             &[false, false],
-            "?X", "grandparent", "?Z",
+            "?X",
+            "grandparent",
+            "?Z",
             "grandparent_rule",
         );
 
         // ?X=alice, ?Y=bob, ?Z=charlie → grandparent(alice, charlie)
         let proof = qa.prove("alice", "grandparent", "charlie", 10);
-        assert!(proof.is_some(), "should prove grandparent via unification chain");
+        assert!(
+            proof.is_some(),
+            "should prove grandparent via unification chain"
+        );
         let p = proof.unwrap();
         let (s, v, o) = p.conclusion();
         assert_eq!(s, "alice");
@@ -8444,7 +9560,9 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "color", "blue")],
             &[false],
-            "?X", "is", "blue",
+            "?X",
+            "is",
+            "blue",
             "blue_inference",
         );
 
@@ -8453,17 +9571,24 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "color", "green")],
             &[false],
-            "?X", "is", "green",
+            "?X",
+            "is",
+            "green",
             "green_inference",
         );
         qa.store_and_rule(
             &[("sky", "is", "blue"), ("grass", "is", "green")],
-            "scene", "is", "pleasant",
+            "scene",
+            "is",
+            "pleasant",
             "scene_rule",
         );
 
         let proof = qa.prove("scene", "is", "pleasant", 10);
-        assert!(proof.is_some(), "mixed schematic+concrete should prove scene pleasant");
+        assert!(
+            proof.is_some(),
+            "mixed schematic+concrete should prove scene pleasant"
+        );
     }
 
     #[test]
@@ -8479,14 +9604,22 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "human", ""), ("?X", "mortal", "")],
             &[false, false],
-            "?X", "demonstrates", "mortality",
+            "?X",
+            "demonstrates",
+            "mortality",
             "socrates_rule",
         );
 
         let proof = qa.prove("socrates", "demonstrates", "mortality", 10);
-        assert!(proof.is_some(), "should prove socrates demonstrates mortality");
+        assert!(
+            proof.is_some(),
+            "should prove socrates demonstrates mortality"
+        );
         let formatted = proof.unwrap().format(0);
-        assert!(formatted.contains("socrates"), "proof should reference socrates");
+        assert!(
+            formatted.contains("socrates"),
+            "proof should reference socrates"
+        );
     }
 
     #[test]
@@ -8507,12 +9640,17 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "likes", "apples"), ("?X", "likes", "bananas")],
             &[false, false],
-            "?X", "is", "impossible",
+            "?X",
+            "is",
+            "impossible",
             "contradiction_test",
         );
 
         let proof = qa.prove("alice", "is", "impossible", 10);
-        assert!(proof.is_none(), "should fail: no one likes both apples and bananas");
+        assert!(
+            proof.is_none(),
+            "should fail: no one likes both apples and bananas"
+        );
     }
 
     #[test]
@@ -8527,7 +9665,9 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "color", "red")],
             &[false],
-            "?X", "is", "red",
+            "?X",
+            "is",
+            "red",
             "red_inference",
         );
 
@@ -8535,12 +9675,21 @@ mod tests {
         let proofs = qa.prove_all("?WHICH", "is", "red", 10);
         assert_eq!(proofs.len(), 2, "should find exactly 2 red things");
 
-        let texts: Vec<String> = proofs.iter().map(|p| {
-            let (s, v, o) = p.conclusion();
-            format!("{} {} {}", s, v, o)
-        }).collect();
-        assert!(texts.contains(&"apple is red".to_string()), "apple should be in results");
-        assert!(texts.contains(&"rose is red".to_string()), "rose should be in results");
+        let texts: Vec<String> = proofs
+            .iter()
+            .map(|p| {
+                let (s, v, o) = p.conclusion();
+                format!("{} {} {}", s, v, o)
+            })
+            .collect();
+        assert!(
+            texts.contains(&"apple is red".to_string()),
+            "apple should be in results"
+        );
+        assert!(
+            texts.contains(&"rose is red".to_string()),
+            "rose should be in results"
+        );
     }
 
     // ═════════════════════════════════════════════════════════════════════
@@ -8557,8 +9706,10 @@ mod tests {
 
         qa.store_schematic_rule(
             &[("?X", "color", "red"), ("?X", "obscured", "")],
-            &[false, true],  // second antecedent is negated
-            "?X", "is", "visible_red",
+            &[false, true], // second antecedent is negated
+            "?X",
+            "is",
+            "visible_red",
             "visibility_rule",
         );
 
@@ -8570,7 +9721,10 @@ mod tests {
 
         // Rose is red but IS obscured → NOT visible_red
         let proof_rose = qa.prove("rose", "is", "visible_red", 10);
-        assert!(proof_rose.is_none(), "rose should NOT be visible_red (obscured)");
+        assert!(
+            proof_rose.is_none(),
+            "rose should NOT be visible_red (obscured)"
+        );
     }
 
     #[test]
@@ -8586,7 +9740,9 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "is", "operational"), ("?X", "has_error", "")],
             &[false, true],
-            "?X", "is", "all_clear",
+            "?X",
+            "is",
+            "all_clear",
             "safety_check",
         );
 
@@ -8605,7 +9761,10 @@ mod tests {
 
         // unknown system_c (not operational at all) → not all_clear
         let proof_c = qa.prove("system_c", "is", "all_clear", 10);
-        assert!(proof_c.is_none(), "system_c not operational → not all_clear");
+        assert!(
+            proof_c.is_none(),
+            "system_c not operational → not all_clear"
+        );
     }
 
     // ═════════════════════════════════════════════════════════════════════
@@ -8639,14 +9798,18 @@ mod tests {
         // Rule A: IF has_wings AND has_feathers THEN is_bird
         qa.store_and_rule(
             &[("has_wings", "is", ""), ("has_feathers", "is", "")],
-            "animal", "is", "bird",
+            "animal",
+            "is",
+            "bird",
             "bird_rule",
         );
 
         // Rule B: IF has_fur THEN is_mammal
         qa.store_and_rule(
             &[("has_fur", "is", "")],
-            "animal", "is", "mammal",
+            "animal",
+            "is",
+            "mammal",
             "mammal_rule",
         );
 
@@ -8673,8 +9836,7 @@ mod tests {
         let proof_b = qa.prove("derived", "is", "B", 10);
         assert!(proof_b.is_some(), "should prove B");
         let p_b = proof_b.clone().unwrap();
-        assert!(p_b.confidence() >= 0.8,
-            "B should have high confidence");
+        assert!(p_b.confidence() >= 0.8, "B should have high confidence");
 
         // Also check that prove("derived", "is", "A") returns the A proof
         let proof_a = qa.prove("derived", "is", "A", 10);
@@ -8683,8 +9845,10 @@ mod tests {
         // prove() should return the best (highest confidence) proof
         let best = qa.prove("derived", "is", "B", 10).unwrap();
         let alt = qa.prove("derived", "is", "A", 10).unwrap();
-        assert!(best.confidence() >= alt.confidence() || best.confidence() >= 0.8,
-            "best proof should have high confidence");
+        assert!(
+            best.confidence() >= alt.confidence() || best.confidence() >= 0.8,
+            "best proof should have high confidence"
+        );
     }
 
     // ═════════════════════════════════════════════════════════════════════
@@ -8715,8 +9879,10 @@ mod tests {
                 ("?X", "ripe", ""),
                 ("?X", "type", "poison"),
             ],
-            &[false, false, true],  // NOT poison
-            "?X", "is", "edible",
+            &[false, false, true], // NOT poison
+            "?X",
+            "is",
+            "edible",
             "edibility_inference",
         );
 
@@ -8737,7 +9903,10 @@ mod tests {
         qa.store_fact("death_cap", "type", "poison", "axiom");
 
         let death_proof = qa.prove("death_cap", "is", "edible", 10);
-        assert!(death_proof.is_none(), "death cap should NOT be edible (poison)");
+        assert!(
+            death_proof.is_none(),
+            "death cap should NOT be edible (poison)"
+        );
     }
 
     #[test]
@@ -8760,7 +9929,9 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "color", "red")],
             &[false],
-            "?X", "is", "red",
+            "?X",
+            "is",
+            "red",
             "test",
         );
         assert_eq!(qa.schematic_rule_count(), 1);
@@ -8808,7 +9979,7 @@ mod tests {
 
         // For this test, store facts that the concrete rule antecedents
         // will match directly:
-        qa.store_fact("red_thing", "is", "", "facts");       // matches "red_thing is "
+        qa.store_fact("red_thing", "is", "", "facts"); // matches "red_thing is "
         qa.store_fact("red_thing", "also", "", "facts");
         qa.store_fact("round_thing", "is", "", "facts");
 
@@ -8819,24 +9990,35 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "color", "red")],
             &[false],
-            "?X", "is", "red_thing",
+            "?X",
+            "is",
+            "red_thing",
             "red_inference",
         );
         qa.store_schematic_rule(
             &[("?Y", "shape", "round")],
             &[false],
-            "?Y", "is", "round_thing",
+            "?Y",
+            "is",
+            "round_thing",
             "round_inference",
         );
 
         // Now prove_all for "?WHICH is red_thing" should find 3 (apple, rose, cherry)
         let red_proofs = qa.prove_all("?WHICH", "is", "red_thing", 10);
-        assert_eq!(red_proofs.len(), 3,
-            "should find 3 red things: apple, rose, cherry (got {})", red_proofs.len());
-        let texts: Vec<String> = red_proofs.iter().map(|p| {
-            let (s, _, _) = p.conclusion();
-            s.to_string()
-        }).collect();
+        assert_eq!(
+            red_proofs.len(),
+            3,
+            "should find 3 red things: apple, rose, cherry (got {})",
+            red_proofs.len()
+        );
+        let texts: Vec<String> = red_proofs
+            .iter()
+            .map(|p| {
+                let (s, _, _) = p.conclusion();
+                s.to_string()
+            })
+            .collect();
         assert!(texts.contains(&"apple".to_string()));
         assert!(texts.contains(&"rose".to_string()));
         assert!(texts.contains(&"cherry".to_string()));
@@ -8852,8 +10034,11 @@ mod tests {
 
         // find_matching_facts for (?X, "type", "test") should return at most 50
         let matches = qa.find_matching_facts("?X", "type", "test");
-        assert!(matches.len() <= 50,
-            "existential matches should be capped at 50, got {}", matches.len());
+        assert!(
+            matches.len() <= 50,
+            "existential matches should be capped at 50, got {}",
+            matches.len()
+        );
     }
 
     #[test]
@@ -8870,17 +10055,26 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "type", "proved")],
             &[false],
-            "?X", "is", "valid",
+            "?X",
+            "is",
+            "valid",
             "validation",
         );
 
         let proofs = qa.prove_all("?WHO", "is", "valid", 10);
         // The existential match cap (50) limits this, not the total proof cap (200)
-        assert!(proofs.len() <= MAX_EXISTENTIAL_MATCHES,
+        assert!(
+            proofs.len() <= MAX_EXISTENTIAL_MATCHES,
             "existential cap should bind first (≤{}), got {}",
-            MAX_EXISTENTIAL_MATCHES, proofs.len());
-        assert_eq!(proofs.len(), MAX_EXISTENTIAL_MATCHES,
-            "should get exactly {} (the existential cap)", MAX_EXISTENTIAL_MATCHES);
+            MAX_EXISTENTIAL_MATCHES,
+            proofs.len()
+        );
+        assert_eq!(
+            proofs.len(),
+            MAX_EXISTENTIAL_MATCHES,
+            "should get exactly {} (the existential cap)",
+            MAX_EXISTENTIAL_MATCHES
+        );
     }
 
     #[test]
@@ -8905,34 +10099,43 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "proof", "A")],
             &[false],
-            "status", "is", "A",
+            "status",
+            "is",
+            "A",
             "a_inference",
         );
         // Schematic: IF ?X proof B THEN status is B
         qa.store_schematic_rule(
             &[("?X", "proof", "B")],
             &[false],
-            "status", "is", "B",
+            "status",
+            "is",
+            "B",
             "b_inference",
         );
 
         // Concrete AND-rule: IF status is A AND status is B THEN mixed
         qa.store_and_rule(
             &[("status", "is", "A"), ("status", "is", "B")],
-            "outcome", "is", "mixed",
+            "outcome",
+            "is",
+            "mixed",
             "combination",
         );
 
         // We should get 2×2 = 4 proofs for "outcome is mixed"
         let proofs = qa.prove_all("outcome", "is", "mixed", 10);
-        assert_eq!(proofs.len(), 4,
-            "should get 2×2 = 4 proof combinations, got {}", proofs.len());
+        assert_eq!(
+            proofs.len(),
+            4,
+            "should get 2×2 = 4 proof combinations, got {}",
+            proofs.len()
+        );
 
         // Each proof should contain 2 sub-proofs (one for A, one for B)
         for p in &proofs {
             if let ProofTree::AndIntro { subproofs, .. } = p {
-                assert_eq!(subproofs.len(), 2,
-                    "each proof should have 2 sub-proofs");
+                assert_eq!(subproofs.len(), 2, "each proof should have 2 sub-proofs");
             } else {
                 panic!("expected AndIntro proof, got {:?}", p);
             }
@@ -8955,23 +10158,31 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "type", "bulk"), ("?Y", "type", "bulk")],
             &[false, false],
-            "result", "is", "double_bulk",
+            "result",
+            "is",
+            "double_bulk",
             "bulk_rule",
         );
 
         let proofs = qa.prove_all("result", "is", "double_bulk", 10);
-        assert!(proofs.len() <= MAX_TOTAL_PROOFS,
-            "capped at MAX_TOTAL_PROOFS ({}), got {}", MAX_TOTAL_PROOFS, proofs.len());
+        assert!(
+            proofs.len() <= MAX_TOTAL_PROOFS,
+            "capped at MAX_TOTAL_PROOFS ({}), got {}",
+            MAX_TOTAL_PROOFS,
+            proofs.len()
+        );
         // Also verify that we got a reasonable number (more than 1 from cartesian)
-        assert!(proofs.len() >= 50,
-            "should get many combinations (capped), got only {}", proofs.len());
+        assert!(
+            proofs.len() >= 50,
+            "should get many combinations (capped), got only {}",
+            proofs.len()
+        );
     }
 
     #[test]
     // ═════════════════════════════════════════════════════════════════════
     // COMPOUND TERM TESTS  ({?X} placeholders within slots)
     // ═════════════════════════════════════════════════════════════════════
-
     #[test]
     fn test_compound_term_father_of() {
         // Compound template: "father_of_{?X}" matches "father_of_bob" with ?X=bob
@@ -8984,13 +10195,18 @@ mod tests {
         qa.store_schematic_rule(
             &[("father_of_{?X}", "age", "?Y")],
             &[false],
-            "?X", "has_father_age", "?Y",
+            "?X",
+            "has_father_age",
+            "?Y",
             "father_age_rule",
         );
 
         // Prove "bob has_father_age 5" — ?X=bob from compound match, ?Y=5
         let proof = qa.prove("bob", "has_father_age", "5", 10);
-        assert!(proof.is_some(), "bob should have father age 5 via compound match");
+        assert!(
+            proof.is_some(),
+            "bob should have father age 5 via compound match"
+        );
         let p = proof.unwrap();
         let (s, v, o) = p.conclusion();
         assert_eq!(s, "bob");
@@ -8999,7 +10215,10 @@ mod tests {
 
         // Also prove "alice has_father_age 3"
         let proof2 = qa.prove("alice", "has_father_age", "3", 10);
-        assert!(proof2.is_some(), "alice should have father age 3 via compound match");
+        assert!(
+            proof2.is_some(),
+            "alice should have father age 3 via compound match"
+        );
     }
 
     #[test]
@@ -9013,7 +10232,9 @@ mod tests {
         qa.store_schematic_rule(
             &[("?X", "age", "?Y")],
             &[false],
-            "person_{?X}_age", "is", "?Y",
+            "person_{?X}_age",
+            "is",
+            "?Y",
             "age_to_person_rule",
         );
 
@@ -9036,7 +10257,9 @@ mod tests {
         qa.store_schematic_rule(
             &[("{?X}_loves_{?Y}", "is", "true")],
             &[false],
-            "?X", "knows", "?Y",
+            "?X",
+            "knows",
+            "?Y",
             "love_to_know_rule",
         );
 
@@ -9055,12 +10278,17 @@ mod tests {
         qa.store_schematic_rule(
             &[("temperature_{?V}c", "reading", "?S")],
             &[false],
-            "temp_status", "?V", "?S",
+            "temp_status",
+            "?V",
+            "?S",
             "temp_rule",
         );
 
         let proof = qa.prove("temp_status", "25", "normal", 10);
-        assert!(proof.is_some(), "should extract temp=25 from temperature_25c");
+        assert!(
+            proof.is_some(),
+            "should extract temp=25 from temperature_25c"
+        );
     }
 
     #[test]
@@ -9073,7 +10301,9 @@ mod tests {
         qa.store_schematic_rule(
             &[("father_of_{?X}", "age", "?Y")],
             &[false],
-            "?X", "has_father_age", "?Y",
+            "?X",
+            "has_father_age",
+            "?Y",
             "father_age_rule",
         );
 
@@ -9101,9 +10331,14 @@ mod tests {
 
         // IF item_{?X}_red color red AND NOT(item_{?X}_red obscured) THEN ?X is visible
         qa.store_schematic_rule(
-            &[("item_{?X}_red", "color", "red"), ("item_{?X}_red", "obscured", "")],
+            &[
+                ("item_{?X}_red", "color", "red"),
+                ("item_{?X}_red", "obscured", ""),
+            ],
             &[false, true],
-            "?X", "is", "visible",
+            "?X",
+            "is",
+            "visible",
             "compound_naf",
         );
 
@@ -9111,7 +10346,7 @@ mod tests {
         let proof = qa.prove("hidden", "is", "visible", 10);
         assert!(proof.is_some(), "hidden should be visible (not obscured)");
 
-        // item_visible_red IS obscured → "visible" is NOT visible  
+        // item_visible_red IS obscured → "visible" is NOT visible
         let proof2 = qa.prove("visible", "is", "visible", 10);
         assert!(proof2.is_none(), "visible should NOT be visible (obscured)");
     }
@@ -9119,9 +10354,18 @@ mod tests {
     #[test]
     fn test_term_from_str_compound_detection() {
         // Test that Term::from_str correctly identifies compounds
-        assert!(matches!(Term::from_str("father_of_{?X}"), Term::Compound(_)));
-        assert!(matches!(Term::from_str("{?X}_loves_{?Y}"), Term::Compound(_)));
-        assert!(matches!(Term::from_str("temperature_{?V}c"), Term::Compound(_)));
+        assert!(matches!(
+            Term::from_str("father_of_{?X}"),
+            Term::Compound(_)
+        ));
+        assert!(matches!(
+            Term::from_str("{?X}_loves_{?Y}"),
+            Term::Compound(_)
+        ));
+        assert!(matches!(
+            Term::from_str("temperature_{?V}c"),
+            Term::Compound(_)
+        ));
         assert!(matches!(Term::from_str("plain_text"), Term::Concrete(_)));
         assert!(matches!(Term::from_str("?X"), Term::Variable(_)));
     }
@@ -9176,11 +10420,23 @@ mod tests {
             confidence: 1.0,
         };
         let text = tree.explain();
-        assert!(text.contains("I know that"), "should start with 'I know that'");
-        assert!(text.contains("the fed"), "should verbalize the_fed → the fed");
+        assert!(
+            text.contains("I know that"),
+            "should start with 'I know that'"
+        );
+        assert!(
+            text.contains("the fed"),
+            "should verbalize the_fed → the fed"
+        );
         assert!(text.contains("rates"), "should mention object");
-        assert!(text.contains("stored directly in memory"), "should mention source");
-        assert!(text.contains("confidence: 1.00"), "should mention confidence");
+        assert!(
+            text.contains("stored directly in memory"),
+            "should mention source"
+        );
+        assert!(
+            text.contains("confidence: 1.00"),
+            "should mention confidence"
+        );
     }
 
     #[test]
@@ -9193,7 +10449,10 @@ mod tests {
         };
         let text = tree.explain();
         assert!(text.contains("I know that system"), "should verbalize");
-        assert!(text.contains("confidence: 0.95"), "should mention confidence");
+        assert!(
+            text.contains("confidence: 0.95"),
+            "should mention confidence"
+        );
         // No trailing space before period for empty object
         assert!(!text.contains("  ."), "no double space for empty object");
     }
@@ -9221,11 +10480,20 @@ mod tests {
             confidence: 0.95,
         };
         let text = tree.explain();
-        assert!(text.contains("I conclude that animal"), "conclusion mention");
+        assert!(
+            text.contains("I conclude that animal"),
+            "conclusion mention"
+        );
         assert!(text.contains("rule 'mammal_check'"), "rule mention");
-        assert!(text.contains("requires ALL of the following"), "AND semantics");
+        assert!(
+            text.contains("requires ALL of the following"),
+            "AND semantics"
+        );
         assert!(text.contains("All conditions were met"), "success message");
-        assert!(text.contains("• I know that animal has hair"), "first sub-proof bullet");
+        assert!(
+            text.contains("• I know that animal has hair"),
+            "first sub-proof bullet"
+        );
         assert!(text.contains("• I know that animal"), "second sub-proof");
         assert!(text.contains("confidence: 0.95"), "overall confidence");
     }
@@ -9255,7 +10523,10 @@ mod tests {
         assert!(text.contains("IF"), "antecedent marker");
         assert!(text.contains("THEN yields rise"), "consequent in rule");
         assert!(text.contains("the fed raise rates"), "antecedent text");
-        assert!(text.contains("The antecedent holds because"), "why explanation");
+        assert!(
+            text.contains("The antecedent holds because"),
+            "why explanation"
+        );
         assert!(text.contains("Thus the conclusion follows"), "resolution");
     }
 
@@ -9308,8 +10579,12 @@ mod tests {
         let mut qa = QaEngine::new();
         qa.store_fact("the_fed", "raise", "rates", "axiom");
         qa.store_rule(
-            "the_fed", "raise", "rates",
-            "yields", "rise", "",
+            "the_fed",
+            "raise",
+            "rates",
+            "yields",
+            "rise",
+            "",
             "rate_hike_consequence",
         );
 
@@ -9334,7 +10609,9 @@ mod tests {
         qa.store_fact("animal", "produces", "milk", "axiom");
         qa.store_and_rule(
             &[("animal", "has", "hair"), ("animal", "produces", "milk")],
-            "animal", "is", "mammal",
+            "animal",
+            "is",
+            "mammal",
             "mammal_check",
         );
 
@@ -9356,7 +10633,9 @@ mod tests {
         qa.store_schematic_rule(
             &[("father_of_{?X}", "age", "?Y")],
             &[false],
-            "?X", "has_father_age", "?Y",
+            "?X",
+            "has_father_age",
+            "?Y",
             "father_age_rule",
         );
 
@@ -9384,16 +10663,8 @@ mod tests {
         qa.store_fact("c", "is", "blue", "axiom");
 
         // Two ways to prove "red_item": via a or b
-        qa.store_and_rule(
-            &[("a", "is", "red")],
-            "a", "is", "red_item",
-            "rule_a",
-        );
-        qa.store_and_rule(
-            &[("b", "is", "red")],
-            "b", "is", "red_item",
-            "rule_b",
-        );
+        qa.store_and_rule(&[("a", "is", "red")], "a", "is", "red_item", "rule_a");
+        qa.store_and_rule(&[("b", "is", "red")], "b", "is", "red_item", "rule_b");
         // c is blue, should NOT match
 
         // prove_and_explain only returns best
@@ -9412,9 +10683,14 @@ mod tests {
         // Note: NO fact for item_hidden_red is obscured
 
         qa.store_schematic_rule(
-            &[("item_{?X}_red", "color", "red"), ("item_{?X}_red", "obscured", "")],
+            &[
+                ("item_{?X}_red", "color", "red"),
+                ("item_{?X}_red", "obscured", ""),
+            ],
             &[false, true],
-            "?X", "is", "visible",
+            "?X",
+            "is",
+            "visible",
             "compound_naf",
         );
 
@@ -9424,11 +10700,26 @@ mod tests {
 
         // Should mention the NAF check — the NotProvable explains what was checked
         // "obscured" is now verbalized as "is obscured" via the predicate-adjective mapping
-        assert!(text.contains("(item hidden red is obscured)"), "should check 'is obscured' in NAF");
-        assert!(text.contains("No evidence was found"), "NAF should report no evidence");
-        assert!(text.contains("I conclude that hidden is visible"), "final conclusion");
-        assert!(text.contains("No evidence was found"), "NAF should report no evidence");
-        assert!(text.contains("I conclude that hidden is visible"), "final conclusion");
+        assert!(
+            text.contains("(item hidden red is obscured)"),
+            "should check 'is obscured' in NAF"
+        );
+        assert!(
+            text.contains("No evidence was found"),
+            "NAF should report no evidence"
+        );
+        assert!(
+            text.contains("I conclude that hidden is visible"),
+            "final conclusion"
+        );
+        assert!(
+            text.contains("No evidence was found"),
+            "NAF should report no evidence"
+        );
+        assert!(
+            text.contains("I conclude that hidden is visible"),
+            "final conclusion"
+        );
     }
 
     #[test]
@@ -9442,7 +10733,10 @@ mod tests {
 
         let all = qa.prove_all_and_explain("y", "is", "valid", 5);
         assert_eq!(all.len(), 1, "only y matches rule_y");
-        assert!(all[0].contains("rule 'rule_y'"), "should reference correct rule");
+        assert!(
+            all[0].contains("rule 'rule_y'"),
+            "should reference correct rule"
+        );
     }
 
     #[test]
@@ -9455,7 +10749,9 @@ mod tests {
 
         qa.store_and_rule(
             &[("?X", "p", "true"), ("b", "q", "true")],
-            "combined", "proved", "true",
+            "combined",
+            "proved",
+            "true",
             "cartesian_rule",
         );
 
@@ -9463,8 +10759,78 @@ mod tests {
         assert!(!explanations.is_empty(), "should find at least one proof");
         // With ?X unbound, both a1 and a2 match the existential
         for text in &explanations {
-            assert!(text.contains("I conclude that combined proved true"), "conclusion");
+            assert!(
+                text.contains("I conclude that combined proved true"),
+                "conclusion"
+            );
             assert!(text.contains("rule 'cartesian_rule'"), "rule");
         }
+    }
+
+    // ── Theorem prover integration (Tier 3) ─────────────────
+
+    #[test]
+    fn test_theorem_prover_sqrt_symbolic() {
+        let mut engine = QaEngine::new();
+        engine.load_theorem_environment();
+        let answer = engine.answer_combined("Prove that sqrt(y^2) = y given y >= 0");
+        assert!(answer.contains("Proved"), "Expected proof: got {}", answer);
+    }
+
+    #[test]
+    fn test_theorem_prover_add_zero() {
+        let mut engine = QaEngine::new();
+        engine.load_theorem_environment();
+        let answer = engine.answer_combined("Prove that x + 0 = x");
+        assert!(answer.contains("Proved"), "Expected proof: got {}", answer);
+    }
+
+    #[test]
+    fn test_theorem_prover_mul_zero() {
+        let mut engine = QaEngine::new();
+        engine.load_theorem_environment();
+        let answer = engine.answer_combined("Prove that x * 0 = 0");
+        assert!(answer.contains("Proved"), "Expected proof: got {}", answer);
+    }
+
+    #[test]
+    fn test_theorem_prover_commutative() {
+        let mut engine = QaEngine::new();
+        engine.load_theorem_environment();
+        let answer = engine.answer_combined("Prove that a + b = b + a");
+        assert!(answer.contains("Proved"), "Expected proof: got {}", answer);
+    }
+
+    #[test]
+    fn test_theorem_prover_distribute() {
+        let mut engine = QaEngine::new();
+        engine.load_theorem_environment();
+        let answer = engine.answer_combined("Prove that a * (b + c) = a * b + a * c");
+        assert!(answer.contains("Proved"), "Expected proof: got {}", answer);
+    }
+
+    #[test]
+    fn test_theorem_prover_abs_nonnegative() {
+        let mut engine = QaEngine::new();
+        engine.load_theorem_environment();
+        let answer = engine.answer_combined("Prove that |x| = x given x >= 0");
+        assert!(answer.contains("Proved"), "Expected proof: got {}", answer);
+    }
+
+    #[test]
+    fn test_theorem_prover_normal_question_falls_through() {
+        let engine = QaEngine::new();
+        let answer = engine.answer_combined("Who raised rates?");
+        assert!(
+            !answer.contains("Proved"),
+            "normal QA should not say Proved"
+        );
+    }
+
+    #[test]
+    fn test_theorem_prover_without_env() {
+        let engine = QaEngine::new();
+        let answer = engine.answer_combined("Prove that x = x");
+        assert!(!answer.contains("Proved"), "no env loaded → no proof");
     }
 }

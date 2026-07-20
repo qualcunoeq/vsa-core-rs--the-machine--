@@ -42,12 +42,12 @@
 // giving perfect energy 1.0.
 // ────────────────────────────────────────────────────────────────────────────
 
-use std::collections::{HashMap, HashSet};
+use crate::abstraction_learner::AbstractionLearner;
 use crate::qa::QaEngine;
 use crate::text_encoder::{ingest_text, store_knowledge_triple};
-use crate::abstraction_learner::AbstractionLearner;
 use crate::Hypervector;
 use crate::VSABrain;
+use std::collections::{HashMap, HashSet};
 
 // ─── Structural Error Parser — Level 3 Classification ────────────────────
 //
@@ -80,23 +80,23 @@ use crate::VSABrain;
 /// Keywords for extracting the falling action from error text.
 const ACTIONS: &[(&str, &str, &str)] = &[
     // (keyword, concrete_action, abstract_actor)
-    ("bind",             "bind",             "process"),
-    ("listen",           "listen",           "process"),
-    ("connect",          "connect",          "process"),
-    ("open",             "open_resource",    "process"),
-    ("read",             "read_resource",    "process"),
-    ("write",            "write_resource",   "process"),
-    ("query",            "query_resource",   "process"),
-    ("reach",            "reach_resource",   "process"),
-    ("mount",            "mount",            "process"),
-    ("parse",            "parse",            "process"),
-    ("validate",         "validate",         "process"),
-    ("validat",          "validate",         "process"),  // catches "validation", "validating"
-    ("initializ",        "initialize",       "process"),
-    ("flush",            "flush",            "process"),
-    ("compact",          "compact",          "process"),
-    ("rebuild",          "rebuild",          "process"),
-    ("index",            "index",            "process"),
+    ("bind", "bind", "process"),
+    ("listen", "listen", "process"),
+    ("connect", "connect", "process"),
+    ("open", "open_resource", "process"),
+    ("read", "read_resource", "process"),
+    ("write", "write_resource", "process"),
+    ("query", "query_resource", "process"),
+    ("reach", "reach_resource", "process"),
+    ("mount", "mount", "process"),
+    ("parse", "parse", "process"),
+    ("validate", "validate", "process"),
+    ("validat", "validate", "process"), // catches "validation", "validating"
+    ("initializ", "initialize", "process"),
+    ("flush", "flush", "process"),
+    ("compact", "compact", "process"),
+    ("rebuild", "rebuild", "process"),
+    ("index", "index", "process"),
 ];
 
 /// Check if text contains a keyword at a word boundary.
@@ -115,7 +115,8 @@ fn contains_word(text: &str, keyword: &str) -> bool {
         let before_ok = abs_pos == 0 || !lower.as_bytes()[abs_pos - 1].is_ascii_alphanumeric();
         // Check character after (must be end of string or non-alphanumeric)
         let after_pos = abs_pos + kw_lower.len();
-        let after_ok = after_pos >= lower.len() || !lower.as_bytes()[after_pos].is_ascii_alphanumeric();
+        let after_ok =
+            after_pos >= lower.len() || !lower.as_bytes()[after_pos].is_ascii_alphanumeric();
         if before_ok && after_ok {
             return true;
         }
@@ -130,49 +131,49 @@ fn contains_word(text: &str, keyword: &str) -> bool {
 /// Keywords for extracting the target resource type.
 const RESOURCES: &[(&str, &str, &str)] = &[
     // (keyword, concrete_resource, abstract_service)
-    ("address",          "network_address",  "network_service"),
-    ("port",             "network_port",     "network_service"),
-    ("socket",           "network_socket",   "network_service"),
-    ("host",             "remote_host",      "network_service"),
-    ("server",           "remote_server",    "network_service"),
-    ("gateway",          "network_gateway",  "network_service"),
-    ("url",              "resource_url",     "network_service"),
-    ("endpoint",         "api_endpoint",     "network_service"),
-    ("file",             "filesystem_file",  "file_system"),
-    ("directory",        "filesystem_dir",   "file_system"),
-    ("disk",             "storage_disk",     "storage"),
-    ("volume",           "storage_volume",   "storage"),
-    ("storage",          "storage_disk",     "storage"),
-    ("database",         "storage_db",       "storage"),
-    ("filesystem",       "storage_fs",       "storage"),
-    ("store",            "store_resource",   "storage"),
-    ("bucket",           "storage_bucket",   "storage"),
-    ("cache",            "cache_resource",   "storage"),
-    ("certificate",      "credential_cert",  "credential"),
-    ("key",              "credential_key",   "credential"),
-    ("token",            "credential_token", "credential"),
+    ("address", "network_address", "network_service"),
+    ("port", "network_port", "network_service"),
+    ("socket", "network_socket", "network_service"),
+    ("host", "remote_host", "network_service"),
+    ("server", "remote_server", "network_service"),
+    ("gateway", "network_gateway", "network_service"),
+    ("url", "resource_url", "network_service"),
+    ("endpoint", "api_endpoint", "network_service"),
+    ("file", "filesystem_file", "file_system"),
+    ("directory", "filesystem_dir", "file_system"),
+    ("disk", "storage_disk", "storage"),
+    ("volume", "storage_volume", "storage"),
+    ("storage", "storage_disk", "storage"),
+    ("database", "storage_db", "storage"),
+    ("filesystem", "storage_fs", "storage"),
+    ("store", "store_resource", "storage"),
+    ("bucket", "storage_bucket", "storage"),
+    ("cache", "cache_resource", "storage"),
+    ("certificate", "credential_cert", "credential"),
+    ("key", "credential_key", "credential"),
+    ("token", "credential_token", "credential"),
 ];
 
 /// Keywords for extracting the error class (result).
 const ERROR_CLASSES: &[(&str, &str, &str)] = &[
     // (keyword, concrete_class, abstract_class)
-    ("failed",           "failed",           "unavailable"),
-    ("refused",          "refused",          "unavailable"),
-    ("unreachable",      "unreachable",      "unavailable"),
-    ("timeout",          "timed_out",        "unavailable"),
-    ("denied",           "permission_denied","permission_blocked"),
-    ("permission",       "permission_denied","permission_blocked"),
-    ("eacces",           "permission_denied","permission_blocked"),
-    ("exceeded",         "quota_exceeded",   "capacity_exhausted"),
-    ("full",             "capacity_full",    "capacity_exhausted"),
-    ("not found",        "not_found",        "resource_missing"),
-    ("missing",          "missing",          "resource_missing"),
-    ("enoent",           "not_found",        "resource_missing"),
-    ("expired",          "expired",          "credential_invalid"),
-    ("invalid",          "invalid",          "credential_invalid"),
-    ("stalled",          "stalled",          "unavailable"),
-    ("hung",             "hung",             "unavailable"),
-    ("corrupt",          "corrupted",        "unavailable"),
+    ("failed", "failed", "unavailable"),
+    ("refused", "refused", "unavailable"),
+    ("unreachable", "unreachable", "unavailable"),
+    ("timeout", "timed_out", "unavailable"),
+    ("denied", "permission_denied", "permission_blocked"),
+    ("permission", "permission_denied", "permission_blocked"),
+    ("eacces", "permission_denied", "permission_blocked"),
+    ("exceeded", "quota_exceeded", "capacity_exhausted"),
+    ("full", "capacity_full", "capacity_exhausted"),
+    ("not found", "not_found", "resource_missing"),
+    ("missing", "missing", "resource_missing"),
+    ("enoent", "not_found", "resource_missing"),
+    ("expired", "expired", "credential_invalid"),
+    ("invalid", "invalid", "credential_invalid"),
+    ("stalled", "stalled", "unavailable"),
+    ("hung", "hung", "unavailable"),
+    ("corrupt", "corrupted", "unavailable"),
 ];
 
 /// Result of parsing an error text into structural components.
@@ -422,18 +423,26 @@ pub fn structure_to_triples(structure: &ErrorStructure) -> Vec<CanonicalSvo> {
     let mut triples = Vec::new();
 
     // ── Concrete level ─────────────────────────────────────────────────
-    if let (Some(ref act), Some(ref res)) = (&structure.action_concrete, &structure.resource_concrete) {
+    if let (Some(ref act), Some(ref res)) =
+        (&structure.action_concrete, &structure.resource_concrete)
+    {
         triples.push((act.clone(), "accesses".to_string(), res.clone()));
     }
-    if let (Some(ref res), Some(ref err)) = (&structure.resource_concrete, &structure.error_concrete) {
+    if let (Some(ref res), Some(ref err)) =
+        (&structure.resource_concrete, &structure.error_concrete)
+    {
         triples.push((res.clone(), "has_state".to_string(), err.clone()));
     }
 
     // ── Abstract level ─────────────────────────────────────────────────
-    if let (Some(ref act), Some(ref res)) = (&structure.action_abstract, &structure.resource_abstract) {
+    if let (Some(ref act), Some(ref res)) =
+        (&structure.action_abstract, &structure.resource_abstract)
+    {
         triples.push((act.clone(), "accesses".to_string(), res.clone()));
     }
-    if let (Some(ref res), Some(ref err)) = (&structure.resource_abstract, &structure.error_abstract) {
+    if let (Some(ref res), Some(ref err)) =
+        (&structure.resource_abstract, &structure.error_abstract)
+    {
         triples.push((res.clone(), "has_state".to_string(), err.clone()));
     }
 
@@ -560,9 +569,7 @@ impl ErrorClassifier {
         patterns: &[&str],
         canonical: (&str, &str, &str),
     ) {
-        let pattern_trigrams: Vec<HashSet<String>> = patterns.iter()
-            .map(|p| trigrams(p))
-            .collect();
+        let pattern_trigrams: Vec<HashSet<String>> = patterns.iter().map(|p| trigrams(p)).collect();
         self.pattern_count += patterns.len();
         self.types.push(ErrorTypeEntry {
             name: name.to_string(),
@@ -679,7 +686,10 @@ impl ErrorClassifier {
 
     /// Return the number of known patterns per type (for reporting).
     pub fn pattern_counts(&self) -> Vec<(String, usize)> {
-        self.types.iter().map(|e| (e.name.clone(), e.patterns.len())).collect()
+        self.types
+            .iter()
+            .map(|e| (e.name.clone(), e.patterns.len()))
+            .collect()
     }
 
     /// Return the number of registered error types.
@@ -689,7 +699,8 @@ impl ErrorClassifier {
 
     /// Get the canonical SVO for a named type (used in tests).
     pub fn get_canonical(&self, name: &str) -> Option<&CanonicalSvo> {
-        self.types.iter()
+        self.types
+            .iter()
             .find(|e| e.name == name)
             .map(|e| &e.canonical)
     }
@@ -721,36 +732,56 @@ pub fn seed_diagnostic_knowledge(qa: &mut QaEngine, _brain: &mut VSABrain) {
 
     // "error has_type port_conflict" → "another_process is_listening_on same_port"
     qa.store_rule(
-        "error", "has_type", "port_conflict",
-        "another_process", "is_listening_on", "same_port",
+        "error",
+        "has_type",
+        "port_conflict",
+        "another_process",
+        "is_listening_on",
+        "same_port",
         "diagnostic_error_type",
     );
 
     // "error has_type connection_refused" → "target_service is_not listening"
     qa.store_rule(
-        "error", "has_type", "connection_refused",
-        "target_service", "is_not", "listening",
+        "error",
+        "has_type",
+        "connection_refused",
+        "target_service",
+        "is_not",
+        "listening",
         "diagnostic_error_type",
     );
 
     // "error has_type missing_file" → "required_file is missing"
     qa.store_rule(
-        "error", "has_type", "missing_file",
-        "required_file", "is", "missing",
+        "error",
+        "has_type",
+        "missing_file",
+        "required_file",
+        "is",
+        "missing",
         "diagnostic_error_type",
     );
 
     // "error has_type permission_denied" → "file_permissions are incorrect"
     qa.store_rule(
-        "error", "has_type", "permission_denied",
-        "file_permissions", "are", "incorrect",
+        "error",
+        "has_type",
+        "permission_denied",
+        "file_permissions",
+        "are",
+        "incorrect",
         "diagnostic_error_type",
     );
 
     // "error has_type startup_failure" → "service has startup_problem"
     qa.store_rule(
-        "error", "has_type", "startup_failure",
-        "service", "has", "startup_problem",
+        "error",
+        "has_type",
+        "startup_failure",
+        "service",
+        "has",
+        "startup_problem",
         "diagnostic_error_type",
     );
 
@@ -775,43 +806,67 @@ pub fn seed_diagnostic_knowledge(qa: &mut QaEngine, _brain: &mut VSABrain) {
     // Abstract: ANY process accessing ANY network service is having a
     // resource access problem.  The resource state tells us the cause.
     qa.store_rule(
-        "process", "accesses", "network_service",
-        "resource_access", "is", "problematic",
+        "process",
+        "accesses",
+        "network_service",
+        "resource_access",
+        "is",
+        "problematic",
         "diagnostic_abstract",
     );
 
     // If a network service is unavailable, another process may be blocking it
     qa.store_rule(
-        "network_service", "has_state", "unavailable",
-        "another_process", "is_listening_on", "same_port",
+        "network_service",
+        "has_state",
+        "unavailable",
+        "another_process",
+        "is_listening_on",
+        "same_port",
         "diagnostic_abstract",
     );
 
     // If a network service has a permission error → file permissions
     qa.store_rule(
-        "network_service", "has_state", "permission_blocked",
-        "file_permissions", "are", "incorrect",
+        "network_service",
+        "has_state",
+        "permission_blocked",
+        "file_permissions",
+        "are",
+        "incorrect",
         "diagnostic_abstract",
     );
 
     // If a file system is unavailable → check which file is missing
     qa.store_rule(
-        "file_system", "has_state", "unavailable",
-        "required_file", "is", "missing",
+        "file_system",
+        "has_state",
+        "unavailable",
+        "required_file",
+        "is",
+        "missing",
         "diagnostic_abstract",
     );
 
     // If storage is full → free space
     qa.store_rule(
-        "storage", "has_state", "capacity_exhausted",
-        "disk_space", "is", "full",
+        "storage",
+        "has_state",
+        "capacity_exhausted",
+        "disk_space",
+        "is",
+        "full",
         "diagnostic_abstract",
     );
 
     // Abstract resource access problem → verification needed
     qa.store_rule(
-        "resource_access", "is", "problematic",
-        "machine", "identifies", "possible_cause",
+        "resource_access",
+        "is",
+        "problematic",
+        "machine",
+        "identifies",
+        "possible_cause",
         "diagnostic_abstract_chain",
     );
 
@@ -821,29 +876,45 @@ pub fn seed_diagnostic_knowledge(qa: &mut QaEngine, _brain: &mut VSABrain) {
 
     // Concrete: bind accessing network_port → port conflict
     qa.store_rule(
-        "bind", "accesses", "network_port",
-        "another_process", "is_listening_on", "same_port",
+        "bind",
+        "accesses",
+        "network_port",
+        "another_process",
+        "is_listening_on",
+        "same_port",
         "diagnostic_concrete",
     );
 
     // Concrete: connect accessing remote_host → service not listening
     qa.store_rule(
-        "connect", "accesses", "remote_host",
-        "target_service", "is_not", "listening",
+        "connect",
+        "accesses",
+        "remote_host",
+        "target_service",
+        "is_not",
+        "listening",
         "diagnostic_concrete",
     );
 
     // Concrete: open_resource accessing filesystem_file → missing file
     qa.store_rule(
-        "open_resource", "accesses", "filesystem_file",
-        "required_file", "is", "missing",
+        "open_resource",
+        "accesses",
+        "filesystem_file",
+        "required_file",
+        "is",
+        "missing",
         "diagnostic_concrete",
     );
 
     // Concrete: bind accessing network_socket → port conflict
     qa.store_rule(
-        "bind", "accesses", "network_socket",
-        "another_process", "is_listening_on", "same_port",
+        "bind",
+        "accesses",
+        "network_socket",
+        "another_process",
+        "is_listening_on",
+        "same_port",
         "diagnostic_concrete",
     );
 
@@ -852,20 +923,32 @@ pub fn seed_diagnostic_knowledge(qa: &mut QaEngine, _brain: &mut VSABrain) {
     // ═════════════════════════════════════════════════════════════════════
 
     qa.store_action(
-        "machine", "check_port", "target:port",
-        "machine", "knows", "process_on_port",
+        "machine",
+        "check_port",
+        "target:port",
+        "machine",
+        "knows",
+        "process_on_port",
         "diagnostic_actions",
     );
 
     qa.store_action(
-        "machine", "check_service_running", "target:name",
-        "machine", "knows", "service_status",
+        "machine",
+        "check_service_running",
+        "target:name",
+        "machine",
+        "knows",
+        "service_status",
         "diagnostic_actions",
     );
 
     qa.store_action(
-        "machine", "read_error_log", "target:path",
-        "machine", "knows", "error_content",
+        "machine",
+        "read_error_log",
+        "target:path",
+        "machine",
+        "knows",
+        "error_content",
         "diagnostic_actions",
     );
 
@@ -874,26 +957,42 @@ pub fn seed_diagnostic_knowledge(qa: &mut QaEngine, _brain: &mut VSABrain) {
     // ═════════════════════════════════════════════════════════════════════
 
     qa.store_action(
-        "machine", "free_port_and_restart", "target:port:service",
-        "machine", "has", "fixed_port_conflict",
+        "machine",
+        "free_port_and_restart",
+        "target:port:service",
+        "machine",
+        "has",
+        "fixed_port_conflict",
         "diagnostic_actions",
     );
 
     qa.store_action(
-        "machine", "resolve_missing_file", "target:path:content",
-        "machine", "has", "fixed_missing_file",
+        "machine",
+        "resolve_missing_file",
+        "target:path:content",
+        "machine",
+        "has",
+        "fixed_missing_file",
         "diagnostic_actions",
     );
 
     qa.store_action(
-        "machine", "fix_permissions", "target:path:perms",
-        "machine", "has", "fixed_permissions",
+        "machine",
+        "fix_permissions",
+        "target:path:perms",
+        "machine",
+        "has",
+        "fixed_permissions",
         "diagnostic_actions",
     );
 
     qa.store_action(
-        "machine", "restart_service", "target:name",
-        "service", "is", "running",
+        "machine",
+        "restart_service",
+        "target:name",
+        "service",
+        "is",
+        "running",
         "diagnostic_actions",
     );
 
@@ -902,32 +1001,52 @@ pub fn seed_diagnostic_knowledge(qa: &mut QaEngine, _brain: &mut VSABrain) {
     // ═════════════════════════════════════════════════════════════════════
 
     qa.store_rule(
-        "machine", "knows", "error_content",
-        "machine", "identifies", "possible_cause",
+        "machine",
+        "knows",
+        "error_content",
+        "machine",
+        "identifies",
+        "possible_cause",
         "diagnostic_chain",
     );
 
     qa.store_rule(
-        "machine", "knows", "process_on_port",
-        "machine", "confirms", "cause",
+        "machine",
+        "knows",
+        "process_on_port",
+        "machine",
+        "confirms",
+        "cause",
         "diagnostic_chain",
     );
 
     qa.store_rule(
-        "machine", "confirms", "cause",
-        "machine", "can", "fix_problem",
+        "machine",
+        "confirms",
+        "cause",
+        "machine",
+        "can",
+        "fix_problem",
         "diagnostic_chain",
     );
 
     qa.store_rule(
-        "machine", "has", "fixed_port_conflict",
-        "service", "is", "running",
+        "machine",
+        "has",
+        "fixed_port_conflict",
+        "service",
+        "is",
+        "running",
         "diagnostic_chain",
     );
 
     qa.store_rule(
-        "machine", "restarts", "service",
-        "service", "is", "running",
+        "machine",
+        "restarts",
+        "service",
+        "service",
+        "is",
+        "running",
         "diagnostic_chain",
     );
 
@@ -949,7 +1068,14 @@ pub fn seed_diagnostic_knowledge(qa: &mut QaEngine, _brain: &mut VSABrain) {
     ingest_text(_brain, diagnostic_text, "diagnostic_knowledge");
 
     // ── Experiment metadata ─────────────────────────────────────────────
-    store_knowledge_triple(_brain, "diagnostic_system", "is_ready", "true", 1.0, "experiment_metadata");
+    store_knowledge_triple(
+        _brain,
+        "diagnostic_system",
+        "is_ready",
+        "true",
+        1.0,
+        "experiment_metadata",
+    );
 }
 
 /// Seed the ErrorClassifier with known error types and their textual triggers.
@@ -963,10 +1089,16 @@ pub fn seed_error_classifier() -> ErrorClassifier {
     classifier.register(
         "port_conflict",
         &[
-            "bind()", "bind failed", "failed to bind",
-            "address already in use", "port already in use",
-            "eadinuse", "eaddrinuse", "could not bind",
-            "port is already allocated", "port is allocated",
+            "bind()",
+            "bind failed",
+            "failed to bind",
+            "address already in use",
+            "port already in use",
+            "eadinuse",
+            "eaddrinuse",
+            "could not bind",
+            "port is already allocated",
+            "port is allocated",
         ],
         &[
             "bind() to 0.0.0.0:80 failed (98: Unknown error)",
@@ -981,14 +1113,13 @@ pub fn seed_error_classifier() -> ErrorClassifier {
     classifier.register(
         "connection_refused",
         &[
-            "connection refused", "econnrefused",
-            "actively refused", "no connection could be made",
+            "connection refused",
+            "econnrefused",
+            "actively refused",
+            "no connection could be made",
             "target machine refused",
         ],
-        &[
-            "Connection refused",
-            "connect: connection refused",
-        ],
+        &["Connection refused", "connect: connection refused"],
         ("error", "has_type", "connection_refused"),
     );
 
@@ -996,8 +1127,12 @@ pub fn seed_error_classifier() -> ErrorClassifier {
     classifier.register(
         "missing_file",
         &[
-            "no such file", "not found", "cannot open",
-            "enoent", "does not exist", "no such directory",
+            "no such file",
+            "not found",
+            "cannot open",
+            "enoent",
+            "does not exist",
+            "no such directory",
         ],
         &[
             "No such file or directory",
@@ -1010,13 +1145,13 @@ pub fn seed_error_classifier() -> ErrorClassifier {
     classifier.register(
         "permission_denied",
         &[
-            "permission denied", "eacces", "eperm",
-            "not permitted", "access denied",
+            "permission denied",
+            "eacces",
+            "eperm",
+            "not permitted",
+            "access denied",
         ],
-        &[
-            "Permission denied",
-            "cannot access: Permission denied",
-        ],
+        &["Permission denied", "cannot access: Permission denied"],
         ("error", "has_type", "permission_denied"),
     );
 
@@ -1028,12 +1163,12 @@ pub fn seed_error_classifier() -> ErrorClassifier {
     classifier.register(
         "startup_failure",
         &[
-            "startup failed", "could not start",
-            "initialization failed", "fatal error",
-        ],
-        &[
             "startup failed",
+            "could not start",
+            "initialization failed",
+            "fatal error",
         ],
+        &["startup failed"],
         ("error", "has_type", "startup_failure"),
     );
 
@@ -1125,7 +1260,9 @@ pub fn absorb_diagnosis_with_learner(
         None => parse_error_structure(error_text),
     };
 
-    if let (Some(ref act), Some(ref res)) = (&structure.action_abstract, &structure.resource_abstract) {
+    if let (Some(ref act), Some(ref res)) =
+        (&structure.action_abstract, &structure.resource_abstract)
+    {
         let act_hv = Hypervector::encode_text_ngram(act, 3);
         let acc_hv = Hypervector::encode_text_ngram("accesses", 3);
         let res_hv = Hypervector::encode_text_ngram(res, 3);
@@ -1157,7 +1294,9 @@ pub fn absorb_diagnosis_with_learner(
     // Store STATE SVO regardless of whether action is available.
     // This handles cases like "disk quota exceeded" where only resource
     // and error keywords are present.
-    if let (Some(ref res), Some(ref err)) = (&structure.resource_abstract, &structure.error_abstract) {
+    if let (Some(ref res), Some(ref err)) =
+        (&structure.resource_abstract, &structure.error_abstract)
+    {
         let res_hv = Hypervector::encode_text_ngram(res, 3);
         let state_v_hv = Hypervector::encode_text_ngram("has_state", 3);
         let err_hv = Hypervector::encode_text_ngram(err, 3);
@@ -1246,12 +1385,16 @@ fn query_diagnostic_category_internal(
     structure: &ErrorStructure,
 ) -> Option<(String, f64)> {
     // ── Build query from structural SVO (primary path) ────────────────
-    let query_hv: Hypervector = if let (Some(ref act), Some(ref res)) = (&structure.action_abstract, &structure.resource_abstract) {
+    let query_hv: Hypervector = if let (Some(ref act), Some(ref res)) =
+        (&structure.action_abstract, &structure.resource_abstract)
+    {
         let act_hv = Hypervector::encode_text_ngram(act, 3);
         let acc_hv = Hypervector::encode_text_ngram("accesses", 3);
         let res_hv = Hypervector::encode_text_ngram(res, 3);
         crate::resonator::encode_svo(&act_hv, &acc_hv, &res_hv)
-    } else if let (Some(ref res), Some(ref err)) = (&structure.resource_abstract, &structure.error_abstract) {
+    } else if let (Some(ref res), Some(ref err)) =
+        (&structure.resource_abstract, &structure.error_abstract)
+    {
         let res_hv = Hypervector::encode_text_ngram(res, 3);
         let state_v_hv = Hypervector::encode_text_ngram("has_state", 3);
         let err_hv = Hypervector::encode_text_ngram(err, 3);
@@ -1272,8 +1415,10 @@ fn query_diagnostic_category_internal(
         for entry in &cluster.entries {
             if entry.label.starts_with("concept:") {
                 let concept_name = &entry.label[8..];
-                let concept_hv = Hypervector::encode_text_ngram(&format!("concept:{}", concept_name), 3);
-                if let Some((_concept_idx, _concept_sim)) = brain.nearest_centroid_idx(&concept_hv) {
+                let concept_hv =
+                    Hypervector::encode_text_ngram(&format!("concept:{}", concept_name), 3);
+                if let Some((_concept_idx, _concept_sim)) = brain.nearest_centroid_idx(&concept_hv)
+                {
                     let centroid = &brain.dejavu_clusters[nearest_idx].centroid;
                     let concept_centroid = &brain.dejavu_clusters[_concept_idx].centroid;
                     let cluster_dist = centroid.normalized_hamming_distance(concept_centroid);
@@ -1327,8 +1472,12 @@ fn query_diagnostic_category_internal(
 
     // ── Final fallback: check known categories by centroid proximity ─
     let known_categories = [
-        "port_conflict", "connection_refused", "missing_file",
-        "permission_denied", "disk_full", "startup_failure",
+        "port_conflict",
+        "connection_refused",
+        "missing_file",
+        "permission_denied",
+        "disk_full",
+        "startup_failure",
     ];
     let mut best: Option<(String, f64)> = None;
     for cat in &known_categories {
@@ -1357,10 +1506,7 @@ fn query_diagnostic_category_internal(
 /// Uses built-in keyword maps only.  See also
 /// `query_diagnostic_category_with_learner` for the version that also
 /// checks the learner's promoted keyword extensions.
-pub fn query_diagnostic_category(
-    brain: &VSABrain,
-    error_text: &str,
-) -> Option<(String, f64)> {
+pub fn query_diagnostic_category(brain: &VSABrain, error_text: &str) -> Option<(String, f64)> {
     let structure = parse_error_structure(error_text);
     query_diagnostic_category_internal(brain, error_text, &structure)
 }
@@ -1387,7 +1533,9 @@ pub fn query_diagnostic_category_with_learner(
 pub fn diagnosis_reinforcement_count(brain: &VSABrain, category: &str) -> usize {
     let concept_name = format!("concept:{}", category);
     let concept_hv = Hypervector::encode_text_ngram(&concept_name, 3);
-    brain.dejavu_clusters.iter()
+    brain
+        .dejavu_clusters
+        .iter()
         .filter(|c| {
             let sim = 1.0 - concept_hv.normalized_hamming_distance(&c.centroid);
             sim >= 0.65
@@ -1486,10 +1634,11 @@ mod tests {
         let classifier = seed_error_classifier();
         let error_text = "bind to 10.0.0.1:8080 failed";
         let (svo, level) = classifier.classify_deep(error_text);
-        assert!(svo.is_some(),
-            "Trigram should classify text with partial trigram overlap");
-        assert_eq!(level, "trigram",
-            "Should match via trigram, not trigger");
+        assert!(
+            svo.is_some(),
+            "Trigram should classify text with partial trigram overlap"
+        );
+        assert_eq!(level, "trigram", "Should match via trigram, not trigger");
         assert_eq!(svo.unwrap().2, "port_conflict");
     }
 
@@ -1499,10 +1648,8 @@ mod tests {
         let classifier = seed_error_classifier();
         let error_text = "connect refused";
         let (svo, level) = classifier.classify_deep(error_text);
-        assert!(svo.is_some(),
-            "Trigram should classify 'connect refused'");
-        assert_eq!(level, "trigram",
-            "Should match via trigram");
+        assert!(svo.is_some(), "Trigram should classify 'connect refused'");
+        assert_eq!(level, "trigram", "Should match via trigram");
         assert_eq!(svo.unwrap().2, "connection_refused");
     }
 
@@ -1513,10 +1660,11 @@ mod tests {
         let classifier = seed_error_classifier();
         let error_text = "Kernel panic - not syncing: VFS: Unable to mount root fs";
         let (svo, level) = classifier.classify_deep(error_text);
-        assert!(svo.is_none(),
-            "Should not classify completely unrelated error");
-        assert_eq!(level, "none",
-            "Should explicitly report no match");
+        assert!(
+            svo.is_none(),
+            "Should not classify completely unrelated error"
+        );
+        assert_eq!(level, "none", "Should explicitly report no match");
     }
 
     #[test]
@@ -1560,8 +1708,10 @@ mod tests {
         seed_diagnostic_knowledge(&mut qa, &mut brain);
 
         let plan = qa.plan_for_goal("service", "is", "running", 10);
-        assert!(!plan.is_empty(),
-            "Should find at least one action to diagnose/restart service");
+        assert!(
+            !plan.is_empty(),
+            "Should find at least one action to diagnose/restart service"
+        );
     }
 
     #[test]
@@ -1581,7 +1731,10 @@ mod tests {
         assert!(n >= 1, "Should derive at least 1 fact from error type");
 
         let (verified, _conf) = qa.verify_fact("another_process", "is_listening_on", "same_port");
-        assert!(verified, "Error-type rule should derive port conflict cause");
+        assert!(
+            verified,
+            "Error-type rule should derive port conflict cause"
+        );
     }
 
     #[test]
@@ -1590,7 +1743,13 @@ mod tests {
         let mut brain = VSABrain::new(0.12);
         seed_diagnostic_knowledge(&mut qa, &mut brain);
 
-        let types = ["port_conflict", "connection_refused", "missing_file", "permission_denied", "startup_failure"];
+        let types = [
+            "port_conflict",
+            "connection_refused",
+            "missing_file",
+            "permission_denied",
+            "startup_failure",
+        ];
         let expected = [
             "another_process is_listening_on same_port",
             "target_service is_not listening",
@@ -1606,13 +1765,23 @@ mod tests {
 
             qa2.store_fact("error", "has_type", error_type, "classifier");
             let n = qa2.forward_chain(0.75);
-            assert!(n >= 1, "Type '{}' should derive at least 1 fact (got {})", error_type, n);
+            assert!(
+                n >= 1,
+                "Type '{}' should derive at least 1 fact (got {})",
+                error_type,
+                n
+            );
 
             let parts: Vec<&str> = expected[i].splitn(3, ' ').collect();
             let (subj, verb, obj) = (parts[0], parts[1], parts[2]);
             let (verified, _) = qa2.verify_fact(subj, verb, obj);
-            assert!(verified, "Type '{}' should derive: {} (got {})",
-                error_type, expected[i], if verified { "yes" } else { "no" });
+            assert!(
+                verified,
+                "Type '{}' should derive: {} (got {})",
+                error_type,
+                expected[i],
+                if verified { "yes" } else { "no" }
+            );
         }
     }
 
@@ -1629,7 +1798,8 @@ mod tests {
         let error_text = "nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)";
 
         // Use classifier to get the canonical triple.
-        let svo = classifier.classify(error_text)
+        let svo = classifier
+            .classify(error_text)
             .expect("Should classify nginx error");
         let (subj, verb, obj) = svo.clone();
 
@@ -1641,7 +1811,10 @@ mod tests {
         assert!(n >= 1, "Should derive facts from classified error");
 
         let (verified, _) = qa.verify_fact("another_process", "is_listening_on", "same_port");
-        assert!(verified, "Classified error should trigger port conflict rule");
+        assert!(
+            verified,
+            "Classified error should trigger port conflict rule"
+        );
     }
 
     #[test]
@@ -1653,7 +1826,8 @@ mod tests {
         let classifier = seed_error_classifier();
 
         let error_text = "socket.error: [Errno 98] EADDRINUSE";
-        let svo = classifier.classify(error_text)
+        let svo = classifier
+            .classify(error_text)
             .expect("Should classify EADDRINUSE");
         let (subj, verb, obj) = svo.clone();
         qa.store_fact(&subj, &verb, &obj, "error_log");
@@ -1674,10 +1848,8 @@ mod tests {
         let error_text = "[KMS] keyserver unreachable: timeout";
 
         let (svo, level) = classifier.classify_deep(error_text);
-        assert!(svo.is_none(),
-            "Novel error should NOT match any known type");
-        assert_eq!(level, "none",
-            "Should explicitly report no match");
+        assert!(svo.is_none(), "Novel error should NOT match any known type");
+        assert_eq!(level, "none", "Should explicitly report no match");
 
         // Verify: the downstream consequence is that the diagnostic loop
         // reports "unknown error pattern" instead of forming a hypothesis.
@@ -1739,19 +1911,28 @@ mod tests {
     fn test_add_pattern_extends_classifier() {
         let mut classifier = seed_error_classifier();
         let before = classifier.pattern_counts();
-        let port_patterns_before = before.iter()
-            .find(|(n, _)| n == "port_conflict").map(|(_, c)| *c).unwrap_or(0);
+        let port_patterns_before = before
+            .iter()
+            .find(|(n, _)| n == "port_conflict")
+            .map(|(_, c)| *c)
+            .unwrap_or(0);
 
         // Add a new pattern to port_conflict
-        let added = classifier.add_pattern("port_conflict",
-            "custom error: could not bind to port 8080");
+        let added =
+            classifier.add_pattern("port_conflict", "custom error: could not bind to port 8080");
         assert!(added, "Should add pattern to existing type");
 
         let after = classifier.pattern_counts();
-        let port_patterns_after = after.iter()
-            .find(|(n, _)| n == "port_conflict").map(|(_, c)| *c).unwrap_or(0);
-        assert_eq!(port_patterns_after, port_patterns_before + 1,
-            "Pattern count should increase by 1");
+        let port_patterns_after = after
+            .iter()
+            .find(|(n, _)| n == "port_conflict")
+            .map(|(_, c)| *c)
+            .unwrap_or(0);
+        assert_eq!(
+            port_patterns_after,
+            port_patterns_before + 1,
+            "Pattern count should increase by 1"
+        );
     }
 
     #[test]
@@ -1767,14 +1948,25 @@ mod tests {
         let text = "bind() to 0.0.0.0:80 failed (98: Unknown error)";
 
         classifier.add_pattern("port_conflict", text);
-        let count1 = classifier.pattern_counts().iter()
-            .find(|(n, _)| n == "port_conflict").map(|(_, c)| *c).unwrap_or(0);
+        let count1 = classifier
+            .pattern_counts()
+            .iter()
+            .find(|(n, _)| n == "port_conflict")
+            .map(|(_, c)| *c)
+            .unwrap_or(0);
 
         classifier.add_pattern("port_conflict", text);
-        let count2 = classifier.pattern_counts().iter()
-            .find(|(n, _)| n == "port_conflict").map(|(_, c)| *c).unwrap_or(0);
+        let count2 = classifier
+            .pattern_counts()
+            .iter()
+            .find(|(n, _)| n == "port_conflict")
+            .map(|(_, c)| *c)
+            .unwrap_or(0);
 
-        assert_eq!(count1, count2, "Duplicate pattern should not increase count");
+        assert_eq!(
+            count1, count2,
+            "Duplicate pattern should not increase count"
+        );
     }
 
     #[test]
@@ -1792,20 +1984,38 @@ mod tests {
 
         // Phase 1: absorb each error as a port_conflict diagnosis
         for text in &error_texts {
-            absorb_diagnosis(&mut brain, &mut qa, &mut classifier, text, "port_conflict", 1.0);
+            absorb_diagnosis(
+                &mut brain,
+                &mut qa,
+                &mut classifier,
+                text,
+                "port_conflict",
+                1.0,
+            );
         }
 
         // Check: reinforcement count should be 3+ (one per episode)
         let count = diagnosis_reinforcement_count(&brain, "port_conflict");
         eprintln!("  Port conflict reinforcement count: {}", count);
-        assert!(count >= 3, "Should have reinforced port_conflict at least 3 times (got {})", count);
+        assert!(
+            count >= 3,
+            "Should have reinforced port_conflict at least 3 times (got {})",
+            count
+        );
 
         // Check: classifier should have learned new patterns
         let pc = classifier.pattern_counts();
-        let port_count = pc.iter()
-            .find(|(n, _)| n == "port_conflict").map(|(_, c)| *c).unwrap_or(0);
+        let port_count = pc
+            .iter()
+            .find(|(n, _)| n == "port_conflict")
+            .map(|(_, c)| *c)
+            .unwrap_or(0);
         eprintln!("  Port conflict patterns after learning: {}", port_count);
-        assert!(port_count >= 4, "Should have at least 4 patterns for port_conflict (got {})", port_count);
+        assert!(
+            port_count >= 4,
+            "Should have at least 4 patterns for port_conflict (got {})",
+            port_count
+        );
     }
 
     #[test]
@@ -1817,12 +2027,30 @@ mod tests {
         let mut classifier = seed_error_classifier();
 
         // Absorb some port_conflict episodes
-        absorb_diagnosis(&mut brain, &mut qa, &mut classifier,
-            "bind() to 0.0.0.0:80 failed (98: Unknown error)", "port_conflict", 1.0);
-        absorb_diagnosis(&mut brain, &mut qa, &mut classifier,
-            "Address already in use", "port_conflict", 1.0);
-        absorb_diagnosis(&mut brain, &mut qa, &mut classifier,
-            "port is already allocated", "port_conflict", 1.0);
+        absorb_diagnosis(
+            &mut brain,
+            &mut qa,
+            &mut classifier,
+            "bind() to 0.0.0.0:80 failed (98: Unknown error)",
+            "port_conflict",
+            1.0,
+        );
+        absorb_diagnosis(
+            &mut brain,
+            &mut qa,
+            &mut classifier,
+            "Address already in use",
+            "port_conflict",
+            1.0,
+        );
+        absorb_diagnosis(
+            &mut brain,
+            &mut qa,
+            &mut classifier,
+            "port is already allocated",
+            "port_conflict",
+            1.0,
+        );
 
         // Now try to query with a novel variant that shares trigrams
         // but doesn't match any trigger or pre-seeded pattern directly.
@@ -1833,8 +2061,10 @@ mod tests {
         eprintln!("  Query result for novel variant: {:?}", category);
         // This may or may not find the category depending on centroid similarity.
         // The test is informational since centroid matching depends on trigram overlap.
-        assert!(category.is_some() || category.is_none(),
-            "Query should return Some or None (not panic)");
+        assert!(
+            category.is_some() || category.is_none(),
+            "Query should return Some or None (not panic)"
+        );
     }
 
     #[test]
@@ -1855,14 +2085,25 @@ mod tests {
         let (after, after_level) = classifier.classify_deep("random bind failure on socket");
         assert!(after.is_some(), "Should classify after adding pattern");
         assert_eq!(after_level, "trigram", "Should match via trigram");
-        assert_eq!(after.unwrap().2, "port_conflict", "Should classify as port_conflict");
+        assert_eq!(
+            after.unwrap().2,
+            "port_conflict",
+            "Should classify as port_conflict"
+        );
 
         // Also: a slight variant should now match via trigram Jaccard
-        let (variant, variant_level) = classifier.classify_deep("random bind failure on port socket");
-        assert!(variant.is_some(),
-            "Variant should match via trigram after pattern added");
+        let (variant, variant_level) =
+            classifier.classify_deep("random bind failure on port socket");
+        assert!(
+            variant.is_some(),
+            "Variant should match via trigram after pattern added"
+        );
         assert_eq!(variant_level, "trigram", "Variant should match via trigram");
-        assert_eq!(variant.unwrap().2, "port_conflict", "Variant should classify as port_conflict");
+        assert_eq!(
+            variant.unwrap().2,
+            "port_conflict",
+            "Variant should classify as port_conflict"
+        );
     }
 
     // ── Structural Parser Tests ─────────────────────────────────────────
@@ -1928,14 +2169,30 @@ mod tests {
     fn test_structure_to_triples_concrete() {
         let s = parse_error_structure("bind() to 0.0.0.0:80 failed");
         let triples = structure_to_triples(&s);
-        assert!(triples.len() >= 4, "Should produce at least 4 triples (got {})", triples.len());
+        assert!(
+            triples.len() >= 4,
+            "Should produce at least 4 triples (got {})",
+            triples.len()
+        );
 
         // Should contain the concrete structural triple
-        assert!(triples.contains(&("bind".to_string(), "accesses".to_string(), "network_port".to_string())),
-            "Should contain bind→network_port");
+        assert!(
+            triples.contains(&(
+                "bind".to_string(),
+                "accesses".to_string(),
+                "network_port".to_string()
+            )),
+            "Should contain bind→network_port"
+        );
         // Should contain the abstract structural triple
-        assert!(triples.contains(&("process".to_string(), "accesses".to_string(), "network_service".to_string())),
-            "Should contain process→network_service");
+        assert!(
+            triples.contains(&(
+                "process".to_string(),
+                "accesses".to_string(),
+                "network_service".to_string()
+            )),
+            "Should contain process→network_service"
+        );
     }
 
     #[test]
@@ -1949,16 +2206,40 @@ mod tests {
         let t2 = structure_to_triples(&s2);
 
         // Both should contain ("process", "accesses", "network_service")
-        assert!(t1.contains(&("process".to_string(), "accesses".to_string(), "network_service".to_string())),
-            "bind() failed should produce abstract triple");
-        assert!(t2.contains(&("process".to_string(), "accesses".to_string(), "network_service".to_string())),
-            "KMS timeout should produce abstract triple");
+        assert!(
+            t1.contains(&(
+                "process".to_string(),
+                "accesses".to_string(),
+                "network_service".to_string()
+            )),
+            "bind() failed should produce abstract triple"
+        );
+        assert!(
+            t2.contains(&(
+                "process".to_string(),
+                "accesses".to_string(),
+                "network_service".to_string()
+            )),
+            "KMS timeout should produce abstract triple"
+        );
 
         // Further: both should contain ("network_service", "has_state", "unavailable")
-        assert!(t1.contains(&("network_service".to_string(), "has_state".to_string(), "unavailable".to_string())),
-            "bind() failed should produce state triple");
-        assert!(t2.contains(&("network_service".to_string(), "has_state".to_string(), "unavailable".to_string())),
-            "KMS timeout should produce state triple");
+        assert!(
+            t1.contains(&(
+                "network_service".to_string(),
+                "has_state".to_string(),
+                "unavailable".to_string()
+            )),
+            "bind() failed should produce state triple"
+        );
+        assert!(
+            t2.contains(&(
+                "network_service".to_string(),
+                "has_state".to_string(),
+                "unavailable".to_string()
+            )),
+            "KMS timeout should produce state triple"
+        );
 
         // If both produce the same triples, they will fire the SAME
         // abstract forward-chain rules → same diagnosis.
@@ -1983,8 +2264,10 @@ mod tests {
         let n = qa.forward_chain(0.75);
         eprintln!("  Bind failed -> forward chain: {} facts", n);
         let (has_cause, _) = qa.verify_fact("another_process", "is_listening_on", "same_port");
-        assert!(has_cause,
-            "Abstract structural triples should derive port conflict cause");
+        assert!(
+            has_cause,
+            "Abstract structural triples should derive port conflict cause"
+        );
 
         // Now do the same with KMS timeout
         let mut qa2 = QaEngine::new();
@@ -2000,8 +2283,10 @@ mod tests {
         let n2 = qa2.forward_chain(0.75);
         eprintln!("  KMS timeout -> forward chain: {} facts", n2);
         let (has_cause2, _) = qa2.verify_fact("another_process", "is_listening_on", "same_port");
-        assert!(has_cause2,
-            "KMS timeout should ALSO derive port conflict via abstract rules");
+        assert!(
+            has_cause2,
+            "KMS timeout should ALSO derive port conflict via abstract rules"
+        );
     }
 
     #[test]
@@ -2019,12 +2304,18 @@ mod tests {
 
         // Level 1 & 2 fail
         let (svo, level) = classifier.classify_deep(error_text);
-        assert!(svo.is_none(), "Classifier should NOT match this via trigger/trigram");
+        assert!(
+            svo.is_none(),
+            "Classifier should NOT match this via trigger/trigram"
+        );
         assert_eq!(level, "none");
 
         // Level 3: structural parsing
         let structural_triples = classify_structural(error_text);
-        assert!(structural_triples.is_some(), "Structural parser should produce triples");
+        assert!(
+            structural_triples.is_some(),
+            "Structural parser should produce triples"
+        );
         let triples = structural_triples.unwrap();
 
         // Store structural triples as facts
@@ -2039,7 +2330,9 @@ mod tests {
 
         // Should now verify the cause
         let (has_cause, _) = qa.verify_fact("another_process", "is_listening_on", "same_port");
-        assert!(has_cause,
-            "Structural fallback should identify port conflict cause");
+        assert!(
+            has_cause,
+            "Structural fallback should identify port conflict cause"
+        );
     }
 }

@@ -89,7 +89,10 @@ pub(crate) fn build_square_attack_map(
         }
     }
 
-    SquareAttackMap { opponent_attacks: opp, our_attacks: ours }
+    SquareAttackMap {
+        opponent_attacks: opp,
+        our_attacks: ours,
+    }
 }
 
 impl ChessThreatDetector {
@@ -118,7 +121,8 @@ impl ThreatDetector<(Vec<(char, u8, u8)>, [[Option<char>; 8]; 8])> for ChessThre
         let (before_pieces, before_board) = before;
         let (after_pieces, _after_board) = after;
 
-        let before_map = build_square_attack_map(before_pieces, before_board, self.machine_is_white);
+        let before_map =
+            build_square_attack_map(before_pieces, before_board, self.machine_is_white);
         let after_map = build_square_attack_map(after_pieces, _after_board, self.machine_is_white);
 
         let mut events = Vec::new();
@@ -187,7 +191,8 @@ pub fn diff_triples(
 ) -> Vec<crate::perception::SvoTriple> {
     let before_set: std::collections::HashSet<&crate::perception::SvoTriple> =
         before.iter().collect();
-    after.iter()
+    after
+        .iter()
         .filter(|t| !before_set.contains(t))
         .cloned()
         .collect()
@@ -200,50 +205,82 @@ pub fn diff_triples(
 pub fn seed_threat_rules(qa: &mut crate::qa::QaEngine) {
     // Network threats
     qa.store_rule(
-        "process", "connected_to", "external_ip",
-        "connection", "is", "suspicious",
-        "threat_model"
+        "process",
+        "connected_to",
+        "external_ip",
+        "connection",
+        "is",
+        "suspicious",
+        "threat_model",
     );
     qa.store_rule(
-        "process", "listening_on", "high_port",
-        "process", "may_be", "backdoor",
-        "threat_model"
+        "process",
+        "listening_on",
+        "high_port",
+        "process",
+        "may_be",
+        "backdoor",
+        "threat_model",
     );
 
     // File access threats
     qa.store_rule(
-        "process", "reading", "/etc/passwd",
-        "process", "may_be", "credential_harvesting",
-        "threat_model"
+        "process",
+        "reading",
+        "/etc/passwd",
+        "process",
+        "may_be",
+        "credential_harvesting",
+        "threat_model",
     );
     qa.store_rule(
-        "process", "reading", "/etc/shadow",
-        "process", "is", "privilege_escalation_attempt",
-        "threat_model"
+        "process",
+        "reading",
+        "/etc/shadow",
+        "process",
+        "is",
+        "privilege_escalation_attempt",
+        "threat_model",
     );
 
     // Process threats
     qa.store_rule(
-        "process", "has_user", "root",
-        "unknown_process", "is", "privilege_escalation_risk",
-        "threat_model"
+        "process",
+        "has_user",
+        "root",
+        "unknown_process",
+        "is",
+        "privilege_escalation_risk",
+        "threat_model",
     );
     qa.store_rule(
-        "process", "writing_to", "/tmp",
-        "process", "may_be", "dropping_payload",
-        "threat_model"
+        "process",
+        "writing_to",
+        "/tmp",
+        "process",
+        "may_be",
+        "dropping_payload",
+        "threat_model",
     );
 
     // Composite: process with both network activity AND sensitive file access
     qa.store_rule(
-        "connection", "is", "suspicious",
-        "system", "has", "network_threat",
-        "threat_model"
+        "connection",
+        "is",
+        "suspicious",
+        "system",
+        "has",
+        "network_threat",
+        "threat_model",
     );
     qa.store_rule(
-        "process", "may_be", "credential_harvesting",
-        "system", "has", "data_exfiltration_risk",
-        "threat_model"
+        "process",
+        "may_be",
+        "credential_harvesting",
+        "system",
+        "has",
+        "data_exfiltration_risk",
+        "threat_model",
     );
 }
 
@@ -273,7 +310,9 @@ impl SystemThreatDetector {
 
         // If the QA engine finds a threat conclusion
         if result.contains("threat") || result.contains("risk") || result.contains("suspicious") {
-            let severity = if result.contains("privilege_escalation") || result.contains("data_exfiltration") {
+            let severity = if result.contains("privilege_escalation")
+                || result.contains("data_exfiltration")
+            {
                 0.9
             } else if result.contains("credential_harvesting") || result.contains("backdoor") {
                 0.8
@@ -295,7 +334,10 @@ impl SystemThreatDetector {
         // Rule-based checks for common threat patterns (fast path without QA)
         // These match patterns that the QA rules above encode
         if self.is_suspicious_network(subject, verb, object) {
-            let desc = format!("{} {} {} — unknown process with network activity", subject, verb, object);
+            let desc = format!(
+                "{} {} {} — unknown process with network activity",
+                subject, verb, object
+            );
             return Some(ThreatEvent {
                 domain: "system".to_string(),
                 severity: 0.6,
@@ -329,11 +371,13 @@ impl SystemThreatDetector {
 
     /// Fast check: is a process accessing a sensitive system file?
     fn is_sensitive_file_access(&self, _subject: &str, verb: &str, object: &str) -> bool {
-        verb == "has_open" || verb == "reading" || verb == "writing_to"
-            && (object.contains("/etc/passwd")
-                || object.contains("/etc/shadow")
-                || object.contains(".ssh")
-                || object.contains(".gnupg"))
+        verb == "has_open"
+            || verb == "reading"
+            || verb == "writing_to"
+                && (object.contains("/etc/passwd")
+                    || object.contains("/etc/shadow")
+                    || object.contains(".ssh")
+                    || object.contains(".gnupg"))
     }
 
     /// Update known entities from a set of triples.
@@ -398,7 +442,11 @@ impl ThreatDetector<SystemState> for SystemThreatDetector {
             }
 
             // New listening port
-            if verb == "listening_on" && !self.known_listeners.contains(&format!("{}_{}", subject, object)) {
+            if verb == "listening_on"
+                && !self
+                    .known_listeners
+                    .contains(&format!("{}_{}", subject, object))
+            {
                 events.push(ThreatEvent {
                     domain: "system".to_string(),
                     severity: 0.5,
@@ -552,11 +600,7 @@ impl DefenseSystem {
         }
 
         // Gate 3: Dynamic danger threshold (clamped to 0.60 during inhibition)
-        let danger_threshold = if inhibited {
-            0.60
-        } else {
-            0.8 - 0.4 * anxiety
-        };
+        let danger_threshold = if inhibited { 0.60 } else { 0.8 - 0.4 * anxiety };
         if threat >= danger_threshold && action_name == "execute_bash" {
             return Err(format!(
                 "Energy gate: threat={:.2} exceeds threshold={:.2}. Blocking shell execution.",
@@ -593,13 +637,23 @@ mod tests {
     #[test]
     fn test_system_threat_detector_detects_new_connection() {
         let detector = SystemThreatDetector::new();
-        let before: SystemState = vec![
-            ("process_1".to_string(), "is_running".to_string(), "bash".to_string()),
-        ];
+        let before: SystemState = vec![(
+            "process_1".to_string(),
+            "is_running".to_string(),
+            "bash".to_string(),
+        )];
 
         let after: SystemState = vec![
-            ("process_1".to_string(), "is_running".to_string(), "bash".to_string()),
-            ("process_1".to_string(), "connected_to".to_string(), "10.0.0.1:443".to_string()),
+            (
+                "process_1".to_string(),
+                "is_running".to_string(),
+                "bash".to_string(),
+            ),
+            (
+                "process_1".to_string(),
+                "connected_to".to_string(),
+                "10.0.0.1:443".to_string(),
+            ),
         ];
 
         // Without baseline, empty results
@@ -620,14 +674,24 @@ mod tests {
     fn test_system_threat_detector_sensitive_file() {
         let mut detector = SystemThreatDetector::new();
         // Establish baseline with just the process
-        let baseline: SystemState = vec![
-            ("process_5".to_string(), "is_running".to_string(), "curl".to_string()),
-        ];
+        let baseline: SystemState = vec![(
+            "process_5".to_string(),
+            "is_running".to_string(),
+            "curl".to_string(),
+        )];
         detector.update_baseline(&baseline);
 
         let after: SystemState = vec![
-            ("process_5".to_string(), "is_running".to_string(), "curl".to_string()),
-            ("process_5".to_string(), "has_open".to_string(), "/etc/passwd".to_string()),
+            (
+                "process_5".to_string(),
+                "is_running".to_string(),
+                "curl".to_string(),
+            ),
+            (
+                "process_5".to_string(),
+                "has_open".to_string(),
+                "/etc/passwd".to_string(),
+            ),
         ];
 
         let events = detector.detect(&baseline, &after);
@@ -639,9 +703,7 @@ mod tests {
     #[test]
     fn test_diff_triples() {
         use crate::perception::SvoTriple;
-        let before: Vec<SvoTriple> = vec![
-            ("a".to_string(), "runs".to_string(), "b".to_string()),
-        ];
+        let before: Vec<SvoTriple> = vec![("a".to_string(), "runs".to_string(), "b".to_string())];
         let after: Vec<SvoTriple> = vec![
             ("a".to_string(), "runs".to_string(), "b".to_string()),
             ("c".to_string(), "connects".to_string(), "d".to_string()),
@@ -656,7 +718,11 @@ mod tests {
         let mut qa = crate::qa::QaEngine::new();
         seed_threat_rules(&mut qa);
         // QA should have at least the rules we seeded
-        assert!(qa.rule_count() >= 7, "Should have at least 7 threat rules, got {}", qa.rule_count());
+        assert!(
+            qa.rule_count() >= 7,
+            "Should have at least 7 threat rules, got {}",
+            qa.rule_count()
+        );
     }
 
     #[tokio::test]
@@ -745,7 +811,10 @@ mod tests {
         // Threat should now be 0.55 (dampened: 0.55 * 0.5 * 0.5 = 0.1375)
         // That's well below 0.60, so no rotation yet
         let rotated = defense.evaluate_threat_response().await;
-        assert!(!rotated, "Should not rotate at 0.1375 threat during inhibition");
+        assert!(
+            !rotated,
+            "Should not rotate at 0.1375 threat during inhibition"
+        );
 
         // Manually set threat to 0.65
         {
@@ -753,7 +822,10 @@ mod tests {
             *t = 0.65;
         }
         let rotated2 = defense.evaluate_threat_response().await;
-        assert!(rotated2, "Should rotate at 0.65 threat during inhibition (threshold=0.60)");
+        assert!(
+            rotated2,
+            "Should rotate at 0.65 threat during inhibition (threshold=0.60)"
+        );
     }
 
     #[test]
@@ -797,17 +869,26 @@ mod tests {
 
         let events = detector.detect(&(before_pieces, before_board), &(after_pieces, after_board));
 
-        assert!(!events.is_empty(), "Should detect at least one threat: {:?}", events);
+        assert!(
+            !events.is_empty(),
+            "Should detect at least one threat: {:?}",
+            events
+        );
         let queen_threat = events.iter().find(|e| e.entity == "wQ_d1");
         assert!(
             queen_threat.is_some(),
-            "Should detect queen on d1 as threatened: events={:?}", events
+            "Should detect queen on d1 as threatened: events={:?}",
+            events
         );
         if let Some(qt) = queen_threat {
             assert_eq!(qt.class, ThreatClass::Threat);
             assert!(qt.severity > 0.5, "Queen threat should be high severity");
             assert_eq!(qt.domain, "chess");
-            assert!(qt.description.contains("newly under attack"), "description: {}", qt.description);
+            assert!(
+                qt.description.contains("newly under attack"),
+                "description: {}",
+                qt.description
+            );
         }
     }
 

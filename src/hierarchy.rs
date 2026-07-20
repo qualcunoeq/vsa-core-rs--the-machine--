@@ -169,7 +169,8 @@ impl ManifoldLevel {
         }
 
         // Compute distances to ALL centroids
-        let mut dists: Vec<(usize, f64)> = self.centroids
+        let mut dists: Vec<(usize, f64)> = self
+            .centroids
             .iter()
             .enumerate()
             .map(|(i, c)| (i, x.normalized_hamming_distance(c)))
@@ -203,7 +204,9 @@ impl ManifoldLevel {
         }
 
         // Normalize weights — all centroids participate
-        for (_, w) in weights.iter_mut() { *w /= w_sum; }
+        for (_, w) in weights.iter_mut() {
+            *w /= w_sum;
+        }
 
         // Weighted majority per bit over ALL centroids
         let mut result_bits = [0u64; crate::U64_BLOCKS];
@@ -308,7 +311,8 @@ impl HierarchicalManifold {
             } else {
                 // Higher levels: we need to form the abstract vector first
                 // by bundling rotation-bound lower-level results
-                let abstract_vec = Self::bind_centroids_into_abstract(&results, level.rotation_offset);
+                let abstract_vec =
+                    Self::bind_centroids_into_abstract(&results, level.rotation_offset);
                 if tau > 1e-12 {
                     level.soft_project_through(&abstract_vec, tau)
                 } else {
@@ -322,9 +326,11 @@ impl HierarchicalManifold {
     }
 
     /// Project upward but also return activation strengths for diagnostics.
-    pub fn project_up_with_activations(&self, x: &Hypervector, tau: f64)
-        -> Vec<(Hypervector, f64, usize)>
-    {
+    pub fn project_up_with_activations(
+        &self,
+        x: &Hypervector,
+        tau: f64,
+    ) -> Vec<(Hypervector, f64, usize)> {
         let mut results = Vec::with_capacity(self.levels.len());
 
         for (i, level) in self.levels.iter().enumerate() {
@@ -335,16 +341,15 @@ impl HierarchicalManifold {
                     level.project_through(x)
                 }
             } else {
-                let projected_refs: Vec<Hypervector> = results.iter()
+                let projected_refs: Vec<Hypervector> = results
+                    .iter()
                     .map(|r| {
                         let (hv, _, _) = r;
                         *hv
                     })
                     .collect();
-                let abstract_vec = Self::bind_centroids_into_abstract(
-                    &projected_refs,
-                    level.rotation_offset,
-                );
+                let abstract_vec =
+                    Self::bind_centroids_into_abstract(&projected_refs, level.rotation_offset);
                 if tau > 1e-12 {
                     (level.soft_project_through(&abstract_vec, tau), 0.0, 0)
                 } else {
@@ -366,7 +371,10 @@ impl HierarchicalManifold {
     ///   concept = bundle(ρ^{rot}(c_1), ρ^{rot}(c_2), ..., ρ^{rot}(c_n))
     ///
     /// where each c_i is a centroid from the previous level.
-    pub fn bind_centroids_into_abstract(lower_results: &[Hypervector], rotation: usize) -> Hypervector {
+    pub fn bind_centroids_into_abstract(
+        lower_results: &[Hypervector],
+        rotation: usize,
+    ) -> Hypervector {
         if lower_results.is_empty() {
             return Hypervector::new_zero();
         }
@@ -401,7 +409,7 @@ impl HierarchicalManifold {
         // Level 2 → components from levels[0], store at levels[1]
         // Level 3 → components from levels[1], store at levels[2]
         let level_idx = level.checked_sub(1)?;
-        let prev_level_idx = level.checked_sub(2)?;  // source of components
+        let prev_level_idx = level.checked_sub(2)?; // source of components
 
         if level_idx >= self.levels.len() {
             return None;
@@ -448,9 +456,7 @@ impl HierarchicalManifold {
     /// closer to it than expected by chance.
     ///
     /// `level` is 1-based (2 = first abstract level).
-    pub fn decompose_to_base(&self, abstract_vec: &Hypervector, level: usize)
-        -> Vec<(usize, f64)>
-    {
+    pub fn decompose_to_base(&self, abstract_vec: &Hypervector, level: usize) -> Vec<(usize, f64)> {
         // `level` is 1-based; convert to 0-based index
         let level_idx = level.checked_sub(1).unwrap_or(0);
         if level_idx == 0 || level_idx >= self.levels.len() {
@@ -469,7 +475,8 @@ impl HierarchicalManifold {
         let unrotated = abstract_vec.rotate_left(inv_rot);
 
         // For each base centroid, compute similarity to the unrotated abstract
-        let mut scores: Vec<(usize, f64)> = base_level.centroids
+        let mut scores: Vec<(usize, f64)> = base_level
+            .centroids
             .iter()
             .enumerate()
             .map(|(i, c)| {
@@ -483,7 +490,8 @@ impl HierarchicalManifold {
         scores.sort_by(|a, b| compare_similarity_candidate(b.0, b.1, a.0, a.1));
 
         // Return only those above chance level (0.5 is random for binary HVs)
-        scores.into_iter()
+        scores
+            .into_iter()
             .filter(|(_, sim)| *sim > 0.55)
             .take(10) // top 10 at most
             .collect()
@@ -588,12 +596,17 @@ impl HierarchicalManifold {
         let proj_a = self.project_up_with_activations(a, tau);
         let proj_b = self.project_up_with_activations(b, tau);
 
-        proj_a.iter().zip(proj_b.iter()).enumerate().map(|(level, (pa, pb))| {
-            let (va, _, _) = pa;
-            let (vb, _, _) = pb;
-            let nhd = va.normalized_hamming_distance(vb);
-            (level + 1, nhd)
-        }).collect()
+        proj_a
+            .iter()
+            .zip(proj_b.iter())
+            .enumerate()
+            .map(|(level, (pa, pb))| {
+                let (va, _, _) = pa;
+                let (vb, _, _) = pb;
+                let nhd = va.normalized_hamming_distance(vb);
+                (level + 1, nhd)
+            })
+            .collect()
     }
 }
 
@@ -653,8 +666,8 @@ mod tests {
     /// random vectors through the hierarchy vs flat.
     #[test]
     fn test_hierarchy_capacity() {
-        let k = 16;  // centroids per level
-        let l = 3;   // three levels
+        let k = 16; // centroids per level
+        let l = 3; // three levels
         let n_samples = 500;
 
         // Build hierarchy
@@ -693,13 +706,21 @@ mod tests {
 
         // Count distinct outputs at each level
         let flat_unique = count_distinct(&flat_outputs, 0.05);
-        eprintln!("  Flat (L1): {} distinct outputs out of {} samples", flat_unique, n_samples);
+        eprintln!(
+            "  Flat (L1): {} distinct outputs out of {} samples",
+            flat_unique, n_samples
+        );
 
         let mut hier_unique_across = 0usize;
         for level in 0..l {
             let level_vecs: Vec<Hypervector> = hier_outputs.iter().map(|r| r[level]).collect();
             let n_unique = count_distinct(&level_vecs, 0.05);
-            eprintln!("  Hierarchy L{}: {} distinct outputs out of {} samples", level+1, n_unique, n_samples);
+            eprintln!(
+                "  Hierarchy L{}: {} distinct outputs out of {} samples",
+                level + 1,
+                n_unique,
+                n_samples
+            );
             hier_unique_across += n_unique;
         }
 
@@ -707,7 +728,8 @@ mod tests {
         assert!(
             hier_unique_across > flat_unique,
             "Hierarchy should produce more distinct outputs than flat alone: {} vs {}",
-            hier_unique_across, flat_unique
+            hier_unique_across,
+            flat_unique
         );
 
         // Log capacity estimates
@@ -715,7 +737,10 @@ mod tests {
         let hier_capacity = (hier_unique_across as f64).log2();
         eprintln!("  Flat capacity: ~{:.2} bits", flat_capacity);
         eprintln!("  Hierarchy capacity: ~{:.2} bits", hier_capacity);
-        eprintln!("  Multiplier: {:.2}x", hier_capacity / flat_capacity.max(1.0));
+        eprintln!(
+            "  Multiplier: {:.2}x",
+            hier_capacity / flat_capacity.max(1.0)
+        );
     }
 
     /// Test H2: Hierarchy preserves (improves) contraction.
@@ -724,7 +749,9 @@ mod tests {
     fn count_distinct(vectors: &[Hypervector], threshold: f64) -> usize {
         let mut distinct: Vec<&Hypervector> = Vec::new();
         for v in vectors {
-            let is_dup = distinct.iter().any(|d| d.normalized_hamming_distance(v) <= threshold);
+            let is_dup = distinct
+                .iter()
+                .any(|d| d.normalized_hamming_distance(v) <= threshold);
             if !is_dup {
                 distinct.push(v);
             }
@@ -738,7 +765,7 @@ mod tests {
         use rand::{Rng, SeedableRng};
 
         let k = 32;
-        let n_pairs = 400;  // increased from 100 to reduce sampling variance
+        let n_pairs = 400; // increased from 100 to reduce sampling variance
 
         // Use a deterministic RNG so the test is not flaky
         let mut rng = StdRng::seed_from_u64(42);
@@ -784,15 +811,28 @@ mod tests {
         // Theorem H2: each level has κ_P < 1.
         // The base level κ ≈ 1 − 1/K ≈ 0.969 (hard projection, random centroids),
         // with sampling noise < 0.01 at n_pairs=400, so < 0.99 is reliable.
-        assert!(kappa_base < 0.99, "Base level contraction must be < 1: {}", kappa_base);
-        assert!(kappa_l2 < 0.99, "Level 2 contraction must be < 1: {}", kappa_l2);
-        assert!(kappa_l3 < 0.99, "Level 3 contraction must be < 1: {}", kappa_l3);
+        assert!(
+            kappa_base < 0.99,
+            "Base level contraction must be < 1: {}",
+            kappa_base
+        );
+        assert!(
+            kappa_l2 < 0.99,
+            "Level 2 contraction must be < 1: {}",
+            kappa_l2
+        );
+        assert!(
+            kappa_l3 < 0.99,
+            "Level 3 contraction must be < 1: {}",
+            kappa_l3
+        );
 
         // Theorem H2: joint contraction < base level contraction
         assert!(
             joint_kappa < kappa_base,
             "Joint contraction {} must be < base level {}",
-            joint_kappa, kappa_base
+            joint_kappa,
+            kappa_base
         );
 
         // Joint contraction should be well below the tripwire (0.995)
@@ -818,14 +858,20 @@ mod tests {
         // Form an abstract concept from 3 specific base centroids
         let target_indices = [3, 7, 12];
         let concept_idx = hierarchy.register_abstract_concept(2, &target_indices);
-        assert!(concept_idx.is_some(), "Should be able to register abstract concept");
+        assert!(
+            concept_idx.is_some(),
+            "Should be able to register abstract concept"
+        );
 
         let concept = hierarchy.levels[1].centroids[concept_idx.unwrap()];
 
         // Decompose back to base
         let components = hierarchy.decompose_to_base(&concept, 2);
 
-        eprintln!("  Abstract concept formed from indices: {:?}", target_indices);
+        eprintln!(
+            "  Abstract concept formed from indices: {:?}",
+            target_indices
+        );
         eprintln!("  Decomposed components:");
         for (idx, sim) in &components {
             eprintln!("    Base[{}] with sim={:.4}", idx, sim);
@@ -864,18 +910,20 @@ mod tests {
         let mut hierarchy = HierarchicalManifold::new(&[k, 8, 4]);
 
         // Seed with structured base centroids (not all random — create clusters)
-        let base_centroids: Vec<Hypervector> = (0..k).map(|i| {
-            // Create distinguishable centroids by encoding different text
-            Hypervector::encode_text_ngram(&format!("CONCEPT_{}", i), 3)
-        }).collect();
+        let base_centroids: Vec<Hypervector> = (0..k)
+            .map(|i| {
+                // Create distinguishable centroids by encoding different text
+                Hypervector::encode_text_ngram(&format!("CONCEPT_{}", i), 3)
+            })
+            .collect();
 
         hierarchy.seed_from_base_centroids(&base_centroids);
 
         // Register level-2 abstract concepts (groups of base concepts)
         let l2_groups = vec![
-            vec![0, 1, 2],  // group A
-            vec![3, 4, 5],  // group B
-            vec![6, 7, 8],  // group C
+            vec![0, 1, 2],   // group A
+            vec![3, 4, 5],   // group B
+            vec![6, 7, 8],   // group C
             vec![9, 10, 11], // group D
         ];
 
@@ -896,14 +944,22 @@ mod tests {
         // Level 1: should snap to the nearest base centroid
         let (l1_proj, l1_sim, l1_idx) = hierarchy.levels[0].project_through(&observation);
         eprintln!("  L1 projection: idx={}, sim={:.4}", l1_idx, l1_sim);
-        assert!(l1_sim > 0.5, "L1 projection should have meaningful similarity: {}", l1_sim);
+        assert!(
+            l1_sim > 0.5,
+            "L1 projection should have meaningful similarity: {}",
+            l1_sim
+        );
 
         // Level 2: should snap to the abstract concept covering this group
         if results.len() > 1 {
             let (l2_proj, l2_sim, l2_idx) = hierarchy.levels[1].project_through(&results[0]);
             eprintln!("  L2 projection: idx={}, sim={:.4}", l2_idx, l2_sim);
             if hierarchy.levels[1].centroids.len() > 1 {
-                assert!(l2_sim > 0.50, "L2 projection should be meaningful: {}", l2_sim);
+                assert!(
+                    l2_sim > 0.50,
+                    "L2 projection should be meaningful: {}",
+                    l2_sim
+                );
             }
         }
 
@@ -912,12 +968,20 @@ mod tests {
             let (l3_proj, l3_sim, l3_idx) = hierarchy.levels[2].project_through(&results[1]);
             eprintln!("  L3 projection: idx={}, sim={:.4}", l3_idx, l3_sim);
             if hierarchy.levels[2].centroids.len() > 1 {
-                assert!(l3_sim > 0.50, "L3 projection should be meaningful: {}", l3_sim);
+                assert!(
+                    l3_sim > 0.50,
+                    "L3 projection should be meaningful: {}",
+                    l3_sim
+                );
             }
         }
 
         eprintln!("  Projection levels: {}", results.len());
-        assert_eq!(results.len(), 3, "Should have 3 levels of projection results");
+        assert_eq!(
+            results.len(),
+            3,
+            "Should have 3 levels of projection results"
+        );
     }
 
     /// Verify that the hierarchy binding is deterministic
@@ -939,7 +1003,11 @@ mod tests {
             let dist = va.normalized_hamming_distance(&vb);
             eprintln!("  Same inputs produce distance: {:.6}", dist);
             // Same inputs should produce the same abstract concept
-            assert!(dist < 0.01, "Deterministic binding failed: distance {}", dist);
+            assert!(
+                dist < 0.01,
+                "Deterministic binding failed: distance {}",
+                dist
+            );
         }
     }
 
@@ -978,7 +1046,11 @@ mod tests {
         if hierarchy.levels.len() > 1 && !hierarchy.levels[1].centroids.is_empty() {
             let (soft_l2, soft_sim, _) = hierarchy.levels[1].project_through(&soft[1]);
             eprintln!("  Soft L2 sim to nearest centroid: {:.4}", soft_sim);
-            assert!(soft_sim > 0.50, "Soft projection should snap near a centroid: sim={}", soft_sim);
+            assert!(
+                soft_sim > 0.50,
+                "Soft projection should snap near a centroid: sim={}",
+                soft_sim
+            );
         }
     }
 
@@ -997,14 +1069,19 @@ mod tests {
         // ── Step 1: Create vocabulary centroids ──
         let vehicle_terms = ["car", "truck", "accelerates", "on_road", "speed"];
         let finance_terms = ["central_bank", "foreign_bank", "tightens", "policy"];
-        let all_terms: Vec<&str> = vehicle_terms.iter().chain(finance_terms.iter()).copied().collect();
-        let centroids: Vec<Hypervector> = all_terms.iter()
+        let all_terms: Vec<&str> = vehicle_terms
+            .iter()
+            .chain(finance_terms.iter())
+            .copied()
+            .collect();
+        let centroids: Vec<Hypervector> = all_terms
+            .iter()
             .map(|t| Hypervector::encode_text_ngram(t, 3))
             .collect();
 
         // Build term→index mapping
-        let idx_of: std::collections::HashMap<&str, usize> = all_terms.iter().enumerate()
-            .map(|(i, t)| (*t, i)).collect();
+        let idx_of: std::collections::HashMap<&str, usize> =
+            all_terms.iter().enumerate().map(|(i, t)| (*t, i)).collect();
         let i = |name: &str| -> usize { *idx_of.get(name).unwrap() };
 
         // ── Step 2: Seed L1 and register L2 communities ──
@@ -1013,16 +1090,21 @@ mod tests {
 
         // Vehicle community: car, truck, accelerates, on_road, speed
         let vehicle_indices: Vec<usize> = vehicle_terms.iter().map(|t| i(t)).collect();
-        let _l2_vehicle = hierarchy.register_abstract_concept(2, &vehicle_indices)
+        let _l2_vehicle = hierarchy
+            .register_abstract_concept(2, &vehicle_indices)
             .expect("Vehicle L2 concept should register");
 
         // Finance community: central_bank, foreign_bank, tightens, policy
         let finance_indices: Vec<usize> = finance_terms.iter().map(|t| i(t)).collect();
-        let _l2_finance = hierarchy.register_abstract_concept(2, &finance_indices)
+        let _l2_finance = hierarchy
+            .register_abstract_concept(2, &finance_indices)
             .expect("Finance L2 concept should register");
 
-        assert_eq!(hierarchy.levels[1].centroids.len(), 2,
-            "Should have 2 L2 centroids");
+        assert_eq!(
+            hierarchy.levels[1].centroids.len(),
+            2,
+            "Should have 2 L2 centroids"
+        );
 
         // ── Step 3: Define similar and dissimilar pairs ──
         let similar_pairs = [
@@ -1044,7 +1126,10 @@ mod tests {
             let mut all_similar_dist = Vec::new();
             let mut all_dissimilar_dist = Vec::new();
 
-            for (label, pairs) in [("SIMILAR", &similar_pairs[..]), ("DISSIMILAR", &dissimilar_pairs[..])] {
+            for (label, pairs) in [
+                ("SIMILAR", &similar_pairs[..]),
+                ("DISSIMILAR", &dissimilar_pairs[..]),
+            ] {
                 eprintln!("  {}:", label);
                 for &(a_name, b_name) in pairs {
                     let a = &centroids[i(a_name)];
@@ -1052,8 +1137,10 @@ mod tests {
                     let dists = hierarchy.hierarchical_distance(a, b, tau);
                     let l1 = dists[0].1;
                     let l2 = if dists.len() > 1 { dists[1].1 } else { 0.0 };
-                    eprintln!("    {:20} x {:<20}  L1={:.4}  L2={:.4}",
-                        a_name, b_name, l1, l2);
+                    eprintln!(
+                        "    {:20} x {:<20}  L1={:.4}  L2={:.4}",
+                        a_name, b_name, l1, l2
+                    );
                     if label == "SIMILAR" {
                         all_similar_dist.push(l2);
                     } else {
@@ -1064,7 +1151,8 @@ mod tests {
 
             // ── Step 5: Analysis ──
             let sim_avg: f64 = all_similar_dist.iter().sum::<f64>() / all_similar_dist.len() as f64;
-            let dis_avg: f64 = all_dissimilar_dist.iter().sum::<f64>() / all_dissimilar_dist.len() as f64;
+            let dis_avg: f64 =
+                all_dissimilar_dist.iter().sum::<f64>() / all_dissimilar_dist.len() as f64;
             let sim_max = all_similar_dist.iter().cloned().fold(0.0_f64, f64::max);
             let dis_min = all_dissimilar_dist.iter().cloned().fold(1.0_f64, f64::min);
             let separation = dis_min - sim_max;
@@ -1074,7 +1162,10 @@ mod tests {
             eprintln!("  Dissimilar avg L2: {:.4}", dis_avg);
             eprintln!("  Similar max L2:    {:.4}", sim_max);
             eprintln!("  Dissimilar min L2: {:.4}", dis_min);
-            eprintln!("  Separation Δ:      {:.4} (positive = complete separation)", separation);
+            eprintln!(
+                "  Separation Δ:      {:.4} (positive = complete separation)",
+                separation
+            );
 
             if separation > 0.0 {
                 eprintln!("  RESULT: COMPLETE SEPARATION ✓");
@@ -1095,20 +1186,27 @@ mod tests {
         let dist_cross = hierarchy.hierarchical_distance(c, d, 0.10);
         // The L2 distance for similar pairs should be lower than for dissimilar
         // at least in the average
-        let sim_l2_avg = similar_pairs.iter()
-            .map(|(a,b)| {
+        let sim_l2_avg = similar_pairs
+            .iter()
+            .map(|(a, b)| {
                 let d = hierarchy.hierarchical_distance(&centroids[i(a)], &centroids[i(b)], 0.10);
                 d.get(1).map(|(_, v)| *v).unwrap_or(1.0)
             })
-            .sum::<f64>() / similar_pairs.len() as f64;
-        let dis_l2_avg = dissimilar_pairs.iter()
-            .map(|(a,b)| {
+            .sum::<f64>()
+            / similar_pairs.len() as f64;
+        let dis_l2_avg = dissimilar_pairs
+            .iter()
+            .map(|(a, b)| {
                 let d = hierarchy.hierarchical_distance(&centroids[i(a)], &centroids[i(b)], 0.10);
                 d.get(1).map(|(_, v)| *v).unwrap_or(1.0)
             })
-            .sum::<f64>() / dissimilar_pairs.len() as f64;
-        assert!(sim_l2_avg < dis_l2_avg,
+            .sum::<f64>()
+            / dissimilar_pairs.len() as f64;
+        assert!(
+            sim_l2_avg < dis_l2_avg,
             "Similar pairs should have lower avg L2 distance (sim={:.4}, dis={:.4})",
-            sim_l2_avg, dis_l2_avg);
+            sim_l2_avg,
+            dis_l2_avg
+        );
     }
 }

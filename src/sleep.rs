@@ -59,10 +59,10 @@
 // 6. test_bounded_duration             — Sleep completes in bounded steps
 // 7. test_trajectory_clear_on_complete — Buffer cleared after sleep
 
-use crate::cognition::{ConceptEvent, ConceptEventType, ConceptJournal};
-use crate::Hypervector;
-use crate::hierarchy::HierarchicalManifold;
 use crate::abstractor::Abstractor;
+use crate::cognition::{ConceptEvent, ConceptEventType, ConceptJournal};
+use crate::hierarchy::HierarchicalManifold;
+use crate::Hypervector;
 use std::collections::HashMap;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -173,7 +173,10 @@ impl L2ActivationHistory {
     pub fn build_cooccurrence_matrix(&self, num_l2: usize) -> Vec<Vec<u32>> {
         let mut matrix = vec![vec![0u32; num_l2]; num_l2];
 
-        for window in self.history.windows(L3_CO_OCCURRENCE_WINDOW.min(self.history.len().max(1))) {
+        for window in self
+            .history
+            .windows(L3_CO_OCCURRENCE_WINDOW.min(self.history.len().max(1)))
+        {
             // Collect all unique L2 indices active in this window
             let mut active_in_window: Vec<usize> = Vec::new();
             for (_, indices) in window {
@@ -322,7 +325,9 @@ impl SleepCycle {
         }
 
         // Trigger 4: Workspace idle for extended time
-        if workspace_idle && self.tick.saturating_sub(self.last_sleep_tick) > self.sleep_interval / 2 {
+        if workspace_idle
+            && self.tick.saturating_sub(self.last_sleep_tick) > self.sleep_interval / 2
+        {
             return (true, "workspace idle".to_string());
         }
 
@@ -400,7 +405,10 @@ impl SleepCycle {
 
     /// Replay the trajectory buffer and extract transition points.
     /// Public so the agent loop can call it during wake-cycle checks.
-    pub fn phase1_replay(&self, trajectory: &[Hypervector]) -> (Vec<TransitionPoint>, WakeNarrative) {
+    pub fn phase1_replay(
+        &self,
+        trajectory: &[Hypervector],
+    ) -> (Vec<TransitionPoint>, WakeNarrative) {
         if trajectory.is_empty() {
             return (
                 Vec::new(),
@@ -448,7 +456,8 @@ impl SleepCycle {
         } else {
             // Bundle up to MAX_NARRATIVE_ENTRIES transition vectors
             let take = transitions.len().min(MAX_NARRATIVE_ENTRIES);
-            let refs: Vec<&Hypervector> = transitions.iter().take(take).map(|t| &t.identity).collect();
+            let refs: Vec<&Hypervector> =
+                transitions.iter().take(take).map(|t| &t.identity).collect();
             if refs.is_empty() {
                 *trajectory.last().unwrap()
             } else {
@@ -488,7 +497,8 @@ impl SleepCycle {
         let co_matrix = self.l2_history.build_cooccurrence_matrix(num_l2);
 
         // Normalize: convert counts to probabilities
-        let max_count = co_matrix.iter()
+        let max_count = co_matrix
+            .iter()
             .flat_map(|row| row.iter())
             .cloned()
             .fold(0u32, u32::max);
@@ -594,9 +604,17 @@ impl SleepCycle {
         journal: &mut Option<&mut ConceptJournal>,
         cycle_count: u64,
     ) -> usize {
-        let before = hierarchy.levels.get(2).map(|l| l.centroids.len()).unwrap_or(0);
+        let before = hierarchy
+            .levels
+            .get(2)
+            .map(|l| l.centroids.len())
+            .unwrap_or(0);
         let created = self.phase3_l3_abstraction_impl(hierarchy);
-        let after = hierarchy.levels.get(2).map(|l| l.centroids.len()).unwrap_or(0);
+        let after = hierarchy
+            .levels
+            .get(2)
+            .map(|l| l.centroids.len())
+            .unwrap_or(0);
 
         // Journal newly created L3 concepts
         if created > 0 {
@@ -623,7 +641,11 @@ impl SleepCycle {
     // ═════════════════════════════════════════════════════════════════════
 
     /// Prune low-coherence L2 concepts from the hierarchy.
-    fn phase4_pruning_impl(&self, hierarchy: &mut HierarchicalManifold, abstractor: &Abstractor) -> usize {
+    fn phase4_pruning_impl(
+        &self,
+        hierarchy: &mut HierarchicalManifold,
+        abstractor: &Abstractor,
+    ) -> usize {
         if hierarchy.levels.len() < 2 {
             return 0;
         }
@@ -702,7 +724,9 @@ impl SleepCycle {
     pub fn report(&self) -> String {
         format!(
             "SleepCycle: tick={}, last_sleep={}, cycles={}, sleeping={}, phase={}, l2_history={}",
-            self.tick, self.last_sleep_tick, self.total_sleep_cycles,
+            self.tick,
+            self.last_sleep_tick,
+            self.total_sleep_cycles,
             if self.sleeping { "YES" } else { "no" },
             self.phase,
             self.l2_history.len(),
@@ -762,7 +786,10 @@ impl SleepCycle {
                         phase: 0,
                     },
                     Err(e) => {
-                        eprintln!("WARNING: Failed to deserialize sleep state: {}. Using defaults.", e);
+                        eprintln!(
+                            "WARNING: Failed to deserialize sleep state: {}. Using defaults.",
+                            e
+                        );
                         default.clone()
                     }
                 }
@@ -793,8 +820,8 @@ impl Clone for SleepCycle {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::hierarchy::HierarchicalManifold;
     use crate::abstractor::{Abstractor, CoherenceTracker};
+    use crate::hierarchy::HierarchicalManifold;
     use crate::Hypervector;
 
     /// Test that sleep triggers when energy drops below threshold.
@@ -806,11 +833,11 @@ mod tests {
         sc_trigger.tick = 1000;
 
         let (should, reason) = sc_trigger.should_sleep(
-            0.15,   // energy < FATIGUE_TRIGGER (0.20)
-            0.30,   // integration normal
-            0.05,   // min_error
-            0.10,   // current_error
-            false,  // workspace not idle
+            0.15,  // energy < FATIGUE_TRIGGER (0.20)
+            0.30,  // integration normal
+            0.05,  // min_error
+            0.10,  // current_error
+            false, // workspace not idle
         );
 
         eprintln!("  Fatigue trigger: should={}, reason={}", should, reason);
@@ -825,14 +852,15 @@ mod tests {
         sc.tick = 1000;
 
         let (should, reason) = sc.should_sleep(
-            0.50,   // energy fine
-            0.80,   // integration > INTEGRATION_TRIGGER (0.70)
-            0.05,
-            0.10,
-            false,
+            0.50, // energy fine
+            0.80, // integration > INTEGRATION_TRIGGER (0.70)
+            0.05, 0.10, false,
         );
 
-        eprintln!("  Integration trigger: should={}, reason={}", should, reason);
+        eprintln!(
+            "  Integration trigger: should={}, reason={}",
+            should, reason
+        );
         assert!(should, "Should trigger on high integration");
         assert_eq!(reason, "integration high");
     }
@@ -841,15 +869,13 @@ mod tests {
     #[test]
     fn test_sleep_not_triggered_early() {
         let mut sc = SleepCycle::with_defaults();
-        sc.tick = 10;   // only 10 ticks since last_sleep (which is 0)
+        sc.tick = 10; // only 10 ticks since last_sleep (which is 0)
         sc.last_sleep_tick = 5; // only 5 ticks ago
 
         let (should, _reason) = sc.should_sleep(
-            0.15,   // energy low
-            0.80,   // integration high
-            0.05,
-            0.10,
-            false,
+            0.15, // energy low
+            0.80, // integration high
+            0.05, 0.10, false,
         );
 
         eprintln!("  Early check: should={}", should);
@@ -866,7 +892,9 @@ mod tests {
 
         // Segment 1: stable (5 identical vectors)
         let stable_a = Hypervector::encode_text_ngram("STABLE_PHASE_A", 3);
-        for _ in 0..5 { trajectory.push(stable_a); }
+        for _ in 0..5 {
+            trajectory.push(stable_a);
+        }
 
         // Transition: different vector
         let transition = Hypervector::encode_text_ngram("TRANSITION_EVENT", 3);
@@ -874,14 +902,18 @@ mod tests {
 
         // Segment 2: stable B
         let stable_b = Hypervector::encode_text_ngram("STABLE_PHASE_B", 3);
-        for _ in 0..5 { trajectory.push(stable_b); }
+        for _ in 0..5 {
+            trajectory.push(stable_b);
+        }
 
         let (transitions, narrative) = sc.phase1_replay(&trajectory);
 
         eprintln!("  Trajectory length: {}", trajectory.len());
         eprintln!("  Transitions found: {}", transitions.len());
-        eprintln!("  Narrative vector popcount: {:.2}%",
-            narrative.narrative_vector.count_ones() as f64 / 10240.0 * 100.0);
+        eprintln!(
+            "  Narrative vector popcount: {:.2}%",
+            narrative.narrative_vector.count_ones() as f64 / 10240.0 * 100.0
+        );
         eprintln!("  Avg delta: {:.6}", narrative.avg_delta);
         eprintln!("  Max delta: {:.6}", narrative.max_delta);
 
@@ -906,9 +938,9 @@ mod tests {
         let mut hierarchy = HierarchicalManifold::new(&[10, 10, 10]);
 
         // Seed L1 centroids
-        let base: Vec<Hypervector> = (0..10).map(|i|
-            Hypervector::encode_text_ngram(&format!("L1_CONCEPT_{}", i), 3)
-        ).collect();
+        let base: Vec<Hypervector> = (0..10)
+            .map(|i| Hypervector::encode_text_ngram(&format!("L1_CONCEPT_{}", i), 3))
+            .collect();
         hierarchy.seed_from_base_centroids(&base);
 
         // Register L2 concepts (groups of L1 centroids)
@@ -920,9 +952,9 @@ mod tests {
         // Record L2 activation history: L2_0,1,2 co-occur frequently
         for tick in 0..100 {
             let active = if tick % 3 == 0 {
-                vec![0, 1, 2]  // group A
+                vec![0, 1, 2] // group A
             } else {
-                vec![4, 5, 6]  // group B
+                vec![4, 5, 6] // group B
             };
             sc.l2_history.record(tick, active);
         }
@@ -945,9 +977,9 @@ mod tests {
         let sc = SleepCycle::with_defaults();
         let mut hierarchy = HierarchicalManifold::new(&[10, 10]);
 
-        let base: Vec<Hypervector> = (0..5).map(|i|
-            Hypervector::encode_text_ngram(&format!("L1_{}", i), 3)
-        ).collect();
+        let base: Vec<Hypervector> = (0..5)
+            .map(|i| Hypervector::encode_text_ngram(&format!("L1_{}", i), 3))
+            .collect();
         hierarchy.seed_from_base_centroids(&base);
 
         // Register some L2 concepts
@@ -964,10 +996,7 @@ mod tests {
         let pruned = sc.phase4_pruning_impl(&mut hierarchy, &abstractor);
 
         eprintln!("  L2 concepts pruned: {}", pruned);
-        assert!(
-            pruned >= 1,
-            "Should prune at least 1 low-coherence L2"
-        );
+        assert!(pruned >= 1, "Should prune at least 1 low-coherence L2");
     }
 
     /// Test the full sleep lifecycle: all 4 phases run without error.
@@ -977,9 +1006,9 @@ mod tests {
         let mut hierarchy = HierarchicalManifold::new(&[10, 10, 10]);
 
         // Seed hierarchy
-        let base: Vec<Hypervector> = (0..10).map(|i|
-            Hypervector::encode_text_ngram(&format!("L1_{}", i), 3)
-        ).collect();
+        let base: Vec<Hypervector> = (0..10)
+            .map(|i| Hypervector::encode_text_ngram(&format!("L1_{}", i), 3))
+            .collect();
         hierarchy.seed_from_base_centroids(&base);
 
         // Register L2 concepts
@@ -1008,7 +1037,13 @@ mod tests {
 
         let error_history = vec![0.10; 50];
 
-        let report = sc.cycle(&trajectory, &mut hierarchy, &abstractor, &error_history, None);
+        let report = sc.cycle(
+            &trajectory,
+            &mut hierarchy,
+            &abstractor,
+            &error_history,
+            None,
+        );
 
         eprintln!("");
         eprintln!("  ═══════════════════════════════════════════");
@@ -1022,10 +1057,16 @@ mod tests {
         eprintln!("  Total sleep cycles: {}", report.total_sleep_cycles);
 
         assert!(report.slept, "Sleep cycle should complete");
-        assert!(report.total_sleep_cycles > 0, "Sleep cycles should increment");
+        assert!(
+            report.total_sleep_cycles > 0,
+            "Sleep cycles should increment"
+        );
 
         // Should have created L3 concepts if L2 history had structure
-        eprintln!("  L3 centroids now: {}", hierarchy.levels[2].centroids.len());
+        eprintln!(
+            "  L3 centroids now: {}",
+            hierarchy.levels[2].centroids.len()
+        );
 
         // After cycle, sleeping should be false
         assert!(!sc.sleeping, "Sleep should end after cycle");

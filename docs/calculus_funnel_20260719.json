@@ -1,0 +1,26 @@
+{
+  "source": "data/hle.jsonl",
+  "input_slice": "broad_math_task_kind=elementary_calculus",
+  "prompts_scanned": 181,
+  "explicit_bounded_operation": 0,
+  "task_counts": {
+    "asymptotic_analysis": 3,
+    "explicit_integration": 11,
+    "explicit_limit_evaluation": 11,
+    "finite_or_infinite_series": 4,
+    "ode_pde": 49,
+    "optimization": 3,
+    "special_functions": 26,
+    "unclassified": 74
+  },
+  "support_counts": {
+    "diagram_or_table_dependent": 18,
+    "outside_calculus": 56,
+    "requires_advanced_theorem": 3,
+    "requires_convergence_argument": 1,
+    "requires_modeling": 52,
+    "requires_specialized_definition": 26,
+    "requires_symbolic_capability": 25
+  },
+  "decision": "do_not_build_calculus_executor_yet"
+}

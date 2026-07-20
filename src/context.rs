@@ -261,17 +261,17 @@ impl HierarchicalContextMemory {
         let count = self.pending_fold.len();
 
         // Collect labels
-        let labels: Vec<String> = self.pending_fold.iter().map(|(_, l, _)| l.clone()).collect();
+        let labels: Vec<String> = self
+            .pending_fold
+            .iter()
+            .map(|(_, l, _)| l.clone())
+            .collect();
 
         // Bundle via weighted majority (all weights = 1.0).
         // `bundle_weighted` does per-bit majority voting — no rotation
         // needed.  The resulting bundle is the centroid of the items,
         // so it maintains high similarity to each constituent.
-        let refs: Vec<&Hypervector> = self
-            .pending_fold
-            .iter()
-            .map(|(hv, _, _)| hv)
-            .collect();
+        let refs: Vec<&Hypervector> = self.pending_fold.iter().map(|(hv, _, _)| hv).collect();
         let weights: Vec<f64> = vec![1.0; refs.len()];
         let bundle = if refs.is_empty() {
             Hypervector::new_zero()
@@ -358,7 +358,10 @@ impl HierarchicalContextMemory {
     /// Recall the most recent entry with a label containing `substring`.
     /// This is a convenience method for labeled retrieval.
     pub fn recall_by_label(&self, substring: &str) -> Option<&RecentEntry> {
-        self.recent.iter().rev().find(|e| e.label.contains(substring))
+        self.recent
+            .iter()
+            .rev()
+            .find(|e| e.label.contains(substring))
     }
 
     /// Number of items in the recent buffer.
@@ -506,10 +509,7 @@ mod tests {
 
         // Query with base — should find it in folded (bundle preserves cluster)
         let result = mem.query(&base);
-        assert!(
-            result.is_some(),
-            "Target should be found in folded memory"
-        );
+        assert!(result.is_some(), "Target should be found in folded memory");
         if let Some(r) = result {
             assert_eq!(r.tier, ContextTier::Folded);
             assert!(

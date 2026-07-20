@@ -46,8 +46,8 @@
 // 4. test_credit_assignment — proves correct reinforcement of intents
 // 5. test_full_predictive_cycle — end-to-end integration test
 
-use crate::Hypervector;
 use crate::temporal::TemporalCognition;
+use crate::Hypervector;
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -147,8 +147,8 @@ impl IntentMemory {
         // Exponential moving average update
         let n = self.invocation_count[intent_id] as f64;
         let alpha = learning_rate.max(1.0 / n); // at least 1/n for first observation
-        self.weighted_scores[intent_id] = (1.0 - alpha) * self.weighted_scores[intent_id]
-            + alpha * quality;
+        self.weighted_scores[intent_id] =
+            (1.0 - alpha) * self.weighted_scores[intent_id] + alpha * quality;
     }
 
     /// Get the quality score for an intent (0.0–1.0).
@@ -372,9 +372,10 @@ impl PredictiveCodingLoop {
             (Some((pred_idx, _)), Some((_act_idx, _))) => {
                 if pred_idx == centroid_idx {
                     // Correct prediction: error is the uncertainty
-                    self.temporal.transitions.transition_probability(
-                        prediction.unwrap().0, centroid_idx
-                    ).max(0.01)
+                    self.temporal
+                        .transitions
+                        .transition_probability(prediction.unwrap().0, centroid_idx)
+                        .max(0.01)
                 } else {
                     // Wrong prediction: error = 1.0 - P(correct | wrong)
                     1.0
@@ -470,7 +471,8 @@ impl PredictiveCodingLoop {
     pub fn assessment(&self) -> PredictiveAssessment {
         let _accuracy = self.temporal.prediction_accuracy(100);
         let anomaly_rate = if self.total_cycles > 0 {
-            self.temporal.episodes.anomaly_count(100) as f64 / 100.0_f64.min(self.total_cycles as f64)
+            self.temporal.episodes.anomaly_count(100) as f64
+                / 100.0_f64.min(self.total_cycles as f64)
         } else {
             0.0
         };
@@ -605,7 +607,10 @@ mod tests {
         // Error should decrease (or at least not increase)
         // For a deterministic cycle, error should approach 0
         let prediction_accuracy = pc.temporal.prediction_accuracy(50);
-        eprintln!("  Prediction accuracy (last 50): {:.4}", prediction_accuracy);
+        eprintln!(
+            "  Prediction accuracy (last 50): {:.4}",
+            prediction_accuracy
+        );
 
         assert!(
             prediction_accuracy > 0.50,
@@ -628,7 +633,10 @@ mod tests {
 
         // Activate curiosity
         pc.activate_curiosity();
-        assert!(pc.is_curious(), "Curiosity should be active after activation");
+        assert!(
+            pc.is_curious(),
+            "Curiosity should be active after activation"
+        );
 
         // Run cycles with random (highly unpredictable) transitions
         // to maximize curiosity lifespan
@@ -655,12 +663,15 @@ mod tests {
         assert!(
             steps_active <= MAX_CURIOSITY_STEPS + 10, // +10 for buffer
             "Curiosity should deactivate within {} steps, was {}",
-            MAX_CURIOSITY_STEPS, steps_active
+            MAX_CURIOSITY_STEPS,
+            steps_active
         );
 
         // After deactivation, is_curious should return false
-        assert!(!pc.is_curious() || pc.total_cycles >= 100,
-            "Curiosity should be deactivated after exploration bound");
+        assert!(
+            !pc.is_curious() || pc.total_cycles >= 100,
+            "Curiosity should be deactivated after exploration bound"
+        );
     }
 
     /// Test that credit assignment correctly reinforces intents that lead
@@ -693,14 +704,21 @@ mod tests {
         let freq_0 = pc.intents.frequency(0);
         let freq_1 = pc.intents.frequency(1);
 
-        eprintln!("  Intent 0 (predictable): quality={:.4}, freq={}", quality_0, freq_0);
-        eprintln!("  Intent 1 (random): quality={:.4}, freq={}", quality_1, freq_1);
+        eprintln!(
+            "  Intent 0 (predictable): quality={:.4}, freq={}",
+            quality_0, freq_0
+        );
+        eprintln!(
+            "  Intent 1 (random): quality={:.4}, freq={}",
+            quality_1, freq_1
+        );
 
         // Intent 0 should have higher quality (leads to predictable outcomes)
         assert!(
             quality_0 > quality_1,
             "Predictable intent should have higher quality: {} vs {}",
-            quality_0, quality_1
+            quality_0,
+            quality_1
         );
 
         // Best intent should be intent 0

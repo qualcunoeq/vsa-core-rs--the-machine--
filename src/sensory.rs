@@ -78,9 +78,8 @@ impl SensoryModality for SystemTelemetryModality {
         let mut bound_vectors = Vec::new();
         for (key, config) in &self.variables {
             let val = self.readings.get(key).cloned().unwrap_or(config.min_val);
-            let encoded_val = Hypervector::encode_fpe(
-                &config.level_vectors, val, config.min_val, config.max_val,
-            );
+            let encoded_val =
+                Hypervector::encode_fpe(&config.level_vectors, val, config.min_val, config.max_val);
             bound_vectors.push(config.id.bitwise_xor(&encoded_val));
         }
         let refs: Vec<&Hypervector> = bound_vectors.iter().collect();
@@ -461,7 +460,11 @@ impl AudioModality {
             centroid_num += (i as f64) * band;
             centroid_den += band;
         }
-        features.push(if centroid_den > 0.0 { centroid_num / centroid_den / 31.0 } else { 0.0 });
+        features.push(if centroid_den > 0.0 {
+            centroid_num / centroid_den / 31.0
+        } else {
+            0.0
+        });
 
         features
     }
@@ -608,7 +611,8 @@ impl UnifiedLatentSpace {
         for (label, concept) in &self.concepts {
             let sim = 1.0 - query.normalized_hamming_distance(&concept.canonical);
             if sim >= threshold {
-                let modality = if concept.visual_vector.is_some() && concept.audio_vector.is_some() {
+                let modality = if concept.visual_vector.is_some() && concept.audio_vector.is_some()
+                {
                     "multimodal"
                 } else if concept.visual_vector.is_some() {
                     "visual"
@@ -646,15 +650,16 @@ impl UnifiedLatentSpace {
                 if sim >= threshold {
                     let label = &self.hnsw_to_concept[*i];
                     if let Some(concept) = self.concepts.get(label) {
-                        let modality = if concept.visual_vector.is_some() && concept.audio_vector.is_some() {
-                            "multimodal"
-                        } else if concept.visual_vector.is_some() {
-                            "visual"
-                        } else if concept.audio_vector.is_some() {
-                            "audio"
-                        } else {
-                            "text"
-                        };
+                        let modality =
+                            if concept.visual_vector.is_some() && concept.audio_vector.is_some() {
+                                "multimodal"
+                            } else if concept.visual_vector.is_some() {
+                                "visual"
+                            } else if concept.audio_vector.is_some() {
+                                "audio"
+                            } else {
+                                "text"
+                            };
                         output.push((label.clone(), sim, modality.to_string()));
                     }
                 }
@@ -713,7 +718,11 @@ mod tests {
 
         // Different features should produce different vectors
         let dist = hv1.normalized_hamming_distance(&hv3);
-        assert!(dist > 0.10, "Different features should produce distinguishable vectors: {}", dist);
+        assert!(
+            dist > 0.10,
+            "Different features should produce distinguishable vectors: {}",
+            dist
+        );
     }
 
     #[test]
@@ -771,7 +780,11 @@ mod tests {
         let hv2 = audio2.encode();
 
         let dist = hv.normalized_hamming_distance(&hv2);
-        assert!(dist > 0.10, "Different frequencies should be distinguishable: {}", dist);
+        assert!(
+            dist > 0.10,
+            "Different frequencies should be distinguishable: {}",
+            dist
+        );
     }
 
     #[test]

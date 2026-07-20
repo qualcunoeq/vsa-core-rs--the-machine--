@@ -8,9 +8,8 @@
 //! No Python, no spaCy, no subprocess — entirely self-contained Rust.
 
 use crate::analogy::{
-    AnalogicalIndex, EpistemicStatus, MetaIndex,
-    ObservationProvenance, RoleDictionary,
-    ROLE_AGENT, ROLE_ACTION, ROLE_PATIENT,
+    AnalogicalIndex, EpistemicStatus, MetaIndex, ObservationProvenance, RoleDictionary,
+    ROLE_ACTION, ROLE_AGENT, ROLE_PATIENT,
 };
 use crate::nlp;
 use crate::Hypervector;
@@ -28,10 +27,10 @@ pub fn encode_phrase(text: &str) -> Hypervector {
 #[derive(Debug, Default)]
 pub struct BridgeResult {
     pub triples_extracted: usize,
-    pub frames_inserted:   usize,
-    pub frames_skipped:    usize,
-    pub frames_rejected_quality: usize,  // triples that failed the quality pre-filter
-    pub parse_errors:      usize,
+    pub frames_inserted: usize,
+    pub frames_skipped: usize,
+    pub frames_rejected_quality: usize, // triples that failed the quality pre-filter
+    pub parse_errors: usize,
 }
 
 // ─── Quality pre-filter ─────────────────────────────────────────────────────
@@ -44,21 +43,98 @@ pub struct BridgeResult {
 
 /// Common English stopwords that should not appear as sentence subjects.
 fn is_stopword(w: &str) -> bool {
-    matches!(w.to_lowercase().as_str(),
-        "the" | "a" | "an" | "this" | "that" | "these" | "those"
-        | "it" | "its" | "they" | "them" | "he" | "she" | "we" | "you"
-        | "there" | "here" | "what" | "which" | "who" | "where" | "when"
-        | "all" | "each" | "every" | "some" | "any" | "no" | "both"
-        | "such" | "only" | "just" | "also" | "very" | "too" | "so"
-        | "and" | "or" | "but" | "if" | "because" | "while" | "as"
-        | "more" | "most" | "much" | "many" | "few" | "less"
-        | "after" | "before" | "between" | "through" | "during"
-        | "above" | "below" | "under" | "over" | "out" | "off"
-        | "on" | "in" | "at" | "by" | "with" | "for" | "to" | "from"
-        | "into" | "about" | "along" | "among" | "upon" | "across"
-        | "against" | "within" | "without" | "behind" | "beyond"
-        | "toward" | "towards" | "throughout" | "despite" | "until"
-        | "since" | "up" | "down" | "away" | "back" | "around"
+    matches!(
+        w.to_lowercase().as_str(),
+        "the"
+            | "a"
+            | "an"
+            | "this"
+            | "that"
+            | "these"
+            | "those"
+            | "it"
+            | "its"
+            | "they"
+            | "them"
+            | "he"
+            | "she"
+            | "we"
+            | "you"
+            | "there"
+            | "here"
+            | "what"
+            | "which"
+            | "who"
+            | "where"
+            | "when"
+            | "all"
+            | "each"
+            | "every"
+            | "some"
+            | "any"
+            | "no"
+            | "both"
+            | "such"
+            | "only"
+            | "just"
+            | "also"
+            | "very"
+            | "too"
+            | "so"
+            | "and"
+            | "or"
+            | "but"
+            | "if"
+            | "because"
+            | "while"
+            | "as"
+            | "more"
+            | "most"
+            | "much"
+            | "many"
+            | "few"
+            | "less"
+            | "after"
+            | "before"
+            | "between"
+            | "through"
+            | "during"
+            | "above"
+            | "below"
+            | "under"
+            | "over"
+            | "out"
+            | "off"
+            | "on"
+            | "in"
+            | "at"
+            | "by"
+            | "with"
+            | "for"
+            | "to"
+            | "from"
+            | "into"
+            | "about"
+            | "along"
+            | "among"
+            | "upon"
+            | "across"
+            | "against"
+            | "within"
+            | "without"
+            | "behind"
+            | "beyond"
+            | "toward"
+            | "towards"
+            | "throughout"
+            | "despite"
+            | "until"
+            | "since"
+            | "up"
+            | "down"
+            | "away"
+            | "back"
+            | "around"
     )
 }
 
@@ -66,12 +142,18 @@ fn is_stopword(w: &str) -> bool {
 /// grabbed a trailing prepositional phrase instead of the true object.
 fn starts_with_noise_prep(obj: &str) -> bool {
     let obj_trimmed = obj.trim();
-    obj_trimmed.starts_with("as ") || obj_trimmed.starts_with("to ")
-        || obj_trimmed.starts_with("on ") || obj_trimmed.starts_with("by ")
-        || obj_trimmed.starts_with("for ") || obj_trimmed.starts_with("at ")
-        || obj_trimmed.starts_with("into ") || obj_trimmed.starts_with("through ")
-        || obj_trimmed.starts_with("during ") || obj_trimmed.starts_with("without ")
-        || obj_trimmed.starts_with("in order to") || obj_trimmed.starts_with("so that")
+    obj_trimmed.starts_with("as ")
+        || obj_trimmed.starts_with("to ")
+        || obj_trimmed.starts_with("on ")
+        || obj_trimmed.starts_with("by ")
+        || obj_trimmed.starts_with("for ")
+        || obj_trimmed.starts_with("at ")
+        || obj_trimmed.starts_with("into ")
+        || obj_trimmed.starts_with("through ")
+        || obj_trimmed.starts_with("during ")
+        || obj_trimmed.starts_with("without ")
+        || obj_trimmed.starts_with("in order to")
+        || obj_trimmed.starts_with("so that")
 }
 
 /// Quality gate for extracted SVO triples.
@@ -93,7 +175,7 @@ pub fn passes_quality_gate(triple: &nlp::SvoTriple) -> bool {
     // 2. Object must have meaningful content
     let obj_trimmed = triple.object.trim().trim_matches('.');
     if obj_trimmed.is_empty() {
-        return false;  // intransitive verbs get zero-HV objects — skip them
+        return false; // intransitive verbs get zero-HV objects — skip them
     }
     // Object with only punctuation or single character
     if obj_trimmed.len() <= 1 || obj_trimmed.chars().all(|c| c.is_ascii_punctuation()) {
@@ -164,7 +246,7 @@ pub fn ingest_triples(
         let s_hv = Hypervector::encode_text_ngram(&triple.subject, 3);
         let v_hv = Hypervector::encode_text_ngram(&triple.verb, 3);
         let o_hv = if triple.object.is_empty() {
-            Hypervector::new_zero()  // intransitive verb — zero patient
+            Hypervector::new_zero() // intransitive verb — zero patient
         } else {
             Hypervector::encode_text_ngram(&triple.object, 3)
         };
@@ -173,9 +255,10 @@ pub fn ingest_triples(
         let bound = roles.bind_triple(&s_hv, &v_hv, &o_hv);
 
         // Novelty filter — skip frames too similar to existing ones
-        let is_novel = primary.frames().iter().all(|f| {
-            f.bound_vector.normalized_hamming_distance(&bound) > novel_threshold
-        });
+        let is_novel = primary
+            .frames()
+            .iter()
+            .all(|f| f.bound_vector.normalized_hamming_distance(&bound) > novel_threshold);
         if !is_novel {
             result.frames_skipped += 1;
             continue;
@@ -185,22 +268,21 @@ pub fn ingest_triples(
         *frame_counter += 1;
 
         let fillers = vec![
-            (ROLE_AGENT,   s_hv, triple.subject.clone()),
-            (ROLE_ACTION,  v_hv, triple.verb.clone()),
+            (ROLE_AGENT, s_hv, triple.subject.clone()),
+            (ROLE_ACTION, v_hv, triple.verb.clone()),
             (ROLE_PATIENT, o_hv, triple.object.clone()),
         ];
 
         // Confidence → evidential weight on 0–500 scale
         let weight = (triple.confidence * 400.0).clamp(0.0, 500.0);
 
-        primary.insert_with_provenance(
-            &label, bound, fillers,
-            ObservationProvenance::Ambient,
-        );
+        primary.insert_with_provenance(&label, bound, fillers, ObservationProvenance::Ambient);
 
         meta.on_insert(
-            &label, &bound,
-            EpistemicStatus::Observed, weight,
+            &label,
+            &bound,
+            EpistemicStatus::Observed,
+            weight,
             ObservationProvenance::Ambient,
         );
 
@@ -236,8 +318,10 @@ mod tests {
         let triples = nlp::extract_svo("Alice fed the cat.");
         assert!(!triples.is_empty(), "Should extract at least one triple");
         let t = &triples[0];
-        eprintln!("  [bridge] active: ({}, {}, {}) conf={}",
-            t.subject, t.verb, t.object, t.confidence);
+        eprintln!(
+            "  [bridge] active: ({}, {}, {}) conf={}",
+            t.subject, t.verb, t.object, t.confidence
+        );
         assert_eq!(t.verb, "feed", "Verb should be lemmatized");
         assert!(
             t.subject.to_lowercase().contains("alice"),
@@ -255,8 +339,10 @@ mod tests {
         let triples = nlp::extract_svo("The cat was fed by Alice.");
         assert!(!triples.is_empty(), "Should extract at least one triple");
         let t = &triples[0];
-        eprintln!("  [bridge] passive: ({}, {}, {}) conf={}",
-            t.subject, t.verb, t.object, t.confidence);
+        eprintln!(
+            "  [bridge] passive: ({}, {}, {}) conf={}",
+            t.subject, t.verb, t.object, t.confidence
+        );
         assert!(
             t.subject.to_lowercase().contains("alice"),
             "Passive recovery should put Alice as subject, got '{}'",
@@ -321,12 +407,13 @@ mod tests {
         );
 
         // Check frames have correct fillers
-        let feed_frames: Vec<_> = primary.frames().iter()
+        let feed_frames: Vec<_> = primary
+            .frames()
+            .iter()
             .filter(|f| f.label.starts_with("bridge_"))
             .collect();
         for f in &feed_frames {
-            let fillers: Vec<&str> = f.fillers.iter()
-                .map(|x| x.filler_str.as_str()).collect();
+            let fillers: Vec<&str> = f.fillers.iter().map(|x| x.filler_str.as_str()).collect();
             eprintln!("  [bridge] frame {} — fillers: {:?}", f.label, fillers);
         }
 

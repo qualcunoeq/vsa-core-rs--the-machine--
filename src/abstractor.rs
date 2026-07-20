@@ -346,8 +346,7 @@ impl Abstractor {
         report.communities_detected = communities.len();
 
         // Step 2: Check prediction error gate
-        let error_ok = predictive.avg_error < self.error_threshold
-            || predictive.total_cycles < 50; // always allow during learning phase
+        let error_ok = predictive.avg_error < self.error_threshold || predictive.total_cycles < 50; // always allow during learning phase
         self.gated = !error_ok;
 
         if error_ok && !communities.is_empty() {
@@ -455,7 +454,11 @@ impl Abstractor {
         self.coherence.tick();
         // Journal decay events for any concept that crossed a significant decay threshold
         if let Some(j) = journal.as_mut() {
-            for (i, (before, after)) in before_scores.iter().zip(self.coherence.scores.iter()).enumerate() {
+            for (i, (before, after)) in before_scores
+                .iter()
+                .zip(self.coherence.scores.iter())
+                .enumerate()
+            {
                 let threshold = 0.5;
                 if *before >= threshold && *after < threshold {
                     j.push(ConceptEvent {
@@ -857,8 +860,10 @@ mod tests {
 
         eprintln!("  Detected {} communities:", communities.len());
         for (i, c) in communities.iter().enumerate() {
-            eprintln!("    {}: {:?} (cohesion={:.4}, {:?})",
-                i, c.centroid_indices, c.cohesion_score, c.community_type);
+            eprintln!(
+                "    {}: {:?} (cohesion={:.4}, {:?})",
+                i, c.centroid_indices, c.cohesion_score, c.community_type
+            );
         }
 
         // Should detect the {0, 1, 2} community
@@ -869,7 +874,10 @@ mod tests {
                 && c.centroid_indices.contains(&2)
         });
 
-        assert!(has_regime, "Should detect {{0, 1, 2}} as a bidirectional regime");
+        assert!(
+            has_regime,
+            "Should detect {{0, 1, 2}} as a bidirectional regime"
+        );
 
         // Cohesion should be above threshold
         for c in &communities {
@@ -915,8 +923,10 @@ mod tests {
 
         eprintln!("  Detected {} communities:", communities.len());
         for (i, c) in communities.iter().enumerate() {
-            eprintln!("    {}: {:?} (cohesion={:.4}, {:?})",
-                i, c.centroid_indices, c.cohesion_score, c.community_type);
+            eprintln!(
+                "    {}: {:?} (cohesion={:.4}, {:?})",
+                i, c.centroid_indices, c.cohesion_score, c.community_type
+            );
         }
 
         // Should detect at least one community (could be bidirectional regime
@@ -929,8 +939,10 @@ mod tests {
 
         // Report what was found
         for c in &communities {
-            eprintln!("    Type={:?}, indices={:?}, cohesion={:.4}",
-                c.community_type, c.centroid_indices, c.cohesion_score);
+            eprintln!(
+                "    Type={:?}, indices={:?}, cohesion={:.4}",
+                c.community_type, c.centroid_indices, c.cohesion_score
+            );
 
             // If it's a chain, verify high cohesion
             if c.community_type == CommunityType::UnidirectionalChain {
@@ -1025,7 +1037,10 @@ mod tests {
             predictive.cycle(&state, c_idx, Some(0), 0.5);
         }
 
-        eprintln!("  Avg error: {:.4} (threshold: {:.4})", predictive.avg_error, abstractor.error_threshold);
+        eprintln!(
+            "  Avg error: {:.4} (threshold: {:.4})",
+            predictive.avg_error, abstractor.error_threshold
+        );
         eprintln!("  Total cycles: {}", predictive.total_cycles);
 
         // Run abstraction cycle
@@ -1091,7 +1106,10 @@ mod tests {
             abstractor.coherence.tick();
         }
 
-        eprintln!("  Coherence after regime change: {:?}", abstractor.coherence.scores);
+        eprintln!(
+            "  Coherence after regime change: {:?}",
+            abstractor.coherence.scores
+        );
 
         // Check if dissolution would trigger
         let to_dissolve = abstractor.coherence.concepts_to_dissolve();
@@ -1099,7 +1117,10 @@ mod tests {
 
         // With enough decay, coherence should drop below threshold
         if !to_dissolve.is_empty() {
-            eprintln!("  ✓ Dissolution triggered for L2 concepts: {:?}", to_dissolve);
+            eprintln!(
+                "  ✓ Dissolution triggered for L2 concepts: {:?}",
+                to_dissolve
+            );
         } else {
             eprintln!("  ⚠ Coherence still above threshold (may need more decay)");
             // This isn't necessarily a failure — depends on decay parameters
@@ -1114,7 +1135,10 @@ mod tests {
 
             // After dissolution: L2 concept should be zeroed
             abstractor.coherence.remove(to_dissolve[0]);
-            eprintln!("  After dissolution: {} L2 concepts remain", abstractor.coherence.len());
+            eprintln!(
+                "  After dissolution: {} L2 concepts remain",
+                abstractor.coherence.len()
+            );
         }
     }
 
@@ -1168,7 +1192,10 @@ mod tests {
 
         let l2_count_after = hierarchy.levels[1].centroids.len();
         let coherence_count = abstractor.coherence.len();
-        eprintln!("  L2 concepts: {}, tracked: {}", l2_count_after, coherence_count);
+        eprintln!(
+            "  L2 concepts: {}, tracked: {}",
+            l2_count_after, coherence_count
+        );
 
         // Phase 3: Regime change — old community dissolves
         eprintln!("----- Phase 3: Regime change & dissolution -----");
@@ -1188,10 +1215,14 @@ mod tests {
             abstractor.coherence.tick();
         }
 
-        eprintln!("  Coherence after regime change: {:?}", abstractor.coherence.scores);
-        eprintln!("  Total created: {}, dissolved: {}",
-            abstractor.total_abstractions_created,
-            abstractor.total_abstractions_dissolved);
+        eprintln!(
+            "  Coherence after regime change: {:?}",
+            abstractor.coherence.scores
+        );
+        eprintln!(
+            "  Total created: {}, dissolved: {}",
+            abstractor.total_abstractions_created, abstractor.total_abstractions_dissolved
+        );
 
         // The lifecycle completed without crashing
         eprintln!("  ✓ Full lifecycle completed successfully");
@@ -1218,13 +1249,22 @@ mod tests {
         let abstractor = Abstractor::new();
         let communities = abstractor.detect_communities(&model);
 
-        eprintln!("  Communities: {:?}", communities.iter().map(|c| &c.centroid_indices).collect::<Vec<_>>());
+        eprintln!(
+            "  Communities: {:?}",
+            communities
+                .iter()
+                .map(|c| &c.centroid_indices)
+                .collect::<Vec<_>>()
+        );
 
         // {0, 1, 2} should appear at most once
-        let count = communities.iter()
-            .filter(|c| c.centroid_indices.contains(&0)
-                && c.centroid_indices.contains(&1)
-                && c.centroid_indices.contains(&2))
+        let count = communities
+            .iter()
+            .filter(|c| {
+                c.centroid_indices.contains(&0)
+                    && c.centroid_indices.contains(&1)
+                    && c.centroid_indices.contains(&2)
+            })
             .count();
 
         assert!(

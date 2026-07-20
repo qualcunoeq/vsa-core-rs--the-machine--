@@ -31,10 +31,10 @@ use std::collections::HashMap;
 /// One SVO triple — mirrors the `SvoTriple` struct from the old Python bridge.
 #[derive(Debug, Clone, PartialEq)]
 pub struct SvoTriple {
-    pub subject:      String,
-    pub verb:         String,
-    pub object:       String,
-    pub confidence:   f64,
+    pub subject: String,
+    pub verb: String,
+    pub object: String,
+    pub confidence: f64,
     pub construction: String,
 }
 
@@ -46,7 +46,9 @@ pub fn verb_lemma(word: &str) -> String {
     // Common irregular verbs
     match lower.as_str() {
         // be
-        "am" | "is" | "are" | "was" | "were" | "been" | "being" | "'m" | "'s" | "'re" => "be".to_string(),
+        "am" | "is" | "are" | "was" | "were" | "been" | "being" | "'m" | "'s" | "'re" => {
+            "be".to_string()
+        }
         // have
         "has" | "had" | "having" => "have".to_string(),
         // do
@@ -112,8 +114,11 @@ pub fn verb_lemma(word: &str) -> String {
         _ if lower.ends_with("es") && lower.len() > 4 => {
             let stem = &lower[..lower.len() - 2];
             // Check for sibilant endings: "watches" → "watch", "passes" → "pass"
-            if stem.ends_with('s') || stem.ends_with('x') || stem.ends_with('z')
-                || stem.ends_with("sh") || stem.ends_with("ch")
+            if stem.ends_with('s')
+                || stem.ends_with('x')
+                || stem.ends_with('z')
+                || stem.ends_with("sh")
+                || stem.ends_with("ch")
             {
                 stem.to_string()
             } else {
@@ -184,18 +189,18 @@ pub fn verb_lemma(word: &str) -> String {
 /// Small POS tagset used internally.
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum PosTag {
-    Noun,       // NN, NNP, NNS
-    Verb,       // VB, VBP, VBZ, VBD, VBN, VBG
-    Aux,        // MD, auxiliaries (will, can, must, etc.)
-    Adj,        // JJ, JJR, JJS
-    Adv,        // RB, RBR, RBS
-    Det,        // DT (the, a, an, this)
-    Prep,       // IN (in, on, at, by, with)
-    Conj,       // CC (and, or, but)
-    Pronoun,    // PRP (I, you, he, she, it, we, they)
-    Particle,   // RP (up, down, out, off, over)
-    Num,        // CD (one, two, first, second)
-    Punct,      // . , ! ? ; :
+    Noun,     // NN, NNP, NNS
+    Verb,     // VB, VBP, VBZ, VBD, VBN, VBG
+    Aux,      // MD, auxiliaries (will, can, must, etc.)
+    Adj,      // JJ, JJR, JJS
+    Adv,      // RB, RBR, RBS
+    Det,      // DT (the, a, an, this)
+    Prep,     // IN (in, on, at, by, with)
+    Conj,     // CC (and, or, but)
+    Pronoun,  // PRP (I, you, he, she, it, we, they)
+    Particle, // RP (up, down, out, off, over)
+    Num,      // CD (one, two, first, second)
+    Punct,    // . , ! ? ; :
 }
 
 /// A single token with surface form and POS tag.
@@ -204,7 +209,7 @@ struct Token {
     text: String,
     lower: String,
     pos: PosTag,
-    is_passive: bool,   // true if the token looks like a past-participle in passive context
+    is_passive: bool, // true if the token looks like a past-participle in passive context
 }
 
 /// A sentence is a sequence of tokens.
@@ -220,292 +225,1123 @@ fn is_verb_form(word: &str) -> bool {
     // All the forms known to verb_lemma + additional common verbs
     let verbs: HashSet<&'static str> = HashSet::from([
         // be
-        "be", "am", "is", "are", "was", "were", "been", "being",
+        "be",
+        "am",
+        "is",
+        "are",
+        "was",
+        "were",
+        "been",
+        "being",
         // have
-        "have", "has", "had", "having",
+        "have",
+        "has",
+        "had",
+        "having",
         // do
-        "do", "does", "did", "doing", "done",
+        "do",
+        "does",
+        "did",
+        "doing",
+        "done",
         // go
-        "go", "goes", "went", "gone", "going",
+        "go",
+        "goes",
+        "went",
+        "gone",
+        "going",
         // say
-        "say", "says", "said", "saying",
+        "say",
+        "says",
+        "said",
+        "saying",
         // get
-        "get", "gets", "got", "gotten", "getting",
+        "get",
+        "gets",
+        "got",
+        "gotten",
+        "getting",
         // make
-        "make", "makes", "made", "making",
+        "make",
+        "makes",
+        "made",
+        "making",
         // know
-        "know", "knows", "knew", "known", "knowing",
+        "know",
+        "knows",
+        "knew",
+        "known",
+        "knowing",
         // take
-        "take", "takes", "took", "taken", "taking",
+        "take",
+        "takes",
+        "took",
+        "taken",
+        "taking",
         // see
-        "see", "sees", "saw", "seen", "seeing",
+        "see",
+        "sees",
+        "saw",
+        "seen",
+        "seeing",
         // come
-        "come", "comes", "came", "coming",
+        "come",
+        "comes",
+        "came",
+        "coming",
         // give
-        "give", "gives", "gave", "given", "giving",
+        "give",
+        "gives",
+        "gave",
+        "given",
+        "giving",
         // find
-        "find", "finds", "found", "finding",
+        "find",
+        "finds",
+        "found",
+        "finding",
         // think
-        "think", "thinks", "thought", "thinking",
+        "think",
+        "thinks",
+        "thought",
+        "thinking",
         // tell
-        "tell", "tells", "told", "telling",
+        "tell",
+        "tells",
+        "told",
+        "telling",
         // use
-        "use", "uses", "used", "using",
+        "use",
+        "uses",
+        "used",
+        "using",
         // raise
-        "raise", "raises", "raised", "raising",
+        "raise",
+        "raises",
+        "raised",
+        "raising",
         // cause
-        "cause", "causes", "caused", "causing",
+        "cause",
+        "causes",
+        "caused",
+        "causing",
         // read
-        "read", "reads", "reading",
+        "read",
+        "reads",
+        "reading",
         // write
-        "write", "writes", "wrote", "written", "writing",
+        "write",
+        "writes",
+        "wrote",
+        "written",
+        "writing",
         // execute
-        "execute", "executes", "executed", "executing",
+        "execute",
+        "executes",
+        "executed",
+        "executing",
         // feed
-        "feed", "feeds", "fed", "feeding",
+        "feed",
+        "feeds",
+        "fed",
+        "feeding",
         // Additional common verbs (short forms that suffix rules miss)
-        "eat", "eats", "ate", "eaten", "eating",
-        "run", "runs", "ran", "running",
-        "cut", "cuts", "cutting",
-        "put", "puts", "putting",
-        "set", "sets", "setting",
-        "let", "lets", "letting",
-        "hit", "hits", "hitting",
-        "sit", "sits", "sat", "sitting",
-        "bring", "brings", "brought", "bringing",
-        "buy", "buys", "bought", "buying",
-        "catch", "catches", "caught", "catching",
-        "drop", "drops", "dropped", "dropping",
-        "fall", "falls", "fell", "fallen", "falling",
-        "feel", "feels", "felt", "feeling",
-        "fight", "fights", "fought", "fighting",
-        "fly", "flies", "flew", "flown", "flying",
-        "grow", "grows", "grew", "grown", "growing",
-        "hold", "holds", "held", "holding",
-        "keep", "keeps", "kept", "keeping",
-        "lead", "leads", "led", "leading",
-        "leave", "leaves", "left", "leaving",
-        "lend", "lends", "lent", "lending",
-        "lose", "loses", "lost", "losing",
-        "mean", "means", "meant", "meaning",
-        "meet", "meets", "met", "meeting",
-        "pay", "pays", "paid", "paying",
-        "sell", "sells", "sold", "selling",
-        "send", "sends", "sent", "sending",
-        "show", "shows", "showed", "shown", "showing",
-        "shut", "shuts", "shutting",
-        "speak", "speaks", "spoke", "spoken", "speaking",
-        "spend", "spends", "spent", "spending",
-        "stand", "stands", "stood", "standing",
-        "teach", "teaches", "taught", "teaching",
-        "throw", "throws", "threw", "thrown", "throwing",
-        "understand", "understands", "understood", "understanding",
-        "win", "wins", "won", "winning",
-        "buy", "buys", "bought", "buying",
-        "begin", "begins", "began", "begun", "beginning",
-        "break", "breaks", "broke", "broken", "breaking",
-        "build", "builds", "built", "building",
-        "choose", "chooses", "chose", "chosen", "choosing",
-        "draw", "draws", "drew", "drawn", "drawing",
-        "drink", "drinks", "drank", "drunk", "drinking",
-        "drive", "drives", "drove", "driven", "driving",
-        "forget", "forgets", "forgot", "forgotten", "forgetting",
-        "freeze", "freezes", "froze", "frozen", "freezing",
-        "hide", "hides", "hid", "hidden", "hiding",
-        "ride", "rides", "rode", "ridden", "riding",
-        "rise", "rises", "rose", "risen", "rising",
-        "sing", "sings", "sang", "sung", "singing",
-        "swim", "swims", "swam", "swum", "swimming",
-        "take", "takes", "took", "taken", "taking",
-        "wake", "wakes", "woke", "woken", "waking",
-        "wear", "wears", "wore", "worn", "wearing",
-        "beat", "beats", "beating",
-        "become", "becomes", "became", "becoming",
-        "bind", "binds", "bound", "binding",
-        "bite", "bites", "bit", "bitten", "biting",
-        "blow", "blows", "blew", "blown", "blowing",
-        "breed", "breeds", "bred", "breeding",
-        "cast", "casts", "casting",
-        "cost", "costs", "costing",
-        "deal", "deals", "dealt", "dealing",
-        "dig", "digs", "dug", "digging",
-        "dive", "dives", "dove", "diving",
-        "flee", "flees", "fled", "fleeing",
-        "forbid", "forbids", "forbade", "forbidden", "forbidding",
-        "forecast", "forecasts", "forecasting",
-        "forgive", "forgives", "forgave", "forgiven", "forgiving",
-        "hang", "hangs", "hung", "hanging",
-        "lay", "lays", "laid", "laying",
-        "lie", "lies", "lay", "lain", "lying",
-        "light", "lights", "lit", "lighting",
-        "overcome", "overcomes", "overcame", "overcoming",
-        "overthrow", "overthrows", "overthrew", "overthrown", "overthrowing",
-        "overwrite", "overwrites", "overwrote", "overwritten", "overwriting",
-        "prove", "proves", "proved", "proven", "proving",
-        "quit", "quits", "quitting",
-        "seek", "seeks", "sought", "seeking",
-        "shake", "shakes", "shook", "shaken", "shaking",
-        "shine", "shines", "shone", "shining",
-        "shoot", "shoots", "shot", "shooting",
-        "shrink", "shrinks", "shrank", "shrunk", "shrinking",
-        "sing", "sings", "sang", "sung", "singing",
-        "sink", "sinks", "sank", "sunk", "sinking",
-        "slide", "slides", "slid", "sliding",
-        "smell", "smells", "smelt", "smelling",
-        "sow", "sows", "sowed", "sown", "sowing",
-        "spin", "spins", "spun", "spinning",
-        "spit", "spits", "spat", "spitting",
-        "split", "splits", "splitting",
-        "spread", "spreads", "spreading",
-        "spring", "springs", "sprang", "sprung", "springing",
-        "steal", "steals", "stole", "stolen", "stealing",
-        "stick", "sticks", "stuck", "sticking",
-        "sting", "stings", "stung", "stinging",
-        "strike", "strikes", "struck", "striking",
-        "string", "strings", "strung", "stringing",
-        "sweep", "sweeps", "swept", "sweeping",
-        "swing", "swings", "swung", "swinging",
-        "tear", "tears", "tore", "torn", "tearing",
-        "tread", "treads", "trod", "trodden", "treading",
-        "weep", "weeps", "wept", "weeping",
-        "wind", "winds", "wound", "winding",
-        "withdraw", "withdraws", "withdrew", "withdrawn", "withdrawing",
-        "wring", "wrings", "wrung", "wringing",
+        "eat",
+        "eats",
+        "ate",
+        "eaten",
+        "eating",
+        "run",
+        "runs",
+        "ran",
+        "running",
+        "cut",
+        "cuts",
+        "cutting",
+        "put",
+        "puts",
+        "putting",
+        "set",
+        "sets",
+        "setting",
+        "let",
+        "lets",
+        "letting",
+        "hit",
+        "hits",
+        "hitting",
+        "sit",
+        "sits",
+        "sat",
+        "sitting",
+        "bring",
+        "brings",
+        "brought",
+        "bringing",
+        "buy",
+        "buys",
+        "bought",
+        "buying",
+        "catch",
+        "catches",
+        "caught",
+        "catching",
+        "drop",
+        "drops",
+        "dropped",
+        "dropping",
+        "fall",
+        "falls",
+        "fell",
+        "fallen",
+        "falling",
+        "feel",
+        "feels",
+        "felt",
+        "feeling",
+        "fight",
+        "fights",
+        "fought",
+        "fighting",
+        "fly",
+        "flies",
+        "flew",
+        "flown",
+        "flying",
+        "grow",
+        "grows",
+        "grew",
+        "grown",
+        "growing",
+        "hold",
+        "holds",
+        "held",
+        "holding",
+        "keep",
+        "keeps",
+        "kept",
+        "keeping",
+        "lead",
+        "leads",
+        "led",
+        "leading",
+        "leave",
+        "leaves",
+        "left",
+        "leaving",
+        "lend",
+        "lends",
+        "lent",
+        "lending",
+        "lose",
+        "loses",
+        "lost",
+        "losing",
+        "mean",
+        "means",
+        "meant",
+        "meaning",
+        "meet",
+        "meets",
+        "met",
+        "meeting",
+        "pay",
+        "pays",
+        "paid",
+        "paying",
+        "sell",
+        "sells",
+        "sold",
+        "selling",
+        "send",
+        "sends",
+        "sent",
+        "sending",
+        "show",
+        "shows",
+        "showed",
+        "shown",
+        "showing",
+        "shut",
+        "shuts",
+        "shutting",
+        "speak",
+        "speaks",
+        "spoke",
+        "spoken",
+        "speaking",
+        "spend",
+        "spends",
+        "spent",
+        "spending",
+        "stand",
+        "stands",
+        "stood",
+        "standing",
+        "teach",
+        "teaches",
+        "taught",
+        "teaching",
+        "throw",
+        "throws",
+        "threw",
+        "thrown",
+        "throwing",
+        "understand",
+        "understands",
+        "understood",
+        "understanding",
+        "win",
+        "wins",
+        "won",
+        "winning",
+        "buy",
+        "buys",
+        "bought",
+        "buying",
+        "begin",
+        "begins",
+        "began",
+        "begun",
+        "beginning",
+        "break",
+        "breaks",
+        "broke",
+        "broken",
+        "breaking",
+        "build",
+        "builds",
+        "built",
+        "building",
+        "choose",
+        "chooses",
+        "chose",
+        "chosen",
+        "choosing",
+        "draw",
+        "draws",
+        "drew",
+        "drawn",
+        "drawing",
+        "drink",
+        "drinks",
+        "drank",
+        "drunk",
+        "drinking",
+        "drive",
+        "drives",
+        "drove",
+        "driven",
+        "driving",
+        "forget",
+        "forgets",
+        "forgot",
+        "forgotten",
+        "forgetting",
+        "freeze",
+        "freezes",
+        "froze",
+        "frozen",
+        "freezing",
+        "hide",
+        "hides",
+        "hid",
+        "hidden",
+        "hiding",
+        "ride",
+        "rides",
+        "rode",
+        "ridden",
+        "riding",
+        "rise",
+        "rises",
+        "rose",
+        "risen",
+        "rising",
+        "sing",
+        "sings",
+        "sang",
+        "sung",
+        "singing",
+        "swim",
+        "swims",
+        "swam",
+        "swum",
+        "swimming",
+        "take",
+        "takes",
+        "took",
+        "taken",
+        "taking",
+        "wake",
+        "wakes",
+        "woke",
+        "woken",
+        "waking",
+        "wear",
+        "wears",
+        "wore",
+        "worn",
+        "wearing",
+        "beat",
+        "beats",
+        "beating",
+        "become",
+        "becomes",
+        "became",
+        "becoming",
+        "bind",
+        "binds",
+        "bound",
+        "binding",
+        "bite",
+        "bites",
+        "bit",
+        "bitten",
+        "biting",
+        "blow",
+        "blows",
+        "blew",
+        "blown",
+        "blowing",
+        "breed",
+        "breeds",
+        "bred",
+        "breeding",
+        "cast",
+        "casts",
+        "casting",
+        "cost",
+        "costs",
+        "costing",
+        "deal",
+        "deals",
+        "dealt",
+        "dealing",
+        "dig",
+        "digs",
+        "dug",
+        "digging",
+        "dive",
+        "dives",
+        "dove",
+        "diving",
+        "flee",
+        "flees",
+        "fled",
+        "fleeing",
+        "forbid",
+        "forbids",
+        "forbade",
+        "forbidden",
+        "forbidding",
+        "forecast",
+        "forecasts",
+        "forecasting",
+        "forgive",
+        "forgives",
+        "forgave",
+        "forgiven",
+        "forgiving",
+        "hang",
+        "hangs",
+        "hung",
+        "hanging",
+        "lay",
+        "lays",
+        "laid",
+        "laying",
+        "lie",
+        "lies",
+        "lay",
+        "lain",
+        "lying",
+        "light",
+        "lights",
+        "lit",
+        "lighting",
+        "overcome",
+        "overcomes",
+        "overcame",
+        "overcoming",
+        "overthrow",
+        "overthrows",
+        "overthrew",
+        "overthrown",
+        "overthrowing",
+        "overwrite",
+        "overwrites",
+        "overwrote",
+        "overwritten",
+        "overwriting",
+        "prove",
+        "proves",
+        "proved",
+        "proven",
+        "proving",
+        "quit",
+        "quits",
+        "quitting",
+        "seek",
+        "seeks",
+        "sought",
+        "seeking",
+        "shake",
+        "shakes",
+        "shook",
+        "shaken",
+        "shaking",
+        "shine",
+        "shines",
+        "shone",
+        "shining",
+        "shoot",
+        "shoots",
+        "shot",
+        "shooting",
+        "shrink",
+        "shrinks",
+        "shrank",
+        "shrunk",
+        "shrinking",
+        "sing",
+        "sings",
+        "sang",
+        "sung",
+        "singing",
+        "sink",
+        "sinks",
+        "sank",
+        "sunk",
+        "sinking",
+        "slide",
+        "slides",
+        "slid",
+        "sliding",
+        "smell",
+        "smells",
+        "smelt",
+        "smelling",
+        "sow",
+        "sows",
+        "sowed",
+        "sown",
+        "sowing",
+        "spin",
+        "spins",
+        "spun",
+        "spinning",
+        "spit",
+        "spits",
+        "spat",
+        "spitting",
+        "split",
+        "splits",
+        "splitting",
+        "spread",
+        "spreads",
+        "spreading",
+        "spring",
+        "springs",
+        "sprang",
+        "sprung",
+        "springing",
+        "steal",
+        "steals",
+        "stole",
+        "stolen",
+        "stealing",
+        "stick",
+        "sticks",
+        "stuck",
+        "sticking",
+        "sting",
+        "stings",
+        "stung",
+        "stinging",
+        "strike",
+        "strikes",
+        "struck",
+        "striking",
+        "string",
+        "strings",
+        "strung",
+        "stringing",
+        "sweep",
+        "sweeps",
+        "swept",
+        "sweeping",
+        "swing",
+        "swings",
+        "swung",
+        "swinging",
+        "tear",
+        "tears",
+        "tore",
+        "torn",
+        "tearing",
+        "tread",
+        "treads",
+        "trod",
+        "trodden",
+        "treading",
+        "weep",
+        "weeps",
+        "wept",
+        "weeping",
+        "wind",
+        "winds",
+        "wound",
+        "winding",
+        "withdraw",
+        "withdraws",
+        "withdrew",
+        "withdrawn",
+        "withdrawing",
+        "wring",
+        "wrings",
+        "wrung",
+        "wringing",
         // market/narrative verbs
-        "increase", "increases", "increased", "increasing",
-        "decrease", "decreases", "decreased", "decreasing",
-        "rise", "rises", "rose", "risen", "rising",
-        "fall", "falls", "fell", "fallen", "falling",
-        "grow", "grows", "grew", "grown", "growing",
-        "decline", "declines", "declined", "declining",
-        "surge", "surges", "surged", "surging",
-        "plunge", "plunges", "plunged", "plunging",
-        "rally", "rallies", "rallied", "rallying",
-        "crash", "crashes", "crashed", "crashing",
-        "bounce", "bounces", "bounced", "bouncing",
-        "recover", "recovers", "recovered", "recovering",
-        "signal", "signals", "signaled", "signaling",
-        "trigger", "triggers", "triggered", "triggering",
-        "boost", "boosts", "boosted", "boosting",
-        "slash", "slashes", "slashed", "slashing",
-        "cut", "cuts", "cutting",
-        "trim", "trims", "trimmed", "trimming",
-        "hike", "hikes", "hiked", "hiking",
-        "lift", "lifts", "lifted", "lifting",
-        "lower", "lowers", "lowered", "lowering",
-        "maintain", "maintains", "maintained", "maintaining",
-        "expect", "expects", "expected", "expecting",
-        "forecast", "forecasts", "forecasted", "forecasting",
-        "predict", "predicts", "predicted", "predicting",
-        "project", "projects", "projected", "projecting",
-        "estimate", "estimates", "estimated", "estimating",
-        "anticipate", "anticipates", "anticipated", "anticipating",
-        "announce", "announces", "announced", "announcing",
-        "report", "reports", "reported", "reporting",
-        "launch", "launches", "launched", "launching",
-        "release", "releases", "released", "releasing",
-        "publish", "publishes", "published", "publishing",
-        "propose", "proposes", "proposed", "proposing",
-        "approve", "approves", "approved", "approving",
-        "reject", "rejects", "rejected", "rejecting",
-        "pass", "passes", "passed", "passing",
-        "fail", "fails", "failed", "failing",
-        "succeed", "succeeds", "succeeded", "succeeding",
-        "attempt", "attempts", "attempted", "attempting",
-        "work", "works", "worked", "working",
-        "happen", "happens", "happened", "happening",
-        "change", "changes", "changed", "changing",
-        "move", "moves", "moved", "moving",
-        "follow", "follows", "followed", "following",
-        "include", "includes", "included", "including",
-        "contain", "contains", "contained", "containing",
-        "involve", "involves", "involved", "involving",
-        "need", "needs", "needed", "needing",
-        "want", "wants", "wanted", "wanting",
-        "try", "tries", "tried", "trying",
-        "help", "helps", "helped", "helping",
-        "allow", "allows", "allowed", "allowing",
-        "require", "requires", "required", "requiring",
-        "enable", "enables", "enabled", "enabling",
-        "prevent", "prevents", "prevented", "preventing",
-        "limit", "limits", "limited", "limiting",
-        "force", "forces", "forced", "forcing",
-        "push", "pushes", "pushed", "pushing",
-        "pull", "pulls", "pulled", "pulling",
-        "open", "opens", "opened", "opening",
-        "close", "closes", "closed", "closing",
-        "start", "starts", "started", "starting",
-        "stop", "stops", "stopped", "stopping",
-        "continue", "continues", "continued", "continuing",
-        "remain", "remains", "remained", "remaining",
-        "exist", "exists", "existed", "existing",
-        "appear", "appears", "appeared", "appearing",
-        "seem", "seems", "seemed", "seeming",
-        "become", "becomes", "became", "becoming",
-        "call", "calls", "called", "calling",
-        "name", "names", "named", "naming",
-        "elect", "elects", "elected", "electing",
-        "appoint", "appoints", "appointed", "appointing",
-        "consider", "considers", "considered", "considering",
-        "believe", "believes", "believed", "believing",
-        "think", "thinks", "thought", "thinking",
-        "know", "knows", "knew", "known", "knowing",
-        "understand", "understands", "understood", "understanding",
-        "mean", "means", "meant", "meaning",
-        "suggest", "suggests", "suggested", "suggesting",
-        "show", "shows", "showed", "shown", "showing",
-        "indicate", "indicates", "indicated", "indicating",
-        "reveal", "reveals", "revealed", "revealing",
-        "confirm", "confirms", "confirmed", "confirming",
-        "deny", "denies", "denied", "denying",
-        "admit", "admits", "admitted", "admitting",
-        "claim", "claims", "claimed", "claiming",
-        "argue", "argues", "argued", "arguing",
-        "debate", "debates", "debated", "debating",
-        "discuss", "discusses", "discussed", "discussing",
-        "explain", "explains", "explained", "explaining",
-        "describe", "describes", "described", "describing",
-        "note", "notes", "noted", "noting",
-        "add", "adds", "added", "adding",
-        "warn", "warns", "warned", "warning",
-        "caution", "cautions", "cautioned", "cautioning",
-        "promise", "promises", "promised", "promising",
-        "threaten", "threatens", "threatened", "threatening",
-        "pledge", "pledges", "pledged", "pledging",
-        "vow", "vows", "vowed", "vowing",
-        "agree", "agrees", "agreed", "agreeing",
-        "disagree", "disagrees", "disagreed", "disagreeing",
-        "support", "supports", "supported", "supporting",
-        "oppose", "opposes", "opposed", "opposing",
-        "back", "backs", "backed", "backing",
-        "block", "blocks", "blocked", "blocking",
-        "reject", "rejects", "rejected", "rejecting",
-        "accept", "accepts", "accepted", "accepting",
-        "adopt", "adopts", "adopted", "adopting",
-        "implement", "implements", "implemented", "implementing",
-        "introduce", "introduces", "introduced", "introducing",
-        "propose", "proposes", "proposed", "proposing",
-        "offer", "offers", "offered", "offering",
-        "provide", "provides", "provided", "providing",
-        "deliver", "delivers", "delivered", "delivering",
-        "issue", "issues", "issued", "issuing",
-        "seek", "seeks", "sought", "seeking",
-        "pursue", "pursues", "pursued", "pursuing",
-        "avoid", "avoids", "avoided", "avoiding",
-        "escape", "escapes", "escaped", "escaping",
-        "enter", "enters", "entered", "entering",
-        "exit", "exits", "exited", "exiting",
-        "join", "joins", "joined", "joining",
-        "leave", "leaves", "left", "leaving",
-        "return", "returns", "returned", "returning",
-        "reach", "reaches", "reached", "reaching",
-        "hit", "hits", "hitting",
-        "miss", "misses", "missed", "missing",
-        "beat", "beats", "beating",
-        "top", "tops", "topped", "topping",
-        "break", "breaks", "broke", "broken", "breaking",
-        "record", "records", "recorded", "recording",
-        "post", "posts", "posted", "posting",
+        "increase",
+        "increases",
+        "increased",
+        "increasing",
+        "decrease",
+        "decreases",
+        "decreased",
+        "decreasing",
+        "rise",
+        "rises",
+        "rose",
+        "risen",
+        "rising",
+        "fall",
+        "falls",
+        "fell",
+        "fallen",
+        "falling",
+        "grow",
+        "grows",
+        "grew",
+        "grown",
+        "growing",
+        "decline",
+        "declines",
+        "declined",
+        "declining",
+        "surge",
+        "surges",
+        "surged",
+        "surging",
+        "plunge",
+        "plunges",
+        "plunged",
+        "plunging",
+        "rally",
+        "rallies",
+        "rallied",
+        "rallying",
+        "crash",
+        "crashes",
+        "crashed",
+        "crashing",
+        "bounce",
+        "bounces",
+        "bounced",
+        "bouncing",
+        "recover",
+        "recovers",
+        "recovered",
+        "recovering",
+        "signal",
+        "signals",
+        "signaled",
+        "signaling",
+        "trigger",
+        "triggers",
+        "triggered",
+        "triggering",
+        "boost",
+        "boosts",
+        "boosted",
+        "boosting",
+        "slash",
+        "slashes",
+        "slashed",
+        "slashing",
+        "cut",
+        "cuts",
+        "cutting",
+        "trim",
+        "trims",
+        "trimmed",
+        "trimming",
+        "hike",
+        "hikes",
+        "hiked",
+        "hiking",
+        "lift",
+        "lifts",
+        "lifted",
+        "lifting",
+        "lower",
+        "lowers",
+        "lowered",
+        "lowering",
+        "maintain",
+        "maintains",
+        "maintained",
+        "maintaining",
+        "expect",
+        "expects",
+        "expected",
+        "expecting",
+        "forecast",
+        "forecasts",
+        "forecasted",
+        "forecasting",
+        "predict",
+        "predicts",
+        "predicted",
+        "predicting",
+        "project",
+        "projects",
+        "projected",
+        "projecting",
+        "estimate",
+        "estimates",
+        "estimated",
+        "estimating",
+        "anticipate",
+        "anticipates",
+        "anticipated",
+        "anticipating",
+        "announce",
+        "announces",
+        "announced",
+        "announcing",
+        "report",
+        "reports",
+        "reported",
+        "reporting",
+        "launch",
+        "launches",
+        "launched",
+        "launching",
+        "release",
+        "releases",
+        "released",
+        "releasing",
+        "publish",
+        "publishes",
+        "published",
+        "publishing",
+        "propose",
+        "proposes",
+        "proposed",
+        "proposing",
+        "approve",
+        "approves",
+        "approved",
+        "approving",
+        "reject",
+        "rejects",
+        "rejected",
+        "rejecting",
+        "pass",
+        "passes",
+        "passed",
+        "passing",
+        "fail",
+        "fails",
+        "failed",
+        "failing",
+        "succeed",
+        "succeeds",
+        "succeeded",
+        "succeeding",
+        "attempt",
+        "attempts",
+        "attempted",
+        "attempting",
+        "work",
+        "works",
+        "worked",
+        "working",
+        "happen",
+        "happens",
+        "happened",
+        "happening",
+        "change",
+        "changes",
+        "changed",
+        "changing",
+        "move",
+        "moves",
+        "moved",
+        "moving",
+        "follow",
+        "follows",
+        "followed",
+        "following",
+        "include",
+        "includes",
+        "included",
+        "including",
+        "contain",
+        "contains",
+        "contained",
+        "containing",
+        "involve",
+        "involves",
+        "involved",
+        "involving",
+        "need",
+        "needs",
+        "needed",
+        "needing",
+        "want",
+        "wants",
+        "wanted",
+        "wanting",
+        "try",
+        "tries",
+        "tried",
+        "trying",
+        "help",
+        "helps",
+        "helped",
+        "helping",
+        "allow",
+        "allows",
+        "allowed",
+        "allowing",
+        "require",
+        "requires",
+        "required",
+        "requiring",
+        "enable",
+        "enables",
+        "enabled",
+        "enabling",
+        "prevent",
+        "prevents",
+        "prevented",
+        "preventing",
+        "limit",
+        "limits",
+        "limited",
+        "limiting",
+        "force",
+        "forces",
+        "forced",
+        "forcing",
+        "push",
+        "pushes",
+        "pushed",
+        "pushing",
+        "pull",
+        "pulls",
+        "pulled",
+        "pulling",
+        "open",
+        "opens",
+        "opened",
+        "opening",
+        "close",
+        "closes",
+        "closed",
+        "closing",
+        "start",
+        "starts",
+        "started",
+        "starting",
+        "stop",
+        "stops",
+        "stopped",
+        "stopping",
+        "continue",
+        "continues",
+        "continued",
+        "continuing",
+        "remain",
+        "remains",
+        "remained",
+        "remaining",
+        "exist",
+        "exists",
+        "existed",
+        "existing",
+        "appear",
+        "appears",
+        "appeared",
+        "appearing",
+        "seem",
+        "seems",
+        "seemed",
+        "seeming",
+        "become",
+        "becomes",
+        "became",
+        "becoming",
+        "call",
+        "calls",
+        "called",
+        "calling",
+        "name",
+        "names",
+        "named",
+        "naming",
+        "elect",
+        "elects",
+        "elected",
+        "electing",
+        "appoint",
+        "appoints",
+        "appointed",
+        "appointing",
+        "consider",
+        "considers",
+        "considered",
+        "considering",
+        "believe",
+        "believes",
+        "believed",
+        "believing",
+        "think",
+        "thinks",
+        "thought",
+        "thinking",
+        "know",
+        "knows",
+        "knew",
+        "known",
+        "knowing",
+        "understand",
+        "understands",
+        "understood",
+        "understanding",
+        "mean",
+        "means",
+        "meant",
+        "meaning",
+        "suggest",
+        "suggests",
+        "suggested",
+        "suggesting",
+        "show",
+        "shows",
+        "showed",
+        "shown",
+        "showing",
+        "indicate",
+        "indicates",
+        "indicated",
+        "indicating",
+        "reveal",
+        "reveals",
+        "revealed",
+        "revealing",
+        "confirm",
+        "confirms",
+        "confirmed",
+        "confirming",
+        "deny",
+        "denies",
+        "denied",
+        "denying",
+        "admit",
+        "admits",
+        "admitted",
+        "admitting",
+        "claim",
+        "claims",
+        "claimed",
+        "claiming",
+        "argue",
+        "argues",
+        "argued",
+        "arguing",
+        "debate",
+        "debates",
+        "debated",
+        "debating",
+        "discuss",
+        "discusses",
+        "discussed",
+        "discussing",
+        "explain",
+        "explains",
+        "explained",
+        "explaining",
+        "describe",
+        "describes",
+        "described",
+        "describing",
+        "note",
+        "notes",
+        "noted",
+        "noting",
+        "add",
+        "adds",
+        "added",
+        "adding",
+        "warn",
+        "warns",
+        "warned",
+        "warning",
+        "caution",
+        "cautions",
+        "cautioned",
+        "cautioning",
+        "promise",
+        "promises",
+        "promised",
+        "promising",
+        "threaten",
+        "threatens",
+        "threatened",
+        "threatening",
+        "pledge",
+        "pledges",
+        "pledged",
+        "pledging",
+        "vow",
+        "vows",
+        "vowed",
+        "vowing",
+        "agree",
+        "agrees",
+        "agreed",
+        "agreeing",
+        "disagree",
+        "disagrees",
+        "disagreed",
+        "disagreeing",
+        "support",
+        "supports",
+        "supported",
+        "supporting",
+        "oppose",
+        "opposes",
+        "opposed",
+        "opposing",
+        "back",
+        "backs",
+        "backed",
+        "backing",
+        "block",
+        "blocks",
+        "blocked",
+        "blocking",
+        "reject",
+        "rejects",
+        "rejected",
+        "rejecting",
+        "accept",
+        "accepts",
+        "accepted",
+        "accepting",
+        "adopt",
+        "adopts",
+        "adopted",
+        "adopting",
+        "implement",
+        "implements",
+        "implemented",
+        "implementing",
+        "introduce",
+        "introduces",
+        "introduced",
+        "introducing",
+        "propose",
+        "proposes",
+        "proposed",
+        "proposing",
+        "offer",
+        "offers",
+        "offered",
+        "offering",
+        "provide",
+        "provides",
+        "provided",
+        "providing",
+        "deliver",
+        "delivers",
+        "delivered",
+        "delivering",
+        "issue",
+        "issues",
+        "issued",
+        "issuing",
+        "seek",
+        "seeks",
+        "sought",
+        "seeking",
+        "pursue",
+        "pursues",
+        "pursued",
+        "pursuing",
+        "avoid",
+        "avoids",
+        "avoided",
+        "avoiding",
+        "escape",
+        "escapes",
+        "escaped",
+        "escaping",
+        "enter",
+        "enters",
+        "entered",
+        "entering",
+        "exit",
+        "exits",
+        "exited",
+        "exiting",
+        "join",
+        "joins",
+        "joined",
+        "joining",
+        "leave",
+        "leaves",
+        "left",
+        "leaving",
+        "return",
+        "returns",
+        "returned",
+        "returning",
+        "reach",
+        "reaches",
+        "reached",
+        "reaching",
+        "hit",
+        "hits",
+        "hitting",
+        "miss",
+        "misses",
+        "missed",
+        "missing",
+        "beat",
+        "beats",
+        "beating",
+        "top",
+        "tops",
+        "topped",
+        "topping",
+        "break",
+        "breaks",
+        "broke",
+        "broken",
+        "breaking",
+        "record",
+        "records",
+        "recorded",
+        "recording",
+        "post",
+        "posts",
+        "posted",
+        "posting",
     ]);
 
     verbs.contains(lower.as_str())
@@ -519,63 +1355,195 @@ fn tag_word(word: &str) -> PosTag {
     let lower = word.to_lowercase();
 
     // Closed-class words (determiners)
-    if matches!(lower.as_str(), "the" | "a" | "an" | "this" | "that" | "these" | "those"
-        | "some" | "any" | "no" | "every" | "each" | "all" | "both" | "few"
-        | "many" | "much" | "several" | "enough")
-    {
+    if matches!(
+        lower.as_str(),
+        "the"
+            | "a"
+            | "an"
+            | "this"
+            | "that"
+            | "these"
+            | "those"
+            | "some"
+            | "any"
+            | "no"
+            | "every"
+            | "each"
+            | "all"
+            | "both"
+            | "few"
+            | "many"
+            | "much"
+            | "several"
+            | "enough"
+    ) {
         return PosTag::Det;
     }
 
     // Pronouns
-    if matches!(lower.as_str(), "i" | "you" | "he" | "she" | "it" | "we" | "they"
-        | "me" | "him" | "her" | "us" | "them"
-        | "my" | "your" | "his" | "its" | "our" | "their"
-        | "mine" | "yours" | "hers" | "ours" | "theirs"
-        | "myself" | "yourself" | "himself" | "herself" | "itself"
-        | "ourselves" | "themselves"
-        | "who" | "whom" | "which" | "that" | "what")
-    {
+    if matches!(
+        lower.as_str(),
+        "i" | "you"
+            | "he"
+            | "she"
+            | "it"
+            | "we"
+            | "they"
+            | "me"
+            | "him"
+            | "her"
+            | "us"
+            | "them"
+            | "my"
+            | "your"
+            | "his"
+            | "its"
+            | "our"
+            | "their"
+            | "mine"
+            | "yours"
+            | "hers"
+            | "ours"
+            | "theirs"
+            | "myself"
+            | "yourself"
+            | "himself"
+            | "herself"
+            | "itself"
+            | "ourselves"
+            | "themselves"
+            | "who"
+            | "whom"
+            | "which"
+            | "that"
+            | "what"
+    ) {
         return PosTag::Pronoun;
     }
 
     // Prepositions
-    if matches!(lower.as_str(), "in" | "on" | "at" | "by" | "with" | "from" | "to"
-        | "for" | "of" | "about" | "into" | "through" | "during"
-        | "before" | "after" | "above" | "below" | "between"
-        | "under" | "over" | "without" | "against" | "within"
-        | "along" | "among" | "upon" | "across" | "behind"
-        | "beyond" | "toward" | "towards" | "throughout")
-    {
+    if matches!(
+        lower.as_str(),
+        "in" | "on"
+            | "at"
+            | "by"
+            | "with"
+            | "from"
+            | "to"
+            | "for"
+            | "of"
+            | "about"
+            | "into"
+            | "through"
+            | "during"
+            | "before"
+            | "after"
+            | "above"
+            | "below"
+            | "between"
+            | "under"
+            | "over"
+            | "without"
+            | "against"
+            | "within"
+            | "along"
+            | "among"
+            | "upon"
+            | "across"
+            | "behind"
+            | "beyond"
+            | "toward"
+            | "towards"
+            | "throughout"
+    ) {
         return PosTag::Prep;
     }
 
     // Conjunctions
-    if matches!(lower.as_str(), "and" | "or" | "but" | "nor" | "yet" | "so" | "for"
-        | "because" | "although" | "while" | "if" | "when" | "where"
-        | "since" | "unless" | "as" | "though" | "until" | "whether")
-    {
+    if matches!(
+        lower.as_str(),
+        "and"
+            | "or"
+            | "but"
+            | "nor"
+            | "yet"
+            | "so"
+            | "for"
+            | "because"
+            | "although"
+            | "while"
+            | "if"
+            | "when"
+            | "where"
+            | "since"
+            | "unless"
+            | "as"
+            | "though"
+            | "until"
+            | "whether"
+    ) {
         return PosTag::Conj;
     }
 
     // Auxiliary verbs
-    if matches!(lower.as_str(), "will" | "would" | "can" | "could" | "shall" | "should"
-        | "may" | "might" | "must" | "ought")
-    {
+    if matches!(
+        lower.as_str(),
+        "will"
+            | "would"
+            | "can"
+            | "could"
+            | "shall"
+            | "should"
+            | "may"
+            | "might"
+            | "must"
+            | "ought"
+    ) {
         return PosTag::Aux;
     }
 
     // Particles
-    if matches!(lower.as_str(), "up" | "down" | "out" | "off" | "over" | "away"
-        | "back" | "through" | "about" | "around" | "along")
-    {
+    if matches!(
+        lower.as_str(),
+        "up" | "down"
+            | "out"
+            | "off"
+            | "over"
+            | "away"
+            | "back"
+            | "through"
+            | "about"
+            | "around"
+            | "along"
+    ) {
         return PosTag::Particle;
     }
 
     // Numbers
-    if word.chars().all(|c| c.is_ascii_digit() || c == '.' || c == ',')
-        || matches!(lower.as_str(), "first" | "second" | "third" | "next" | "last"
-            | "one" | "two" | "three" | "four" | "five" | "six" | "seven"
-            | "eight" | "nine" | "ten" | "hundred" | "thousand" | "million")
+    if word
+        .chars()
+        .all(|c| c.is_ascii_digit() || c == '.' || c == ',')
+        || matches!(
+            lower.as_str(),
+            "first"
+                | "second"
+                | "third"
+                | "next"
+                | "last"
+                | "one"
+                | "two"
+                | "three"
+                | "four"
+                | "five"
+                | "six"
+                | "seven"
+                | "eight"
+                | "nine"
+                | "ten"
+                | "hundred"
+                | "thousand"
+                | "million"
+        )
     {
         return PosTag::Num;
     }
@@ -587,7 +1555,13 @@ fn tag_word(word: &str) -> PosTag {
 
     // Capitalized mid-sentence → proper noun (check BEFORE verb lexicon)
     // "Fed" should be a noun, not a verb
-    if word.chars().next().map(|c| c.is_uppercase()).unwrap_or(false) && word.len() > 1 {
+    if word
+        .chars()
+        .next()
+        .map(|c| c.is_uppercase())
+        .unwrap_or(false)
+        && word.len() > 1
+    {
         return PosTag::Noun;
     }
 
@@ -617,8 +1591,12 @@ fn tag_word(word: &str) -> PosTag {
     if lower.ends_with("al") || lower.ends_with("ic") || lower.ends_with("ive") {
         return PosTag::Adj;
     }
-    if lower.ends_with("ment") || lower.ends_with("tion") || lower.ends_with("sion")
-        || lower.ends_with("ness") || lower.ends_with("ity") || lower.ends_with("ism")
+    if lower.ends_with("ment")
+        || lower.ends_with("tion")
+        || lower.ends_with("sion")
+        || lower.ends_with("ness")
+        || lower.ends_with("ity")
+        || lower.ends_with("ism")
     {
         return PosTag::Noun;
     }
@@ -635,24 +1613,78 @@ fn tag_word(word: &str) -> PosTag {
 fn is_past_participle(word: &str) -> bool {
     let lower = word.to_lowercase();
     // Irregular past participles
-    matches!(lower.as_str(), "been" | "gone" | "done" | "made" | "taken" | "given"
-        | "seen" | "known" | "written" | "broken" | "spoken" | "driven"
-        | "eaten" | "fallen" | "grown" | "hidden" | "led" | "left"
-        | "lost" | "meant" | "paid" | "proven" | "raised" | "risen"
-        | "run" | "said" | "sold" | "set" | "shown" | "shut" | "told"
-        | "thought" | "understood" | "won" | "fed" | "read" | "brought"
-        | "built" | "bought" | "caught" | "cut" | "dealt" | "dug"
-        | "felt" | "fought" | "found" | "flown" | "forgiven" | "frozen"
-        | "held" | "kept" | "laid" | "learnt" | "lent" | "lit"
-        | "overthrown" | "overwritten" | "overridden")
-        || (lower.ends_with("ed") && lower.len() > 4
-            && !lower.ends_with("eed") && !lower.ends_with("bed"))
+    matches!(
+        lower.as_str(),
+        "been"
+            | "gone"
+            | "done"
+            | "made"
+            | "taken"
+            | "given"
+            | "seen"
+            | "known"
+            | "written"
+            | "broken"
+            | "spoken"
+            | "driven"
+            | "eaten"
+            | "fallen"
+            | "grown"
+            | "hidden"
+            | "led"
+            | "left"
+            | "lost"
+            | "meant"
+            | "paid"
+            | "proven"
+            | "raised"
+            | "risen"
+            | "run"
+            | "said"
+            | "sold"
+            | "set"
+            | "shown"
+            | "shut"
+            | "told"
+            | "thought"
+            | "understood"
+            | "won"
+            | "fed"
+            | "read"
+            | "brought"
+            | "built"
+            | "bought"
+            | "caught"
+            | "cut"
+            | "dealt"
+            | "dug"
+            | "felt"
+            | "fought"
+            | "found"
+            | "flown"
+            | "forgiven"
+            | "frozen"
+            | "held"
+            | "kept"
+            | "laid"
+            | "learnt"
+            | "lent"
+            | "lit"
+            | "overthrown"
+            | "overwritten"
+            | "overridden"
+    ) || (lower.ends_with("ed")
+        && lower.len() > 4
+        && !lower.ends_with("eed")
+        && !lower.ends_with("bed"))
 }
 
 /// Check if a word is a form of "be" (for passive detection).
 fn is_be_form(word: &str) -> bool {
-    matches!(word.to_lowercase().as_str(),
-        "be" | "am" | "is" | "are" | "was" | "were" | "been" | "being")
+    matches!(
+        word.to_lowercase().as_str(),
+        "be" | "am" | "is" | "are" | "was" | "were" | "been" | "being"
+    )
 }
 
 // ─── Sentence splitting ─────────────────────────────────────────────────────
@@ -664,9 +1696,8 @@ fn split_sentences(text: &str) -> Vec<String> {
     let mut current = String::new();
 
     let abbreviations: &[&str] = &[
-        "mr.", "mrs.", "ms.", "dr.", "prof.", "sr.", "jr.", "st.", "ave.",
-        "dept.", "est.", "govt.", "inc.", "ltd.", "co.", "corp.",
-        "e.g.", "i.e.", "vs.", "etc.", "cf.", "approx.",
+        "mr.", "mrs.", "ms.", "dr.", "prof.", "sr.", "jr.", "st.", "ave.", "dept.", "est.",
+        "govt.", "inc.", "ltd.", "co.", "corp.", "e.g.", "i.e.", "vs.", "etc.", "cf.", "approx.",
         "jan.", "feb.", "mar.", "apr.", "jun.", "jul.", "aug.", "sep.", "oct.", "nov.", "dec.",
         "u.s.", "u.k.", "e.u.",
     ];
@@ -941,7 +1972,8 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
                     let (agt, _) = extract_noun_phrase(tokens, j + 1);
                     agent = agt;
                     // Everything between verb and "by" is part of the object
-                    object = tokens[verb_idx + 1..j].iter()
+                    object = tokens[verb_idx + 1..j]
+                        .iter()
                         .map(|t| t.text.clone())
                         .collect::<Vec<_>>()
                         .join(" ");
@@ -954,7 +1986,11 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
                 triples.push(SvoTriple {
                     subject: agent,
                     verb: verb_lemma_str.clone(),
-                    object: if object.is_empty() { subject } else { format!("{} {}", object, subject) },
+                    object: if object.is_empty() {
+                        subject
+                    } else {
+                        format!("{} {}", object, subject)
+                    },
                     confidence: 0.85,
                     construction: "passive_recovered".to_string(),
                 });
@@ -984,7 +2020,10 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
         // Skip auxiliaries, be-verbs before passives, and the passive
         // participle itself (already handled in the passive pass above).
         if pos == PosTag::Aux
-            || (pos == PosTag::Verb && is_be_form(&tokens[i].text) && i + 1 < n && tokens[i + 1].is_passive)
+            || (pos == PosTag::Verb
+                && is_be_form(&tokens[i].text)
+                && i + 1 < n
+                && tokens[i + 1].is_passive)
             || tokens[i].is_passive
         {
             continue;
@@ -1012,15 +2051,18 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
                 while j > 0 && tokens[j].pos == PosTag::Adv {
                     j -= 1;
                 }
-                if tokens[j].pos == PosTag::Noun || tokens[j].pos == PosTag::Pronoun
-                    || tokens[j].pos == PosTag::Det || tokens[j].pos == PosTag::Adj
+                if tokens[j].pos == PosTag::Noun
+                    || tokens[j].pos == PosTag::Pronoun
+                    || tokens[j].pos == PosTag::Det
+                    || tokens[j].pos == PosTag::Adj
                 {
                     // Find the start of this noun phrase
                     let mut k = j;
-                    while k > 0 && (tokens[k - 1].pos == PosTag::Det
-                        || tokens[k - 1].pos == PosTag::Adj
-                        || tokens[k - 1].pos == PosTag::Noun
-                        || tokens[k - 1].pos == PosTag::Pronoun)
+                    while k > 0
+                        && (tokens[k - 1].pos == PosTag::Det
+                            || tokens[k - 1].pos == PosTag::Adj
+                            || tokens[k - 1].pos == PosTag::Noun
+                            || tokens[k - 1].pos == PosTag::Pronoun)
                     {
                         k -= 1;
                         if k > 0 && tokens[k - 1].pos == PosTag::Conj {
@@ -1074,42 +2116,45 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
     // ── PASS 3: Conjunction expansion ───────────────────────────────
     // For each triple with a known verb, check if there's a conjoined verb
     // and create an additional triple
-    let _expanded: Vec<SvoTriple> = triples.iter().flat_map(|triple| {
-        let mut results = vec![triple.clone()];
-        let lower_verb = triple.verb.to_lowercase();
+    let _expanded: Vec<SvoTriple> = triples
+        .iter()
+        .flat_map(|triple| {
+            let mut results = vec![triple.clone()];
+            let lower_verb = triple.verb.to_lowercase();
 
-        // Find the verb token in the sentence that matches this lemma
-        for (idx, tok) in tokens.iter().enumerate() {
-            if verb_lemma(&tok.text) == lower_verb && idx + 2 < n {
-                // Check for "and/or + verb" pattern
-                if tokens[idx + 1].pos == PosTag::Conj
-                    && (tokens[idx + 1].lower == "and" || tokens[idx + 1].lower == "or")
-                    && tokens[idx + 2].pos == PosTag::Verb
-                {
-                    let conj_verb = verb_lemma(&tokens[idx + 2].text);
-                    let conj_obj = if idx + 3 < n {
-                        extract_object(tokens, idx + 3)
-                    } else {
-                        String::new()
-                    };
-                    let new_obj = if conj_obj.is_empty() {
-                        triple.object.clone()
-                    } else {
-                        conj_obj
-                    };
-                    results.push(SvoTriple {
-                        subject: triple.subject.clone(),
-                        verb: conj_verb,
-                        object: new_obj,
-                        confidence: triple.confidence * 0.9,
-                        construction: "conj_expanded".to_string(),
-                    });
+            // Find the verb token in the sentence that matches this lemma
+            for (idx, tok) in tokens.iter().enumerate() {
+                if verb_lemma(&tok.text) == lower_verb && idx + 2 < n {
+                    // Check for "and/or + verb" pattern
+                    if tokens[idx + 1].pos == PosTag::Conj
+                        && (tokens[idx + 1].lower == "and" || tokens[idx + 1].lower == "or")
+                        && tokens[idx + 2].pos == PosTag::Verb
+                    {
+                        let conj_verb = verb_lemma(&tokens[idx + 2].text);
+                        let conj_obj = if idx + 3 < n {
+                            extract_object(tokens, idx + 3)
+                        } else {
+                            String::new()
+                        };
+                        let new_obj = if conj_obj.is_empty() {
+                            triple.object.clone()
+                        } else {
+                            conj_obj
+                        };
+                        results.push(SvoTriple {
+                            subject: triple.subject.clone(),
+                            verb: conj_verb,
+                            object: new_obj,
+                            confidence: triple.confidence * 0.9,
+                            construction: "conj_expanded".to_string(),
+                        });
+                    }
                 }
             }
-        }
 
-        results
-    }).collect();
+            results
+        })
+        .collect();
 
     // ── PASS 4: Subordinate clause extraction ──────────────────────
     // Pattern: [sub_conj noun_phrase verb ...] , [noun_phrase verb ...]
@@ -1117,9 +2162,8 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
     // Only attempt if depth > 0 to prevent infinite recursion.
     if depth > 0 {
         let sub_conjunctions: &[&str] = &[
-            "after", "before", "when", "while", "since", "until",
-            "once", "although", "though", "because", "if",
-            "unless", "whereas",
+            "after", "before", "when", "while", "since", "until", "once", "although", "though",
+            "because", "if", "unless", "whereas",
         ];
 
         for &conj in sub_conjunctions {
@@ -1127,20 +2171,23 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
             let conj_token_idx: Option<usize> = tokens.iter().position(|t| t.lower == conj);
             if let Some(ci) = conj_token_idx {
                 // Find the comma after the subordinate clause
-                let clause_end_idx = tokens[ci..].iter()
+                let clause_end_idx = tokens[ci..]
+                    .iter()
                     .position(|t| t.text == ",")
                     .map(|p| ci + p)
                     .unwrap_or(n);
                 // Extract tokens AFTER the conjunction (skip the conjunction itself)
                 let sub_start = ci + 1;
-                let sub_text: String = tokens[sub_start..clause_end_idx].iter()
+                let sub_text: String = tokens[sub_start..clause_end_idx]
+                    .iter()
                     .map(|t| t.text.clone())
                     .collect::<Vec<_>>()
                     .join(" ");
                 if sub_text.len() > 3 && sub_text.len() < 200 {
                     let sub_tokens = tokenize(&sub_text);
                     let sub_tagged = tag_tokens(&sub_tokens);
-                    let sub_results = extract_svo_from_sentence_depth(&sub_tagged, depth.saturating_sub(1));
+                    let sub_results =
+                        extract_svo_from_sentence_depth(&sub_tagged, depth.saturating_sub(1));
                     for mut st in sub_results {
                         if st.confidence > 0.5 {
                             st.construction = format!("subordinate:{}", conj);
@@ -1161,14 +2208,20 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
             || tokens[i].lower == "which"
             || tokens[i].lower == "that"
             || tokens[i].lower == "whom";
-        if !is_rel_marker { continue; }
+        if !is_rel_marker {
+            continue;
+        }
 
         // The subject is the noun phrase before the relative marker
         let (rel_subject, _) = extract_noun_phrase(tokens, i - 1);
-        if rel_subject.is_empty() { continue; }
+        if rel_subject.is_empty() {
+            continue;
+        }
 
         // The verb comes after the relative marker
-        if tokens[i + 1].pos != PosTag::Verb { continue; }
+        if tokens[i + 1].pos != PosTag::Verb {
+            continue;
+        }
         let rel_verb = verb_lemma(&tokens[i + 1].text);
 
         // Object comes after the verb
@@ -1190,7 +2243,11 @@ fn extract_svo_from_sentence_depth(tokens: &Sentence, depth: usize) -> Vec<SvoTr
     let mut seen = HashMap::new();
     let mut deduped = Vec::new();
     for t in triples {
-        let key = (t.subject.to_lowercase(), t.verb.to_lowercase(), t.object.to_lowercase());
+        let key = (
+            t.subject.to_lowercase(),
+            t.verb.to_lowercase(),
+            t.object.to_lowercase(),
+        );
         if !seen.contains_key(&key) {
             seen.insert(key, true);
             deduped.push(t);
@@ -1241,16 +2298,20 @@ mod tests {
         let triples = extract_svo("Alice fed the cat.");
         assert!(!triples.is_empty(), "Should extract at least one triple");
         let t = &triples[0];
-        eprintln!("  [nlp] active: ({}, {}, {}) conf={} cons={}",
-            t.subject, t.verb, t.object, t.confidence, t.construction);
+        eprintln!(
+            "  [nlp] active: ({}, {}, {}) conf={} cons={}",
+            t.subject, t.verb, t.object, t.confidence, t.construction
+        );
         assert_eq!(t.verb, "feed", "Verb should be lemmatized");
         assert!(
             t.subject.to_lowercase().contains("alice"),
-            "Subject should be Alice, got '{}'", t.subject
+            "Subject should be Alice, got '{}'",
+            t.subject
         );
         assert!(
             t.object.to_lowercase().contains("cat"),
-            "Object should contain cat, got '{}'", t.object
+            "Object should contain cat, got '{}'",
+            t.object
         );
     }
 
@@ -1259,8 +2320,10 @@ mod tests {
         let triples = extract_svo("The cat was fed by Alice.");
         assert!(!triples.is_empty(), "Should extract at least one triple");
         let t = &triples[0];
-        eprintln!("  [nlp] passive: ({}, {}, {}) conf={} cons={}",
-            t.subject, t.verb, t.object, t.confidence, t.construction);
+        eprintln!(
+            "  [nlp] passive: ({}, {}, {}) conf={} cons={}",
+            t.subject, t.verb, t.object, t.confidence, t.construction
+        );
         assert!(
             t.subject.to_lowercase().contains("alice"),
             "Passive recovery should put Alice as subject, got '{}'",
@@ -1272,16 +2335,22 @@ mod tests {
     #[test]
     fn test_conjunction_expansion() {
         let triples = extract_svo("Bob reads books and writes code.");
-        assert!(triples.len() >= 2, "Conjunction should produce ≥2 triples, got {}", triples.len());
+        assert!(
+            triples.len() >= 2,
+            "Conjunction should produce ≥2 triples, got {}",
+            triples.len()
+        );
         let verbs: Vec<&str> = triples.iter().map(|t| t.verb.as_str()).collect();
         eprintln!("  [nlp] conj verbs: {:?}", verbs);
         assert!(
             verbs.contains(&"read"),
-            "Should contain 'read', got {:?}", verbs
+            "Should contain 'read', got {:?}",
+            verbs
         );
         assert!(
             verbs.contains(&"write"),
-            "Should contain 'write', got {:?}", verbs
+            "Should contain 'write', got {:?}",
+            verbs
         );
     }
 
@@ -1301,11 +2370,14 @@ mod tests {
         let triples = extract_svo("High inflation causes rate hikes.");
         assert!(!triples.is_empty(), "Should extract inflation triple");
         for t in &triples {
-            eprintln!("  [nlp] inflation: ({}, {}, {})", t.subject, t.verb, t.object);
+            eprintln!(
+                "  [nlp] inflation: ({}, {}, {})",
+                t.subject, t.verb, t.object
+            );
         }
-        let has_inflation = triples.iter().any(|t| {
-            t.subject.to_lowercase().contains("inflation") && t.verb == "cause"
-        });
+        let has_inflation = triples
+            .iter()
+            .any(|t| t.subject.to_lowercase().contains("inflation") && t.verb == "cause");
         assert!(has_inflation, "Should find 'inflation causes rate hikes'");
     }
 
@@ -1327,8 +2399,13 @@ mod tests {
     #[test]
     fn test_passive_agentless() {
         let triples = extract_svo("The cat was fed.");
-        assert!(!triples.is_empty(), "Agentless passive should produce a triple");
-        let has_passive = triples.iter().any(|t| t.construction == "passive_agentless");
+        assert!(
+            !triples.is_empty(),
+            "Agentless passive should produce a triple"
+        );
+        let has_passive = triples
+            .iter()
+            .any(|t| t.construction == "passive_agentless");
         assert!(has_passive, "Should have a passive_agentless construction");
     }
 
@@ -1382,7 +2459,10 @@ mod tests {
             total += triples.len();
         }
 
-        assert!(total >= 3, "Expected ≥3 triples from 5 sentences, got {total}");
+        assert!(
+            total >= 3,
+            "Expected ≥3 triples from 5 sentences, got {total}"
+        );
     }
 
     // ── New NLP capability tests ────────────────────────────────────
@@ -1392,17 +2472,20 @@ mod tests {
         let triples = extract_svo("After the Fed raised rates, the market rallied.");
         eprintln!("  [nlp] subordinate 'after': {} triples", triples.len());
         for t in &triples {
-            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+            eprintln!(
+                "         ({}, {}, {}) [{}]",
+                t.subject, t.verb, t.object, t.construction
+            );
         }
         // Should at least extract the main clause
-        let has_main = triples.iter().any(|t| {
-            t.subject.to_lowercase().contains("market") && t.verb == "rally"
-        });
+        let has_main = triples
+            .iter()
+            .any(|t| t.subject.to_lowercase().contains("market") && t.verb == "rally");
         assert!(has_main, "Should extract 'market rallied'");
         // Should also extract the subordinate clause
-        let has_sub = triples.iter().any(|t| {
-            t.construction.starts_with("subordinate") && t.verb == "raise"
-        });
+        let has_sub = triples
+            .iter()
+            .any(|t| t.construction.starts_with("subordinate") && t.verb == "raise");
         assert!(has_sub, "Should extract subordinate 'Fed raised rates'");
     }
 
@@ -1411,9 +2494,15 @@ mod tests {
         let triples = extract_svo("Before the ECB cut rates, the euro fell.");
         eprintln!("  [nlp] subordinate 'before': {} triples", triples.len());
         for t in &triples {
-            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+            eprintln!(
+                "         ({}, {}, {}) [{}]",
+                t.subject, t.verb, t.object, t.construction
+            );
         }
-        assert!(triples.len() >= 2, "Should extract ≥2 triples from subordinate clause");
+        assert!(
+            triples.len() >= 2,
+            "Should extract ≥2 triples from subordinate clause"
+        );
     }
 
     #[test]
@@ -1421,7 +2510,10 @@ mod tests {
         let triples = extract_svo("The Fed, who raised rates, paused.");
         eprintln!("  [nlp] relative 'who': {} triples", triples.len());
         for t in &triples {
-            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+            eprintln!(
+                "         ({}, {}, {}) [{}]",
+                t.subject, t.verb, t.object, t.construction
+            );
         }
         let has_rel = triples.iter().any(|t| t.construction == "relative_clause");
         assert!(has_rel, "Should extract a relative clause");
@@ -1432,7 +2524,10 @@ mod tests {
         let triples = extract_svo("The policy which caused inflation was reversed.");
         eprintln!("  [nlp] relative 'which': {} triples", triples.len());
         for t in &triples {
-            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+            eprintln!(
+                "         ({}, {}, {}) [{}]",
+                t.subject, t.verb, t.object, t.construction
+            );
         }
         let has_rel = triples.iter().any(|t| t.construction == "relative_clause");
         assert!(has_rel, "Should extract a relative clause with 'which'");
@@ -1440,18 +2535,23 @@ mod tests {
 
     #[test]
     fn test_financial_complex_sentence() {
-        let triples = extract_svo("After the Federal Reserve raised interest rates, bond yields increased sharply.");
+        let triples = extract_svo(
+            "After the Federal Reserve raised interest rates, bond yields increased sharply.",
+        );
         eprintln!("  [nlp] financial complex: {} triples", triples.len());
         for t in &triples {
-            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+            eprintln!(
+                "         ({}, {}, {}) [{}]",
+                t.subject, t.verb, t.object, t.construction
+            );
         }
         // Should extract the causal chain
-        let has_antecedent = triples.iter().any(|t| {
-            t.subject.to_lowercase().contains("reserve") && t.verb == "raise"
-        });
-        let has_consequent = triples.iter().any(|t| {
-            t.subject.to_lowercase().contains("yields") && t.verb == "increase"
-        });
+        let has_antecedent = triples
+            .iter()
+            .any(|t| t.subject.to_lowercase().contains("reserve") && t.verb == "raise");
+        let has_consequent = triples
+            .iter()
+            .any(|t| t.subject.to_lowercase().contains("yields") && t.verb == "increase");
         assert!(has_antecedent, "Should extract 'Fed raised rates'");
         assert!(has_consequent, "Should extract 'yields increased'");
     }
@@ -1461,17 +2561,20 @@ mod tests {
         let triples = extract_svo("Stocks fell because the Fed raised rates.");
         eprintln!("  [nlp] subordinate 'because': {} triples", triples.len());
         for t in &triples {
-            eprintln!("         ({}, {}, {}) [{}]", t.subject, t.verb, t.object, t.construction);
+            eprintln!(
+                "         ({}, {}, {}) [{}]",
+                t.subject, t.verb, t.object, t.construction
+            );
         }
         // Should extract at least one clause with raise/fed
-        let has_fed = triples.iter().any(|t| {
-            t.subject.to_lowercase().contains("fed") && t.verb == "raise"
-        });
+        let has_fed = triples
+            .iter()
+            .any(|t| t.subject.to_lowercase().contains("fed") && t.verb == "raise");
         assert!(has_fed, "Should extract 'Fed raised rates' clause");
         // Should also extract the main clause
-        let has_stocks = triples.iter().any(|t| {
-            t.subject.to_lowercase().contains("stocks") && t.verb == "fall"
-        });
+        let has_stocks = triples
+            .iter()
+            .any(|t| t.subject.to_lowercase().contains("stocks") && t.verb == "fall");
         assert!(has_stocks, "Should extract 'Stocks fell' clause");
     }
 }

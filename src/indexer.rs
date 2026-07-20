@@ -71,7 +71,9 @@ pub const INDEXER_FALLBACK_SIM: f64 = 0.50;
 ///
 /// Comparison is 40× cheaper than full 10240‑bit Hypervector comparison
 /// (4 u64 XOR + popcount vs 160 u64 XOR + popcount).
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize,
+)]
 pub struct LowDimVector {
     pub bits: [u64; INDEXER_U64_BLOCKS],
 }
@@ -169,7 +171,9 @@ impl FingerprintStrategy {
 /// Reference: GLM-5 Multi-Latent Attention with 256-dim KV latent —
 /// a mid-resolution latent reduces the candidate pool before expensive
 /// full-resolution verification.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize,
+)]
 pub struct MediumDimVector {
     pub bits: [u64; MEDIUM_INDEXER_U64_BLOCKS],
 }
@@ -506,7 +510,10 @@ impl LightningIndexer {
     /// compact_clusters, or sync_cluster_data).
     pub fn rebuild(&mut self, centroids: &[Hypervector]) {
         self.fingerprints = centroids.iter().map(|c| self.strategy.extract(c)).collect();
-        self.medium_fingerprints = centroids.iter().map(|c| self.strategy.extract_medium(c)).collect();
+        self.medium_fingerprints = centroids
+            .iter()
+            .map(|c| self.strategy.extract_medium(c))
+            .collect();
         self.last_count = centroids.len();
         // Reset telemetry on rebuild (new epoch).
         self.queries_processed = 0;
@@ -522,7 +529,11 @@ impl LightningIndexer {
     ///
     /// If `centroids` is provided, fingerprints are rebuilt immediately.
     /// If `None`, the caller must call `rebuild()` separately.
-    pub fn set_strategy(&mut self, strategy: FingerprintStrategy, centroids: Option<&[Hypervector]>) {
+    pub fn set_strategy(
+        &mut self,
+        strategy: FingerprintStrategy,
+        centroids: Option<&[Hypervector]>,
+    ) {
         self.strategy = strategy;
         if let Some(c) = centroids {
             self.rebuild(c);
@@ -651,8 +662,8 @@ impl LightningIndexer {
         &self,
         query: &Hypervector,
         centroids: &[Hypervector],
-        n1: usize,   // candidates past stage 1 (e.g. 20)
-        n2: usize,   // candidates past stage 2 (e.g. 5)
+        n1: usize, // candidates past stage 1 (e.g. 20)
+        n2: usize, // candidates past stage 2 (e.g. 5)
     ) -> Vec<(usize, f64)> {
         if self.fingerprints.is_empty() || self.medium_fingerprints.is_empty() {
             return Vec::new();
@@ -804,7 +815,11 @@ impl LightningIndexer {
     ///
     /// After training, fingerprints are rebuilt from the centroids
     /// using the new learned projection.
-    pub fn train_learned(&mut self, centroids: &[Hypervector], n_queries: usize) -> &LearnedProjector {
+    pub fn train_learned(
+        &mut self,
+        centroids: &[Hypervector],
+        n_queries: usize,
+    ) -> &LearnedProjector {
         let projector = LearnedProjector::train(centroids, n_queries);
         self.strategy = FingerprintStrategy::Learned(projector);
         self.rebuild(centroids);
@@ -1058,8 +1073,12 @@ mod tests {
 
     #[test]
     fn test_low_dim_symmetric() {
-        let a = LowDimVector { bits: [0xDEADBEEF; 4] };
-        let b = LowDimVector { bits: [0xCAFEBABE; 4] };
+        let a = LowDimVector {
+            bits: [0xDEADBEEF; 4],
+        };
+        let b = LowDimVector {
+            bits: [0xCAFEBABE; 4],
+        };
         assert_eq!(
             a.normalized_hamming_distance(&b),
             b.normalized_hamming_distance(&a)
@@ -1216,8 +1235,7 @@ mod tests {
             "Indexer returned no results for self-query"
         );
         assert_eq!(
-            results[0].0,
-            10,
+            results[0].0, 10,
             "Self-query should rank its own centroid first, got index {} instead of 10",
             results[0].0
         );
@@ -1380,11 +1398,9 @@ mod tests {
         let expected_offsets: [usize; 4] = [0, 40, 80, 120];
         for (i, &offset) in expected_offsets.iter().enumerate() {
             assert_eq!(
-                fp.bits[i],
-                hv.bits[offset],
+                fp.bits[i], hv.bits[offset],
                 "Fingerprint block {} should equal hv.bits[{}]",
-                i,
-                offset
+                i, offset
             );
         }
     }
@@ -1574,9 +1590,8 @@ mod tests {
         // Create a random projector (256 random positions)
         use rand::Rng;
         let mut rng = rand::thread_rng();
-        let random_positions: Vec<usize> = (0..256)
-            .map(|_| rng.gen_range(0..HD_DIMENSION))
-            .collect();
+        let random_positions: Vec<usize> =
+            (0..256).map(|_| rng.gen_range(0..HD_DIMENSION)).collect();
         let random_proj = LearnedProjector {
             positions: random_positions,
             mean_score: 0.0,
@@ -1688,10 +1703,7 @@ mod tests {
 
     #[test]
     fn test_learned_projector_fingerprint_strategy_name() {
-        assert_eq!(
-            FingerprintStrategy::BlockSampling.name(),
-            "BlockSampling"
-        );
+        assert_eq!(FingerprintStrategy::BlockSampling.name(), "BlockSampling");
     }
 
     #[test]
@@ -1702,10 +1714,7 @@ mod tests {
 
         // Switch to learned
         let projector = LearnedProjector::train(&centroids, 30);
-        indexer.set_strategy(
-            FingerprintStrategy::Learned(projector),
-            Some(&centroids),
-        );
+        indexer.set_strategy(FingerprintStrategy::Learned(projector), Some(&centroids));
 
         match indexer.strategy() {
             FingerprintStrategy::Learned(_) => {} // expected

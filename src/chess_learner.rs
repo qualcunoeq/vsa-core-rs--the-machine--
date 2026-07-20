@@ -13,12 +13,12 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 use crate::chess_eval::encode_position;
+use crate::chess_eval::{encode_tracked_position, parse_fen, tracked_similarity, TrackedPosition};
 use crate::defense::{ChessThreatDetector, ThreatDetector, ThreatEvent};
-use crate::chess_eval::{encode_tracked_position, tracked_similarity, TrackedPosition, parse_fen};
 use crate::hierarchy::HierarchicalManifold;
-use crate::VSABrain;
 use crate::qa::QaEngine;
-use crate::{DejavuEntry, MemoryCluster, Hypervector};
+use crate::VSABrain;
+use crate::{DejavuEntry, Hypervector, MemoryCluster};
 use rand::Rng;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -59,25 +59,36 @@ pub struct StockfishClient {
 }
 
 impl StockfishClient {
-    pub fn new(path: &str) -> Self {
+    /// Start an engine without turning an unavailable optional dependency into
+    /// a process-wide panic.  Interactive training may still use `new`, but
+    /// question answering must be able to abstain safely.
+    pub fn try_new(path: &str) -> Result<Self, String> {
         let mut child = Command::new(path)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::null())
             .spawn()
-            .expect("Failed to start Stockfish");
-
-        let stdin = child.stdin.take().unwrap();
-        let stdout = BufReader::new(child.stdout.take().unwrap());
-
+            .map_err(|error| format!("could not start Stockfish at {path}: {error}"))?;
+        let stdin = child
+            .stdin
+            .take()
+            .ok_or_else(|| "Stockfish has no stdin".to_string())?;
+        let stdout = child
+            .stdout
+            .take()
+            .ok_or_else(|| "Stockfish has no stdout".to_string())?;
         let mut client = StockfishClient {
             stdin,
-            stdout,
+            stdout: BufReader::new(stdout),
             _child: child,
             buffer: Vec::new(),
         };
         client.handshake();
-        client
+        Ok(client)
+    }
+
+    pub fn new(path: &str) -> Self {
+        Self::try_new(path).expect("Failed to start Stockfish")
     }
 
     fn send(&mut self, cmd: &str) {
@@ -166,6 +177,27 @@ impl StockfishClient {
             }
         }
         moves
+    }
+
+    /// Ask the UCI engine for one principal variation.  This is deliberately
+    /// distinct from material extraction: a returned move is an engine result
+    /// and is suitable for FEN/tactics questions.
+    pub fn best_move_at_depth(&mut self, fen: &str, depth: usize) -> Option<String> {
+        self.send("setoption name MultiPV value 1");
+        self.set_position(fen);
+        self.send(&format!("go depth {}", depth.clamp(1, 20)));
+        let lines = self.read_until("bestmove", Duration::from_secs(10));
+        lines
+            .iter()
+            .find_map(|line| {
+                let mut parts = line.split_whitespace();
+                if parts.next()? == "bestmove" {
+                    parts.next().map(str::to_string)
+                } else {
+                    None
+                }
+            })
+            .filter(|move_uci| move_uci != "(none)")
     }
 
     /// Apply a move to a known FEN and return the new FEN.
@@ -282,8 +314,12 @@ impl StockfishClient {
 
         // 2. Check cp scores (cp is always from white's perspective in Stockfish)
         if let Some(eval_cp) = last_cp {
-            if eval_cp > 200.0 { return 1.0; }  // white winning
-            if eval_cp < -200.0 { return -1.0; } // black winning
+            if eval_cp > 200.0 {
+                return 1.0;
+            } // white winning
+            if eval_cp < -200.0 {
+                return -1.0;
+            } // black winning
         }
 
         0.0 // draw or stalemate
@@ -354,11 +390,7 @@ impl StockfishClient {
 /// Queries individual entries across all clusters rather than cluster centroids,
 /// because early in training all positions may collapse into one cluster.
 /// k-NN on entries preserves fine-grained outcome differentiation.
-pub fn knn_evaluate(
-    fen: &str,
-    brain: &VSABrain,
-    k: usize,
-) -> f64 {
+pub fn knn_evaluate(fen: &str, brain: &VSABrain, k: usize) -> f64 {
     let query_hv = encode_position(fen);
     let clusters = &brain.dejavu_clusters;
 
@@ -460,7 +492,8 @@ pub fn knn_evaluate_tracked(
         // Get or cache the TrackedPosition via RefCell interior mutability
         let entry_tp = {
             let mut cache = tracked_cache.borrow_mut();
-            cache.entry(entry_fen.clone())
+            cache
+                .entry(entry_fen.clone())
                 .or_insert_with(|| encode_tracked_position(&entry_fen))
                 .clone()
         };
@@ -508,21 +541,125 @@ const PLAN_WEIGHT: f64 = 0.30;
 /// Seed the QA engine with hand-coded chess strategy rules.
 pub fn seed_chess_rules(qa: &mut crate::qa::QaEngine) {
     // Center control
-    qa.store_action("move_pawn", "to", "e4", "white", "controls", "center", "chess_knowledge");
-    qa.store_action("move_pawn", "to", "d4", "white", "controls", "center", "chess_knowledge");
-    qa.store_action("move_knight", "to", "f3", "white", "controls", "center", "chess_knowledge");
-    qa.store_action("move_knight", "to", "c3", "white", "controls", "center", "chess_knowledge");
-    qa.store_rule("white", "controls", "center", "white", "has", "space_advantage", "chess_knowledge");
+    qa.store_action(
+        "move_pawn",
+        "to",
+        "e4",
+        "white",
+        "controls",
+        "center",
+        "chess_knowledge",
+    );
+    qa.store_action(
+        "move_pawn",
+        "to",
+        "d4",
+        "white",
+        "controls",
+        "center",
+        "chess_knowledge",
+    );
+    qa.store_action(
+        "move_knight",
+        "to",
+        "f3",
+        "white",
+        "controls",
+        "center",
+        "chess_knowledge",
+    );
+    qa.store_action(
+        "move_knight",
+        "to",
+        "c3",
+        "white",
+        "controls",
+        "center",
+        "chess_knowledge",
+    );
+    qa.store_rule(
+        "white",
+        "controls",
+        "center",
+        "white",
+        "has",
+        "space_advantage",
+        "chess_knowledge",
+    );
     // Development
-    qa.store_action("move_knight", "to", "f3", "white", "developed", "kingside", "chess_knowledge");
-    qa.store_action("move_knight", "to", "c3", "white", "developed", "queenside", "chess_knowledge");
-    qa.store_action("move_bishop", "to", "c4", "white", "developed", "kingside", "chess_knowledge");
-    qa.store_action("move_bishop", "to", "b5", "white", "developed", "queenside", "chess_knowledge");
-    qa.store_rule("white", "developed", "kingside", "white", "has", "piece_activity", "chess_knowledge");
-    qa.store_rule("white", "developed", "queenside", "white", "has", "piece_activity", "chess_knowledge");
-    qa.store_rule("white", "has", "piece_activity", "white", "has", "advantage", "chess_knowledge");
+    qa.store_action(
+        "move_knight",
+        "to",
+        "f3",
+        "white",
+        "developed",
+        "kingside",
+        "chess_knowledge",
+    );
+    qa.store_action(
+        "move_knight",
+        "to",
+        "c3",
+        "white",
+        "developed",
+        "queenside",
+        "chess_knowledge",
+    );
+    qa.store_action(
+        "move_bishop",
+        "to",
+        "c4",
+        "white",
+        "developed",
+        "kingside",
+        "chess_knowledge",
+    );
+    qa.store_action(
+        "move_bishop",
+        "to",
+        "b5",
+        "white",
+        "developed",
+        "queenside",
+        "chess_knowledge",
+    );
+    qa.store_rule(
+        "white",
+        "developed",
+        "kingside",
+        "white",
+        "has",
+        "piece_activity",
+        "chess_knowledge",
+    );
+    qa.store_rule(
+        "white",
+        "developed",
+        "queenside",
+        "white",
+        "has",
+        "piece_activity",
+        "chess_knowledge",
+    );
+    qa.store_rule(
+        "white",
+        "has",
+        "piece_activity",
+        "white",
+        "has",
+        "advantage",
+        "chess_knowledge",
+    );
     // Space advantage → overall advantage
-    qa.store_rule("white", "has", "space_advantage", "white", "has", "advantage", "chess_knowledge");
+    qa.store_rule(
+        "white",
+        "has",
+        "space_advantage",
+        "white",
+        "has",
+        "advantage",
+        "chess_knowledge",
+    );
 }
 
 /// Encode a UCI move as an SVO triple matching chess rules.
@@ -531,17 +668,25 @@ fn uci_to_action(fen: &str, move_uci: &str) -> (String, String, String) {
     let pieces = parse_fen(fen);
     // Get piece at source square
     let src_sq = &move_uci[..2];
-    let piece_upper = pieces.iter()
-        .find(|&&(_, r, f)| {
-            format!("{}{}", (b'a' + f) as char, r + 1) == src_sq
-        })
+    let piece_upper = pieces
+        .iter()
+        .find(|&&(_, r, f)| format!("{}{}", (b'a' + f) as char, r + 1) == src_sq)
         .map(|&(c, _, _)| c.to_ascii_uppercase())
         .unwrap_or('P');
     let pname = match piece_upper {
-        'P' => "pawn", 'N' => "knight", 'B' => "bishop",
-        'R' => "rook", 'Q' => "queen", 'K' => "king", _ => "piece",
+        'P' => "pawn",
+        'N' => "knight",
+        'B' => "bishop",
+        'R' => "rook",
+        'Q' => "queen",
+        'K' => "king",
+        _ => "piece",
     };
-    (format!("move_{}", pname), "to".to_string(), dest.to_string())
+    (
+        format!("move_{}", pname),
+        "to".to_string(),
+        dest.to_string(),
+    )
 }
 
 /// Select a move using planner-augmented k-NN.
@@ -553,19 +698,21 @@ pub fn plan_move_selection(
     evaluate_fn: &impl Fn(&str) -> f64,
 ) -> (String, f64) {
     let plan = qa.plan_for_goal("white", "has", "advantage", 5);
-    let plan_actions: Vec<(String, String, String)> = plan.iter()
-        .map(|step| step.action.clone())
-        .collect();
+    let plan_actions: Vec<(String, String, String)> =
+        plan.iter().map(|step| step.action.clone()).collect();
 
     let mut best_score = f64::NEG_INFINITY;
     let mut best_move = candidates[0].0.clone();
 
     for (move_uci, _) in candidates {
         let new_fen = sf.apply_move_to_fen(current_fen, move_uci);
-        if new_fen.is_empty() { continue; }
+        if new_fen.is_empty() {
+            continue;
+        }
         let k_score = evaluate_fn(&new_fen);
         let action = uci_to_action(current_fen, move_uci);
-        let plan_bonus = plan_actions.iter()
+        let plan_bonus = plan_actions
+            .iter()
             .find(|(s, v, o)| *s == action.0 && *v == action.1 && *o == action.2)
             .map(|_| PLAN_WEIGHT)
             .unwrap_or(0.0);
@@ -581,12 +728,12 @@ pub fn plan_move_selection(
 /// Result of a single game.
 #[derive(Clone)]
 pub struct GameRecord {
-    pub positions: Vec<String>,   // FENs in chronological order
-    pub result: f64,              // +1 for machine win, -1 for loss, 0 for draw
+    pub positions: Vec<String>, // FENs in chronological order
+    pub result: f64,            // +1 for machine win, -1 for loss, 0 for draw
     pub machine_is_white: bool,
     pub ply_count: usize,
-    pub eval_spread: f64,         // max - min of k-NN scores during evaluation
-    pub avg_abs_eval: f64,        // average |score| of evaluated moves (variance proxy)
+    pub eval_spread: f64,  // max - min of k-NN scores during evaluation
+    pub avg_abs_eval: f64, // average |score| of evaluated moves (variance proxy)
     pub opponent_responses: Vec<OpponentResponse>, // opponent response patterns
 }
 
@@ -600,11 +747,11 @@ pub struct GameRecord {
 /// Late games: k-NN takes over, planner refines.
 pub fn plan_weight_for_game(games_at_level: usize) -> f64 {
     if games_at_level < 100 {
-        0.70  // early: planner dominates, k-NN accumulating
+        0.70 // early: planner dominates, k-NN accumulating
     } else if games_at_level < 300 {
-        0.50  // mid: balanced
+        0.50 // mid: balanced
     } else {
-        0.30  // late: k-NN takes over, planner refines
+        0.30 // late: k-NN takes over, planner refines
     }
 }
 
@@ -631,7 +778,8 @@ fn predict_behavior_distribution(
     };
 
     // Compute similarity to sampled responses (keep original index for lookup)
-    let mut sims: Vec<(usize, f64)> = sample_indices.iter()
+    let mut sims: Vec<(usize, f64)> = sample_indices
+        .iter()
         .map(|&orig_idx| {
             let r_hv = encode_position(&responses[orig_idx].fen_before_opponent);
             let sim = 1.0 - query_hv.normalized_hamming_distance(&r_hv);
@@ -645,7 +793,9 @@ fn predict_behavior_distribution(
     let mut total_weight = 0.0_f64;
     for &(idx, sim) in sims.iter().take(k) {
         let weight = sim.max(0.0);
-        *behavior_votes.entry(responses[idx].behavior.clone()).or_insert(0.0) += weight;
+        *behavior_votes
+            .entry(responses[idx].behavior.clone())
+            .or_insert(0.0) += weight;
         total_weight += weight;
     }
 
@@ -653,7 +803,8 @@ fn predict_behavior_distribution(
         return Vec::new();
     }
 
-    let mut result: Vec<(OpponentBehavior, f64)> = behavior_votes.into_iter()
+    let mut result: Vec<(OpponentBehavior, f64)> = behavior_votes
+        .into_iter()
         .map(|(b, w)| (b, w / total_weight))
         .collect();
     result.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
@@ -663,7 +814,11 @@ fn predict_behavior_distribution(
 /// Generate a representative opponent move for the given behavioral class.
 /// Uses chess heuristics (capture highest-value piece, retreat attacked piece, etc.)
 #[allow(dead_code)]
-fn sample_response_for_behavior(fen: &str, behavior: &OpponentBehavior, legal_moves: &[(String, f64)]) -> String {
+fn sample_response_for_behavior(
+    fen: &str,
+    behavior: &OpponentBehavior,
+    legal_moves: &[(String, f64)],
+) -> String {
     let pieces = parse_fen(fen);
     let white_to_move = fen.contains(" w ");
 
@@ -674,18 +829,25 @@ fn sample_response_for_behavior(fen: &str, behavior: &OpponentBehavior, legal_mo
             let mut best_value = -1;
             for (uci, _) in legal_moves {
                 if let Some(_dest) = uci.chars().nth(2) {
-                    let target_piece = pieces.iter()
-                        .find(|&&(_, r, f)| {
-                            let f_char = (b'a' + f) as char;
-                            let r_char = (b'1' + r) as char;
-                            uci.len() >= 4 && uci.as_bytes()[2] == f_char as u8 && uci.as_bytes()[3] == r_char as u8
-                        });
+                    let target_piece = pieces.iter().find(|&&(_, r, f)| {
+                        let f_char = (b'a' + f) as char;
+                        let r_char = (b'1' + r) as char;
+                        uci.len() >= 4
+                            && uci.as_bytes()[2] == f_char as u8
+                            && uci.as_bytes()[3] == r_char as u8
+                    });
                     if let Some(&(ch, _, _)) = target_piece {
                         // Check if it's an opponent piece
                         let is_white_piece = ch.is_uppercase();
                         if is_white_piece != white_to_move {
                             let value = match ch.to_ascii_uppercase() {
-                                'P' => 1, 'N' => 3, 'B' => 3, 'R' => 5, 'Q' => 9, 'K' => 100, _ => 0,
+                                'P' => 1,
+                                'N' => 3,
+                                'B' => 3,
+                                'R' => 5,
+                                'Q' => 9,
+                                'K' => 100,
+                                _ => 0,
                             };
                             if value > best_value {
                                 best_value = value;
@@ -695,8 +857,10 @@ fn sample_response_for_behavior(fen: &str, behavior: &OpponentBehavior, legal_mo
                     }
                 }
             }
-            if !best_capture.is_empty() { return best_capture; }
-        },
+            if !best_capture.is_empty() {
+                return best_capture;
+            }
+        }
         OpponentBehavior::Retreats => {
             // Find a move that moves an attacked piece to safety
             for (uci, _) in legal_moves {
@@ -714,7 +878,7 @@ fn sample_response_for_behavior(fen: &str, behavior: &OpponentBehavior, legal_mo
                     }
                 }
             }
-        },
+        }
         OpponentBehavior::Advances => {
             // Find a pawn push
             for (uci, _) in legal_moves {
@@ -727,7 +891,7 @@ fn sample_response_for_behavior(fen: &str, behavior: &OpponentBehavior, legal_mo
                     }
                 }
             }
-        },
+        }
         OpponentBehavior::Develops => {
             // Find a knight or bishop move toward center
             for (uci, _) in legal_moves {
@@ -735,17 +899,23 @@ fn sample_response_for_behavior(fen: &str, behavior: &OpponentBehavior, legal_mo
                 let src_f_u8 = src.as_bytes()[0] - b'a';
                 let src_r_u8 = src.as_bytes()[1] - b'1';
                 for &(ch, r, f) in &pieces {
-                    if (ch == 'N' || ch == 'n' || ch == 'B' || ch == 'b') && f == src_f_u8 && r == src_r_u8 {
+                    if (ch == 'N' || ch == 'n' || ch == 'B' || ch == 'b')
+                        && f == src_f_u8
+                        && r == src_r_u8
+                    {
                         return uci.clone(); // develop piece
                     }
                 }
             }
-        },
+        }
         _ => {} // KingsideCastle, QueensideCastle, Defends, Unclear: fall through
     }
 
     // Fallback: first legal move
-    legal_moves.first().map(|(uci, _)| uci.clone()).unwrap_or_default()
+    legal_moves
+        .first()
+        .map(|(uci, _)| uci.clone())
+        .unwrap_or_default()
 }
 
 /// `hybrid_stockfish_pct` controls opponent strength:
@@ -807,10 +977,13 @@ where
             // ── Pass 1: Quick k-NN prefilter ──────────────────────────────
             // Evaluate all candidates with bare k-NN (no planner, no lookahead).
             // Only the top 4-5 proceed to the expensive full evaluation.
-            let mut prefiltered: Vec<(String, f64)> = candidates.iter()
+            let mut prefiltered: Vec<(String, f64)> = candidates
+                .iter()
                 .filter_map(|&(ref move_uci, _)| {
                     let new_fen = sf.apply_move_to_fen(&current_fen, move_uci);
-                    if new_fen.is_empty() { return None; }
+                    if new_fen.is_empty() {
+                        return None;
+                    }
                     let k_score = evaluate_fn(&new_fen);
                     Some((move_uci.clone(), k_score))
                 })
@@ -826,7 +999,9 @@ where
             // for the most promising moves.
             for (i, &(ref move_uci, ref k_score)) in prefiltered.iter().enumerate() {
                 let new_fen = sf.apply_move_to_fen(&current_fen, move_uci);
-                if new_fen.is_empty() { continue; }
+                if new_fen.is_empty() {
+                    continue;
+                }
 
                 let mut score = *k_score;
 
@@ -834,7 +1009,8 @@ where
                 if i < top_n_for_full {
                     if let Some(qa) = qa {
                         let plan = qa.plan_for_goal("white", "has", "advantage", 5);
-                        let plan_score = plan.iter()
+                        let plan_score = plan
+                            .iter()
                             .map(|step| step.confidence)
                             .fold(0.0_f64, f64::max);
                         score = plan_score * plan_weight + *k_score * (1.0 - plan_weight);
@@ -876,14 +1052,20 @@ where
                                         if from_file == t_file && from_rank == t_rank {
                                             // Verify destination safety using attack map
                                             let dest_safe = {
-                                                let (pieces, board) = ChessThreatDetector::parse_state(&new_fen);
+                                                let (pieces, board) =
+                                                    ChessThreatDetector::parse_state(&new_fen);
                                                 let map = crate::defense::build_square_attack_map(
-                                                    &pieces, &board, machine_is_white);
+                                                    &pieces,
+                                                    &board,
+                                                    machine_is_white,
+                                                );
                                                 // Destination is safe if opponent doesn't attack it
-                                                !map.opponent_attacks[to_rank as usize][to_file as usize]
+                                                !map.opponent_attacks[to_rank as usize]
+                                                    [to_file as usize]
                                             };
                                             // Only give the bonus if the move is SAFE
-                                            let severity = if dest_safe { threat.severity } else { 0.0 };
+                                            let severity =
+                                                if dest_safe { threat.severity } else { 0.0 };
                                             defensive_bonus = f64::max(defensive_bonus, severity);
                                         }
                                     }
@@ -898,7 +1080,11 @@ where
                         // Path 3: Opponent model lookahead (only on top candidates)
                         if !qa.opponent_responses.is_empty() {
                             let behavior_dist = predict_behavior_distribution(
-                                &new_fen, &qa.opponent_responses, 10, 500);
+                                &new_fen,
+                                &qa.opponent_responses,
+                                10,
+                                500,
+                            );
                             if !behavior_dist.is_empty() {
                                 let (_, top_prob) = &behavior_dist[0];
                                 let response = sf.opponent_move_at_depth(&new_fen, search_depth);
@@ -916,8 +1102,12 @@ where
                 }
 
                 // Track eval variance across ALL candidates
-                if score > eval_max { eval_max = score; }
-                if score < eval_min { eval_min = score; }
+                if score > eval_max {
+                    eval_max = score;
+                }
+                if score < eval_min {
+                    eval_min = score;
+                }
                 eval_abs_sum += score.abs();
                 eval_count += 1;
 
@@ -934,7 +1124,9 @@ where
             let sf_threshold = (sf_pct as f64) / 100.0;
             let opponent_move = if sf_pct > 0 && rand::thread_rng().gen_bool(sf_threshold) {
                 let best = sf.opponent_move_at_depth(&current_fen, search_depth);
-                if best.is_empty() { break; }
+                if best.is_empty() {
+                    break;
+                }
                 best
             } else {
                 let idx = rand::thread_rng().gen_range(0..legal.len());
@@ -946,7 +1138,10 @@ where
             // Record opponent response (only if machine has moved this game)
             if !last_machine_fen.is_empty() {
                 let response = record_opponent_response(
-                    &last_machine_fen, &last_machine_move, &current_fen, &opponent_move,
+                    &last_machine_fen,
+                    &last_machine_move,
+                    &current_fen,
+                    &opponent_move,
                 );
                 opponent_responses.push(response);
             }
@@ -988,9 +1183,13 @@ where
 
     // Backpropagate game outcome to opponent responses
     for response in &mut opponent_responses {
-        response.outcome = if machine_result > 0.0 { 1.0 }
-            else if machine_result < 0.0 { 0.0 }
-            else { 0.5 };
+        response.outcome = if machine_result > 0.0 {
+            1.0
+        } else if machine_result < 0.0 {
+            0.0
+        } else {
+            0.5
+        };
     }
 
     GameRecord {
@@ -998,8 +1197,16 @@ where
         result: machine_result,
         machine_is_white,
         ply_count: ply,
-        eval_spread: if eval_count > 0 { eval_max - eval_min } else { 0.0 },
-        avg_abs_eval: if eval_count > 0 { eval_abs_sum / eval_count as f64 } else { 0.0 },
+        eval_spread: if eval_count > 0 {
+            eval_max - eval_min
+        } else {
+            0.0
+        },
+        avg_abs_eval: if eval_count > 0 {
+            eval_abs_sum / eval_count as f64
+        } else {
+            0.0
+        },
         opponent_responses,
     }
 }
@@ -1094,10 +1301,7 @@ fn store_chess_entry(
 /// Outcomes are stored from the MACHINE's perspective (positive = good for
 /// machine).  The k-NN evaluation handles side-to-move normalization at
 /// query time by comparing the query's STM with the stored entry's STM.
-pub fn store_game_outcomes(
-    record: &GameRecord,
-    brain: &mut VSABrain,
-) {
+pub fn store_game_outcomes(record: &GameRecord, brain: &mut VSABrain) {
     let n = record.positions.len();
     for (i, fen) in record.positions.iter().enumerate() {
         let moves_from_end = (n - i) as u32;
@@ -1112,8 +1316,15 @@ pub fn store_game_outcomes(
         meta.insert("result".to_string(), format!("{}", record.result));
         meta.insert("ply".to_string(), format!("{}", i));
         meta.insert("source".to_string(), "chess_stage1".to_string());
-        meta.insert("machine_color".to_string(),
-            if record.machine_is_white { "white" } else { "black" }.to_string());
+        meta.insert(
+            "machine_color".to_string(),
+            if record.machine_is_white {
+                "white"
+            } else {
+                "black"
+            }
+            .to_string(),
+        );
 
         store_chess_entry(brain, hv, &outcome_str, meta);
     }
@@ -1131,8 +1342,8 @@ pub fn seed_from_lichess_csv(
     csv_path: &str,
     max_positions: usize,
 ) -> std::io::Result<usize> {
-    use std::io::{BufRead, BufReader};
     use std::fs::File;
+    use std::io::{BufRead, BufReader};
 
     let file = File::open(csv_path)?;
     let reader = BufReader::new(file);
@@ -1197,26 +1408,33 @@ pub fn eval_lichess_r2(
     test_positions: usize,
     k_nearest: usize,
 ) -> (f64, f64) {
-    use std::io::{BufRead, BufReader};
-    use std::fs::File;
     use std::cell::RefCell;
     use std::collections::HashMap;
+    use std::fs::File;
+    use std::io::{BufRead, BufReader};
 
     // Read only the test positions (skip header + max_train data lines)
     let file = File::open(csv_path).expect("Can't open CSV");
     let reader = BufReader::new(file);
 
-    let test_set: Vec<(String, f64)> = reader.lines()
+    let test_set: Vec<(String, f64)> = reader
+        .lines()
         .skip(1) // skip CSV header
         .skip(max_train) // skip training data
         .filter_map(|line| {
             let line = line.ok()?;
-            if line.trim().is_empty() { return None; }
+            if line.trim().is_empty() {
+                return None;
+            }
             let parts: Vec<&str> = line.split(',').collect();
-            if parts.len() < 2 { return None; }
+            if parts.len() < 2 {
+                return None;
+            }
             let fen = parts[0].trim().to_string();
             let centipawn: f64 = parts[1].trim().parse().ok()?;
-            if centipawn.abs() > 5000.0 { return None; }
+            if centipawn.abs() > 5000.0 {
+                return None;
+            }
             Some((fen, centipawn))
         })
         .take(test_positions)
@@ -1231,7 +1449,14 @@ pub fn eval_lichess_r2(
     let mean_actual: f64 = test_set.iter().map(|(_, e)| e).sum::<f64>() / n_test as f64;
 
     // Use equal weights for all 6 tracks to measure the tactics track's contribution
-    let equal_weights: [f64; 6] = [1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0, 1.0/6.0];
+    let equal_weights: [f64; 6] = [
+        1.0 / 6.0,
+        1.0 / 6.0,
+        1.0 / 6.0,
+        1.0 / 6.0,
+        1.0 / 6.0,
+        1.0 / 6.0,
+    ];
     let tracked_cache = RefCell::new(HashMap::<String, TrackedPosition>::new());
     let evaluate = |fen: &str| -> f64 {
         knn_evaluate_tracked(fen, brain, k_nearest, &equal_weights, &tracked_cache)
@@ -1243,9 +1468,13 @@ pub fn eval_lichess_r2(
     for (fen, actual_centipawn) in &test_set {
         let predicted_label = evaluate(fen);
         // Convert predicted label back to centipawns
-        let predicted_cp = if predicted_label <= 0.0 { -5000.0 }
-            else if predicted_label >= 1.0 { 5000.0 }
-            else { -150.0 * (1.0 / predicted_label - 1.0).ln() };
+        let predicted_cp = if predicted_label <= 0.0 {
+            -5000.0
+        } else if predicted_label >= 1.0 {
+            5000.0
+        } else {
+            -150.0 * (1.0 / predicted_label - 1.0).ln()
+        };
 
         let se = (predicted_cp - actual_centipawn).powi(2);
         total_se += se;
@@ -1298,10 +1527,24 @@ pub fn train_stage1(brain: &mut VSABrain, num_games: usize) -> QaEngine {
         };
 
         // Play the game with planner augmentation
-        let record = play_game(&mut sf, &evaluate, machine_is_white, Some(&qa), None, PLAN_WEIGHT, 1);
+        let record = play_game(
+            &mut sf,
+            &evaluate,
+            machine_is_white,
+            Some(&qa),
+            None,
+            PLAN_WEIGHT,
+            1,
+        );
 
         // Feed game outcome back to planner rules
-        let outcome = if record.result > 0.0 { 1.0 } else if record.result < 0.0 { 0.0 } else { 0.5 };
+        let outcome = if record.result > 0.0 {
+            1.0
+        } else if record.result < 0.0 {
+            0.0
+        } else {
+            0.5
+        };
         let plan = qa.plan_for_goal("white", "has", "advantage", 5);
         let _ = qa.evaluate_plan_outcome(outcome, &plan);
 
@@ -1323,7 +1566,9 @@ pub fn train_stage1(brain: &mut VSABrain, num_games: usize) -> QaEngine {
             let win_rate = total_wins as f64 / games_played as f64 * 100.0;
             let avg_rule_conf: f64 = if qa.rule_count() > 0 {
                 qa.rules().iter().map(|r| r.confidence).sum::<f64>() / qa.rule_count() as f64
-            } else { 0.0 };
+            } else {
+                0.0
+            };
             eprintln!(
                 "  Game {:4}/{}: {} {:4} ply | W/L/D: {}/{}/{} ({:.0}% WR) | {} clusters | conf={:.4} | ev: {:.3}/{:.3}",
                 game_num + 1,
@@ -1346,7 +1591,10 @@ pub fn train_stage1(brain: &mut VSABrain, num_games: usize) -> QaEngine {
     }
 
     // ── Post-training L2 rule mining ────────────────────────────────────
-    eprintln!("\n  ── Mining L2 transition rules from {} games ──", games_played);
+    eprintln!(
+        "\n  ── Mining L2 transition rules from {} games ──",
+        games_played
+    );
     let (rules_mined, _l2_cap, _total_trans, _unique_pairs, avg_mined_conf) = {
         // Temporarily borrow qa mutably for mining
         mine_l2_rules(&game_records, brain, &mut qa, 5, 0.60)
@@ -1355,15 +1603,24 @@ pub fn train_stage1(brain: &mut VSABrain, num_games: usize) -> QaEngine {
     let win_rate = total_wins as f64 / games_played as f64 * 100.0;
     let avg_rule_conf: f64 = if qa.rule_count() > 0 {
         qa.rules().iter().map(|r| r.confidence).sum::<f64>() / qa.rule_count() as f64
-    } else { 0.0 };
+    } else {
+        0.0
+    };
     eprintln!("\n═══════════════════════════════════════════════════");
     eprintln!("  STAGE 1 COMPLETE (with planner + L2 mining)");
     eprintln!("  Games: {}", games_played);
     eprintln!("  W/L/D: {}/{}/{}", total_wins, total_losses, total_draws);
     eprintln!("  Win rate: {:.1}%", win_rate);
     eprintln!("  Clusters: {}", brain.dejavu_clusters.len());
-    eprintln!("  Strategy rules: {} (avg conf: {:.4})", qa.rule_count(), avg_rule_conf);
-    eprintln!("  L2 rules mined: {} (avg conf: {:.3})", rules_mined, avg_mined_conf);
+    eprintln!(
+        "  Strategy rules: {} (avg conf: {:.4})",
+        qa.rule_count(),
+        avg_rule_conf
+    );
+    eprintln!(
+        "  L2 rules mined: {} (avg conf: {:.3})",
+        rules_mined, avg_mined_conf
+    );
     eprintln!("  Plan weight: {}", PLAN_WEIGHT);
     eprintln!("  Eval calls: ~{}k", games_played * 40 / 2 * 30 / 1000);
     eprintln!("═══════════════════════════════════════════════════\n");
@@ -1397,7 +1654,8 @@ fn seed_l2_from_outcomes(hierarchy: &mut HierarchicalManifold, brain: &VSABrain)
     }
 
     // Compute win rate for each L1 centroid from entry metadata
-    let mut l1_win_rates: Vec<(usize, f64)> = brain.dejavu_clusters
+    let mut l1_win_rates: Vec<(usize, f64)> = brain
+        .dejavu_clusters
         .iter()
         .enumerate()
         .map(|(idx, c)| {
@@ -1431,13 +1689,19 @@ fn seed_l2_from_outcomes(hierarchy: &mut HierarchicalManifold, brain: &VSABrain)
         if end <= start {
             break;
         }
-        let indices: Vec<usize> = l1_win_rates[start..end].iter().map(|(idx, _)| *idx).collect();
+        let indices: Vec<usize> = l1_win_rates[start..end]
+            .iter()
+            .map(|(idx, _)| *idx)
+            .collect();
         if hierarchy.register_abstract_concept(2, &indices).is_some() {
             n_registered += 1;
         }
     }
 
-    eprintln!("  L2 seeding: {} groups from {} L1 centroids", n_registered, l1_count);
+    eprintln!(
+        "  L2 seeding: {} groups from {} L1 centroids",
+        n_registered, l1_count
+    );
 }
 
 /// A single L2 transition observation from a game.
@@ -1465,22 +1729,22 @@ pub fn reconstruct_game_records_from_clusters(brain: &VSABrain) -> Vec<GameRecor
 
     for cluster in &brain.dejavu_clusters {
         for entry in &cluster.entries {
-            let result: f64 = entry.metadata
+            let result: f64 = entry
+                .metadata
                 .get("result")
                 .and_then(|s| s.parse().ok())
                 .unwrap_or(0.0);
-            let machine_color = entry.metadata
+            let machine_color = entry
+                .metadata
                 .get("machine_color")
                 .map(|s| s == "white")
                 .unwrap_or(true);
-            let ply: usize = entry.metadata
+            let ply: usize = entry
+                .metadata
                 .get("ply")
                 .and_then(|s| s.parse().ok())
                 .unwrap_or(0);
-            let fen = entry.metadata
-                .get("fen")
-                .cloned()
-                .unwrap_or_default();
+            let fen = entry.metadata.get("fen").cloned().unwrap_or_default();
 
             if !fen.is_empty() {
                 all_positions.push((result, machine_color, ply, fen));
@@ -1522,7 +1786,13 @@ pub fn reconstruct_game_records_from_clusters(brain: &VSABrain) -> Vec<GameRecor
 
         let ply_count = positions.len();
         if ply_count >= 2 {
-            let result_val = if result > 0.0 { 1.0 } else if result < 0.0 { -1.0 } else { 0.0 };
+            let result_val = if result > 0.0 {
+                1.0
+            } else if result < 0.0 {
+                -1.0
+            } else {
+                0.0
+            };
             records.push(GameRecord {
                 positions,
                 result: result_val,
@@ -1536,8 +1806,11 @@ pub fn reconstruct_game_records_from_clusters(brain: &VSABrain) -> Vec<GameRecor
         i = j;
     }
 
-    eprintln!("  Reconstructed {} game records from {} cluster entries",
-        records.len(), all_positions.len());
+    eprintln!(
+        "  Reconstructed {} game records from {} cluster entries",
+        records.len(),
+        all_positions.len()
+    );
     records
 }
 
@@ -1548,10 +1821,8 @@ pub fn build_chess_hierarchy(brain: &VSABrain) -> HierarchicalManifold {
     let l2_capacity = (l1_count / 4).max(2);
     let l3_capacity = (l2_capacity / 4).max(2);
     let mut hierarchy = HierarchicalManifold::new(&[l1_count, l2_capacity, l3_capacity]);
-    let base_centroids: Vec<Hypervector> = brain.dejavu_clusters
-        .iter()
-        .map(|c| c.centroid)
-        .collect();
+    let base_centroids: Vec<Hypervector> =
+        brain.dejavu_clusters.iter().map(|c| c.centroid).collect();
     hierarchy.seed_from_base_centroids(&base_centroids);
     seed_l2_from_outcomes(&mut hierarchy, brain);
     hierarchy
@@ -1577,7 +1848,10 @@ pub fn mine_l2_rules(
 ) -> (usize, usize, usize, usize, f64) {
     let l1_count = brain.dejavu_clusters.len();
     if l1_count < 4 {
-        eprintln!("  ⚠ Not enough L1 centroids ({}) for L2 mining (need ≥ 4)", l1_count);
+        eprintln!(
+            "  ⚠ Not enough L1 centroids ({}) for L2 mining (need ≥ 4)",
+            l1_count
+        );
         return (0, 0, 0, 0, 0.0);
     }
 
@@ -1586,10 +1860,8 @@ pub fn mine_l2_rules(
 
     // ── Step 1: Build + seed hierarchy ──────────────────────────────────
     let mut hierarchy = HierarchicalManifold::new(&[l1_count, l2_capacity, l3_capacity]);
-    let base_centroids: Vec<Hypervector> = brain.dejavu_clusters
-        .iter()
-        .map(|c| c.centroid)
-        .collect();
+    let base_centroids: Vec<Hypervector> =
+        brain.dejavu_clusters.iter().map(|c| c.centroid).collect();
     hierarchy.seed_from_base_centroids(&base_centroids);
     seed_l2_from_outcomes(&mut hierarchy, brain);
 
@@ -1647,11 +1919,17 @@ pub fn mine_l2_rules(
     });
     if !has_pos_bridge {
         qa.store_rule(
-            "chess_position", "correlated_with", "positive_outcome",
-            "white", "has", "advantage",
+            "chess_position",
+            "correlated_with",
+            "positive_outcome",
+            "white",
+            "has",
+            "advantage",
             "mined_bridge",
         );
-        eprintln!("  Bridge (+): chess_position correlated_with positive_outcome → white has advantage");
+        eprintln!(
+            "  Bridge (+): chess_position correlated_with positive_outcome → white has advantage"
+        );
     }
 
     let has_neg_bridge = qa.rules().iter().any(|r| {
@@ -1661,8 +1939,12 @@ pub fn mine_l2_rules(
     });
     if !has_neg_bridge {
         qa.store_rule(
-            "chess_position", "correlated_with", "negative_outcome",
-            "white", "has", "disadvantage",
+            "chess_position",
+            "correlated_with",
+            "negative_outcome",
+            "white",
+            "has",
+            "disadvantage",
             "mined_bridge",
         );
         eprintln!("  Bridge (–): chess_position correlated_with negative_outcome → white has disadvantage");
@@ -1686,8 +1968,12 @@ pub fn mine_l2_rules(
         if confidence >= min_confidence {
             // Positive rule: transition leads to winning
             qa.store_rule_with_confidence(
-                &from_label, "leads_to", &to_label,
-                "chess_position", "correlated_with", "positive_outcome",
+                &from_label,
+                "leads_to",
+                &to_label,
+                "chess_position",
+                "correlated_with",
+                "positive_outcome",
                 "mined",
                 confidence,
             );
@@ -1710,8 +1996,12 @@ pub fn mine_l2_rules(
             });
             // Also store in planner chain (low confidence) for EWMA tracking
             qa.store_rule_with_confidence(
-                &from_label, "leads_to", &to_label,
-                "chess_position", "correlated_with", "negative_outcome",
+                &from_label,
+                "leads_to",
+                &to_label,
+                "chess_position",
+                "correlated_with",
+                "negative_outcome",
                 "mined",
                 0.15,
             );
@@ -1734,7 +2024,11 @@ pub fn mine_l2_rules(
         "  L1 centroids: {} | L2 capacity: {} | L2 centroids: {}",
         l1_count,
         l2_capacity,
-        hierarchy.levels.get(1).map(|l| l.centroids.len()).unwrap_or(0)
+        hierarchy
+            .levels
+            .get(1)
+            .map(|l| l.centroids.len())
+            .unwrap_or(0)
     );
     eprintln!(
         "  Positions projected: {} | Transitions: {} | Unique pairs: {}",
@@ -1753,13 +2047,28 @@ pub fn mine_l2_rules(
         let conf = *pos / *total as f64;
         let is_pos = conf >= min_confidence && *total >= min_support as u32;
         let is_neg = conf <= 1.0 - min_confidence && *total >= min_support as u32;
-        let tag = if is_pos { " ✓ POS" } else if is_neg { " ✓ AVOID" } else { "" };
-        if is_pos { pos_rules += 1; }
-        if is_neg { neg_rules += 1; }
+        let tag = if is_pos {
+            " ✓ POS"
+        } else if is_neg {
+            " ✓ AVOID"
+        } else {
+            ""
+        };
+        if is_pos {
+            pos_rules += 1;
+        }
+        if is_neg {
+            neg_rules += 1;
+        }
         if i < 10 || is_pos || is_neg {
             eprintln!(
                 "  │ {}. l2c_{} → l2c_{}: support={}, win_rate={:.3}{}",
-                i + 1, from, to, total, conf, tag,
+                i + 1,
+                from,
+                to,
+                total,
+                conf,
+                tag,
             );
         }
     }
@@ -1768,7 +2077,13 @@ pub fn mine_l2_rules(
         pos_rules, neg_rules, rules_mined, min_support, min_confidence,
     );
 
-    (rules_mined, l2_capacity, transitions.len(), sorted.len(), avg_conf)
+    (
+        rules_mined,
+        l2_capacity,
+        transitions.len(),
+        sorted.len(),
+        avg_conf,
+    )
 }
 
 /// Stage 2: validation games with mined rules active.
@@ -1808,7 +2123,10 @@ pub fn train_stage2(
     eprintln!("  Opponent: Stockfish {}", level_str);
     eprintln!("  k = {}", K_NEAREST);
     eprintln!("  Plan weight schedule: 0.70 early → 0.50 mid → 0.30 late");
-    eprintln!("  Hand-coded rules: {} | Mined rules: {}", num_hand, num_mined);
+    eprintln!(
+        "  Hand-coded rules: {} | Mined rules: {}",
+        num_hand, num_mined
+    );
     eprintln!("  Games: {}", num_games);
     eprintln!("═══════════════════════════════════════════════════\n");
 
@@ -1821,10 +2139,24 @@ pub fn train_stage2(
             knn_evaluate_tracked(fen, brain, K_NEAREST, &TRACKED_WEIGHTS, &tracked_cache)
         };
 
-        let record = play_game(&mut sf, &evaluate, machine_is_white, Some(qa), hybrid_stockfish_pct, p_weight, search_depth);
+        let record = play_game(
+            &mut sf,
+            &evaluate,
+            machine_is_white,
+            Some(qa),
+            hybrid_stockfish_pct,
+            p_weight,
+            search_depth,
+        );
 
         // Self-improvement: update ALL rules in the plan chain
-        let outcome = if record.result > 0.0 { 1.0 } else if record.result < 0.0 { 0.0 } else { 0.5 };
+        let outcome = if record.result > 0.0 {
+            1.0
+        } else if record.result < 0.0 {
+            0.0
+        } else {
+            0.5
+        };
         let plan = qa.plan_for_goal("white", "has", "advantage", 5);
         let _ = qa.evaluate_plan_outcome(outcome, &plan);
 
@@ -1835,9 +2167,13 @@ pub fn train_stage2(
             records.push(record.clone());
         }
 
-        if record.result > 0.0 { total_wins += 1; }
-        else if record.result < 0.0 { total_losses += 1; }
-        else { total_draws += 1; }
+        if record.result > 0.0 {
+            total_wins += 1;
+        } else if record.result < 0.0 {
+            total_losses += 1;
+        } else {
+            total_draws += 1;
+        }
 
         // 50-game window WR
         if (game_num + 1) % 50 == 0 {
@@ -1848,18 +2184,34 @@ pub fn train_stage2(
         if (game_num + 1) % 10 == 0 {
             let win_rate = total_wins as f64 / (game_num + 1) as f64 * 100.0;
             let window_wr = if (game_num + 1) >= 50 {
-                (total_wins - if game_num >= 50 { total_wins - window_wins_50 } else { 0 }) as f64 / 50.0 * 100.0
-            } else { win_rate };
-            let avg_hand_conf: f64 = qa.rules().iter()
+                (total_wins
+                    - if game_num >= 50 {
+                        total_wins - window_wins_50
+                    } else {
+                        0
+                    }) as f64
+                    / 50.0
+                    * 100.0
+            } else {
+                win_rate
+            };
+            let avg_hand_conf: f64 = qa
+                .rules()
+                .iter()
                 .filter(|r| r.source != "mined")
-                .map(|r| r.confidence).sum::<f64>()
+                .map(|r| r.confidence)
+                .sum::<f64>()
                 / num_hand.max(1) as f64;
             let avg_mined_conf: f64 = if num_mined > 0 {
-                qa.rules().iter()
+                qa.rules()
+                    .iter()
                     .filter(|r| r.source == "mined")
-                    .map(|r| r.confidence).sum::<f64>()
+                    .map(|r| r.confidence)
+                    .sum::<f64>()
                     / num_mined as f64
-            } else { 0.0 };
+            } else {
+                0.0
+            };
             eprintln!(
                 "  Game {:4}/{}: {} {:4} ply | W/L/D: {}/{}/{} ({:.0}% WR) [50g: {:.0}%] | pw={:.2} | hand={:.3} mined={:.3}",
                 game_num + 1, num_games,
@@ -1875,31 +2227,43 @@ pub fn train_stage2(
 
     // Mine opponent rules from collected game records
     let _num_opponent_rules = if let Some(ref records) = game_records {
-        let all_responses: Vec<OpponentResponse> = records.iter()
+        let all_responses: Vec<OpponentResponse> = records
+            .iter()
             .flat_map(|r| r.opponent_responses.iter().cloned())
             .collect();
         mine_opponent_rules(&all_responses, qa)
-    } else { 0 };
+    } else {
+        0
+    };
 
     let win_rate = total_wins as f64 / num_games as f64 * 100.0;
-    let avg_hand_conf: f64 = qa.rules().iter()
+    let avg_hand_conf: f64 = qa
+        .rules()
+        .iter()
         .filter(|r| r.source != "mined")
-        .map(|r| r.confidence).sum::<f64>()
+        .map(|r| r.confidence)
+        .sum::<f64>()
         / num_hand.max(1) as f64;
     let avg_mined_conf: f64 = if num_mined > 0 {
-        qa.rules().iter()
+        qa.rules()
+            .iter()
             .filter(|r| r.source == "mined")
-            .map(|r| r.confidence).sum::<f64>()
+            .map(|r| r.confidence)
+            .sum::<f64>()
             / num_mined as f64
-    } else { 0.0 };
+    } else {
+        0.0
+    };
 
     eprintln!("\n═══════════════════════════════════════════════════");
     eprintln!("  STAGE 2 COMPLETE ({})", level_str);
     eprintln!("  Games: {}", num_games);
     eprintln!("  W/L/D: {}/{}/{}", total_wins, total_losses, total_draws);
     eprintln!("  Win rate: {:.1}%", win_rate);
-    eprintln!("  Hand-coded rules: {} (avg conf: {:.3}) | Mined: {} (avg conf: {:.3})",
-        num_hand, avg_hand_conf, num_mined, avg_mined_conf);
+    eprintln!(
+        "  Hand-coded rules: {} (avg conf: {:.3}) | Mined: {} (avg conf: {:.3})",
+        num_hand, avg_hand_conf, num_mined, avg_mined_conf
+    );
     eprintln!("═══════════════════════════════════════════════════\n");
 
     (total_wins, total_losses, total_draws, win_rate)
@@ -1931,14 +2295,14 @@ pub fn train_stage2(
 /// Classifies an opponent's response to a Machine move.
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum OpponentBehavior {
-    Captures,           // Opponent captured a piece
-    Retreats,           // Opponent moved a piece away from attack  
-    Advances,           // Opponent advanced a pawn
-    KingsideCastle,     // Opponent castled kingside
-    QueensideCastle,    // Opponent castled queenside
-    Develops,           // Opponent developed a piece (knight/bishop out)
-    Defends,            // Opponent moved to defend an attacked piece
-    Unclear,            // Can't classify
+    Captures,        // Opponent captured a piece
+    Retreats,        // Opponent moved a piece away from attack
+    Advances,        // Opponent advanced a pawn
+    KingsideCastle,  // Opponent castled kingside
+    QueensideCastle, // Opponent castled queenside
+    Develops,        // Opponent developed a piece (knight/bishop out)
+    Defends,         // Opponent moved to defend an attacked piece
+    Unclear,         // Can't classify
 }
 
 /// Describes what happened on one opponent response to a Machine action.
@@ -1977,7 +2341,9 @@ fn classify_opponent_move(
     let dest_rank = (dest.as_bytes()[1] - b'1') as u8;
 
     // Find which piece moved to dest
-    let moved_piece = pieces_after.iter().find(|&&(_, r, f)| r == dest_rank && f == dest_file);
+    let moved_piece = pieces_after
+        .iter()
+        .find(|&&(_, r, f)| r == dest_rank && f == dest_file);
     let dest_piece = moved_piece.map(|&(c, _, _)| c).unwrap_or(' ');
 
     // Castle detection
@@ -1995,7 +2361,8 @@ fn classify_opponent_move(
 
     // Development: knight or bishop moving to a non-back-rank
     if (dest_piece == 'N' || dest_piece == 'n' || dest_piece == 'B' || dest_piece == 'b')
-        && (opponent_move_uci.as_bytes()[1] - b'1') < 6  // not from back rank... 
+        && (opponent_move_uci.as_bytes()[1] - b'1') < 6
+    // not from back rank...
     {
         // Check if it moved FROM the back rank
         let src_rank = opponent_move_uci.as_bytes()[1] - b'1';
@@ -2008,7 +2375,9 @@ fn classify_opponent_move(
     let src = &opponent_move_uci[..2];
     let src_file = (src.as_bytes()[0] - b'a') as u8;
     let src_rank = (src.as_bytes()[1] - b'1') as u8;
-    let src_was_attacked = pieces_before.iter().any(|&(_, r, f)| r == src_rank && f == src_file);
+    let src_was_attacked = pieces_before
+        .iter()
+        .any(|&(_, r, f)| r == src_rank && f == src_file);
 
     // Check if the source was attacked by building attack maps
     // Simple heuristic: if source piece was attacked, it's a retreat
@@ -2054,10 +2423,7 @@ fn record_opponent_response(
 ///
 /// Stores as causal rules in the QA engine. Also stores a bridge rule
 /// connecting opponent response outcomes to the planning goal chain.
-pub fn mine_opponent_rules(
-    responses: &[OpponentResponse],
-    qa: &mut QaEngine,
-) -> usize {
+pub fn mine_opponent_rules(responses: &[OpponentResponse], qa: &mut QaEngine) -> usize {
     if responses.is_empty() {
         return 0;
     }
@@ -2073,8 +2439,12 @@ pub fn mine_opponent_rules(
     });
     if !has_pos_bridge {
         qa.store_rule(
-            "opponent_response", "correlates_with", "positive_outcome",
-            "white", "has", "advantage",
+            "opponent_response",
+            "correlates_with",
+            "positive_outcome",
+            "white",
+            "has",
+            "advantage",
             "opponent_model_bridge",
         );
     }
@@ -2085,8 +2455,12 @@ pub fn mine_opponent_rules(
     });
     if !has_neg_bridge {
         qa.store_rule(
-            "opponent_response", "correlates_with", "negative_outcome",
-            "white", "has", "disadvantage",
+            "opponent_response",
+            "correlates_with",
+            "negative_outcome",
+            "white",
+            "has",
+            "disadvantage",
             "opponent_model_bridge",
         );
     }
@@ -2117,8 +2491,12 @@ pub fn mine_opponent_rules(
         if win_rate >= 0.60 {
             // Opponent's response correlates with Machine winning
             qa.store_rule_with_confidence(
-                opp_name, "responds_with", &beh_str,
-                "opponent_response", "correlates_with", "positive_outcome",
+                opp_name,
+                "responds_with",
+                &beh_str,
+                "opponent_response",
+                "correlates_with",
+                "positive_outcome",
                 "opponent_model",
                 win_rate,
             );
@@ -2126,8 +2504,12 @@ pub fn mine_opponent_rules(
         } else if win_rate <= 0.40 {
             // Opponent's response correlates with Machine losing
             qa.store_rule_with_confidence(
-                opp_name, "responds_with", &beh_str,
-                "opponent_response", "correlates_with", "negative_outcome",
+                opp_name,
+                "responds_with",
+                &beh_str,
+                "opponent_response",
+                "correlates_with",
+                "negative_outcome",
                 "opponent_model",
                 1.0 - win_rate,
             );
@@ -2135,8 +2517,12 @@ pub fn mine_opponent_rules(
         }
     }
 
-    eprintln!("  Opponent model: {} rules mined from {} responses (behaviors: {})",
-        rules_mined, responses.len(), stats.len());
+    eprintln!(
+        "  Opponent model: {} rules mined from {} responses (behaviors: {})",
+        rules_mined,
+        responses.len(),
+        stats.len()
+    );
 
     // Show per-behavior stats
     let mut sorted: Vec<_> = stats.iter().collect();
@@ -2191,14 +2577,21 @@ pub fn train_curriculum(
 
     while current <= max_index.min(CURRICULUM_LADDER.len().saturating_sub(1)) {
         let sf_pct = CURRICULUM_LADDER[current];
-        eprintln!("\n━━━ STAGE {}: {}% Stockfish d1 / {}% random ━━━",
-            current, sf_pct, 100 - sf_pct);
+        eprintln!(
+            "\n━━━ STAGE {}: {}% Stockfish d1 / {}% random ━━━",
+            current,
+            sf_pct,
+            100 - sf_pct
+        );
 
         // At 100% SF, retrain k-NN entries on pure Stockfish positions first
         // so the evaluation function knows what winning looks like against Stockfish.
         if sf_pct == 100 {
             let retrain_games = 500;
-            eprintln!("  ── Retraining k-NN on {} pure Stockfish games ──", retrain_games);
+            eprintln!(
+                "  ── Retraining k-NN on {} pure Stockfish games ──",
+                retrain_games
+            );
             // Clear all cluster entries (keep centroids, delete outcome labels)
             for cluster in &mut brain.dejavu_clusters {
                 cluster.entries.clear();
@@ -2207,38 +2600,66 @@ pub fn train_curriculum(
             qa.opponent_responses.clear();
             // Run games to populate entries with Stockfish-calibrated labels
             let mut retrain_records: Vec<GameRecord> = Vec::with_capacity(retrain_games);
-            train_stage2(brain, &mut qa, retrain_games, Some(sf_pct),
-                Some(&mut retrain_records), search_depth);
-            eprintln!("  ── k-NN retrained ({} clusters, {} total entries now from Stockfish data) ──",
+            train_stage2(
+                brain,
+                &mut qa,
+                retrain_games,
+                Some(sf_pct),
+                Some(&mut retrain_records),
+                search_depth,
+            );
+            eprintln!(
+                "  ── k-NN retrained ({} clusters, {} total entries now from Stockfish data) ──",
                 brain.dejavu_clusters.len(),
-                brain.dejavu_clusters.iter().map(|c| c.entries.len()).sum::<usize>());
+                brain
+                    .dejavu_clusters
+                    .iter()
+                    .map(|c| c.entries.len())
+                    .sum::<usize>()
+            );
         }
 
         // Run games at this rung, collecting game records for re-mining
         let mut game_records: Vec<GameRecord> = Vec::with_capacity(games_per_level);
         let (_wins, _losses, _draws, wr) = train_stage2(
-            brain, &mut qa, games_per_level, Some(sf_pct), Some(&mut game_records), search_depth,
+            brain,
+            &mut qa,
+            games_per_level,
+            Some(sf_pct),
+            Some(&mut game_records),
+            search_depth,
         );
 
         // Re-mine L2 rules from current stage positions (replaces previous rules)
-        eprintln!("  ── Re-mining L2 rules after {} games at {}% SF d1 ──",
-            games_per_level, sf_pct);
+        eprintln!(
+            "  ── Re-mining L2 rules after {} games at {}% SF d1 ──",
+            games_per_level, sf_pct
+        );
         let (rules_mined, _l2_cap, _total_trans, _unique_pairs, _avg_mined_conf) =
             mine_l2_rules(&game_records, brain, &mut qa, 5, 0.60);
 
-        let mined_conf = qa.rules().iter()
+        let mined_conf = qa
+            .rules()
+            .iter()
             .filter(|r| r.source == "mined")
-            .map(|r| r.confidence).sum::<f64>()
+            .map(|r| r.confidence)
+            .sum::<f64>()
             / rules_mined.max(1) as f64;
 
         history.push((sf_pct, wr, mined_conf, rules_mined));
 
         // Promotion check: threshold decreases as SF % increases
-        let promotion_threshold = if sf_pct <= 30 { 40.0 }
-            else if sf_pct <= 50 { 35.0 }
-            else if sf_pct <= 70 { 25.0 }
-            else if sf_pct <= 90 { 15.0 }
-            else { 5.0 };
+        let promotion_threshold = if sf_pct <= 30 {
+            40.0
+        } else if sf_pct <= 50 {
+            35.0
+        } else if sf_pct <= 70 {
+            25.0
+        } else if sf_pct <= 90 {
+            15.0
+        } else {
+            5.0
+        };
         // Minimum rules: lower threshold for small game counts (50 games often
         // produce 2-5 rules); higher for large counts (500 games → 10+ rules).
         let min_rules = if games_per_level <= 100 { 2 } else { 5 };
@@ -2253,20 +2674,29 @@ pub fn train_curriculum(
         } else if retry_counts[current] >= max_retries_per_stage {
             eprintln!(
                 "  ✗ WR {:.1}% < {:.0}% ({} retries exhausted) — FORCE ADVANCE to {}% SF d1\n",
-                wr, promotion_threshold, max_retries_per_stage,
+                wr,
+                promotion_threshold,
+                max_retries_per_stage,
                 CURRICULUM_LADDER.get(current + 1).unwrap_or(&sf_pct)
             );
             current += 1;
         } else {
             eprintln!(
                 "  ✗ WR {:.1}% < {:.0}% or {} rules < {} — curriculum paused (retry {}/{})",
-                wr, promotion_threshold, rules_mined, min_rules,
-                retry_counts[current] + 1, max_retries_per_stage
+                wr,
+                promotion_threshold,
+                rules_mined,
+                min_rules,
+                retry_counts[current] + 1,
+                max_retries_per_stage
             );
             retry_counts[current] += 1;
             // If WR > 0, retry with more games; otherwise stop
             if wr > 0.0 {
-                eprintln!("  Retrying {}% SF d1 with {} more games...\n", sf_pct, games_per_level);
+                eprintln!(
+                    "  Retrying {}% SF d1 with {} more games...\n",
+                    sf_pct, games_per_level
+                );
             } else {
                 break;
             }
@@ -2279,8 +2709,10 @@ pub fn train_curriculum(
     eprintln!("║     CURRICULUM COMPLETE                                 ║");
     eprintln!("║     Highest rung: {}% Stockfish d1", final_pct);
     for (pct, wr, mc, rm) in &history {
-        eprintln!("║       {}% SF: WR={:.1}%, mined_conf={:.3}, {} rules",
-            pct, wr, mc, rm);
+        eprintln!(
+            "║       {}% SF: WR={:.1}%, mined_conf={:.3}, {} rules",
+            pct, wr, mc, rm
+        );
     }
     eprintln!("╚══════════════════════════════════════════════════════════╝\n");
 
@@ -2298,8 +2730,15 @@ mod tests {
         let mut sf = StockfishClient::new(STOCKFISH_PATH);
         sf.set_position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         let moves = sf.legal_moves();
-        assert!(moves.len() >= 2, "Starting position has at least 2 legal moves");
-        assert!(moves.len() <= 30, "Starting position has at most 30 legal moves (got {})", moves.len());
+        assert!(
+            moves.len() >= 2,
+            "Starting position has at least 2 legal moves"
+        );
+        assert!(
+            moves.len() <= 30,
+            "Starting position has at most 30 legal moves (got {})",
+            moves.len()
+        );
         eprintln!("  Starting position: {} legal moves", moves.len());
     }
 
@@ -2324,14 +2763,23 @@ mod tests {
         let record = play_game(&mut sf, &evaluate, true, None, None, PLAN_WEIGHT, 1);
         store_game_outcomes(&record, &mut brain);
 
-        eprintln!("  Game result: {} ({} ply, {} entries)",
-            record.result, record.ply_count,
-            brain.dejavu_clusters.iter().map(|c| c.entries.len()).sum::<usize>());
+        eprintln!(
+            "  Game result: {} ({} ply, {} entries)",
+            record.result,
+            record.ply_count,
+            brain
+                .dejavu_clusters
+                .iter()
+                .map(|c| c.entries.len())
+                .sum::<usize>()
+        );
 
         // Evaluate the starting position — should have some signal now
         let start_eval = knn_evaluate(
             "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-            &brain, 5);
+            &brain,
+            5,
+        );
         eprintln!("  Starting position eval after 1 game: {:.4}", start_eval);
 
         // Evaluate a clearly winning position (white up a rook)
@@ -2344,8 +2792,10 @@ mod tests {
         assert!(brain.dejavu_clusters.len() >= 1);
         let total_entries: usize = brain.dejavu_clusters.iter().map(|c| c.entries.len()).sum();
         assert!(total_entries > 0);
-        eprintln!("  Entry-level k-NN works: {} entries, start_eval={:.4}, winning_eval={:.4}",
-            total_entries, start_eval, winning_eval);
+        eprintln!(
+            "  Entry-level k-NN works: {} entries, start_eval={:.4}, winning_eval={:.4}",
+            total_entries, start_eval, winning_eval
+        );
     }
 
     #[test]
@@ -2354,7 +2804,14 @@ mod tests {
         use crate::VSABrain;
         let mut brain = VSABrain::new(0.35);
         train_stage1(&mut brain, 5);
-        assert!(brain.dejavu_clusters.len() >= 1, "Should have at least 1 cluster after training");
-        eprintln!("  {} clusters after {} games", brain.dejavu_clusters.len(), 5);
+        assert!(
+            brain.dejavu_clusters.len() >= 1,
+            "Should have at least 1 cluster after training"
+        );
+        eprintln!(
+            "  {} clusters after {} games",
+            brain.dejavu_clusters.len(),
+            5
+        );
     }
 }

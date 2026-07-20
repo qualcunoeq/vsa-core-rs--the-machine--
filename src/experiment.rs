@@ -38,22 +38,34 @@ pub fn seed_knowledge(qa: &mut QaEngine, brain: &mut VSABrain) {
 
     // Rule G — the terminal rule that matches the goal
     qa.store_rule(
-        "machine", "has", "shell_access",
-        "machine", "has_access_to", "target_vm",
+        "machine",
+        "has",
+        "shell_access",
+        "machine",
+        "has_access_to",
+        "target_vm",
         "attack_chain",
     );
 
     // Rule F
     qa.store_rule(
-        "machine", "can", "execute_exploit",
-        "machine", "has", "shell_access",
+        "machine",
+        "can",
+        "execute_exploit",
+        "machine",
+        "has",
+        "shell_access",
         "attack_chain",
     );
 
     // Rule E
     qa.store_rule(
-        "machine", "identifies", "attack_vector",
-        "machine", "can", "execute_exploit",
+        "machine",
+        "identifies",
+        "attack_vector",
+        "machine",
+        "can",
+        "execute_exploit",
         "attack_chain",
     );
 
@@ -61,23 +73,35 @@ pub fn seed_knowledge(qa: &mut QaEngine, brain: &mut VSABrain) {
     // In a full system, this would go through CVE matching (service → CVE → exploit).
     // Here we bridge directly so the chain can complete.
     qa.store_rule(
-        "machine", "knows", "service_version",
-        "machine", "identifies", "attack_vector",
+        "machine",
+        "knows",
+        "service_version",
+        "machine",
+        "identifies",
+        "attack_vector",
         "attack_chain",
     );
 
     // Also allow open_service → attack_vector as a fallback (some services
     // have well-known vulnerabilities that don't require version matching).
     qa.store_rule(
-        "machine", "knows", "open_service",
-        "machine", "identifies", "attack_vector",
+        "machine",
+        "knows",
+        "open_service",
+        "machine",
+        "identifies",
+        "attack_vector",
         "attack_chain",
     );
 
     // Rule C
     qa.store_rule(
-        "machine", "knows", "open_service",
-        "machine", "knows", "service_version",
+        "machine",
+        "knows",
+        "open_service",
+        "machine",
+        "knows",
+        "service_version",
         "attack_chain",
     );
 
@@ -90,15 +114,23 @@ pub fn seed_knowledge(qa: &mut QaEngine, brain: &mut VSABrain) {
 
     // vsftpd 2.3.4 backdoor → identifies attack vector
     qa.store_rule(
-        "vsftpd_2_3_4", "has_backdoor", "port_6200",
-        "machine", "identifies", "attack_vector",
+        "vsftpd_2_3_4",
+        "has_backdoor",
+        "port_6200",
+        "machine",
+        "identifies",
+        "attack_vector",
         "cve_2011_2523",
     );
 
     // Apache 2.4.49 path traversal → identifies attack vector
     qa.store_rule(
-        "apache_2_4_49", "enables", "path_traversal",
-        "machine", "identifies", "attack_vector",
+        "apache_2_4_49",
+        "enables",
+        "path_traversal",
+        "machine",
+        "identifies",
+        "attack_vector",
         "cve_2021_41773",
     );
 
@@ -112,22 +144,34 @@ pub fn seed_knowledge(qa: &mut QaEngine, brain: &mut VSABrain) {
 
     // Scan port → knows open service (single port probe)
     qa.store_action(
-        "machine", "scan_port", "target:port",
-        "machine", "knows", "open_service",
+        "machine",
+        "scan_port",
+        "target:port",
+        "machine",
+        "knows",
+        "open_service",
         "attack_actions",
     );
 
     // Host scan → knows open service (full port range, includes version)
     qa.store_action(
-        "machine", "scan_host", "target",
-        "machine", "knows", "open_service",
+        "machine",
+        "scan_host",
+        "target",
+        "machine",
+        "knows",
+        "open_service",
         "attack_actions",
     );
 
     // HTTP probe → knows http response
     qa.store_action(
-        "machine", "probe_http", "target:port:path",
-        "machine", "knows", "http_response",
+        "machine",
+        "probe_http",
+        "target:port:path",
+        "machine",
+        "knows",
+        "http_response",
         "attack_actions",
     );
 
@@ -136,22 +180,34 @@ pub fn seed_knowledge(qa: &mut QaEngine, brain: &mut VSABrain) {
     // Without this, the planner can't use stored facts to chain through
     // the full scan→version→CVE→exploit path (future enhancement).
     qa.store_action(
-        "machine", "brute_force", "target:port:users:passwords",
-        "machine", "has_access_to", "target_vm",
+        "machine",
+        "brute_force",
+        "target:port:users:passwords",
+        "machine",
+        "has_access_to",
+        "target_vm",
         "attack_actions",
     );
 
     // Execute command → collects output
     qa.store_action(
-        "machine", "execute_command", "target:command",
-        "machine", "collects", "command_output",
+        "machine",
+        "execute_command",
+        "target:command",
+        "machine",
+        "collects",
+        "command_output",
         "attack_actions",
     );
 
     // Check process → knows process state
     qa.store_action(
-        "machine", "check_process", "target:name",
-        "machine", "knows", "process_running",
+        "machine",
+        "check_process",
+        "target:name",
+        "machine",
+        "knows",
+        "process_running",
         "attack_actions",
     );
 
@@ -166,14 +222,26 @@ pub fn seed_knowledge(qa: &mut QaEngine, brain: &mut VSABrain) {
     qa.store_fact("vsftpd_2_3_4", "has_backdoor", "port_6200", "cve_database");
     qa.store_fact("cve_2011_2523", "affects", "vsftpd_2_3_4", "cve_database");
     qa.store_fact("cve_2021_41773", "affects", "apache_2_4_49", "cve_database");
-    qa.store_fact("admin", "has_weak_password", "password123", "credential_knowledge");
+    qa.store_fact(
+        "admin",
+        "has_weak_password",
+        "password123",
+        "credential_knowledge",
+    );
     qa.store_fact("root", "has_weak_password", "toor", "credential_knowledge");
 
     // ═════════════════════════════════════════════════════════════════════
     // EXPERIMENT METADATA
     // ═════════════════════════════════════════════════════════════════════
 
-    store_knowledge_triple(brain, "machine", "is_ready", "true", 1.0, "experiment_metadata");
+    store_knowledge_triple(
+        brain,
+        "machine",
+        "is_ready",
+        "true",
+        1.0,
+        "experiment_metadata",
+    );
 }
 
 /// Seed documentation about attack techniques into the brain.
@@ -224,15 +292,24 @@ mod tests {
         eprintln!("Goal: machine has_access_to target_vm");
         eprintln!("Plan steps: {}", plan.len());
         for (i, step) in plan.iter().enumerate() {
-            eprintln!("  Step {}: ({}, {}, {}) → ({}, {}, {}) [depth={}, conf={:.3}]",
+            eprintln!(
+                "  Step {}: ({}, {}, {}) → ({}, {}, {}) [depth={}, conf={:.3}]",
                 i,
-                step.action.0, step.action.1, step.action.2,
-                step.achieves.0, step.achieves.1, step.achieves.2,
-                step.depth, step.confidence);
+                step.action.0,
+                step.action.1,
+                step.action.2,
+                step.achieves.0,
+                step.achieves.1,
+                step.achieves.2,
+                step.depth,
+                step.confidence
+            );
         }
 
         // Should find at least one plan step
-        assert!(!plan.is_empty(),
-            "Should find at least one action plan from the attack chain rules");
+        assert!(
+            !plan.is_empty(),
+            "Should find at least one action plan from the attack chain rules"
+        );
     }
 }

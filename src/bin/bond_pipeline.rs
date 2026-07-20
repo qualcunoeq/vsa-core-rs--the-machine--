@@ -49,9 +49,14 @@ fn main() {
     let load_start = Instant::now();
     let load = match crucible.reader.load_all_sources() {
         Ok(report) => {
-            println!("  Loaded: {} daily + {} FOMC + {} macro = {} total  [{:?}]",
-                report.daily_features, report.fomc_minutes, report.macro_surprises,
-                report.total, load_start.elapsed());
+            println!(
+                "  Loaded: {} daily + {} FOMC + {} macro = {} total  [{:?}]",
+                report.daily_features,
+                report.fomc_minutes,
+                report.macro_surprises,
+                report.total,
+                load_start.elapsed()
+            );
             // Verify source tracking
             let counts = crucible.reader.count_by_source();
             println!("  Source counts: {:?}", counts);
@@ -78,16 +83,21 @@ fn main() {
             let entry = source_samples.entry(label).or_insert(0);
             if *entry < 2 {
                 let pop = state.encoded.count_ones() as f64 / 10240.0 * 100.0;
-                println!("    {}[{}]: date={}, popcount={:.1}%",
-                    label, *entry, state.date, pop);
+                println!(
+                    "    {}[{}]: date={}, popcount={:.1}%",
+                    label, *entry, state.date, pop
+                );
                 *entry += 1;
             }
         }
 
         if crucible.reader.states.len() >= 2 {
-            let d = crucible.reader.get_state(0).unwrap().encoded
-                .normalized_hamming_distance(
-                    &crucible.reader.get_state(1).unwrap().encoded);
+            let d = crucible
+                .reader
+                .get_state(0)
+                .unwrap()
+                .encoded
+                .normalized_hamming_distance(&crucible.reader.get_state(1).unwrap().encoded);
             println!("  Distance between first two states: {:.4}", d);
         }
     }
@@ -95,9 +105,11 @@ fn main() {
     // ── Step 3: Run the cognitive pipeline ─────────────────────────────
     if warm_only {
         println!("[bond_pipeline] --warm mode: data loaded, pipeline skipped.");
-        println!("  Summary: {} states across {} sources",
+        println!(
+            "  Summary: {} states across {} sources",
             crucible.reader.count(),
-            crucible.reader.count_by_source().len());
+            crucible.reader.count_by_source().len()
+        );
         std::process::exit(0);
     }
 
@@ -111,7 +123,10 @@ fn main() {
     let total_elapsed = start.elapsed();
     let counts = crucible.reader.count_by_source();
     let l2_count = crucible.abstractor.coherence.len();
-    let l3_count = crucible.hierarchy.levels.get(2)
+    let l3_count = crucible
+        .hierarchy
+        .levels
+        .get(2)
         .map(|l| l.centroids.iter().filter(|c| c.count_ones() > 0).count())
         .unwrap_or(0);
 
@@ -119,18 +134,38 @@ fn main() {
     println!("  ═══════════════════════════════════════════");
     println!("  BOND PIPELINE RESULTS");
     println!("  ═══════════════════════════════════════════");
-    println!("  Total states:   {} ({} daily, {} FOMC, {} macro)",
+    println!(
+        "  Total states:   {} ({} daily, {} FOMC, {} macro)",
         crucible.reader.count(),
-        counts.get(&the_machine::bond_feeder::DataSource::DailyFeatures).unwrap_or(&0),
-        counts.get(&the_machine::bond_feeder::DataSource::FomcMinutes).unwrap_or(&0),
-        counts.get(&the_machine::bond_feeder::DataSource::MacroSurprises).unwrap_or(&0));
-    println!("  L1 centroids:   {}", crucible.hierarchy.levels[0].centroids.len());
+        counts
+            .get(&the_machine::bond_feeder::DataSource::DailyFeatures)
+            .unwrap_or(&0),
+        counts
+            .get(&the_machine::bond_feeder::DataSource::FomcMinutes)
+            .unwrap_or(&0),
+        counts
+            .get(&the_machine::bond_feeder::DataSource::MacroSurprises)
+            .unwrap_or(&0)
+    );
+    println!(
+        "  L1 centroids:   {}",
+        crucible.hierarchy.levels[0].centroids.len()
+    );
     println!("  Avg error:      {:.4}", crucible.predictive.avg_error);
-    println!("  Prediction acc: {:.1}%", crucible.prediction_accuracy(20) * 100.0);
+    println!(
+        "  Prediction acc: {:.1}%",
+        crucible.prediction_accuracy(20) * 100.0
+    );
     println!("  L2 concepts:    {}", l2_count);
     println!("  L3 concepts:    {}", l3_count);
-    println!("  Abstractions:   {}", crucible.abstractor.total_abstractions_created);
-    println!("  Dissolved:      {}", crucible.abstractor.total_abstractions_dissolved);
+    println!(
+        "  Abstractions:   {}",
+        crucible.abstractor.total_abstractions_created
+    );
+    println!(
+        "  Dissolved:      {}",
+        crucible.abstractor.total_abstractions_dissolved
+    );
     println!("  Ticks:          {}", crucible.tick);
     println!("  Pipeline time:  {:?}", pipeline_elapsed);
     println!("  Total time:     {:?}", total_elapsed);
@@ -162,8 +197,7 @@ fn main() {
         "exit_code": 0,
     });
 
-    let status_str = serde_json::to_string_pretty(&status)
-        .unwrap_or_else(|_| "{}".to_string());
+    let status_str = serde_json::to_string_pretty(&status).unwrap_or_else(|_| "{}".to_string());
     match std::fs::write("/tmp/bond_pipeline_status.json", &status_str) {
         Ok(_) => println!("[bond_pipeline] Status written to /tmp/bond_pipeline_status.json"),
         Err(e) => eprintln!("[bond_pipeline] WARN: Could not write status file: {}", e),

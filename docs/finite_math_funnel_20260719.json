@@ -1,0 +1,27 @@
+{
+  "source": "data/hle.jsonl",
+  "input_slice": "broad_math_task_kind=finite_combinatorics",
+  "prompts_scanned": 215,
+  "explicit_bounded_operation": 0,
+  "uniformity_explicit": 10,
+  "task_counts": {
+    "advanced_combinatorics": 16,
+    "advanced_probability": 3,
+    "domain_modeling_required": 50,
+    "expectation_finite_support": 4,
+    "recurrence": 1,
+    "unclassified": 111,
+    "uniform_finite_probability": 28,
+    "variance_finite_support": 2
+  },
+  "support_counts": {
+    "missing_replacement_semantics": 2,
+    "missing_sampling_policy": 23,
+    "outside_finite_math": 95,
+    "requires_advanced_theorem": 20,
+    "requires_combinatorial_modeling": 50,
+    "requires_diagram_or_table": 16,
+    "requires_probability_modeling": 9
+  },
+  "decision": "do_not_build_finite_math_solver_yet"
+}

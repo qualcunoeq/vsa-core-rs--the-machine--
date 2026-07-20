@@ -1,4 +1,4 @@
-use crate::{Hypervector, LSH_SECTOR_COUNT, HD_DIMENSION};
+use crate::{Hypervector, HD_DIMENSION, LSH_SECTOR_COUNT};
 use std::collections::HashMap;
 use std::sync::atomic::{AtomicU64, Ordering};
 
@@ -13,7 +13,7 @@ pub const MIN_RECONSTRUCTION_ENERGY: f64 = 0.65;
 pub const PLATEAU_PATIENCE: usize = 8;
 
 /// ██ UPGRADE v3.0: Beam search width for multi-hypothesis resonator ██
-/// Higher values improve factorization success rate at the cost of O(K·B³) 
+/// Higher values improve factorization success rate at the cost of O(K·B³)
 /// compute per iteration.  B=3 gives 27 hypotheses evaluated per iteration,
 /// which is fast for typical vocabulary sizes (10-30 terms per slot).
 pub const BEAM_WIDTH: usize = 3;
@@ -51,13 +51,42 @@ impl ResonatorVocabulary {
             lsh_fallback: AtomicU64::new(0),
         };
         let baseline = vec![
-            "sys_read", "sys_write", "execute_bash", "tcp_send",
-            "Agent-1", "Agent-2", "Agent-3", "Broker", "Finch",
-            "Anomaly", "Stress", "Stable", "Alert", "Background", "Normal",
-            "Signal", "State", "Focus",
-            "hosts", "ledger", "read", "write", "execute", "panic", "sync",
-            "What", "is", "the", "anomaly", "breached", "server", "admin",
-            "IF_RULE", "CAUSE_RULE", "THEN_RULE", "consequence",
+            "sys_read",
+            "sys_write",
+            "execute_bash",
+            "tcp_send",
+            "Agent-1",
+            "Agent-2",
+            "Agent-3",
+            "Broker",
+            "Finch",
+            "Anomaly",
+            "Stress",
+            "Stable",
+            "Alert",
+            "Background",
+            "Normal",
+            "Signal",
+            "State",
+            "Focus",
+            "hosts",
+            "ledger",
+            "read",
+            "write",
+            "execute",
+            "panic",
+            "sync",
+            "What",
+            "is",
+            "the",
+            "anomaly",
+            "breached",
+            "server",
+            "admin",
+            "IF_RULE",
+            "CAUSE_RULE",
+            "THEN_RULE",
+            "consequence",
         ];
         for term in baseline {
             vocab.register_term(term);
@@ -113,7 +142,9 @@ impl ResonatorVocabulary {
         let mut best_sim = -1.0;
 
         for (idx, (term, vec)) in term_vec.iter().enumerate() {
-            if idx % LSH_SECTOR_COUNT != sector { continue; }
+            if idx % LSH_SECTOR_COUNT != sector {
+                continue;
+            }
             let sim = 1.0 - vector.normalized_hamming_distance(vec);
             if sim > best_sim {
                 best_sim = sim;
@@ -222,7 +253,12 @@ impl ResonatorVocabulary {
     ///
     /// This is used by the beam search resonator to generate multiple
     /// candidate factor assignments per iteration.
-    pub fn cleanup_top_n(&self, vector: &Hypervector, subset: &[String], n: usize) -> Vec<(String, f64)> {
+    pub fn cleanup_top_n(
+        &self,
+        vector: &Hypervector,
+        subset: &[String],
+        n: usize,
+    ) -> Vec<(String, f64)> {
         if subset.is_empty() || n == 0 {
             return vec![];
         }
@@ -255,9 +291,8 @@ impl ResonatorVocabulary {
     ///
     /// Returns the number of pruned terms.
     pub fn prune_vocabulary(&mut self, theta_sim: f64) -> usize {
-        let terms: Vec<(String, Hypervector)> = self.terms.iter()
-            .map(|(k, v)| (k.clone(), *v))
-            .collect();
+        let terms: Vec<(String, Hypervector)> =
+            self.terms.iter().map(|(k, v)| (k.clone(), *v)).collect();
 
         if terms.len() < 3 {
             return 0; // nothing to prune
@@ -288,9 +323,8 @@ impl ResonatorVocabulary {
             }
 
             // Compute cluster centroid (bundle of all members)
-            let refs: Vec<&Hypervector> = cluster_indices.iter()
-                .map(|&idx| &terms[idx].1)
-                .collect();
+            let refs: Vec<&Hypervector> =
+                cluster_indices.iter().map(|&idx| &terms[idx].1).collect();
             let centroid = Hypervector::bundle(&refs);
 
             // Pick the term closest to the centroid as the representative
@@ -382,7 +416,10 @@ pub struct FactorHypothesis {
 /// Returns `(adaptive_patience, adaptive_threshold)`:
 /// - `adaptive_patience`: iterations before noise injection, ranges from 4 to 16
 /// - `adaptive_threshold`: minimum reconstruction energy, ranges from 0.55 to 0.70
-pub fn adaptive_resonance_params(hypotheses: &[FactorHypothesis], base_energy: f64) -> (usize, f64) {
+pub fn adaptive_resonance_params(
+    hypotheses: &[FactorHypothesis],
+    base_energy: f64,
+) -> (usize, f64) {
     if hypotheses.len() < 2 {
         return (PLATEAU_PATIENCE, MIN_RECONSTRUCTION_ENERGY);
     }
@@ -402,7 +439,11 @@ pub fn adaptive_resonance_params(hypotheses: &[FactorHypothesis], base_energy: f
     let entropy = |counts: &HashMap<&str, usize>| -> f64 {
         counts.values().fold(0.0, |acc, &c| {
             let p = c as f64 / n;
-            if p > 0.0 { acc - p * p.log2() } else { acc }
+            if p > 0.0 {
+                acc - p * p.log2()
+            } else {
+                acc
+            }
         })
     };
 
@@ -483,8 +524,10 @@ pub fn factorize_svo(
     }
 
     // ── Initialise initial hypothesis from slot-specific bundles ────
-    let s_init_vectors: Vec<&Hypervector> =
-        subjects.iter().filter_map(|t| vocab.get_vector(t)).collect();
+    let s_init_vectors: Vec<&Hypervector> = subjects
+        .iter()
+        .filter_map(|t| vocab.get_vector(t))
+        .collect();
     let v_init_vectors: Vec<&Hypervector> =
         verbs.iter().filter_map(|t| vocab.get_vector(t)).collect();
     let o_init_vectors: Vec<&Hypervector> =
@@ -549,17 +592,21 @@ pub fn factorize_svo(
 
             // ── Enumerate all combinations ──────────────────────────
             for (s_str, _) in &s_cands {
-                let s_vec = vocab.get_vector(s_str).cloned()
+                let s_vec = vocab
+                    .get_vector(s_str)
+                    .cloned()
                     .unwrap_or_else(|| hyp.s_vec);
                 for (v_str, _) in &v_cands {
-                    let v_vec = vocab.get_vector(v_str).cloned()
+                    let v_vec = vocab
+                        .get_vector(v_str)
+                        .cloned()
                         .unwrap_or_else(|| hyp.v_vec);
                     for (o_str, _) in &o_cands {
-                        let o_vec = vocab.get_vector(o_str).cloned()
+                        let o_vec = vocab
+                            .get_vector(o_str)
+                            .cloned()
                             .unwrap_or_else(|| hyp.o_vec);
-                        let energy = reconstruction_energy(
-                            &s_vec, &v_vec, &o_vec, thought_vector,
-                        );
+                        let energy = reconstruction_energy(&s_vec, &v_vec, &o_vec, thought_vector);
                         candidates.push(FactorHypothesis {
                             s_str: s_str.clone(),
                             v_str: v_str.clone(),
@@ -574,9 +621,8 @@ pub fn factorize_svo(
             }
 
             // Also push the current hypothesis with updated energy
-            let cur_energy = reconstruction_energy(
-                &hyp.s_vec, &hyp.v_vec, &hyp.o_vec, thought_vector,
-            );
+            let cur_energy =
+                reconstruction_energy(&hyp.s_vec, &hyp.v_vec, &hyp.o_vec, thought_vector);
             candidates.push(FactorHypothesis {
                 s_str: hyp.s_str.clone(),
                 v_str: hyp.v_str.clone(),
@@ -590,7 +636,11 @@ pub fn factorize_svo(
 
         // ── Deduplicate and prune to BEAM_WIDTH ─────────────────────
         // Sort by energy descending
-        candidates.sort_by(|a, b| b.energy.partial_cmp(&a.energy).unwrap_or(std::cmp::Ordering::Equal));
+        candidates.sort_by(|a, b| {
+            b.energy
+                .partial_cmp(&a.energy)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
 
         // Deduplicate: keep first occurrence of each unique (s,v,o) tuple
         let mut seen = std::collections::HashSet::new();
@@ -626,21 +676,35 @@ pub fn factorize_svo(
         // If the top hypothesis has converged (all strings non-empty and
         // every hypothesis in the beam agrees on all 3 factors), we're done.
         let best = &beam[0];
-        let top3_agree = beam.len() >= 3 && beam.iter().all(|h| {
-            !h.s_str.is_empty() && h.s_str == best.s_str
-                && !h.v_str.is_empty() && h.v_str == best.v_str
-                && !h.o_str.is_empty() && h.o_str == best.o_str
-        });
+        let top3_agree = beam.len() >= 3
+            && beam.iter().all(|h| {
+                !h.s_str.is_empty()
+                    && h.s_str == best.s_str
+                    && !h.v_str.is_empty()
+                    && h.v_str == best.v_str
+                    && !h.o_str.is_empty()
+                    && h.o_str == best.o_str
+            });
 
         if top3_agree {
             if best.energy >= adaptive_threshold {
-                return Some((best.s_str.clone(), best.v_str.clone(), best.o_str.clone(), best.energy));
+                return Some((
+                    best.s_str.clone(),
+                    best.v_str.clone(),
+                    best.o_str.clone(),
+                    best.energy,
+                ));
             }
             // Low energy despite consensus → hallucination or local minimum.
             // Apply targeted noise to diversify the beam.
             let temperature = 1.0 - (iteration as f64 / max_iterations as f64);
             for hyp in beam.iter_mut() {
-                inject_noise(&mut hyp.s_vec, &mut hyp.v_vec, &mut hyp.o_vec, temperature * 0.5);
+                inject_noise(
+                    &mut hyp.s_vec,
+                    &mut hyp.v_vec,
+                    &mut hyp.o_vec,
+                    temperature * 0.5,
+                );
             }
             iter_since_best = 0;
             continue;
@@ -649,7 +713,12 @@ pub fn factorize_svo(
         // Single-hypothesis convergence (backward compat path)
         if !best.s_str.is_empty() && beam.len() == 1 {
             if best.energy >= adaptive_threshold {
-                return Some((best.s_str.clone(), best.v_str.clone(), best.o_str.clone(), best.energy));
+                return Some((
+                    best.s_str.clone(),
+                    best.v_str.clone(),
+                    best.o_str.clone(),
+                    best.energy,
+                ));
             }
             let temperature = 1.0 - (iteration as f64 / max_iterations as f64);
             // Split the borrow to satisfy the borrow checker
@@ -704,12 +773,7 @@ pub fn factorize_svo(
 
 /// Inject deterministic noise into factor vectors to escape local minima.
 /// Noise magnitude is proportional to `temperature` (simulated annealing).
-fn inject_noise(
-    s: &mut Hypervector,
-    v: &mut Hypervector,
-    o: &mut Hypervector,
-    temperature: f64,
-) {
+fn inject_noise(s: &mut Hypervector, v: &mut Hypervector, o: &mut Hypervector, temperature: f64) {
     if temperature <= 0.0 {
         return;
     }
@@ -851,8 +915,16 @@ pub fn lsh_sector(vector: &Hypervector) -> usize {
     let bit_8 = (vector.bits[9] ^ vector.bits[110]).count_ones() % 2;
     let bit_9 = (vector.bits[10] ^ vector.bits[130]).count_ones() % 2;
 
-    ((bit_9 << 9) | (bit_8 << 8) | (bit_7 << 7) | (bit_6 << 6) | (bit_5 << 5)
-        | (bit_4 << 4) | (bit_3 << 3) | (bit_2 << 2) | (bit_1 << 1) | bit_0) as usize
+    ((bit_9 << 9)
+        | (bit_8 << 8)
+        | (bit_7 << 7)
+        | (bit_6 << 6)
+        | (bit_5 << 5)
+        | (bit_4 << 4)
+        | (bit_3 << 3)
+        | (bit_2 << 2)
+        | (bit_1 << 1)
+        | bit_0) as usize
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────
@@ -949,14 +1021,7 @@ mod tests {
     fn test_empty_vocab_returns_none() {
         let vocab = ResonatorVocabulary::new();
         let t = Hypervector::new_random();
-        let res = factorize_svo(
-            &t,
-            &vocab,
-            &[],
-            &[],
-            &[],
-            10,
-        );
+        let res = factorize_svo(&t, &vocab, &[], &[], &[], 10);
         assert!(res.is_none());
     }
 
@@ -1015,9 +1080,9 @@ mod tests {
         // 5σ tolerance with Bonferroni correction for 1024 simultaneous bins.
         // σ ≈ sqrt(100000 * 1/1024 * 1023/1024) ≈ sqrt(97.6) ≈ 9.88
         // 5σ ≈ 49.4 — accounts for multiple testing across 1024 bins.
-        let sigma = (n as f64 * (1.0 / LSH_SECTOR_COUNT as f64)
-            * (1.0 - 1.0 / LSH_SECTOR_COUNT as f64))
-            .sqrt();
+        let sigma =
+            (n as f64 * (1.0 / LSH_SECTOR_COUNT as f64) * (1.0 - 1.0 / LSH_SECTOR_COUNT as f64))
+                .sqrt();
         let tolerance = (5.0 * sigma).ceil() as usize;
 
         let mut max_dev = 0usize;
@@ -1033,7 +1098,11 @@ mod tests {
             assert!(
                 dev <= tolerance,
                 "LSH sector {} has {} entries (expected ~{:.1}, deviation {} > tolerance {})",
-                i, count, expected, dev, tolerance
+                i,
+                count,
+                expected,
+                dev,
+                tolerance
             );
         }
         eprintln!(
@@ -1066,7 +1135,7 @@ mod tests {
 
         let s_hv = vocab.get_vector("IF_RULE").unwrap();
         let v_hv = vocab.get_vector("Breach").unwrap();
-        
+
         // Nested Object: "Finch write ledger"
         let sub_s = vocab.get_vector("Finch").unwrap();
         let sub_v = vocab.get_vector("write").unwrap();
@@ -1081,7 +1150,11 @@ mod tests {
             "Finch".to_string(),
             "Agent-1".to_string(),
         ];
-        let verbs = vec!["Breach".to_string(), "write".to_string(), "read".to_string()];
+        let verbs = vec![
+            "Breach".to_string(),
+            "write".to_string(),
+            "read".to_string(),
+        ];
         let objects = vec![
             "ledger".to_string(),
             "hosts".to_string(),
@@ -1089,11 +1162,14 @@ mod tests {
         ];
 
         let res = factorize_recursive(&t, &vocab, &subjects, &verbs, &objects, 30);
-        assert!(res.is_some(), "Recursive resonator should resolve nested thought");
+        assert!(
+            res.is_some(),
+            "Recursive resonator should resolve nested thought"
+        );
         let (s, v, o_slot) = res.unwrap();
         assert_eq!(s, "IF_RULE");
         assert_eq!(v, "Breach");
-        
+
         match o_slot {
             RecursiveSlot::Nested(boxed) => {
                 let (sub_s_res, sub_v_res, sub_o_slot) = *boxed;
@@ -1121,7 +1197,10 @@ mod tests {
         let top2 = vocab.cleanup_top_n(query, &subjects, 2);
         assert_eq!(top2.len(), 2, "Should return exactly 2 candidates");
         assert_eq!(top2[0].0, "Finch", "Best candidate should be exact match");
-        assert!(top2[0].1 >= top2[1].1, "Results should be sorted by similarity");
+        assert!(
+            top2[0].1 >= top2[1].1,
+            "Results should be sorted by similarity"
+        );
     }
 
     #[test]
@@ -1132,7 +1211,11 @@ mod tests {
         let subjects = vec!["Finch".to_string()];
 
         let top5 = vocab.cleanup_top_n(query, &subjects, 5);
-        assert_eq!(top5.len(), 1, "Should return at most the available candidates");
+        assert_eq!(
+            top5.len(),
+            1,
+            "Should return at most the available candidates"
+        );
     }
 
     #[test]
@@ -1158,7 +1241,10 @@ mod tests {
         ];
 
         let res = factorize_svo(&t, &vocab, &subjects, &verbs, &objects, 30);
-        assert!(res.is_some(), "Beam resonator should resolve the thought vector");
+        assert!(
+            res.is_some(),
+            "Beam resonator should resolve the thought vector"
+        );
         let (s, v, o, energy) = res.unwrap();
         assert_eq!(s, "Finch", "Subject should be Finch");
         assert_eq!(v, "write", "Verb should be write");
@@ -1220,41 +1306,123 @@ mod tests {
     fn test_adaptive_resonance_params_high_diversity() {
         // Create diverse hypotheses (all different)
         let mut vocab = make_vocab();
-        let s_vec = vocab.get_vector("Finch").cloned().unwrap_or_else(Hypervector::new_random);
-        let v_vec = vocab.get_vector("write").cloned().unwrap_or_else(Hypervector::new_random);
-        let o_vec = vocab.get_vector("ledger").cloned().unwrap_or_else(Hypervector::new_random);
+        let s_vec = vocab
+            .get_vector("Finch")
+            .cloned()
+            .unwrap_or_else(Hypervector::new_random);
+        let v_vec = vocab
+            .get_vector("write")
+            .cloned()
+            .unwrap_or_else(Hypervector::new_random);
+        let o_vec = vocab
+            .get_vector("ledger")
+            .cloned()
+            .unwrap_or_else(Hypervector::new_random);
 
         let hypotheses = vec![
-            FactorHypothesis { s_str: "Finch".into(), v_str: "write".into(), o_str: "ledger".into(), s_vec: s_vec.clone(), v_vec: v_vec.clone(), o_vec: o_vec.clone(), energy: 0.85 },
-            FactorHypothesis { s_str: "Agent-1".into(), v_str: "read".into(), o_str: "hosts".into(), s_vec: s_vec.clone(), v_vec: v_vec.clone(), o_vec: o_vec.clone(), energy: 0.65 },
-            FactorHypothesis { s_str: "Broker".into(), v_str: "panic".into(), o_str: "server".into(), s_vec, v_vec, o_vec, energy: 0.55 },
+            FactorHypothesis {
+                s_str: "Finch".into(),
+                v_str: "write".into(),
+                o_str: "ledger".into(),
+                s_vec: s_vec.clone(),
+                v_vec: v_vec.clone(),
+                o_vec: o_vec.clone(),
+                energy: 0.85,
+            },
+            FactorHypothesis {
+                s_str: "Agent-1".into(),
+                v_str: "read".into(),
+                o_str: "hosts".into(),
+                s_vec: s_vec.clone(),
+                v_vec: v_vec.clone(),
+                o_vec: o_vec.clone(),
+                energy: 0.65,
+            },
+            FactorHypothesis {
+                s_str: "Broker".into(),
+                v_str: "panic".into(),
+                o_str: "server".into(),
+                s_vec,
+                v_vec,
+                o_vec,
+                energy: 0.55,
+            },
         ];
 
         let (patience, threshold) = adaptive_resonance_params(&hypotheses, 0.5);
         // High diversity should increase patience
-        assert!(patience >= PLATEAU_PATIENCE, "High diversity should increase patience: {}", patience);
+        assert!(
+            patience >= PLATEAU_PATIENCE,
+            "High diversity should increase patience: {}",
+            patience
+        );
         // High diversity should lower threshold
-        assert!(threshold <= MIN_RECONSTRUCTION_ENERGY, "High diversity should lower threshold: {}", threshold);
+        assert!(
+            threshold <= MIN_RECONSTRUCTION_ENERGY,
+            "High diversity should lower threshold: {}",
+            threshold
+        );
     }
 
     #[test]
     fn test_adaptive_resonance_params_low_diversity() {
         // Create unanimous hypotheses (all same)
         let mut vocab = make_vocab();
-        let s_vec = vocab.get_vector("Finch").cloned().unwrap_or_else(Hypervector::new_random);
-        let v_vec = vocab.get_vector("write").cloned().unwrap_or_else(Hypervector::new_random);
-        let o_vec = vocab.get_vector("ledger").cloned().unwrap_or_else(Hypervector::new_random);
+        let s_vec = vocab
+            .get_vector("Finch")
+            .cloned()
+            .unwrap_or_else(Hypervector::new_random);
+        let v_vec = vocab
+            .get_vector("write")
+            .cloned()
+            .unwrap_or_else(Hypervector::new_random);
+        let o_vec = vocab
+            .get_vector("ledger")
+            .cloned()
+            .unwrap_or_else(Hypervector::new_random);
 
         let hypotheses = vec![
-            FactorHypothesis { s_str: "Finch".into(), v_str: "write".into(), o_str: "ledger".into(), s_vec: s_vec.clone(), v_vec: v_vec.clone(), o_vec: o_vec.clone(), energy: 0.90 },
-            FactorHypothesis { s_str: "Finch".into(), v_str: "write".into(), o_str: "ledger".into(), s_vec: s_vec.clone(), v_vec: v_vec.clone(), o_vec: o_vec, energy: 0.88 },
-            FactorHypothesis { s_str: "Finch".into(), v_str: "write".into(), o_str: "ledger".into(), s_vec, v_vec, o_vec: o_vec.clone(), energy: 0.86 },
+            FactorHypothesis {
+                s_str: "Finch".into(),
+                v_str: "write".into(),
+                o_str: "ledger".into(),
+                s_vec: s_vec.clone(),
+                v_vec: v_vec.clone(),
+                o_vec: o_vec.clone(),
+                energy: 0.90,
+            },
+            FactorHypothesis {
+                s_str: "Finch".into(),
+                v_str: "write".into(),
+                o_str: "ledger".into(),
+                s_vec: s_vec.clone(),
+                v_vec: v_vec.clone(),
+                o_vec: o_vec,
+                energy: 0.88,
+            },
+            FactorHypothesis {
+                s_str: "Finch".into(),
+                v_str: "write".into(),
+                o_str: "ledger".into(),
+                s_vec,
+                v_vec,
+                o_vec: o_vec.clone(),
+                energy: 0.86,
+            },
         ];
 
         let (patience, threshold) = adaptive_resonance_params(&hypotheses, 0.9);
         // Low diversity should keep patience near default
-        assert!(patience <= PLATEAU_PATIENCE + 2, "Low diversity should not increase patience much: {}", patience);
+        assert!(
+            patience <= PLATEAU_PATIENCE + 2,
+            "Low diversity should not increase patience much: {}",
+            patience
+        );
         // High energy means higher threshold
-        assert!(threshold <= MIN_RECONSTRUCTION_ENERGY + 0.01, "Threshold should be reasonable: {}", threshold);
+        assert!(
+            threshold <= MIN_RECONSTRUCTION_ENERGY + 0.01,
+            "Threshold should be reasonable: {}",
+            threshold
+        );
     }
 }

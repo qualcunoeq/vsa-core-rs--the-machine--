@@ -256,11 +256,15 @@ impl ToolRegistry {
         // Use the tool ID itself as the seed for a distinctive fingerprint
         // Rather than n-gram (which clusters similar names), we use a
         // seeded random approach for maximum orthogonality between tools.
-        let seed: u64 = tool_id.bytes().fold(0u64, |acc, b| acc.wrapping_mul(31).wrapping_add(b as u64));
+        let seed: u64 = tool_id
+            .bytes()
+            .fold(0u64, |acc, b| acc.wrapping_mul(31).wrapping_add(b as u64));
         let mut bits = [0u64; 160];
         let mut x = seed;
         for i in 0..160 {
-            x = x.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            x = x
+                .wrapping_mul(6364136223846793005)
+                .wrapping_add(1442695040888963407);
             bits[i] = x;
         }
         Hypervector { bits }
@@ -273,7 +277,8 @@ impl ToolRegistry {
             signature: ToolSignature {
                 tool_id: "http_get".to_string(),
                 fingerprint: Self::tool_fingerprint("http_get"),
-                description: "Fetch a URL via HTTP GET and return the response body as text.".to_string(),
+                description: "Fetch a URL via HTTP GET and return the response body as text."
+                    .to_string(),
                 input_types: vec![ToolParamType {
                     name: "url".to_string(),
                     description: "The URL to fetch".to_string(),
@@ -286,7 +291,11 @@ impl ToolRegistry {
                 }],
                 compute_cost: 0.3,
                 risk_score: 0.1,
-                tags: vec!["network".to_string(), "fetch".to_string(), "http".to_string()],
+                tags: vec![
+                    "network".to_string(),
+                    "fetch".to_string(),
+                    "http".to_string(),
+                ],
             },
             invoke_fn: Arc::new(|params: &[Hypervector]| {
                 if params.is_empty() {
@@ -321,7 +330,11 @@ impl ToolRegistry {
                 }],
                 compute_cost: 0.4,
                 risk_score: 0.2,
-                tags: vec!["network".to_string(), "http".to_string(), "write".to_string()],
+                tags: vec![
+                    "network".to_string(),
+                    "http".to_string(),
+                    "write".to_string(),
+                ],
             },
             invoke_fn: Arc::new(|params: &[Hypervector]| {
                 if params.len() < 2 {
@@ -349,7 +362,11 @@ impl ToolRegistry {
                 }],
                 compute_cost: 0.5,
                 risk_score: 0.6,
-                tags: vec!["execution".to_string(), "python".to_string(), "code".to_string()],
+                tags: vec![
+                    "execution".to_string(),
+                    "python".to_string(),
+                    "code".to_string(),
+                ],
             },
             invoke_fn: Arc::new(|params: &[Hypervector]| {
                 if params.is_empty() {
@@ -377,7 +394,11 @@ impl ToolRegistry {
                 }],
                 compute_cost: 0.4,
                 risk_score: 0.7,
-                tags: vec!["execution".to_string(), "shell".to_string(), "system".to_string()],
+                tags: vec![
+                    "execution".to_string(),
+                    "shell".to_string(),
+                    "system".to_string(),
+                ],
             },
             invoke_fn: Arc::new(|params: &[Hypervector]| {
                 if params.is_empty() {
@@ -405,7 +426,11 @@ impl ToolRegistry {
                 }],
                 compute_cost: 0.1,
                 risk_score: 0.2,
-                tags: vec!["filesystem".to_string(), "read".to_string(), "io".to_string()],
+                tags: vec![
+                    "filesystem".to_string(),
+                    "read".to_string(),
+                    "io".to_string(),
+                ],
             },
             invoke_fn: Arc::new(|params: &[Hypervector]| {
                 if params.is_empty() {
@@ -420,7 +445,8 @@ impl ToolRegistry {
             signature: ToolSignature {
                 tool_id: "semantic_search".to_string(),
                 fingerprint: Self::tool_fingerprint("semantic_search"),
-                description: "Search the machine's semantic memory for related concepts.".to_string(),
+                description: "Search the machine's semantic memory for related concepts."
+                    .to_string(),
                 input_types: vec![ToolParamType {
                     name: "query".to_string(),
                     description: "Semantic query hypervector".to_string(),
@@ -433,7 +459,11 @@ impl ToolRegistry {
                 }],
                 compute_cost: 0.2,
                 risk_score: 0.0,
-                tags: vec!["memory".to_string(), "search".to_string(), "semantic".to_string()],
+                tags: vec![
+                    "memory".to_string(),
+                    "search".to_string(),
+                    "semantic".to_string(),
+                ],
             },
             invoke_fn: Arc::new(|params: &[Hypervector]| {
                 if params.is_empty() {
@@ -460,7 +490,11 @@ impl ToolRegistry {
     }
 
     /// Discover tools by similarity to a query hypervector.
-    pub fn discover_by_similarity(&self, query: &Hypervector, threshold: f64) -> Vec<(String, f64)> {
+    pub fn discover_by_similarity(
+        &self,
+        query: &Hypervector,
+        threshold: f64,
+    ) -> Vec<(String, f64)> {
         let mut results = Vec::new();
         for (id, tool) in &self.tools {
             let sim = 1.0 - query.normalized_hamming_distance(&tool.signature.fingerprint);
@@ -478,8 +512,14 @@ impl ToolRegistry {
     }
 
     /// Invoke a tool by ID with the given hypervector parameters.
-    pub fn invoke_tool(&self, tool_id: &str, params: &[Hypervector]) -> Result<Hypervector, String> {
-        let tool = self.tools.get(tool_id)
+    pub fn invoke_tool(
+        &self,
+        tool_id: &str,
+        params: &[Hypervector],
+    ) -> Result<Hypervector, String> {
+        let tool = self
+            .tools
+            .get(tool_id)
             .ok_or_else(|| format!("Tool '{}' not found in registry", tool_id))?;
         (tool.invoke_fn)(params)
     }
@@ -498,7 +538,11 @@ impl ToolRegistry {
     /// self-inverse property prevents reliable tool identification. Bundling
     /// preserves similarity: the intent remains similar to the rotated
     /// fingerprint, allowing tool identification via nearest-neighbor search.
-    pub fn encode_tool_call(&self, tool_id: &str, param_vectors: &[Hypervector]) -> Option<Hypervector> {
+    pub fn encode_tool_call(
+        &self,
+        tool_id: &str,
+        param_vectors: &[Hypervector],
+    ) -> Option<Hypervector> {
         let tool = self.tools.get(tool_id)?;
         let rotated_fp = tool.signature.fingerprint.rotate_left(13);
 
@@ -558,7 +602,11 @@ mod tests {
     fn test_tool_registry_builtins() {
         let registry = ToolRegistry::new();
         let tools = registry.list_tools();
-        assert!(tools.len() >= 6, "Should have at least 6 built-in tools, got {}", tools.len());
+        assert!(
+            tools.len() >= 6,
+            "Should have at least 6 built-in tools, got {}",
+            tools.len()
+        );
 
         // Verify specific tools exist
         assert!(registry.get_tool("http_get").is_some());
@@ -611,9 +659,14 @@ mod tests {
         // With bundling, the correct tool should be identified by similarity
         // The parameter is approximately recoverable
         let param_sim = 1.0 - decoded_params[0].normalized_hamming_distance(&param);
-        assert!(param_sim > 0.50, "Parameter roundtrip similarity too low: {}", param_sim);
+        assert!(
+            param_sim > 0.50,
+            "Parameter roundtrip similarity too low: {}",
+            param_sim
+        );
 
-        assert_eq!(decoded_id, "http_get",
+        assert_eq!(
+            decoded_id, "http_get",
             "Tool should be correctly identified. Got '{}', expected 'http_get'",
             decoded_id
         );
@@ -651,9 +704,7 @@ mod tests {
                 risk_score: 0.1,
                 tags: vec!["custom".to_string(), "analysis".to_string()],
             },
-            invoke_fn: Arc::new(|params: &[Hypervector]| {
-                Ok(params[0])
-            }),
+            invoke_fn: Arc::new(|params: &[Hypervector]| Ok(params[0])),
         };
 
         registry.register_tool(custom_tool);

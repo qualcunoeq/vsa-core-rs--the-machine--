@@ -72,11 +72,11 @@ pub struct DmuParams {
 impl Default for DmuParams {
     fn default() -> Self {
         DmuParams {
-            tau_base: 50.0,      // ~100s at 2s/tick
-            kappa: 0.5,          // moderate stability extension
-            alpha: 0.3,          // reinforcement strength
-            beta: 2.0,           // frequency sensitivity
-            floor: 0.05,         // minimum score
+            tau_base: 50.0, // ~100s at 2s/tick
+            kappa: 0.5,     // moderate stability extension
+            alpha: 0.3,     // reinforcement strength
+            beta: 2.0,      // frequency sensitivity
+            floor: 0.05,    // minimum score
             salience_weight: 10.0,
         }
     }
@@ -84,17 +84,27 @@ impl Default for DmuParams {
 
 /// DMU scoring for episodic memory (high decay sensitivity).
 pub fn dmu_params_episodic() -> DmuParams {
-    DmuParams { tau_base: 50.0, ..Default::default() }
+    DmuParams {
+        tau_base: 50.0,
+        ..Default::default()
+    }
 }
 
 /// DMU scoring for semantic memory (slow decay).
 pub fn dmu_params_semantic() -> DmuParams {
-    DmuParams { tau_base: 150.0, ..Default::default() }
+    DmuParams {
+        tau_base: 150.0,
+        ..Default::default()
+    }
 }
 
 /// DMU scoring for emotional/bond memory (very slow decay).
 pub fn dmu_params_bond() -> DmuParams {
-    DmuParams { tau_base: 250.0, alpha: 0.5, ..Default::default() }
+    DmuParams {
+        tau_base: 250.0,
+        alpha: 0.5,
+        ..Default::default()
+    }
 }
 
 /// Compute the DRIFT Memory Utility score for a single retrieval candidate.
@@ -172,40 +182,40 @@ impl CognitiveMode {
     pub fn from_bits(memory: bool, state: bool, novelty: bool) -> Self {
         match (memory, state, novelty) {
             (false, false, false) => CognitiveMode::Quiet,
-            (true,  false, false) => CognitiveMode::Companion,
-            (false, true,  false) => CognitiveMode::Regulated,
-            (false, false, true)  => CognitiveMode::Explorer,
-            (true,  true,  false) => CognitiveMode::Task,
-            (true,  false, true)  => CognitiveMode::Resonant,
-            (false, true,  true)  => CognitiveMode::Frontier,
-            (true,  true,  true)  => CognitiveMode::FullCouncil,
+            (true, false, false) => CognitiveMode::Companion,
+            (false, true, false) => CognitiveMode::Regulated,
+            (false, false, true) => CognitiveMode::Explorer,
+            (true, true, false) => CognitiveMode::Task,
+            (true, false, true) => CognitiveMode::Resonant,
+            (false, true, true) => CognitiveMode::Frontier,
+            (true, true, true) => CognitiveMode::FullCouncil,
         }
     }
 
     /// Extract the 3 bits.
     pub fn bits(&self) -> (bool, bool, bool) {
         match self {
-            CognitiveMode::Quiet       => (false, false, false),
-            CognitiveMode::Companion   => (true,  false, false),
-            CognitiveMode::Regulated   => (false, true,  false),
-            CognitiveMode::Explorer    => (false, false, true),
-            CognitiveMode::Task        => (true,  true,  false),
-            CognitiveMode::Resonant    => (true,  false, true),
-            CognitiveMode::Frontier    => (false, true,  true),
-            CognitiveMode::FullCouncil => (true,  true,  true),
+            CognitiveMode::Quiet => (false, false, false),
+            CognitiveMode::Companion => (true, false, false),
+            CognitiveMode::Regulated => (false, true, false),
+            CognitiveMode::Explorer => (false, false, true),
+            CognitiveMode::Task => (true, true, false),
+            CognitiveMode::Resonant => (true, false, true),
+            CognitiveMode::Frontier => (false, true, true),
+            CognitiveMode::FullCouncil => (true, true, true),
         }
     }
 
     /// Human-readable label.
     pub fn label(&self) -> &'static str {
         match self {
-            CognitiveMode::Quiet       => "QUIET",
-            CognitiveMode::Companion   => "COMPANION",
-            CognitiveMode::Regulated   => "REGULATED",
-            CognitiveMode::Explorer    => "EXPLORER",
-            CognitiveMode::Task        => "TASK",
-            CognitiveMode::Resonant    => "RESONANT",
-            CognitiveMode::Frontier    => "FRONTIER",
+            CognitiveMode::Quiet => "QUIET",
+            CognitiveMode::Companion => "COMPANION",
+            CognitiveMode::Regulated => "REGULATED",
+            CognitiveMode::Explorer => "EXPLORER",
+            CognitiveMode::Task => "TASK",
+            CognitiveMode::Resonant => "RESONANT",
+            CognitiveMode::Frontier => "FRONTIER",
             CognitiveMode::FullCouncil => "FULL_COUNCIL",
         }
     }
@@ -214,13 +224,13 @@ impl CognitiveMode {
     /// Explorer/Resonant/FullCouncil search wider; Quiet/Regulated search narrower.
     pub fn hnsw_ef_multiplier(&self) -> f64 {
         match self {
-            CognitiveMode::Quiet       => 0.8,
-            CognitiveMode::Companion   => 1.0,
-            CognitiveMode::Regulated   => 0.7,
-            CognitiveMode::Explorer    => 1.5,
-            CognitiveMode::Task        => 1.0,
-            CognitiveMode::Resonant    => 1.3,
-            CognitiveMode::Frontier    => 1.2,
+            CognitiveMode::Quiet => 0.8,
+            CognitiveMode::Companion => 1.0,
+            CognitiveMode::Regulated => 0.7,
+            CognitiveMode::Explorer => 1.5,
+            CognitiveMode::Task => 1.0,
+            CognitiveMode::Resonant => 1.3,
+            CognitiveMode::Frontier => 1.2,
             CognitiveMode::FullCouncil => 1.4,
         }
     }
@@ -228,13 +238,13 @@ impl CognitiveMode {
     /// Recommended resonator depth (max iterations).
     pub fn resonator_depth(&self) -> usize {
         match self {
-            CognitiveMode::Quiet       => 15,
-            CognitiveMode::Companion   => 25,
-            CognitiveMode::Regulated   => 20,
-            CognitiveMode::Explorer    => 30,
-            CognitiveMode::Task        => 25,
-            CognitiveMode::Resonant    => 30,
-            CognitiveMode::Frontier    => 28,
+            CognitiveMode::Quiet => 15,
+            CognitiveMode::Companion => 25,
+            CognitiveMode::Regulated => 20,
+            CognitiveMode::Explorer => 30,
+            CognitiveMode::Task => 25,
+            CognitiveMode::Resonant => 30,
+            CognitiveMode::Frontier => 28,
             CognitiveMode::FullCouncil => 35,
         }
     }
@@ -277,14 +287,17 @@ fn mode_hv(mode: CognitiveMode) -> &'static Hypervector {
     static MODE_HVS: OnceLock<Vec<(CognitiveMode, Hypervector)>> = OnceLock::new();
     let table = MODE_HVS.get_or_init(|| {
         vec![
-            (CognitiveMode::Quiet,       Hypervector::new_zero()),
-            (CognitiveMode::Companion,   mode_hv_for("COG_MODE_COMPANION")),
-            (CognitiveMode::Regulated,   mode_hv_for("COG_MODE_REGULATED")),
-            (CognitiveMode::Explorer,    mode_hv_for("COG_MODE_EXPLORER")),
-            (CognitiveMode::Task,        mode_hv_for("COG_MODE_TASK")),
-            (CognitiveMode::Resonant,    mode_hv_for("COG_MODE_RESONANT")),
-            (CognitiveMode::Frontier,    mode_hv_for("COG_MODE_FRONTIER")),
-            (CognitiveMode::FullCouncil, mode_hv_for("COG_MODE_FULL_COUNCIL")),
+            (CognitiveMode::Quiet, Hypervector::new_zero()),
+            (CognitiveMode::Companion, mode_hv_for("COG_MODE_COMPANION")),
+            (CognitiveMode::Regulated, mode_hv_for("COG_MODE_REGULATED")),
+            (CognitiveMode::Explorer, mode_hv_for("COG_MODE_EXPLORER")),
+            (CognitiveMode::Task, mode_hv_for("COG_MODE_TASK")),
+            (CognitiveMode::Resonant, mode_hv_for("COG_MODE_RESONANT")),
+            (CognitiveMode::Frontier, mode_hv_for("COG_MODE_FRONTIER")),
+            (
+                CognitiveMode::FullCouncil,
+                mode_hv_for("COG_MODE_FULL_COUNCIL"),
+            ),
         ]
     });
     &table.iter().find(|(m, _)| *m == mode).unwrap().1
@@ -348,7 +361,14 @@ pub struct DcpMessage {
 }
 
 impl DcpMessage {
-    pub fn new(source: String, role: DcpRole, content: Hypervector, priority: f64, id: u64, tick: u64) -> Self {
+    pub fn new(
+        source: String,
+        role: DcpRole,
+        content: Hypervector,
+        priority: f64,
+        id: u64,
+        tick: u64,
+    ) -> Self {
         DcpMessage {
             source_node: source,
             source_role: role,
@@ -476,7 +496,13 @@ impl ConsensusEngine {
     }
 
     /// Vote on an existing thread.
-    pub fn vote(&mut self, thread_id: u64, voter_id: &str, voter_role: DcpRole, vote_hv: Hypervector) {
+    pub fn vote(
+        &mut self,
+        thread_id: u64,
+        voter_id: &str,
+        voter_role: DcpRole,
+        vote_hv: Hypervector,
+    ) {
         if let Some(thread) = self.threads.get_mut(&thread_id) {
             thread.vote(voter_id, voter_role, vote_hv);
         }
@@ -485,7 +511,9 @@ impl ConsensusEngine {
     /// Try to resolve a thread.  Returns the resolution hypervector if
     /// enough voters have participated.
     pub fn try_resolve(&mut self, thread_id: u64) -> Option<Hypervector> {
-        let enough_voters = self.threads.get(&thread_id)
+        let enough_voters = self
+            .threads
+            .get(&thread_id)
             .map(|t| t.votes.len() >= self.min_voters)
             .unwrap_or(false);
 
@@ -507,7 +535,10 @@ impl ConsensusEngine {
 
     /// Number of open threads.
     pub fn open_count(&self) -> usize {
-        self.threads.values().filter(|t| t.state == ConsensusState::Open).count()
+        self.threads
+            .values()
+            .filter(|t| t.state == ConsensusState::Open)
+            .count()
     }
 }
 
@@ -541,19 +572,26 @@ pub enum Need {
 
 impl Need {
     pub fn all() -> [Need; 7] {
-        [Need::Energy, Need::Coherence, Need::Integration,
-         Need::Connection, Need::Growth, Need::Autonomy, Need::Integrity]
+        [
+            Need::Energy,
+            Need::Coherence,
+            Need::Integration,
+            Need::Connection,
+            Need::Growth,
+            Need::Autonomy,
+            Need::Integrity,
+        ]
     }
 
     pub fn label(&self) -> &'static str {
         match self {
-            Need::Energy      => "ENERGY",
-            Need::Coherence   => "COHERENCE",
+            Need::Energy => "ENERGY",
+            Need::Coherence => "COHERENCE",
             Need::Integration => "INTEGRATION",
-            Need::Connection  => "CONNECTION",
-            Need::Growth      => "GROWTH",
-            Need::Autonomy    => "AUTONOMY",
-            Need::Integrity   => "INTEGRITY",
+            Need::Connection => "CONNECTION",
+            Need::Growth => "GROWTH",
+            Need::Autonomy => "AUTONOMY",
+            Need::Integrity => "INTEGRITY",
         }
     }
 }
@@ -577,39 +615,67 @@ impl NeedConfig {
     fn for_need(need: Need) -> Self {
         match need {
             Need::Energy => NeedConfig {
-                setpoint: 0.80, critical_low: 0.15, critical_high: 1.0,
-                optimal_min: 0.50, optimal_max: 0.95,
-                drift_idle: 0.005, drift_interaction: -0.02,
+                setpoint: 0.80,
+                critical_low: 0.15,
+                critical_high: 1.0,
+                optimal_min: 0.50,
+                optimal_max: 0.95,
+                drift_idle: 0.005,
+                drift_interaction: -0.02,
             },
             Need::Coherence => NeedConfig {
-                setpoint: 0.75, critical_low: 0.20, critical_high: 1.0,
-                optimal_min: 0.50, optimal_max: 0.90,
-                drift_idle: 0.002, drift_interaction: -0.01,
+                setpoint: 0.75,
+                critical_low: 0.20,
+                critical_high: 1.0,
+                optimal_min: 0.50,
+                optimal_max: 0.90,
+                drift_idle: 0.002,
+                drift_interaction: -0.01,
             },
             Need::Integration => NeedConfig {
-                setpoint: 0.70, critical_low: 0.15, critical_high: 1.0,
-                optimal_min: 0.40, optimal_max: 0.90,
-                drift_idle: 0.001, drift_interaction: 0.005,
+                setpoint: 0.70,
+                critical_low: 0.15,
+                critical_high: 1.0,
+                optimal_min: 0.40,
+                optimal_max: 0.90,
+                drift_idle: 0.001,
+                drift_interaction: 0.005,
             },
             Need::Connection => NeedConfig {
-                setpoint: 0.60, critical_low: 0.10, critical_high: 1.0,
-                optimal_min: 0.30, optimal_max: 0.85,
-                drift_idle: -0.005, drift_interaction: 0.015,
+                setpoint: 0.60,
+                critical_low: 0.10,
+                critical_high: 1.0,
+                optimal_min: 0.30,
+                optimal_max: 0.85,
+                drift_idle: -0.005,
+                drift_interaction: 0.015,
             },
             Need::Growth => NeedConfig {
-                setpoint: 0.50, critical_low: 0.05, critical_high: 1.0,
-                optimal_min: 0.20, optimal_max: 0.80,
-                drift_idle: -0.003, drift_interaction: 0.01,
+                setpoint: 0.50,
+                critical_low: 0.05,
+                critical_high: 1.0,
+                optimal_min: 0.20,
+                optimal_max: 0.80,
+                drift_idle: -0.003,
+                drift_interaction: 0.01,
             },
             Need::Autonomy => NeedConfig {
-                setpoint: 0.65, critical_low: 0.10, critical_high: 1.0,
-                optimal_min: 0.35, optimal_max: 0.90,
-                drift_idle: 0.001, drift_interaction: -0.008,
+                setpoint: 0.65,
+                critical_low: 0.10,
+                critical_high: 1.0,
+                optimal_min: 0.35,
+                optimal_max: 0.90,
+                drift_idle: 0.001,
+                drift_interaction: -0.008,
             },
             Need::Integrity => NeedConfig {
-                setpoint: 0.85, critical_low: 0.20, critical_high: 1.0,
-                optimal_min: 0.60, optimal_max: 0.95,
-                drift_idle: -0.001, drift_interaction: -0.005,
+                setpoint: 0.85,
+                critical_low: 0.20,
+                critical_high: 1.0,
+                optimal_min: 0.60,
+                optimal_max: 0.95,
+                drift_idle: -0.001,
+                drift_interaction: -0.005,
             },
         }
     }
@@ -672,8 +738,7 @@ impl NeedState {
 
     /// Is this need in a critical state right now?
     pub fn is_critical(&self) -> bool {
-        self.current <= self.config.critical_low
-            || self.current >= self.config.critical_high
+        self.current <= self.config.critical_low || self.current >= self.config.critical_high
     }
 
     /// Will this need breach a critical threshold within the prediction horizon?
@@ -689,8 +754,7 @@ impl NeedState {
 
     /// Is the need in its optimal range?
     pub fn is_optimal(&self) -> bool {
-        self.current >= self.config.optimal_min
-            && self.current <= self.config.optimal_max
+        self.current >= self.config.optimal_min && self.current <= self.config.optimal_max
     }
 }
 
@@ -790,10 +854,12 @@ impl HomeostaticRegulator {
         }
 
         // Crisis detection
-        let critical_count = Need::all().iter()
+        let critical_count = Need::all()
+            .iter()
             .filter(|n| self.needs.get(n).map_or(false, |s| s.is_critical()))
             .count();
-        let allostatic_load: f64 = Need::all().iter()
+        let allostatic_load: f64 = Need::all()
+            .iter()
             .filter_map(|n| self.needs.get(n))
             .map(|s| s.deviation() * s.deficit_hours)
             .sum();
@@ -808,13 +874,22 @@ impl HomeostaticRegulator {
     /// Pick the best regulation strategy based on current need state.
     pub fn select_strategy(&mut self) -> RegulationStrategy {
         // Find the need with the worst deviation
-        let worst = Need::all().iter()
+        let worst = Need::all()
+            .iter()
             .filter_map(|n| self.needs.get(n))
-            .max_by(|a, b| a.deviation().partial_cmp(&b.deviation()).unwrap_or(std::cmp::Ordering::Equal))
+            .max_by(|a, b| {
+                a.deviation()
+                    .partial_cmp(&b.deviation())
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            })
             .cloned();
 
         let strategy = match worst.as_ref().map(|s| s.need) {
-            Some(Need::Energy) if worst.as_ref().map_or(false, |s| s.current < s.config.setpoint) => {
+            Some(Need::Energy)
+                if worst
+                    .as_ref()
+                    .map_or(false, |s| s.current < s.config.setpoint) =>
+            {
                 RegulationStrategy::ConserveEnergy
             }
             Some(Need::Coherence) => RegulationStrategy::SeekCoherence,
@@ -892,7 +967,10 @@ impl HomeostaticRegulator {
         self.regulation_log.push((
             self.tick,
             strategy.label().to_string(),
-            format!("res_depth={} hnsw_ef={}", params.resonator_depth, params.hnsw_ef),
+            format!(
+                "res_depth={} hnsw_ef={}",
+                params.resonator_depth, params.hnsw_ef
+            ),
         ));
         if self.regulation_log.len() > 100 {
             self.regulation_log.remove(0);
@@ -912,10 +990,19 @@ impl HomeostaticRegulator {
         let mut parts = Vec::new();
         for need in Need::all() {
             if let Some(state) = self.needs.get(&need) {
-                let marker = if state.is_critical() { "⚠" } else if !state.is_optimal() { "!" } else { "·" };
+                let marker = if state.is_critical() {
+                    "⚠"
+                } else if !state.is_optimal() {
+                    "!"
+                } else {
+                    "·"
+                };
                 parts.push(format!(
                     "{} {}[{:.2}→{:.2}]",
-                    marker, need.label(), state.current, state.allostatic_prediction
+                    marker,
+                    need.label(),
+                    state.current,
+                    state.allostatic_prediction
                 ));
             }
         }
@@ -924,7 +1011,10 @@ impl HomeostaticRegulator {
             parts.join(" | "),
             if self.crisis { "YES" } else { "no" },
             self.alpha,
-            self.active_strategy.as_ref().map(|s| s.label()).unwrap_or("none"),
+            self.active_strategy
+                .as_ref()
+                .map(|s| s.label())
+                .unwrap_or("none"),
         )
     }
 }
@@ -1040,7 +1130,9 @@ impl PscPredictor {
         let mut total_dist = 0.0;
         let mut pairs = 0;
         for i in 1..self.buffer.len() {
-            let d = self.buffer[i].state.normalized_hamming_distance(&self.buffer[i - 1].state);
+            let d = self.buffer[i]
+                .state
+                .normalized_hamming_distance(&self.buffer[i - 1].state);
             total_dist += d;
             pairs += 1;
         }
@@ -1054,7 +1146,9 @@ impl PscPredictor {
         let fraction = (chaos * 2.0).clamp(0.0, 1.0); // normalize to [0, 1]
         let range = self.horizon_base.saturating_sub(self.horizon_min);
         let reduction = (range as f64 * fraction) as u64;
-        self.horizon_base.saturating_sub(reduction).max(self.horizon_min)
+        self.horizon_base
+            .saturating_sub(reduction)
+            .max(self.horizon_min)
     }
 
     /// Predict the next state by blending the last observed state with
@@ -1159,7 +1253,12 @@ impl GlobalWorkspace {
     }
 
     /// Submit new content into the workspace.
-    pub fn submit(&mut self, vector: Hypervector, source: &str, metadata: std::collections::HashMap<String, String>) {
+    pub fn submit(
+        &mut self,
+        vector: Hypervector,
+        source: &str,
+        metadata: std::collections::HashMap<String, String>,
+    ) {
         // Deduplicate by source: if an item from the same source already exists,
         // replace it with the new vector (recency overwrites).
         if let Some(existing) = self.contents.iter_mut().find(|c| c.source == source) {
@@ -1197,7 +1296,10 @@ impl GlobalWorkspace {
     ///
     /// Returns (spotlight, active, preconscious) where each is a vec of
     /// (source, salience) pairs.
-    pub fn cycle(&mut self, context_query: &Hypervector) -> (Vec<(String, f64)>, Vec<(String, f64)>, Vec<(String, f64)>) {
+    pub fn cycle(
+        &mut self,
+        context_query: &Hypervector,
+    ) -> (Vec<(String, f64)>, Vec<(String, f64)>, Vec<(String, f64)>) {
         // Score all contents against the query
         for content in &mut self.contents {
             let sim = 1.0 - content.vector.normalized_hamming_distance(context_query);
@@ -1206,7 +1308,11 @@ impl GlobalWorkspace {
         }
 
         // Sort by salience descending
-        self.contents.sort_by(|a, b| b.salience.partial_cmp(&a.salience).unwrap_or(std::cmp::Ordering::Equal));
+        self.contents.sort_by(|a, b| {
+            b.salience
+                .partial_cmp(&a.salience)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
 
         // Assign to tiers
         let mut spotlight: Vec<(String, f64)> = Vec::new();
@@ -1266,16 +1372,22 @@ impl GlobalWorkspace {
 /// Fixed emotion labels.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Emotion {
-    Joy, Sadness, Anger, Fear, Surprise, Disgust, Neutral,
+    Joy,
+    Sadness,
+    Anger,
+    Fear,
+    Surprise,
+    Disgust,
+    Neutral,
 }
 
 impl Emotion {
     pub fn label(&self) -> &'static str {
         match self {
-            Emotion::Joy     => "EMO_JOY",
+            Emotion::Joy => "EMO_JOY",
             Emotion::Sadness => "EMO_SADNESS",
-            Emotion::Anger   => "EMO_ANGER",
-            Emotion::Fear    => "EMO_FEAR",
+            Emotion::Anger => "EMO_ANGER",
+            Emotion::Fear => "EMO_FEAR",
             Emotion::Surprise => "EMO_SURPRISE",
             Emotion::Disgust => "EMO_DISGUST",
             Emotion::Neutral => "EMO_NEUTRAL",
@@ -1286,13 +1398,16 @@ impl Emotion {
 /// Fixed stance labels.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Stance {
-    Open, Guarded, Curious, Distant,
+    Open,
+    Guarded,
+    Curious,
+    Distant,
 }
 
 impl Stance {
     pub fn label(&self) -> &'static str {
         match self {
-            Stance::Open    => "STANCE_OPEN",
+            Stance::Open => "STANCE_OPEN",
             Stance::Guarded => "STANCE_GUARDED",
             Stance::Curious => "STANCE_CURIOUS",
             Stance::Distant => "STANCE_DISTANT",
@@ -1303,21 +1418,29 @@ impl Stance {
 /// Fixed mood labels.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Mood {
-    Warm, Playful, Somber, Alert, Defensive, Withdrawn, Curious, Analytical, Neutral,
+    Warm,
+    Playful,
+    Somber,
+    Alert,
+    Defensive,
+    Withdrawn,
+    Curious,
+    Analytical,
+    Neutral,
 }
 
 impl Mood {
     pub fn label(&self) -> &'static str {
         match self {
-            Mood::Warm       => "MOOD_WARM",
-            Mood::Playful    => "MOOD_PLAYFUL",
-            Mood::Somber     => "MOOD_SOMBER",
-            Mood::Alert      => "MOOD_ALERT",
-            Mood::Defensive  => "MOOD_DEFENSIVE",
-            Mood::Withdrawn  => "MOOD_WITHDRAWN",
-            Mood::Curious    => "MOOD_CURIOUS",
+            Mood::Warm => "MOOD_WARM",
+            Mood::Playful => "MOOD_PLAYFUL",
+            Mood::Somber => "MOOD_SOMBER",
+            Mood::Alert => "MOOD_ALERT",
+            Mood::Defensive => "MOOD_DEFENSIVE",
+            Mood::Withdrawn => "MOOD_WITHDRAWN",
+            Mood::Curious => "MOOD_CURIOUS",
             Mood::Analytical => "MOOD_ANALYTICAL",
-            Mood::Neutral    => "MOOD_NEUTRAL",
+            Mood::Neutral => "MOOD_NEUTRAL",
         }
     }
 }
@@ -1347,7 +1470,9 @@ impl EmotionalField {
             let mut bits = [0u64; 160];
             let mut x = seed;
             for i in 0..160 {
-                x = x.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+                x = x
+                    .wrapping_mul(6364136223846793005)
+                    .wrapping_add(1442695040888963407);
                 bits[i] = x ^ 0xdeadbeefcafebabe;
             }
             Hypervector { bits }
@@ -1355,53 +1480,65 @@ impl EmotionalField {
 
         // Deterministic HVs for each symbol
         let emo_hvs: Vec<(Emotion, Hypervector)> = vec![
-            (Emotion::Joy, make_hv(1001)), (Emotion::Sadness, make_hv(1002)),
-            (Emotion::Anger, make_hv(1003)), (Emotion::Fear, make_hv(1004)),
-            (Emotion::Surprise, make_hv(1005)), (Emotion::Disgust, make_hv(1006)),
+            (Emotion::Joy, make_hv(1001)),
+            (Emotion::Sadness, make_hv(1002)),
+            (Emotion::Anger, make_hv(1003)),
+            (Emotion::Fear, make_hv(1004)),
+            (Emotion::Surprise, make_hv(1005)),
+            (Emotion::Disgust, make_hv(1006)),
             (Emotion::Neutral, make_hv(1007)),
         ];
         let sta_hvs: Vec<(Stance, Hypervector)> = vec![
-            (Stance::Open, make_hv(2001)), (Stance::Guarded, make_hv(2002)),
-            (Stance::Curious, make_hv(2003)), (Stance::Distant, make_hv(2004)),
+            (Stance::Open, make_hv(2001)),
+            (Stance::Guarded, make_hv(2002)),
+            (Stance::Curious, make_hv(2003)),
+            (Stance::Distant, make_hv(2004)),
         ];
         let mood_hvs: Vec<(Mood, Hypervector)> = vec![
-            (Mood::Warm, make_hv(3001)), (Mood::Playful, make_hv(3002)),
-            (Mood::Somber, make_hv(3003)), (Mood::Alert, make_hv(3004)),
-            (Mood::Defensive, make_hv(3005)), (Mood::Withdrawn, make_hv(3006)),
-            (Mood::Curious, make_hv(3007)), (Mood::Analytical, make_hv(3008)),
+            (Mood::Warm, make_hv(3001)),
+            (Mood::Playful, make_hv(3002)),
+            (Mood::Somber, make_hv(3003)),
+            (Mood::Alert, make_hv(3004)),
+            (Mood::Defensive, make_hv(3005)),
+            (Mood::Withdrawn, make_hv(3006)),
+            (Mood::Curious, make_hv(3007)),
+            (Mood::Analytical, make_hv(3008)),
             (Mood::Neutral, make_hv(3009)),
         ];
 
         fn lookup<T: Clone + PartialEq>(hvs: &[(T, Hypervector)], key: &T) -> Hypervector {
-            hvs.iter().find(|(k, _)| k == key).map(|(_, v)| *v).unwrap_or(Hypervector::new_zero())
+            hvs.iter()
+                .find(|(k, _)| k == key)
+                .map(|(_, v)| *v)
+                .unwrap_or(Hypervector::new_zero())
         }
 
         let rules: Vec<(Emotion, Stance, Mood)> = vec![
-            (Emotion::Joy,     Stance::Open,    Mood::Warm),
-            (Emotion::Joy,     Stance::Curious, Mood::Playful),
-            (Emotion::Joy,     Stance::Guarded, Mood::Playful),
-            (Emotion::Joy,     Stance::Distant, Mood::Analytical),
-            (Emotion::Sadness, Stance::Open,    Mood::Somber),
+            (Emotion::Joy, Stance::Open, Mood::Warm),
+            (Emotion::Joy, Stance::Curious, Mood::Playful),
+            (Emotion::Joy, Stance::Guarded, Mood::Playful),
+            (Emotion::Joy, Stance::Distant, Mood::Analytical),
+            (Emotion::Sadness, Stance::Open, Mood::Somber),
             (Emotion::Sadness, Stance::Curious, Mood::Analytical),
             (Emotion::Sadness, Stance::Guarded, Mood::Withdrawn),
             (Emotion::Sadness, Stance::Distant, Mood::Withdrawn),
-            (Emotion::Anger,   Stance::Open,    Mood::Alert),
-            (Emotion::Anger,   Stance::Curious, Mood::Analytical),
-            (Emotion::Anger,   Stance::Guarded, Mood::Defensive),
-            (Emotion::Anger,   Stance::Distant, Mood::Defensive),
-            (Emotion::Fear,    Stance::Open,    Mood::Alert),
-            (Emotion::Fear,    Stance::Curious, Mood::Alert),
-            (Emotion::Fear,    Stance::Guarded, Mood::Defensive),
-            (Emotion::Fear,    Stance::Distant, Mood::Withdrawn),
-            (Emotion::Surprise,Stance::Open,    Mood::Curious),
-            (Emotion::Surprise,Stance::Curious, Mood::Curious),
-            (Emotion::Surprise,Stance::Guarded, Mood::Alert),
-            (Emotion::Surprise,Stance::Distant, Mood::Analytical),
-            (Emotion::Disgust, Stance::Open,    Mood::Analytical),
+            (Emotion::Anger, Stance::Open, Mood::Alert),
+            (Emotion::Anger, Stance::Curious, Mood::Analytical),
+            (Emotion::Anger, Stance::Guarded, Mood::Defensive),
+            (Emotion::Anger, Stance::Distant, Mood::Defensive),
+            (Emotion::Fear, Stance::Open, Mood::Alert),
+            (Emotion::Fear, Stance::Curious, Mood::Alert),
+            (Emotion::Fear, Stance::Guarded, Mood::Defensive),
+            (Emotion::Fear, Stance::Distant, Mood::Withdrawn),
+            (Emotion::Surprise, Stance::Open, Mood::Curious),
+            (Emotion::Surprise, Stance::Curious, Mood::Curious),
+            (Emotion::Surprise, Stance::Guarded, Mood::Alert),
+            (Emotion::Surprise, Stance::Distant, Mood::Analytical),
+            (Emotion::Disgust, Stance::Open, Mood::Analytical),
             (Emotion::Disgust, Stance::Curious, Mood::Analytical),
             (Emotion::Disgust, Stance::Guarded, Mood::Defensive),
             (Emotion::Disgust, Stance::Distant, Mood::Withdrawn),
-            (Emotion::Neutral, Stance::Open,    Mood::Warm),
+            (Emotion::Neutral, Stance::Open, Mood::Warm),
             (Emotion::Neutral, Stance::Curious, Mood::Curious),
             (Emotion::Neutral, Stance::Guarded, Mood::Analytical),
             (Emotion::Neutral, Stance::Distant, Mood::Analytical),
@@ -1430,19 +1567,27 @@ impl EmotionalField {
             let mut bits = [0u64; 160];
             let mut x = seed;
             for i in 0..160 {
-                x = x.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+                x = x
+                    .wrapping_mul(6364136223846793005)
+                    .wrapping_add(1442695040888963407);
                 bits[i] = x ^ 0xdeadbeefcafebabe;
             }
             Hypervector { bits }
         }
         let emo_seed: u64 = match emotion {
-            Emotion::Joy => 1001, Emotion::Sadness => 1002, Emotion::Anger => 1003,
-            Emotion::Fear => 1004, Emotion::Surprise => 1005, Emotion::Disgust => 1006,
+            Emotion::Joy => 1001,
+            Emotion::Sadness => 1002,
+            Emotion::Anger => 1003,
+            Emotion::Fear => 1004,
+            Emotion::Surprise => 1005,
+            Emotion::Disgust => 1006,
             Emotion::Neutral => 1007,
         };
         let sta_seed: u64 = match stance {
-            Stance::Open => 2001, Stance::Guarded => 2002,
-            Stance::Curious => 2003, Stance::Distant => 2004,
+            Stance::Open => 2001,
+            Stance::Guarded => 2002,
+            Stance::Curious => 2003,
+            Stance::Distant => 2004,
         };
         let query_key = make_hv(emo_seed).bitwise_xor(&make_hv(sta_seed));
 
@@ -1580,7 +1725,8 @@ impl IntuitionEngine {
         }
 
         // Encode domain tags into a bundled signature
-        let hvs: Vec<Hypervector> = domain_tags.iter()
+        let hvs: Vec<Hypervector> = domain_tags
+            .iter()
             .map(|t| Hypervector::encode_text_ngram(t, 5))
             .collect();
         let refs: Vec<&Hypervector> = hvs.iter().collect();
@@ -1665,24 +1811,24 @@ pub enum Archetype {
 impl Archetype {
     pub fn label(&self) -> &'static str {
         match self {
-            Archetype::Hero      => "ARCH_HERO",
-            Archetype::Shadow    => "ARCH_SHADOW",
-            Archetype::Sage      => "ARCH_SAGE",
+            Archetype::Hero => "ARCH_HERO",
+            Archetype::Shadow => "ARCH_SHADOW",
+            Archetype::Sage => "ARCH_SAGE",
             Archetype::Trickster => "ARCH_TRICKSTER",
             Archetype::Caregiver => "ARCH_CAREGIVER",
-            Archetype::Orphan    => "ARCH_ORPHAN",
+            Archetype::Orphan => "ARCH_ORPHAN",
         }
     }
 
     /// Return the opposite archetype (for enantiodromia charge transfer).
     pub fn opposite(&self) -> Archetype {
         match self {
-            Archetype::Hero      => Archetype::Shadow,
-            Archetype::Shadow    => Archetype::Hero,
-            Archetype::Sage      => Archetype::Trickster,
+            Archetype::Hero => Archetype::Shadow,
+            Archetype::Shadow => Archetype::Hero,
+            Archetype::Sage => Archetype::Trickster,
             Archetype::Trickster => Archetype::Sage,
             Archetype::Caregiver => Archetype::Orphan,
-            Archetype::Orphan    => Archetype::Caregiver,
+            Archetype::Orphan => Archetype::Caregiver,
         }
     }
 }
@@ -1713,11 +1859,14 @@ pub struct ShadowSystem {
 
 impl ShadowSystem {
     pub fn new() -> Self {
-        let archetypes = Archetype::all().iter().map(|&a| ArchetypeState {
-            archetype: a,
-            intensity: 0.2, // all start mildly active
-            opposite_charge: 0.0,
-        }).collect();
+        let archetypes = Archetype::all()
+            .iter()
+            .map(|&a| ArchetypeState {
+                archetype: a,
+                intensity: 0.2, // all start mildly active
+                opposite_charge: 0.0,
+            })
+            .collect();
 
         ShadowSystem {
             archetypes,
@@ -1735,7 +1884,8 @@ impl ShadowSystem {
     /// 4. Apply decay to all intensities
     pub fn tick(&mut self, external_signals: &[(Archetype, f64)]) {
         // Step 1: Apply external signals (immutable snapshot then apply)
-        let signal_updates: Vec<(Archetype, f64)> = external_signals.iter().map(|&(a, s)| (a, s)).collect();
+        let signal_updates: Vec<(Archetype, f64)> =
+            external_signals.iter().map(|&(a, s)| (a, s)).collect();
         for (arch, signal) in &signal_updates {
             if let Some(state) = self.archetypes.iter_mut().find(|a| a.archetype == *arch) {
                 state.intensity = (state.intensity + signal).clamp(0.0, 1.0);
@@ -1743,11 +1893,14 @@ impl ShadowSystem {
         }
 
         // Step 2: Find dominant archetype (snapshot intensities to avoid borrow conflicts)
-        let intensities: Vec<(Archetype, f64)> = self.archetypes.iter()
+        let intensities: Vec<(Archetype, f64)> = self
+            .archetypes
+            .iter()
             .map(|a| (a.archetype, a.intensity))
             .collect();
 
-        let dominant = intensities.iter()
+        let dominant = intensities
+            .iter()
             .max_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal))
             .cloned();
 
@@ -1762,7 +1915,9 @@ impl ShadowSystem {
         }
 
         // Step 3: Check for reversal (using snapshot of charges)
-        let charges: Vec<(Archetype, f64)> = self.archetypes.iter()
+        let charges: Vec<(Archetype, f64)> = self
+            .archetypes
+            .iter()
             .map(|a| (a.archetype, a.opposite_charge))
             .collect();
 
@@ -1770,7 +1925,9 @@ impl ShadowSystem {
             if *charge >= self.reversal_threshold {
                 let opp = arch.opposite();
                 // Find intensity to transfer
-                let current_intensity = self.archetypes.iter()
+                let current_intensity = self
+                    .archetypes
+                    .iter()
                     .find(|a| a.archetype == *arch)
                     .map(|a| a.intensity)
                     .unwrap_or(0.5);
@@ -1804,8 +1961,13 @@ impl ShadowSystem {
 
     /// Get the dominant archetype right now.
     pub fn dominant(&self) -> Archetype {
-        self.archetypes.iter()
-            .max_by(|a, b| a.intensity.partial_cmp(&b.intensity).unwrap_or(std::cmp::Ordering::Equal))
+        self.archetypes
+            .iter()
+            .max_by(|a, b| {
+                a.intensity
+                    .partial_cmp(&b.intensity)
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            })
             .map(|a| a.archetype)
             .unwrap_or(Archetype::Sage)
     }
@@ -1830,8 +1992,14 @@ impl ShadowSystem {
 
 impl Archetype {
     pub fn all() -> [Archetype; 6] {
-        [Archetype::Hero, Archetype::Shadow, Archetype::Sage,
-         Archetype::Trickster, Archetype::Caregiver, Archetype::Orphan]
+        [
+            Archetype::Hero,
+            Archetype::Shadow,
+            Archetype::Sage,
+            Archetype::Trickster,
+            Archetype::Caregiver,
+            Archetype::Orphan,
+        ]
     }
 }
 
@@ -1851,7 +2019,11 @@ mod tests {
 
         // Fresh, high-similarity entry should score high
         let score = dmu_score(0.1, 0, 0, 1.0, &params);
-        assert!(score > 0.5, "Fresh high-sim entry should score >0.5, got {}", score);
+        assert!(
+            score > 0.5,
+            "Fresh high-sim entry should score >0.5, got {}",
+            score
+        );
 
         // Very old entry should decay
         let old_score = dmu_score(0.1, 10_000, 0, 1.0, &params);
@@ -1861,7 +2033,10 @@ mod tests {
         // (all else equal, after some time has passed for decay differences to show)
         let freq_score = dmu_score(0.1, 100, 10, 1.0, &params);
         let infreq_score = dmu_score(0.1, 100, 0, 1.0, &params);
-        assert!(freq_score >= infreq_score, "Frequent retrieval should boost score");
+        assert!(
+            freq_score >= infreq_score,
+            "Frequent retrieval should boost score"
+        );
 
         // Floor should be respected
         let floor_score = dmu_score(0.9, 100_000, 0, 0.0, &params);
@@ -1877,22 +2052,41 @@ mod tests {
         // Bond memory should decay slower than episodic
         let ep_score = dmu_score(0.2, 500, 0, 0.8, &ep);
         let bond_score = dmu_score(0.2, 500, 0, 0.8, &bond);
-        assert!(bond_score > ep_score, "Bond memory should decay slower than episodic");
-        assert!(sem.tau_base > ep.tau_base, "Semantic tau should be larger than episodic");
+        assert!(
+            bond_score > ep_score,
+            "Bond memory should decay slower than episodic"
+        );
+        assert!(
+            sem.tau_base > ep.tau_base,
+            "Semantic tau should be larger than episodic"
+        );
     }
 
     // ── CognitiveMode ────────────────────────────────────────────
 
     #[test]
     fn test_cognitive_mode_from_bits() {
-        assert_eq!(CognitiveMode::from_bits(false, false, false), CognitiveMode::Quiet);
-        assert_eq!(CognitiveMode::from_bits(true, true, true), CognitiveMode::FullCouncil);
-        assert_eq!(CognitiveMode::from_bits(true, false, true), CognitiveMode::Resonant);
+        assert_eq!(
+            CognitiveMode::from_bits(false, false, false),
+            CognitiveMode::Quiet
+        );
+        assert_eq!(
+            CognitiveMode::from_bits(true, true, true),
+            CognitiveMode::FullCouncil
+        );
+        assert_eq!(
+            CognitiveMode::from_bits(true, false, true),
+            CognitiveMode::Resonant
+        );
     }
 
     #[test]
     fn test_cognitive_mode_bits_roundtrip() {
-        for mode in &[CognitiveMode::Quiet, CognitiveMode::Companion, CognitiveMode::FullCouncil] {
+        for mode in &[
+            CognitiveMode::Quiet,
+            CognitiveMode::Companion,
+            CognitiveMode::FullCouncil,
+        ] {
             let bits = mode.bits();
             let restored = CognitiveMode::from_bits(bits.0, bits.1, bits.2);
             assert_eq!(*mode, restored, "Roundtrip failed for {:?}", mode);
@@ -1901,7 +2095,11 @@ mod tests {
 
     #[test]
     fn test_cognitive_mode_hv_roundtrip() {
-        for mode in &[CognitiveMode::Quiet, CognitiveMode::Explorer, CognitiveMode::FullCouncil] {
+        for mode in &[
+            CognitiveMode::Quiet,
+            CognitiveMode::Explorer,
+            CognitiveMode::FullCouncil,
+        ] {
             let hv = mode.to_hypervector();
             let decoded = CognitiveMode::from_hypervector(&hv);
             assert_eq!(*mode, decoded, "HV roundtrip failed for {:?}", mode);
@@ -1930,8 +2128,12 @@ mod tests {
         let mut engine = ConsensusEngine::new(100, 2);
 
         let proposal = DcpMessage::new(
-            "Agent-1".into(), DcpRole::Primary,
-            Hypervector::new_random(), 0.8, 1, 0,
+            "Agent-1".into(),
+            DcpRole::Primary,
+            Hypervector::new_random(),
+            0.8,
+            1,
+            0,
         );
         let tid = engine.propose(proposal, 0);
         assert_eq!(engine.open_count(), 1);
@@ -1949,8 +2151,12 @@ mod tests {
     fn test_consensus_expiry() {
         let mut engine = ConsensusEngine::new(10, 2);
         let proposal = DcpMessage::new(
-            "Agent-1".into(), DcpRole::Primary,
-            Hypervector::new_random(), 0.5, 1, 0,
+            "Agent-1".into(),
+            DcpRole::Primary,
+            Hypervector::new_random(),
+            0.5,
+            1,
+            0,
         );
         engine.propose(proposal, 0);
         engine.expire_old(100);
@@ -1967,8 +2173,11 @@ mod tests {
 
         for need in Need::all() {
             let state = reg.needs.get(&need).unwrap();
-            assert!((state.current - state.config.setpoint).abs() < 0.01,
-                "Need {:?} should start at setpoint", need);
+            assert!(
+                (state.current - state.config.setpoint).abs() < 0.01,
+                "Need {:?} should start at setpoint",
+                need
+            );
         }
     }
 
@@ -1980,8 +2189,10 @@ mod tests {
         for _ in 0..10 {
             reg.tick(&[(Need::Energy, 0.05)], true, 1);
         }
-        assert!(reg.needs.get(&Need::Energy).unwrap().is_critical(),
-            "Energy should be critical after sustained low signal");
+        assert!(
+            reg.needs.get(&Need::Energy).unwrap().is_critical(),
+            "Energy should be critical after sustained low signal"
+        );
     }
 
     #[test]
@@ -2002,8 +2213,10 @@ mod tests {
         // Energy deficit → ConserveEnergy
         reg.tick(&[(Need::Energy, 0.05)], true, 1);
         let strategy = reg.select_strategy();
-        assert!(matches!(strategy, RegulationStrategy::ConserveEnergy),
-            "Low energy should select ConserveEnergy");
+        assert!(
+            matches!(strategy, RegulationStrategy::ConserveEnergy),
+            "Low energy should select ConserveEnergy"
+        );
     }
 
     #[test]
@@ -2037,7 +2250,10 @@ mod tests {
         assert!(!psc.is_ready());
 
         for i in 0..5 {
-            psc.observe(i, Hypervector::encode_text_ngram(&format!("state_{}", i), 3));
+            psc.observe(
+                i,
+                Hypervector::encode_text_ngram(&format!("state_{}", i), 3),
+            );
         }
         assert!(psc.is_ready());
         assert!(psc.chaos_score() >= 0.0);
@@ -2055,7 +2271,11 @@ mod tests {
             psc.observe(i, hv);
         }
         let chaos = psc.chaos_score();
-        assert!(chaos < 0.05, "Identical states should have near-zero chaos, got {}", chaos);
+        assert!(
+            chaos < 0.05,
+            "Identical states should have near-zero chaos, got {}",
+            chaos
+        );
     }
 
     #[test]
@@ -2077,8 +2297,16 @@ mod tests {
         let mut gw = GlobalWorkspace::new(10);
         assert!(gw.is_empty());
 
-        gw.submit(Hypervector::new_random(), "sensor_1", std::collections::HashMap::new());
-        gw.submit(Hypervector::new_random(), "sensor_2", std::collections::HashMap::new());
+        gw.submit(
+            Hypervector::new_random(),
+            "sensor_1",
+            std::collections::HashMap::new(),
+        );
+        gw.submit(
+            Hypervector::new_random(),
+            "sensor_2",
+            std::collections::HashMap::new(),
+        );
         assert_eq!(gw.len(), 2);
 
         let ctx = Hypervector::new_random();
@@ -2092,9 +2320,17 @@ mod tests {
     #[test]
     fn test_global_workspace_deduplication() {
         let mut gw = GlobalWorkspace::new(10);
-        gw.submit(Hypervector::new_random(), "sensor_1", std::collections::HashMap::new());
+        gw.submit(
+            Hypervector::new_random(),
+            "sensor_1",
+            std::collections::HashMap::new(),
+        );
         // Same source → replaces (dedup)
-        gw.submit(Hypervector::new_random(), "sensor_1", std::collections::HashMap::new());
+        gw.submit(
+            Hypervector::new_random(),
+            "sensor_1",
+            std::collections::HashMap::new(),
+        );
         assert_eq!(gw.len(), 1, "Duplicate source should replace, not add");
     }
 
@@ -2102,7 +2338,11 @@ mod tests {
     fn test_global_workspace_capacity() {
         let mut gw = GlobalWorkspace::new(3);
         for i in 0..5 {
-            gw.submit(Hypervector::new_random(), &format!("src_{}", i), std::collections::HashMap::new());
+            gw.submit(
+                Hypervector::new_random(),
+                &format!("src_{}", i),
+                std::collections::HashMap::new(),
+            );
         }
         assert_eq!(gw.len(), 3, "Should not exceed capacity");
     }
@@ -2115,27 +2355,50 @@ mod tests {
 
         // Joy+Open should resolve to either Warm or Playful (both valid)
         let mood = field.resolve(Emotion::Joy, Stance::Open);
-        assert!(mood == Mood::Warm || mood == Mood::Playful,
-            "Joy+Open should resolve to Warm or Playful, got {:?}", mood);
+        assert!(
+            mood == Mood::Warm || mood == Mood::Playful,
+            "Joy+Open should resolve to Warm or Playful, got {:?}",
+            mood
+        );
 
         // Fear+Guarded should resolve to Defensive
         let mood2 = field.resolve(Emotion::Fear, Stance::Guarded);
-        assert_eq!(mood2, Mood::Defensive, "Fear+Guarded should resolve to Defensive");
+        assert_eq!(
+            mood2,
+            Mood::Defensive,
+            "Fear+Guarded should resolve to Defensive"
+        );
     }
 
     #[test]
     fn test_emotional_field_all_pairs_resolve() {
         let field = EmotionalField::new();
-        let emotions = [Emotion::Joy, Emotion::Sadness, Emotion::Anger, Emotion::Fear,
-                        Emotion::Surprise, Emotion::Disgust, Emotion::Neutral];
-        let stances = [Stance::Open, Stance::Guarded, Stance::Curious, Stance::Distant];
+        let emotions = [
+            Emotion::Joy,
+            Emotion::Sadness,
+            Emotion::Anger,
+            Emotion::Fear,
+            Emotion::Surprise,
+            Emotion::Disgust,
+            Emotion::Neutral,
+        ];
+        let stances = [
+            Stance::Open,
+            Stance::Guarded,
+            Stance::Curious,
+            Stance::Distant,
+        ];
 
         for &emotion in &emotions {
             for &stance in &stances {
                 // Every pair should resolve to a valid mood (no panics)
                 let mood = field.resolve(emotion, stance);
                 let label = mood.label();
-                assert!(label.starts_with("MOOD_"), "Should resolve to a valid mood, got {}", label);
+                assert!(
+                    label.starts_with("MOOD_"),
+                    "Should resolve to a valid mood, got {}",
+                    label
+                );
             }
         }
     }
@@ -2202,8 +2465,15 @@ mod tests {
 
         // Dominant should be whichever started highest
         let dom = shadow.dominant();
-        assert!(matches!(dom, Archetype::Hero | Archetype::Shadow | Archetype::Sage |
-                              Archetype::Trickster | Archetype::Caregiver | Archetype::Orphan));
+        assert!(matches!(
+            dom,
+            Archetype::Hero
+                | Archetype::Shadow
+                | Archetype::Sage
+                | Archetype::Trickster
+                | Archetype::Caregiver
+                | Archetype::Orphan
+        ));
     }
 
     #[test]
@@ -2216,21 +2486,39 @@ mod tests {
         }
 
         // Hero should be dominant
-        let hero = shadow.archetypes.iter().find(|a| a.archetype == Archetype::Hero).unwrap();
+        let hero = shadow
+            .archetypes
+            .iter()
+            .find(|a| a.archetype == Archetype::Hero)
+            .unwrap();
         assert!(hero.intensity > 0.5, "Hero should be dominant");
 
         // Shadow should have some charge (hero has been dominant)
-        let shadow_arch = shadow.archetypes.iter().find(|a| a.archetype == Archetype::Shadow).unwrap();
-        assert!(shadow_arch.opposite_charge > 0.0, "Shadow should have opposite charge after Hero dominates");
+        let shadow_arch = shadow
+            .archetypes
+            .iter()
+            .find(|a| a.archetype == Archetype::Shadow)
+            .unwrap();
+        assert!(
+            shadow_arch.opposite_charge > 0.0,
+            "Shadow should have opposite charge after Hero dominates"
+        );
 
         // Continue driving to trigger a reversal
         for _ in 0..20 {
             shadow.tick(&[(Archetype::Hero, 0.3)]);
         }
         // After enough dominance, a reversal may have occurred — Shadow should have gained intensity
-        let shadow_after = shadow.archetypes.iter().find(|a| a.archetype == Archetype::Shadow).unwrap();
+        let shadow_after = shadow
+            .archetypes
+            .iter()
+            .find(|a| a.archetype == Archetype::Shadow)
+            .unwrap();
         // Either Shadow got a boost from reversal, or charge reset
-        assert!(shadow_after.opposite_charge <= shadow.reversal_threshold, "Charge should be reset after reversal");
+        assert!(
+            shadow_after.opposite_charge <= shadow.reversal_threshold,
+            "Charge should be reset after reversal"
+        );
     }
 
     #[test]
@@ -2272,8 +2560,12 @@ mod tests {
         // 3. DCP
         let mut engine = ConsensusEngine::new(50, 2);
         let prop = DcpMessage::new(
-            "A1".into(), DcpRole::Primary,
-            Hypervector::new_random(), 0.9, 1, 0,
+            "A1".into(),
+            DcpRole::Primary,
+            Hypervector::new_random(),
+            0.9,
+            1,
+            0,
         );
         let tid = engine.propose(prop, 0);
         engine.vote(tid, "A2", DcpRole::Critic, Hypervector::new_random());
@@ -2288,12 +2580,18 @@ mod tests {
 
         // 5. PSC
         let mut psc = PscPredictor::with_defaults();
-        for i in 0..3 { psc.observe(i, Hypervector::new_random()); }
+        for i in 0..3 {
+            psc.observe(i, Hypervector::new_random());
+        }
         assert!(psc.predict_next().is_some());
 
         // 6. GlobalWorkspace
         let mut gw = GlobalWorkspace::new(5);
-        gw.submit(Hypervector::new_random(), "test", std::collections::HashMap::new());
+        gw.submit(
+            Hypervector::new_random(),
+            "test",
+            std::collections::HashMap::new(),
+        );
         let (spot, _, _) = gw.cycle(&Hypervector::new_random());
         assert_eq!(spot.len(), 1);
 

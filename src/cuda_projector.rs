@@ -36,7 +36,13 @@ pub struct CudaProjector {
     d_results: *mut f64,
     capacity: usize,
     // Function pointers cached from the library
-    nhd_project_fn: unsafe extern "C" fn(*const u64, *const u64, *mut f64, std::ffi::c_int, std::ffi::c_int) -> std::ffi::c_int,
+    nhd_project_fn: unsafe extern "C" fn(
+        *const u64,
+        *const u64,
+        *mut f64,
+        std::ffi::c_int,
+        std::ffi::c_int,
+    ) -> std::ffi::c_int,
     nhd_malloc_fn: unsafe extern "C" fn(*mut *mut u64, usize) -> std::ffi::c_int,
     nhd_free_fn: unsafe extern "C" fn(*mut u64) -> std::ffi::c_int,
     nhd_memcpy_htod_fn: unsafe extern "C" fn(*mut u64, *const u64, usize) -> std::ffi::c_int,
@@ -89,28 +95,37 @@ impl CudaProjector {
 
             // Resolve function symbols
             let nhd_project_fn: Symbol<
-                unsafe extern "C" fn(*const u64, *const u64, *mut f64, std::ffi::c_int, std::ffi::c_int) -> std::ffi::c_int,
-            > = lib.get(b"nhd_project")
+                unsafe extern "C" fn(
+                    *const u64,
+                    *const u64,
+                    *mut f64,
+                    std::ffi::c_int,
+                    std::ffi::c_int,
+                ) -> std::ffi::c_int,
+            > = lib
+                .get(b"nhd_project")
                 .map_err(|e| format!("Symbol 'nhd_project' not found: {}", e))?;
 
             let nhd_malloc_fn: Symbol<
                 unsafe extern "C" fn(*mut *mut u64, usize) -> std::ffi::c_int,
-            > = lib.get(b"nhd_malloc")
+            > = lib
+                .get(b"nhd_malloc")
                 .map_err(|e| format!("Symbol 'nhd_malloc' not found: {}", e))?;
 
-            let nhd_free_fn: Symbol<
-                unsafe extern "C" fn(*mut u64) -> std::ffi::c_int,
-            > = lib.get(b"nhd_free")
+            let nhd_free_fn: Symbol<unsafe extern "C" fn(*mut u64) -> std::ffi::c_int> = lib
+                .get(b"nhd_free")
                 .map_err(|e| format!("Symbol 'nhd_free' not found: {}", e))?;
 
             let nhd_memcpy_htod_fn: Symbol<
                 unsafe extern "C" fn(*mut u64, *const u64, usize) -> std::ffi::c_int,
-            > = lib.get(b"nhd_memcpy_htod")
+            > = lib
+                .get(b"nhd_memcpy_htod")
                 .map_err(|e| format!("Symbol 'nhd_memcpy_htod' not found: {}", e))?;
 
             let nhd_memcpy_dtoh_fn: Symbol<
                 unsafe extern "C" fn(*mut u64, *const u64, usize) -> std::ffi::c_int,
-            > = lib.get(b"nhd_memcpy_dtoh")
+            > = lib
+                .get(b"nhd_memcpy_dtoh")
                 .map_err(|e| format!("Symbol 'nhd_memcpy_dtoh' not found: {}", e))?;
 
             // Cache function pointers (the Symbol borrows from lib, which we keep alive)
@@ -131,12 +146,18 @@ impl CudaProjector {
 
             let err = nhd_malloc_fn(&mut d_query, query_bytes);
             if err != CUDA_SUCCESS {
-                return Err(format!("nhd_malloc(query, {}) failed: error {}", query_bytes, err));
+                return Err(format!(
+                    "nhd_malloc(query, {}) failed: error {}",
+                    query_bytes, err
+                ));
             }
             let err = nhd_malloc_fn(&mut d_centroids, centroids_bytes);
             if err != CUDA_SUCCESS {
                 nhd_free_fn(d_query);
-                return Err(format!("nhd_malloc(centroids, {}) failed: error {}", centroids_bytes, err));
+                return Err(format!(
+                    "nhd_malloc(centroids, {}) failed: error {}",
+                    centroids_bytes, err
+                ));
             }
             let err = nhd_malloc_fn(
                 &mut d_results as *mut *mut f64 as *mut *mut u64,
@@ -145,7 +166,10 @@ impl CudaProjector {
             if err != CUDA_SUCCESS {
                 nhd_free_fn(d_query);
                 nhd_free_fn(d_centroids);
-                return Err(format!("nhd_malloc(results, {}) failed: error {}", results_bytes, err));
+                return Err(format!(
+                    "nhd_malloc(results, {}) failed: error {}",
+                    results_bytes, err
+                ));
             }
 
             Ok(CudaProjector {
@@ -166,7 +190,11 @@ impl CudaProjector {
     /// Compute NHD between `query` and each centroid in `centroids`.
     ///
     /// Returns `Vec<f64>` where `result[i] = NHD(query, centroids[i])`.
-    pub fn project(&self, query: &Hypervector, centroids: &[Hypervector]) -> Result<Vec<f64>, String> {
+    pub fn project(
+        &self,
+        query: &Hypervector,
+        centroids: &[Hypervector],
+    ) -> Result<Vec<f64>, String> {
         let n = centroids.len();
         if n == 0 {
             return Ok(Vec::new());
@@ -190,7 +218,8 @@ impl CudaProjector {
             for c in centroids {
                 flat.extend_from_slice(&c.bits);
             }
-            let err = (self.nhd_memcpy_htod_fn)(self.d_centroids, flat.as_ptr(), n * U64_BLOCKS * 8);
+            let err =
+                (self.nhd_memcpy_htod_fn)(self.d_centroids, flat.as_ptr(), n * U64_BLOCKS * 8);
             if err != CUDA_SUCCESS {
                 return Err(format!("nhd_memcpy_htod(centroids) failed: error {}", err));
             }
@@ -242,7 +271,10 @@ impl CudaProjector {
 
             let err = (self.nhd_malloc_fn)(&mut d_centroids, centroids_bytes);
             if err != CUDA_SUCCESS {
-                return Err(format!("nhd_malloc(centroids) resize failed: error {}", err));
+                return Err(format!(
+                    "nhd_malloc(centroids) resize failed: error {}",
+                    err
+                ));
             }
             let err = (self.nhd_malloc_fn)(
                 &mut d_results as *mut *mut f64 as *mut *mut u64,
@@ -286,7 +318,10 @@ mod tests {
         let path = CudaProjector::libnhd_path();
         assert!(path.is_ok(), "libnhd_path should resolve: {:?}", path);
         let path_str = path.unwrap();
-        assert!(path_str.to_string_lossy().ends_with("libnhd.so"), "path should end with libnhd.so");
+        assert!(
+            path_str.to_string_lossy().ends_with("libnhd.so"),
+            "path should end with libnhd.so"
+        );
     }
 
     #[test]

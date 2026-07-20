@@ -8,9 +8,9 @@
 // VSABrain's cluster memory for retrieval, reasoning, and question answering.
 // ────────────────────────────────────────────────────────────────────────────
 
+use crate::perception::{Entity, PerceptualEncoder, SvoTriple as SvoTuple};
 use crate::Hypervector;
 use crate::VSABrain;
-use crate::perception::{Entity, SvoTriple as SvoTuple, PerceptualEncoder};
 
 /// Text encoder: converts English text into SVO triples via rule-based NLP.
 ///
@@ -37,7 +37,8 @@ impl PerceptualEncoder for TextEncoder {
     /// Subjects and objects of all extracted triples are collected as entities.
     fn extract_entities(&self, input: &Self::Input) -> Vec<Entity> {
         let triples = crate::nlp::extract_svo(input);
-        let mut entities: Vec<String> = triples.iter()
+        let mut entities: Vec<String> = triples
+            .iter()
             .flat_map(|t| vec![t.subject.to_lowercase(), t.object.to_lowercase()])
             .collect();
         entities.sort();
@@ -48,8 +49,15 @@ impl PerceptualEncoder for TextEncoder {
     /// Extract subject-verb-object relations from English text.
     fn extract_relations(&self, input: &Self::Input, _entities: &[Entity]) -> Vec<SvoTuple> {
         let triples = crate::nlp::extract_svo(input);
-        triples.into_iter()
-            .map(|t| (t.subject.to_lowercase(), t.verb.to_lowercase(), t.object.to_lowercase()))
+        triples
+            .into_iter()
+            .map(|t| {
+                (
+                    t.subject.to_lowercase(),
+                    t.verb.to_lowercase(),
+                    t.object.to_lowercase(),
+                )
+            })
             .collect()
     }
 }
@@ -93,10 +101,15 @@ pub fn store_knowledge_triple(
 
     // Domain is derived from the source parameter.
     // Standard domains: "text_knowledge", "system_state", "threat_model", "chess_stage1"
-    let domain = if source.contains("system") { "system_state" }
-        else if source.contains("threat") { "threat_model" }
-        else if source.contains("chess") { "chess" }
-        else { "text_knowledge" };
+    let domain = if source.contains("system") {
+        "system_state"
+    } else if source.contains("threat") {
+        "threat_model"
+    } else if source.contains("chess") {
+        "chess"
+    } else {
+        "text_knowledge"
+    };
 
     let mut meta = HashMap::new();
     meta.insert("source".to_string(), source.to_string());
@@ -134,12 +147,8 @@ fn store_text_entry(
         if best_nhd < TEXT_NHD_THRESHOLD {
             let cluster = &mut clusters[idx];
             cluster.ensure_anchor();
-            let entry = crate::DejavuEntry::new(
-                hv.clone(),
-                label.to_string(),
-                meta,
-                Some(&cluster.anchor),
-            );
+            let entry =
+                crate::DejavuEntry::new(hv.clone(), label.to_string(), meta, Some(&cluster.anchor));
             let tau = entry.reconstruct(&cluster.anchor);
 
             // Absorb into accumulator
@@ -194,11 +203,7 @@ fn store_text_entry(
 /// Convenience: run the full text → SVO → clusters pipeline on a text string.
 ///
 /// Returns the number of triples stored.
-pub fn ingest_text(
-    brain: &mut VSABrain,
-    text: &str,
-    source: &str,
-) -> usize {
+pub fn ingest_text(brain: &mut VSABrain, text: &str, source: &str) -> usize {
     let encoder = TextEncoder::new();
     let triples = encoder.encode(&text.to_string());
     let mut count = 0;
@@ -224,10 +229,14 @@ mod tests {
         eprintln!("  Extracted triples: {:?}", triples);
 
         // The NLP pipeline lemmatizes verbs ("raised" → "raise") and lowercases everything.
-        let has_econ = triples.iter().any(|(s, v, o)| {
-            v == "raise" && (o.contains("rate") || s.contains("fed"))
-        });
-        assert!(has_econ, "Should capture economic relation: got {:?}", triples);
+        let has_econ = triples
+            .iter()
+            .any(|(s, v, o)| v == "raise" && (o.contains("rate") || s.contains("fed")));
+        assert!(
+            has_econ,
+            "Should capture economic relation: got {:?}",
+            triples
+        );
     }
 
     #[test]
@@ -244,9 +253,7 @@ mod tests {
             !brain.dejavu_clusters.is_empty(),
             "Should have at least one cluster after ingestion"
         );
-        let total_entries: usize = brain.dejavu_clusters.iter()
-            .map(|c| c.entries.len())
-            .sum();
+        let total_entries: usize = brain.dejavu_clusters.iter().map(|c| c.entries.len()).sum();
         eprintln!(
             "  Stored {} triples → {} clusters, {} total entries",
             count,

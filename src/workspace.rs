@@ -288,7 +288,10 @@ impl GlobalWorkspace {
 
     /// Get a module's current vector by ID.
     pub fn module_vector(&self, id: u8) -> Option<&Hypervector> {
-        self.modules.iter().find(|m| m.id == id).map(|m| &m.current_vector)
+        self.modules
+            .iter()
+            .find(|m| m.id == id)
+            .map(|m| &m.current_vector)
     }
 
     /// Number of registered modules.
@@ -334,7 +337,9 @@ impl GlobalWorkspace {
 
         for module in &self.modules {
             let sim = 1.0 - self_query.normalized_hamming_distance(&module.current_vector);
-            report.all_scores.push((module.id, module.label.clone(), sim));
+            report
+                .all_scores
+                .push((module.id, module.label.clone(), sim));
 
             if sim > best_sim {
                 best_sim = sim;
@@ -464,7 +469,10 @@ mod tests {
         let self_query = alpha_vec;
         let report = ws.evaluate_attention(&self_query);
 
-        eprintln!("  Winner: {:?} (sim={:.4})", report.winner_id, report.winner_similarity);
+        eprintln!(
+            "  Winner: {:?} (sim={:.4})",
+            report.winner_id, report.winner_similarity
+        );
         eprintln!("  All scores:");
         for (id, label, sim) in &report.all_scores {
             eprintln!("    {}[{}]: {:.4}", label, id, sim);
@@ -511,7 +519,10 @@ mod tests {
         let self_query = Hypervector::new_random(); // random query
         let report = ws.evaluate_attention(&self_query);
 
-        eprintln!("  Winner: {:?} (sim={:.4})", report.winner_id, report.winner_similarity);
+        eprintln!(
+            "  Winner: {:?} (sim={:.4})",
+            report.winner_id, report.winner_similarity
+        );
         eprintln!("  Threshold: {:.4}", ws.attention_threshold);
 
         // With a high threshold (0.55) and random vectors,
@@ -527,7 +538,10 @@ mod tests {
                 wins += 1;
             }
         }
-        eprintln!("  Wins by chance (100 trials): {} (threshold={})", wins, ws.attention_threshold);
+        eprintln!(
+            "  Wins by chance (100 trials): {} (threshold={})",
+            wins, ws.attention_threshold
+        );
 
         // At threshold 0.55 with random 10240-bit vectors, chance wins
         // should be very rare (well below 50%)
@@ -566,7 +580,10 @@ mod tests {
         // The broadcast bound form should be different (role-bound)
         let bound = ws.get_broadcast_bound();
         let bound_dist = bound.normalized_hamming_distance(&sensor_vec);
-        eprintln!("  Role-bound broadcast distance to winning vector: {:.6}", bound_dist);
+        eprintln!(
+            "  Role-bound broadcast distance to winning vector: {:.6}",
+            bound_dist
+        );
         // Role-bound version is XORed with role_broadcast, so it should differ
         assert!(
             bound_dist > 0.40,
@@ -593,13 +610,21 @@ mod tests {
         let query_visual = visual_vec;
         let report1 = ws.evaluate_attention(&query_visual);
         eprintln!("  Visual query winner: {:?}", report1.winner_id);
-        assert_eq!(report1.winner_id, Some(0), "VISUAL should win for visual query");
+        assert_eq!(
+            report1.winner_id,
+            Some(0),
+            "VISUAL should win for visual query"
+        );
 
         // Query close to audio → AUDIO wins
         let query_audio = audio_vec;
         let report2 = ws.evaluate_attention(&query_audio);
         eprintln!("  Audio query winner: {:?}", report2.winner_id);
-        assert_eq!(report2.winner_id, Some(1), "AUDIO should win for audio query");
+        assert_eq!(
+            report2.winner_id,
+            Some(1),
+            "AUDIO should win for audio query"
+        );
     }
 
     /// Test module registration bounds.

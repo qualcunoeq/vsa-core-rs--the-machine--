@@ -239,7 +239,10 @@ pub trait ActionExecutor: Send + Sync {
     /// Execute an action request asynchronously.
     /// Implementations should spawn blocking work on a threadpool or use async I/O.
     /// The default implementation panics — network-backed implementations MUST override.
-    fn execute_async(&mut self, _request: &ActionRequest) -> std::pin::Pin<Box<dyn std::future::Future<Output = ActionResult> + Send + '_>> {
+    fn execute_async(
+        &mut self,
+        _request: &ActionRequest,
+    ) -> std::pin::Pin<Box<dyn std::future::Future<Output = ActionResult> + Send + '_>> {
         Box::pin(async move {
             ActionResult::error("execute_async not implemented — use a network-backed executor")
         })
@@ -307,7 +310,10 @@ impl JumpBoxActuator {
                     success: false,
                     raw_output: String::new(),
                     observations: Vec::new(),
-                    error: Some(format!("connection timed out after {}s", self.connect_timeout_secs)),
+                    error: Some(format!(
+                        "connection timed out after {}s",
+                        self.connect_timeout_secs
+                    )),
                     duration_ms: start.elapsed().as_millis() as u64,
                 };
             }
@@ -385,24 +391,23 @@ impl JumpBoxActuator {
                     }
                 }
             }
-            Ok(Err(e)) => {
-                ActionResult {
-                    success: false,
-                    raw_output: String::new(),
-                    observations: Vec::new(),
-                    error: Some(format!("read error: {}", e)),
-                    duration_ms: start.elapsed().as_millis() as u64,
-                }
-            }
-            Err(_) => {
-                ActionResult {
-                    success: false,
-                    raw_output: String::new(),
-                    observations: Vec::new(),
-                    error: Some(format!("response timed out after {}s", request.timeout_secs)),
-                    duration_ms: start.elapsed().as_millis() as u64,
-                }
-            }
+            Ok(Err(e)) => ActionResult {
+                success: false,
+                raw_output: String::new(),
+                observations: Vec::new(),
+                error: Some(format!("read error: {}", e)),
+                duration_ms: start.elapsed().as_millis() as u64,
+            },
+            Err(_) => ActionResult {
+                success: false,
+                raw_output: String::new(),
+                observations: Vec::new(),
+                error: Some(format!(
+                    "response timed out after {}s",
+                    request.timeout_secs
+                )),
+                duration_ms: start.elapsed().as_millis() as u64,
+            },
         }
     }
 }
@@ -432,22 +437,38 @@ pub fn parse_scan_port_output(output: &str, target: &str, port: u16) -> Vec<SvoT
 
     // If the output explicitly says "open", the port is open
     if output_lower.contains("open") || output_lower.contains("succeeded") {
-        triples.push((target_key.clone(), "has_open_port".to_string(), port_key.clone()));
+        triples.push((
+            target_key.clone(),
+            "has_open_port".to_string(),
+            port_key.clone(),
+        ));
         triples.push((port_key.clone(), "state".to_string(), "open".to_string()));
     }
 
     // If the output is just a port number (line-based format), assume open
     if output.trim() == port.to_string() || output.trim().starts_with(&port.to_string()) {
-        triples.push((target_key.clone(), "has_open_port".to_string(), port_key.clone()));
+        triples.push((
+            target_key.clone(),
+            "has_open_port".to_string(),
+            port_key.clone(),
+        ));
         triples.push((port_key.clone(), "state".to_string(), "open".to_string()));
     }
 
     // If output contains "closed" or "filtered", mark it
     if output_lower.contains("closed") {
-        triples.push((target_key.clone(), "has_closed_port".to_string(), port_key.clone()));
+        triples.push((
+            target_key.clone(),
+            "has_closed_port".to_string(),
+            port_key.clone(),
+        ));
         triples.push((port_key.clone(), "state".to_string(), "closed".to_string()));
     } else if output_lower.contains("filtered") {
-        triples.push((target_key.clone(), "has_filtered_port".to_string(), port_key.clone()));
+        triples.push((
+            target_key.clone(),
+            "has_filtered_port".to_string(),
+            port_key.clone(),
+        ));
         triples.push((port_key, "state".to_string(), "filtered".to_string()));
     }
 
@@ -497,7 +518,11 @@ pub fn parse_check_service_output(output: &str, _target: &str, port: u16) -> Vec
 
     for (keyword, service_name) in &known_services {
         if output_lower.contains(keyword) {
-            triples.push((port_key.clone(), "service".to_string(), service_name.to_string()));
+            triples.push((
+                port_key.clone(),
+                "service".to_string(),
+                service_name.to_string(),
+            ));
             break;
         }
     }
@@ -540,7 +565,11 @@ pub fn parse_brute_force_output(output: &str, _target: &str, port: u16) -> Vec<S
                 let cred = format!("{}:{}", user, pass);
                 triples.push((port_key.clone(), "rejected_credential".to_string(), cred));
             } else {
-                triples.push((port_key.clone(), "auth_failed".to_string(), "unknown".to_string()));
+                triples.push((
+                    port_key.clone(),
+                    "auth_failed".to_string(),
+                    "unknown".to_string(),
+                ));
             }
         }
     }
@@ -549,21 +578,42 @@ pub fn parse_brute_force_output(output: &str, _target: &str, port: u16) -> Vec<S
 }
 
 /// Parse HTTP probe output into SVO triples.
-pub fn parse_probe_http_output(output: &str, _target: &str, port: u16, path: &str) -> Vec<SvoTriple> {
+pub fn parse_probe_http_output(
+    output: &str,
+    _target: &str,
+    port: u16,
+    path: &str,
+) -> Vec<SvoTriple> {
     let port_key = format!("port_{}", port);
     let mut triples = Vec::new();
 
     // Check response
     let output_lower = output.to_lowercase();
     if output_lower.contains("200 ok") || output_lower.contains("200") {
-        triples.push((port_key.clone(), "http_response".to_string(), "200".to_string()));
+        triples.push((
+            port_key.clone(),
+            "http_response".to_string(),
+            "200".to_string(),
+        ));
         triples.push(("http".to_string(), "serves".to_string(), path.to_string()));
     } else if output_lower.contains("404") {
-        triples.push((port_key.clone(), "http_response".to_string(), "404".to_string()));
+        triples.push((
+            port_key.clone(),
+            "http_response".to_string(),
+            "404".to_string(),
+        ));
     } else if output_lower.contains("301") || output_lower.contains("302") {
-        triples.push((port_key.clone(), "http_response".to_string(), "redirect".to_string()));
+        triples.push((
+            port_key.clone(),
+            "http_response".to_string(),
+            "redirect".to_string(),
+        ));
     } else if output_lower.contains("403") {
-        triples.push((port_key.clone(), "http_response".to_string(), "403".to_string()));
+        triples.push((
+            port_key.clone(),
+            "http_response".to_string(),
+            "403".to_string(),
+        ));
     } else if output.is_empty() {
         triples.push((port_key, "no_response".to_string(), "timeout".to_string()));
     } else {
@@ -585,9 +635,17 @@ pub fn parse_check_process_output(output: &str, process_name: &str) -> Vec<SvoTr
     let output = output.trim();
 
     if output.is_empty() {
-        triples.push((sanitize_entity(process_name), "is_running".to_string(), "no".to_string()));
+        triples.push((
+            sanitize_entity(process_name),
+            "is_running".to_string(),
+            "no".to_string(),
+        ));
     } else {
-        triples.push((sanitize_entity(process_name), "is_running".to_string(), "yes".to_string()));
+        triples.push((
+            sanitize_entity(process_name),
+            "is_running".to_string(),
+            "yes".to_string(),
+        ));
         // Try to extract PID
         if let Some(pid) = extract_pid(output) {
             triples.push((sanitize_entity(process_name), "pid".to_string(), pid));
@@ -636,11 +694,11 @@ fn extract_version(output: &str) -> Option<String> {
             }
         }
         let candidate = &output[digit_start..j];
-        let cleaned = candidate.trim_end_matches(|c: char| !c.is_alphanumeric() && c != '.' && c != '_');
+        let cleaned =
+            candidate.trim_end_matches(|c: char| !c.is_alphanumeric() && c != '.' && c != '_');
 
         // Skip if it looks like a port number (short, all digits, no dot/letter)
-        let is_port_like = cleaned.len() <= 5
-            && cleaned.chars().all(|c| c.is_ascii_digit());
+        let is_port_like = cleaned.len() <= 5 && cleaned.chars().all(|c| c.is_ascii_digit());
 
         // Skip if it's just "0" or a single-digit noise
         if !is_port_like && cleaned.len() > 0 {
@@ -679,7 +737,11 @@ fn extract_pid(output: &str) -> Option<String> {
             .find(|c: char| !c.is_ascii_digit())
             .unwrap_or(after_pid[digits_start..].len());
         let pid = after_pid[digits_start..digits_start + digits_end].to_string();
-        if pid.is_empty() { None } else { Some(pid) }
+        if pid.is_empty() {
+            None
+        } else {
+            Some(pid)
+        }
     } else {
         None
     }
@@ -706,7 +768,9 @@ pub fn parse_result_observations(
 
     match request.action_type {
         ActionType::ScanPort => {
-            let port: u16 = request.params.get("port")
+            let port: u16 = request
+                .params
+                .get("port")
                 .and_then(|p| p.parse().ok())
                 .unwrap_or(22);
             parse_scan_port_output(&result.raw_output, target_ip, port)
@@ -720,9 +784,7 @@ pub fn parse_result_observations(
                     for part in line.split("Ports: ").nth(1).unwrap_or("").split(',') {
                         if let Some(port_str) = part.trim().split('/').next() {
                             if let Ok(port) = port_str.parse::<u16>() {
-                                all_triples.extend(
-                                    parse_scan_port_output("open", target_ip, port)
-                                );
+                                all_triples.extend(parse_scan_port_output("open", target_ip, port));
                             }
                         }
                     }
@@ -731,26 +793,38 @@ pub fn parse_result_observations(
             all_triples
         }
         ActionType::CheckService => {
-            let port: u16 = request.params.get("port")
+            let port: u16 = request
+                .params
+                .get("port")
                 .and_then(|p| p.parse().ok())
                 .unwrap_or(22);
             parse_check_service_output(&result.raw_output, target_ip, port)
         }
         ActionType::BruteForce => {
-            let port: u16 = request.params.get("port")
+            let port: u16 = request
+                .params
+                .get("port")
                 .and_then(|p| p.parse().ok())
                 .unwrap_or(22);
             parse_brute_force_output(&result.raw_output, target_ip, port)
         }
         ActionType::ProbeHttp => {
-            let port: u16 = request.params.get("port")
+            let port: u16 = request
+                .params
+                .get("port")
                 .and_then(|p| p.parse().ok())
                 .unwrap_or(80);
-            let path = request.params.get("path").map(|s| s.as_str()).unwrap_or("/");
+            let path = request
+                .params
+                .get("path")
+                .map(|s| s.as_str())
+                .unwrap_or("/");
             parse_probe_http_output(&result.raw_output, target_ip, port, path)
         }
         ActionType::CheckProcess => {
-            let name = request.params.get("process_name")
+            let name = request
+                .params
+                .get("process_name")
                 .map(|s| s.as_str())
                 .unwrap_or("unknown");
             parse_check_process_output(&result.raw_output, name)
@@ -764,10 +838,7 @@ pub fn parse_result_observations(
 /// Uses `store_knowledge_triple` with source="actuator" so the triples
 /// are tagged with domain="text_knowledge" and can be retrieved in
 /// cross-domain queries alongside system state and documentation.
-pub fn ingest_observations(
-    brain: &mut VSABrain,
-    observations: &[SvoTriple],
-) -> usize {
+pub fn ingest_observations(brain: &mut VSABrain, observations: &[SvoTriple]) -> usize {
     let mut count = 0;
     for (subj, verb, obj) in observations {
         store_knowledge_triple(brain, subj, verb, obj, 0.9, "actuator");
@@ -843,12 +914,9 @@ pub fn plan_step_to_request(step: &PlanStep, target_ip: &str) -> ActionRequest {
         }
         "check_process" => {
             let process = parts.get(1).copied().unwrap_or(target);
-            ActionRequest::new(ActionType::CheckProcess, "")
-                .with_param("process_name", process)
+            ActionRequest::new(ActionType::CheckProcess, "").with_param("process_name", process)
         }
-        "scan_host" => {
-            ActionRequest::new(ActionType::ScanHost, target)
-        }
+        "scan_host" => ActionRequest::new(ActionType::ScanHost, target),
         "execute_command" => {
             let cmd = parts.get(1).copied().unwrap_or("id");
             ActionRequest::exec(target, cmd)
@@ -913,7 +981,7 @@ fn get_target_ip(brain: &VSABrain) -> String {
         for entry in &cluster.entries {
             let subj = entry.metadata.get("subject").map(|s| s.as_str());
             let verb = entry.metadata.get("verb").map(|s| s.as_str());
-            let obj  = entry.metadata.get("object");
+            let obj = entry.metadata.get("object");
             if subj == Some("target_vm") && verb == Some("ip") {
                 if let Some(ip) = obj {
                     return ip.clone();
@@ -943,18 +1011,29 @@ pub async fn budgeted_execute<'a>(
     let action_risk = match request.action_type {
         ActionType::ExecuteCommand | ActionType::ListenPort => 0.70,
         ActionType::BruteForce => 0.60,
-        ActionType::ScanPort | ActionType::ScanHost | ActionType::CheckService
+        ActionType::ScanPort
+        | ActionType::ScanHost
+        | ActionType::CheckService
         | ActionType::ProbeHttp => 0.30,
         ActionType::CheckProcess | ActionType::FetchDocumentation => 0.10,
     };
     let duration_ms = request.timeout_secs * 1000;
 
-    let mut record = DecisionRecord::new(tick, intent, request.clone(), reasoning, &brain.autonomy_budget);
-    record.budget_allowed = brain.autonomy_budget.can_spend(action_risk, is_external_write);
+    let mut record = DecisionRecord::new(
+        tick,
+        intent,
+        request.clone(),
+        reasoning,
+        &brain.autonomy_budget,
+    );
+    record.budget_allowed = brain
+        .autonomy_budget
+        .can_spend(action_risk, is_external_write);
 
     if !record.budget_allowed {
         // Budget blocked — record the denial and return None
-        let denial_msg = format!(
+        let denial_msg =
+            format!(
             "Budget blocked: actions_used={}/{}, risk={:.2}/{:.2}, ext_writes={}/{}, time={}/{}ms",
             brain.autonomy_budget.actions_used, brain.autonomy_budget.max_actions,
             action_risk, brain.autonomy_budget.max_risk,
@@ -972,12 +1051,17 @@ pub async fn budgeted_execute<'a>(
     let result = actuator.send_request(request).await;
 
     // ── 3. Spend the budget ────────────────────────────────────────
-    let budget_ok = brain.autonomy_budget.spend(action_risk, duration_ms, is_external_write);
+    let budget_ok = brain
+        .autonomy_budget
+        .spend(action_risk, duration_ms, is_external_write);
 
     // ── 4. Record the tool event ───────────────────────────────────
     let side_effect = match request.action_type {
-        ActionType::ScanPort | ActionType::ScanHost | ActionType::CheckService
-        | ActionType::ProbeHttp | ActionType::BruteForce => SideEffectClass::Network,
+        ActionType::ScanPort
+        | ActionType::ScanHost
+        | ActionType::CheckService
+        | ActionType::ProbeHttp
+        | ActionType::BruteForce => SideEffectClass::Network,
         ActionType::CheckProcess | ActionType::FetchDocumentation => SideEffectClass::ReadOnly,
         ActionType::ListenPort | ActionType::ExecuteCommand => SideEffectClass::ExternalWrite,
     };
@@ -995,7 +1079,11 @@ pub async fn budgeted_execute<'a>(
     record.action_result = Some(result.clone());
     record.budget_after = brain.autonomy_budget.clone();
     record.tool_event_id = Some(tool_event_id);
-    let budget_err = budget_ok.as_ref().err().map(|e| format!(" (budget warn: {})", e)).unwrap_or_default();
+    let budget_err = budget_ok
+        .as_ref()
+        .err()
+        .map(|e| format!(" (budget warn: {})", e))
+        .unwrap_or_default();
     brain.decision_journal.push(record);
 
     Some((result, budget_err))
@@ -1024,7 +1112,9 @@ pub fn record_tool_event<'a>(
     };
     // Infer side-effect class from action type if not specified
     let side_effect = match request.action_type {
-        ActionType::ScanPort | ActionType::ScanHost | ActionType::CheckService
+        ActionType::ScanPort
+        | ActionType::ScanHost
+        | ActionType::CheckService
         | ActionType::ProbeHttp => SideEffectClass::Network,
         ActionType::BruteForce => SideEffectClass::Network,
         ActionType::CheckProcess => SideEffectClass::ReadOnly,
@@ -1042,7 +1132,9 @@ pub fn record_tool_event<'a>(
         memory_updates: Vec::new(),
     };
     let action_type_str = format!("{:?}", request.action_type);
-    brain.tool_reliability.record(&action_type_str, result.success);
+    brain
+        .tool_reliability
+        .record(&action_type_str, result.success);
     brain.tool_event_store.push(event)
 }
 
@@ -1059,7 +1151,8 @@ pub async fn run_attack_loop(
     // Track how many times each action has failed consecutively.
     // After 3 consecutive failures, we consider it exhausted and
     // fall through to intelligence gathering.
-    let mut action_failure_count: std::collections::HashMap<String, u32> = std::collections::HashMap::new();
+    let mut action_failure_count: std::collections::HashMap<String, u32> =
+        std::collections::HashMap::new();
 
     eprintln!("\n═══════════════════════════════════════════════");
     eprintln!("  Agentic Attack Loop Started");
@@ -1094,20 +1187,30 @@ pub async fn run_attack_loop(
             let key = format!("{}:{}:{}", s.action.0, s.action.1, s.action.2);
             action_failure_count.get(&key).map_or(false, |&c| c >= 3)
         });
-        let plan_dead = plan.is_empty() || action_exhausted || plan.first().map_or(false, |s| s.confidence < 0.12);
+        let plan_dead = plan.is_empty()
+            || action_exhausted
+            || plan.first().map_or(false, |s| s.confidence < 0.12);
         if plan_dead {
             if plan.is_empty() {
                 eprintln!("  ⚠ No plan found. Gathering intelligence...");
             } else {
-                eprintln!("  ⚠ Best plan confidence {:.4} too low. Gathering intelligence...",
-                    plan.first().unwrap().confidence);
+                eprintln!(
+                    "  ⚠ Best plan confidence {:.4} too low. Gathering intelligence...",
+                    plan.first().unwrap().confidence
+                );
             }
 
             // Try scanning the target to discover its attack surface
             // We scan common ports unless we already have some info
-            let has_port_info = brain.dejavu_clusters.iter()
+            let has_port_info = brain
+                .dejavu_clusters
+                .iter()
                 .flat_map(|c| c.entries.iter())
-                .any(|e| e.metadata.get("verb").map_or(false, |v| v == "has_open_port"));
+                .any(|e| {
+                    e.metadata
+                        .get("verb")
+                        .map_or(false, |v| v == "has_open_port")
+                });
 
             if !has_port_info {
                 let scan_request = ActionRequest::new(ActionType::ScanHost, &target_ip);
@@ -1115,16 +1218,20 @@ pub async fn run_attack_loop(
 
                 if scan_result.success {
                     let parsed = parse_result_observations(&scan_request, &scan_result, &target_ip);
-                    let all_obs: Vec<SvoTriple> = scan_result.observations.iter()
+                    let all_obs: Vec<SvoTriple> = scan_result
+                        .observations
+                        .iter()
                         .chain(parsed.iter())
                         .cloned()
                         .collect();
                     let n = ingest_observations(brain, &all_obs);
-                // Store QA facts and forward-chain through causal rules
-                qa.store_fact("machine", "knows", "open_service", "actuator_intel");
-                let n_derived = qa.forward_chain(0.75);
-                if n_derived > 0 { eprintln!("  → Forward chain: {} new facts derived", n_derived); }
-                eprintln!("  ✓ Scanned host: {} observations ingested", n);
+                    // Store QA facts and forward-chain through causal rules
+                    qa.store_fact("machine", "knows", "open_service", "actuator_intel");
+                    let n_derived = qa.forward_chain(0.75);
+                    if n_derived > 0 {
+                        eprintln!("  → Forward chain: {} new facts derived", n_derived);
+                    }
+                    eprintln!("  ✓ Scanned host: {} observations ingested", n);
                 } else {
                     eprintln!("  ✗ Scan failed: {:?}", scan_result.error);
                 }
@@ -1142,17 +1249,25 @@ pub async fn run_attack_loop(
             }
 
             // If we have port info but no service info, probe found ports
-            let has_service_info = brain.dejavu_clusters.iter()
+            let has_service_info = brain
+                .dejavu_clusters
+                .iter()
                 .flat_map(|c| c.entries.iter())
                 .any(|e| e.metadata.get("verb").map_or(false, |v| v == "service"));
 
             if !has_service_info {
                 // Check which ports we know are open (collect first to avoid borrow conflict)
-                let known_ports: Vec<u16> = brain.dejavu_clusters.iter()
+                let known_ports: Vec<u16> = brain
+                    .dejavu_clusters
+                    .iter()
                     .flat_map(|c| c.entries.iter())
                     .filter_map(|e| {
-                        if e.metadata.get("verb").map_or(false, |v| v == "has_open_port") {
-                            e.metadata.get("object")
+                        if e.metadata
+                            .get("verb")
+                            .map_or(false, |v| v == "has_open_port")
+                        {
+                            e.metadata
+                                .get("object")
                                 .and_then(|obj| obj.strip_prefix("port_"))
                                 .and_then(|p| p.parse::<u16>().ok())
                         } else {
@@ -1165,19 +1280,27 @@ pub async fn run_attack_loop(
                     let svc_request = ActionRequest::check_service(&target_ip, *port_num);
                     let svc_result = actuator.send_request(&svc_request).await;
                     if svc_result.success {
-                        let parsed = parse_result_observations(&svc_request, &svc_result, &target_ip);
-                        let all_obs: Vec<SvoTriple> = svc_result.observations.iter()
+                        let parsed =
+                            parse_result_observations(&svc_request, &svc_result, &target_ip);
+                        let all_obs: Vec<SvoTriple> = svc_result
+                            .observations
+                            .iter()
                             .chain(parsed.iter())
                             .cloned()
                             .collect();
                         let n = ingest_observations(brain, &all_obs);
-                        eprintln!("  ✓ Checked service on port {}: {} observations", port_num, n);
+                        eprintln!(
+                            "  ✓ Checked service on port {}: {} observations",
+                            port_num, n
+                        );
                     }
                 }
                 // Store QA facts and forward-chain through causal rules
                 qa.store_fact("machine", "knows", "service_version", "actuator_intel");
                 let n_derived = qa.forward_chain(0.75);
-                if n_derived > 0 { eprintln!("  → Forward chain: {} new facts derived", n_derived); }
+                if n_derived > 0 {
+                    eprintln!("  → Forward chain: {} new facts derived", n_derived);
+                }
                 continue;
             }
 
@@ -1198,24 +1321,35 @@ pub async fn run_attack_loop(
         // ── 4. Execute the first actionable step ─────────────────────────
         let step = &plan[0];
 
-        eprintln!("  Plan step: ({} {} {})",
-            step.action.0, step.action.1, step.action.2);
-        eprintln!("  Achieves:  ({} {} {})",
-            step.achieves.0, step.achieves.1, step.achieves.2);
+        eprintln!(
+            "  Plan step: ({} {} {})",
+            step.action.0, step.action.1, step.action.2
+        );
+        eprintln!(
+            "  Achieves:  ({} {} {})",
+            step.achieves.0, step.achieves.1, step.achieves.2
+        );
         eprintln!("  Confidence: {:.4}", step.confidence);
 
         let step_intent = format!("{} {} {}", step.action.0, step.action.1, step.action.2);
         let request = plan_step_to_request(step, &target_ip);
-        let is_ext_write = matches!(request.action_type, ActionType::ExecuteCommand | ActionType::ListenPort);
+        let is_ext_write = matches!(
+            request.action_type,
+            ActionType::ExecuteCommand | ActionType::ListenPort
+        );
         let executed = budgeted_execute(
             brain,
             step_num as u64,
             &step_intent,
             &request,
             actuator,
-            &format!("Plan step for goal ({} {} {})", step.achieves.0, step.achieves.1, step.achieves.2),
+            &format!(
+                "Plan step for goal ({} {} {})",
+                step.achieves.0, step.achieves.1, step.achieves.2
+            ),
             is_ext_write,
-        ).await;
+        )
+        .await;
 
         let (result, budget_warn) = match executed {
             Some(r) => r,
@@ -1248,7 +1382,9 @@ pub async fn run_attack_loop(
         // The jump-box returns raw_output (nmap text) but observations in
         // the ActionResult are empty.  We parse them client-side here.
         let parsed_observations = parse_result_observations(&request, &result, &target_ip);
-        let all_observations: Vec<SvoTriple> = result.observations.iter()
+        let all_observations: Vec<SvoTriple> = result
+            .observations
+            .iter()
             .chain(parsed_observations.iter())
             .cloned()
             .collect();
@@ -1259,27 +1395,38 @@ pub async fn run_attack_loop(
 
             // Store the achievement as a fact so the QA engine knows it happened
             qa.store_fact(
-                &step.achieves.0, &step.achieves.1, &step.achieves.2,
+                &step.achieves.0,
+                &step.achieves.1,
+                &step.achieves.2,
                 "actuator",
             );
 
             // Also store as knowledge triple for brain-based queries
             store_knowledge_triple(
                 brain,
-                &step.achieves.0, &step.achieves.1, &step.achieves.2,
-                1.0, "actuator",
+                &step.achieves.0,
+                &step.achieves.1,
+                &step.achieves.2,
+                1.0,
+                "actuator",
             );
 
             // Also learn: store a rule that this action achieves its goal
             qa.store_action(
-                &step.action.0, &step.action.1, &step.action.2,
-                &step.achieves.0, &step.achieves.1, &step.achieves.2,
+                &step.action.0,
+                &step.action.1,
+                &step.action.2,
+                &step.achieves.0,
+                &step.achieves.1,
+                &step.achieves.2,
                 "learned",
             );
 
             // Forward-chain: propagate new facts through causal rules
             let n_derived = qa.forward_chain(0.75);
-            if n_derived > 0 { eprintln!("  → Forward chain: {} new facts derived", n_derived); }
+            if n_derived > 0 {
+                eprintln!("  → Forward chain: {} new facts derived", n_derived);
+            }
 
             // Check if goal was directly achieved
             if step_achieves_goal {
@@ -1301,13 +1448,23 @@ pub async fn run_attack_loop(
             // If the plan succeeded but didn't achieve the goal, and we
             // have limited port knowledge, run a full host scan + service
             // check to build a complete picture of the target.
-            let known_port_count: usize = brain.dejavu_clusters.iter()
+            let known_port_count: usize = brain
+                .dejavu_clusters
+                .iter()
                 .flat_map(|c| c.entries.iter())
-                .filter(|e| e.metadata.get("verb").map_or(false, |v| v == "has_open_port"))
+                .filter(|e| {
+                    e.metadata
+                        .get("verb")
+                        .map_or(false, |v| v == "has_open_port")
+                })
                 .count();
 
-            if known_port_count < 3 && false { // disable for now — needs async in non-async block
-                eprintln!("  → Only {} known ports. Running full host scan...", known_port_count);
+            if known_port_count < 3 && false {
+                // disable for now — needs async in non-async block
+                eprintln!(
+                    "  → Only {} known ports. Running full host scan...",
+                    known_port_count
+                );
             }
 
             results.push(AttackCycleResult {
@@ -1317,8 +1474,10 @@ pub async fn run_attack_loop(
                 action_result: result,
                 observations_ingested: n,
                 goal_achieved: false,
-                log: format!("Executed ({} {} {}) → success",
-                    step.action.0, step.action.1, step.action.2),
+                log: format!(
+                    "Executed ({} {} {}) → success",
+                    step.action.0, step.action.1, step.action.2
+                ),
             });
         } else {
             eprintln!("  ✗ Action failed: {:?}", result.error);
@@ -1331,7 +1490,10 @@ pub async fn run_attack_loop(
             let failures = action_failure_count.entry(action_key).or_insert(0);
             *failures += 1;
             if *failures >= 3 {
-                eprintln!("  → Action failed {} times. Marking as exhausted.", *failures);
+                eprintln!(
+                    "  → Action failed {} times. Marking as exhausted.",
+                    *failures
+                );
             }
 
             results.push(AttackCycleResult {
@@ -1341,14 +1503,19 @@ pub async fn run_attack_loop(
                 action_result: result,
                 observations_ingested: 0,
                 goal_achieved: false,
-                log: format!("Executed ({} {} {}) → FAILED",
-                    step.action.0, step.action.1, step.action.2),
+                log: format!(
+                    "Executed ({} {} {}) → FAILED",
+                    step.action.0, step.action.1, step.action.2
+                ),
             });
         }
 
         // ── 7. Check QA-based goal achievement ──────────────────────────
         if goal_achieved(qa, goal_s, goal_v, goal_o) {
-            eprintln!("  ✓ Goal confirmed in QA engine after step {}!", step_num + 1);
+            eprintln!(
+                "  ✓ Goal confirmed in QA engine after step {}!",
+                step_num + 1
+            );
             if let Some(last) = results.last_mut() {
                 last.goal_achieved = true;
             }
@@ -1369,8 +1536,14 @@ pub async fn run_attack_loop(
     let succeeded = results.iter().filter(|r| r.action_result.success).count();
     eprintln!("  Succeeded: {}", succeeded);
     eprintln!("  Failed: {}", results.len() - succeeded);
-    eprintln!("  Goal achieved: {}",
-        if results.last().map_or(false, |r| r.goal_achieved) { "YES" } else { "NO" });
+    eprintln!(
+        "  Goal achieved: {}",
+        if results.last().map_or(false, |r| r.goal_achieved) {
+            "YES"
+        } else {
+            "NO"
+        }
+    );
     eprintln!("═══════════════════════════════════════════════\n");
 
     results
@@ -1399,57 +1572,81 @@ mod tests {
     fn test_parse_scan_port_open() {
         let triples = parse_scan_port_output(
             "Host: 192.168.1.100 Ports: 22/open/tcp//ssh/",
-            "192.168.1.100", 22,
+            "192.168.1.100",
+            22,
         );
-        assert!(triples.contains(&("192_168_1_100".to_string(), "has_open_port".to_string(), "port_22".to_string())));
-        assert!(triples.contains(&("port_22".to_string(), "state".to_string(), "open".to_string())));
+        assert!(triples.contains(&(
+            "192_168_1_100".to_string(),
+            "has_open_port".to_string(),
+            "port_22".to_string()
+        )));
+        assert!(triples.contains(&(
+            "port_22".to_string(),
+            "state".to_string(),
+            "open".to_string()
+        )));
     }
 
     #[test]
     fn test_parse_scan_port_closed() {
-        let triples = parse_scan_port_output(
-            "closed",
-            "192.168.1.100", 80,
-        );
-        assert!(triples.contains(&("192_168_1_100".to_string(), "has_closed_port".to_string(), "port_80".to_string())));
-        assert!(triples.contains(&("port_80".to_string(), "state".to_string(), "closed".to_string())));
+        let triples = parse_scan_port_output("closed", "192.168.1.100", 80);
+        assert!(triples.contains(&(
+            "192_168_1_100".to_string(),
+            "has_closed_port".to_string(),
+            "port_80".to_string()
+        )));
+        assert!(triples.contains(&(
+            "port_80".to_string(),
+            "state".to_string(),
+            "closed".to_string()
+        )));
     }
 
     #[test]
     fn test_parse_scan_port_filtered() {
-        let triples = parse_scan_port_output(
-            "filtered",
-            "10.0.0.1", 443,
-        );
-        assert!(triples.contains(&("10_0_0_1".to_string(), "has_filtered_port".to_string(), "port_443".to_string())));
+        let triples = parse_scan_port_output("filtered", "10.0.0.1", 443);
+        assert!(triples.contains(&(
+            "10_0_0_1".to_string(),
+            "has_filtered_port".to_string(),
+            "port_443".to_string()
+        )));
     }
 
     #[test]
     fn test_parse_check_service_ssh() {
-        let triples = parse_check_service_output(
-            "22/tcp open ssh OpenSSH 8.4p1 Ubuntu",
-            "192.168.1.100", 22,
-        );
-        assert!(triples.contains(&("port_22".to_string(), "service".to_string(), "ssh".to_string())));
-        assert!(triples.contains(&("service_on_port_22".to_string(), "version".to_string(), "8_4p1".to_string())));
+        let triples =
+            parse_check_service_output("22/tcp open ssh OpenSSH 8.4p1 Ubuntu", "192.168.1.100", 22);
+        assert!(triples.contains(&(
+            "port_22".to_string(),
+            "service".to_string(),
+            "ssh".to_string()
+        )));
+        assert!(triples.contains(&(
+            "service_on_port_22".to_string(),
+            "version".to_string(),
+            "8_4p1".to_string()
+        )));
     }
 
     #[test]
     fn test_parse_check_service_http() {
-        let triples = parse_check_service_output(
-            "80/tcp open http Apache httpd 2.4.41",
-            "192.168.1.100", 80,
-        );
-        assert!(triples.contains(&("port_80".to_string(), "service".to_string(), "http".to_string())));
-        assert!(triples.contains(&("service_on_port_80".to_string(), "version".to_string(), "2_4_41".to_string())));
+        let triples =
+            parse_check_service_output("80/tcp open http Apache httpd 2.4.41", "192.168.1.100", 80);
+        assert!(triples.contains(&(
+            "port_80".to_string(),
+            "service".to_string(),
+            "http".to_string()
+        )));
+        assert!(triples.contains(&(
+            "service_on_port_80".to_string(),
+            "version".to_string(),
+            "2_4_41".to_string()
+        )));
     }
 
     #[test]
     fn test_parse_check_service_unknown() {
-        let triples = parse_check_service_output(
-            "some unknown service output",
-            "10.0.0.1", 8080,
-        );
+        let triples = parse_check_service_output("some unknown service output", "10.0.0.1", 8080);
         // Should still try to find version
         assert!(!triples.is_empty() || triples.is_empty());
     }
@@ -1458,38 +1655,68 @@ mod tests {
     fn test_parse_brute_force_success() {
         let output = "Success: admin:password123";
         let triples = parse_brute_force_output(output, "192.168.1.100", 22);
-        assert!(triples.contains(&("ssh_22".to_string(), "accepted_credential".to_string(), "admin:password123".to_string())));
+        assert!(triples.contains(&(
+            "ssh_22".to_string(),
+            "accepted_credential".to_string(),
+            "admin:password123".to_string()
+        )));
     }
 
     #[test]
     fn test_parse_brute_force_failure() {
         let output = "Failed: root:wrongpass";
         let triples = parse_brute_force_output(output, "192.168.1.100", 22);
-        assert!(triples.contains(&("ssh_22".to_string(), "rejected_credential".to_string(), "root:wrongpass".to_string())));
+        assert!(triples.contains(&(
+            "ssh_22".to_string(),
+            "rejected_credential".to_string(),
+            "root:wrongpass".to_string()
+        )));
     }
 
     #[test]
     fn test_parse_probe_http_200() {
         let triples = parse_probe_http_output(
             "HTTP/1.1 200 OK\r\nServer: Apache/2.4.41\r\n",
-            "192.168.1.100", 80, "/index.html",
+            "192.168.1.100",
+            80,
+            "/index.html",
         );
-        assert!(triples.contains(&("port_80".to_string(), "http_response".to_string(), "200".to_string())));
-        assert!(triples.contains(&("http".to_string(), "serves".to_string(), "/index.html".to_string())));
-        assert!(triples.contains(&("http_service".to_string(), "server".to_string(), "apache_2_4_41".to_string())));
+        assert!(triples.contains(&(
+            "port_80".to_string(),
+            "http_response".to_string(),
+            "200".to_string()
+        )));
+        assert!(triples.contains(&(
+            "http".to_string(),
+            "serves".to_string(),
+            "/index.html".to_string()
+        )));
+        assert!(triples.contains(&(
+            "http_service".to_string(),
+            "server".to_string(),
+            "apache_2_4_41".to_string()
+        )));
     }
 
     #[test]
     fn test_parse_check_process_running() {
         let triples = parse_check_process_output("PID 1234: sshd", "sshd");
-        assert!(triples.contains(&("sshd".to_string(), "is_running".to_string(), "yes".to_string())));
+        assert!(triples.contains(&(
+            "sshd".to_string(),
+            "is_running".to_string(),
+            "yes".to_string()
+        )));
         assert!(triples.contains(&("sshd".to_string(), "pid".to_string(), "1234".to_string())));
     }
 
     #[test]
     fn test_parse_check_process_not_running() {
         let triples = parse_check_process_output("", "apache2");
-        assert!(triples.contains(&("apache2".to_string(), "is_running".to_string(), "no".to_string())));
+        assert!(triples.contains(&(
+            "apache2".to_string(),
+            "is_running".to_string(),
+            "no".to_string()
+        )));
     }
 
     // ── ActionRequest Construction Tests ─────────────────────────────────
@@ -1504,10 +1731,14 @@ mod tests {
 
     #[test]
     fn test_action_request_brute_force() {
-        let req = ActionRequest::brute_force("10.0.0.1", 22, &["root", "admin"], &["password", "1234"]);
+        let req =
+            ActionRequest::brute_force("10.0.0.1", 22, &["root", "admin"], &["password", "1234"]);
         assert_eq!(req.action_type, ActionType::BruteForce);
         assert_eq!(req.params.get("users"), Some(&"root,admin".to_string()));
-        assert_eq!(req.params.get("passwords"), Some(&"password,1234".to_string()));
+        assert_eq!(
+            req.params.get("passwords"),
+            Some(&"password,1234".to_string())
+        );
     }
 
     // ── PlanStep → ActionRequest Conversion ──────────────────────────────
@@ -1515,8 +1746,16 @@ mod tests {
     #[test]
     fn test_plan_step_to_request_scan_port() {
         let step = PlanStep {
-            action: ("machine".to_string(), "scan_port".to_string(), "192.168.1.100:22".to_string()),
-            achieves: ("machine".to_string(), "knows".to_string(), "port_22_state".to_string()),
+            action: (
+                "machine".to_string(),
+                "scan_port".to_string(),
+                "192.168.1.100:22".to_string(),
+            ),
+            achieves: (
+                "machine".to_string(),
+                "knows".to_string(),
+                "port_22_state".to_string(),
+            ),
             confidence: 1.0,
             depth: 0,
             rule_chain: vec![],
@@ -1530,8 +1769,16 @@ mod tests {
     #[test]
     fn test_plan_step_to_request_check_service() {
         let step = PlanStep {
-            action: ("machine".to_string(), "check_service".to_string(), "10.0.0.1:80".to_string()),
-            achieves: ("machine".to_string(), "knows".to_string(), "service_on_80".to_string()),
+            action: (
+                "machine".to_string(),
+                "check_service".to_string(),
+                "10.0.0.1:80".to_string(),
+            ),
+            achieves: (
+                "machine".to_string(),
+                "knows".to_string(),
+                "service_on_80".to_string(),
+            ),
             confidence: 1.0,
             depth: 0,
             rule_chain: vec![],
@@ -1545,8 +1792,16 @@ mod tests {
     #[test]
     fn test_plan_step_to_request_substitutes_target_placeholder() {
         let step = PlanStep {
-            action: ("machine".to_string(), "scan_port".to_string(), "target:22".to_string()),
-            achieves: ("machine".to_string(), "knows".to_string(), "port_state".to_string()),
+            action: (
+                "machine".to_string(),
+                "scan_port".to_string(),
+                "target:22".to_string(),
+            ),
+            achieves: (
+                "machine".to_string(),
+                "knows".to_string(),
+                "port_state".to_string(),
+            ),
             confidence: 1.0,
             depth: 0,
             rule_chain: vec![],
@@ -1562,15 +1817,25 @@ mod tests {
     fn test_ingest_observations() {
         let mut brain = VSABrain::new(0.12);
         let observations = vec![
-            ("192_168_1_100".to_string(), "has_open_port".to_string(), "port_22".to_string()),
-            ("port_22".to_string(), "state".to_string(), "open".to_string()),
+            (
+                "192_168_1_100".to_string(),
+                "has_open_port".to_string(),
+                "port_22".to_string(),
+            ),
+            (
+                "port_22".to_string(),
+                "state".to_string(),
+                "open".to_string(),
+            ),
         ];
 
         let n = ingest_observations(&mut brain, &observations);
         assert_eq!(n, 2);
 
         // Verify they were stored
-        let n_entries: usize = brain.dejavu_clusters.iter()
+        let n_entries: usize = brain
+            .dejavu_clusters
+            .iter()
             .flat_map(|c| c.entries.iter())
             .filter(|e| e.metadata.get("source").map_or(false, |s| s == "actuator"))
             .count();
@@ -1598,17 +1863,21 @@ mod tests {
 
         // Don't seed any rules — the planner will find no plan
         let results = run_attack_loop(
-            &mut brain, &mut qa,
-            &mut actuator,  // JBA has `&mut self` in execute, but send_request takes &self, so it's fine
+            &mut brain,
+            &mut qa,
+            &mut actuator, // JBA has `&mut self` in execute, but send_request takes &self, so it's fine
             ("machine", "has_access_to", "target_vm"),
             3,
-        ).await;
+        )
+        .await;
 
         // Should have at least one result (the scan attempt)
         assert!(!results.is_empty(), "Should have results even when no plan");
         // The scan attempt should fail (no jump-box running)
-        assert!(!results[0].action_result.success || results[0].action_request.is_none(),
-            "Scan should fail without a jump-box");
+        assert!(
+            !results[0].action_result.success || results[0].action_request.is_none(),
+            "Scan should fail without a jump-box"
+        );
     }
 
     // ── Serialization Round-Trip ──────────────────────────────────────────
@@ -1628,9 +1897,11 @@ mod tests {
         let result = ActionResult {
             success: true,
             raw_output: "22/open".to_string(),
-            observations: vec![
-                ("target".to_string(), "has_open_port".to_string(), "port_22".to_string()),
-            ],
+            observations: vec![(
+                "target".to_string(),
+                "has_open_port".to_string(),
+                "port_22".to_string(),
+            )],
             error: None,
             duration_ms: 150,
         };

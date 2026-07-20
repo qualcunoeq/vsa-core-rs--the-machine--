@@ -649,12 +649,15 @@ pub async fn resolve_uncertain(
     };
 
     let budget_result = crate::actuator::budgeted_execute(
-        brain, tick,
+        brain,
+        tick,
         &format!("resolve_uncertain: test '{}'", best.category),
-        &test_request, actuator,
+        &test_request,
+        actuator,
         &best.test_description,
         false,
-    ).await;
+    )
+    .await;
     let result = match budget_result {
         Some((res, _)) => res,
         None => return vec![],
@@ -684,12 +687,15 @@ pub async fn resolve_stuck(
     for term in &terms {
         let docs_request = ActionRequest::fetch_docs(term);
         let budget_result = crate::actuator::budgeted_execute(
-            brain, tick,
+            brain,
+            tick,
             &format!("resolve_stuck: fetch docs for '{}'", term),
-            &docs_request, actuator,
+            &docs_request,
+            actuator,
             &format!("acquire knowledge: {}", problem),
             false,
-        ).await;
+        )
+        .await;
         let result = match budget_result {
             Some((res, _)) => res,
             None => continue,
@@ -854,12 +860,18 @@ pub async fn solve_autonomously_with_learner(
                     let budget_result = crate::actuator::budgeted_execute(
                         brain,
                         iteration as u64,
-                        &format!("autonomous step {}/{} ({})", step_idx + 1, executable_steps, action_verb),
+                        &format!(
+                            "autonomous step {}/{} ({})",
+                            step_idx + 1,
+                            executable_steps,
+                            action_verb
+                        ),
                         &action_req,
                         actuator,
                         &format!("confident plan: {}", category),
                         false,
-                    ).await;
+                    )
+                    .await;
                     let result = match budget_result {
                         Some((res, _)) => res,
                         None => {
@@ -952,7 +964,9 @@ pub async fn solve_autonomously_with_learner(
             }
 
             ReasoningState::Uncertain { hypotheses, .. } => {
-                let new_obs = resolve_uncertain(hypotheses, actuator, brain, target_ip, iteration as u64).await;
+                let new_obs =
+                    resolve_uncertain(hypotheses, actuator, brain, target_ip, iteration as u64)
+                        .await;
                 let obs_count = crate::actuator::ingest_observations(brain, &new_obs);
                 no_progress_streak = next_no_progress_streak(no_progress_streak, obs_count);
                 iteration_log.push(format!(
@@ -1343,7 +1357,9 @@ mod tests {
 
         // Before learning: unknown token should not be diagnosable
         let before = crate::diagnostic::query_diagnostic_category_with_learner(
-            &brain, "broker connection failed", Some(&learner)
+            &brain,
+            "broker connection failed",
+            Some(&learner),
         );
         assert!(
             before.is_none() || before.unwrap().1 < 0.55,
@@ -1385,7 +1401,7 @@ mod tests {
         // association traversal (L2), raw n-gram (L3).  This test
         // verifies that associations are stored and retrievable,
         // proving the mechanism exists for cross-cluster resolution.
-        use crate::{MemoryCluster, DejavuEntry, Hypervector, VSABrain};
+        use crate::{DejavuEntry, Hypervector, MemoryCluster, VSABrain};
 
         let c0 = Hypervector::new_random();
         let c1 = Hypervector::new_random();
@@ -1428,10 +1444,7 @@ mod tests {
 
         // Before associations: get_associations should return empty
         let before = brain.get_associations(0);
-        assert!(
-            before.is_empty(),
-            "No associations should exist yet"
-        );
+        assert!(before.is_empty(), "No associations should exist yet");
 
         // Record co-activation with tick advancement to create an association.
         // (record_activation uses tick comparison, so we need different ticks.)
@@ -1448,11 +1461,11 @@ mod tests {
 
         // The first association should point to cluster 1
         let (target, strength) = after[0];
-        assert_eq!(target, 1, "Association should point to the co-activated cluster");
-        assert!(
-            strength > 0.0,
-            "Association strength should be positive"
+        assert_eq!(
+            target, 1,
+            "Association should point to the co-activated cluster"
         );
+        assert!(strength > 0.0, "Association strength should be positive");
         eprintln!(
             "  Association: cluster 0 → cluster 1, strength={:.3}",
             strength
@@ -1499,24 +1512,17 @@ mod tests {
         let soft = soft_project(&midpoint, &clusters, 0.10);
 
         let sim_hard_soft = 1.0 - hard.normalized_hamming_distance(&soft);
-        eprintln!(
-            "  Hard vs soft projection similarity: {:.6}",
-            sim_hard_soft
-        );
+        eprintln!("  Hard vs soft projection similarity: {:.6}", sim_hard_soft);
 
         // They should be different for a midpoint between distinct centroids
-        let sim_hard_c0 = 1.0 - hard.normalized_hamming_distance(
-            &Hypervector::encode_text_ngram("rising", 3)
-        );
-        let sim_hard_c1 = 1.0 - hard.normalized_hamming_distance(
-            &Hypervector::encode_text_ngram("falling", 3)
-        );
-        let sim_soft_c0 = 1.0 - soft.normalized_hamming_distance(
-            &Hypervector::encode_text_ngram("rising", 3)
-        );
-        let sim_soft_c1 = 1.0 - soft.normalized_hamming_distance(
-            &Hypervector::encode_text_ngram("falling", 3)
-        );
+        let sim_hard_c0 =
+            1.0 - hard.normalized_hamming_distance(&Hypervector::encode_text_ngram("rising", 3));
+        let sim_hard_c1 =
+            1.0 - hard.normalized_hamming_distance(&Hypervector::encode_text_ngram("falling", 3));
+        let sim_soft_c0 =
+            1.0 - soft.normalized_hamming_distance(&Hypervector::encode_text_ngram("rising", 3));
+        let sim_soft_c1 =
+            1.0 - soft.normalized_hamming_distance(&Hypervector::encode_text_ngram("falling", 3));
 
         eprintln!(
             "  Hard:  sim(rising)={:.4} sim(falling)={:.4}",

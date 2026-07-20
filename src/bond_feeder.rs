@@ -30,11 +30,11 @@
 //   diagnostics can distinguish between bond yields, FOMC text, and
 //   macro surprises.
 
-use crate::Hypervector;
+use crate::abstractor::Abstractor;
 use crate::hierarchy::HierarchicalManifold;
 use crate::predictive::PredictiveCodingLoop;
-use crate::abstractor::Abstractor;
 use crate::sleep::SleepCycle;
+use crate::Hypervector;
 use std::collections::HashMap;
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -50,9 +50,17 @@ pub const FACTOR_ROTATIONS: &[usize] = &[3, 7, 11, 13, 17, 19, 23, 29, 31, 37, 4
 
 /// Core factors we encode as the market state.
 pub const CORE_FACTORS: &[&str] = &[
-    "yield_10y", "curve_slope_2s10s", "vix", "move_index",
-    "spx", "dxy", "gold", "crude_oil",
-    "breakeven_10y", "real_yield_10y", "fed_sentiment_hawkish_pct",
+    "yield_10y",
+    "curve_slope_2s10s",
+    "vix",
+    "move_index",
+    "spx",
+    "dxy",
+    "gold",
+    "crude_oil",
+    "breakeven_10y",
+    "real_yield_10y",
+    "fed_sentiment_hawkish_pct",
 ];
 
 // ─── Data Source ────────────────────────────────────────────────────────────
@@ -93,7 +101,10 @@ impl FactorConfig {
         let level_vectors = Hypervector::generate_level_vectors(FPE_LEVELS);
         FactorConfig {
             name: name.to_string(),
-            min_val, max_val, level_vectors, rotation,
+            min_val,
+            max_val,
+            level_vectors,
+            rotation,
         }
     }
 
@@ -131,13 +142,21 @@ pub struct BondDataReader {
 impl BondDataReader {
     pub fn new(db_path: &str) -> Self {
         let (mins, maxs) = Self::calibrate_ranges(db_path);
-        let factors: Vec<FactorConfig> = CORE_FACTORS.iter().enumerate().map(|(i, name)| {
-            let rot = FACTOR_ROTATIONS[i % FACTOR_ROTATIONS.len()];
-            let min_val = *mins.get(*name).unwrap_or(&0.0);
-            let max_val = *maxs.get(*name).unwrap_or(&100.0);
-            FactorConfig::new(name, min_val, max_val, rot)
-        }).collect();
-        BondDataReader { factors, states: Vec::new(), db_path: db_path.to_string() }
+        let factors: Vec<FactorConfig> = CORE_FACTORS
+            .iter()
+            .enumerate()
+            .map(|(i, name)| {
+                let rot = FACTOR_ROTATIONS[i % FACTOR_ROTATIONS.len()];
+                let min_val = *mins.get(*name).unwrap_or(&0.0);
+                let max_val = *maxs.get(*name).unwrap_or(&100.0);
+                FactorConfig::new(name, min_val, max_val, rot)
+            })
+            .collect();
+        BondDataReader {
+            factors,
+            states: Vec::new(),
+            db_path: db_path.to_string(),
+        }
     }
 
     // ── Range Calibration ──────────────────────────────────────────────
@@ -150,17 +169,50 @@ impl BondDataReader {
             Err(_) => {
                 for name in CORE_FACTORS {
                     match *name {
-                        "yield_10y" => { mins.insert(name.to_string(), 3.0); maxs.insert(name.to_string(), 5.5); },
-                        "curve_slope_2s10s" => { mins.insert(name.to_string(), -1.0); maxs.insert(name.to_string(), 1.5); },
-                        "vix" => { mins.insert(name.to_string(), 10.0); maxs.insert(name.to_string(), 40.0); },
-                        "move_index" => { mins.insert(name.to_string(), 50.0); maxs.insert(name.to_string(), 200.0); },
-                        "spx" => { mins.insert(name.to_string(), 3000.0); maxs.insert(name.to_string(), 6000.0); },
-                        "dxy" => { mins.insert(name.to_string(), 90.0); maxs.insert(name.to_string(), 110.0); },
-                        "gold" => { mins.insert(name.to_string(), 1500.0); maxs.insert(name.to_string(), 3000.0); },
-                        "crude_oil" => { mins.insert(name.to_string(), 50.0); maxs.insert(name.to_string(), 120.0); },
-                        "breakeven_10y" => { mins.insert(name.to_string(), 1.0); maxs.insert(name.to_string(), 3.5); },
-                        "real_yield_10y" => { mins.insert(name.to_string(), 0.5); maxs.insert(name.to_string(), 2.5); },
-                        "fed_sentiment_hawkish_pct" => { mins.insert(name.to_string(), 0.0); maxs.insert(name.to_string(), 100.0); },
+                        "yield_10y" => {
+                            mins.insert(name.to_string(), 3.0);
+                            maxs.insert(name.to_string(), 5.5);
+                        }
+                        "curve_slope_2s10s" => {
+                            mins.insert(name.to_string(), -1.0);
+                            maxs.insert(name.to_string(), 1.5);
+                        }
+                        "vix" => {
+                            mins.insert(name.to_string(), 10.0);
+                            maxs.insert(name.to_string(), 40.0);
+                        }
+                        "move_index" => {
+                            mins.insert(name.to_string(), 50.0);
+                            maxs.insert(name.to_string(), 200.0);
+                        }
+                        "spx" => {
+                            mins.insert(name.to_string(), 3000.0);
+                            maxs.insert(name.to_string(), 6000.0);
+                        }
+                        "dxy" => {
+                            mins.insert(name.to_string(), 90.0);
+                            maxs.insert(name.to_string(), 110.0);
+                        }
+                        "gold" => {
+                            mins.insert(name.to_string(), 1500.0);
+                            maxs.insert(name.to_string(), 3000.0);
+                        }
+                        "crude_oil" => {
+                            mins.insert(name.to_string(), 50.0);
+                            maxs.insert(name.to_string(), 120.0);
+                        }
+                        "breakeven_10y" => {
+                            mins.insert(name.to_string(), 1.0);
+                            maxs.insert(name.to_string(), 3.5);
+                        }
+                        "real_yield_10y" => {
+                            mins.insert(name.to_string(), 0.5);
+                            maxs.insert(name.to_string(), 2.5);
+                        }
+                        "fed_sentiment_hawkish_pct" => {
+                            mins.insert(name.to_string(), 0.0);
+                            maxs.insert(name.to_string(), 100.0);
+                        }
                         _ => {}
                     }
                 }
@@ -169,7 +221,9 @@ impl BondDataReader {
         };
         for name in CORE_FACTORS {
             let col = name.replace('.', "_");
-            let query = format!("SELECT MIN({col}), MAX({col}) FROM daily_features WHERE {col} IS NOT NULL");
+            let query = format!(
+                "SELECT MIN({col}), MAX({col}) FROM daily_features WHERE {col} IS NOT NULL"
+            );
             if let Ok(mut stmt) = conn.prepare(&query) {
                 if let Ok(rows) = stmt.query_map([], |row| {
                     let min_val: Option<f64> = row.get(0).unwrap_or(None);
@@ -197,24 +251,31 @@ impl BondDataReader {
         let col_list: Vec<String> = CORE_FACTORS.iter().map(|c| c.replace('.', "_")).collect();
         let col_expr = col_list.join(", ");
         let query = format!("SELECT date, {col_expr} FROM daily_features ORDER BY date ASC");
-        let mut stmt = conn.prepare(&query)
+        let mut stmt = conn
+            .prepare(&query)
             .map_err(|e| format!("Failed to prepare query: {}", e))?;
 
-        let rows = stmt.query_map([], |row| {
-            let date: String = row.get(0).unwrap_or_default();
-            let mut values = HashMap::new();
-            for (i, name) in CORE_FACTORS.iter().enumerate() {
-                let val: Option<f64> = row.get(i + 1).unwrap_or(None);
-                if let Some(v) = val { values.insert(name.to_string(), v); }
-            }
-            Ok((date, values))
-        }).map_err(|e| format!("Query failed: {}", e))?;
+        let rows = stmt
+            .query_map([], |row| {
+                let date: String = row.get(0).unwrap_or_default();
+                let mut values = HashMap::new();
+                for (i, name) in CORE_FACTORS.iter().enumerate() {
+                    let val: Option<f64> = row.get(i + 1).unwrap_or(None);
+                    if let Some(v) = val {
+                        values.insert(name.to_string(), v);
+                    }
+                }
+                Ok((date, values))
+            })
+            .map_err(|e| format!("Query failed: {}", e))?;
 
         let mut count = 0;
         let active_indices: Vec<usize> = (0..self.factors.len()).collect();
         for row in rows.flatten() {
             let (date, values) = row;
-            if values.len() < 3 { continue; }
+            if values.len() < 3 {
+                continue;
+            }
             let mut components = Vec::new();
             for &fi in &active_indices {
                 if let Some(val) = values.get(&self.factors[fi].name) {
@@ -223,12 +284,17 @@ impl BondDataReader {
                     }
                 }
             }
-            if components.is_empty() { continue; }
+            if components.is_empty() {
+                continue;
+            }
             let refs: Vec<&Hypervector> = components.iter().collect();
             let encoded = Hypervector::bundle(&refs);
             self.states.push(MarketState {
-                date: date.clone(), source: DataSource::DailyFeatures,
-                raw_values: values, raw_text: String::new(), encoded,
+                date: date.clone(),
+                source: DataSource::DailyFeatures,
+                raw_values: values,
+                raw_text: String::new(),
+                encoded,
             });
             count += 1;
         }
@@ -249,23 +315,29 @@ impl BondDataReader {
             "SELECT meeting_date, substr(content, 1, 8192) FROM fomc_minutes_raw ORDER BY meeting_date ASC"
         ).map_err(|e| format!("Failed to prepare FOMC query: {}", e))?;
 
-        let rows = stmt.query_map([], |row| {
-            let date: String = row.get(0).unwrap_or_default();
-            let text: String = row.get(1).unwrap_or_default();
-            Ok((date, text))
-        }).map_err(|e| format!("FOMC query failed: {}", e))?;
+        let rows = stmt
+            .query_map([], |row| {
+                let date: String = row.get(0).unwrap_or_default();
+                let text: String = row.get(1).unwrap_or_default();
+                Ok((date, text))
+            })
+            .map_err(|e| format!("FOMC query failed: {}", e))?;
 
         let mut count = 0;
         for row in rows.flatten() {
             let (date, text) = row;
-            if text.len() < 50 { continue; }
+            if text.len() < 50 {
+                continue;
+            }
             // Role-bind the text using a unique FOMC role vector
             let role = Hypervector::encode_text_ngram("ROLE_FOMC_MINUTES", 3);
             let text_hv = Hypervector::encode_sentence(&text);
             let encoded = role.bitwise_xor(&text_hv);
             self.states.push(MarketState {
-                date: date.clone(), source: DataSource::FomcMinutes,
-                raw_values: HashMap::new(), raw_text: text,
+                date: date.clone(),
+                source: DataSource::FomcMinutes,
+                raw_values: HashMap::new(),
+                raw_text: text,
                 encoded,
             });
             count += 1;
@@ -282,20 +354,28 @@ impl BondDataReader {
     pub fn load_macro_surprises(&mut self) -> Result<usize, String> {
         let conn = rusqlite::Connection::open(&self.db_path)
             .map_err(|e| format!("Failed to open DB: {}", e))?;
-        let mut stmt = conn.prepare(
-            "SELECT timestamp, indicator, actual, forecast, surprise, importance \
-             FROM macro_surprises ORDER BY timestamp ASC"
-        ).map_err(|e| format!("Failed to prepare macro query: {}", e))?;
+        let mut stmt = conn
+            .prepare(
+                "SELECT timestamp, indicator, actual, forecast, surprise, importance \
+             FROM macro_surprises ORDER BY timestamp ASC",
+            )
+            .map_err(|e| format!("Failed to prepare macro query: {}", e))?;
 
-        let rows = stmt.query_map([], |row| {
-            let date: String = row.get(0).unwrap_or_default();
-            let indicator: String = row.get(1).unwrap_or_default();
-            let actual: Option<f64> = row.get(2).ok();
-            let forecast: Option<f64> = row.get(3).ok();
-            let surprise: Option<f64> = row.get(4).ok();
-            let importance: String = row.get::<_, Option<String>>(5).ok().flatten().unwrap_or_default();
-            Ok((date, indicator, actual, forecast, surprise, importance))
-        }).map_err(|e| format!("Macro query failed: {}", e))?;
+        let rows = stmt
+            .query_map([], |row| {
+                let date: String = row.get(0).unwrap_or_default();
+                let indicator: String = row.get(1).unwrap_or_default();
+                let actual: Option<f64> = row.get(2).ok();
+                let forecast: Option<f64> = row.get(3).ok();
+                let surprise: Option<f64> = row.get(4).ok();
+                let importance: String = row
+                    .get::<_, Option<String>>(5)
+                    .ok()
+                    .flatten()
+                    .unwrap_or_default();
+                Ok((date, indicator, actual, forecast, surprise, importance))
+            })
+            .map_err(|e| format!("Macro query failed: {}", e))?;
 
         // Pre-generate FPE levels for numeric fields
         let levels_surprise = Hypervector::generate_level_vectors(64);
@@ -313,14 +393,12 @@ impl BondDataReader {
             let mut components: Vec<Hypervector> = Vec::new();
 
             // Encode indicator text
-            let ind_hv = role_indicator.bitwise_xor(
-                &Hypervector::encode_text_ngram(&indicator, 3));
+            let ind_hv = role_indicator.bitwise_xor(&Hypervector::encode_text_ngram(&indicator, 3));
             components.push(ind_hv);
 
             // Encode importance text (if available)
             if !importance.is_empty() {
-                let imp_hv = role_base.bitwise_xor(
-                    &Hypervector::encode_text_ngram(&importance, 3));
+                let imp_hv = role_base.bitwise_xor(&Hypervector::encode_text_ngram(&importance, 3));
                 components.push(imp_hv);
             }
 
@@ -344,12 +422,16 @@ impl BondDataReader {
                 }
             }
 
-            if components.is_empty() { continue; }
+            if components.is_empty() {
+                continue;
+            }
             let refs: Vec<&Hypervector> = components.iter().collect();
             let encoded = Hypervector::bundle(&refs);
             self.states.push(MarketState {
-                date: date, source: DataSource::MacroSurprises,
-                raw_values: HashMap::new(), raw_text: indicator,
+                date: date,
+                source: DataSource::MacroSurprises,
+                raw_values: HashMap::new(),
+                raw_text: indicator,
                 encoded,
             });
             count += 1;
@@ -359,7 +441,9 @@ impl BondDataReader {
 
     // ── Common ─────────────────────────────────────────────────────────
 
-    pub fn count(&self) -> usize { self.states.len() }
+    pub fn count(&self) -> usize {
+        self.states.len()
+    }
 
     pub fn get_state(&self, idx: usize) -> Option<&MarketState> {
         self.states.get(idx)
@@ -375,7 +459,9 @@ impl BondDataReader {
     }
 
     /// Clear all loaded states.
-    pub fn clear(&mut self) { self.states.clear(); }
+    pub fn clear(&mut self) {
+        self.states.clear();
+    }
 
     /// Load ALL data sources into the pipeline.
     pub fn load_all_sources(&mut self) -> Result<SourceLoadReport, String> {
@@ -383,7 +469,12 @@ impl BondDataReader {
         let daily = self.load_daily_features().unwrap_or(0);
         let fomc = self.load_fomc_minutes().unwrap_or(0);
         let macro_s = self.load_macro_surprises().unwrap_or(0);
-        Ok(SourceLoadReport { daily_features: daily, fomc_minutes: fomc, macro_surprises: macro_s, total: daily + fomc + macro_s })
+        Ok(SourceLoadReport {
+            daily_features: daily,
+            fomc_minutes: fomc,
+            macro_surprises: macro_s,
+            total: daily + fomc + macro_s,
+        })
     }
 }
 
@@ -420,7 +511,15 @@ impl MarketCrucible {
         let predictive = PredictiveCodingLoop::new(1000, max_centroids, 10);
         let abstractor = Abstractor::new();
         let sleeper = SleepCycle::with_defaults();
-        MarketCrucible { reader, hierarchy, temporal, predictive, abstractor, sleeper, tick: 0 }
+        MarketCrucible {
+            reader,
+            hierarchy,
+            temporal,
+            predictive,
+            abstractor,
+            sleeper,
+            tick: 0,
+        }
     }
 
     /// Load ALL sources and run the full pipeline.
@@ -431,8 +530,10 @@ impl MarketCrucible {
         match self.reader.load_all_sources() {
             Ok(load) => {
                 report.source_load = Some(load.clone());
-                eprintln!("  ✅ Loaded data: {} daily, {} FOMC, {} macro = {} total",
-                    load.daily_features, load.fomc_minutes, load.macro_surprises, load.total);
+                eprintln!(
+                    "  ✅ Loaded data: {} daily, {} FOMC, {} macro = {} total",
+                    load.daily_features, load.fomc_minutes, load.macro_surprises, load.total
+                );
             }
             Err(e) => {
                 report.error = Some(format!("Failed to load data: {}", e));
@@ -452,12 +553,22 @@ impl MarketCrucible {
         // centroids for clean projection and community detection.
         let max_seeds_per_source = 7.min(self.reader.count() / 3);
         let mut seeded_indices = Vec::new();
-        for source in &[DataSource::DailyFeatures, DataSource::FomcMinutes, DataSource::MacroSurprises] {
+        for source in &[
+            DataSource::DailyFeatures,
+            DataSource::FomcMinutes,
+            DataSource::MacroSurprises,
+        ] {
             let mut seeded = 0;
             for (idx, state) in self.reader.states.iter().enumerate() {
-                if state.source != *source { continue; }
-                if seeded >= max_seeds_per_source { break; }
-                if self.hierarchy.levels[0].centroids.len() >= self.hierarchy.levels[0].capacity { break; }
+                if state.source != *source {
+                    continue;
+                }
+                if seeded >= max_seeds_per_source {
+                    break;
+                }
+                if self.hierarchy.levels[0].centroids.len() >= self.hierarchy.levels[0].capacity {
+                    break;
+                }
                 self.hierarchy.levels[0].centroids.push(state.encoded);
                 self.hierarchy.levels[0].activations.push(0.0);
                 seeded_indices.push(idx);
@@ -470,21 +581,29 @@ impl MarketCrucible {
             && self.hierarchy.levels[0].centroids.len() < self.hierarchy.levels[0].capacity
         {
             for (idx, state) in self.reader.states.iter().enumerate() {
-                if seeded_indices.contains(&idx) { continue; }
-                if self.hierarchy.levels[0].centroids.len() >= self.hierarchy.levels[0].capacity { break; }
+                if seeded_indices.contains(&idx) {
+                    continue;
+                }
+                if self.hierarchy.levels[0].centroids.len() >= self.hierarchy.levels[0].capacity {
+                    break;
+                }
                 self.hierarchy.levels[0].centroids.push(state.encoded);
                 self.hierarchy.levels[0].activations.push(0.0);
                 seeded_indices.push(idx);
             }
         }
         report.centroids_seeded = self.hierarchy.levels[0].centroids.len();
-        eprintln!("  ✅ Seeded {} L1 centroids ({} per source from daily/FOMC/macro)",
-            report.centroids_seeded, max_seeds_per_source);
+        eprintln!(
+            "  ✅ Seeded {} L1 centroids ({} per source from daily/FOMC/macro)",
+            report.centroids_seeded, max_seeds_per_source
+        );
 
         // Step 3: Feed ALL states through the cognitive pipeline
         // (skip the ones already used as centroid seeds)
         for i in 0..self.reader.count() {
-            if seeded_indices.contains(&i) { continue; }
+            if seeded_indices.contains(&i) {
+                continue;
+            }
             if let Some(state) = self.reader.get_state(i) {
                 let state_vec = state.encoded;
 
@@ -501,7 +620,9 @@ impl MarketCrucible {
                 // Feed through temporal model + predictive coding
                 let temporal_idx = centroid_idx.min(self.temporal.transitions.max_centroids - 1);
                 self.temporal.observe(&state_vec, temporal_idx, None, 0.5);
-                let error = self.predictive.cycle(&state_vec, temporal_idx, Some(0), 0.5);
+                let error = self
+                    .predictive
+                    .cycle(&state_vec, temporal_idx, Some(0), 0.5);
 
                 // Project through hierarchy
                 let hier_results = self.hierarchy.project_up(&state_vec, 0.0);
@@ -510,7 +631,9 @@ impl MarketCrucible {
                     let (_, _, l2_idx) = self.hierarchy.levels[1].project_through(&hier_results[0]);
                     let active_l2 = if self.hierarchy.levels[1].centroids.len() > l2_idx {
                         vec![l2_idx]
-                    } else { vec![] };
+                    } else {
+                        vec![]
+                    };
                     self.sleeper.record_l2_activation(self.tick, active_l2);
                 }
 
@@ -519,7 +642,10 @@ impl MarketCrucible {
                 // Run abstractor every 5 ticks
                 if self.tick > 0 && self.tick % 5 == 0 {
                     let abs_report = self.abstractor.cycle(
-                        &self.temporal.transitions, &mut self.hierarchy, &self.predictive, None,
+                        &self.temporal.transitions,
+                        &mut self.hierarchy,
+                        &self.predictive,
+                        None,
                     );
                     report.record_abstraction(abs_report);
                 }
@@ -538,26 +664,37 @@ impl MarketCrucible {
         let error_history: Vec<f64> = self.predictive.error_history.clone();
         if self.hierarchy.levels.len() >= 3 {
             let sleep_report = self.sleeper.cycle(
-                &trajectory, &mut self.hierarchy, &self.abstractor, &error_history, None,
+                &trajectory,
+                &mut self.hierarchy,
+                &self.abstractor,
+                &error_history,
+                None,
             );
             report.sleep_report = Some(Box::new(sleep_report.clone()));
-            eprintln!("  ✅ Sleep: {} transitions, {} L3 concepts, {} L2 pruned",
+            eprintln!(
+                "  ✅ Sleep: {} transitions, {} L3 concepts, {} L2 pruned",
                 sleep_report.transitions_found,
                 sleep_report.l3_concepts_created,
-                sleep_report.l2_concepts_pruned);
+                sleep_report.l2_concepts_pruned
+            );
         }
 
         report.ticks_run = self.tick;
         report.final_error = self.predictive.avg_error;
         report.l2_concepts = self.abstractor.coherence.len();
-        report.l3_concepts = self.hierarchy.levels.get(2)
+        report.l3_concepts = self
+            .hierarchy
+            .levels
+            .get(2)
             .map(|l| l.centroids.iter().filter(|c| c.count_ones() > 0).count())
             .unwrap_or(0);
         report.total_abstractor_cycles = self.tick as usize / 5;
         report.regime_changes = self.abstractor.total_abstractions_dissolved;
 
-        eprintln!("  ✅ Pipeline complete: {} ticks, {} L2, {} L3, {} dissolved",
-            report.ticks_run, report.l2_concepts, report.l3_concepts, report.regime_changes);
+        eprintln!(
+            "  ✅ Pipeline complete: {} ticks, {} L2, {} L3, {} dissolved",
+            report.ticks_run, report.l2_concepts, report.l3_concepts, report.regime_changes
+        );
 
         report
     }
@@ -569,7 +706,10 @@ impl MarketCrucible {
 
     pub fn report(&self) -> String {
         let counts = self.reader.count_by_source();
-        let l3_count = self.hierarchy.levels.get(2)
+        let l3_count = self
+            .hierarchy
+            .levels
+            .get(2)
             .map(|l| l.centroids.iter().filter(|c| c.count_ones() > 0).count())
             .unwrap_or(0);
         format!(
@@ -614,24 +754,42 @@ pub struct CrucibleReport {
 impl CrucibleReport {
     pub fn new() -> Self {
         CrucibleReport {
-            source_load: None, total_days: 0, centroids_seeded: 0,
-            ticks_run: 0, total_error: 0.0, error_count: 0, avg_error: 0.0,
-            min_error: f64::MAX, max_error: 0.0, final_error: 0.0,
-            l2_concepts: 0, l3_concepts: 0,
-            abstractions_created: 0, regime_changes: 0,
-            total_abstractor_cycles: 0, sleep_report: None, error: None,
+            source_load: None,
+            total_days: 0,
+            centroids_seeded: 0,
+            ticks_run: 0,
+            total_error: 0.0,
+            error_count: 0,
+            avg_error: 0.0,
+            min_error: f64::MAX,
+            max_error: 0.0,
+            final_error: 0.0,
+            l2_concepts: 0,
+            l3_concepts: 0,
+            abstractions_created: 0,
+            regime_changes: 0,
+            total_abstractor_cycles: 0,
+            sleep_report: None,
+            error: None,
         }
     }
     pub fn accumulate_error(&mut self, error: f64) {
-        self.total_error += error; self.error_count += 1;
+        self.total_error += error;
+        self.error_count += 1;
         self.avg_error = self.total_error / self.error_count as f64;
-        if error < self.min_error { self.min_error = error; }
-        if error > self.max_error { self.max_error = error; }
+        if error < self.min_error {
+            self.min_error = error;
+        }
+        if error > self.max_error {
+            self.max_error = error;
+        }
     }
     pub fn record_abstraction(&mut self, r: crate::abstractor::AbstractionReport) {
         self.abstractions_created += r.created;
     }
-    pub fn has_error(&self) -> bool { self.error.is_some() }
+    pub fn has_error(&self) -> bool {
+        self.error.is_some()
+    }
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -649,8 +807,10 @@ mod tests {
         let mut reader = BondDataReader::new(BOND_DB_PATH);
         match reader.load_all_sources() {
             Ok(load) => {
-                eprintln!("  Load report: {} daily, {} FOMC, {} macro = {} total",
-                    load.daily_features, load.fomc_minutes, load.macro_surprises, load.total);
+                eprintln!(
+                    "  Load report: {} daily, {} FOMC, {} macro = {} total",
+                    load.daily_features, load.fomc_minutes, load.macro_surprises, load.total
+                );
                 assert!(load.daily_features > 0, "Should load daily features");
                 assert!(load.fomc_minutes > 0, "Should load FOMC minutes");
                 // Macro surprises may be 0 if not populated; that's ok for this test
@@ -659,16 +819,28 @@ mod tests {
                 // Verify source tracking
                 let counts = reader.count_by_source();
                 eprintln!("  Source counts: {:?}", counts);
-                assert_eq!(*counts.get(&DataSource::DailyFeatures).unwrap_or(&0), load.daily_features);
-                assert_eq!(*counts.get(&DataSource::FomcMinutes).unwrap_or(&0), load.fomc_minutes);
+                assert_eq!(
+                    *counts.get(&DataSource::DailyFeatures).unwrap_or(&0),
+                    load.daily_features
+                );
+                assert_eq!(
+                    *counts.get(&DataSource::FomcMinutes).unwrap_or(&0),
+                    load.fomc_minutes
+                );
 
                 // Check FOMC encoding: first FOMC state should have non-zero text
                 for state in &reader.states {
                     if state.source == DataSource::FomcMinutes {
-                        eprintln!("  First FOMC entry: date={}, text_len={}, popcount={:.1}%",
-                            state.date, state.raw_text.len(),
-                            state.encoded.count_ones() as f64 / 10240.0 * 100.0);
-                        assert!(state.raw_text.len() > 100, "FOMC text should be > 100 chars");
+                        eprintln!(
+                            "  First FOMC entry: date={}, text_len={}, popcount={:.1}%",
+                            state.date,
+                            state.raw_text.len(),
+                            state.encoded.count_ones() as f64 / 10240.0 * 100.0
+                        );
+                        assert!(
+                            state.raw_text.len() > 100,
+                            "FOMC text should be > 100 chars"
+                        );
                         break;
                     }
                 }
@@ -676,24 +848,38 @@ mod tests {
                 // Check Macro encoding
                 for state in &reader.states {
                     if state.source == DataSource::MacroSurprises {
-                        eprintln!("  First Macro entry: date={}, indicator={}, popcount={:.1}%",
-                            state.date, state.raw_text,
-                            state.encoded.count_ones() as f64 / 10240.0 * 100.0);
+                        eprintln!(
+                            "  First Macro entry: date={}, indicator={}, popcount={:.1}%",
+                            state.date,
+                            state.raw_text,
+                            state.encoded.count_ones() as f64 / 10240.0 * 100.0
+                        );
                         break;
                     }
                 }
 
                 // States from different sources should differ
-                let daily_states: Vec<&MarketState> = reader.states.iter()
-                    .filter(|s| s.source == DataSource::DailyFeatures).collect();
-                let fomc_states: Vec<&MarketState> = reader.states.iter()
-                    .filter(|s| s.source == DataSource::FomcMinutes).collect();
+                let daily_states: Vec<&MarketState> = reader
+                    .states
+                    .iter()
+                    .filter(|s| s.source == DataSource::DailyFeatures)
+                    .collect();
+                let fomc_states: Vec<&MarketState> = reader
+                    .states
+                    .iter()
+                    .filter(|s| s.source == DataSource::FomcMinutes)
+                    .collect();
                 if daily_states.len() >= 2 && fomc_states.len() >= 2 {
-                    let d_dist = daily_states[0].encoded.normalized_hamming_distance(
-                        &daily_states[1].encoded);
-                    let f_dist = fomc_states[0].encoded.normalized_hamming_distance(
-                        &fomc_states[1].encoded);
-                    eprintln!("  Within-source distances — daily: {:.4}, FOMC: {:.4}", d_dist, f_dist);
+                    let d_dist = daily_states[0]
+                        .encoded
+                        .normalized_hamming_distance(&daily_states[1].encoded);
+                    let f_dist = fomc_states[0]
+                        .encoded
+                        .normalized_hamming_distance(&fomc_states[1].encoded);
+                    eprintln!(
+                        "  Within-source distances — daily: {:.4}, FOMC: {:.4}",
+                        d_dist, f_dist
+                    );
                 }
             }
             Err(e) => {
@@ -721,8 +907,10 @@ mod tests {
         eprintln!("  ═══════════════════════════════════════════");
 
         if let Some(ref load) = report.source_load {
-            eprintln!("  Data loaded:     {} daily + {} FOMC + {} macro = {}",
-                load.daily_features, load.fomc_minutes, load.macro_surprises, load.total);
+            eprintln!(
+                "  Data loaded:     {} daily + {} FOMC + {} macro = {}",
+                load.daily_features, load.fomc_minutes, load.macro_surprises, load.total
+            );
         }
         eprintln!("  L1 centroids:    {}", report.centroids_seeded);
         eprintln!("  Ticks run:       {}", report.ticks_run);
@@ -734,8 +922,10 @@ mod tests {
         eprintln!("  Abstractor cycles: {}", report.total_abstractor_cycles);
 
         if let Some(ref sr) = report.sleep_report {
-            eprintln!("  Sleep: {} transitions, {} L3 created, {} L2 pruned",
-                sr.transitions_found, sr.l3_concepts_created, sr.l2_concepts_pruned);
+            eprintln!(
+                "  Sleep: {} transitions, {} L3 created, {} L2 pruned",
+                sr.transitions_found, sr.l3_concepts_created, sr.l2_concepts_pruned
+            );
         }
 
         eprintln!();
@@ -746,8 +936,10 @@ mod tests {
         // abstractor parameters, prediction error gating).  The pipeline
         // itself is the test — it should complete without crashing.
 
-        eprintln!("  ✅ Multi-source pipeline complete — {} L2, {} L3",
-            report.l2_concepts, report.l3_concepts);
+        eprintln!(
+            "  ✅ Multi-source pipeline complete — {} L2, {} L3",
+            report.l2_concepts, report.l3_concepts
+        );
     }
 
     /// Test that the FOMC text encoding produces different vectors per meeting.
@@ -759,7 +951,10 @@ mod tests {
             Ok(n) => {
                 eprintln!("  Loaded {} FOMC minutes", n);
                 if n >= 2 {
-                    let d = reader.get_state(0).unwrap().encoded
+                    let d = reader
+                        .get_state(0)
+                        .unwrap()
+                        .encoded
                         .normalized_hamming_distance(&reader.get_state(1).unwrap().encoded);
                     eprintln!("  Distance between first two FOMC states: {:.4}", d);
                     // Different meetings should produce measurably different vectors

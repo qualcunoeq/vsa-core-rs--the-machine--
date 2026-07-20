@@ -75,7 +75,11 @@ mod tests {
         }
         fn extract_relations(&self, _input: &String, entities: &[Entity]) -> Vec<SvoTriple> {
             if entities.len() >= 2 {
-                vec![(entities[0].clone(), "relates_to".to_string(), entities[1].clone())]
+                vec![(
+                    entities[0].clone(),
+                    "relates_to".to_string(),
+                    entities[1].clone(),
+                )]
             } else {
                 vec![]
             }
@@ -87,7 +91,14 @@ mod tests {
         let encoder = MockEncoder;
         let triples = encoder.encode(&"apple banana".to_string());
         assert_eq!(triples.len(), 1);
-        assert_eq!(triples[0], ("apple".to_string(), "relates_to".to_string(), "banana".to_string()));
+        assert_eq!(
+            triples[0],
+            (
+                "apple".to_string(),
+                "relates_to".to_string(),
+                "banana".to_string()
+            )
+        );
     }
 
     #[test]

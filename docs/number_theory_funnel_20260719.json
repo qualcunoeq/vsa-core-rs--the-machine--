@@ -1,0 +1,27 @@
+{
+  "source": "data/hle.jsonl",
+  "input_slice": "broad_math_task_kind=number_theory",
+  "prompts_scanned": 182,
+  "explicit_bounded_computation": 0,
+  "task_counts": {
+    "advanced_theorem": 43,
+    "counting_integers": 1,
+    "digit_constraint": 2,
+    "diophantine_equation": 2,
+    "explicit_divisibility": 1,
+    "integer_sequence": 8,
+    "modular_evaluation": 4,
+    "prime_factorization": 3,
+    "unclassified": 113
+  },
+  "support_counts": {
+    "diagram_or_table_dependent": 13,
+    "explicit_but_magnitude_unsupported": 4,
+    "outside_number_theory": 85,
+    "requires_advanced_theorem": 43,
+    "requires_domain_modeling": 21,
+    "requires_proof": 5,
+    "requires_search_strategy": 11
+  },
+  "decision": "do_not_build_number_theory_executor_yet"
+}

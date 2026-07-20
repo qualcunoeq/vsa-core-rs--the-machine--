@@ -13,7 +13,8 @@ fn main() {
             .or_else(|_| std::env::var("CUDA_HOME"))
             .unwrap_or_else(|_| {
                 // Check common locations
-                let pip_path = home_dir().join("odysseus/data/local/lib/python3.12/site-packages/nvidia/cu13");
+                let pip_path =
+                    home_dir().join("odysseus/data/local/lib/python3.12/site-packages/nvidia/cu13");
                 if pip_path.join("bin/nvcc").exists() {
                     pip_path.to_string_lossy().to_string()
                 } else if let Ok(entries) = std::fs::read_dir("/usr/local/cuda") {
@@ -31,7 +32,9 @@ fn main() {
             });
 
         if cuda_path.is_empty() {
-            println!("cargo:warning=CUDA feature enabled but CUDA toolkit not found. Run with GPU by:");
+            println!(
+                "cargo:warning=CUDA feature enabled but CUDA toolkit not found. Run with GPU by:"
+            );
             println!("cargo:warning=  export CUDA_PATH=/path/to/cuda");
             println!("cargo:warning=Or install via pip: pip install nvidia-cuda-runtime");
             return;
@@ -92,7 +95,10 @@ fn main() {
             }
             Err(e) => {
                 println!("cargo:warning=nvcc not found: {}", e);
-                println!("cargo:warning=CUDA_PATH={} does not contain bin/nvcc", cuda_path);
+                println!(
+                    "cargo:warning=CUDA_PATH={} does not contain bin/nvcc",
+                    cuda_path
+                );
             }
         }
 

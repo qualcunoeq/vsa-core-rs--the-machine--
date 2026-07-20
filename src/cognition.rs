@@ -292,7 +292,10 @@ impl ConceptJournal {
 
     /// Save to JSON file at the configured path.
     pub fn save(&self) -> Result<(), String> {
-        let p = self.path.as_ref().ok_or_else(|| "ConceptJournal: no save path configured".to_string())?;
+        let p = self
+            .path
+            .as_ref()
+            .ok_or_else(|| "ConceptJournal: no save path configured".to_string())?;
         self.save_to(p)
     }
 
@@ -305,8 +308,7 @@ impl ConceptJournal {
         }
         let json = serde_json::to_string_pretty(self)
             .map_err(|e| format!("ConceptJournal: serialization error: {}", e))?;
-        std::fs::write(path, &json)
-            .map_err(|e| format!("ConceptJournal: write error: {}", e))?;
+        std::fs::write(path, &json).map_err(|e| format!("ConceptJournal: write error: {}", e))?;
         Ok(())
     }
 
@@ -430,7 +432,9 @@ impl ToolEventStore {
     pub fn by_action_type(&self, action_type: &str) -> Vec<&ToolEvent> {
         self.events
             .iter()
-            .filter(|e| format!("{:?}", e.request.action_type).to_lowercase() == action_type.to_lowercase())
+            .filter(|e| {
+                format!("{:?}", e.request.action_type).to_lowercase() == action_type.to_lowercase()
+            })
             .collect()
     }
 
@@ -470,7 +474,11 @@ impl ToolEventStore {
         if total == 0 {
             return None;
         }
-        let successes = self.events.iter().filter(|e| e.succeeded() == Some(true)).count();
+        let successes = self
+            .events
+            .iter()
+            .filter(|e| e.succeeded() == Some(true))
+            .count();
         Some(successes as f64 / total as f64)
     }
 
@@ -485,7 +493,10 @@ impl ToolEventStore {
 
     /// Save to JSON file at the configured path.
     pub fn save(&self) -> Result<(), String> {
-        let p = self.path.as_ref().ok_or_else(|| "ToolEventStore: no save path configured".to_string())?;
+        let p = self
+            .path
+            .as_ref()
+            .ok_or_else(|| "ToolEventStore: no save path configured".to_string())?;
         self.save_to(p)
     }
 
@@ -498,8 +509,7 @@ impl ToolEventStore {
         }
         let json = serde_json::to_string_pretty(self)
             .map_err(|e| format!("ToolEventStore: serialization error: {}", e))?;
-        std::fs::write(path, &json)
-            .map_err(|e| format!("ToolEventStore: write error: {}", e))?;
+        std::fs::write(path, &json).map_err(|e| format!("ToolEventStore: write error: {}", e))?;
         Ok(())
     }
 
@@ -590,8 +600,7 @@ impl ToolReliabilityTracker {
         }
         // EWMA update: R = α · outcome + (1-α) · R_prev
         let outcome = if succeeded { 1.0 } else { 0.0 };
-        entry.reliability_ewma =
-            alpha * outcome + (1.0 - alpha) * entry.reliability_ewma;
+        entry.reliability_ewma = alpha * outcome + (1.0 - alpha) * entry.reliability_ewma;
     }
 
     /// Record from a ToolEvent.
@@ -757,7 +766,10 @@ impl DecisionJournal {
 
     /// Save to JSON file at the configured path.
     pub fn save(&self) -> Result<(), String> {
-        let p = self.path.as_ref().ok_or_else(|| "DecisionJournal: no save path configured".to_string())?;
+        let p = self
+            .path
+            .as_ref()
+            .ok_or_else(|| "DecisionJournal: no save path configured".to_string())?;
         self.save_to(p)
     }
 
@@ -769,8 +781,7 @@ impl DecisionJournal {
         }
         let json = serde_json::to_string_pretty(self)
             .map_err(|e| format!("DecisionJournal: serialization error: {}", e))?;
-        std::fs::write(path, &json)
-            .map_err(|e| format!("DecisionJournal: write error: {}", e))?;
+        std::fs::write(path, &json).map_err(|e| format!("DecisionJournal: write error: {}", e))?;
         Ok(())
     }
 
@@ -1085,7 +1096,11 @@ pub struct PrePostComparison {
 
 impl PrePostComparison {
     /// Compute the comparison from two runs.
-    pub fn new(family_name: impl Into<String>, pre_run: TaskFamilyRun, post_run: TaskFamilyRun) -> Self {
+    pub fn new(
+        family_name: impl Into<String>,
+        pre_run: TaskFamilyRun,
+        post_run: TaskFamilyRun,
+    ) -> Self {
         let answer_changes = pre_run
             .results
             .iter()
@@ -1291,8 +1306,8 @@ impl EpisodeStore {
 
     /// Load a store from a JSON file.
     pub fn load(path: &str) -> Result<Self, String> {
-        let json =
-            std::fs::read_to_string(path).map_err(|e| format!("EpisodeStore: read error: {}", e))?;
+        let json = std::fs::read_to_string(path)
+            .map_err(|e| format!("EpisodeStore: read error: {}", e))?;
         serde_json::from_str(&json)
             .map_err(|e| format!("EpisodeStore: deserialization error: {}", e))
     }
@@ -1359,8 +1374,11 @@ mod tests {
             intent: "scan port 22".to_string(),
             request: ActionRequest::scan_port("10.0.0.1", 22),
             result: Some(crate::actuator::ActionResult {
-                success: true, raw_output: "open".to_string(),
-                observations: Vec::new(), error: None, duration_ms: 10,
+                success: true,
+                raw_output: "open".to_string(),
+                observations: Vec::new(),
+                error: None,
+                duration_ms: 10,
             }),
             side_effect: SideEffectClass::Network,
             confidence: 0.90,
@@ -1376,8 +1394,11 @@ mod tests {
             intent: "brute force ssh".to_string(),
             request: ActionRequest::brute_force("10.0.0.1", 22, &["root"], &["wrong"]),
             result: Some(crate::actuator::ActionResult {
-                success: false, raw_output: "auth failed".to_string(),
-                observations: Vec::new(), error: Some("auth failed".to_string()), duration_ms: 500,
+                success: false,
+                raw_output: "auth failed".to_string(),
+                observations: Vec::new(),
+                error: Some("auth failed".to_string()),
+                duration_ms: 500,
             }),
             side_effect: SideEffectClass::Network,
             confidence: 0.30,
@@ -1416,8 +1437,11 @@ mod tests {
             intent: "test".to_string(),
             request: ActionRequest::new(crate::actuator::ActionType::CheckService, "test"),
             result: Some(crate::actuator::ActionResult {
-                success: true, raw_output: "ok".to_string(),
-                observations: Vec::new(), error: None, duration_ms: 1,
+                success: true,
+                raw_output: "ok".to_string(),
+                observations: Vec::new(),
+                error: None,
+                duration_ms: 1,
             }),
             side_effect: SideEffectClass::ReadOnly,
             confidence: 0.50,
@@ -1473,8 +1497,11 @@ mod tests {
             intent: "test".to_string(),
             request: ActionRequest::new(crate::actuator::ActionType::CheckService, "test"),
             result: Some(crate::actuator::ActionResult {
-                success: true, raw_output: "ok".to_string(),
-                observations: Vec::new(), error: None, duration_ms: 1,
+                success: true,
+                raw_output: "ok".to_string(),
+                observations: Vec::new(),
+                error: None,
+                duration_ms: 1,
             }),
             side_effect: SideEffectClass::ReadOnly,
             confidence: 0.90,
@@ -1489,7 +1516,10 @@ mod tests {
         let mut tracker = ToolReliabilityTracker::new();
         tracker.record("scanport", true);
         assert_eq!(tracker.success_rate("ScanPort"), Some(1.0));
-        assert_eq!(tracker.reliability("SCANPORT"), tracker.reliability("scanport"));
+        assert_eq!(
+            tracker.reliability("SCANPORT"),
+            tracker.reliability("scanport")
+        );
         assert!((tracker.overall_reliability() - tracker.reliability("scanport")).abs() < 1e-6);
     }
 
@@ -1504,7 +1534,8 @@ mod tests {
         assert!(req_real.simulation_mode.is_real());
 
         // Builder pattern: explicit simulated
-        let req_sim = ActionRequest::new(crate::actuator::ActionType::CheckService, "test").simulated();
+        let req_sim =
+            ActionRequest::new(crate::actuator::ActionType::CheckService, "test").simulated();
         assert!(req_sim.simulation_mode.is_simulated());
     }
 
@@ -1525,11 +1556,20 @@ mod tests {
     fn test_decision_record_creation() {
         let budget = AutonomyBudget::new(10, 10000, 5, 0.50);
         let req = crate::actuator::ActionRequest::scan_port("10.0.0.1", 80);
-        let record = DecisionRecord::new(42, "scan port 80", req.clone(), "port scan for intel", &budget);
+        let record = DecisionRecord::new(
+            42,
+            "scan port 80",
+            req.clone(),
+            "port scan for intel",
+            &budget,
+        );
 
         assert_eq!(record.tick, 42);
         assert_eq!(record.intent, "scan port 80");
-        assert_eq!(record.action_request.action_type, crate::actuator::ActionType::ScanPort);
+        assert_eq!(
+            record.action_request.action_type,
+            crate::actuator::ActionType::ScanPort
+        );
         assert!(record.action_result.is_none());
         assert_eq!(record.budget_before.max_actions, 10);
         assert!(!record.budget_allowed);
@@ -1549,8 +1589,11 @@ mod tests {
         let mut r1 = DecisionRecord::new(1, "scan", req.clone(), "reason", &budget);
         r1.budget_allowed = true;
         r1.action_result = Some(crate::actuator::ActionResult {
-            success: true, raw_output: "open".to_string(),
-            observations: Vec::new(), error: None, duration_ms: 10,
+            success: true,
+            raw_output: "open".to_string(),
+            observations: Vec::new(),
+            error: None,
+            duration_ms: 10,
         });
         r1.tool_event_id = Some("tool-1".to_string());
         journal.push(r1);
@@ -1579,7 +1622,8 @@ mod tests {
     fn test_decision_journal_persistence() {
         let mut journal = DecisionJournal::new();
         let budget = AutonomyBudget::new(5, 5000, 3, 0.40);
-        let req = crate::actuator::ActionRequest::new(crate::actuator::ActionType::CheckService, "test");
+        let req =
+            crate::actuator::ActionRequest::new(crate::actuator::ActionType::CheckService, "test");
         let mut record = DecisionRecord::new(1, "check", req, "service check", &budget);
         record.budget_allowed = true;
         journal.push(record);
@@ -1657,8 +1701,7 @@ mod tests {
     #[test]
     fn test_episode_store_push_auto_generates_id() {
         let mut store = EpisodeStore::new();
-        let ep = CognitiveEpisode::new("", "test input")
-            .with_answer("test answer", 0.80);
+        let ep = CognitiveEpisode::new("", "test input").with_answer("test answer", 0.80);
         store.push(ep);
         assert_eq!(store.episodes.len(), 1);
         assert!(!store.episodes[0].id.is_empty());
@@ -1697,17 +1740,10 @@ mod tests {
     #[test]
     fn test_episode_store_outcomes_for_input() {
         let mut store = EpisodeStore::new();
+        store.push(CognitiveEpisode::new("e1", "Who raised rates?").with_answer("the_fed", 0.90));
+        store.push(CognitiveEpisode::new("e2", "Who raised rates?").with_answer("the_fed", 0.85));
         store.push(
-            CognitiveEpisode::new("e1", "Who raised rates?")
-                .with_answer("the_fed", 0.90),
-        );
-        store.push(
-            CognitiveEpisode::new("e2", "Who raised rates?")
-                .with_answer("the_fed", 0.85),
-        );
-        store.push(
-            CognitiveEpisode::new("e3", "What is inflation?")
-                .with_answer("rising prices", 0.70),
+            CognitiveEpisode::new("e3", "What is inflation?").with_answer("rising prices", 0.70),
         );
 
         let outcomes = store.outcomes_for_input("Who raised rates?");
@@ -1753,10 +1789,7 @@ mod tests {
         // Save
         {
             let mut store = EpisodeStore::new();
-            store.push(
-                CognitiveEpisode::new("rt-1", "question?")
-                    .with_answer("answer", 0.95),
-            );
+            store.push(CognitiveEpisode::new("rt-1", "question?").with_answer("answer", 0.95));
             store.save_to(&path).unwrap();
         }
 
@@ -1765,10 +1798,7 @@ mod tests {
         assert_eq!(loaded.episodes.len(), 1);
         assert_eq!(loaded.episodes[0].id, "rt-1");
         assert_eq!(loaded.episodes[0].input, "question?");
-        assert_eq!(
-            loaded.episodes[0].answer.as_deref(),
-            Some("answer")
-        );
+        assert_eq!(loaded.episodes[0].answer.as_deref(), Some("answer"));
         assert!((loaded.episodes[0].confidence - 0.95).abs() < 1e-6);
 
         // Cleanup
@@ -2131,11 +2161,7 @@ mod tests {
         const SEED: u64 = 42;
 
         /// Run the benchmark scenario and return concept count + avg prediction error.
-        fn run_scenario(
-            enable_abstraction: bool,
-            seed: u64,
-            n_ticks: usize,
-        ) -> (usize, f64, f64) {
+        fn run_scenario(enable_abstraction: bool, seed: u64, n_ticks: usize) -> (usize, f64, f64) {
             use rand::SeedableRng;
             let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
 
@@ -2264,7 +2290,8 @@ mod tests {
             assert!(
                 error_on <= error_off * 1.25 || count_on > count_off,
                 "abstraction should not severely degrade prediction: on={:.4} vs off={:.4}",
-                error_on, error_off,
+                error_on,
+                error_off,
             );
         }
     }
@@ -2292,13 +2319,16 @@ mod tests {
         cal.record(0.95, true);
         cal.record(0.90, true);
         cal.record(0.85, false); // overconfident
-        cal.record(0.30, true);  // underconfident
+        cal.record(0.30, true); // underconfident
         cal.record(0.20, false);
         cal.record(0.10, false);
 
         assert_eq!(cal.total_observations, 6);
         assert_eq!(cal.total_correct, 3);
-        assert!((cal.accuracy() - 0.50).abs() < 1e-6, "accuracy should be 0.5");
+        assert!(
+            (cal.accuracy() - 0.50).abs() < 1e-6,
+            "accuracy should be 0.5"
+        );
 
         // Avg confidence: (0.95 + 0.90 + 0.85 + 0.30 + 0.20 + 0.10) / 6
         let expected_avg = (0.95 + 0.90 + 0.85 + 0.30 + 0.20 + 0.10) / 6.0;
@@ -2318,16 +2348,26 @@ mod tests {
 
         // Well-calibrated: accuracy ≈ confidence in each bin
         // Bin [0.9,1.0]: 9 correct out of 10 → 0.90 accuracy vs ~0.95 avg confidence
-        for _ in 0..9 { cal.record(0.95, true); }
+        for _ in 0..9 {
+            cal.record(0.95, true);
+        }
         cal.record(0.95, false); // 90% accurate
 
         // Bin [0.7,0.8]: 7 correct out of 10 → 0.70 accuracy vs ~0.75 avg confidence
-        for _ in 0..7 { cal.record(0.75, true); }
-        for _ in 0..3 { cal.record(0.75, false); } // 70% accurate
+        for _ in 0..7 {
+            cal.record(0.75, true);
+        }
+        for _ in 0..3 {
+            cal.record(0.75, false);
+        } // 70% accurate
 
         // Bin [0.5,0.6]: 5 correct out of 10 → 0.50 accuracy vs ~0.55 avg confidence
-        for _ in 0..5 { cal.record(0.55, true); }
-        for _ in 0..5 { cal.record(0.55, false); } // 50% accurate
+        for _ in 0..5 {
+            cal.record(0.55, true);
+        }
+        for _ in 0..5 {
+            cal.record(0.55, false);
+        } // 50% accurate
 
         // ECE should be reasonably small (within ~0.10 of perfect)
         let ece = cal.expected_calibration_error();
@@ -2343,8 +2383,8 @@ mod tests {
         let mut cal = ConfidenceCalibration::new();
 
         // Success episode with high confidence and high score
-        let ep_success = CognitiveEpisode::new("test1", "input1")
-            .with_answer("correct answer", 0.95);
+        let ep_success =
+            CognitiveEpisode::new("test1", "input1").with_answer("correct answer", 0.95);
         // Can't set outcome directly via with_answer, need to construct manually
         let mut ep_success = CognitiveEpisode::new("test1", "input1");
         ep_success.answer = Some("correct".to_string());
@@ -2386,12 +2426,19 @@ mod tests {
         // Add episodes with outcomes
         let mut ep1 = CognitiveEpisode::new("s1", "q1");
         ep1.confidence = 0.90;
-        ep1.outcome = EpisodeOutcome::Success { score: 1.0, evidence: "ok".to_string() };
+        ep1.outcome = EpisodeOutcome::Success {
+            score: 1.0,
+            evidence: "ok".to_string(),
+        };
         store.push(ep1);
 
         let mut ep2 = CognitiveEpisode::new("s2", "q2");
         ep2.confidence = 0.20;
-        ep2.outcome = EpisodeOutcome::Failure { score: 0.0, error_class: "bad".to_string(), evidence: "no".to_string() };
+        ep2.outcome = EpisodeOutcome::Failure {
+            score: 0.0,
+            error_class: "bad".to_string(),
+            evidence: "no".to_string(),
+        };
         store.push(ep2);
 
         cal.record_store(&store);
@@ -2453,10 +2500,19 @@ mod tests {
         };
 
         let comparison = PrePostComparison::new("comparison", pre, post);
-        assert!((comparison.accuracy_delta - 1.0).abs() < 1e-6, "accuracy should improve by 1.0");
-        assert!((comparison.confidence_delta - 0.60).abs() < 1e-6, "confidence should increase by 0.6");
+        assert!(
+            (comparison.accuracy_delta - 1.0).abs() < 1e-6,
+            "accuracy should improve by 1.0"
+        );
+        assert!(
+            (comparison.confidence_delta - 0.60).abs() < 1e-6,
+            "confidence should increase by 0.6"
+        );
         assert_eq!(comparison.answer_changes, 1, "answer should have changed");
-        assert_eq!(comparison.correctness_changes, 1, "correctness should have changed");
+        assert_eq!(
+            comparison.correctness_changes, 1,
+            "correctness should have changed"
+        );
     }
 
     /// Helper: run a TaskFamily against a QaEngine, producing a TaskFamilyRun.
@@ -2479,10 +2535,7 @@ mod tests {
                     episode_id: String::new(),
                 });
             } else {
-                let episode = qa.answer_episode(
-                    format!("task-{}", results.len()),
-                    &task.input,
-                );
+                let episode = qa.answer_episode(format!("task-{}", results.len()), &task.input);
                 let answer = episode.answer.clone().unwrap_or_default();
                 let confidence = episode.confidence;
                 let matched = task.expected.as_ref().map_or(true, |exp| {
@@ -2529,14 +2582,24 @@ mod tests {
 
         // Pre-feedback run: should already work because facts exist
         let pre = run_task_family(&mut qa, &family);
-        assert!(pre.accuracy > 0.0, "Pre-feedback should have partial accuracy");
-        assert!(pre.avg_confidence > 0.0, "Pre-feedback should have non-zero confidence");
+        assert!(
+            pre.accuracy > 0.0,
+            "Pre-feedback should have partial accuracy"
+        );
+        assert!(
+            pre.avg_confidence > 0.0,
+            "Pre-feedback should have non-zero confidence"
+        );
 
         // Add new knowledge that should improve answers
         qa.store_fact("the_fed", "cut", "rates", "new_info");
         qa.store_rule(
-            "the_fed", "cut", "rates",
-            "rates", "go_down", "0.50 percent",
+            "the_fed",
+            "cut",
+            "rates",
+            "rates",
+            "go_down",
+            "0.50 percent",
             "fed cut rule",
         );
 

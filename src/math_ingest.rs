@@ -168,16 +168,21 @@ fn match_commutative(
 /// - `match(x^5, x^n)` → `{n: 5}` (true)
 /// - `match(5*x, x*n)` → `{n: 5}` (true, commutative)
 /// - `match(x*(y*z), a*b)` → `{a: x, b: y*z}` (true, associative)
-pub fn match_symexpr(expr: &SymExpr, pattern: &SymExpr, bindings: &mut HashMap<String, SymExpr>) -> bool {
+pub fn match_symexpr(
+    expr: &SymExpr,
+    pattern: &SymExpr,
+    bindings: &mut HashMap<String, SymExpr>,
+) -> bool {
     match (expr, pattern) {
         // Numbers must match exactly
         (SymExpr::Num(a), SymExpr::Num(b)) => (a - b).abs() < 1e-12,
 
         // Pattern is a wildcard variable: bind the expression to it
         (expr, SymExpr::Var(p_name)) => {
-            let p_name_str: &str = p_name;
+            let p_name_str: &str = p_name.display.as_ref();
             if is_pattern_variable(p_name_str) {
-                bindings.entry(p_name_str.to_string())
+                bindings
+                    .entry(p_name_str.to_string())
                     .or_insert_with(|| expr.clone());
                 true
             } else {
@@ -225,9 +230,7 @@ pub fn match_symexpr(expr: &SymExpr, pattern: &SymExpr, bindings: &mut HashMap<S
         | (SymExpr::Tanh(a), SymExpr::Tanh(pa))
         | (SymExpr::Asin(a), SymExpr::Asin(pa))
         | (SymExpr::Acos(a), SymExpr::Acos(pa))
-        | (SymExpr::Atan(a), SymExpr::Atan(pa)) => {
-            match_symexpr(a, pa, bindings)
-        }
+        | (SymExpr::Atan(a), SymExpr::Atan(pa)) => match_symexpr(a, pa, bindings),
 
         // Negation
         (SymExpr::Neg(a), SymExpr::Neg(pa)) => match_symexpr(a, pa, bindings),
@@ -246,11 +249,32 @@ pub fn is_pattern_variable(name: &str) -> bool {
     // Single-letter names a-z are ambiguous but common for patterns like n, m, k
     // We treat SINGLE letters as potential pattern variables
     // Multi-letter names starting with uppercase or longer are also patterns
-    !matches!(name, "x" | "y" | "z" | "t" | "e" | "pi" | "PI" | "infinity"
-              | "dx" | "dy" | "dt" | "du" | "dv"
-              | "d" | "C"
-              | "alpha" | "beta" | "gamma" | "theta"
-              | "lambda" | "mu" | "sigma" | "omega" | "Delta")
+    !matches!(
+        name,
+        "x" | "y"
+            | "z"
+            | "t"
+            | "e"
+            | "pi"
+            | "PI"
+            | "infinity"
+            | "dx"
+            | "dy"
+            | "dt"
+            | "du"
+            | "dv"
+            | "d"
+            | "C"
+            | "alpha"
+            | "beta"
+            | "gamma"
+            | "theta"
+            | "lambda"
+            | "mu"
+            | "sigma"
+            | "omega"
+            | "Delta"
+    )
 }
 
 /// Substitute variables in an expression according to bindings.
@@ -258,7 +282,7 @@ pub fn substitute_vars(expr: &SymExpr, bindings: &HashMap<String, SymExpr>) -> S
     match expr {
         SymExpr::Num(_) => expr.clone(),
         SymExpr::Var(name) => {
-            if let Some(replacement) = bindings.get(name) {
+            if let Some(replacement) = bindings.get(name.display.as_ref()) {
                 replacement.clone()
             } else {
                 expr.clone()
@@ -298,15 +322,28 @@ pub fn substitute_vars(expr: &SymExpr, bindings: &HashMap<String, SymExpr>) -> S
         SymExpr::Asin(a) => SymExpr::Asin(Box::new(substitute_vars(a, bindings))),
         SymExpr::Acos(a) => SymExpr::Acos(Box::new(substitute_vars(a, bindings))),
         SymExpr::Atan(a) => SymExpr::Atan(Box::new(substitute_vars(a, bindings))),
-        SymExpr::Limit { variable, approach, body } => SymExpr::Limit {
+        SymExpr::Limit {
+            variable,
+            approach,
+            body,
+        } => SymExpr::Limit {
             variable: variable.clone(),
             approach: Box::new(substitute_vars(approach, bindings)),
             body: Box::new(substitute_vars(body, bindings)),
         },
-        SymExpr::Integral { variable, lower, upper, body } => SymExpr::Integral {
+        SymExpr::Integral {
+            variable,
+            lower,
+            upper,
+            body,
+        } => SymExpr::Integral {
             variable: variable.clone(),
-            lower: lower.as_ref().map(|l| Box::new(substitute_vars(l, bindings))),
-            upper: upper.as_ref().map(|u| Box::new(substitute_vars(u, bindings))),
+            lower: lower
+                .as_ref()
+                .map(|l| Box::new(substitute_vars(l, bindings))),
+            upper: upper
+                .as_ref()
+                .map(|u| Box::new(substitute_vars(u, bindings))),
             body: Box::new(substitute_vars(body, bindings)),
         },
     }
@@ -388,9 +425,10 @@ fn strip_calculus_operator(s: &str) -> (String, Option<RuleDomain>, bool) {
     let s = s.trim();
 
     // Clean up common LaTeX artifacts first
-    let cleaned = s.replace("\\frac{d}{dx}", "d/dx")
-                   .replace("\\int", "∫")
-                   .replace("  ", " ");
+    let cleaned = s
+        .replace("\\frac{d}{dx}", "d/dx")
+        .replace("\\int", "∫")
+        .replace("  ", " ");
 
     // Helper: strip `_lower^upper` or `_{lower}^{upper}` bounds from
     // the start of a string after an integral sign.
@@ -404,14 +442,20 @@ fn strip_calculus_operator(s: &str) -> (String, Option<RuleDomain>, bool) {
             let mut pos = 1; // skip '_'
             if pos < s.len() && s.as_bytes().get(pos) == Some(&b'{') {
                 // _{...}^{...} form — skip until '}' (first brace group)
-                let close = s[pos + 1..].find('}').map(|p| pos + 1 + p + 1).unwrap_or(s.len());
+                let close = s[pos + 1..]
+                    .find('}')
+                    .map(|p| pos + 1 + p + 1)
+                    .unwrap_or(s.len());
                 // After first brace group, skip ^... if present
                 let rest_after_first = &s[close..].trim_start();
                 let after_bounds = if rest_after_first.starts_with('^') {
                     let after_caret = &rest_after_first[1..].trim_start();
                     if after_caret.starts_with('{') {
                         // ^{...} — find closing brace
-                        let close2 = after_caret[1..].find('}').map(|p| 1 + p + 1).unwrap_or(after_caret.len());
+                        let close2 = after_caret[1..]
+                            .find('}')
+                            .map(|p| 1 + p + 1)
+                            .unwrap_or(after_caret.len());
                         let total = close + (rest_after_first.len() - after_caret.len()) + close2;
                         &s[total.min(s.len())..]
                     } else {
@@ -427,14 +471,16 @@ fn strip_calculus_operator(s: &str) -> (String, Option<RuleDomain>, bool) {
             } else {
                 // _lower^upper  or  _lower form
                 // Skip until whitespace, '^', or end
-                let bounds_end = s[1..].find(|c: char| c.is_whitespace() || c == '^')
+                let bounds_end = s[1..]
+                    .find(|c: char| c.is_whitespace() || c == '^')
                     .map(|p| p + 1)
                     .unwrap_or(s.len());
                 let after_bounds = &s[bounds_end..];
                 if after_bounds.starts_with('^') {
                     // _lower^upper — skip ^upper
                     let after_caret = &after_bounds[1..].trim_start();
-                    let exp_end = after_caret.find(|c: char| c.is_whitespace())
+                    let exp_end = after_caret
+                        .find(|c: char| c.is_whitespace())
                         .unwrap_or(after_caret.len());
                     let total = bounds_end + 1 + exp_end;
                     (&s[total.min(s.len())..], true)
@@ -448,7 +494,8 @@ fn strip_calculus_operator(s: &str) -> (String, Option<RuleDomain>, bool) {
     }
 
     // Pattern 1: d/dx <expr>   or   d/dx(<expr>)
-    if let Some(rest) = cleaned.strip_prefix("d/dx ")
+    if let Some(rest) = cleaned
+        .strip_prefix("d/dx ")
         .or_else(|| cleaned.strip_prefix("d/dx("))
     {
         let inner = if cleaned.contains("d/dx(") {
@@ -457,7 +504,7 @@ fn strip_calculus_operator(s: &str) -> (String, Option<RuleDomain>, bool) {
             rest.trim().to_string()
         };
         let inner = if inner.starts_with('(') && inner.ends_with(')') {
-            inner[1..inner.len()-1].trim().to_string()
+            inner[1..inner.len() - 1].trim().to_string()
         } else {
             inner
         };
@@ -470,7 +517,10 @@ fn strip_calculus_operator(s: &str) -> (String, Option<RuleDomain>, bool) {
         let after_int = cleaned[int_char_len..].trim();
         // Strip bounds if present: ∫_a^b f(x) dx → f(x) dx
         let (after_bounds, has_bounds) = strip_bounds(after_int);
-        let inner = if let Some(dx_pos) = after_bounds.rfind(" dx").or_else(|| after_bounds.rfind(" d")) {
+        let inner = if let Some(dx_pos) = after_bounds
+            .rfind(" dx")
+            .or_else(|| after_bounds.rfind(" d"))
+        {
             after_bounds[..dx_pos].trim().to_string()
         } else {
             after_bounds.to_string()
@@ -482,13 +532,16 @@ fn strip_calculus_operator(s: &str) -> (String, Option<RuleDomain>, bool) {
     if cleaned.to_lowercase().starts_with("int ") || cleaned.to_lowercase().starts_with("int_") {
         // For "int_...", only strip "int" — leave "_bounds" for strip_bounds to detect
         let after_int = if cleaned.to_lowercase().starts_with("int_") {
-            cleaned[3..].to_string()  // keeps "_a^b f(x) dx"
+            cleaned[3..].to_string() // keeps "_a^b f(x) dx"
         } else {
-            cleaned[3..].trim().to_string()  // "int " → "f(x) dx"
+            cleaned[3..].trim().to_string() // "int " → "f(x) dx"
         };
         // Strip bounds if present: int_a^b f(x) dx → f(x) dx
         let (after_bounds, has_bounds) = strip_bounds(&after_int);
-        let inner = if let Some(dx_pos) = after_bounds.rfind(" dx").or_else(|| after_bounds.rfind(" d")) {
+        let inner = if let Some(dx_pos) = after_bounds
+            .rfind(" dx")
+            .or_else(|| after_bounds.rfind(" d"))
+        {
             after_bounds[..dx_pos].trim().to_string()
         } else {
             after_bounds.to_string()
@@ -532,7 +585,12 @@ impl RuleEngine {
     ///
     /// Returns `Some((result, slug))` if a rule matches, `None` otherwise.
     /// Rules are tried in order (most recently added first for faster iteration).
-    pub fn try_apply(&self, expr: &SymExpr, domain: &RuleDomain, extra_bindings: &HashMap<String, SymExpr>) -> Option<(SymExpr, String)> {
+    pub fn try_apply(
+        &self,
+        expr: &SymExpr,
+        domain: &RuleDomain,
+        extra_bindings: &HashMap<String, SymExpr>,
+    ) -> Option<(SymExpr, String)> {
         for rule in self.rules.iter().rev() {
             if rule.domain != *domain {
                 continue;
@@ -555,8 +613,8 @@ impl RuleEngine {
         let n = || Var("n".into());
         let a = || Var("a".into());
         let b = || Var("b".into());
-        let axb = || a() * x() + b();  // a*x + b
-        let ax = || a() * x();         // a*x
+        let axb = || a() * x() + b(); // a*x + b
+        let ax = || a() * x(); // a*x
 
         // ── Integration Rules ────────────────────────────────────────
 
@@ -908,7 +966,10 @@ impl RuleEngine {
         // Auto-derive integration rules from all differentiation rules
         let derived = self.derive_integral_rules();
         if derived > 0 {
-            eprintln!("  bootstrap: derived {} integration rules from differentiation rules", derived);
+            eprintln!(
+                "  bootstrap: derived {} integration rules from differentiation rules",
+                derived
+            );
         }
     }
 
@@ -973,7 +1034,7 @@ impl RuleEngine {
             return Some(ComputationRule {
                 slug: format!("derived_int_from_{}", rule.slug),
                 domain: RuleDomain::Integrate,
-                pattern: derived_pat,  // no simplify — keep exact structural form
+                pattern: derived_pat, // no simplify — keep exact structural form
                 template: derived_tpl.simplify(),
                 description: format!("Self-derived ∫ d/dx({}) dx = {} + C", rule.description, pat),
                 confidence: rule.confidence * 0.95,
@@ -985,7 +1046,7 @@ impl RuleEngine {
         Some(ComputationRule {
             slug: format!("derived_int_from_{}", rule.slug),
             domain: RuleDomain::Integrate,
-            pattern: tpl.clone(),  // no simplify — keep the exact structural form
+            pattern: tpl.clone(), // no simplify — keep the exact structural form
             template: derived_tpl.simplify(),
             description: format!("Self-derived ∫ d/dx({}) dx = {} + C", rule.description, pat),
             confidence: rule.confidence * 0.95,
@@ -1020,8 +1081,10 @@ impl RuleEngine {
     pub fn formula_to_rule(formula: &FormulaEntry) -> Option<ComputationRule> {
         // Try to find an '=' sign and parse both sides
         let (lhs_raw, rhs_raw) = if let Some(eq_pos) = formula.expr_str.find('=') {
-            (formula.expr_str[..eq_pos].trim().to_string(),
-             formula.expr_str[eq_pos + 1..].trim().to_string())
+            (
+                formula.expr_str[..eq_pos].trim().to_string(),
+                formula.expr_str[eq_pos + 1..].trim().to_string(),
+            )
         } else {
             // No '=' found — can't split into pattern/template
             return None;
@@ -1030,9 +1093,10 @@ impl RuleEngine {
         // Clean up common LaTeX artifacts
         let clean = |s: &str| -> String {
             s.replace("\\frac{d}{dx}", "d/dx")
-             .replace("\\int", "∫")
-             .replace("  ", " ")
-             .trim().to_string()
+                .replace("\\int", "∫")
+                .replace("  ", " ")
+                .trim()
+                .to_string()
         };
 
         let lhs_raw = clean(&lhs_raw);
@@ -1048,8 +1112,10 @@ impl RuleEngine {
         // that aren't in the expression being matched, producing a useless
         // rule (e.g. pattern `f(x)` or `x^2` matches trivially everywhere).
         if has_bounds {
-            eprintln!("  skip auto_{}: definite integral — doesn't generalise as a computation rule",
-                formula.slug);
+            eprintln!(
+                "  skip auto_{}: definite integral — doesn't generalise as a computation rule",
+                formula.slug
+            );
             return None;
         }
 
@@ -1060,17 +1126,29 @@ impl RuleEngine {
         // Determine domain: prefer forced domain, fall back to tags/structure
         let domain = forced_domain.unwrap_or_else(|| {
             match formula.domain.as_str() {
-                d if d.contains("derivative") || d.contains("differentiation") => RuleDomain::Differentiate,
+                d if d.contains("derivative") || d.contains("differentiation") => {
+                    RuleDomain::Differentiate
+                }
                 d if d.contains("integral") || d.contains("integration") => RuleDomain::Integrate,
                 d if d.contains("solve") || d.contains("equation") => RuleDomain::Solve,
                 _ => {
                     // Infer from structure
                     let lower = formula.expr_str.to_lowercase();
-                    if lower.contains("d/d") || lower.contains("derivative") || lower.contains("differentiate") {
+                    if lower.contains("d/d")
+                        || lower.contains("derivative")
+                        || lower.contains("differentiate")
+                    {
                         RuleDomain::Differentiate
-                    } else if lower.contains('∫') || lower.contains("integral") || lower.contains("integrate") || lower.contains("int ") {
+                    } else if lower.contains('∫')
+                        || lower.contains("integral")
+                        || lower.contains("integrate")
+                        || lower.contains("int ")
+                    {
                         RuleDomain::Integrate
-                    } else if lower.contains("solve") || lower.contains("root") || lower.contains("solution") {
+                    } else if lower.contains("solve")
+                        || lower.contains("root")
+                        || lower.contains("solution")
+                    {
                         RuleDomain::Solve
                     } else {
                         RuleDomain::Simplify
@@ -1136,7 +1214,9 @@ impl FormulaRegistry {
 
     /// Look up a formula by slug (mutable).
     pub fn by_slug_mut(&mut self, slug: &str) -> Option<&mut FormulaEntry> {
-        self.slug_index.get(slug).map(|&idx| &mut self.formulas[idx])
+        self.slug_index
+            .get(slug)
+            .map(|&idx| &mut self.formulas[idx])
     }
 
     /// Look up a formula by alias or slug.
@@ -1157,17 +1237,20 @@ impl FormulaRegistry {
     /// Search formulas by tag or domain.
     pub fn search(&self, query: &str) -> Vec<&FormulaEntry> {
         let q = query.to_lowercase();
-        self.formulas.iter().filter(|f| {
-            f.slug.contains(&q)
-                || f.domain.to_lowercase().contains(&q)
-                || f.tags.iter().any(|t| t.to_lowercase().contains(&q))
-                || f.aliases.iter().any(|a| a.to_lowercase().contains(&q))
-                || f.descriptions.iter().any(|(s, v, o)| {
-                    s.to_lowercase().contains(&q)
-                        || v.to_lowercase().contains(&q)
-                        || o.to_lowercase().contains(&q)
-                })
-        }).collect()
+        self.formulas
+            .iter()
+            .filter(|f| {
+                f.slug.contains(&q)
+                    || f.domain.to_lowercase().contains(&q)
+                    || f.tags.iter().any(|t| t.to_lowercase().contains(&q))
+                    || f.aliases.iter().any(|a| a.to_lowercase().contains(&q))
+                    || f.descriptions.iter().any(|(s, v, o)| {
+                        s.to_lowercase().contains(&q)
+                            || v.to_lowercase().contains(&q)
+                            || o.to_lowercase().contains(&q)
+                    })
+            })
+            .collect()
     }
 
     /// Total number of registered formulas.
@@ -1259,7 +1342,11 @@ impl FormulaRegistry {
                 slug: "power_rule".into(),
                 expr_str: "d/dx x^n = n*x^(n-1)".into(),
                 descriptions: vec![
-                    ("power_rule".into(), "states".into(), "d/dx_x^n_=_n*x^(n-1)".into()),
+                    (
+                        "power_rule".into(),
+                        "states".into(),
+                        "d/dx_x^n_=_n*x^(n-1)".into(),
+                    ),
                     ("derivative_of_x^n".into(), "is".into(), "n*x^(n-1)".into()),
                 ],
                 aliases: vec!["power rule".into(), "derivative power rule".into()],
@@ -1272,154 +1359,168 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "derivative_of_sin".into(),
                 expr_str: "d/dx sin(x) = cos(x)".into(),
-                descriptions: vec![
-                    ("derivative_of_sin(x)".into(), "is".into(), "cos(x)".into()),
-                ],
+                descriptions: vec![("derivative_of_sin(x)".into(), "is".into(), "cos(x)".into())],
                 aliases: vec!["derivative of sin".into(), "sin derivative".into()],
                 source: "bootstrap".into(),
                 domain: "calculus".into(),
                 tags: vec!["derivative".into(), "trigonometry".into()],
-            linked_fact_ids: Vec::new(),
+                linked_fact_ids: Vec::new(),
             },
             // ── Derivative of cos ────────────────────────────────────
             FormulaEntry {
                 slug: "derivative_of_cos".into(),
                 expr_str: "d/dx cos(x) = -sin(x)".into(),
-                descriptions: vec![
-                    ("derivative_of_cos(x)".into(), "is".into(), "-sin(x)".into()),
-                ],
+                descriptions: vec![("derivative_of_cos(x)".into(), "is".into(), "-sin(x)".into())],
                 aliases: vec!["derivative of cos".into(), "cos derivative".into()],
                 source: "bootstrap".into(),
                 domain: "calculus".into(),
                 tags: vec!["derivative".into(), "trigonometry".into()],
-            linked_fact_ids: Vec::new(),
+                linked_fact_ids: Vec::new(),
             },
             // ── Derivative of tan ────────────────────────────────────
             FormulaEntry {
                 slug: "derivative_of_tan".into(),
                 expr_str: "d/dx tan(x) = 1/cos^2(x)".into(),
-                descriptions: vec![
-                    ("derivative_of_tan(x)".into(), "is".into(), "sec^2(x)".into()),
-                ],
+                descriptions: vec![(
+                    "derivative_of_tan(x)".into(),
+                    "is".into(),
+                    "sec^2(x)".into(),
+                )],
                 aliases: vec!["derivative of tan".into(), "tan derivative".into()],
                 source: "bootstrap".into(),
                 domain: "calculus".into(),
                 tags: vec!["derivative".into(), "trigonometry".into()],
-            linked_fact_ids: Vec::new(),
+                linked_fact_ids: Vec::new(),
             },
             // ── Product Rule ─────────────────────────────────────────
             FormulaEntry {
                 slug: "product_rule".into(),
                 expr_str: "d/dx (u*v) = u*dv/dx + v*du/dx".into(),
-                descriptions: vec![
-                    ("product_rule".into(), "states".into(), "d/dx_(u*v)_=_u*dv/dx_+_v*du/dx".into()),
-                ],
+                descriptions: vec![(
+                    "product_rule".into(),
+                    "states".into(),
+                    "d/dx_(u*v)_=_u*dv/dx_+_v*du/dx".into(),
+                )],
                 aliases: vec!["product rule".into(), "derivative product rule".into()],
                 source: "bootstrap".into(),
                 domain: "calculus".into(),
                 tags: vec!["derivative".into(), "product".into()],
-            linked_fact_ids: Vec::new(),
+                linked_fact_ids: Vec::new(),
             },
             // ── Chain Rule ───────────────────────────────────────────
             FormulaEntry {
                 slug: "chain_rule".into(),
                 expr_str: "d/dx f(g(x)) = f'(g(x))*g'(x)".into(),
-                descriptions: vec![
-                    ("chain_rule".into(), "states".into(), "d/dx_f(g(x))_=_f'(g(x))*g'(x)".into()),
-                ],
+                descriptions: vec![(
+                    "chain_rule".into(),
+                    "states".into(),
+                    "d/dx_f(g(x))_=_f'(g(x))*g'(x)".into(),
+                )],
                 aliases: vec!["chain rule".into(), "derivative chain rule".into()],
                 source: "bootstrap".into(),
                 domain: "calculus".into(),
                 tags: vec!["derivative".into(), "chain".into(), "composition".into()],
-            linked_fact_ids: Vec::new(),
+                linked_fact_ids: Vec::new(),
             },
             // ── Integral Power Rule ──────────────────────────────────
             FormulaEntry {
                 slug: "integral_power_rule".into(),
                 expr_str: "int x^n dx = x^(n+1)/(n+1) + C".into(),
-                descriptions: vec![
-                    ("integral_of_x^n".into(), "is".into(), "x^(n+1)/(n+1)_+_C".into()),
+                descriptions: vec![(
+                    "integral_of_x^n".into(),
+                    "is".into(),
+                    "x^(n+1)/(n+1)_+_C".into(),
+                )],
+                aliases: vec![
+                    "integral power rule".into(),
+                    "power rule integration".into(),
                 ],
-                aliases: vec!["integral power rule".into(), "power rule integration".into()],
                 source: "bootstrap".into(),
                 domain: "calculus".into(),
                 tags: vec!["integral".into(), "power".into(), "polynomial".into()],
-            linked_fact_ids: Vec::new(),
+                linked_fact_ids: Vec::new(),
             },
             // ── Fundamental Theorem of Calculus ──────────────────────
             FormulaEntry {
                 slug: "fundamental_theorem_of_calculus".into(),
                 expr_str: "int_a^b f(x) dx = F(b) - F(a)".into(),
-                descriptions: vec![
-                    ("fundamental_theorem_of_calculus".into(), "states".into(), "int_a^b_f(x)_dx_=_F(b)_-_F(a)".into()),
-                ],
+                descriptions: vec![(
+                    "fundamental_theorem_of_calculus".into(),
+                    "states".into(),
+                    "int_a^b_f(x)_dx_=_F(b)_-_F(a)".into(),
+                )],
                 aliases: vec!["fundamental theorem".into(), "FTC".into()],
                 source: "bootstrap".into(),
                 domain: "calculus".into(),
                 tags: vec!["integral".into(), "theorem".into(), "fundamental".into()],
-            linked_fact_ids: Vec::new(),
+                linked_fact_ids: Vec::new(),
             },
             // ── Quadratic Formula ────────────────────────────────────
             FormulaEntry {
                 slug: "quadratic_formula".into(),
                 expr_str: "x = (-b +- sqrt(b^2 - 4*a*c))/(2*a)".into(),
-                descriptions: vec![
-                    ("quadratic_formula".into(), "solves".into(), "ax^2_+_bx_+_c_=_0".into()),
-                ],
+                descriptions: vec![(
+                    "quadratic_formula".into(),
+                    "solves".into(),
+                    "ax^2_+_bx_+_c_=_0".into(),
+                )],
                 aliases: vec!["quadratic formula".into(), "quadratic equation".into()],
                 source: "bootstrap".into(),
                 domain: "algebra".into(),
                 tags: vec!["algebra".into(), "quadratic".into(), "polynomial".into()],
-            linked_fact_ids: Vec::new(),
+                linked_fact_ids: Vec::new(),
             },
             // ── Pythagorean Identity ─────────────────────────────────
             FormulaEntry {
                 slug: "pythagorean_identity".into(),
                 expr_str: "sin^2(x) + cos^2(x) = 1".into(),
-                descriptions: vec![
-                    ("sin^2(x)_+_cos^2(x)".into(), "equals".into(), "1".into()),
-                ],
+                descriptions: vec![("sin^2(x)_+_cos^2(x)".into(), "equals".into(), "1".into())],
                 aliases: vec!["pythagorean identity".into(), "trig identity".into()],
                 source: "bootstrap".into(),
                 domain: "trigonometry".into(),
-                tags: vec!["trigonometry".into(), "identity".into(), "pythagorean".into()],
-            linked_fact_ids: Vec::new(),
+                tags: vec![
+                    "trigonometry".into(),
+                    "identity".into(),
+                    "pythagorean".into(),
+                ],
+                linked_fact_ids: Vec::new(),
             },
             // ── Derivative of exp ────────────────────────────────────
             FormulaEntry {
                 slug: "derivative_of_exp".into(),
                 expr_str: "d/dx e^x = e^x".into(),
-                descriptions: vec![
-                    ("derivative_of_e^x".into(), "is".into(), "e^x".into()),
-                ],
+                descriptions: vec![("derivative_of_e^x".into(), "is".into(), "e^x".into())],
                 aliases: vec!["derivative of e^x".into(), "exponential derivative".into()],
                 source: "bootstrap".into(),
                 domain: "calculus".into(),
                 tags: vec!["derivative".into(), "exponential".into()],
-            linked_fact_ids: Vec::new(),
+                linked_fact_ids: Vec::new(),
             },
             // ── Derivative of ln ─────────────────────────────────────
             FormulaEntry {
                 slug: "derivative_of_ln".into(),
                 expr_str: "d/dx ln(x) = 1/x".into(),
-                descriptions: vec![
-                    ("derivative_of_ln(x)".into(), "is".into(), "1/x".into()),
-                ],
+                descriptions: vec![("derivative_of_ln(x)".into(), "is".into(), "1/x".into())],
                 aliases: vec!["derivative of ln".into(), "log derivative".into()],
                 source: "bootstrap".into(),
                 domain: "calculus".into(),
                 tags: vec!["derivative".into(), "logarithm".into()],
-            linked_fact_ids: Vec::new(),
+                linked_fact_ids: Vec::new(),
             },
-
             // ── Newton's Second Law (Physics) ─────────────────────────
             FormulaEntry {
                 slug: "newtons_second_law".into(),
                 expr_str: "F = m*a".into(),
-                descriptions: vec![
-                    ("newtons_second_law".into(), "states".into(), "force_equals_mass_times_acceleration".into()),
+                descriptions: vec![(
+                    "newtons_second_law".into(),
+                    "states".into(),
+                    "force_equals_mass_times_acceleration".into(),
+                )],
+                aliases: vec![
+                    "newton's second law".into(),
+                    "newton's second law of motion".into(),
+                    "f=ma".into(),
                 ],
-                aliases: vec!["newton's second law".into(), "newton's second law of motion".into(), "f=ma".into()],
                 source: "bootstrap".into(),
                 domain: "physics".into(),
                 tags: vec!["physics".into(), "mechanics".into(), "force".into()],
@@ -1429,9 +1530,11 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "kinetic_energy".into(),
                 expr_str: "KE = 1/2*m*v^2".into(),
-                descriptions: vec![
-                    ("kinetic_energy".into(), "equals".into(), "one_half_m_v_squared".into()),
-                ],
+                descriptions: vec![(
+                    "kinetic_energy".into(),
+                    "equals".into(),
+                    "one_half_m_v_squared".into(),
+                )],
                 aliases: vec!["kinetic energy".into(), "kinetic energy formula".into()],
                 source: "bootstrap".into(),
                 domain: "physics".into(),
@@ -1442,10 +1545,16 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "gravitational_potential_energy".into(),
                 expr_str: "PE = m*g*h".into(),
-                descriptions: vec![
-                    ("gravitational_potential_energy".into(), "equals".into(), "mass_times_gravity_times_height".into()),
+                descriptions: vec![(
+                    "gravitational_potential_energy".into(),
+                    "equals".into(),
+                    "mass_times_gravity_times_height".into(),
+                )],
+                aliases: vec![
+                    "gravitational potential energy".into(),
+                    "potential energy".into(),
+                    "mgh".into(),
                 ],
-                aliases: vec!["gravitational potential energy".into(), "potential energy".into(), "mgh".into()],
                 source: "bootstrap".into(),
                 domain: "physics".into(),
                 tags: vec!["physics".into(), "mechanics".into(), "energy".into()],
@@ -1455,10 +1564,16 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "hookes_law".into(),
                 expr_str: "F = -k*x".into(),
-                descriptions: vec![
-                    ("hookes_law".into(), "states".into(), "force_equals_negative_spring_constant_times_displacement".into()),
+                descriptions: vec![(
+                    "hookes_law".into(),
+                    "states".into(),
+                    "force_equals_negative_spring_constant_times_displacement".into(),
+                )],
+                aliases: vec![
+                    "hooke's law".into(),
+                    "hookes law".into(),
+                    "spring force formula".into(),
                 ],
-                aliases: vec!["hooke's law".into(), "hookes law".into(), "spring force formula".into()],
                 source: "bootstrap".into(),
                 domain: "physics".into(),
                 tags: vec!["physics".into(), "mechanics".into(), "oscillation".into()],
@@ -1468,10 +1583,17 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "area_of_circle".into(),
                 expr_str: "A = pi*r^2".into(),
-                descriptions: vec![
-                    ("area_of_circle".into(), "equals".into(), "pi_r_squared".into()),
+                descriptions: vec![(
+                    "area_of_circle".into(),
+                    "equals".into(),
+                    "pi_r_squared".into(),
+                )],
+                aliases: vec![
+                    "area of circle".into(),
+                    "area of a circle".into(),
+                    "circle area".into(),
+                    "pi r squared".into(),
                 ],
-                aliases: vec!["area of circle".into(), "area of a circle".into(), "circle area".into(), "pi r squared".into()],
                 source: "bootstrap".into(),
                 domain: "geometry".into(),
                 tags: vec!["geometry".into(), "circle".into(), "area".into()],
@@ -1481,10 +1603,16 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "pythagorean_theorem".into(),
                 expr_str: "a^2 + b^2 = c^2".into(),
-                descriptions: vec![
-                    ("pythagorean_theorem".into(), "states".into(), "a_squared_plus_b_squared_equals_c_squared".into()),
+                descriptions: vec![(
+                    "pythagorean_theorem".into(),
+                    "states".into(),
+                    "a_squared_plus_b_squared_equals_c_squared".into(),
+                )],
+                aliases: vec![
+                    "pythagorean theorem".into(),
+                    "pythagoras theorem".into(),
+                    "pythagorean theorem formula".into(),
                 ],
-                aliases: vec!["pythagorean theorem".into(), "pythagoras theorem".into(), "pythagorean theorem formula".into()],
                 source: "bootstrap".into(),
                 domain: "geometry".into(),
                 tags: vec!["geometry".into(), "triangle".into(), "pythagorean".into()],
@@ -1494,10 +1622,16 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "mean_formula".into(),
                 expr_str: "mu = (sum(x))/n".into(),
-                descriptions: vec![
-                    ("mean_formula".into(), "equals".into(), "sum_of_x_divided_by_n".into()),
+                descriptions: vec![(
+                    "mean_formula".into(),
+                    "equals".into(),
+                    "sum_of_x_divided_by_n".into(),
+                )],
+                aliases: vec![
+                    "mean formula".into(),
+                    "arithmetic mean".into(),
+                    "average formula".into(),
                 ],
-                aliases: vec!["mean formula".into(), "arithmetic mean".into(), "average formula".into()],
                 source: "bootstrap".into(),
                 domain: "statistics".into(),
                 tags: vec!["statistics".into(), "mean".into(), "average".into()],
@@ -1507,10 +1641,16 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "variance_formula".into(),
                 expr_str: "sigma^2 = sum((x - mu)^2)/n".into(),
-                descriptions: vec![
-                    ("variance_formula".into(), "equals".into(), "average_squared_deviation_from_mean".into()),
+                descriptions: vec![(
+                    "variance_formula".into(),
+                    "equals".into(),
+                    "average_squared_deviation_from_mean".into(),
+                )],
+                aliases: vec![
+                    "variance formula".into(),
+                    "population variance".into(),
+                    "sigma squared".into(),
                 ],
-                aliases: vec!["variance formula".into(), "population variance".into(), "sigma squared".into()],
                 source: "bootstrap".into(),
                 domain: "statistics".into(),
                 tags: vec!["statistics".into(), "variance".into(), "dispersion".into()],
@@ -1520,10 +1660,16 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "binomial_theorem".into(),
                 expr_str: "(x + y)^n = sum_{k=0}^{n} C(n,k) x^(n-k) y^k".into(),
-                descriptions: vec![
-                    ("binomial_theorem".into(), "states".into(), "expansion_of_x_plus_y_to_n".into()),
+                descriptions: vec![(
+                    "binomial_theorem".into(),
+                    "states".into(),
+                    "expansion_of_x_plus_y_to_n".into(),
+                )],
+                aliases: vec![
+                    "binomial theorem".into(),
+                    "binomial expansion".into(),
+                    "binomial formula".into(),
                 ],
-                aliases: vec!["binomial theorem".into(), "binomial expansion".into(), "binomial formula".into()],
                 source: "bootstrap".into(),
                 domain: "algebra".into(),
                 tags: vec!["algebra".into(), "binomial".into(), "polynomial".into()],
@@ -1533,10 +1679,16 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "slope_formula".into(),
                 expr_str: "m = (y2 - y1)/(x2 - x1)".into(),
-                descriptions: vec![
-                    ("slope_formula".into(), "equals".into(), "rise_over_run".into()),
+                descriptions: vec![(
+                    "slope_formula".into(),
+                    "equals".into(),
+                    "rise_over_run".into(),
+                )],
+                aliases: vec![
+                    "slope formula".into(),
+                    "rise over run".into(),
+                    "slope of a line".into(),
                 ],
-                aliases: vec!["slope formula".into(), "rise over run".into(), "slope of a line".into()],
                 source: "bootstrap".into(),
                 domain: "algebra".into(),
                 tags: vec!["algebra".into(), "slope".into(), "linear".into()],
@@ -1546,10 +1698,16 @@ impl FormulaRegistry {
             FormulaEntry {
                 slug: "distance_formula".into(),
                 expr_str: "d = sqrt((x2 - x1)^2 + (y2 - y1)^2)".into(),
-                descriptions: vec![
-                    ("distance_formula".into(), "equals".into(), "sqrt_of_sum_of_squared_differences".into()),
+                descriptions: vec![(
+                    "distance_formula".into(),
+                    "equals".into(),
+                    "sqrt_of_sum_of_squared_differences".into(),
+                )],
+                aliases: vec![
+                    "distance formula".into(),
+                    "euclidean distance".into(),
+                    "distance between two points".into(),
                 ],
-                aliases: vec!["distance formula".into(), "euclidean distance".into(), "distance between two points".into()],
                 source: "bootstrap".into(),
                 domain: "algebra".into(),
                 tags: vec!["algebra".into(), "geometry".into(), "distance".into()],
@@ -1581,9 +1739,7 @@ impl FormulaRegistry {
                     .map_err(|e| format!("Failed to parse formula registry: {}", e))?;
                 Ok(registry)
             }
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
-                Ok(FormulaRegistry::new())
-            }
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(FormulaRegistry::new()),
             Err(e) => Err(format!("Failed to read formula registry: {}", e)),
         }
     }
@@ -1758,7 +1914,9 @@ fn find_closing_paren(chars: &[char], start: usize) -> Option<usize> {
     while i < chars.len() {
         if chars[i] == '\\' && i + 1 < chars.len() && chars[i + 1] == ')' {
             depth -= 1;
-            if depth == 0 { return Some(i - 1); }
+            if depth == 0 {
+                return Some(i - 1);
+            }
             i += 2;
             continue;
         }
@@ -1779,7 +1937,9 @@ fn find_closing_bracket(chars: &[char], start: usize) -> Option<usize> {
     while i < chars.len() {
         if chars[i] == '\\' && i + 1 < chars.len() && chars[i + 1] == ']' {
             depth -= 1;
-            if depth == 0 { return Some(i - 1); }
+            if depth == 0 {
+                return Some(i - 1);
+            }
             i += 2;
             continue;
         }
@@ -1823,13 +1983,21 @@ fn extract_context_after(chars: &[char], pos: usize, max_chars: usize) -> String
 fn extract_unicode_math_regions(text: &str, source: &str) -> Vec<FormulaExtraction> {
     let mut results = Vec::new();
     let math_triggers = [
-        "d/dx", "\\int", "\\sum", "\\lim", "\\frac", "\\sqrt",
-        "\\partial", "\\infty",
+        "d/dx",
+        "\\int",
+        "\\sum",
+        "\\lim",
+        "\\frac",
+        "\\sqrt",
+        "\\partial",
+        "\\infty",
     ];
 
     for line in text.lines() {
         let trimmed = line.trim();
-        if trimmed.len() < 3 || trimmed.len() > 500 { continue; }
+        if trimmed.len() < 3 || trimmed.len() > 500 {
+            continue;
+        }
 
         // Skip lines already captured by LaTeX extraction
         if trimmed.contains('$') || trimmed.contains("\\(") || trimmed.contains("\\[") {
@@ -1839,8 +2007,26 @@ fn extract_unicode_math_regions(text: &str, source: &str) -> Vec<FormulaExtracti
         // Check for Unicode math triggers
         let has_math = math_triggers.iter().any(|t| trimmed.contains(t));
         let has_unicode_math = trimmed.chars().any(|c| {
-            matches!(c, '∫' | '∑' | '∏' | '∂' | '√' | '∞' | 'π' | 'Δ' | 'θ'
-                        | 'α' | 'β' | 'γ' | 'δ' | 'ε' | 'λ' | 'μ' | 'σ' | 'ω')
+            matches!(
+                c,
+                '∫' | '∑'
+                    | '∏'
+                    | '∂'
+                    | '√'
+                    | '∞'
+                    | 'π'
+                    | 'Δ'
+                    | 'θ'
+                    | 'α'
+                    | 'β'
+                    | 'γ'
+                    | 'δ'
+                    | 'ε'
+                    | 'λ'
+                    | 'μ'
+                    | 'σ'
+                    | 'ω'
+            )
         });
 
         if has_math || has_unicode_math {
@@ -1881,8 +2067,20 @@ pub struct ProseFormulaExtraction {
 /// These let "sine function" match "sin", "natural logarithm" match "log", etc.
 /// Ordered longest-first so multi-word synonyms are matched before their components.
 const FUNCTION_SYNONYMS: &[(&[&str], &str)] = &[
-    (&["natural logarithm", "natural log", "logarithm", "logarithms", "logarithmic"], "log"),
-    (&["exponential function", "exponential", "exponentials"], "exp"),
+    (
+        &[
+            "natural logarithm",
+            "natural log",
+            "logarithm",
+            "logarithms",
+            "logarithmic",
+        ],
+        "log",
+    ),
+    (
+        &["exponential function", "exponential", "exponentials"],
+        "exp",
+    ),
     (&["absolute value", "modulus"], "abs"),
     (&["square root", "principal square root"], "sqrt"),
     (&["sine", "sines", "sinusoidal"], "sin"),
@@ -1899,10 +2097,21 @@ const FUNCTION_SYNONYMS: &[(&[&str], &str)] = &[
 /// Words that are optional noise in formula-name matching.
 /// "derivative of THE sine FUNCTION" → matching ignores "the" and "function".
 const NOISE_WORDS: &[&str] = &[
-    "the", "a", "an", "of",
-    "function", "functions", "rule", "rules",
-    "its", "their", "this",
-    "for", "with", "by", "via",
+    "the",
+    "a",
+    "an",
+    "of",
+    "function",
+    "functions",
+    "rule",
+    "rules",
+    "its",
+    "their",
+    "this",
+    "for",
+    "with",
+    "by",
+    "via",
 ];
 
 /// Normalize a word for matching: lowercases and replaces function-name synonyms.
@@ -1910,12 +2119,12 @@ const NOISE_WORDS: &[&str] = &[
 /// Returns `None` for noise words that should be skipped entirely.
 fn normalized_word(w: &str) -> Option<String> {
     let lower = w.to_lowercase();
-    
+
     // Check noise words
     if NOISE_WORDS.contains(&lower.as_str()) {
         return None;
     }
-    
+
     // Check function synonyms (single-word only here)
     for (variants, canonical) in FUNCTION_SYNONYMS {
         for variant in *variants {
@@ -1924,7 +2133,7 @@ fn normalized_word(w: &str) -> Option<String> {
             }
         }
     }
-    
+
     Some(lower)
 }
 
@@ -1940,40 +2149,64 @@ fn tokenize_words(text: &str) -> Vec<WordToken> {
     // Use char_indices to track byte positions throughout.
     let chars_with_pos: Vec<(usize, char)> = text.char_indices().collect();
     let mut i = 0; // index into chars_with_pos
-    
+
     while i < chars_with_pos.len() {
         let (_byte_pos, ch) = chars_with_pos[i];
         // Skip non-word characters
-        if !ch.is_alphanumeric() && ch != '\'' && ch != '^' 
-            && ch != '_' && ch != '/' && ch != '(' && ch != ')' {
+        if !ch.is_alphanumeric()
+            && ch != '\''
+            && ch != '^'
+            && ch != '_'
+            && ch != '/'
+            && ch != '('
+            && ch != ')'
+        {
             i += 1;
             continue;
         }
-        
+
         let start_char_idx = i;
         let start_byte = chars_with_pos[i].0;
         while i < chars_with_pos.len() {
             let (_, c) = chars_with_pos[i];
-            if c.is_alphanumeric() || c == '\'' || c == '^' || c == '_' || c == '/' || c == '(' || c == ')' {
+            if c.is_alphanumeric()
+                || c == '\''
+                || c == '^'
+                || c == '_'
+                || c == '/'
+                || c == '('
+                || c == ')'
+            {
                 i += 1;
             } else {
                 break;
             }
         }
-        let end_byte = if i < chars_with_pos.len() { chars_with_pos[i].0 } else { text.len() };
-        let word: String = chars_with_pos[start_char_idx..i].iter().map(|(_, c)| c).collect();
+        let end_byte = if i < chars_with_pos.len() {
+            chars_with_pos[i].0
+        } else {
+            text.len()
+        };
+        let word: String = chars_with_pos[start_char_idx..i]
+            .iter()
+            .map(|(_, c)| c)
+            .collect();
         if word.len() >= 1 {
-            tokens.push(WordToken { word, start: start_byte, end: end_byte });
+            tokens.push(WordToken {
+                word,
+                start: start_byte,
+                end: end_byte,
+            });
         }
     }
-    
+
     tokens
 }
 
 /// Normalize text for matching: lowercases and replaces function-name synonyms.
 fn normalize_text(text: &str) -> String {
     let mut result = text.to_lowercase();
-    
+
     // Replace multi-word synonyms first (longest first to handle overlap)
     for (variants, canonical) in FUNCTION_SYNONYMS {
         for variant in *variants {
@@ -1999,22 +2232,25 @@ fn normalize_text(text: &str) -> String {
             }
         }
     }
-    
+
     // Replace single-word synonyms using word-by-word processing
-    let words: Vec<String> = result.split(' ').map(|w| {
-        let trimmed = w.trim_matches(|c: char| !c.is_alphanumeric());
-        let trimmed_str: &str = trimmed;
-        for (variants, canonical) in FUNCTION_SYNONYMS {
-            for variant in *variants {
-                if !variant.contains(' ') && trimmed_str == *variant {
-                    return canonical.to_string();
+    let words: Vec<String> = result
+        .split(' ')
+        .map(|w| {
+            let trimmed = w.trim_matches(|c: char| !c.is_alphanumeric());
+            let trimmed_str: &str = trimmed;
+            for (variants, canonical) in FUNCTION_SYNONYMS {
+                for variant in *variants {
+                    if !variant.contains(' ') && trimmed_str == *variant {
+                        return canonical.to_string();
+                    }
                 }
             }
-        }
-        w.to_string()
-    }).collect();
+            w.to_string()
+        })
+        .collect();
     result = words.join(" ");
-    
+
     result
 }
 
@@ -2035,46 +2271,50 @@ struct AliasMatch {
 fn fuzzy_alias_match(sentence: &str, alias: &str) -> Option<AliasMatch> {
     // Tokenize the ORIGINAL sentence (keeps position info)
     let orig_tokens = tokenize_words(sentence);
-    if orig_tokens.is_empty() { return None; }
-    
+    if orig_tokens.is_empty() {
+        return None;
+    }
+
     // Normalize alias
     let norm_alias = normalize_text(alias);
     let alias_tokens = tokenize_words(&norm_alias);
-    if alias_tokens.is_empty() { return None; }
+    if alias_tokens.is_empty() {
+        return None;
+    }
     let alias_words: Vec<&str> = alias_tokens.iter().map(|t| t.word.as_str()).collect();
-    
+
     // Try each start position in the original sentence
     for start in 0..orig_tokens.len() {
         let mut ai = 0; // alias index
         let mut si = start; // sentence index (in original token space)
         let mut last_matched_si = si;
-        
+
         while ai < alias_words.len() && si < orig_tokens.len() {
             // Normalize the original sentence word on the fly
             let orig_word = &orig_tokens[si].word;
             let norm_word = normalized_word(orig_word);
             let a_word = alias_words[ai];
-            
+
             // Both are noise? Skip both
             if norm_word.is_none() && is_noise(a_word) {
                 ai += 1;
                 si += 1;
                 continue;
             }
-            
+
             // Sentence word is noise? Skip it
             if norm_word.is_none() {
                 si += 1;
                 continue;
             }
-            
+
             // Alias word after normalization is noise? Skip it
             let a_norm = normalized_word(a_word);
             if a_norm.is_none() {
                 ai += 1;
                 continue;
             }
-            
+
             // Direct match or synonym match?
             let s_word = norm_word.unwrap();
             let a_clean = a_norm.unwrap();
@@ -2084,7 +2324,7 @@ fn fuzzy_alias_match(sentence: &str, alias: &str) -> Option<AliasMatch> {
                 si += 1;
                 continue;
             }
-            
+
             // Also try matching without normalization (for aliases already in canonical form)
             let orig_word_lower = orig_word.to_lowercase();
             if orig_word_lower == a_clean || synonym_match(&orig_word_lower, &a_clean) {
@@ -2093,11 +2333,11 @@ fn fuzzy_alias_match(sentence: &str, alias: &str) -> Option<AliasMatch> {
                 si += 1;
                 continue;
             }
-            
+
             // Mismatch — this start position doesn't work
             break;
         }
-        
+
         if ai == alias_words.len() {
             // Full alias matched
             return Some(AliasMatch {
@@ -2106,24 +2346,30 @@ fn fuzzy_alias_match(sentence: &str, alias: &str) -> Option<AliasMatch> {
             });
         }
     }
-    
+
     None
 }
 
 /// Check if two words are synonymous (e.g., "sine" ↔ "sin", "cosine" ↔ "cos").
 fn synonym_match(a: &str, b: &str) -> bool {
-    if a == b { return true; }
+    if a == b {
+        return true;
+    }
     let a_lower = a.to_lowercase();
     let b_lower = b.to_lowercase();
-    if a_lower == b_lower { return true; }
-    
+    if a_lower == b_lower {
+        return true;
+    }
+
     // Check both directions in the synonym table
     for (variants, canonical) in FUNCTION_SYNONYMS {
         let is_a_var = variants.contains(&a_lower.as_str()) || a_lower == *canonical;
         let is_b_var = variants.contains(&b_lower.as_str()) || b_lower == *canonical;
-        if is_a_var && is_b_var { return true; }
+        if is_a_var && is_b_var {
+            return true;
+        }
     }
-    
+
     false
 }
 
@@ -2140,44 +2386,226 @@ fn is_noise(word: &str) -> bool {
 /// in a `FormulaRegistry` at extraction time.
 const KNOWN_FORMULA_NAMES: &[(&str, &[&str])] = &[
     // ── Calculus ───────────────────────────────────────────────────────
-    ("power_rule", &["power rule", "power rule of differentiation", "power rule for derivatives"]),
-    ("product_rule", &["product rule", "product rule of differentiation", "product rule for derivatives"]),
-    ("quotient_rule", &["quotient rule", "quotient rule of differentiation", "quotient rule for derivatives"]),
-    ("chain_rule", &["chain rule", "chain rule of differentiation", "chain rule for derivatives"]),
-    ("derivative_of_sin", &["derivative of sin", "derivative of sine", "derivative of sine function", "derivative of sin(x)"]),
-    ("derivative_of_cos", &["derivative of cos", "derivative of cosine", "derivative of cosine function", "derivative of cos(x)"]),
-    ("derivative_of_tan", &["derivative of tan", "derivative of tangent", "derivative of tangent function"]),
-    ("derivative_of_exp", &["derivative of e^x", "derivative of exp", "derivative of exponential", "derivative of exponential function"]),
-    ("derivative_of_ln", &["derivative of ln", "derivative of log", "derivative of natural log", "derivative of natural logarithm"]),
-    ("integral_power_rule", &["integral power rule", "power rule of integration", "power rule for integrals"]),
-    ("fundamental_theorem_of_calculus", &["fundamental theorem of calculus", "ftc", "first fundamental theorem"]),
-
+    (
+        "power_rule",
+        &[
+            "power rule",
+            "power rule of differentiation",
+            "power rule for derivatives",
+        ],
+    ),
+    (
+        "product_rule",
+        &[
+            "product rule",
+            "product rule of differentiation",
+            "product rule for derivatives",
+        ],
+    ),
+    (
+        "quotient_rule",
+        &[
+            "quotient rule",
+            "quotient rule of differentiation",
+            "quotient rule for derivatives",
+        ],
+    ),
+    (
+        "chain_rule",
+        &[
+            "chain rule",
+            "chain rule of differentiation",
+            "chain rule for derivatives",
+        ],
+    ),
+    (
+        "derivative_of_sin",
+        &[
+            "derivative of sin",
+            "derivative of sine",
+            "derivative of sine function",
+            "derivative of sin(x)",
+        ],
+    ),
+    (
+        "derivative_of_cos",
+        &[
+            "derivative of cos",
+            "derivative of cosine",
+            "derivative of cosine function",
+            "derivative of cos(x)",
+        ],
+    ),
+    (
+        "derivative_of_tan",
+        &[
+            "derivative of tan",
+            "derivative of tangent",
+            "derivative of tangent function",
+        ],
+    ),
+    (
+        "derivative_of_exp",
+        &[
+            "derivative of e^x",
+            "derivative of exp",
+            "derivative of exponential",
+            "derivative of exponential function",
+        ],
+    ),
+    (
+        "derivative_of_ln",
+        &[
+            "derivative of ln",
+            "derivative of log",
+            "derivative of natural log",
+            "derivative of natural logarithm",
+        ],
+    ),
+    (
+        "integral_power_rule",
+        &[
+            "integral power rule",
+            "power rule of integration",
+            "power rule for integrals",
+        ],
+    ),
+    (
+        "fundamental_theorem_of_calculus",
+        &[
+            "fundamental theorem of calculus",
+            "ftc",
+            "first fundamental theorem",
+        ],
+    ),
     // ── Physics / Mechanics ────────────────────────────────────────────
-    ("newtons_second_law", &["newton's second law", "newton's second law of motion", "force equals mass times acceleration", "f equals ma"]),
-    ("kinetic_energy", &["kinetic energy", "kinetic energy formula", "ke formula"]),
-    ("gravitational_potential_energy", &["gravitational potential energy", "potential energy", "pe formula", "mgh"]),
-    ("work_formula", &["work formula", "work equals force times distance", "work energy principle"]),
-    ("hookes_law", &["hooke's law", "hookes law", "spring force formula"]),
-
+    (
+        "newtons_second_law",
+        &[
+            "newton's second law",
+            "newton's second law of motion",
+            "force equals mass times acceleration",
+            "f equals ma",
+        ],
+    ),
+    (
+        "kinetic_energy",
+        &["kinetic energy", "kinetic energy formula", "ke formula"],
+    ),
+    (
+        "gravitational_potential_energy",
+        &[
+            "gravitational potential energy",
+            "potential energy",
+            "pe formula",
+            "mgh",
+        ],
+    ),
+    (
+        "work_formula",
+        &[
+            "work formula",
+            "work equals force times distance",
+            "work energy principle",
+        ],
+    ),
+    (
+        "hookes_law",
+        &["hooke's law", "hookes law", "spring force formula"],
+    ),
     // ── Geometry ───────────────────────────────────────────────────────
-    ("area_of_circle", &["area of circle", "area of a circle", "circle area formula", "pi r squared"]),
-    ("circumference_of_circle", &["circumference of circle", "circle circumference", "2 pi r"]),
-    ("area_of_rectangle", &["area of rectangle", "rectangle area", "length times width"]),
-    ("volume_of_sphere", &["volume of sphere", "sphere volume formula", "four thirds pi r cubed"]),
-    ("pythagorean_theorem", &["pythagorean theorem", "pythagoras theorem", "a squared plus b squared equals c squared"]),
-
+    (
+        "area_of_circle",
+        &[
+            "area of circle",
+            "area of a circle",
+            "circle area formula",
+            "pi r squared",
+        ],
+    ),
+    (
+        "circumference_of_circle",
+        &["circumference of circle", "circle circumference", "2 pi r"],
+    ),
+    (
+        "area_of_rectangle",
+        &["area of rectangle", "rectangle area", "length times width"],
+    ),
+    (
+        "volume_of_sphere",
+        &[
+            "volume of sphere",
+            "sphere volume formula",
+            "four thirds pi r cubed",
+        ],
+    ),
+    (
+        "pythagorean_theorem",
+        &[
+            "pythagorean theorem",
+            "pythagoras theorem",
+            "a squared plus b squared equals c squared",
+        ],
+    ),
     // ── Statistics / Probability ───────────────────────────────────────
-    ("mean_formula", &["mean formula", "arithmetic mean", "average formula", "sum divided by n"]),
-    ("variance_formula", &["variance formula", "population variance", "sigma squared"]),
-    ("standard_deviation", &["standard deviation", "sigma", "root mean square deviation"]),
-    ("normal_distribution", &["normal distribution", "gaussian distribution", "bell curve formula"]),
-
+    (
+        "mean_formula",
+        &[
+            "mean formula",
+            "arithmetic mean",
+            "average formula",
+            "sum divided by n",
+        ],
+    ),
+    (
+        "variance_formula",
+        &["variance formula", "population variance", "sigma squared"],
+    ),
+    (
+        "standard_deviation",
+        &["standard deviation", "sigma", "root mean square deviation"],
+    ),
+    (
+        "normal_distribution",
+        &[
+            "normal distribution",
+            "gaussian distribution",
+            "bell curve formula",
+        ],
+    ),
     // ── Algebra ────────────────────────────────────────────────────────
-    ("quadratic_formula", &["quadratic formula", "quadratic equation", "quadratic formula solver"]),
-    ("pythagorean_identity", &["pythagorean identity", "trig identity", "pythagorean trigonometric identity"]),
-    ("binomial_theorem", &["binomial theorem", "binomial expansion", "binomial formula"]),
-    ("slope_formula", &["slope formula", "rise over run", "slope of a line"]),
-    ("distance_formula", &["distance formula", "euclidean distance", "distance between two points"]),
+    (
+        "quadratic_formula",
+        &[
+            "quadratic formula",
+            "quadratic equation",
+            "quadratic formula solver",
+        ],
+    ),
+    (
+        "pythagorean_identity",
+        &[
+            "pythagorean identity",
+            "trig identity",
+            "pythagorean trigonometric identity",
+        ],
+    ),
+    (
+        "binomial_theorem",
+        &["binomial theorem", "binomial expansion", "binomial formula"],
+    ),
+    (
+        "slope_formula",
+        &["slope formula", "rise over run", "slope of a line"],
+    ),
+    (
+        "distance_formula",
+        &[
+            "distance formula",
+            "euclidean distance",
+            "distance between two points",
+        ],
+    ),
 ];
 
 /// Build a unified alias list from hardcoded + registry formulas for prose extraction.
@@ -2353,8 +2781,7 @@ impl FormulaAliasIndex {
             alias_map.insert(slug.clone(), aliases.clone());
         }
         let mut query_entries = Vec::new();
-        let mut token_to_queries: HashMap<String, Vec<usize>> =
-            HashMap::default();
+        let mut token_to_queries: HashMap<String, Vec<usize>> = HashMap::default();
 
         for (slug, alias_list) in &all_aliases {
             for alias in alias_list {
@@ -2417,7 +2844,11 @@ impl FormulaAliasIndex {
             }
         }
 
-        FormulaAliasIndex { alias_map, query_entries, token_to_queries }
+        FormulaAliasIndex {
+            alias_map,
+            query_entries,
+            token_to_queries,
+        }
     }
 
     /// Fast candidate retrieval: finds all queries whose normalized tokens
@@ -2450,7 +2881,8 @@ impl FormulaAliasIndex {
         }
         // Keep queries where score == query_tokens.len() (all tokens present).
         // Sort by token count descending and limit to MAX_CANDIDATES.
-        let mut matched: Vec<(&IndexedAliasQuery, usize)> = scores.into_iter()
+        let mut matched: Vec<(&IndexedAliasQuery, usize)> = scores
+            .into_iter()
             .filter_map(|(idx, score)| {
                 let entry = &self.query_entries[idx];
                 let required = entry.query_tokens.len();
@@ -2460,7 +2892,11 @@ impl FormulaAliasIndex {
                     // Single-token matches only count if the token is
                     // not a generic math term (length >= 4 or contains special chars)
                     let tok = &entry.query_tokens[0];
-                    if tok.len() >= 4 || tok.contains('^') || tok.contains('_') || tok.contains('\\') {
+                    if tok.len() >= 4
+                        || tok.contains('^')
+                        || tok.contains('_')
+                        || tok.contains('\\')
+                    {
                         Some((entry, 1))
                     } else {
                         None
@@ -2509,7 +2945,10 @@ impl SentenceTokenCache {
             }
         }
         let token_set: HashSet<String> = result_tokens.iter().cloned().collect();
-        SentenceTokenCache { tokens: result_tokens, token_set }
+        SentenceTokenCache {
+            tokens: result_tokens,
+            token_set,
+        }
     }
 }
 
@@ -2545,11 +2984,17 @@ pub fn extract_formulas_from_prose(
 
     for (sent_idx, sentence) in sentences.iter().enumerate() {
         if total > 5000 && sent_idx > 0 && sent_idx % 5000 == 0 {
-            eprintln!("    ... {}/{} sentences processed ({} formulas found so far)",
-                sent_idx, total, results.len());
+            eprintln!(
+                "    ... {}/{} sentences processed ({} formulas found so far)",
+                sent_idx,
+                total,
+                results.len()
+            );
         }
         let trimmed = sentence.trim();
-        if trimmed.len() < 10 { continue; }
+        if trimmed.len() < 10 {
+            continue;
+        }
 
         // Skip sentences that already have LaTeX delimiters (handled elsewhere)
         if trimmed.contains('$') || trimmed.contains("\\(") || trimmed.contains("\\[") {
@@ -2605,27 +3050,39 @@ pub fn extract_formulas_from_prose(
         // Pattern 1: "[Name] [verb] that [expression]"
         //   "The power rule states that d/dx x^n = n x^(n-1)"
         results.extend(extract_name_verb_that_pattern(
-            trimmed, source, &filtered_aliases));
+            trimmed,
+            source,
+            &filtered_aliases,
+        ));
 
         // Pattern 2: "[Name] [verb] [expression]" (no 'that')
         //   "The derivative of sin is cos(x)"
         results.extend(extract_name_verb_expr_pattern(
-            trimmed, source, &filtered_aliases));
+            trimmed,
+            source,
+            &filtered_aliases,
+        ));
 
         // Pattern 3: "[expression] is called/known as [name]"
         //   "sin^2(x) + cos^2(x) = 1 is known as the Pythagorean identity"
         results.extend(extract_expr_is_called_pattern(
-            trimmed, source, &filtered_aliases));
+            trimmed,
+            source,
+            &filtered_aliases,
+        ));
 
         // Pattern 4: "[Name]: [expression]"
         //   "Power rule: d/dx x^n = n x^(n-1)"
-        results.extend(extract_colon_pattern(
-            trimmed, source, &filtered_aliases));
+        results.extend(extract_colon_pattern(trimmed, source, &filtered_aliases));
 
         // Pattern 5: General formula definition from context
         //   "The formula for kinetic energy is KE = 1/2 mv^2"
         //   "F = ma" (bare equality)
-        results.extend(extract_general_formula_pattern(trimmed, source, &filtered_aliases));
+        results.extend(extract_general_formula_pattern(
+            trimmed,
+            source,
+            &filtered_aliases,
+        ));
     }
 
     // Deduplicate by name
@@ -2677,9 +3134,9 @@ fn extract_name_verb_that_pattern(
                 // appear in the sentence. This avoids expensive fuzzy matching for
                 // clearly non-matching aliases.
                 let alias_words: Vec<&str> = alias.split_whitespace().collect();
-                let has_content_word = alias_words.iter().any(|w| {
-                    w.len() >= 3 && sentence_lower.contains(&w.to_lowercase())
-                });
+                let has_content_word = alias_words
+                    .iter()
+                    .any(|w| w.len() >= 3 && sentence_lower.contains(&w.to_lowercase()));
                 if !alias_words.is_empty() && !has_content_word {
                     continue;
                 }
@@ -2725,9 +3182,9 @@ fn extract_name_verb_expr_pattern(
             // Quick pre-check: skip if NO content words (len >= 3) from the alias
             // appear in the sentence.
             let alias_words: Vec<&str> = alias.split_whitespace().collect();
-            let has_content_word = alias_words.iter().any(|w| {
-                w.len() >= 3 && sentence_lower.contains(&w.to_lowercase())
-            });
+            let has_content_word = alias_words
+                .iter()
+                .any(|w| w.len() >= 3 && sentence_lower.contains(&w.to_lowercase()));
             if !alias_words.is_empty() && !has_content_word {
                 continue;
             }
@@ -2792,31 +3249,30 @@ fn extract_derivative_of_pattern(sentence: &str, source: &str) -> Vec<ProseFormu
             if let Some(is_pos) = rest.find(" is ") {
                 let func = rest[..is_pos].trim();
                 let result = rest[is_pos + 4..].trim_end_matches('.').trim();
-                    if !func.is_empty() && !result.is_empty() {
-                        // Clean the function name for the slug: strip noise words
-                        let clean_func: Vec<&str> = func.split_whitespace()
-                            .filter(|w| {
-                                let wl = w.to_lowercase();
-                                !NOISE_WORDS.contains(&wl.as_str())
-                                    && wl != "d/dx"
-                                    && wl != "="
-                            })
-                            .collect();
-                        let clean_slug = if clean_func.is_empty() {
-                            func.replace(' ', "_")
-                        } else {
-                            clean_func.join("_")
-                        };
-                        let clean_name = clean_slug.replace('_', " ");
-                        let slug = format!("derivative_of_{}", clean_slug);
-                        results.push(ProseFormulaExtraction {
-                            name: slug,
-                            verb: "is".into(),
-                            expression: format!("d/dx {} = {}", clean_name, result),
-                            context: sentence.to_string(),
-                            source: source.to_string(),
-                        });
-                    }
+                if !func.is_empty() && !result.is_empty() {
+                    // Clean the function name for the slug: strip noise words
+                    let clean_func: Vec<&str> = func
+                        .split_whitespace()
+                        .filter(|w| {
+                            let wl = w.to_lowercase();
+                            !NOISE_WORDS.contains(&wl.as_str()) && wl != "d/dx" && wl != "="
+                        })
+                        .collect();
+                    let clean_slug = if clean_func.is_empty() {
+                        func.replace(' ', "_")
+                    } else {
+                        clean_func.join("_")
+                    };
+                    let clean_name = clean_slug.replace('_', " ");
+                    let slug = format!("derivative_of_{}", clean_slug);
+                    results.push(ProseFormulaExtraction {
+                        name: slug,
+                        verb: "is".into(),
+                        expression: format!("d/dx {} = {}", clean_name, result),
+                        context: sentence.to_string(),
+                        source: source.to_string(),
+                    });
+                }
             }
         }
     }
@@ -2829,7 +3285,11 @@ fn extract_integral_of_pattern(sentence: &str, source: &str) -> Vec<ProseFormula
     let mut results = Vec::new();
     let lower = sentence.to_lowercase();
 
-    for trigger in &["integral of ", "antiderivative of ", "indefinite integral of "] {
+    for trigger in &[
+        "integral of ",
+        "antiderivative of ",
+        "indefinite integral of ",
+    ] {
         if let Some(m) = fuzzy_alias_match(sentence, trigger.trim()) {
             let norm_lower = normalize_text(&lower);
             let trigger_norm = trigger.trim().to_lowercase();
@@ -2842,7 +3302,8 @@ fn extract_integral_of_pattern(sentence: &str, source: &str) -> Vec<ProseFormula
                     let result = rest[is_pos + 4..].trim_end_matches('.').trim();
                     if !func.is_empty() && !result.is_empty() {
                         // Clean the function name for the slug: strip noise words
-                        let clean_func: Vec<&str> = func.split_whitespace()
+                        let clean_func: Vec<&str> = func
+                            .split_whitespace()
                             .filter(|w| {
                                 let wl = w.to_lowercase();
                                 !NOISE_WORDS.contains(&wl.as_str())
@@ -2888,7 +3349,10 @@ fn extract_expr_is_called_pattern(
     for marker in &["is known as the ", "is called the ", "is the "] {
         if let Some(pos) = lower.find(marker) {
             let before = sentence[..pos].trim();
-            let after = lower[pos + marker.len()..].trim_end_matches('.').trim().to_string();
+            let after = lower[pos + marker.len()..]
+                .trim_end_matches('.')
+                .trim()
+                .to_string();
 
             // Check if "after" matches a known formula name using fuzzy matching
             for (slug, alias_list) in aliases {
@@ -2941,7 +3405,11 @@ fn extract_colon_pattern(
                 }
                 // Skip past the colon
                 let colon_end = colon_pos.unwrap() + 1;
-                let expression = after[colon_end..].trim().trim_end_matches('.').trim().to_string();
+                let expression = after[colon_end..]
+                    .trim()
+                    .trim_end_matches('.')
+                    .trim()
+                    .to_string();
                 if expression.len() >= 3 {
                     results.push(ProseFormulaExtraction {
                         name: slug.to_string(),
@@ -3048,9 +3516,11 @@ pub fn ingest_prose_formulas(
         let entry = FormulaEntry {
             slug: slug.clone(),
             expr_str: extraction.expression.clone(),
-            descriptions: vec![
-                (extraction.name.clone(), extraction.verb.clone(), extraction.expression.clone()),
-            ],
+            descriptions: vec![(
+                extraction.name.clone(),
+                extraction.verb.clone(),
+                extraction.expression.clone(),
+            )],
             aliases: vec![extraction.name.clone()],
             source: extraction.source.clone(),
             domain: default_domain.to_string(),
@@ -3105,14 +3575,17 @@ pub fn latex_to_symexpr(latex: &str) -> Option<SymExpr> {
 enum LToken {
     Num(f64),
     Var(String),
-    Op(char),         // +, -, *, /, ^, =, !, ', , (comma)
-    LParen, RParen,
-    LBrack, RBrack,
-    LBrace, RBrace,
-    Bar,              // |
-    Command(String),  // \sin, \frac, \int, etc.
-    Subscript,        // _
-    Prime,            // '
+    Op(char), // +, -, *, /, ^, =, !, ', , (comma)
+    LParen,
+    RParen,
+    LBrack,
+    RBrack,
+    LBrace,
+    RBrace,
+    Bar,             // |
+    Command(String), // \sin, \frac, \int, etc.
+    Subscript,       // _
+    Prime,           // '
     End,
 }
 
@@ -3181,38 +3654,128 @@ fn tokenize_latex(s: &str) -> Option<Vec<LToken>> {
                 tokens.push(LToken::Op(c));
                 i += 1;
             }
-            '(' => { tokens.push(LToken::LParen); i += 1; }
-            ')' => { tokens.push(LToken::RParen); i += 1; }
-            '[' => { tokens.push(LToken::LBrack); i += 1; }
-            ']' => { tokens.push(LToken::RBrack); i += 1; }
-            '{' => { tokens.push(LToken::LBrace); i += 1; }
-            '}' => { tokens.push(LToken::RBrace); i += 1; }
-            '|' => { tokens.push(LToken::Bar); i += 1; }
-            '_' => { tokens.push(LToken::Subscript); i += 1; }
-            '\'' => { tokens.push(LToken::Prime); i += 1; }
+            '(' => {
+                tokens.push(LToken::LParen);
+                i += 1;
+            }
+            ')' => {
+                tokens.push(LToken::RParen);
+                i += 1;
+            }
+            '[' => {
+                tokens.push(LToken::LBrack);
+                i += 1;
+            }
+            ']' => {
+                tokens.push(LToken::RBrack);
+                i += 1;
+            }
+            '{' => {
+                tokens.push(LToken::LBrace);
+                i += 1;
+            }
+            '}' => {
+                tokens.push(LToken::RBrace);
+                i += 1;
+            }
+            '|' => {
+                tokens.push(LToken::Bar);
+                i += 1;
+            }
+            '_' => {
+                tokens.push(LToken::Subscript);
+                i += 1;
+            }
+            '\'' => {
+                tokens.push(LToken::Prime);
+                i += 1;
+            }
             // Unicode math operators
-            '·' | '×' | '⋅' => { tokens.push(LToken::Op('*')); i += 1; }
-            '÷' => { tokens.push(LToken::Op('/')); i += 1; }
-            '±' => { tokens.push(LToken::Op('+')); i += 1; } // approximation
-            '\u{2212}' => { tokens.push(LToken::Op('-')); i += 1; } // − (minus sign)
-            '\u{2211}' => { tokens.push(LToken::Command("sum".into())); i += 1; } // ∑
-            '\u{222B}' => { tokens.push(LToken::Command("int".into())); i += 1; } // ∫
-            '\u{2202}' => { tokens.push(LToken::Command("partial".into())); i += 1; } // ∂
-            '\u{221A}' => { tokens.push(LToken::Command("sqrt".into())); i += 1; } // √
+            '·' | '×' | '⋅' => {
+                tokens.push(LToken::Op('*'));
+                i += 1;
+            }
+            '÷' => {
+                tokens.push(LToken::Op('/'));
+                i += 1;
+            }
+            '±' => {
+                tokens.push(LToken::Op('+'));
+                i += 1;
+            } // approximation
+            '\u{2212}' => {
+                tokens.push(LToken::Op('-'));
+                i += 1;
+            } // − (minus sign)
+            '\u{2211}' => {
+                tokens.push(LToken::Command("sum".into()));
+                i += 1;
+            } // ∑
+            '\u{222B}' => {
+                tokens.push(LToken::Command("int".into()));
+                i += 1;
+            } // ∫
+            '\u{2202}' => {
+                tokens.push(LToken::Command("partial".into()));
+                i += 1;
+            } // ∂
+            '\u{221A}' => {
+                tokens.push(LToken::Command("sqrt".into()));
+                i += 1;
+            } // √
             // Greek letters (Unicode)
-            '\u{03B1}' => { tokens.push(LToken::Var("alpha".into())); i += 1; }
-            '\u{03B2}' => { tokens.push(LToken::Var("beta".into())); i += 1; }
-            '\u{03B3}' => { tokens.push(LToken::Var("gamma".into())); i += 1; }
-            '\u{03B4}' => { tokens.push(LToken::Var("delta".into())); i += 1; }
-            '\u{03B5}' => { tokens.push(LToken::Var("epsilon".into())); i += 1; }
-            '\u{03B8}' => { tokens.push(LToken::Var("theta".into())); i += 1; }
-            '\u{03BB}' => { tokens.push(LToken::Var("lambda".into())); i += 1; }
-            '\u{03BC}' => { tokens.push(LToken::Var("mu".into())); i += 1; }
-            '\u{03C0}' => { tokens.push(LToken::Var("pi".into())); i += 1; }
-            '\u{03C3}' => { tokens.push(LToken::Var("sigma".into())); i += 1; }
-            '\u{03C9}' => { tokens.push(LToken::Var("omega".into())); i += 1; }
-            '\u{0394}' => { tokens.push(LToken::Var("Delta".into())); i += 1; }
-            '\u{03A3}' => { tokens.push(LToken::Var("Sigma".into())); i += 1; }
+            '\u{03B1}' => {
+                tokens.push(LToken::Var("alpha".into()));
+                i += 1;
+            }
+            '\u{03B2}' => {
+                tokens.push(LToken::Var("beta".into()));
+                i += 1;
+            }
+            '\u{03B3}' => {
+                tokens.push(LToken::Var("gamma".into()));
+                i += 1;
+            }
+            '\u{03B4}' => {
+                tokens.push(LToken::Var("delta".into()));
+                i += 1;
+            }
+            '\u{03B5}' => {
+                tokens.push(LToken::Var("epsilon".into()));
+                i += 1;
+            }
+            '\u{03B8}' => {
+                tokens.push(LToken::Var("theta".into()));
+                i += 1;
+            }
+            '\u{03BB}' => {
+                tokens.push(LToken::Var("lambda".into()));
+                i += 1;
+            }
+            '\u{03BC}' => {
+                tokens.push(LToken::Var("mu".into()));
+                i += 1;
+            }
+            '\u{03C0}' => {
+                tokens.push(LToken::Var("pi".into()));
+                i += 1;
+            }
+            '\u{03C3}' => {
+                tokens.push(LToken::Var("sigma".into()));
+                i += 1;
+            }
+            '\u{03C9}' => {
+                tokens.push(LToken::Var("omega".into()));
+                i += 1;
+            }
+            '\u{0394}' => {
+                tokens.push(LToken::Var("Delta".into()));
+                i += 1;
+            }
+            '\u{03A3}' => {
+                tokens.push(LToken::Var("Sigma".into()));
+                i += 1;
+            }
             _ => {
                 // Skip unknown characters
                 i += 1;
@@ -3305,9 +3868,19 @@ fn parse_mul_div(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
 /// Commands that are relational operators, not factors.
 /// They should NOT trigger implicit multiplication.
 const RELATIONAL_COMMANDS: &[&str] = &[
-    "to", "rightarrow", "Rightarrow", "implies", "iff",
-    "neq", "approx", "cong", "sim",
-    "leq", "geq", "le", "ge",
+    "to",
+    "rightarrow",
+    "Rightarrow",
+    "implies",
+    "iff",
+    "neq",
+    "approx",
+    "cong",
+    "sim",
+    "leq",
+    "geq",
+    "le",
+    "ge",
 ];
 
 /// Check if the next token starts an implicit multiplication.
@@ -3341,12 +3914,8 @@ fn parse_unary(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
             let (expr, pos) = parse_unary(tokens, pos + 1)?;
             Some((-expr, pos))
         }
-        LToken::Op('+') => {
-            parse_unary(tokens, pos + 1)
-        }
-        LToken::Command(cmd) => {
-            parse_command(tokens, pos)
-        }
+        LToken::Op('+') => parse_unary(tokens, pos + 1),
+        LToken::Command(cmd) => parse_command(tokens, pos),
         _ => parse_atom(tokens, pos),
     }
 }
@@ -3375,9 +3944,9 @@ fn is_derivative_notation(num: &SymExpr, den: &SymExpr) -> bool {
     // It can also be Mul(∂, var) when \partial is followed by a variable
     // (in LaTeX, \partial x parses as implicit multiplication: ∂ * x)
     let den_ok = match den {
-        SymExpr::Var(v) => v.starts_with('d') || v.starts_with('∂'),
+        SymExpr::Var(v) => v.display.starts_with('d') || v.display.starts_with('∂'),
         SymExpr::Pow(base, _) => matches!(base.as_ref(), SymExpr::Var(v)
-            if v.starts_with('d') || v.starts_with('∂')),
+            if v.display.starts_with('d') || v.display.starts_with('∂')),
         SymExpr::Mul(left, _) => matches!(left.as_ref(), SymExpr::Var(v) if v == "d" || v == "∂"),
         _ => false,
     };
@@ -3427,8 +3996,8 @@ fn parse_command(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                         Some((SymExpr::Sqrt(Box::new(expr)), pos))
                     }
                 }
-                "sin" | "cos" | "tan" | "ln" | "exp" | "log"
-                | "sinh" | "cosh" | "tanh" | "asin" | "acos" | "atan" => {
+                "sin" | "cos" | "tan" | "ln" | "exp" | "log" | "sinh" | "cosh" | "tanh"
+                | "asin" | "acos" | "atan" => {
                     let (arg, pos) = parse_func_arg(tokens, pos + 1)?;
                     match cmd.as_str() {
                         "sin" => Some((SymExpr::Sin(Box::new(arg)), pos)),
@@ -3456,12 +4025,15 @@ fn parse_command(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                     // Determine integration variable: extract from trailing differential
                     // or default to "x"
                     let var_name = guess_integration_variable(&body, &tokens, p);
-                    Some((SymExpr::Integral {
-                        variable: var_name,
-                        lower: lower.map(Box::new),
-                        upper: upper.map(Box::new),
-                        body: Box::new(body),
-                    }, p))
+                    Some((
+                        SymExpr::Integral {
+                            variable: crate::algebra::Variable::named(&var_name),
+                            lower: lower.map(Box::new),
+                            upper: upper.map(Box::new),
+                            body: Box::new(body),
+                        },
+                        p,
+                    ))
                 }
                 "sum" | "Sigma" => {
                     // \sum_{i=1}^{n} expr
@@ -3487,7 +4059,7 @@ fn parse_command(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                         p += 1;
                         if p < tokens.len() && tokens[p] == LToken::LBrace {
                             p += 1; // skip '{'
-                            // Parse the content until '}' or '→' or '\to'
+                                    // Parse the content until '}' or '→' or '\to'
                             let start = p;
                             // Scan for the \to or → within the braces
                             let mut arrow_pos = None;
@@ -3497,7 +4069,9 @@ fn parse_command(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                                 match &tokens[scan] {
                                     LToken::RBrace => depth -= 1,
                                     LToken::LBrace => depth += 1,
-                                    LToken::Command(c) if c == "to" || c == "rightarrow" || c == "Rightarrow" => {
+                                    LToken::Command(c)
+                                        if c == "to" || c == "rightarrow" || c == "Rightarrow" =>
+                                    {
                                         arrow_pos = Some(scan);
                                         break;
                                     }
@@ -3509,7 +4083,7 @@ fn parse_command(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                                 // Parse variable before the arrow
                                 if let Some((var_expr, _)) = parse_atom(tokens, start) {
                                     if let SymExpr::Var(v) = &var_expr {
-                                        var_name = v.clone();
+                                        var_name = v.to_string();
                                     }
                                 }
                                 // Parse approach value after the arrow
@@ -3528,9 +4102,13 @@ fn parse_command(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                                         LToken::LBrace => depth2 += 1,
                                         _ => {}
                                     }
-                                    if depth2 > 0 { p += 1; }
+                                    if depth2 > 0 {
+                                        p += 1;
+                                    }
                                 }
-                                if p < tokens.len() { p += 1; }
+                                if p < tokens.len() {
+                                    p += 1;
+                                }
                             } else {
                                 // No arrow found — skip to end of brace group
                                 let mut depth2 = 1;
@@ -3540,18 +4118,25 @@ fn parse_command(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                                         LToken::LBrace => depth2 += 1,
                                         _ => {}
                                     }
-                                    if depth2 > 0 { p += 1; }
+                                    if depth2 > 0 {
+                                        p += 1;
+                                    }
                                 }
-                                if p < tokens.len() { p += 1; }
+                                if p < tokens.len() {
+                                    p += 1;
+                                }
                             }
                         }
                     }
                     let (body, p) = parse_expr(tokens, p)?;
-                    Some((SymExpr::Limit {
-                        variable: var_name,
-                        approach: Box::new(approach),
-                        body: Box::new(body),
-                    }, p))
+                    Some((
+                        SymExpr::Limit {
+                            variable: crate::algebra::Variable::named(&var_name),
+                            approach: Box::new(approach),
+                            body: Box::new(body),
+                        },
+                        p,
+                    ))
                 }
                 "to" | "rightarrow" | "Rightarrow" | "implies" | "iff" => {
                     // Arrow — treat as implication, return left side
@@ -3630,9 +4215,9 @@ fn parse_atom(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                 let sub_str = format!("{}", sub);
                 let full_name = format!("{}_{}", name, sub_str);
                 p = np;
-                Some((SymExpr::Var(full_name), p))
+                Some((SymExpr::Var(crate::algebra::Variable::named(&full_name)), p))
             } else {
-                Some((SymExpr::Var(name.clone()), p))
+                Some((SymExpr::Var(crate::algebra::Variable::named(&name)), p))
             }
         }
         LToken::LParen => {
@@ -3672,9 +4257,7 @@ fn parse_atom(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                 None
             }
         }
-        LToken::Command(cmd) => {
-            parse_command(tokens, pos)
-        }
+        LToken::Command(cmd) => parse_command(tokens, pos),
         LToken::End => None,
         _ => None,
     }
@@ -3682,18 +4265,24 @@ fn parse_atom(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
 
 /// Parse a function argument: either a braced group `{...}` or a single atom.
 fn parse_func_arg(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
-    if pos >= tokens.len() { return None; }
+    if pos >= tokens.len() {
+        return None;
+    }
     match &tokens[pos] {
         LToken::LBrace => parse_atom_braced(tokens, pos),
         LToken::LParen => parse_atom(tokens, pos), // (expr)
-        _ => parse_atom(tokens, pos), // single atom
+        _ => parse_atom(tokens, pos),              // single atom
     }
 }
 
 /// Parse a braced group `{ expr }` — returns the inner expression.
 fn parse_atom_braced(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
-    if pos >= tokens.len() { return None; }
-    if tokens[pos] != LToken::LBrace { return None; }
+    if pos >= tokens.len() {
+        return None;
+    }
+    if tokens[pos] != LToken::LBrace {
+        return None;
+    }
     let (expr, mut p) = parse_expr(tokens, pos + 1)?;
     if p < tokens.len() && tokens[p] == LToken::RBrace {
         p += 1;
@@ -3709,12 +4298,17 @@ fn strip_trailing_differential(expr: SymExpr) -> SymExpr {
         SymExpr::Mul(left, right) => {
             let right = *right;
             match &right {
-                SymExpr::Var(v) if v.len() == 2 && v.starts_with('d')
-                    && v.as_bytes()[1].is_ascii_alphabetic() =>
+                SymExpr::Var(v)
+                    if v.display.len() == 2
+                        && v.display.starts_with('d')
+                        && v.display.as_bytes()[1].is_ascii_alphabetic() =>
                 {
                     *left
                 }
-                _ => SymExpr::Mul(Box::new(strip_trailing_differential(*left)), Box::new(right)),
+                _ => SymExpr::Mul(
+                    Box::new(strip_trailing_differential(*left)),
+                    Box::new(right),
+                ),
             }
         }
         SymExpr::Add(l, r) => SymExpr::Add(
@@ -3742,14 +4336,25 @@ fn guess_integration_variable(body: &SymExpr, tokens: &[LToken], pos: usize) -> 
     }
     // Fallback: scan the body for variables
     match body {
-        SymExpr::Var(v) if v.len() == 1 && v.as_bytes()[0].is_ascii_alphabetic() => v.clone(),
+        SymExpr::Var(v)
+            if v.display.len() == 1 && v.display.as_bytes()[0].is_ascii_alphabetic() =>
+        {
+            v.to_string()
+        }
         SymExpr::Add(a, b) | SymExpr::Sub(a, b) | SymExpr::Mul(a, b) | SymExpr::Div(a, b) => {
             let va = guess_integration_variable(a, &[], 0);
-            if va != "x" { return va; }
+            if va != "x" {
+                return va;
+            }
             guess_integration_variable(b, &[], 0)
         }
-        SymExpr::Sin(e) | SymExpr::Cos(e) | SymExpr::Tan(e) | SymExpr::Exp(e) | SymExpr::Ln(e)
-            | SymExpr::Sqrt(e) | SymExpr::Abs(e) => guess_integration_variable(e, &[], 0),
+        SymExpr::Sin(e)
+        | SymExpr::Cos(e)
+        | SymExpr::Tan(e)
+        | SymExpr::Exp(e)
+        | SymExpr::Ln(e)
+        | SymExpr::Sqrt(e)
+        | SymExpr::Abs(e) => guess_integration_variable(e, &[], 0),
         _ => "x".to_string(),
     }
 }
@@ -3758,7 +4363,10 @@ fn guess_integration_variable(body: &SymExpr, tokens: &[LToken], pos: usize) -> 
 ///
 /// Returns `(pos_after, Some(lower), Some(upper))` if both exist,
 /// or `None` for absent bounds.
-fn parse_command_bounds(tokens: &[LToken], pos: usize) -> (usize, Option<SymExpr>, Option<SymExpr>) {
+fn parse_command_bounds(
+    tokens: &[LToken],
+    pos: usize,
+) -> (usize, Option<SymExpr>, Option<SymExpr>) {
     let mut p = pos;
     let mut lower = None;
     let mut upper = None;
@@ -3786,8 +4394,12 @@ fn parse_command_bounds(tokens: &[LToken], pos: usize) -> (usize, Option<SymExpr
 
 /// Parse bracket content `[ expr ]`.
 fn parse_bracket_content(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
-    if pos >= tokens.len() { return None; }
-    if tokens[pos] != LToken::LBrack { return None; }
+    if pos >= tokens.len() {
+        return None;
+    }
+    if tokens[pos] != LToken::LBrack {
+        return None;
+    }
     let (expr, mut p) = parse_expr(tokens, pos + 1)?;
     if p < tokens.len() && tokens[p] == LToken::RBrack {
         p += 1;
@@ -3838,9 +4450,7 @@ pub fn ingest_formulas(
         let entry = FormulaEntry {
             slug,
             expr_str: extraction.raw.clone(),
-            descriptions: vec![
-                (desc, "is_formula".into(), extraction.raw.clone()),
-            ],
+            descriptions: vec![(desc, "is_formula".into(), extraction.raw.clone())],
             aliases: vec![],
             source: extraction.source.clone(),
             domain: default_domain.to_string(),
@@ -3860,13 +4470,25 @@ pub fn ingest_formulas(
 /// Generate a URL-safe slug from a formula and its context.
 fn generate_slug(formula: &str, context: &str) -> String {
     // Try to extract a meaningful name from context
-    let ctx_clean: String = context.chars()
+    let ctx_clean: String = context
+        .chars()
         .filter(|c| c.is_alphanumeric() || c.is_whitespace())
         .collect();
 
     // Take the first few keywords
-    let words: Vec<&str> = ctx_clean.split_whitespace()
-        .filter(|w| w.len() > 2 && !["the", "and", "for", "are", "but", "not", "you", "all", "can", "had", "her", "was", "one", "our", "out", "has", "have", "been", "some", "them", "then", "its", "also", "just", "than", "they", "very", "when", "with", "from", "that", "this", "which", "what", "will", "would", "could", "should", "about", "into", "over", "such", "their"].contains(w))
+    let words: Vec<&str> = ctx_clean
+        .split_whitespace()
+        .filter(|w| {
+            w.len() > 2
+                && ![
+                    "the", "and", "for", "are", "but", "not", "you", "all", "can", "had", "her",
+                    "was", "one", "our", "out", "has", "have", "been", "some", "them", "then",
+                    "its", "also", "just", "than", "they", "very", "when", "with", "from", "that",
+                    "this", "which", "what", "will", "would", "could", "should", "about", "into",
+                    "over", "such", "their",
+                ]
+                .contains(w)
+        })
         .take(3)
         .collect();
 
@@ -3904,15 +4526,15 @@ pub struct IngestResult {
 /// Phase 4: Merge, link, deduplicate, and save.
 ///
 /// Returns the final `QaEngine` and `FormulaRegistry`.
-pub fn staged_ingest_all(
-    pdf_paths: &[String],
-    qa: &mut crate::qa::QaEngine,
-) -> Vec<IngestResult> {
+pub fn staged_ingest_all(pdf_paths: &[String], qa: &mut crate::qa::QaEngine) -> Vec<IngestResult> {
     let total_start = std::time::Instant::now();
     let mut results = Vec::new();
 
     // ── Phase 1: Text + definitions + LaTeX ──────────────────────────
-    println!("Phase 1: Extracting text, definitions, and LaTeX formulas from {} PDFs...", pdf_paths.len());
+    println!(
+        "Phase 1: Extracting text, definitions, and LaTeX formulas from {} PDFs...",
+        pdf_paths.len()
+    );
     for pdf_path in pdf_paths {
         let start = std::time::Instant::now();
         let text = match crate::pdf_reader::extract_text(pdf_path) {
@@ -3928,12 +4550,17 @@ pub fn staged_ingest_all(
             qa.store_fact(s, v, o, pdf_path);
         }
         let extractions = extract_formulas_from_text(&text, pdf_path);
-        let (reg_count, fail_count) = ingest_formulas(
-            &extractions, &mut qa.formula_registry, "calculus",
-        );
+        let (reg_count, fail_count) =
+            ingest_formulas(&extractions, &mut qa.formula_registry, "calculus");
         let elapsed = start.elapsed();
-        println!("  {}: {:.0}s | {} defs, {} LaTeX formulas ({} fails)",
-            pdf_path, elapsed.as_secs_f64(), def_count, reg_count, fail_count);
+        println!(
+            "  {}: {:.0}s | {} defs, {} LaTeX formulas ({} fails)",
+            pdf_path,
+            elapsed.as_secs_f64(),
+            def_count,
+            reg_count,
+            fail_count
+        );
         results.push(IngestResult {
             pdf_path: pdf_path.clone(),
             text,
@@ -3947,52 +4574,70 @@ pub fn staged_ingest_all(
     }
 
     let phase1_elapsed = total_start.elapsed();
-    println!("Phase 1 complete in {:.0}s | {} formulas in registry",
-        phase1_elapsed.as_secs_f64(), qa.formula_registry.len());
+    println!(
+        "Phase 1 complete in {:.0}s | {} formulas in registry",
+        phase1_elapsed.as_secs_f64(),
+        qa.formula_registry.len()
+    );
 
     // ── Phase 2: Build global FormulaAliasIndex ─────────────────────
     let index = FormulaAliasIndex::build(Some(&qa.formula_registry));
-    println!("Phase 2: Built FormulaAliasIndex with {} query entries",
-        index.query_entries.len());
+    println!(
+        "Phase 2: Built FormulaAliasIndex with {} query entries",
+        index.query_entries.len()
+    );
 
     // ── Phase 3: Prose scan with full index ─────────────────────────
     println!("Phase 3: Scanning prose with complete index...");
     for result in &mut results {
         let start = std::time::Instant::now();
-        let prose = extract_formulas_from_prose(
-            &result.text, &result.pdf_path, Some(&qa.formula_registry),
-        );
-        let prose_count = ingest_prose_formulas(
-            &prose, &mut qa.formula_registry, "calculus",
-        );
+        let prose =
+            extract_formulas_from_prose(&result.text, &result.pdf_path, Some(&qa.formula_registry));
+        let prose_count = ingest_prose_formulas(&prose, &mut qa.formula_registry, "calculus");
         result.prose_formula_count = prose_count;
         let elapsed = start.elapsed();
         result.duration_phase3 = Some(elapsed);
-        println!("  {}: {:.0}s | {} prose formulas", result.pdf_path, elapsed.as_secs_f64(), prose_count);
+        println!(
+            "  {}: {:.0}s | {} prose formulas",
+            result.pdf_path,
+            elapsed.as_secs_f64(),
+            prose_count
+        );
     }
 
     // ── Phase 4: Relink + report ────────────────────────────────────
-    println!("Phase 4: Relinking {} facts to {} formulas...",
-        qa.fact_count(), qa.formula_registry.len());
+    println!(
+        "Phase 4: Relinking {} facts to {} formulas...",
+        qa.fact_count(),
+        qa.formula_registry.len()
+    );
     qa.relink_all();
 
     // ── Phase 5: Auto-sync formulas → computation rules ────────────
     let rule_count_before = qa.rule_engine.rules.len();
     qa.sync_formulas_to_rules();
     let rule_count_after = qa.rule_engine.rules.len();
-    println!("Phase 5: Synced formulas to rules ({} → {})",
-        rule_count_before, rule_count_after);
+    println!(
+        "Phase 5: Synced formulas to rules ({} → {})",
+        rule_count_before, rule_count_after
+    );
 
     let total_elapsed = total_start.elapsed();
     println!("\n{}", "=".repeat(60));
     println!("  ✅ Full ingestion complete");
     println!("{}", "=".repeat(60));
     println!("  PDFs: {}", pdf_paths.len());
-    println!("  Time: {:.0}s ({:.1} min)", total_elapsed.as_secs_f64(), total_elapsed.as_secs_f64() / 60.0);
+    println!(
+        "  Time: {:.0}s ({:.1} min)",
+        total_elapsed.as_secs_f64(),
+        total_elapsed.as_secs_f64() / 60.0
+    );
     println!("  Facts: {}", qa.fact_count());
     println!("  Formulas: {}", qa.formula_registry.len());
-    println!("  Phase 3 prose total: {}",
-        results.iter().map(|r| r.prose_formula_count).sum::<usize>());
+    println!(
+        "  Phase 3 prose total: {}",
+        results.iter().map(|r| r.prose_formula_count).sum::<usize>()
+    );
 
     results
 }
@@ -4004,10 +4649,7 @@ pub fn staged_ingest_all(
 ///          (including previously loaded ones — not just this PDF's formulas).
 /// Phase 3: Scan prose using the complete index.
 /// Phase 4: Relink and return an `IngestResult`.
-pub fn staged_ingest_single(
-    pdf_path: &str,
-    qa: &mut crate::qa::QaEngine,
-) -> IngestResult {
+pub fn staged_ingest_single(pdf_path: &str, qa: &mut crate::qa::QaEngine) -> IngestResult {
     let total_start = std::time::Instant::now();
 
     // ── Phase 1: Text + definitions + LaTeX ──────────────────────────
@@ -4032,20 +4674,15 @@ pub fn staged_ingest_single(
         qa.store_fact(s, v, o, pdf_path);
     }
     let extractions = extract_formulas_from_text(&text, pdf_path);
-    let (reg_count, fail_count) = ingest_formulas(
-        &extractions, &mut qa.formula_registry, "calculus",
-    );
+    let (reg_count, fail_count) =
+        ingest_formulas(&extractions, &mut qa.formula_registry, "calculus");
     let phase1_elapsed = total_start.elapsed();
 
     // ── Phases 2+3: Prose scan (extract_formulas_from_prose internally
     //     builds the FormulaAliasIndex from the current registry) ─────
     let phase3_start = std::time::Instant::now();
-    let prose = extract_formulas_from_prose(
-        &text, pdf_path, Some(&qa.formula_registry),
-    );
-    let prose_count = ingest_prose_formulas(
-        &prose, &mut qa.formula_registry, "calculus",
-    );
+    let prose = extract_formulas_from_prose(&text, pdf_path, Some(&qa.formula_registry));
+    let prose_count = ingest_prose_formulas(&prose, &mut qa.formula_registry, "calculus");
     let phase3_elapsed = phase3_start.elapsed();
 
     // ── Phase 4: Relink ─────────────────────────────────────────────
@@ -4094,7 +4731,8 @@ mod tests {
             domain: "test".into(),
             tags: vec![],
             linked_fact_ids: Vec::new(),
-        }).unwrap();
+        })
+        .unwrap();
         assert_eq!(r.len(), 1);
         assert!(r.by_slug("test_rule").is_some());
         assert!(r.lookup("test alias").is_some());
@@ -4105,7 +4743,11 @@ mod tests {
     fn test_registry_bootstrap() {
         let mut r = FormulaRegistry::new();
         r.seed_bootstrap();
-        assert!(r.len() >= 11, "expected at least 11 bootstrap formulas, got {}", r.len());
+        assert!(
+            r.len() >= 11,
+            "expected at least 11 bootstrap formulas, got {}",
+            r.len()
+        );
         assert!(r.by_slug("power_rule").is_some());
         assert!(r.by_slug("derivative_of_sin").is_some());
         assert!(r.by_slug("quadratic_formula").is_some());
@@ -4116,7 +4758,11 @@ mod tests {
         let mut r = FormulaRegistry::new();
         r.seed_bootstrap();
         let results = r.search("derivative");
-        assert!(results.len() >= 5, "expected many derivative results, got {}", results.len());
+        assert!(
+            results.len() >= 5,
+            "expected many derivative results, got {}",
+            results.len()
+        );
     }
 
     #[test]
@@ -4131,7 +4777,8 @@ mod tests {
             domain: "test".into(),
             tags: vec![],
             linked_fact_ids: Vec::new(),
-        }).unwrap();
+        })
+        .unwrap();
         let path = "/tmp/test_formula_registry.json";
         r.save_to_file(path).unwrap();
         let loaded = FormulaRegistry::load_from_file(path).unwrap();
@@ -4254,7 +4901,9 @@ mod tests {
     #[test]
     fn test_latex_pi() {
         let e = latex_to_symexpr("\\pi").unwrap();
-        assert!((format!("{}", e).parse::<f64>().unwrap_or(0.0) - std::f64::consts::PI).abs() < 1e-10);
+        assert!(
+            (format!("{}", e).parse::<f64>().unwrap_or(0.0) - std::f64::consts::PI).abs() < 1e-10
+        );
     }
 
     #[test]
@@ -4279,7 +4928,12 @@ mod tests {
     fn test_extract_inline_latex() {
         let text = "The derivative of $\\sin(x)$ is $\\cos(x)$ according to the chain rule.";
         let results = extract_formulas_from_text(text, "test");
-        assert_eq!(results.len(), 2, "expected 2 formulas, got: {:?}", results.iter().map(|r| &r.raw).collect::<Vec<_>>());
+        assert_eq!(
+            results.len(),
+            2,
+            "expected 2 formulas, got: {:?}",
+            results.iter().map(|r| &r.raw).collect::<Vec<_>>()
+        );
     }
 
     #[test]
@@ -4288,7 +4942,10 @@ mod tests {
         let results = extract_formulas_from_text(text, "test");
         // Should find at least the display formula
         assert!(!results.is_empty(), "expected at least one formula");
-        assert!(results.iter().any(|r| r.raw.contains("frac")), "no frac formula found");
+        assert!(
+            results.iter().any(|r| r.raw.contains("frac")),
+            "no frac formula found"
+        );
     }
 
     #[test]
@@ -4342,8 +4999,11 @@ mod tests {
         let text = "The derivative of the sine function is the cosine function.";
         let results = extract_formulas_from_prose(text, "test", None);
         assert!(!results.is_empty(), "expected fuzzy match for sine -> sin");
-        assert!(results.iter().any(|r| r.name == "derivative_of_sin"),
-            "expected derivative_of_sin slug, got: {:?}", results);
+        assert!(
+            results.iter().any(|r| r.name == "derivative_of_sin"),
+            "expected derivative_of_sin slug, got: {:?}",
+            results
+        );
     }
 
     #[test]
@@ -4351,7 +5011,10 @@ mod tests {
         // "trigonometric identity" should match alias "trig identity"
         let text = "sin^2(x) + cos^2(x) = 1 is called the Pythagorean trigonometric identity.";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(!results.is_empty(), "expected fuzzy match for pythagorean identity");
+        assert!(
+            !results.is_empty(),
+            "expected fuzzy match for pythagorean identity"
+        );
         assert!(results.iter().any(|r| r.name == "pythagorean_identity"));
     }
 
@@ -4360,7 +5023,11 @@ mod tests {
         // "exponential function" → "exp"
         let text = "The derivative of the exponential function is the exponential function.";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(!results.is_empty(), "expected fuzzy match for exp derivative, got: {:?}", results);
+        assert!(
+            !results.is_empty(),
+            "expected fuzzy match for exp derivative, got: {:?}",
+            results
+        );
         assert!(results.iter().any(|r| r.name == "derivative_of_exp"));
     }
 
@@ -4369,10 +5036,17 @@ mod tests {
         // "natural logarithm" → "log" (synonym), slug becomes derivative_of_log
         let text = "The derivative of the natural logarithm is one over x.";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(!results.is_empty(), "expected fuzzy match for ln derivative, got: {:?}", results);
-        assert!(results.iter().any(|r| r.name == "derivative_of_log")
-            || results.iter().any(|r| r.name == "derivative_of_ln"),
-            "expected derivative_of_log or derivative_of_ln, got: {:?}", results);
+        assert!(
+            !results.is_empty(),
+            "expected fuzzy match for ln derivative, got: {:?}",
+            results
+        );
+        assert!(
+            results.iter().any(|r| r.name == "derivative_of_log")
+                || results.iter().any(|r| r.name == "derivative_of_ln"),
+            "expected derivative_of_log or derivative_of_ln, got: {:?}",
+            results
+        );
     }
 
     #[test]
@@ -4380,8 +5054,11 @@ mod tests {
         // "chain rule for derivatives" with extra noise words
         let text = "The chain rule for derivatives states that d/dx f(g(x)) = f'(g(x))*g'(x).";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(results.iter().any(|r| r.name == "chain_rule"),
-            "expected chain_rule, got: {:?}", results);
+        assert!(
+            results.iter().any(|r| r.name == "chain_rule"),
+            "expected chain_rule, got: {:?}",
+            results
+        );
     }
 
     #[test]
@@ -4418,7 +5095,12 @@ mod tests {
             "test",
             None,
         );
-        assert_eq!(extractions.len(), 2, "expected 2 extractions, got: {:?}", extractions);
+        assert_eq!(
+            extractions.len(),
+            2,
+            "expected 2 extractions, got: {:?}",
+            extractions
+        );
 
         let count = ingest_prose_formulas(&extractions, &mut registry, "calculus");
         // Both should be merged into existing entries (not new)
@@ -4441,7 +5123,12 @@ mod tests {
         let results = extract_formulas_from_prose(text, "test", None);
         // Should be deduplicated by name
         let power_results: Vec<_> = results.iter().filter(|r| r.name == "power_rule").collect();
-        assert_eq!(power_results.len(), 1, "expected 1 power_rule result after dedup, got {}", power_results.len());
+        assert_eq!(
+            power_results.len(),
+            1,
+            "expected 1 power_rule result after dedup, got {}",
+            power_results.len()
+        );
     }
 
     // ── End-to-End Test ──────────────────────────────────────────────
@@ -4569,8 +5256,16 @@ mod tests {
 
         let result = substitute_vars(&template, &bindings);
         let result_str = format!("{}", result);
-        assert!(result_str.contains("5"), "expected 5 in result, got: {}", result_str);
-        assert!(result_str.contains("x^"), "expected x^ in result, got: {}", result_str);
+        assert!(
+            result_str.contains("5"),
+            "expected 5 in result, got: {}",
+            result_str
+        );
+        assert!(
+            result_str.contains("x^"),
+            "expected x^ in result, got: {}",
+            result_str
+        );
     }
 
     #[test]
@@ -4605,7 +5300,10 @@ mod tests {
         r.seed_bootstrap();
         // Unknown expression should return None
         let result = r.derive("d/dx unknown_thing");
-        assert!(result.is_none() || result.is_some(), "derive should not panic");
+        assert!(
+            result.is_none() || result.is_some(),
+            "derive should not panic"
+        );
     }
 
     #[test]
@@ -4633,10 +5331,16 @@ mod tests {
             Box::new(SymExpr::Var("n".into())),
             Box::new(SymExpr::Var("x".into())),
         );
-        assert!(match_symexpr(&expr, &pat, &mut bindings),
-            "x*5 should match n*x commutatively");
-        assert_eq!(format!("{}", bindings["n"]), "5",
-            "n should be bound to 5, got: {}", format!("{}", bindings["n"]));
+        assert!(
+            match_symexpr(&expr, &pat, &mut bindings),
+            "x*5 should match n*x commutatively"
+        );
+        assert_eq!(
+            format!("{}", bindings["n"]),
+            "5",
+            "n should be bound to 5, got: {}",
+            format!("{}", bindings["n"])
+        );
     }
 
     #[test]
@@ -4651,8 +5355,10 @@ mod tests {
             Box::new(SymExpr::Var("x".into())),
             Box::new(SymExpr::Var("a".into())),
         );
-        assert!(match_symexpr(&expr, &pat, &mut bindings),
-            "5+x should match x+a commutatively");
+        assert!(
+            match_symexpr(&expr, &pat, &mut bindings),
+            "5+x should match x+a commutatively"
+        );
         assert_eq!(format!("{}", bindings["a"]), "5");
     }
 
@@ -4674,8 +5380,10 @@ mod tests {
             )),
             Box::new(SymExpr::Var("c".into())),
         );
-        assert!(match_symexpr(&expr, &pat, &mut bindings),
-            "(x+y)+z should match a+b+c associatively");
+        assert!(
+            match_symexpr(&expr, &pat, &mut bindings),
+            "(x+y)+z should match a+b+c associatively"
+        );
         assert_eq!(format!("{}", bindings["a"]), "x");
         assert_eq!(format!("{}", bindings["b"]), "y");
         assert_eq!(format!("{}", bindings["c"]), "z");
@@ -4699,8 +5407,10 @@ mod tests {
             )),
             Box::new(SymExpr::Var("c".into())),
         );
-        assert!(match_symexpr(&expr, &pat, &mut bindings),
-            "x+(y+z) should match a+b+c associatively");
+        assert!(
+            match_symexpr(&expr, &pat, &mut bindings),
+            "x+(y+z) should match a+b+c associatively"
+        );
     }
 
     #[test]
@@ -4715,11 +5425,15 @@ mod tests {
             domain: "test".into(),
             tags: vec![],
             linked_fact_ids: Vec::new(),
-        }).unwrap();
+        })
+        .unwrap();
 
         // Both orderings should work
         assert!(r.derive("5*x").is_some(), "5*x should match n*x");
-        assert!(r.derive("x*5").is_some(), "x*5 should match n*x (commutative)");
+        assert!(
+            r.derive("x*5").is_some(),
+            "x*5 should match n*x (commutative)"
+        );
 
         let r1 = r.derive("x*5").unwrap();
         assert_eq!(r1, "5*x", "expected 5*x, got: {}", r1);
@@ -4737,11 +5451,15 @@ mod tests {
             domain: "test".into(),
             tags: vec![],
             linked_fact_ids: Vec::new(),
-        }).unwrap();
+        })
+        .unwrap();
 
         // Both orderings should work
         assert!(r.derive("x+5").is_some(), "x+5 should match a+b");
-        assert!(r.derive("5+x").is_some(), "5+x should match a+b (commutative)");
+        assert!(
+            r.derive("5+x").is_some(),
+            "5+x should match a+b (commutative)"
+        );
     }
 
     #[test]
@@ -4756,15 +5474,23 @@ mod tests {
             domain: "test".into(),
             tags: vec![],
             linked_fact_ids: Vec::new(),
-        }).unwrap();
+        })
+        .unwrap();
 
         // All three should work (left-nested, right-nested, flat)
-        assert!(r.derive("x + y + z").is_some(),
-            "x+y+z should match a+b+c (got: {:?})", r.derive("x + y + z"));
-        assert!(r.derive("(x + y) + z").is_some(),
-            "(x+y)+z should match a+b+c");
-        assert!(r.derive("x + (y + z)").is_some(),
-            "x+(y+z) should match a+b+c");
+        assert!(
+            r.derive("x + y + z").is_some(),
+            "x+y+z should match a+b+c (got: {:?})",
+            r.derive("x + y + z")
+        );
+        assert!(
+            r.derive("(x + y) + z").is_some(),
+            "(x+y)+z should match a+b+c"
+        );
+        assert!(
+            r.derive("x + (y + z)").is_some(),
+            "x+(y+z) should match a+b+c"
+        );
     }
 
     // ── Multi-Domain Formula Tests ──────────────────────────────────
@@ -4773,37 +5499,53 @@ mod tests {
     fn test_bootstrap_has_physics() {
         let mut r = FormulaRegistry::new();
         r.seed_bootstrap();
-        assert!(r.by_slug("newtons_second_law").is_some(),
-            "expected newtons_second_law in bootstrap");
-        assert!(r.by_slug("kinetic_energy").is_some(),
-            "expected kinetic_energy in bootstrap");
+        assert!(
+            r.by_slug("newtons_second_law").is_some(),
+            "expected newtons_second_law in bootstrap"
+        );
+        assert!(
+            r.by_slug("kinetic_energy").is_some(),
+            "expected kinetic_energy in bootstrap"
+        );
     }
 
     #[test]
     fn test_bootstrap_has_geometry() {
         let mut r = FormulaRegistry::new();
         r.seed_bootstrap();
-        assert!(r.by_slug("area_of_circle").is_some(),
-            "expected area_of_circle in bootstrap");
-        assert!(r.by_slug("pythagorean_theorem").is_some(),
-            "expected pythagorean_theorem in bootstrap");
+        assert!(
+            r.by_slug("area_of_circle").is_some(),
+            "expected area_of_circle in bootstrap"
+        );
+        assert!(
+            r.by_slug("pythagorean_theorem").is_some(),
+            "expected pythagorean_theorem in bootstrap"
+        );
     }
 
     #[test]
     fn test_bootstrap_has_statistics() {
         let mut r = FormulaRegistry::new();
         r.seed_bootstrap();
-        assert!(r.by_slug("mean_formula").is_some(),
-            "expected mean_formula in bootstrap");
-        assert!(r.by_slug("variance_formula").is_some(),
-            "expected variance_formula in bootstrap");
+        assert!(
+            r.by_slug("mean_formula").is_some(),
+            "expected mean_formula in bootstrap"
+        );
+        assert!(
+            r.by_slug("variance_formula").is_some(),
+            "expected variance_formula in bootstrap"
+        );
     }
 
     #[test]
     fn test_latex_second_derivative_with_body() {
         // \frac{d^2}{dx^2} f(x) should return f(x) as body
         let result = latex_to_symexpr(r"\frac{d^2}{dx^2} f(x)");
-        assert!(result.is_some(), "second derivative should parse, got: {:?}", result);
+        assert!(
+            result.is_some(),
+            "second derivative should parse, got: {:?}",
+            result
+        );
         let s = format!("{}", result.unwrap());
         assert!(s.contains("f"), "expected f (body) in result, got: {}", s);
     }
@@ -4812,33 +5554,50 @@ mod tests {
     fn test_latex_partial_derivative() {
         // \frac{\partial^2}{\partial x^2} — should parse as division (no body)
         let result = latex_to_symexpr(r"\frac{\partial^2}{\partial x^2}");
-        assert!(result.is_some(), "partial derivative should parse, got: {:?}", result);
+        assert!(
+            result.is_some(),
+            "partial derivative should parse, got: {:?}",
+            result
+        );
         let s = format!("{}", result.unwrap());
-        assert!(s.contains("∂") || s.contains("d"), "expected ∂ or d in result, got: {}", s);
+        assert!(
+            s.contains("∂") || s.contains("d"),
+            "expected ∂ or d in result, got: {}",
+            s
+        );
     }
 
     #[test]
     fn test_prose_physics_newtons_law() {
         let text = "Newton's second law states that F = ma.";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(results.iter().any(|r| r.name == "newtons_second_law"),
-            "expected newtons_second_law, got: {:?}", results);
+        assert!(
+            results.iter().any(|r| r.name == "newtons_second_law"),
+            "expected newtons_second_law, got: {:?}",
+            results
+        );
     }
 
     #[test]
     fn test_prose_geometry_circle_area() {
         let text = "The area of a circle is pi r squared.";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(results.iter().any(|r| r.name == "area_of_circle"),
-            "expected area_of_circle, got: {:?}", results);
+        assert!(
+            results.iter().any(|r| r.name == "area_of_circle"),
+            "expected area_of_circle, got: {:?}",
+            results
+        );
     }
 
     #[test]
     fn test_prose_statistics_mean() {
         let text = "The arithmetic mean is the sum divided by n.";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(results.iter().any(|r| r.name == "mean_formula"),
-            "expected mean_formula, got: {:?}", results);
+        assert!(
+            results.iter().any(|r| r.name == "mean_formula"),
+            "expected mean_formula, got: {:?}",
+            results
+        );
     }
 
     #[test]
@@ -4846,8 +5605,11 @@ mod tests {
         // "The formula for [name] is [expr]" — general pattern
         let text = "The formula for kinetic energy is KE = 1/2 mv^2.";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(results.iter().any(|r| r.name == "formula_kinetic_energy"),
-            "expected formula_kinetic_energy slug, got: {:?}", results);
+        assert!(
+            results.iter().any(|r| r.name == "formula_kinetic_energy"),
+            "expected formula_kinetic_energy slug, got: {:?}",
+            results
+        );
     }
 
     #[test]
@@ -4855,8 +5617,11 @@ mod tests {
         // "Newton's second law states that F = ma" — Pattern 1 (verb-that)
         let text = "Newton's second law states that F = ma.";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(results.iter().any(|r| r.name == "newtons_second_law"),
-            "expected newtons_second_law, got: {:?}", results);
+        assert!(
+            results.iter().any(|r| r.name == "newtons_second_law"),
+            "expected newtons_second_law, got: {:?}",
+            results
+        );
     }
 
     #[test]
@@ -4864,11 +5629,17 @@ mod tests {
         // Bare "X = Y" detection in context sentence
         let text = "In physics class, the formula for force is F = ma.";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(!results.is_empty(),
-            "expected general formula detection, got: {:?}", results);
-        assert!(results.iter().any(|r| r.name == "newtons_second_law")
-            || results.iter().any(|r| r.name.contains("formula_force")),
-            "expected newtons_second_law or formula_force, got: {:?}", results);
+        assert!(
+            !results.is_empty(),
+            "expected general formula detection, got: {:?}",
+            results
+        );
+        assert!(
+            results.iter().any(|r| r.name == "newtons_second_law")
+                || results.iter().any(|r| r.name.contains("formula_force")),
+            "expected newtons_second_law or formula_force, got: {:?}",
+            results
+        );
     }
 
     #[test]
@@ -4881,10 +5652,26 @@ mod tests {
         let geo_count = r.search("geometry").len();
         let stat_count = r.search("statistics").len();
         let alg_count = r.search("algebra").len();
-        assert!(calc_count >= 10, "expected >=10 calculus formulas, got {}", calc_count);
-        assert!(phys_count >= 3, "expected >=3 physics formulas, got {}", phys_count);
-        assert!(geo_count >= 2, "expected >=2 geometry formulas, got {}", geo_count);
-        assert!(stat_count >= 2, "expected >=2 statistics formulas, got {}", stat_count);
+        assert!(
+            calc_count >= 10,
+            "expected >=10 calculus formulas, got {}",
+            calc_count
+        );
+        assert!(
+            phys_count >= 3,
+            "expected >=3 physics formulas, got {}",
+            phys_count
+        );
+        assert!(
+            geo_count >= 2,
+            "expected >=2 geometry formulas, got {}",
+            geo_count
+        );
+        assert!(
+            stat_count >= 2,
+            "expected >=2 statistics formulas, got {}",
+            stat_count
+        );
     }
 
     #[test]
@@ -4892,8 +5679,11 @@ mod tests {
         // Test general formula pattern: "The formula for [X] is [Y]"
         let text = "The formula for kinetic energy is KE = one half m v squared.";
         let results = extract_formulas_from_prose(text, "test", None);
-        assert!(results.iter().any(|r| r.name.contains("kinetic")),
-            "expected formula containing 'kinetic', got: {:?}", results);
+        assert!(
+            results.iter().any(|r| r.name.contains("kinetic")),
+            "expected formula containing 'kinetic', got: {:?}",
+            results
+        );
     }
 
     // ── Rule Engine Tests ─────────────────────────────────────────────
@@ -4902,16 +5692,47 @@ mod tests {
     fn test_rule_engine_bootstrap() {
         let mut engine = RuleEngine::new();
         engine.seed_bootstrap();
-        assert!(engine.rules.len() >= 25, "expected >= 25 bootstrap rules, got {}", engine.rules.len());
-        assert!(engine.rules.iter().any(|r| r.slug == "int_power"), "int_power rule missing");
-        assert!(engine.rules.iter().any(|r| r.slug == "diff_sin"), "diff_sin rule missing");
-        assert!(engine.rules.iter().any(|r| r.slug == "simp_pythagorean"), "simp_pythagorean missing");
-        assert!(engine.rules.iter().any(|r| r.slug == "int_sin_linear"), "int_sin_linear missing");
-        assert!(engine.rules.iter().any(|r| r.slug == "int_cos_linear"), "int_cos_linear missing");
-        assert!(engine.rules.iter().any(|r| r.slug == "diff_sin_linear"), "diff_sin_linear missing");
-        assert!(engine.rules.iter().any(|r| r.slug == "diff_sqrt_linear"), "diff_sqrt_linear missing");
-        assert!(engine.rules.iter().any(|r| r.slug == "int_tan"), "int_tan missing");
-        assert!(engine.rules.iter().any(|r| r.slug == "diff_tan"), "diff_tan missing");
+        assert!(
+            engine.rules.len() >= 25,
+            "expected >= 25 bootstrap rules, got {}",
+            engine.rules.len()
+        );
+        assert!(
+            engine.rules.iter().any(|r| r.slug == "int_power"),
+            "int_power rule missing"
+        );
+        assert!(
+            engine.rules.iter().any(|r| r.slug == "diff_sin"),
+            "diff_sin rule missing"
+        );
+        assert!(
+            engine.rules.iter().any(|r| r.slug == "simp_pythagorean"),
+            "simp_pythagorean missing"
+        );
+        assert!(
+            engine.rules.iter().any(|r| r.slug == "int_sin_linear"),
+            "int_sin_linear missing"
+        );
+        assert!(
+            engine.rules.iter().any(|r| r.slug == "int_cos_linear"),
+            "int_cos_linear missing"
+        );
+        assert!(
+            engine.rules.iter().any(|r| r.slug == "diff_sin_linear"),
+            "diff_sin_linear missing"
+        );
+        assert!(
+            engine.rules.iter().any(|r| r.slug == "diff_sqrt_linear"),
+            "diff_sqrt_linear missing"
+        );
+        assert!(
+            engine.rules.iter().any(|r| r.slug == "int_tan"),
+            "int_tan missing"
+        );
+        assert!(
+            engine.rules.iter().any(|r| r.slug == "diff_tan"),
+            "diff_tan missing"
+        );
     }
 
     #[test]
@@ -5005,7 +5826,11 @@ mod tests {
         let (expr, _) = result.unwrap();
         let s = format!("{}", expr);
         // x^(5+1)/(5+1) = x^6/6
-        assert!(s.contains("x^6") || s.contains("x⁶") || s.contains("/6"), "expected x^6/6, got: {}", s);
+        assert!(
+            s.contains("x^6") || s.contains("x⁶") || s.contains("/6"),
+            "expected x^6/6, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -5016,8 +5841,10 @@ mod tests {
         // 5*x should match n*x (commutative)
         let expr = Num(5.0) * Var("x".into());
         let pattern = Var("n".into()) * Var("x".into());
-        assert!(match_symexpr(&expr, &pattern, &mut bindings),
-            "5*x should match n*x commutatively");
+        assert!(
+            match_symexpr(&expr, &pattern, &mut bindings),
+            "5*x should match n*x commutatively"
+        );
         assert!(bindings.contains_key("n"), "n should be bound");
         if let Some(val) = bindings.get("n") {
             assert_eq!(format!("{}", val), "5");
@@ -5044,8 +5871,16 @@ mod tests {
         // Pattern should be sin(x), not Mul(Div(d,dx), sin(x))
         let pat_str = format!("{}", rule.pattern);
         let tpl_str = format!("{}", rule.template);
-        assert_eq!(pat_str, "sin(x)", "pattern should be sin(x), got: {}", pat_str);
-        assert_eq!(tpl_str, "cos(x)", "template should be cos(x), got: {}", tpl_str);
+        assert_eq!(
+            pat_str, "sin(x)",
+            "pattern should be sin(x), got: {}",
+            pat_str
+        );
+        assert_eq!(
+            tpl_str, "cos(x)",
+            "template should be cos(x), got: {}",
+            tpl_str
+        );
     }
 
     #[test]
@@ -5065,8 +5900,16 @@ mod tests {
         // Pattern should be x^n, not Mul(Mul(int, x^n), dx)
         let pat_str = format!("{}", rule.pattern);
         let tpl_str = format!("{}", rule.template);
-        assert!(pat_str.contains("x^n") || pat_str.contains("x^"), "pattern should be x^n, got: {}", pat_str);
-        assert!(tpl_str.contains("C"), "template should contain + C, got: {}", tpl_str);
+        assert!(
+            pat_str.contains("x^n") || pat_str.contains("x^"),
+            "pattern should be x^n, got: {}",
+            pat_str
+        );
+        assert!(
+            tpl_str.contains("C"),
+            "template should contain + C, got: {}",
+            tpl_str
+        );
     }
 
     #[test]
@@ -5087,8 +5930,16 @@ mod tests {
         // After stripping "int " and " dx", "e^x" should be the pattern
         // e is parsed as Euler's constant (Num(2.718...)), so the display
         // will show the numeric value. Check for x in the exponent.
-        assert!(pat_str.contains("x"), "pattern should contain x, got: {}", pat_str);
-        assert!(!pat_str.contains("int"), "pattern should not contain 'int', got: {}", pat_str);
+        assert!(
+            pat_str.contains("x"),
+            "pattern should contain x, got: {}",
+            pat_str
+        );
+        assert!(
+            !pat_str.contains("int"),
+            "pattern should not contain 'int', got: {}",
+            pat_str
+        );
     }
 
     #[test]
@@ -5129,7 +5980,11 @@ mod tests {
         let pat_str = format!("{}", rule.pattern);
         let tpl_str = format!("{}", rule.template);
         // "d/dx ln(x)" should strip to "ln(x)"
-        assert_eq!(pat_str, "ln(x)", "pattern should be ln(x), got: {}", pat_str);
+        assert_eq!(
+            pat_str, "ln(x)",
+            "pattern should be ln(x), got: {}",
+            pat_str
+        );
         assert_eq!(tpl_str, "1/x", "template should be 1/x, got: {}", tpl_str);
     }
 
@@ -5149,12 +6004,19 @@ mod tests {
         }
 
         // The derivative_of_sin formula should have been converted
-        let auto_sin = engine.rules.iter().find(|r| r.slug.contains("derivative_of_sin"));
+        let auto_sin = engine
+            .rules
+            .iter()
+            .find(|r| r.slug.contains("derivative_of_sin"));
         assert!(auto_sin.is_some(), "expected auto_derivative_of_sin rule");
         if let Some(rule) = auto_sin {
             // Pattern should be sin(x), not d/dx sin(x)
             let pat_str = format!("{}", rule.pattern);
-            assert_eq!(pat_str, "sin(x)", "auto_derivative_of_sin pattern should be sin(x), got: {}", pat_str);
+            assert_eq!(
+                pat_str, "sin(x)",
+                "auto_derivative_of_sin pattern should be sin(x), got: {}",
+                pat_str
+            );
             assert_eq!(rule.domain, RuleDomain::Differentiate);
         }
 
@@ -5163,10 +6025,18 @@ mod tests {
         let expr = Var("x".into()).sin();
         let extra = std::collections::HashMap::new();
         let result = engine.try_apply(&expr, &RuleDomain::Differentiate, &extra);
-        assert!(result.is_some(), "auto-converted sin derivative should match sin(x)");
+        assert!(
+            result.is_some(),
+            "auto-converted sin derivative should match sin(x)"
+        );
         let (result_expr, slug) = result.unwrap();
-        assert_eq!(format!("{}", result_expr), "cos(x)",
-            "auto derivative_of_sin should produce cos(x), got: {}, slug: {}", result_expr, slug);
+        assert_eq!(
+            format!("{}", result_expr),
+            "cos(x)",
+            "auto derivative_of_sin should produce cos(x), got: {}, slug: {}",
+            result_expr,
+            slug
+        );
     }
 
     /// Test that auto-converted integral power rule matches and computes correctly.
@@ -5184,17 +6054,27 @@ mod tests {
 
         // The integral_power_rule formula: "∫ x^n dx = x^(n+1)/(n+1) + C"
         // After auto-conversion: pattern = x^n, template = x^(n+1)/(n+1) + C
-        let auto_int = engine.rules.iter().find(|r| r.slug.contains("integral_power_rule"));
+        let auto_int = engine
+            .rules
+            .iter()
+            .find(|r| r.slug.contains("integral_power_rule"));
         assert!(auto_int.is_some(), "expected auto_integral_power_rule");
 
         use crate::algebra::SymExpr::*;
         let expr = Var("x".into()).pow(Num(5.0));
         let extra = std::collections::HashMap::new();
         let result = engine.try_apply(&expr, &RuleDomain::Integrate, &extra);
-        assert!(result.is_some(), "auto integral power rule should match x^5");
+        assert!(
+            result.is_some(),
+            "auto integral power rule should match x^5"
+        );
         let (result_expr, _) = result.unwrap();
         let result_str = format!("{}", result_expr);
-        assert!(result_str.contains("x^6"), "expected x^6 in result, got: {}", result_str);
+        assert!(
+            result_str.contains("x^6"),
+            "expected x^6 in result, got: {}",
+            result_str
+        );
     }
 
     /// Test the full pipeline: differentiate_str_with_rules falls back to
@@ -5208,7 +6088,7 @@ mod tests {
         registry.seed_bootstrap();
 
         let mut engine = RuleEngine::new();
-        engine.seed_bootstrap();  // built-in bootstrap rules
+        engine.seed_bootstrap(); // built-in bootstrap rules
         for formula in registry.formulas() {
             if let Some(rule) = RuleEngine::formula_to_rule(formula) {
                 let _ = engine.add_rule(rule);
@@ -5217,16 +6097,29 @@ mod tests {
 
         // differentiate_str_with_rules should work for sin(x) (hardcoded handles it)
         let result = crate::algebra::differentiate_str_with_rules("sin(x)", "x", &engine.rules);
-        assert!(result.is_ok(), "differentiate_str_with_rules(sin(x)) should succeed");
+        assert!(
+            result.is_ok(),
+            "differentiate_str_with_rules(sin(x)) should succeed"
+        );
         let result = result.unwrap();
-        assert_eq!(result, "cos(x)", "d/dx sin(x) should be cos(x), got: {}", result);
+        assert_eq!(
+            result, "cos(x)",
+            "d/dx sin(x) should be cos(x), got: {}",
+            result
+        );
 
         // Test with differentiate_str_with_rules for x^5 (hardcoded handles power rule)
         let result = crate::algebra::differentiate_str_with_rules("x^5", "x", &engine.rules);
-        assert!(result.is_ok(), "differentiate_str_with_rules(x^5) should succeed");
+        assert!(
+            result.is_ok(),
+            "differentiate_str_with_rules(x^5) should succeed"
+        );
         let result = result.unwrap();
-        assert!(result.contains("x^4") || result.contains("x⁴"),
-            "d/dx x^5 should be 5*x^4, got: {}", result);
+        assert!(
+            result.contains("x^4") || result.contains("x⁴"),
+            "d/dx x^5 should be 5*x^4, got: {}",
+            result
+        );
     }
 
     /// Test that auto-synced formulas from bootstrap registry create usable
@@ -5241,16 +6134,34 @@ mod tests {
         let rule_count_after = qa.rule_engine.rules.len();
 
         // Should have added at least some rules from the registry
-        assert!(rule_count_after > rule_count_before,
-            "sync should add rules: before={}, after={}", rule_count_before, rule_count_after);
+        assert!(
+            rule_count_after > rule_count_before,
+            "sync should add rules: before={}, after={}",
+            rule_count_before,
+            rule_count_after
+        );
 
         // Verify the derivative_of_sin auto rule exists
-        let auto_rule = qa.rule_engine.rules.iter().find(|r| r.slug == "auto_derivative_of_sin");
-        assert!(auto_rule.is_some(), "expected auto_derivative_of_sin rule after sync");
+        let auto_rule = qa
+            .rule_engine
+            .rules
+            .iter()
+            .find(|r| r.slug == "auto_derivative_of_sin");
+        assert!(
+            auto_rule.is_some(),
+            "expected auto_derivative_of_sin rule after sync"
+        );
 
         // Verify the integral_power_rule auto rule exists
-        let auto_int = qa.rule_engine.rules.iter().find(|r| r.slug == "auto_integral_power_rule");
-        assert!(auto_int.is_some(), "expected auto_integral_power_rule after sync");
+        let auto_int = qa
+            .rule_engine
+            .rules
+            .iter()
+            .find(|r| r.slug == "auto_integral_power_rule");
+        assert!(
+            auto_int.is_some(),
+            "expected auto_integral_power_rule after sync"
+        );
     }
 
     // ── Definite Integral (Bounds) Handling Tests ──────────────────────
@@ -5273,7 +6184,11 @@ mod tests {
         };
         // Should return None (skip), not crash
         let rule = RuleEngine::formula_to_rule(&formula);
-        assert!(rule.is_none(), "definite integral should be skipped, got: {:?}", rule);
+        assert!(
+            rule.is_none(),
+            "definite integral should be skipped, got: {:?}",
+            rule
+        );
     }
 
     #[test]
@@ -5291,7 +6206,11 @@ mod tests {
         };
         // Should return None (skip), not crash
         let rule = RuleEngine::formula_to_rule(&formula);
-        assert!(rule.is_none(), "FTC formula should be skipped, got: {:?}", rule);
+        assert!(
+            rule.is_none(),
+            "FTC formula should be skipped, got: {:?}",
+            rule
+        );
     }
 
     #[test]
@@ -5309,7 +6228,11 @@ mod tests {
         };
         let rule = RuleEngine::formula_to_rule(&formula);
         let rule = RuleEngine::formula_to_rule(&formula);
-        assert!(rule.is_none(), "definite integral with curly braces should be skipped, got: {:?}", rule);
+        assert!(
+            rule.is_none(),
+            "definite integral with curly braces should be skipped, got: {:?}",
+            rule
+        );
     }
 
     #[test]
@@ -5326,7 +6249,10 @@ mod tests {
             linked_fact_ids: vec![],
         };
         let rule = RuleEngine::formula_to_rule(&formula);
-        assert!(rule.is_some(), "indefinite integral should convert, got None");
+        assert!(
+            rule.is_some(),
+            "indefinite integral should convert, got None"
+        );
         if let Some(r) = rule {
             assert_eq!(r.domain, RuleDomain::Integrate);
             let pat_str = format!("{}", r.pattern);
@@ -5357,7 +6283,10 @@ mod tests {
         assert_eq!(count, 1, "should derive 1 rule");
 
         // Check the derived rule exists
-        let derived = engine.rules.iter().find(|r| r.slug == "derived_int_from_diff_exp_test");
+        let derived = engine
+            .rules
+            .iter()
+            .find(|r| r.slug == "derived_int_from_diff_exp_test");
         assert!(derived.is_some(), "derived rule should exist");
 
         // Check the derived rule's pattern and template
@@ -5366,10 +6295,22 @@ mod tests {
             let pat_str = format!("{}", r.pattern);
             let tpl_str = format!("{}", r.template);
             // exp(x) is the exponential function (displayed as exp(x))
-            assert!(pat_str.contains("exp"), "derived pattern should contain exp, got: {}", pat_str);
+            assert!(
+                pat_str.contains("exp"),
+                "derived pattern should contain exp, got: {}",
+                pat_str
+            );
             // Template should contain + C
-            assert!(tpl_str.contains("x"), "template should contain x, got: {}", tpl_str);
-            assert!(tpl_str.contains("C"), "template should contain + C, got: {}", tpl_str);
+            assert!(
+                tpl_str.contains("x"),
+                "template should contain x, got: {}",
+                tpl_str
+            );
+            assert!(
+                tpl_str.contains("C"),
+                "template should contain + C, got: {}",
+                tpl_str
+            );
         }
 
         // Test that the derived rule actually matches
@@ -5404,14 +6345,21 @@ mod tests {
         assert_eq!(count, 1, "should derive 1 rule from Neg template");
 
         // Check the derived rule
-        let derived = engine.rules.iter().find(|r| r.slug == "derived_int_from_diff_cos_test");
+        let derived = engine
+            .rules
+            .iter()
+            .find(|r| r.slug == "derived_int_from_diff_cos_test");
         assert!(derived.is_some());
 
         if let Some(r) = derived {
             assert_eq!(r.domain, RuleDomain::Integrate);
             let pat_str = format!("{}", r.pattern);
             // Pattern should be sin(x) (the inner of Neg)
-            assert_eq!(pat_str, "sin(x)", "derived pattern should be sin(x), got: {}", pat_str);
+            assert_eq!(
+                pat_str, "sin(x)",
+                "derived pattern should be sin(x), got: {}",
+                pat_str
+            );
         }
 
         // Test matching: ∫ sin(x) dx = -cos(x) + C
@@ -5451,15 +6399,26 @@ mod tests {
         assert_eq!(count, 1, "should derive 1 rule");
 
         // Check the derived rule
-        let derived = engine.rules.iter().find(|r| r.slug == "derived_int_from_diff_sin_linear_test");
+        let derived = engine
+            .rules
+            .iter()
+            .find(|r| r.slug == "derived_int_from_diff_sin_linear_test");
         assert!(derived.is_some(), "derived rule should exist");
 
         if let Some(r) = derived {
             assert_eq!(r.domain, RuleDomain::Integrate);
             let pat_str = format!("{}", r.pattern);
             // Pattern should be a*cos(ax+b) (the full derivative template, unchanged)
-            assert!(pat_str.contains("cos"), "derived pattern should contain cos, got: {}", pat_str);
-            assert!(pat_str.contains("a"), "derived pattern should contain factor a, got: {}", pat_str);
+            assert!(
+                pat_str.contains("cos"),
+                "derived pattern should contain cos, got: {}",
+                pat_str
+            );
+            assert!(
+                pat_str.contains("a"),
+                "derived pattern should contain factor a, got: {}",
+                pat_str
+            );
         }
 
         // Test matching: ∫ 2*cos(2x+1) dx should match with a=2, b=1
@@ -5480,11 +6439,17 @@ mod tests {
         engine.seed_bootstrap();
 
         // Should have derived rules for each differentiable rule
-        let derived_count = engine.rules.iter()
+        let derived_count = engine
+            .rules
+            .iter()
             .filter(|r| r.slug.starts_with("derived_int_from_"))
             .count();
         // 11 derivative rules × ~1 each → ~11, minus conflicts
-        assert!(derived_count >= 8, "expected >= 8 derived rules, got {}", derived_count);
+        assert!(
+            derived_count >= 8,
+            "expected >= 8 derived rules, got {}",
+            derived_count
+        );
 
         // Verify key derived rules exist
         let expected = [
@@ -5497,8 +6462,11 @@ mod tests {
             "derived_int_from_diff_cos_linear",
         ];
         for slug in &expected {
-            assert!(engine.rules.iter().any(|r| r.slug == *slug),
-                "expected derived rule '{}'", slug);
+            assert!(
+                engine.rules.iter().any(|r| r.slug == *slug),
+                "expected derived rule '{}'",
+                slug
+            );
         }
 
         // Verify derived rules work: ∫ cos(x) dx should match (derived from diff_sin)
@@ -5509,22 +6477,44 @@ mod tests {
         assert!(result.is_some(), "∫ cos(x) should match a rule");
         if let Some((res, slug)) = result {
             let s = format!("{}", res);
-            assert!(s.contains("sin"), "∫ cos(x) should give sin(x)+?, got: {} (slug: {})", s, slug);
+            assert!(
+                s.contains("sin"),
+                "∫ cos(x) should give sin(x)+?, got: {} (slug: {})",
+                s,
+                slug
+            );
         }
 
         // Verify that derived rules are CORRECT by checking specific rules
         // Check derived_int_from_diff_ln: pattern should be 1/x, template ln(x)+C
-        let derived_ln = engine.rules.iter().find(|r| r.slug == "derived_int_from_diff_ln");
-        assert!(derived_ln.is_some(), "derived_int_from_diff_ln should exist");
+        let derived_ln = engine
+            .rules
+            .iter()
+            .find(|r| r.slug == "derived_int_from_diff_ln");
+        assert!(
+            derived_ln.is_some(),
+            "derived_int_from_diff_ln should exist"
+        );
         if let Some(r) = derived_ln {
             assert_eq!(r.domain, RuleDomain::Integrate);
             let pat_str = format!("{}", r.pattern);
             let tpl_str = format!("{}", r.template);
             // Pattern is x^(-1) (the derivative template for d/dx ln(x) = 1/x is stored as x^(-1))
-            assert!(pat_str.contains("^-") || pat_str.contains("1/x"),
-                "derived_int_from_diff_ln pattern should be x^-1 or 1/x, got: {}", pat_str);
-            assert!(tpl_str.contains("ln"), "template should contain ln(x), got: {}", tpl_str);
-            assert!(tpl_str.contains("C"), "template should contain + C, got: {}", tpl_str);
+            assert!(
+                pat_str.contains("^-") || pat_str.contains("1/x"),
+                "derived_int_from_diff_ln pattern should be x^-1 or 1/x, got: {}",
+                pat_str
+            );
+            assert!(
+                tpl_str.contains("ln"),
+                "template should contain ln(x), got: {}",
+                tpl_str
+            );
+            assert!(
+                tpl_str.contains("C"),
+                "template should contain + C, got: {}",
+                tpl_str
+            );
         }
 
         // Check that int_reciprocal (bootstrap, pattern x^(-1)) still works alongside derived rule
@@ -5557,11 +6547,28 @@ mod tests {
         // Verify: ∫ cosh(x) dx = sinh(x) + C
         let expr = Var("x".into()).cosh();
         let extra = std::collections::HashMap::new();
-        let result = qa.rule_engine.try_apply(&expr, &RuleDomain::Integrate, &extra);
+        let result = qa
+            .rule_engine
+            .try_apply(&expr, &RuleDomain::Integrate, &extra);
         assert!(result.is_some(), "∫ cosh(x) should match derived rule");
         if let Some((result_expr, _)) = result {
             let s = format!("{}", result_expr);
-            assert!(s.contains("sinh"), "∫ cosh(x) should give sinh(x)+C, got: {}", s);
+            assert!(
+                s.contains("sinh"),
+                "∫ cosh(x) should give sinh(x)+C, got: {}",
+                s
+            );
         }
     }
+}
+
+/// Parse a LaTeX equation string into a SymExpr equation.
+/// Returns (lhs, rhs) on success.
+///
+/// NOTE: This is a stub function that forwards to the standard parser.
+/// Full LaTeX parsing is not yet implemented.
+pub fn latex_to_equation(
+    s: &str,
+) -> Result<(crate::algebra::SymExpr, crate::algebra::SymExpr), String> {
+    crate::algebra::parse_equation(s)
 }

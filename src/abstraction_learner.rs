@@ -90,7 +90,9 @@ pub struct AbstractionLearner {
     min_purity: f64,
 }
 
-fn default_version() -> u64 { 1 }
+fn default_version() -> u64 {
+    1
+}
 
 impl AbstractionLearner {
     /// Create a new learner with default thresholds.
@@ -364,19 +366,43 @@ impl AbstractionLearner {
     fn looks_like_error(token: &str) -> bool {
         let lower = token.to_lowercase();
         // Common error suffixes
-        if lower.ends_with("failed") || lower.ends_with("error")
-            || lower.ends_with("denied") || lower.ends_with("refused")
-            || lower.ends_with("expired") || lower.ends_with("invalid")
-            || lower.ends_with("missing") || lower.ends_with("stalled")
-            || lower.ends_with("exceeded") || lower.ends_with("unreachable")
-            || lower.ends_with("rupted") || lower.ends_with("roken") {
+        if lower.ends_with("failed")
+            || lower.ends_with("error")
+            || lower.ends_with("denied")
+            || lower.ends_with("refused")
+            || lower.ends_with("expired")
+            || lower.ends_with("invalid")
+            || lower.ends_with("missing")
+            || lower.ends_with("stalled")
+            || lower.ends_with("exceeded")
+            || lower.ends_with("unreachable")
+            || lower.ends_with("rupted")
+            || lower.ends_with("roken")
+        {
             return true;
         }
         // Common error words — includes connection/negotiation failures
-        matches!(lower.as_str(), "timeout" | "error" | "fail" | "fault"
-            | "crash" | "panic" | "abort" | "dead" | "stuck" | "hung"
-            | "handshake" | "retry" | "backoff" | "throttle"
-            | "reset" | "disconnect" | "refused" | "reject")
+        matches!(
+            lower.as_str(),
+            "timeout"
+                | "error"
+                | "fail"
+                | "fault"
+                | "crash"
+                | "panic"
+                | "abort"
+                | "dead"
+                | "stuck"
+                | "hung"
+                | "handshake"
+                | "retry"
+                | "backoff"
+                | "throttle"
+                | "reset"
+                | "disconnect"
+                | "refused"
+                | "reject"
+        )
     }
 
     /// Get a concrete form for a token.
@@ -384,8 +410,15 @@ impl AbstractionLearner {
     /// Converts the token to a normalized form: lowercase, replace spaces
     /// with underscores, prefix with "kw_" to avoid collisions.
     fn concrete_for_token(token: &str) -> String {
-        let normalized: String = token.chars()
-            .map(|c| if c.is_alphanumeric() { c.to_ascii_lowercase() } else { '_' })
+        let normalized: String = token
+            .chars()
+            .map(|c| {
+                if c.is_alphanumeric() {
+                    c.to_ascii_lowercase()
+                } else {
+                    '_'
+                }
+            })
             .collect();
         format!("kw_{}", normalized)
     }
@@ -399,7 +432,9 @@ impl AbstractionLearner {
         match role {
             MappingRole::Action => Some("process"),
             MappingRole::Resource => match category {
-                "port_conflict" | "connection_refused" | "network_timeout" => Some("network_service"),
+                "port_conflict" | "connection_refused" | "network_timeout" => {
+                    Some("network_service")
+                }
                 "missing_file" => Some("file_system"),
                 "disk_full" => Some("storage"),
                 "credential_invalid" => Some("credential"),
@@ -424,25 +459,46 @@ impl AbstractionLearner {
     /// Get the currently promoted action keyword mappings.
     /// Returns (keyword, concrete, abstract) triples.
     pub fn promoted_actions(&self) -> Vec<(&str, &str, &str)> {
-        self.promoted.iter()
+        self.promoted
+            .iter()
             .filter(|m| m.role == MappingRole::Action)
-            .map(|m| (m.keyword.as_str(), m.concrete.as_str(), m.abstract_.as_str()))
+            .map(|m| {
+                (
+                    m.keyword.as_str(),
+                    m.concrete.as_str(),
+                    m.abstract_.as_str(),
+                )
+            })
             .collect()
     }
 
     /// Get the currently promoted resource keyword mappings.
     pub fn promoted_resources(&self) -> Vec<(&str, &str, &str)> {
-        self.promoted.iter()
+        self.promoted
+            .iter()
             .filter(|m| m.role == MappingRole::Resource)
-            .map(|m| (m.keyword.as_str(), m.concrete.as_str(), m.abstract_.as_str()))
+            .map(|m| {
+                (
+                    m.keyword.as_str(),
+                    m.concrete.as_str(),
+                    m.abstract_.as_str(),
+                )
+            })
             .collect()
     }
 
     /// Get the currently promoted error keyword mappings.
     pub fn promoted_errors(&self) -> Vec<(&str, &str, &str)> {
-        self.promoted.iter()
+        self.promoted
+            .iter()
             .filter(|m| m.role == MappingRole::Error)
-            .map(|m| (m.keyword.as_str(), m.concrete.as_str(), m.abstract_.as_str()))
+            .map(|m| {
+                (
+                    m.keyword.as_str(),
+                    m.concrete.as_str(),
+                    m.abstract_.as_str(),
+                )
+            })
             .collect()
     }
 
@@ -475,7 +531,8 @@ impl AbstractionLearner {
         lines.push(format!("  Promoted mappings: {}", self.promoted.len()));
 
         // Show top tokens by frequency
-        let mut token_entries: Vec<(&String, &Vec<(String, u32)>)> = self.co_occurrence.iter().collect();
+        let mut token_entries: Vec<(&String, &Vec<(String, u32)>)> =
+            self.co_occurrence.iter().collect();
         token_entries.sort_by(|a, b| {
             let total_a: u32 = a.1.iter().map(|(_, c)| c).sum();
             let total_b: u32 = b.1.iter().map(|(_, c)| c).sum();
@@ -486,7 +543,8 @@ impl AbstractionLearner {
             let total: u32 = counts.iter().map(|(_, c)| c).sum();
             let mut sorted_counts = counts.to_vec();
             sorted_counts.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
-            let cat_str: Vec<String> = sorted_counts.iter()
+            let cat_str: Vec<String> = sorted_counts
+                .iter()
                 .map(|(c, n)| format!("{}={}", c, n))
                 .collect();
             lines.push(format!("    {} ({}): {}", token, total, cat_str.join(", ")));
@@ -563,7 +621,8 @@ impl AbstractionLearner {
     pub fn save_to_file(&self, path: &str) -> Result<(), String> {
         let json = serde_json::to_string_pretty(self)
             .map_err(|e| format!("AbstractionLearner serialization error: {}", e))?;
-        std::fs::write(path, &json).map_err(|e| format!("AbstractionLearner write error: {}", e))?;
+        std::fs::write(path, &json)
+            .map_err(|e| format!("AbstractionLearner write error: {}", e))?;
         Ok(())
     }
 
@@ -579,46 +638,83 @@ impl AbstractionLearner {
 /// Static set of all keywords from the built-in maps.
 /// Sorted for binary search.  Must be kept in sync with diagnostic.rs.
 const KNOWN_KEYWORDS: &[&str] = &[
-    "abort", "address", "bind", "bucket", "cache", "certificate",
-    "compact", "connect", "corrupt", "crash", "database",
-    "dead", "denied", "directory", "disk", "eacces", "enoent",
-    "endpoint", "exceeded", "expired", "fail", "failed", "fault",
-    "file", "filesystem", "flush", "full", "gateway",
-    "host", "hung", "index", "initializ",
-    "invalid", "key", "listen", "missing", "mount",
-    "not found", "open", "panic", "parse",
-    "permission", "port", "query",
-    "read", "reach", "rebuild", "refused", "server",
-    "socket", "stalled", "storage", "store",
-    "timeout", "token", "unreachable", "url",
-    "validat", "validate", "volume", "write",
+    "abort",
+    "address",
+    "bind",
+    "bucket",
+    "cache",
+    "certificate",
+    "compact",
+    "connect",
+    "corrupt",
+    "crash",
+    "database",
+    "dead",
+    "denied",
+    "directory",
+    "disk",
+    "eacces",
+    "enoent",
+    "endpoint",
+    "exceeded",
+    "expired",
+    "fail",
+    "failed",
+    "fault",
+    "file",
+    "filesystem",
+    "flush",
+    "full",
+    "gateway",
+    "host",
+    "hung",
+    "index",
+    "initializ",
+    "invalid",
+    "key",
+    "listen",
+    "missing",
+    "mount",
+    "not found",
+    "open",
+    "panic",
+    "parse",
+    "permission",
+    "port",
+    "query",
+    "read",
+    "reach",
+    "rebuild",
+    "refused",
+    "server",
+    "socket",
+    "stalled",
+    "storage",
+    "store",
+    "timeout",
+    "token",
+    "unreachable",
+    "url",
+    "validat",
+    "validate",
+    "volume",
+    "write",
 ];
 
 /// Common English stopwords that carry no diagnostic signal.
 /// Sorted for binary search.  Tokens matching this list are skipped
 /// by `record_episode` to prevent noise promotion.
 const STOPWORDS: &[&str] = &[
-    "a", "about", "after", "all", "also", "an", "and", "any", "are", "as", "at",
-    "back", "be", "because", "been", "but", "by",
-    "can", "could",
-    "did", "do", "does", "done", "down",
-    "each", "either",
-    "for", "from",
-    "get", "got",
-    "had", "has", "have", "here", "how",
-    "if", "in", "into", "is", "it", "its",
-    "just",
-    "like",
-    "made", "make", "may", "maybe", "more", "most", "much", "must", "my",
-    "no", "nor", "not", "now",
-    "of", "off", "on", "once", "only", "or", "other", "our", "out", "over",
-    "said", "same", "see", "she", "should", "show", "side", "since", "so", "some", "still", "such",
-    "take", "than", "that", "the", "their", "them", "then", "there", "these",
-    "they", "this", "through", "to", "too", "under", "up", "upon",
-    "very",
-    "was", "way", "we", "well", "were", "what", "when", "where", "which",
-    "while", "who", "will", "with", "within", "without", "would",
-    "yes", "yet", "you", "your",
+    "a", "about", "after", "all", "also", "an", "and", "any", "are", "as", "at", "back", "be",
+    "because", "been", "but", "by", "can", "could", "did", "do", "does", "done", "down", "each",
+    "either", "for", "from", "get", "got", "had", "has", "have", "here", "how", "if", "in", "into",
+    "is", "it", "its", "just", "like", "made", "make", "may", "maybe", "more", "most", "much",
+    "must", "my", "no", "nor", "not", "now", "of", "off", "on", "once", "only", "or", "other",
+    "our", "out", "over", "said", "same", "see", "she", "should", "show", "side", "since", "so",
+    "some", "still", "such", "take", "than", "that", "the", "their", "them", "then", "there",
+    "these", "they", "this", "through", "to", "too", "under", "up", "upon", "very", "was", "way",
+    "we", "well", "were", "what", "when", "where", "which", "while", "who", "will", "with",
+    "within", "without", "would", "yes", "yet", "you", "your",
 ];
 
 // ─── Tests ─────────────────────────────────────────────────────────────────
@@ -680,7 +776,10 @@ mod tests {
         learner.record_episode("message broker unreachable", "connection_refused");
         learner.record_episode("broker connection lost", "connection_refused");
 
-        assert!(learner.promoted_count() >= 1, "Should have promoted at least one mapping");
+        assert!(
+            learner.promoted_count() >= 1,
+            "Should have promoted at least one mapping"
+        );
         assert!(
             learner.promoted.iter().any(|m| m.keyword == "broker"),
             "broker should be promoted"
@@ -739,10 +838,15 @@ mod tests {
         // The threshold is 3 episodes, but purity is 0.50 < 0.80
         // Actually, 4 episodes total with min_episodes=3 means it qualifies,
         // but the purity is 0.50 which is below 0.80, so no promotion.
-        let promoted_for_volume: Vec<&LearnedMapping> = learner.promoted.iter()
+        let promoted_for_volume: Vec<&LearnedMapping> = learner
+            .promoted
+            .iter()
             .filter(|m| m.keyword == "volume")
             .collect();
-        assert!(promoted_for_volume.is_empty(), "volume should NOT be promoted (low purity)");
+        assert!(
+            promoted_for_volume.is_empty(),
+            "volume should NOT be promoted (low purity)"
+        );
     }
 
     #[test]
@@ -860,13 +964,19 @@ mod tests {
         // Check promoted mappings have version metadata
         let meta = learner.promoted_with_metadata();
         for (mapping, episode, md) in &meta {
-            assert!(mapping.promoted_at_episode > 0, "promoted_at_episode should be set");
+            assert!(
+                mapping.promoted_at_episode > 0,
+                "promoted_at_episode should be set"
+            );
             assert_eq!(
                 md.get("version").unwrap(),
                 "1",
                 "metadata should contain version=1"
             );
-            assert!(*episode <= learner.episode_count(), "episode should be <= total");
+            assert!(
+                *episode <= learner.episode_count(),
+                "episode should be <= total"
+            );
         }
 
         // Verify round-trip preserves metadata

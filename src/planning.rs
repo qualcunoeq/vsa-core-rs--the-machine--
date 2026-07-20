@@ -60,12 +60,7 @@ impl DriftForecast {
     }
 
     /// Add a regime and auto-normalise all weights so they sum to 1.0
-    pub fn add_regime(
-        &mut self,
-        label: &str,
-        weight: f64,
-        drift_sequence: Vec<Hypervector>,
-    ) {
+    pub fn add_regime(&mut self, label: &str, weight: f64, drift_sequence: Vec<Hypervector>) {
         self.regimes.push(DriftRegime {
             label: label.to_string(),
             weight,
@@ -245,7 +240,10 @@ pub fn find_optimal_trajectory(
                 if let Some(ref exp_b) = exp_bundle {
                     let a_vec = profile.vector;
                     let p_vec = step.step_vector.bitwise_xor(&a_vec);
-                    let o_est = exp_b.bitwise_xor(&a_vec).bitwise_xor(&p_vec).bitwise_xor(&curr_state);
+                    let o_est = exp_b
+                        .bitwise_xor(&a_vec)
+                        .bitwise_xor(&p_vec)
+                        .bitwise_xor(&curr_state);
 
                     let v_success = Hypervector::encode_text_ngram("SUCCESS", 3);
                     let v_failure = Hypervector::encode_text_ngram("FAILURE", 3);
@@ -323,9 +321,9 @@ pub fn simulate_threat_trajectory(
                 .rotate_left(13)
                 .bitwise_xor(&regime.drift_sequence[step_idx]);
 
-            let hit = crisis_concepts.iter().any(|concept| {
-                1.0 - curr_state.normalized_hamming_distance(concept) >= threshold
-            });
+            let hit = crisis_concepts
+                .iter()
+                .any(|concept| 1.0 - curr_state.normalized_hamming_distance(concept) >= threshold);
 
             if hit {
                 steps_to_crisis = Some(step_idx + 1);
@@ -443,8 +441,12 @@ pub fn filter_drift_noise(delta: &Hypervector, history: &[Hypervector]) -> Hyper
         let copies_delta = 1usize;
         let copies_consensus = 7usize;
         let mut weighted: Vec<&Hypervector> = Vec::with_capacity(copies_delta + copies_consensus);
-        for _ in 0..copies_delta { weighted.push(delta); }
-        for _ in 0..copies_consensus { weighted.push(&consensus); }
+        for _ in 0..copies_delta {
+            weighted.push(delta);
+        }
+        for _ in 0..copies_consensus {
+            weighted.push(&consensus);
+        }
         Hypervector::bundle(&weighted)
     } else {
         // Transition zone — smoothstep blending
@@ -458,8 +460,12 @@ pub fn filter_drift_noise(delta: &Hypervector, history: &[Hypervector]) -> Hyper
         let copies_delta = (delta_weight * 4.0).round().max(1.0) as usize;
         let copies_consensus = (cons_weight * 4.0).round().max(1.0) as usize;
         let mut weighted: Vec<&Hypervector> = Vec::with_capacity(copies_delta + copies_consensus);
-        for _ in 0..copies_delta { weighted.push(delta); }
-        for _ in 0..copies_consensus { weighted.push(&consensus); }
+        for _ in 0..copies_delta {
+            weighted.push(delta);
+        }
+        for _ in 0..copies_consensus {
+            weighted.push(&consensus);
+        }
         Hypervector::bundle(&weighted)
     }
 }
@@ -504,13 +510,14 @@ pub fn build_drift_forecast(
     }
 
     // ██ Filter each delta against its own history ██
-    let filtered_deltas: Vec<Hypervector> = deltas.iter().enumerate().map(|(i, d)| {
-        let history: Vec<Hypervector> = deltas.iter()
-            .take(i)
-            .cloned()
-            .collect();
-        filter_drift_noise(d, &history)
-    }).collect();
+    let filtered_deltas: Vec<Hypervector> = deltas
+        .iter()
+        .enumerate()
+        .map(|(i, d)| {
+            let history: Vec<Hypervector> = deltas.iter().take(i).cloned().collect();
+            filter_drift_noise(d, &history)
+        })
+        .collect();
 
     // Use filtered deltas for all downstream computation
     let nominal = bundle_weighted_ewma(&filtered_deltas, half_life);
@@ -530,8 +537,10 @@ pub fn build_drift_forecast(
 
     // Volatile regime: amplify the most recent filtered delta
     let newest = filtered_deltas.last().copied().unwrap_or(nominal);
-    let amp_refs: Vec<&Hypervector> =
-        std::iter::repeat(&newest).take(5).chain(std::iter::once(&nominal)).collect();
+    let amp_refs: Vec<&Hypervector> = std::iter::repeat(&newest)
+        .take(5)
+        .chain(std::iter::once(&nominal))
+        .collect();
     let volatile_drift = Hypervector::bundle(&amp_refs);
 
     // Weights spread proportional to uncertainty (prior)
@@ -592,7 +601,11 @@ mod tests {
         // With low crisis-similarity the cost should be near base_cost;
         // relax tolerance because random 10k-bit vectors can occasionally
         // land slightly above θ_safe (0.50) by chance.
-        assert!(cost < 0.35, "cost should be near base_cost (0.25): {}", cost);
+        assert!(
+            cost < 0.35,
+            "cost should be near base_cost (0.25): {}",
+            cost
+        );
     }
 
     #[test]
@@ -621,8 +634,7 @@ mod tests {
         };
 
         let cost_stable = calculate_dynamic_cost(&profile, &crisis, &[crisis], 5.0, 0.50, 0.0);
-        let cost_volatile =
-            calculate_dynamic_cost(&profile, &crisis, &[crisis], 5.0, 0.50, 1.0);
+        let cost_volatile = calculate_dynamic_cost(&profile, &crisis, &[crisis], 5.0, 0.50, 1.0);
 
         assert!(
             cost_volatile > cost_stable,
@@ -647,8 +659,7 @@ mod tests {
         };
 
         let cost_low = calculate_dynamic_cost(&profile, &crisis, &[crisis], 5.0, 0.50, 1.0);
-        let cost_high =
-            calculate_dynamic_cost(&high_beta, &crisis, &[crisis], 5.0, 0.50, 1.0);
+        let cost_high = calculate_dynamic_cost(&high_beta, &crisis, &[crisis], 5.0, 0.50, 1.0);
 
         assert!(
             cost_high > cost_low * 5.0,
@@ -813,8 +824,15 @@ mod tests {
 
         let drift_seq = vec![e_world; 2];
         let traj_opt = find_optimal_trajectory(
-            &s0, &goal_state, &drift_seq, &reg, &vocab, 2,
-            &[], 0.0, &[], // no crisis concepts → static costs
+            &s0,
+            &goal_state,
+            &drift_seq,
+            &reg,
+            &vocab,
+            2,
+            &[],
+            0.0,
+            &[], // no crisis concepts → static costs
         );
         assert!(traj_opt.is_some(), "Should find a valid trajectory");
 
@@ -840,10 +858,8 @@ mod tests {
         let goal = s0.rotate_left(13).bitwise_xor(&step).bitwise_xor(&e_world);
 
         let drift_seq = vec![e_world; 2];
-        let traj_opt = find_optimal_trajectory(
-            &s0, &goal, &drift_seq, &reg, &vocab, 2,
-            &[], 0.0, &[],
-        );
+        let traj_opt =
+            find_optimal_trajectory(&s0, &goal, &drift_seq, &reg, &vocab, 2, &[], 0.0, &[]);
         assert!(traj_opt.is_some());
 
         let traj = traj_opt.unwrap();
@@ -867,18 +883,19 @@ mod tests {
         let goal = s0.rotate_left(13).bitwise_xor(&step).bitwise_xor(&e_world);
 
         let drift_seq = vec![e_world; 1];
-        let traj_neutral = find_optimal_trajectory(
-            &s0, &goal, &drift_seq, &reg, &vocab, 1,
-            &[], 0.0, &[],
-        ).unwrap();
+        let traj_neutral =
+            find_optimal_trajectory(&s0, &goal, &drift_seq, &reg, &vocab, 1, &[], 0.0, &[])
+                .unwrap();
 
         let v_failure = Hypervector::encode_text_ngram("FAILURE", 3);
-        let exp = act_read.bitwise_xor(param_hosts).bitwise_xor(&s0).bitwise_xor(&v_failure);
-        
-        let traj_penalised = find_optimal_trajectory(
-            &s0, &goal, &drift_seq, &reg, &vocab, 1,
-            &[], 0.0, &[exp],
-        ).unwrap();
+        let exp = act_read
+            .bitwise_xor(param_hosts)
+            .bitwise_xor(&s0)
+            .bitwise_xor(&v_failure);
+
+        let traj_penalised =
+            find_optimal_trajectory(&s0, &goal, &drift_seq, &reg, &vocab, 1, &[], 0.0, &[exp])
+                .unwrap();
 
         assert!(
             traj_penalised.cumulative_cost > traj_neutral.cumulative_cost,

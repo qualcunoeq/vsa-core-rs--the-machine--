@@ -22,8 +22,10 @@
 //      queries structural SVO, not surface trigrams)
 //   4. Measure: what fraction classify correctly?
 
-use the_machine::diagnostic::{seed_diagnostic_knowledge, seed_error_classifier,
-    classify_structural, CanonicalSvo, absorb_diagnosis, query_diagnostic_category};
+use the_machine::diagnostic::{
+    absorb_diagnosis, classify_structural, query_diagnostic_category, seed_diagnostic_knowledge,
+    seed_error_classifier, CanonicalSvo,
+};
 use the_machine::qa::QaEngine;
 use the_machine::VSABrain;
 
@@ -31,27 +33,57 @@ use the_machine::VSABrain;
 /// (module-private) for the "WITH ABSTRACTION TABLES" comparison.
 fn find_best_structural_category(triples: &[CanonicalSvo], _qa: &QaEngine) -> Option<String> {
     let category_patterns: &[(&[(&str, &str, &str)], &str)] = &[
-        (&[("process", "accesses", "network_service"),
-           ("network_service", "has_state", "unavailable")], "port_conflict"),
-        (&[("network_service", "has_state", "unavailable")], "connection_refused"),
-        (&[("process", "accesses", "file_system"),
-           ("file_system", "has_state", "unavailable")], "missing_file"),
+        (
+            &[
+                ("process", "accesses", "network_service"),
+                ("network_service", "has_state", "unavailable"),
+            ],
+            "port_conflict",
+        ),
+        (
+            &[("network_service", "has_state", "unavailable")],
+            "connection_refused",
+        ),
+        (
+            &[
+                ("process", "accesses", "file_system"),
+                ("file_system", "has_state", "unavailable"),
+            ],
+            "missing_file",
+        ),
         (&[("file_system", "has_state", "not_found")], "missing_file"),
-        (&[("file_system", "has_state", "resource_missing")], "missing_file"),
-        (&[("file_system", "has_state", "permission_blocked")], "permission_denied"),
-        (&[("network_service", "has_state", "permission_blocked")], "permission_denied"),
-        (&[("storage", "has_state", "capacity_exhausted")], "disk_full"),
+        (
+            &[("file_system", "has_state", "resource_missing")],
+            "missing_file",
+        ),
+        (
+            &[("file_system", "has_state", "permission_blocked")],
+            "permission_denied",
+        ),
+        (
+            &[("network_service", "has_state", "permission_blocked")],
+            "permission_denied",
+        ),
+        (
+            &[("storage", "has_state", "capacity_exhausted")],
+            "disk_full",
+        ),
         (&[("storage", "has_state", "unavailable")], "disk_full"),
-        (&[("credential", "has_state", "credential_invalid")], "credential_invalid"),
+        (
+            &[("credential", "has_state", "credential_invalid")],
+            "credential_invalid",
+        ),
         (&[("process", "accesses", "storage")], "disk_full"),
         (&[("process", "accesses", "cache_resource")], "disk_full"),
         (&[("process", "accesses", "store_resource")], "disk_full"),
     ];
     for (patterns, category) in category_patterns {
-        let all_match = patterns.iter().all(|(s, v, o)| {
-            triples.contains(&(s.to_string(), v.to_string(), o.to_string()))
-        });
-        if all_match { return Some(category.to_string()); }
+        let all_match = patterns
+            .iter()
+            .all(|(s, v, o)| triples.contains(&(s.to_string(), v.to_string(), o.to_string())));
+        if all_match {
+            return Some(category.to_string());
+        }
     }
     for (s, v, o) in triples {
         if s == "process" && v == "accesses" {
@@ -78,21 +110,24 @@ fn main() {
     // instead of surface trigrams.
     println!("  ── Phase 1: Absorbing 7 known episodes (structural centroids) ──\n");
     let known_texts: &[(&str, &str)] = &[
-        ("port_conflict",       "bind() to 0.0.0.0:80 failed (98: Unknown error)"),
-        ("port_conflict",       "Address already in use"),
-        ("connection_refused",  "Connection refused"),
-        ("connection_refused",  "connect: connection refused"),
-        ("missing_file",        "No such file or directory"),
-        ("permission_denied",   "Permission denied"),
+        (
+            "port_conflict",
+            "bind() to 0.0.0.0:80 failed (98: Unknown error)",
+        ),
+        ("port_conflict", "Address already in use"),
+        ("connection_refused", "Connection refused"),
+        ("connection_refused", "connect: connection refused"),
+        ("missing_file", "No such file or directory"),
+        ("permission_denied", "Permission denied"),
         // Train disk_full using a text with ZERO trigram overlap with the test case
         // "storage volume full" → resource="storage", error="capacity_exhausted"
         // Test case "disk quota exceeded" → SAME resource+error, ZERO shared trigrams
-        ("disk_full",           "storage volume full"),
+        ("disk_full", "storage volume full"),
         // Train credential_invalid using a text with ZERO trigram overlap with test case
         // "authentication token invalid" → resource="credential", error="credential_invalid"
         // Test case "SSL certificate validation failed" → SAME resource+error part
-        ("credential_invalid",  "authentication token invalid"),
-        ("startup_failure",     "startup failed"),
+        ("credential_invalid", "authentication token invalid"),
+        ("startup_failure", "startup failed"),
     ];
     for (cat, text) in known_texts {
         absorb_diagnosis(&mut brain, &mut qa, &mut classifier, text, cat, 1.0);
@@ -104,8 +139,8 @@ fn main() {
 
     let zero_overlap_texts: &[(&str, &str)] = &[
         ("KMS keyserver unreachable: timeout", "connection_refused"),
-        ("disk quota exceeded",                "disk_full"),
-        ("certificate key expired",            "credential_invalid"),
+        ("disk quota exceeded", "disk_full"),
+        ("certificate key expired", "credential_invalid"),
     ];
 
     let mut bare_correct = 0usize;
@@ -118,13 +153,18 @@ fn main() {
 
         // ── Level 1 (trigger matching) ───────────────────────────────────
         let l1 = classifier.classify(text);
-        println!("    Level 1 (triggers):       {:?}",
-            l1.map(|s| s.2.as_str()).unwrap_or("none"));
+        println!(
+            "    Level 1 (triggers):       {:?}",
+            l1.map(|s| s.2.as_str()).unwrap_or("none")
+        );
 
         // ── Level 2 (trigram Jaccard) ────────────────────────────────────
         let (l2, l2_method) = classifier.classify_deep(text);
-        println!("    Level 2 (trigrams, {}):  {:?}",
-            l2_method, l2.map(|s| s.2.as_str()).unwrap_or("none"));
+        println!(
+            "    Level 2 (trigrams, {}):  {:?}",
+            l2_method,
+            l2.map(|s| s.2.as_str()).unwrap_or("none")
+        );
 
         // ── Level 3 (structural parser) ──────────────────────────────────
         let struct_result = classify_structural(text);
@@ -141,7 +181,10 @@ fn main() {
         let l4 = query_diagnostic_category(&brain, text);
         match l4 {
             Some((ref cat, conf)) => {
-                println!("    Level 4 (structural SVO):  category={}, conf={:.4}", cat, conf);
+                println!(
+                    "    Level 4 (structural SVO):  category={}, conf={:.4}",
+                    cat, conf
+                );
             }
             None => {
                 println!("    Level 4 (structural SVO):  no match");
@@ -151,12 +194,24 @@ fn main() {
         // ── WITHOUT structural parser (Levels 1-2-4 only) ────────────────
         let bare_result = {
             if let Some(svo) = classifier.classify(text) {
-                if svo.2 == *expected { "L1 correct" } else { "L1 wrong" }
+                if svo.2 == *expected {
+                    "L1 correct"
+                } else {
+                    "L1 wrong"
+                }
             } else if let Some(svo) = classifier.classify_trigram(text) {
-                if svo.2 == *expected { "L2 correct" } else { "L2 wrong" }
+                if svo.2 == *expected {
+                    "L2 correct"
+                } else {
+                    "L2 wrong"
+                }
             } else if let Some((_cat, _conf)) = query_diagnostic_category(&brain, text) {
                 // The structural SVO query found a category
-                if _cat == *expected { "L4 correct" } else { "L4 wrong" }
+                if _cat == *expected {
+                    "L4 correct"
+                } else {
+                    "L4 wrong"
+                }
             } else {
                 "stuck"
             }
@@ -177,7 +232,8 @@ fn main() {
         }
 
         // ── WITH structural parser (Level 3) ─────────────────────────────
-        let with_result = struct_result.as_ref()
+        let with_result = struct_result
+            .as_ref()
             .and_then(|triples| find_best_structural_category(triples, &qa));
         match with_result {
             Some(ref cat) if cat == expected => {
@@ -185,7 +241,10 @@ fn main() {
                 struct_correct += 1;
             }
             Some(ref cat) => {
-                println!("    ▶ WITH L3 (tables):       classified '{}' (expected '{}')", cat, expected);
+                println!(
+                    "    ▶ WITH L3 (tables):       classified '{}' (expected '{}')",
+                    cat, expected
+                );
             }
             None => {
                 println!("    ▶ WITH L3 (tables):       no category match");
@@ -198,22 +257,42 @@ fn main() {
     println!("═══════════════════════════════════════════════════════════════════════\n");
     println!("  Results:\n");
     println!("    BARE (structural SVO centroids, no L3 tables):");
-    println!("      Correct:  {}/{}", bare_correct, zero_overlap_texts.len());
-    println!("      Wrong:    {}/{}", bare_wrong, zero_overlap_texts.len());
-    println!("      Stuck:    {}/{}",
-        zero_overlap_texts.len() - bare_correct - bare_wrong, zero_overlap_texts.len());
+    println!(
+        "      Correct:  {}/{}",
+        bare_correct,
+        zero_overlap_texts.len()
+    );
+    println!(
+        "      Wrong:    {}/{}",
+        bare_wrong,
+        zero_overlap_texts.len()
+    );
+    println!(
+        "      Stuck:    {}/{}",
+        zero_overlap_texts.len() - bare_correct - bare_wrong,
+        zero_overlap_texts.len()
+    );
     println!();
     println!("    WITH L3 (hand-coded abstraction tables):");
-    println!("      Correct:  {}/{}", struct_correct, zero_overlap_texts.len());
+    println!(
+        "      Correct:  {}/{}",
+        struct_correct,
+        zero_overlap_texts.len()
+    );
     println!();
 
     // ── Comparison with v3.1 ─────────────────────────────────────────────
     println!("  Comparison with v3.1 (trigram centroids):");
     println!("    v3.1: 0/3 correct, 1/3 wrong, 2/3 stuck");
-    println!("    v3.2: {}/{} correct, {}/{} wrong, {}/{} stuck",
-        bare_correct, zero_overlap_texts.len(),
-        bare_wrong, zero_overlap_texts.len(),
-        zero_overlap_texts.len() - bare_correct - bare_wrong, zero_overlap_texts.len());
+    println!(
+        "    v3.2: {}/{} correct, {}/{} wrong, {}/{} stuck",
+        bare_correct,
+        zero_overlap_texts.len(),
+        bare_wrong,
+        zero_overlap_texts.len(),
+        zero_overlap_texts.len() - bare_correct - bare_wrong,
+        zero_overlap_texts.len()
+    );
     println!();
 
     if bare_correct > 0 {

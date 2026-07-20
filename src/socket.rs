@@ -1,5 +1,5 @@
-use crate::{defense::DefenseSystem, Hypervector, VSABrain};
 use crate::qa::QaEngine;
+use crate::{defense::DefenseSystem, Hypervector, VSABrain};
 use std::sync::Arc;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::TcpListener;
@@ -35,7 +35,12 @@ impl AdminSocketServer {
         brain: Arc<RwLock<VSABrain>>,
         qa: Arc<RwLock<QaEngine>>,
     ) -> Self {
-        AdminSocketServer { intent, defense, brain, qa }
+        AdminSocketServer {
+            intent,
+            defense,
+            brain,
+            qa,
+        }
     }
 
     pub async fn run(

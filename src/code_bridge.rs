@@ -12,19 +12,14 @@
 //! so code frames and natural-language frames can coexist in the same
 //! `PrimaryIndex` and participate in the same analogical inferences.
 
-use std::path::Path;
 use std::fs;
+use std::path::Path;
 
-use syn::{
-    File, Item, ItemFn, ImplItem, FnArg,
-    ReturnType, Type,
-};
+use syn::{File, FnArg, ImplItem, Item, ItemFn, ReturnType, Type};
 
 use crate::analogy::{
-    AnalogicalIndex, EpistemicStatus, MetaIndex,
-    ObservationProvenance, RoleDictionary,
-    ROLE_AGENT, ROLE_ACTION, ROLE_PATIENT,
-    ROLE_INSTRUMENT, ROLE_CAUSE, ROLE_ATTRIBUTE,
+    AnalogicalIndex, EpistemicStatus, MetaIndex, ObservationProvenance, RoleDictionary,
+    ROLE_ACTION, ROLE_AGENT, ROLE_ATTRIBUTE, ROLE_CAUSE, ROLE_INSTRUMENT, ROLE_PATIENT,
 };
 use crate::bridge::encode_phrase;
 use crate::Hypervector;
@@ -35,11 +30,11 @@ use crate::Hypervector;
 #[derive(Debug, Default)]
 pub struct CodeBridgeResult {
     pub frames_signature: usize,
-    pub frames_call:      usize,
-    pub frames_type:      usize,
-    pub frames_impl:      usize,
-    pub frames_skipped:   usize,
-    pub parse_errors:     usize,
+    pub frames_call: usize,
+    pub frames_type: usize,
+    pub frames_impl: usize,
+    pub frames_skipped: usize,
+    pub parse_errors: usize,
 }
 
 impl CodeBridgeResult {
@@ -50,9 +45,15 @@ impl CodeBridgeResult {
 
 // ─── Fixed concept hypervectors ───────────────────────────────────────────────
 
-fn hv_calls()    -> Hypervector { encode_phrase("calls_canonical") }
-fn hv_contains() -> Hypervector { encode_phrase("contains_canonical") }
-fn hv_impls()    -> Hypervector { encode_phrase("impls_canonical") }
+fn hv_calls() -> Hypervector {
+    encode_phrase("calls_canonical")
+}
+fn hv_contains() -> Hypervector {
+    encode_phrase("contains_canonical")
+}
+fn hv_impls() -> Hypervector {
+    encode_phrase("impls_canonical")
+}
 
 // ─── Binding helpers ─────────────────────────────────────────────────────────
 
@@ -63,7 +64,8 @@ fn bind_quad(
     c: &Hypervector,
     d: &Hypervector,
 ) -> Hypervector {
-    roles.bind_role_filler(ROLE_AGENT, a)
+    roles
+        .bind_role_filler(ROLE_AGENT, a)
         .bitwise_xor(&roles.bind_role_filler(ROLE_ACTION, b))
         .bitwise_xor(&roles.bind_role_filler(ROLE_PATIENT, c))
         .bitwise_xor(&roles.bind_role_filler(ROLE_INSTRUMENT, d))
@@ -73,7 +75,8 @@ fn bundle_types(types: &[String]) -> Hypervector {
     if types.is_empty() {
         return Hypervector::new_zero();
     }
-    types.iter()
+    types
+        .iter()
         .map(|t| encode_phrase(t))
         .fold(Hypervector::new_zero(), |acc, hv| acc.bitwise_xor(&hv))
 }
@@ -89,33 +92,33 @@ fn type_to_string(ty: &Type) -> String {
 #[allow(dead_code)]
 struct RawSignature {
     struct_name: String,
-    fn_name:     String,
+    fn_name: String,
     param_types: Vec<String>,
     return_type: String,
-    confidence:  f64,
+    confidence: f64,
 }
 
 #[allow(dead_code)]
 struct RawCall {
-    caller:        String,
+    caller: String,
     caller_struct: String,
-    callee:        String,
-    confidence:    f64,
+    callee: String,
+    confidence: f64,
 }
 
 #[allow(dead_code)]
 struct RawField {
     struct_name: String,
-    field_name:  String,
-    field_type:  String,
-    confidence:  f64,
+    field_name: String,
+    field_type: String,
+    confidence: f64,
 }
 
 #[allow(dead_code)]
 struct RawImpl {
     struct_name: String,
-    trait_name:  String,
-    confidence:  f64,
+    trait_name: String,
+    confidence: f64,
 }
 
 /// AST visitor that extracts code structure frames.
@@ -144,7 +147,10 @@ impl CodeVisitor {
         let fn_name = item_fn.sig.ident.to_string();
 
         // Extract parameter types
-        let param_types: Vec<String> = item_fn.sig.inputs.iter()
+        let param_types: Vec<String> = item_fn
+            .sig
+            .inputs
+            .iter()
             .filter_map(|arg| match arg {
                 FnArg::Typed(pat_type) => Some(type_to_string(&pat_type.ty)),
                 FnArg::Receiver(_) => None, // skip self
@@ -284,11 +290,12 @@ impl CodeVisitor {
     /// Extract a simple name from an expression (for callee identification).
     fn expr_name(&self, expr: &syn::Expr) -> String {
         match expr {
-            syn::Expr::Path(path) => {
-                path.path.segments.last()
-                    .map(|s| s.ident.to_string())
-                    .unwrap_or_default()
-            }
+            syn::Expr::Path(path) => path
+                .path
+                .segments
+                .last()
+                .map(|s| s.ident.to_string())
+                .unwrap_or_default(),
             _ => String::new(),
         }
     }
@@ -304,9 +311,9 @@ impl CodeVisitor {
 pub fn ingest_source_file(
     path: &Path,
     primary: &mut AnalogicalIndex,
-    meta:    &mut MetaIndex,
+    meta: &mut MetaIndex,
     novel_threshold: f64,
-    frame_counter:   &mut usize,
+    frame_counter: &mut usize,
 ) -> CodeBridgeResult {
     let mut result = CodeBridgeResult::default();
     let roles = RoleDictionary::new();
@@ -339,7 +346,9 @@ pub fn ingest_source_file(
             Item::Impl(item_impl) => {
                 // Extract impl block information
                 let struct_name = type_to_string(&item_impl.self_ty);
-                let trait_name = item_impl.trait_.as_ref()
+                let trait_name = item_impl
+                    .trait_
+                    .as_ref()
                     .map(|(_, path, _)| path_to_string(path))
                     .unwrap_or_default();
 
@@ -355,7 +364,10 @@ pub fn ingest_source_file(
                         ImplItem::Fn(method) => {
                             // ImplItemFn has sig and block like ItemFn but is a different type
                             let fn_name = method.sig.ident.to_string();
-                            let param_types: Vec<String> = method.sig.inputs.iter()
+                            let param_types: Vec<String> = method
+                                .sig
+                                .inputs
+                                .iter()
                                 .filter_map(|arg| match arg {
                                     FnArg::Typed(pat_type) => Some(type_to_string(&pat_type.ty)),
                                     FnArg::Receiver(_) => None,
@@ -387,7 +399,9 @@ pub fn ingest_source_file(
                 // Extract fields
                 if let syn::Fields::Named(fields_named) = &item_struct.fields {
                     for field in &fields_named.named {
-                        let field_name = field.ident.as_ref()
+                        let field_name = field
+                            .ident
+                            .as_ref()
                             .map(|id| id.to_string())
                             .unwrap_or_default();
                         let field_type = type_to_string(&field.ty);
@@ -406,7 +420,10 @@ pub fn ingest_source_file(
                 for trait_item in &item_trait.items {
                     if let syn::TraitItem::Fn(trait_method) = trait_item {
                         let fn_name = trait_method.sig.ident.to_string();
-                        let param_types: Vec<String> = trait_method.sig.inputs.iter()
+                        let param_types: Vec<String> = trait_method
+                            .sig
+                            .inputs
+                            .iter()
                             .filter_map(|arg| match arg {
                                 FnArg::Typed(pat_type) => Some(type_to_string(&pat_type.ty)),
                                 FnArg::Receiver(_) => None,
@@ -433,25 +450,32 @@ pub fn ingest_source_file(
     // ── Insert all frames ───────────────────────────────────────────
 
     for sig in &visitor.signatures {
-        let agent      = encode_phrase(&sig.struct_name);
-        let action     = encode_phrase(&sig.fn_name);
-        let patient    = encode_phrase(&sig.return_type);
+        let agent = encode_phrase(&sig.struct_name);
+        let action = encode_phrase(&sig.fn_name);
+        let patient = encode_phrase(&sig.return_type);
         let instrument = bundle_types(&sig.param_types);
-        let bound      = bind_quad(&roles, &agent, &action, &patient, &instrument);
+        let bound = bind_quad(&roles, &agent, &action, &patient, &instrument);
         let fillers = vec![
-            (ROLE_AGENT,      agent,      sig.struct_name.clone()),
-            (ROLE_ACTION,     action,     sig.fn_name.clone()),
-            (ROLE_PATIENT,    patient,    sig.return_type.clone()),
+            (ROLE_AGENT, agent, sig.struct_name.clone()),
+            (ROLE_ACTION, action, sig.fn_name.clone()),
+            (ROLE_PATIENT, patient, sig.return_type.clone()),
             (ROLE_INSTRUMENT, instrument, sig.param_types.join(", ")),
         ];
-        let is_novel = primary.frames().iter().all(|f| {
-            f.bound_vector.normalized_hamming_distance(&bound) > novel_threshold
-        });
+        let is_novel = primary
+            .frames()
+            .iter()
+            .all(|f| f.bound_vector.normalized_hamming_distance(&bound) > novel_threshold);
         if is_novel {
             let label = format!("code_{:05}", frame_counter);
             *frame_counter += 1;
             primary.insert_with_provenance(&label, bound, fillers, ObservationProvenance::Ambient);
-            meta.on_insert(&label, &bound, EpistemicStatus::Observed, 400.0, ObservationProvenance::Ambient);
+            meta.on_insert(
+                &label,
+                &bound,
+                EpistemicStatus::Observed,
+                400.0,
+                ObservationProvenance::Ambient,
+            );
             result.frames_signature += 1;
         } else {
             result.frames_skipped += 1;
@@ -459,26 +483,33 @@ pub fn ingest_source_file(
     }
 
     for call in &visitor.calls {
-        let agent   = encode_phrase(&call.caller);
-        let action  = hv_calls();
+        let agent = encode_phrase(&call.caller);
+        let action = hv_calls();
         let patient = encode_phrase(&call.callee);
-        let cause   = encode_phrase(&call.caller_struct);
-        let bound   = roles.bind_triple(&agent, &action, &patient);
+        let cause = encode_phrase(&call.caller_struct);
+        let bound = roles.bind_triple(&agent, &action, &patient);
         let fillers = vec![
-            (ROLE_AGENT,   agent,   call.caller.clone()),
-            (ROLE_ACTION,  action,  "calls".to_string()),
+            (ROLE_AGENT, agent, call.caller.clone()),
+            (ROLE_ACTION, action, "calls".to_string()),
             (ROLE_PATIENT, patient, call.callee.clone()),
-            (ROLE_CAUSE,   cause,   call.caller_struct.clone()),
+            (ROLE_CAUSE, cause, call.caller_struct.clone()),
         ];
-        let is_novel = primary.frames().iter().all(|f| {
-            f.bound_vector.normalized_hamming_distance(&bound) > novel_threshold
-        });
+        let is_novel = primary
+            .frames()
+            .iter()
+            .all(|f| f.bound_vector.normalized_hamming_distance(&bound) > novel_threshold);
         if is_novel {
             let label = format!("code_{:05}", frame_counter);
             *frame_counter += 1;
             primary.insert_with_provenance(&label, bound, fillers, ObservationProvenance::Ambient);
             let weight = (call.confidence * 380.0).clamp(0.0, 500.0);
-            meta.on_insert(&label, &bound, EpistemicStatus::Observed, weight, ObservationProvenance::Ambient);
+            meta.on_insert(
+                &label,
+                &bound,
+                EpistemicStatus::Observed,
+                weight,
+                ObservationProvenance::Ambient,
+            );
             result.frames_call += 1;
         } else {
             result.frames_skipped += 1;
@@ -486,25 +517,32 @@ pub fn ingest_source_file(
     }
 
     for field in &visitor.fields {
-        let agent     = encode_phrase(&field.struct_name);
-        let action    = hv_contains();
-        let patient   = encode_phrase(&field.field_name);
+        let agent = encode_phrase(&field.struct_name);
+        let action = hv_contains();
+        let patient = encode_phrase(&field.field_name);
         let attribute = encode_phrase(&field.field_type);
-        let bound     = roles.bind_triple(&agent, &action, &patient);
-        let fillers   = vec![
-            (ROLE_AGENT,     agent,     field.struct_name.clone()),
-            (ROLE_ACTION,    action,    "contains".to_string()),
-            (ROLE_PATIENT,   patient,   field.field_name.clone()),
+        let bound = roles.bind_triple(&agent, &action, &patient);
+        let fillers = vec![
+            (ROLE_AGENT, agent, field.struct_name.clone()),
+            (ROLE_ACTION, action, "contains".to_string()),
+            (ROLE_PATIENT, patient, field.field_name.clone()),
             (ROLE_ATTRIBUTE, attribute, field.field_type.clone()),
         ];
-        let is_novel = primary.frames().iter().all(|f| {
-            f.bound_vector.normalized_hamming_distance(&bound) > novel_threshold
-        });
+        let is_novel = primary
+            .frames()
+            .iter()
+            .all(|f| f.bound_vector.normalized_hamming_distance(&bound) > novel_threshold);
         if is_novel {
             let label = format!("code_{:05}", frame_counter);
             *frame_counter += 1;
             primary.insert_with_provenance(&label, bound, fillers, ObservationProvenance::Ambient);
-            meta.on_insert(&label, &bound, EpistemicStatus::Observed, 400.0, ObservationProvenance::Ambient);
+            meta.on_insert(
+                &label,
+                &bound,
+                EpistemicStatus::Observed,
+                400.0,
+                ObservationProvenance::Ambient,
+            );
             result.frames_type += 1;
         } else {
             result.frames_skipped += 1;
@@ -512,27 +550,34 @@ pub fn ingest_source_file(
     }
 
     for imp in &visitor.impls {
-        let agent   = encode_phrase(&imp.struct_name);
-        let action  = hv_impls();
+        let agent = encode_phrase(&imp.struct_name);
+        let action = hv_impls();
         let patient = if imp.trait_name.is_empty() {
             encode_phrase("inherent")
         } else {
             encode_phrase(&imp.trait_name)
         };
-        let bound   = roles.bind_triple(&agent, &action, &patient);
+        let bound = roles.bind_triple(&agent, &action, &patient);
         let fillers = vec![
-            (ROLE_AGENT,   agent,   imp.struct_name.clone()),
-            (ROLE_ACTION,  action,  "impls".to_string()),
+            (ROLE_AGENT, agent, imp.struct_name.clone()),
+            (ROLE_ACTION, action, "impls".to_string()),
             (ROLE_PATIENT, patient, imp.trait_name.clone()),
         ];
-        let is_novel = primary.frames().iter().all(|f| {
-            f.bound_vector.normalized_hamming_distance(&bound) > novel_threshold
-        });
+        let is_novel = primary
+            .frames()
+            .iter()
+            .all(|f| f.bound_vector.normalized_hamming_distance(&bound) > novel_threshold);
         if is_novel {
             let label = format!("code_{:05}", frame_counter);
             *frame_counter += 1;
             primary.insert_with_provenance(&label, bound, fillers, ObservationProvenance::Ambient);
-            meta.on_insert(&label, &bound, EpistemicStatus::Observed, 400.0, ObservationProvenance::Ambient);
+            meta.on_insert(
+                &label,
+                &bound,
+                EpistemicStatus::Observed,
+                400.0,
+                ObservationProvenance::Ambient,
+            );
             result.frames_impl += 1;
         } else {
             result.frames_skipped += 1;
@@ -544,7 +589,8 @@ pub fn ingest_source_file(
 
 /// Helper: convert a syn Path to a string
 fn path_to_string(path: &syn::Path) -> String {
-    path.segments.iter()
+    path.segments
+        .iter()
         .map(|s| s.ident.to_string())
         .collect::<Vec<_>>()
         .join("::")
@@ -566,13 +612,18 @@ mod tests {
         // Ingest the code_bridge itself (small file, fast parse)
         let result = ingest_source_file(
             Path::new("src/code_bridge.rs"),
-            &mut primary, &mut meta, 0.05, &mut counter,
+            &mut primary,
+            &mut meta,
+            0.05,
+            &mut counter,
         );
 
         eprintln!(
             "  [code_bridge] self: sig={} call={} type={} impl={} total={}",
-            result.frames_signature, result.frames_call,
-            result.frames_type, result.frames_impl,
+            result.frames_signature,
+            result.frames_call,
+            result.frames_type,
+            result.frames_impl,
             result.total_inserted(),
         );
 
@@ -594,13 +645,18 @@ mod tests {
         // Use lib.rs (smaller than analogy.rs) for a reasonably-sized test
         let result = ingest_source_file(
             Path::new("src/lib.rs"),
-            &mut primary, &mut meta, 0.05, &mut counter,
+            &mut primary,
+            &mut meta,
+            0.05,
+            &mut counter,
         );
 
         eprintln!(
             "  [code_bridge] lib.rs: sig={} call={} type={} impl={} total={}",
-            result.frames_signature, result.frames_call,
-            result.frames_type, result.frames_impl,
+            result.frames_signature,
+            result.frames_call,
+            result.frames_type,
+            result.frames_impl,
             result.total_inserted(),
         );
 
@@ -626,12 +682,17 @@ mod tests {
 
         let result = ingest_source_file(
             Path::new("src/code_bridge.rs"),
-            &mut primary, &mut meta, 0.05, &mut counter,
+            &mut primary,
+            &mut meta,
+            0.05,
+            &mut counter,
         );
 
         // Verify some specific functions were found
         let has_insert_with_gate = primary.frames().iter().any(|f| {
-            f.fillers.iter().any(|filler| filler.filler_str.contains("ingest_source_file"))
+            f.fillers
+                .iter()
+                .any(|filler| filler.filler_str.contains("ingest_source_file"))
         });
         assert!(
             has_insert_with_gate,

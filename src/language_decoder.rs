@@ -46,14 +46,11 @@ pub fn verbalize_relation(relation: &str) -> String {
         // that read naturally as "is X" in English. Without the copula
         // they'd sound raw: "item hidden red obscured" vs "item hidden red
         // is obscured".
-        "obscured" | "hidden" | "visible" | "invisible"
-        | "known" | "unknown" | "enabled" | "disabled"
-        | "active" | "inactive" | "present" | "absent"
-        | "available" | "unavailable" | "ready" | "done"
-        | "complete" | "incomplete" | "pending" | "valid"
-        | "invalid" | "true" | "false" | "empty" | "full"
-        | "open" | "closed" | "locked" | "unlocked"
-        | "connected" | "disconnected" | "mounted" | "unmounted" => {
+        "obscured" | "hidden" | "visible" | "invisible" | "known" | "unknown" | "enabled"
+        | "disabled" | "active" | "inactive" | "present" | "absent" | "available"
+        | "unavailable" | "ready" | "done" | "complete" | "incomplete" | "pending" | "valid"
+        | "invalid" | "true" | "false" | "empty" | "full" | "open" | "closed" | "locked"
+        | "unlocked" | "connected" | "disconnected" | "mounted" | "unmounted" => {
             format!("is {}", verbalize_token(relation))
         }
 
@@ -147,11 +144,7 @@ impl NlpDecoder {
     /// ```
     pub fn answer_with_reasoning(&self, answer: &str, explanation: &str) -> String {
         let answer = verbalize_token(answer);
-        format!(
-            "Answer: {}.\n\nReasoning:\n{}",
-            answer,
-            explanation,
-        )
+        format!("Answer: {}.\n\nReasoning:\n{}", answer, explanation,)
     }
 }
 
@@ -211,8 +204,14 @@ mod tests {
             "I matched variables: ?X → bob.\n  I know that father_of_bob age 5 (confidence: 1.00). This is a fact stored directly in memory.\n  I conclude that bob has_father_age 5.",
         );
         assert!(response.contains("Answer: bob."), "should include answer");
-        assert!(response.contains("Reasoning:"), "should include reasoning section");
-        assert!(response.contains("I know that father_of_bob age 5"), "should include explanation text");
+        assert!(
+            response.contains("Reasoning:"),
+            "should include reasoning section"
+        );
+        assert!(
+            response.contains("I know that father_of_bob age 5"),
+            "should include explanation text"
+        );
     }
 
     #[test]

@@ -261,7 +261,8 @@ impl SparseAccumulator {
             }
             Err(i) => {
                 if val != self.default {
-                    self.deltas.insert(i, (pos, val as i32 - self.default as i32));
+                    self.deltas
+                        .insert(i, (pos, val as i32 - self.default as i32));
                 }
             }
         }
@@ -272,7 +273,11 @@ impl SparseAccumulator {
         for (_, delta) in &mut self.deltas {
             let abs = (*delta).unsigned_abs();
             let decayed = (abs as f64 * factor).round() as u32;
-            *delta = if *delta >= 0 { decayed as i32 } else { -(decayed as i32) };
+            *delta = if *delta >= 0 {
+                decayed as i32
+            } else {
+                -(decayed as i32)
+            };
         }
         // Prune entries that have decayed to zero
         self.deltas.retain(|&(_, d)| d != 0);
@@ -402,10 +407,7 @@ impl Default for MergeConfig {
 ///
 /// O(n² × D) for n = cohort size.  Since this runs once per merge and
 /// merge only fires on large clusters, the cost is acceptable.
-pub fn mean_hamming_within_cohort(
-    entries: &[DejavuEntry],
-    anchor: &Hypervector,
-) -> f64 {
+pub fn mean_hamming_within_cohort(entries: &[DejavuEntry], anchor: &Hypervector) -> f64 {
     let n = entries.len();
     if n < 2 {
         return 0.0;
@@ -415,10 +417,7 @@ pub fn mean_hamming_within_cohort(
     let mut pairs = 0_u64;
 
     // Reconstruct all vectors first to avoid repeated delta-decoding
-    let reconstructed: Vec<Hypervector> = entries
-        .iter()
-        .map(|e| e.reconstruct(anchor))
-        .collect();
+    let reconstructed: Vec<Hypervector> = entries.iter().map(|e| e.reconstruct(anchor)).collect();
 
     for i in 0..n {
         for j in (i + 1)..n {
@@ -449,10 +448,7 @@ pub fn vsa_bisect(
         return (entries.to_vec(), Vec::new());
     }
 
-    let reconstructed: Vec<Hypervector> = entries
-        .iter()
-        .map(|e| e.reconstruct(anchor))
-        .collect();
+    let reconstructed: Vec<Hypervector> = entries.iter().map(|e| e.reconstruct(anchor)).collect();
 
     // Step 1: Find the two most distant vectors as initial centroids
     let mut max_dist = -1.0_f64;
@@ -503,10 +499,7 @@ pub fn vsa_bisect(
 /// Returns (summary_vector, total_weight_in_cohort).
 /// The summary bit = 1 iff popcount(bit across all entries) > n/2.
 /// Even-bundle ties use the first entry's bit (deterministic).
-fn bundle_and_threshold(
-    entries: &[DejavuEntry],
-    anchor: &Hypervector,
-) -> (Hypervector, u32) {
+fn bundle_and_threshold(entries: &[DejavuEntry], anchor: &Hypervector) -> (Hypervector, u32) {
     let n = entries.len();
     if n == 0 {
         return (Hypervector::new_zero(), 0);
@@ -799,9 +792,9 @@ pub fn golomb_rice_encode(indices: &[u16], k: u32) -> Vec<u8> {
         let gap = (idx as u32).wrapping_sub(prev);
         prev = idx as u32;
         let m = 1u32 << k;
-        let q = gap / m;      // quotient
-        let r = gap % m;      // remainder
-        // Write unary: q ones followed by a zero terminator
+        let q = gap / m; // quotient
+        let r = gap % m; // remainder
+                         // Write unary: q ones followed by a zero terminator
         writer.write_unary(q);
         // Write remainder: k bits binary
         writer.write_bits(r as u64, k);
@@ -885,7 +878,9 @@ pub fn encode_entry(entry: &DejavuEntry, centroid: &Hypervector) -> EncodedEntry
         } else {
             HD_DIMENSION as f64
         };
-        let optimal_k = ((mean_gap * std::f64::consts::LN_2).log2().round() as u32).max(1).min(8);
+        let optimal_k = ((mean_gap * std::f64::consts::LN_2).log2().round() as u32)
+            .max(1)
+            .min(8);
         let data = golomb_rice_encode(&indices, optimal_k);
         EncodedEntry::Delta {
             k: optimal_k,
@@ -904,10 +899,12 @@ pub fn decode_entry(
     creation_tick: u64,
 ) -> DejavuEntry {
     let mut entry = match encoded {
-        EncodedEntry::Raw(vec) => {
-            DejavuEntry::new(*vec, label.to_string(), HashMap::new(), None)
-        }
-        EncodedEntry::Delta { k, num_indices, data } => {
+        EncodedEntry::Raw(vec) => DejavuEntry::new(*vec, label.to_string(), HashMap::new(), None),
+        EncodedEntry::Delta {
+            k,
+            num_indices,
+            data,
+        } => {
             let indices = golomb_rice_decode(data, *num_indices as usize, *k);
             // Reconstruct δ from indices
             let mut delta_bits = [0u64; U64_BLOCKS];
@@ -957,14 +954,15 @@ const COLD_CLUSTER_VERSION: u32 = 1;
 ///   if Delta:   u8(k) + u32(num_indices) + u16(data_len) + [u8; data_len]
 /// ```
 pub fn serialize_cold_cluster(cluster: &MemoryCluster) -> Vec<u8> {
-    use std::io::{Write, Cursor};
+    use std::io::{Cursor, Write};
 
     let mut buf = Cursor::new(Vec::new());
 
     // Header
     buf.write_all(&COLD_CLUSTER_MAGIC.to_le_bytes()).unwrap();
     buf.write_all(&COLD_CLUSTER_VERSION.to_le_bytes()).unwrap();
-    buf.write_all(&(cluster.entries.len() as u16).to_le_bytes()).unwrap();
+    buf.write_all(&(cluster.entries.len() as u16).to_le_bytes())
+        .unwrap();
 
     // Centroid
     buf.write_all(&cluster.centroid.to_bytes()).unwrap();
@@ -978,7 +976,8 @@ pub fn serialize_cold_cluster(cluster: &MemoryCluster) -> Vec<u8> {
                 acc_entries.push((i as u16, cluster.accumulator[i]));
             }
         }
-        buf.write_all(&(acc_entries.len() as u32).to_le_bytes()).unwrap();
+        buf.write_all(&(acc_entries.len() as u32).to_le_bytes())
+            .unwrap();
         for (idx, val) in &acc_entries {
             buf.write_all(&idx.to_le_bytes()).unwrap();
             buf.write_all(&val.to_le_bytes()).unwrap();
@@ -998,9 +997,13 @@ pub fn serialize_cold_cluster(cluster: &MemoryCluster) -> Vec<u8> {
                 buf.write_all(&[0u8]).unwrap();
                 buf.write_all(&vec.to_bytes()).unwrap();
             }
-            EncodedEntry::Delta { k, num_indices, data } => {
+            EncodedEntry::Delta {
+                k,
+                num_indices,
+                data,
+            } => {
                 buf.write_all(&[1u8]).unwrap(); // tag
-                buf.write_all(&(k as u8).to_le_bytes()).unwrap();   // 1 byte k
+                buf.write_all(&(k as u8).to_le_bytes()).unwrap(); // 1 byte k
                 buf.write_all(&num_indices.to_le_bytes()).unwrap(); // 4 bytes count
                 buf.write_all(&(data.len() as u16).to_le_bytes()).unwrap(); // 2 bytes data len
                 buf.write_all(&data).unwrap();
@@ -1014,7 +1017,7 @@ pub fn serialize_cold_cluster(cluster: &MemoryCluster) -> Vec<u8> {
 /// Deserialize a MemoryCluster from bytes produced by `serialize_cold_cluster`.
 /// Returns None if the magic doesn't match or data is truncated.
 pub fn deserialize_cold_cluster(bytes: &[u8]) -> Option<MemoryCluster> {
-    use std::io::{Read, Cursor};
+    use std::io::{Cursor, Read};
 
     let mut cursor = Cursor::new(bytes);
 
@@ -1081,7 +1084,10 @@ pub fn deserialize_cold_cluster(bytes: &[u8]) -> Option<MemoryCluster> {
                 let vec = Hypervector::from_bytes(&raw_bytes);
                 decode_entry(
                     &EncodedEntry::Raw(vec),
-                    &centroid, "cold_restore", weight, creation_tick,
+                    &centroid,
+                    "cold_restore",
+                    weight,
+                    creation_tick,
                 )
             }
             1 => {
@@ -1101,8 +1107,15 @@ pub fn deserialize_cold_cluster(bytes: &[u8]) -> Option<MemoryCluster> {
                 cursor.read_exact(&mut data).ok()?;
 
                 decode_entry(
-                    &EncodedEntry::Delta { k, num_indices, data },
-                    &centroid, "cold_restore", weight, creation_tick,
+                    &EncodedEntry::Delta {
+                        k,
+                        num_indices,
+                        data,
+                    },
+                    &centroid,
+                    "cold_restore",
+                    weight,
+                    creation_tick,
                 )
             }
             _ => return None,
@@ -1207,7 +1220,9 @@ pub fn estimate_serialized_entry_size(entry: &DejavuEntry, centroid: &Hypervecto
         } else {
             HD_DIMENSION as f64
         };
-        let k = ((mean_gap * std::f64::consts::LN_2).log2().round() as u32).max(1).min(8);
+        let k = ((mean_gap * std::f64::consts::LN_2).log2().round() as u32)
+            .max(1)
+            .min(8);
         // Average bits per gap: unary(~log2(gap)) + k + 1 (terminator)
         let avg_bits_per_gap = (mean_gap.log2().ceil() as u32 + k + 1) as f64;
         let total_bits = set_bits as f64 * avg_bits_per_gap;
@@ -1272,7 +1287,8 @@ mod tests {
         // Create a dense vector where 99% of values are the same (0),
         // and only 1% are non-zero.  This gives high sparsity.
         let mut dense = vec![0u32; 10240];
-        for i in 0..102 { // ~1% of entries are non-zero
+        for i in 0..102 {
+            // ~1% of entries are non-zero
             dense[i * 100] = 42;
         }
         let sa = SparseAccumulator::from_dense(&dense, 50);

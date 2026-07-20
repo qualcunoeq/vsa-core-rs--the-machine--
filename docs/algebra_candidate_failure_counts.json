@@ -1,0 +1,13 @@
+{
+  "source": "math_funnel_v4 executor_candidate annotations",
+  "total_candidates": 33,
+  "inside_tier_a_algebra": 0,
+  "categories": {
+    "calculus_asymptotics_odes_special_functions": 12,
+    "domain_specific_physical_chemical_cs_model": 8,
+    "combinatorics_sequences_discrete_construction": 6,
+    "number_theory_or_trigonometric_theorem": 4,
+    "probability_optimization_game_theory": 3
+  },
+  "next_reconnaissance": "bounded combinatorics and probability funnel over 215 prompts"
+}

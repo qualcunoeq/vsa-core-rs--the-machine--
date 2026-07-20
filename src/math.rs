@@ -44,11 +44,56 @@ use regex::Regex;
 pub struct MathEngine;
 
 impl MathEngine {
+    /// Solve one extracted algebraic equation through the same constrained
+    /// SymPy path used by explicit `CAS solve` directives.  This is public so
+    /// the router can pass a structured parser result without widening CAS to
+    /// arbitrary natural language or Python input.
+    pub fn try_cas_solve_equation(variable: &str, equation: &str) -> Option<String> {
+        if variable.len() != 1 || !variable.chars().all(|c| c.is_ascii_alphabetic()) {
+            return None;
+        }
+        Self::try_sympy_directive(&format!("CAS solve {variable}: {equation}"))
+    }
+
+    /// Simplify a fully parsed mathematical expression through SymPy.  The
+    /// caller is responsible for turning presentation syntax (such as LaTeX)
+    /// into a complete AST first; this method intentionally accepts only the
+    /// resulting small CAS language.
+    pub fn try_cas_simplify_expression(expression: &str) -> Option<String> {
+        Self::try_sympy_directive(&format!("CAS simplify: {expression}"))
+    }
+
+    /// Differentiate a complete, already-validated expression.  Natural
+    /// language extraction lives in the router; keeping this entry point
+    /// structural prevents the CAS bridge from receiving a prose fragment.
+    pub fn try_cas_differentiate_expression(variable: &str, expression: &str) -> Option<String> {
+        if variable.len() != 1 || !variable.chars().all(|c| c.is_ascii_alphabetic()) {
+            return None;
+        }
+        Self::try_sympy_directive(&format!("CAS differentiate {variable}: {expression}"))
+    }
+
+    /// Integrate a complete, already-validated expression.  This returns an
+    /// antiderivative; definite bounds are evaluated by the typed router
+    /// request after parsing both bounds as numbers.
+    pub fn try_cas_integrate_expression(variable: &str, expression: &str) -> Option<String> {
+        if variable.len() != 1 || !variable.chars().all(|c| c.is_ascii_alphabetic()) {
+            return None;
+        }
+        Self::try_sympy_directive(&format!("CAS integrate {variable}: {expression}"))
+    }
+
     /// Try to answer a question via math computation.
     ///
     /// Returns `Some(answer)` if the question matches a math pattern AND
     /// the expression evaluates successfully.  Returns `None` otherwise.
     pub fn try_answer(question: &str) -> Option<String> {
+        // An explicit CAS directive is intentionally handled before the
+        // lightweight built-in recognizer.  It gives callers access to the
+        // installed SymPy solver without treating arbitrary prose as code.
+        if let Some(answer) = Self::try_sympy_directive(question) {
+            return Some(answer);
+        }
         let normalized = Self::normalize_question(question);
         let lower = question.to_lowercase();
 
@@ -58,18 +103,14 @@ impl MathEngine {
         // "d/dX (EXPR)" / "d/dX EXPR"
         // "second derivative of EXPR"
         // "slope of EXPR at X = VAL"
-        if lower.contains("derivative") || lower.contains("differentiate")
-            || lower.contains("d/d") || lower.contains("slope of")
-        {
+        if Self::requests_derivative(&lower) {
             return Self::try_derivative(question);
         }
 
         // ── Integral patterns ─────────────────────────────────────────────
         // "integral of EXPR" / "integrate EXPR" / "antiderivative of EXPR"
         // "integral of EXPR from A to B" / "integrate EXPR from A to B"
-        if lower.contains("integral") || lower.contains("integrate")
-            || lower.contains("antiderivative") || lower.contains("anti-derivative")
-        {
+        if Self::requests_integral(&lower) {
             return Self::try_integral(question);
         }
 
@@ -95,6 +136,133 @@ impl MathEngine {
         None
     }
 
+    /// Mentioning a derivative in a scientific problem is not a request to
+    /// differentiate it.  The symbolic tool is safe only for direct
+    /// derivative requests; otherwise callers should continue to routing or
+    /// abstain.
+    fn requests_derivative(lower: &str) -> bool {
+        let prompt = lower.trim_start();
+        [
+            "derivative of ",
+            "what is the derivative of ",
+            "find the derivative of ",
+            "calculate the derivative of ",
+            "differentiate ",
+            "d/d",
+            "slope of ",
+        ]
+        .iter()
+        .any(|prefix| prompt.starts_with(prefix))
+    }
+
+    fn requests_integral(lower: &str) -> bool {
+        let prompt = lower.trim_start();
+        [
+            "integral of ",
+            "what is the integral of ",
+            "find the integral of ",
+            "calculate the integral of ",
+            "integrate ",
+            "antiderivative of ",
+            "anti-derivative of ",
+        ]
+        .iter()
+        .any(|prefix| prompt.starts_with(prefix))
+    }
+
+    /// Invoke the locally installed SymPy CAS for an explicitly structured
+    /// request.  Accepted forms are:
+    ///
+    /// `CAS simplify: (x^2 - 1)/(x - 1)`
+    /// `CAS solve: x^2 - 1 = 0`
+    /// `CAS differentiate x: sin(x^2)`
+    /// `CAS integrate x: exp(-x^2)`
+    ///
+    /// This is deliberately not a natural-language parser.  The expression
+    /// is passed on stdin to a fixed Python program (never interpolated into
+    /// a shell command), and a small grammar rejects strings that could be
+    /// interpreted as Python code.
+    fn try_sympy_directive(question: &str) -> Option<String> {
+        let directive = question.trim().strip_prefix("CAS ")?.trim();
+        let (operation, rest) = directive.split_once(':')?;
+        let operation = operation.trim().to_ascii_lowercase();
+        let (operation, variable) = match operation.split_once(char::is_whitespace) {
+            Some((op, var)) => (op.trim(), var.trim()),
+            None => (operation.trim(), "x"),
+        };
+        if !matches!(
+            operation,
+            "simplify" | "solve" | "differentiate" | "integrate"
+        ) || variable.is_empty()
+            || !variable.chars().all(|c| c.is_ascii_alphabetic())
+            || !Self::safe_cas_expression(rest)
+        {
+            return None;
+        }
+
+        let request = format!("{}\n{}\n{}\n", operation, variable, rest.trim());
+        const SCRIPT: &str = r#"
+import sys
+import sympy as s
+operation, variable, expression = sys.stdin.read().splitlines()
+symbols = {name: s.Symbol(name) for name in 'abcdefghijklmnopqrstuvwxyz'}
+symbols.update({'pi': s.pi, 'E': s.E, 'sin': s.sin, 'cos': s.cos, 'tan': s.tan,
+                'exp': s.exp, 'log': s.log, 'sqrt': s.sqrt})
+expr = expression.replace('^', '**')
+if operation == 'solve':
+    if '=' in expr:
+        left, right = expr.split('=', 1)
+        lhs = s.sympify(left, locals=symbols)
+        rhs = s.sympify(right, locals=symbols)
+        result = s.solve(s.Eq(lhs, rhs), symbols[variable])
+        # A solver result is evidence only when every emitted root satisfies
+        # the original equation.  This rejects parser/solver surprises before
+        # Rust is allowed to map a result onto an answer choice.
+        if not all(s.simplify(lhs.subs(symbols[variable], root) - rhs.subs(symbols[variable], root)) == 0 for root in result):
+            raise ValueError('unverified solution')
+    else:
+        result = s.solve(s.sympify(expr, locals=symbols), symbols[variable])
+elif operation == 'differentiate':
+    result = s.diff(s.sympify(expr, locals=symbols), symbols[variable])
+elif operation == 'integrate':
+    result = s.integrate(s.sympify(expr, locals=symbols), symbols[variable])
+else:
+    result = s.simplify(s.sympify(expr, locals=symbols))
+print(result)
+"#;
+
+        use std::io::Write;
+        use std::process::{Command, Stdio};
+        let mut child = Command::new("python3")
+            .args(["-c", SCRIPT])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .ok()?;
+        child.stdin.as_mut()?.write_all(request.as_bytes()).ok()?;
+        let output = child.wait_with_output().ok()?;
+        if !output.status.success() {
+            return None;
+        }
+        let answer = String::from_utf8(output.stdout).ok()?;
+        let answer = answer.trim();
+        (!answer.is_empty() && answer.len() <= 512).then(|| answer.to_string())
+    }
+
+    fn safe_cas_expression(expression: &str) -> bool {
+        !expression.is_empty()
+            && expression.len() <= 512
+            && !expression.contains("__")
+            && expression.chars().all(|c| {
+                c.is_ascii_alphanumeric()
+                    || matches!(
+                        c,
+                        ' ' | '+' | '-' | '*' | '/' | '^' | '(' | ')' | ',' | '.' | '='
+                    )
+            })
+    }
+
     /// Try to answer a derivative question by delegating to the symbolic
     /// algebra engine.
     fn try_derivative(question: &str) -> Option<String> {
@@ -103,14 +271,20 @@ impl MathEngine {
         // Extract the variable (default to "x")
         let var = if lower.contains(" wrt ") || lower.contains(" with respect to ") {
             // Find the variable after "wrt" or "with respect to"
-            let after_wrt = lower.split("wrt").last()
+            let after_wrt = lower
+                .split("wrt")
+                .last()
                 .or_else(|| lower.split("with respect to").last())?
                 .trim()
                 .split(|c: char| !c.is_alphanumeric())
                 .next()
                 .unwrap_or("x")
                 .to_string();
-            if after_wrt.is_empty() { "x".to_string() } else { after_wrt }
+            if after_wrt.is_empty() {
+                "x".to_string()
+            } else {
+                after_wrt
+            }
         } else {
             "x".to_string()
         };
@@ -136,11 +310,14 @@ impl MathEngine {
             // "d/dx sin(x)" → "sin(x)"
             let after_dd = question[3..].trim();
             // Skip the variable character(s)
-            let after_var = after_dd.splitn(2, |c: char| c == ' ' || c == '(' || c == ')')
+            let after_var = after_dd
+                .splitn(2, |c: char| c == ' ' || c == '(' || c == ')')
                 .last()
                 .unwrap_or("")
                 .trim();
-            if after_var.is_empty() { return None; }
+            if after_var.is_empty() {
+                return None;
+            }
             after_var.to_string()
         } else if lower.contains("derivative of") {
             let after = lower.split("derivative of").last()?.trim();
@@ -156,7 +333,11 @@ impl MathEngine {
             };
             stripped.trim().to_string()
         } else if lower.starts_with("differentiate") || lower.starts_with("slope of") {
-            let prefix = if lower.starts_with("slope of") { "slope of" } else { "differentiate" };
+            let prefix = if lower.starts_with("slope of") {
+                "slope of"
+            } else {
+                "differentiate"
+            };
             let after = lower.split(prefix).last()?.trim();
             let stripped = if let Some(at_pos) = after.rfind(" at ") {
                 &after[..at_pos]
@@ -189,10 +370,16 @@ impl MathEngine {
 
         // If the question asks for evaluation at a point, compute it
         if let Some(at_str) = lower.split(" at ").last() {
-            if let Some(val_str) = at_str.strip_prefix("x = ").or_else(|| at_str.strip_prefix("x="))
+            if let Some(val_str) = at_str
+                .strip_prefix("x = ")
+                .or_else(|| at_str.strip_prefix("x="))
                 .or_else(|| {
                     let parts: Vec<&str> = at_str.split('=').collect();
-                    if parts.len() == 2 { Some(parts[1].trim()) } else { None }
+                    if parts.len() == 2 {
+                        Some(parts[1].trim())
+                    } else {
+                        None
+                    }
                 })
             {
                 if let Ok(val) = val_str.trim().parse::<f64>() {
@@ -231,21 +418,43 @@ impl MathEngine {
             // ∫ f(x) dx pattern — the variable is after "d"
             let after_d = lower.split(" d").last()?;
             let var_candidate = after_d.trim().split_whitespace().next().unwrap_or("x");
-            var_candidate.trim_end_matches('.').trim_end_matches('?').to_string()
+            var_candidate
+                .trim_end_matches('.')
+                .trim_end_matches('?')
+                .to_string()
         } else {
             "x".to_string()
         };
 
         let expr_str = if lower.contains("integral of") {
             let after = lower.split("integral of").last()?.trim();
-            after.split("from").next().unwrap_or(after).trim().to_string()
+            after
+                .split("from")
+                .next()
+                .unwrap_or(after)
+                .trim()
+                .to_string()
         } else if lower.contains("integrate ") {
             let after = lower.split("integrate ").last()?.trim();
-            after.split("from").next().unwrap_or(after).trim().to_string()
+            after
+                .split("from")
+                .next()
+                .unwrap_or(after)
+                .trim()
+                .to_string()
         } else if lower.contains("antiderivative of") || lower.contains("anti-derivative of") {
-            let keyword = if lower.contains("antiderivative of") { "antiderivative of" } else { "anti-derivative of" };
+            let keyword = if lower.contains("antiderivative of") {
+                "antiderivative of"
+            } else {
+                "anti-derivative of"
+            };
             let after = lower.split(keyword).last()?.trim();
-            after.split("from").next().unwrap_or(after).trim().to_string()
+            after
+                .split("from")
+                .next()
+                .unwrap_or(after)
+                .trim()
+                .to_string()
         } else {
             return None;
         };
@@ -262,10 +471,13 @@ impl MathEngine {
             }
             (None, None) => {
                 // Indefinite integral: symbolic
-                crate::algebra::integrate_str(&expr_str, &var)
-                    .map(|s| {
-                        if s.is_empty() { s } else { format!("{} + C", s) }
-                    })
+                crate::algebra::integrate_str(&expr_str, &var).map(|s| {
+                    if s.is_empty() {
+                        s
+                    } else {
+                        format!("{} + C", s)
+                    }
+                })
             }
             _ => None,
         }
@@ -278,7 +490,12 @@ impl MathEngine {
         // Extract the variable (default to "x")
         let var = if lower.contains(" for ") {
             let after_for = lower.split(" for ").last()?;
-            after_for.trim().split_whitespace().next().unwrap_or("x").to_string()
+            after_for
+                .trim()
+                .split_whitespace()
+                .next()
+                .unwrap_or("x")
+                .to_string()
         } else {
             "x".to_string()
         };
@@ -288,7 +505,9 @@ impl MathEngine {
             // Find the start of the equation (after "solve" or at the beginning)
             let start = if lower.starts_with("solve") {
                 let after_solve = lower.strip_prefix("solve")?.trim();
-                match after_solve.find(|c: char| c.is_alphanumeric() || c == '(' || c == '-' || c == '+' || c == 'x' || c == 'y') {
+                match after_solve.find(|c: char| {
+                    c.is_alphanumeric() || c == '(' || c == '-' || c == '+' || c == 'x' || c == 'y'
+                }) {
                     Some(pos) => &after_solve[pos..],
                     None => after_solve,
                 }
@@ -317,8 +536,6 @@ impl MathEngine {
 
         crate::algebra::solve_str(&eq_str, &var).ok()
     }
-
-
 
     /// Normalize the question: lowercase, strip punctuation, replace word forms.
     fn normalize_question(q: &str) -> String {
@@ -409,10 +626,24 @@ impl MathEngine {
 
         // Recognized function prefixes (must be checked before generic fallback)
         let func_prefixes = [
-            "sqrt", "sin", "cos", "tan", "log", "ln", "exp", "abs",
-            "ceil", "floor", "round", "factorial",
-            "gcd", "lcm", "ncr", "npr",
-            "is_prime", "largest_prime_divisor",
+            "sqrt",
+            "sin",
+            "cos",
+            "tan",
+            "log",
+            "ln",
+            "exp",
+            "abs",
+            "ceil",
+            "floor",
+            "round",
+            "factorial",
+            "gcd",
+            "lcm",
+            "ncr",
+            "npr",
+            "is_prime",
+            "largest_prime_divisor",
         ];
 
         // Direct arithmetic: starts with a number or parenthesis or function
@@ -455,10 +686,24 @@ impl MathEngine {
     fn looks_like_expression(s: &str) -> bool {
         let has_operator = s.contains(|c: char| "+-*/^%".contains(c));
         let function_names = [
-            "sqrt(", "sin(", "cos(", "tan(", "log(", "ln(", "exp(",
-            "abs(", "ceil(", "floor(", "round(", "factorial(",
-            "gcd(", "lcm(", "ncr(", "npr(",
-            "largest_prime_divisor(", "is_prime(",
+            "sqrt(",
+            "sin(",
+            "cos(",
+            "tan(",
+            "log(",
+            "ln(",
+            "exp(",
+            "abs(",
+            "ceil(",
+            "floor(",
+            "round(",
+            "factorial(",
+            "gcd(",
+            "lcm(",
+            "ncr(",
+            "npr(",
+            "largest_prime_divisor(",
+            "is_prime(",
         ];
         let has_function = function_names.iter().any(|f| s.contains(f))
             || s.starts_with("pi")
@@ -797,7 +1042,11 @@ impl MathEngine {
             match op {
                 '*' => Some(l * r),
                 '/' => {
-                    if r == 0.0 { None } else { Some(l / r) }
+                    if r == 0.0 {
+                        None
+                    } else {
+                        Some(l / r)
+                    }
                 }
                 _ => None,
             }
@@ -1034,7 +1283,8 @@ impl MathEngine {
             format!("{}", x)
         } else {
             // Limit to 10 decimal places
-            format!("{:.10}", x).trim_end_matches('0')
+            format!("{:.10}", x)
+                .trim_end_matches('0')
                 .trim_end_matches('.')
                 .to_string()
         }
@@ -1078,22 +1328,68 @@ impl MathEngine {
     /// Check if the question describes a DRT problem.
     fn is_drt_problem(q: &str) -> bool {
         let travel_keywords = [
-            "train", "car", "truck", "bus", "plane", "boat", "ship",
-            "bike", "cyclist", "driver", "walk", "run", "jog", "vehicle",
-            "travel", "journey", "trip", "drive", "ride", "flight",
-            "passenger", "commuter",
+            "train",
+            "car",
+            "truck",
+            "bus",
+            "plane",
+            "boat",
+            "ship",
+            "bike",
+            "cyclist",
+            "driver",
+            "walk",
+            "run",
+            "jog",
+            "vehicle",
+            "travel",
+            "journey",
+            "trip",
+            "drive",
+            "ride",
+            "flight",
+            "passenger",
+            "commuter",
         ];
         if !travel_keywords.iter().any(|k| q.contains(k)) {
             return false;
         }
 
         let rate_keywords = [
-            "mph", "km/h", "kph", "miles per hour", "kilometers per hour",
-            "mi/h", "kmh", "speed", "traveling at", "travels at",
-            "miles", "kilometers", "km", "distance", "hours", "minutes",
+            "mph",
+            "km/h",
+            "kph",
+            "miles per hour",
+            "kilometers per hour",
+            "mi/h",
+            "kmh",
+            "speed",
+            "traveling at",
+            "travels at",
+            "miles",
+            "kilometers",
+            "km",
+            "distance",
+            "hours",
+            "minutes",
             "per hour",
         ];
-        rate_keywords.iter().any(|k| q.contains(k))
+        // Also require a SPEED unit or speed-related keyword to avoid
+        // false positives from physics problems that happen to mention
+        // "travels" (e.g. "light travels") and "hours" (e.g. orbital period).
+        let speed_keywords = [
+            "mph",
+            "km/h",
+            "kph",
+            "miles per hour",
+            "kilometers per hour",
+            "mi/h",
+            "kmh",
+            "speed",
+            "traveling at",
+            "travels at",
+        ];
+        rate_keywords.iter().any(|k| q.contains(k)) && speed_keywords.iter().any(|k| q.contains(k))
     }
 
     /// Try to solve a distance-rate-time problem.
@@ -1107,12 +1403,18 @@ impl MathEngine {
         let distance = Self::extract_distance(q);
 
         // Detect relationship from keywords
-        let approaching = q.contains("toward") || q.contains("towards")
-            || q.contains("approaching") || q.contains("meet")
-            || q.contains("each other") || q.contains("heading")
-            || q.contains("apart") || q.contains("between");
-        let same_direction = q.contains("same direction") || q.contains("catch")
-            || q.contains("overtake") || q.contains("passes")
+        let approaching = q.contains("toward")
+            || q.contains("towards")
+            || q.contains("approaching")
+            || q.contains("meet")
+            || q.contains("each other")
+            || q.contains("heading")
+            || q.contains("apart")
+            || q.contains("between");
+        let same_direction = q.contains("same direction")
+            || q.contains("catch")
+            || q.contains("overtake")
+            || q.contains("passes")
             || q.contains("chase");
 
         // ── Two-vehicle approaching ───────────────────────────────────────
@@ -1148,22 +1450,41 @@ impl MathEngine {
 
     /// Extract numeric speeds from the text (e.g., "60 mph", "75 miles per hour").
     fn extract_speeds(q: &str) -> Option<Vec<f64>> {
-        let re = Regex::new(r"(\d+(?:\.\d+)?)\s*(?:mph|mi/h|miles?\s*per\s*hour|km/h|kph|kilometers?\s*per\s*hour)")
-            .ok()?;
-        let speeds: Vec<f64> = re.captures_iter(q)
-            .filter_map(|cap| cap[1].parse::<f64>().ok().filter(|&s| s > 0.0 && s < 10000.0))
+        let re = Regex::new(
+            r"(\d+(?:\.\d+)?)\s*(?:mph|mi/h|miles?\s*per\s*hour|km/h|kph|kilometers?\s*per\s*hour)",
+        )
+        .ok()?;
+        let speeds: Vec<f64> = re
+            .captures_iter(q)
+            .filter_map(|cap| {
+                cap[1]
+                    .parse::<f64>()
+                    .ok()
+                    .filter(|&s| s > 0.0 && s < 10000.0)
+            })
             .collect();
-        if speeds.is_empty() { None } else { Some(speeds) }
+        if speeds.is_empty() {
+            None
+        } else {
+            Some(speeds)
+        }
     }
 
     /// Extract departure times (24h decimal hours).  Requires AM/PM.
     fn extract_departure_times(q: &str) -> Option<Vec<f64>> {
         let re = Regex::new(r"\b(\d{1,2})(?::(\d{2}))?\s*(AM|PM|am|pm)\b").ok()?;
-        let times: Vec<f64> = re.captures_iter(q)
+        let times: Vec<f64> = re
+            .captures_iter(q)
             .filter_map(|cap| {
                 let hour: f64 = cap[1].parse().ok()?;
-                let minute: f64 = cap.get(2).and_then(|m| m.as_str().parse().ok()).unwrap_or(0.0);
-                let is_pm = cap.get(3).map(|m| m.as_str().to_lowercase() == "pm").unwrap_or(false);
+                let minute: f64 = cap
+                    .get(2)
+                    .and_then(|m| m.as_str().parse().ok())
+                    .unwrap_or(0.0);
+                let is_pm = cap
+                    .get(3)
+                    .map(|m| m.as_str().to_lowercase() == "pm")
+                    .unwrap_or(false);
 
                 if hour < 1.0 || hour > 12.0 || minute >= 60.0 {
                     return None;
@@ -1179,7 +1500,11 @@ impl MathEngine {
                 Some(decimal)
             })
             .collect();
-        if times.is_empty() { None } else { Some(times) }
+        if times.is_empty() {
+            None
+        } else {
+            Some(times)
+        }
     }
 
     /// Extract total distance (the *last* "N miles/Km" pair that is NOT part
@@ -1190,15 +1515,18 @@ impl MathEngine {
         // Remove "N miles per hour" / "N mph" / "N km/h" patterns so they
         // don't contaminate distance extraction.
         let speed_re = Regex::new(
-            r"\d+(?:\.\d+)?\s*(?:mph|mi/h|miles?\s*per\s*hour|km/h|kph|kilometers?\s*per\s*hour)"
-        ).ok()?;
+            r"\d+(?:\.\d+)?\s*(?:mph|mi/h|miles?\s*per\s*hour|km/h|kph|kilometers?\s*per\s*hour)",
+        )
+        .ok()?;
         let cleaned = speed_re.replace_all(&lower, "");
 
         // Look for "N miles", "N km", "N kilometers" bigrams in remaining text
-        let words: Vec<&str> = cleaned.split_whitespace()
+        let words: Vec<&str> = cleaned
+            .split_whitespace()
             .map(|w| w.trim_end_matches(|c: char| !c.is_ascii_alphanumeric()))
             .collect();
-        let distances: Vec<f64> = words.windows(2)
+        let distances: Vec<f64> = words
+            .windows(2)
             .filter_map(|pair| {
                 let num = pair[0].parse::<f64>().ok()?;
                 match pair[1] {
@@ -1229,15 +1557,21 @@ impl MathEngine {
         let t = (distance + s1 * d1 + s2 * d2) / denominator;
 
         // Determine what the question asks for
-        if q.contains("what time") || q.contains("when will") || q.contains("what hour")
-            || q.contains("when do") || q.contains("what o'clock") || q.contains("what is the time")
+        if q.contains("what time")
+            || q.contains("when will")
+            || q.contains("what hour")
+            || q.contains("when do")
+            || q.contains("what o'clock")
+            || q.contains("what is the time")
         {
             // "What time do they meet?" → clock time
             let time_str = Self::format_time_of_day(t);
             return Some(format!("They meet at {}", time_str));
         }
 
-        if q.contains("how far") || q.contains("what distance") || q.contains("how many miles")
+        if q.contains("how far")
+            || q.contains("what distance")
+            || q.contains("how many miles")
             || q.contains("how many kilometers")
         {
             // "How far from Station A?" → distance first train traveled
@@ -1245,11 +1579,13 @@ impl MathEngine {
             if dist_a < 0.0 {
                 return None;
             }
-            return Some(format!("They meet {:.2} miles from the first train's starting point", dist_a));
+            return Some(format!(
+                "They meet {:.2} miles from the first train's starting point",
+                dist_a
+            ));
         }
 
-        if q.contains("how long") || q.contains("how many hours") || q.contains("how much time")
-        {
+        if q.contains("how long") || q.contains("how many hours") || q.contains("how much time") {
             // "How long until they meet?" → duration since first departure
             let duration = t - d1;
             let formatted = Self::format_duration(duration);
@@ -1264,14 +1600,21 @@ impl MathEngine {
     /// Solve the same-direction / catch-up scenario.
     /// s₁·(t − d₁) + gap = s₂·(t − d₂)   when there's an initial gap
     /// s₁·(t − d₁) = s₂·(t − d₂)         when starting from same point
-    fn solve_same_direction(speeds: &[f64], times: &[f64], _distance: f64, q: &str) -> Option<String> {
+    fn solve_same_direction(
+        speeds: &[f64],
+        times: &[f64],
+        _distance: f64,
+        q: &str,
+    ) -> Option<String> {
         let s1 = speeds[0];
         let s2 = speeds[1];
         let d1 = times[0];
         let d2 = times[1];
 
         if s2 <= s1 {
-            return Some(format!("The second vehicle never catches up (it is not faster)."));
+            return Some(format!(
+                "The second vehicle never catches up (it is not faster)."
+            ));
         }
 
         // Equation: s1*(t - d1) = s2*(t - d2) → catch-up from same point
@@ -1295,7 +1638,8 @@ impl MathEngine {
     fn try_single_vehicle(q: &str, speeds: &[f64], distance: Option<f64>) -> Option<String> {
         // Extract a duration (time interval, not clock time)
         let duration_re = Regex::new(r"(\d+(?:\.\d+)?)\s*(?:hours?|minutes?|hrs?|h)\b").ok()?;
-        let duration: Option<f64> = duration_re.captures_iter(q)
+        let duration: Option<f64> = duration_re
+            .captures_iter(q)
             .filter_map(|cap| cap[1].parse::<f64>().ok())
             .next();
 
@@ -1308,19 +1652,31 @@ impl MathEngine {
             // d = r * t
             (Some(sp), None, Some(ti)) => {
                 let dist = sp * ti;
-                let unit = if q.contains("km") || q.contains("kilometer") { "km" } else { "miles" };
+                let unit = if q.contains("km") || q.contains("kilometer") {
+                    "km"
+                } else {
+                    "miles"
+                };
                 Some(format!("{} {}", Self::format_float(dist), unit))
             }
             // r = d / t
             (None, Some(di), Some(ti)) => {
-                if ti == 0.0 { return None; }
+                if ti == 0.0 {
+                    return None;
+                }
                 let speed = di / ti;
-                let unit = if q.contains("km") || q.contains("kilometer") { "km/h" } else { "mph" };
+                let unit = if q.contains("km") || q.contains("kilometer") {
+                    "km/h"
+                } else {
+                    "mph"
+                };
                 Some(format!("{} {}", Self::format_float(speed), unit))
             }
             // t = d / r
             (Some(sp), Some(di), None) => {
-                if sp == 0.0 { return None; }
+                if sp == 0.0 {
+                    return None;
+                }
                 let time = di / sp;
                 Some(format!("{} hours", Self::format_float(time)))
             }
@@ -1362,9 +1718,13 @@ impl MathEngine {
             (0, 0) => "0 minutes".to_string(),
             (0, m) => format!("{} minute{}", m, if m == 1 { "" } else { "s" }),
             (h, 0) => format!("{} hour{}", h, if h == 1 { "" } else { "s" }),
-            (h, m) => format!("{} hour{} and {} minute{}",
-                h, if h == 1 { "" } else { "s" },
-                m, if m == 1 { "" } else { "s" }),
+            (h, m) => format!(
+                "{} hour{} and {} minute{}",
+                h,
+                if h == 1 { "" } else { "s" },
+                m,
+                if m == 1 { "" } else { "s" }
+            ),
         }
     }
 }
@@ -1379,25 +1739,58 @@ mod tests {
 
     #[test]
     fn test_basic_arithmetic() {
-        assert_eq!(MathEngine::try_answer("What is 2 + 2?"), Some("4".to_string()));
-        assert_eq!(MathEngine::try_answer("What is 10 - 3?"), Some("7".to_string()));
-        assert_eq!(MathEngine::try_answer("What is 4 * 5?"), Some("20".to_string()));
-        assert_eq!(MathEngine::try_answer("What is 20 / 4?"), Some("5".to_string()));
+        assert_eq!(
+            MathEngine::try_answer("What is 2 + 2?"),
+            Some("4".to_string())
+        );
+        assert_eq!(
+            MathEngine::try_answer("What is 10 - 3?"),
+            Some("7".to_string())
+        );
+        assert_eq!(
+            MathEngine::try_answer("What is 4 * 5?"),
+            Some("20".to_string())
+        );
+        assert_eq!(
+            MathEngine::try_answer("What is 20 / 4?"),
+            Some("5".to_string())
+        );
     }
 
     #[test]
     fn test_word_forms() {
-        assert_eq!(MathEngine::try_answer("What is 2 plus 2?"), Some("4".to_string()));
-        assert_eq!(MathEngine::try_answer("What is 10 minus 3?"), Some("7".to_string()));
-        assert_eq!(MathEngine::try_answer("What is 4 times 5?"), Some("20".to_string()));
-        assert_eq!(MathEngine::try_answer("What is 20 divided by 4?"), Some("5".to_string()));
+        assert_eq!(
+            MathEngine::try_answer("What is 2 plus 2?"),
+            Some("4".to_string())
+        );
+        assert_eq!(
+            MathEngine::try_answer("What is 10 minus 3?"),
+            Some("7".to_string())
+        );
+        assert_eq!(
+            MathEngine::try_answer("What is 4 times 5?"),
+            Some("20".to_string())
+        );
+        assert_eq!(
+            MathEngine::try_answer("What is 20 divided by 4?"),
+            Some("5".to_string())
+        );
     }
 
     #[test]
     fn test_power_and_sqrt() {
-        assert_eq!(MathEngine::try_answer("What is 3 squared?"), Some("9".to_string()));
-        assert_eq!(MathEngine::try_answer("What is sqrt(144)?"), Some("12".to_string()));
-        assert_eq!(MathEngine::try_answer("Compute 2 ^ 10"), Some("1024".to_string()));
+        assert_eq!(
+            MathEngine::try_answer("What is 3 squared?"),
+            Some("9".to_string())
+        );
+        assert_eq!(
+            MathEngine::try_answer("What is sqrt(144)?"),
+            Some("12".to_string())
+        );
+        assert_eq!(
+            MathEngine::try_answer("Compute 2 ^ 10"),
+            Some("1024".to_string())
+        );
     }
 
     #[test]
@@ -1410,9 +1803,15 @@ mod tests {
 
     #[test]
     fn test_factorial() {
-        assert_eq!(MathEngine::try_answer("What is 5!"), Some("120".to_string()));
+        assert_eq!(
+            MathEngine::try_answer("What is 5!"),
+            Some("120".to_string())
+        );
         // Should not match "5!" directly since ! isn't parsed yet
-        assert_eq!(MathEngine::try_answer("Compute factorial(5)"), Some("120".to_string()));
+        assert_eq!(
+            MathEngine::try_answer("Compute factorial(5)"),
+            Some("120".to_string())
+        );
     }
 
     #[test]
@@ -1457,13 +1856,25 @@ mod tests {
 
     #[test]
     fn test_non_math_returns_none() {
+        assert_eq!(MathEngine::try_answer("Who raised rates?"), None);
+        assert_eq!(MathEngine::try_answer("What is the meaning of life?"), None);
+    }
+
+    #[test]
+    fn test_derivative_mention_is_not_a_derivative_request() {
+        let q = "The first derivative of R is defined above. Find the nonlinear correction to frequency.";
+        assert_eq!(MathEngine::try_answer(q), None);
+    }
+
+    #[test]
+    fn test_explicit_sympy_cas_directive() {
         assert_eq!(
-            MathEngine::try_answer("Who raised rates?"),
-            None
+            MathEngine::try_answer("CAS solve x: x^2 - 1 = 0"),
+            Some("[-1, 1]".to_string())
         );
         assert_eq!(
-            MathEngine::try_answer("What is the meaning of life?"),
-            None
+            MathEngine::try_answer("CAS integrate x: exp(-x^2)"),
+            Some("sqrt(pi)*erf(x)/2".to_string())
         );
     }
 
@@ -1508,7 +1919,8 @@ mod tests {
 
     #[test]
     fn test_solve_system_3x3() {
-        let result = MathEngine::try_answer("solve x + y + z = 6; 2*x - y + z = 3; x + 2*y - z = 2");
+        let result =
+            MathEngine::try_answer("solve x + y + z = 6; 2*x - y + z = 3; x + 2*y - z = 2");
         assert_eq!(result, Some("x = 1, y = 2, z = 3".to_string()));
     }
 
@@ -1539,8 +1951,11 @@ mod tests {
         let result = MathEngine::try_answer(q);
         assert!(result.is_some(), "classic train problem should be solvable");
         let s = result.unwrap();
-        assert!(s.contains("4:46:40 PM") || s.contains("4:47 PM"),
-            "expected meeting time ~4:47 PM, got: {}", s);
+        assert!(
+            s.contains("4:46:40 PM") || s.contains("4:47 PM"),
+            "expected meeting time ~4:47 PM, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -1566,8 +1981,11 @@ mod tests {
         let result = MathEngine::try_answer(q);
         assert!(result.is_some(), "should answer how-long question");
         let s = result.unwrap();
-        assert!(s.contains("2 hours") && (s.contains("46 minutes") || s.contains("47 minutes")),
-            "expected ~2h47m, got: {}", s);
+        assert!(
+            s.contains("2 hours") && (s.contains("46 minutes") || s.contains("47 minutes")),
+            "expected ~2h47m, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -1578,7 +1996,10 @@ mod tests {
                   toward Station A. The stations are 270 miles apart. \
                   When do they meet?";
         let result = MathEngine::try_answer(q);
-        assert!(result.is_some(), "same-departure problem should be solvable");
+        assert!(
+            result.is_some(),
+            "same-departure problem should be solvable"
+        );
         let s = result.unwrap();
         // 60t + 75t = 270 → 135t = 270 → t = 2 hours after 2 PM = 4 PM
         assert!(s.contains("4:00 PM"), "expected 4:00 PM, got: {}", s);
@@ -1593,7 +2014,11 @@ mod tests {
         let result = MathEngine::try_answer(q);
         assert!(result.is_some(), "quiet narrative should still parse");
         let s = result.unwrap();
-        assert!(s.contains("4:"), "expected meeting time ~4:xx PM, got: {}", s);
+        assert!(
+            s.contains("4:"),
+            "expected meeting time ~4:xx PM, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -1651,7 +2076,10 @@ mod tests {
         assert_eq!(MathEngine::format_duration(2.0), "2 hours");
         assert_eq!(MathEngine::format_duration(0.5), "30 minutes");
         assert_eq!(MathEngine::format_duration(2.5), "2 hours and 30 minutes");
-        assert_eq!(MathEngine::format_duration(2.7777778), "2 hours and 47 minutes");
+        assert_eq!(
+            MathEngine::format_duration(2.7777778),
+            "2 hours and 47 minutes"
+        );
     }
 
     #[test]
@@ -1698,10 +2126,16 @@ mod tests {
                   Another train leaves Station B at 3:00 PM traveling at 75 mph. \
                   The stations are 300 miles apart. When do they meet?";
         let result = MathEngine::try_answer(q);
-        assert!(result.is_some(), "should solve the exact classic 'train leaves at 2pm' problem");
+        assert!(
+            result.is_some(),
+            "should solve the exact classic 'train leaves at 2pm' problem"
+        );
         let s = result.unwrap();
-        assert!(s.contains("4:46") || s.contains("4:47"), 
-            "expected meeting time ~4:47 PM, got: {}", s);
+        assert!(
+            s.contains("4:46") || s.contains("4:47"),
+            "expected meeting time ~4:47 PM, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -1715,8 +2149,11 @@ mod tests {
         let s = result.unwrap();
         // 100(t-14) + 120(t-15) = 500 → 220t = 500 + 1400 + 1800 = 3700
         // t = 3700/220 = 16.818... → 4:49 PM
-        assert!(s.contains("4:49") || s.contains("4:50"),
-            "expected ~4:49 PM, got: {}", s);
+        assert!(
+            s.contains("4:49") || s.contains("4:50"),
+            "expected ~4:49 PM, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -1726,7 +2163,10 @@ mod tests {
                   Another train leaves at 3 PM at 75 mph toward the north. \
                   They are 300 miles apart. What time do they meet?";
         let result = MathEngine::try_answer(q);
-        assert!(result.is_some(), "should detect approaching without 'meet' keyword");
+        assert!(
+            result.is_some(),
+            "should detect approaching without 'meet' keyword"
+        );
     }
 
     #[test]

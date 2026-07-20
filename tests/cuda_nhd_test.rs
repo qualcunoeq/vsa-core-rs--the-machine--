@@ -18,7 +18,8 @@ fn test_cuda_nhd_matches_cpu() {
 
     let projector = CudaProjector::new(64).expect("CUDA initialisation failed");
 
-    let gpu_results = projector.project(&query, &centroids)
+    let gpu_results = projector
+        .project(&query, &centroids)
         .expect("GPU projection failed");
 
     assert_eq!(gpu_results.len(), 32);
@@ -30,12 +31,16 @@ fn test_cuda_nhd_matches_cpu() {
         assert!(
             diff < 1e-12,
             "Mismatch at centroid {}: CPU={:.10} GPU={:.10} diff={:.2e}",
-            i, cpu_dist, gpu_dist, diff
+            i,
+            cpu_dist,
+            gpu_dist,
+            diff
         );
         assert!(
             *gpu_dist >= 0.0 && *gpu_dist <= 1.0,
             "NHD out of range at centroid {}: {}",
-            i, gpu_dist
+            i,
+            gpu_dist
         );
     }
 }
@@ -48,12 +53,15 @@ fn test_cuda_nhd_identity() {
 
     let projector = CudaProjector::new(16).expect("CUDA init failed");
 
-    let results = projector.project(&hv, &centroids).expect("GPU projection failed");
+    let results = projector
+        .project(&hv, &centroids)
+        .expect("GPU projection failed");
     for (i, &d) in results.iter().enumerate() {
         assert!(
             d < 1e-12,
             "Identity NHD should be ~0 at centroid {}, got {}",
-            i, d
+            i,
+            d
         );
     }
 }
@@ -65,13 +73,17 @@ fn test_cuda_nhd_21_centroids() {
     let centroids: Vec<Hypervector> = (0..21).map(|_| Hypervector::new_random()).collect();
 
     let projector = CudaProjector::new(64).expect("CUDA init failed");
-    let results = projector.project(&query, &centroids).expect("GPU projection failed");
+    let results = projector
+        .project(&query, &centroids)
+        .expect("GPU projection failed");
 
     assert_eq!(results.len(), 21);
     for (i, &d) in results.iter().enumerate() {
         assert!(
             d >= 0.0 && d <= 1.0,
-            "NHD out of range at centroid {}: {}", i, d
+            "NHD out of range at centroid {}: {}",
+            i,
+            d
         );
     }
 }
@@ -83,7 +95,9 @@ fn test_cuda_nhd_315_centroids() {
     let centroids: Vec<Hypervector> = (0..315).map(|_| Hypervector::new_random()).collect();
 
     let projector = CudaProjector::new(315).expect("CUDA init failed");
-    let results = projector.project(&query, &centroids).expect("GPU projection failed");
+    let results = projector
+        .project(&query, &centroids)
+        .expect("GPU projection failed");
 
     assert_eq!(results.len(), 315);
 
@@ -94,7 +108,10 @@ fn test_cuda_nhd_315_centroids() {
         assert!(
             diff < 1e-12,
             "Mismatch at centroid {}: CPU={:.10} GPU={:.10} diff={:.2e}",
-            i, cpu_dist, results[i], diff
+            i,
+            cpu_dist,
+            results[i],
+            diff
         );
     }
 }
@@ -109,14 +126,18 @@ fn test_cuda_nhd_resize() {
     let mut projector = CudaProjector::new(64).expect("CUDA init failed");
 
     // Project small set
-    let small_results = projector.project(&query, &small).expect("Small projection failed");
+    let small_results = projector
+        .project(&query, &small)
+        .expect("Small projection failed");
     assert_eq!(small_results.len(), 10);
 
     // Resize for larger set
     projector.resize(256).expect("Resize failed");
 
     // Project large set
-    let large_results = projector.project(&query, &large).expect("Large projection failed");
+    let large_results = projector
+        .project(&query, &large)
+        .expect("Large projection failed");
     assert_eq!(large_results.len(), 200);
 
     for (i, (centroid, gpu_dist)) in large.iter().zip(large_results.iter()).enumerate() {
@@ -125,7 +146,10 @@ fn test_cuda_nhd_resize() {
         assert!(
             diff < 1e-12,
             "Mismatch after resize at centroid {}: CPU={:.10} GPU={:.10} diff={:.2e}",
-            i, cpu_dist, gpu_dist, diff
+            i,
+            cpu_dist,
+            gpu_dist,
+            diff
         );
     }
 }

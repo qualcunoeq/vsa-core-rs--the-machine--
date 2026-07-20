@@ -38,8 +38,8 @@
 //! 5. **Partial analogy**: changing one role propagates correctly to a new base
 //! 6. **Full resonator factorization**: recover (S,V,O) from a bound triple
 
-use crate::resonator::PLATEAU_PATIENCE;
 use crate::resonator::ResonatorVocabulary;
+use crate::resonator::PLATEAU_PATIENCE;
 use crate::{Hypervector, HD_DIMENSION};
 use rand::Rng;
 use std::collections::HashMap;
@@ -58,16 +58,16 @@ pub const ROLE_RHO: [usize; 10] = [3, 7, 11, 13, 17, 19, 23, 29, 31, 37];
 /// Canonical role names in order of their index.
 /// The first three (agent, patient, action) form the SVO triple core.
 pub const ROLE_NAMES: [&str; 10] = [
-    "agent",     // 0 — subject / agent of action
-    "patient",   // 1 — object / patient of action
-    "action",    // 2 — verb / action
-    "location",  // 3 — spatial location
-    "instrument",// 4 — tool or instrument
-    "cause",     // 5 — causal antecedent
-    "effect",    // 6 — causal consequent
-    "time",      // 7 — temporal location
-    "attribute", // 8 — property or attribute
-    "quantifier",// 9 — quantification (all, some, none)
+    "agent",      // 0 — subject / agent of action
+    "patient",    // 1 — object / patient of action
+    "action",     // 2 — verb / action
+    "location",   // 3 — spatial location
+    "instrument", // 4 — tool or instrument
+    "cause",      // 5 — causal antecedent
+    "effect",     // 6 — causal consequent
+    "time",       // 7 — temporal location
+    "attribute",  // 8 — property or attribute
+    "quantifier", // 9 — quantification (all, some, none)
 ];
 
 /// Named indices into the role array for readability.
@@ -199,7 +199,12 @@ impl RoleDictionary {
     /// Using XOR (not majority bundling) is **essential** for the analogical
     /// shift property: XOR distributes over XOR, so `S₁ ⊕ S₂` cleanly
     /// separates the per-role filler differences without cross-term debris.
-    pub fn bind_triple(&self, subj: &Hypervector, verb: &Hypervector, obj: &Hypervector) -> Hypervector {
+    pub fn bind_triple(
+        &self,
+        subj: &Hypervector,
+        verb: &Hypervector,
+        obj: &Hypervector,
+    ) -> Hypervector {
         self.bind_role_filler(ROLE_AGENT, subj)
             .bitwise_xor(&self.bind_role_filler(ROLE_ACTION, verb))
             .bitwise_xor(&self.bind_role_filler(ROLE_PATIENT, obj))
@@ -437,7 +442,8 @@ pub fn factorize_triple(
 
     for iteration in 0..max_iterations {
         // ── Simultaneous unbinding (all from current estimates) ──
-        let (s_raw, v_raw, o_raw) = roles.unbind_triple(thought, &current_s, &current_v, &current_o);
+        let (s_raw, v_raw, o_raw) =
+            roles.unbind_triple(thought, &current_s, &current_v, &current_o);
 
         // ── Cleanup against vocabulary subsets ──
         let (s_str, _) = vocab.cleanup_subset(&s_raw, subj_candidates);
@@ -463,10 +469,8 @@ pub fn factorize_triple(
         current_o = next_o;
 
         // ── Convergence check ──
-        let converged = !s_str.is_empty()
-            && s_str == last_s_str
-            && v_str == last_v_str
-            && o_str == last_o_str;
+        let converged =
+            !s_str.is_empty() && s_str == last_s_str && v_str == last_v_str && o_str == last_o_str;
 
         last_s_str = s_str.clone();
         last_v_str = v_str.clone();
@@ -677,12 +681,19 @@ impl ObservationProvenance {
     pub fn from_hv(hv: &Hypervector) -> Self {
         let variants = [
             (Self::Ambient, Self::Ambient.to_hv()),
-            (Self::DirectedFactorizable, Self::DirectedFactorizable.to_hv()),
-            (Self::DirectedInarticulate, Self::DirectedInarticulate.to_hv()),
+            (
+                Self::DirectedFactorizable,
+                Self::DirectedFactorizable.to_hv(),
+            ),
+            (
+                Self::DirectedInarticulate,
+                Self::DirectedInarticulate.to_hv(),
+            ),
             (Self::Analogical, Self::Analogical.to_hv()),
             (Self::MetaPredicted, Self::MetaPredicted.to_hv()),
         ];
-        variants.iter()
+        variants
+            .iter()
             .min_by(|a, b| {
                 let da = hv.normalized_hamming_distance(&a.1);
                 let db = hv.normalized_hamming_distance(&b.1);
@@ -818,11 +829,17 @@ pub fn infer_predicted_fillers(
 
     // Helper: find filler vector for a role in a frame
     let find_filler = |fillers: &[RoleFiller], role_idx: usize| -> Option<Hypervector> {
-        fillers.iter().find(|f| f.role_idx == role_idx).map(|f| f.filler_hv)
+        fillers
+            .iter()
+            .find(|f| f.role_idx == role_idx)
+            .map(|f| f.filler_hv)
     };
 
     let find_filler_str = |fillers: &[RoleFiller], role_idx: usize| -> Option<String> {
-        fillers.iter().find(|f| f.role_idx == role_idx).map(|f| f.filler_str.clone())
+        fillers
+            .iter()
+            .find(|f| f.role_idx == role_idx)
+            .map(|f| f.filler_str.clone())
     };
 
     let mut clean_matches = 0_usize;
@@ -970,10 +987,10 @@ impl AnalogicalIndex {
     fn push_prediction(&mut self, pred: AnalogicalPrediction) {
         // Dynamic cap: at least 10K, at most MAX_STORED_PREDICTIONS,
         // scaled to 100× the current frame count.
-        let max_pred = MAX_STORED_PREDICTIONS
-            .min(10_000 + self.frames.len() * PREDICTIONS_PER_FRAME_RATIO);
+        let max_pred =
+            MAX_STORED_PREDICTIONS.min(10_000 + self.frames.len() * PREDICTIONS_PER_FRAME_RATIO);
         if self.predictions.len() >= max_pred {
-            let drain = max_pred / 3;  // remove oldest third
+            let drain = max_pred / 3; // remove oldest third
             self.predictions.drain(0..drain);
         }
         self.predictions_generated += 1;
@@ -1054,10 +1071,7 @@ impl AnalogicalIndex {
             return delta;
         }
 
-        let delta = analogical_shift(
-            &self.frames[i].bound_vector,
-            &self.frames[j].bound_vector,
-        );
+        let delta = analogical_shift(&self.frames[i].bound_vector, &self.frames[j].bound_vector);
         self.delta_cache.insert(key, delta);
 
         // ── DELTA CACHE CAP: evict oldest 1/3 when exceeding ──
@@ -1110,9 +1124,7 @@ impl AnalogicalIndex {
         fillers: Vec<(usize, Hypervector, String)>,
         provenance: ObservationProvenance,
     ) -> usize {
-        self.insert_with_provenance_and_suppression(
-            label, bound_vector, fillers, provenance, None,
-        )
+        self.insert_with_provenance_and_suppression(label, bound_vector, fillers, provenance, None)
     }
 
     /// Like `insert_with_provenance` but accepts an optional suppression set.
@@ -1138,7 +1150,10 @@ impl AnalogicalIndex {
             .collect();
 
         let sig_key = compute_signature_key(
-            &fillers.iter().map(|(i, h, s)| (*i, h, s.as_str())).collect::<Vec<_>>()
+            &fillers
+                .iter()
+                .map(|(i, h, s)| (*i, h, s.as_str()))
+                .collect::<Vec<_>>(),
         );
 
         self.frames.push(RoleFrame {
@@ -1195,7 +1210,12 @@ impl AnalogicalIndex {
         abductor: &CausalRuleAbductor,
     ) -> Option<usize> {
         self.insert_with_gate_and_suppression(
-            label, bound_vector, fillers, provenance, abductor, None,
+            label,
+            bound_vector,
+            fillers,
+            provenance,
+            abductor,
+            None,
         )
     }
 
@@ -1213,7 +1233,11 @@ impl AnalogicalIndex {
             return None;
         }
         Some(self.insert_with_provenance_and_suppression(
-            label, bound_vector, fillers, provenance, suppressed,
+            label,
+            bound_vector,
+            fillers,
+            provenance,
+            suppressed,
         ))
     }
 
@@ -1249,9 +1273,7 @@ impl AnalogicalIndex {
         };
 
         // Helper: check if a frame index is suppressed
-        let is_suppressed = |idx: usize| -> bool {
-            suppressed.map_or(false, |s| s.contains(&idx))
-        };
+        let is_suppressed = |idx: usize| -> bool { suppressed.map_or(false, |s| s.contains(&idx)) };
 
         // ── Case 1: Deltas from new_idx to every existing frame ──
         // Collect at most MAX_CASE1 predictions (capped to prevent O(N²)
@@ -1263,7 +1285,9 @@ impl AnalogicalIndex {
             if existing_idx == new_idx || is_suppressed(existing_idx) || is_suppressed(new_idx) {
                 continue;
             }
-            if case1.len() >= MAX_CASE1 { break; }
+            if case1.len() >= MAX_CASE1 {
+                break;
+            }
 
             let delta = self.get_or_compute_delta(new_idx, existing_idx);
 
@@ -1271,15 +1295,15 @@ impl AnalogicalIndex {
                 if other_idx == new_idx || other_idx == existing_idx {
                     continue;
                 }
-                if case1.len() >= MAX_CASE1 { break; }
+                if case1.len() >= MAX_CASE1 {
+                    break;
+                }
 
                 let base = &self.frames[other_idx];
                 let source = &self.frames[new_idx];
                 let target = &self.frames[existing_idx];
                 let predicted_vector = apply_shift(&base.bound_vector, &delta);
-                let pred_fillers = infer_predicted_fillers(
-                    &self.roles, base, source, target,
-                );
+                let pred_fillers = infer_predicted_fillers(&self.roles, base, source, target);
 
                 case1.push(AnalogicalPrediction {
                     base_label: base.label.clone(),
@@ -1302,11 +1326,19 @@ impl AnalogicalIndex {
         let mut case2: Vec<AnalogicalPrediction> = Vec::with_capacity(MAX_CASE2);
         if group.len() >= 3 {
             for &i in &group {
-                if i == new_idx || is_suppressed(i) { continue; }
-                if case2.len() >= MAX_CASE2 { break; }
+                if i == new_idx || is_suppressed(i) {
+                    continue;
+                }
+                if case2.len() >= MAX_CASE2 {
+                    break;
+                }
                 for &j in &group {
-                    if j == new_idx || j <= i || is_suppressed(j) { continue; }
-                    if case2.len() >= MAX_CASE2 { break; }
+                    if j == new_idx || j <= i || is_suppressed(j) {
+                        continue;
+                    }
+                    if case2.len() >= MAX_CASE2 {
+                        break;
+                    }
 
                     let delta = self.get_or_compute_delta(i, j);
 
@@ -1314,9 +1346,7 @@ impl AnalogicalIndex {
                     let source = &self.frames[i];
                     let target = &self.frames[j];
                     let predicted_vector = apply_shift(&base.bound_vector, &delta);
-                    let pred_fillers = infer_predicted_fillers(
-                        &self.roles, base, source, target,
-                    );
+                    let pred_fillers = infer_predicted_fillers(&self.roles, base, source, target);
 
                     case2.push(AnalogicalPrediction {
                         base_label: base.label.clone(),
@@ -1347,7 +1377,8 @@ impl AnalogicalIndex {
         self.predictions.clear();
 
         // Clone group indices first to avoid borrow conflicts with get_or_compute_delta
-        let groups: Vec<Vec<usize>> = self.signature_index
+        let groups: Vec<Vec<usize>> = self
+            .signature_index
             .iter()
             .map(|(_, indices)| indices.clone())
             .collect();
@@ -1362,20 +1393,23 @@ impl AnalogicalIndex {
 
             for &i in indices.iter() {
                 for &j in indices.iter() {
-                    if i == j { continue; }
+                    if i == j {
+                        continue;
+                    }
 
                     let delta = self.get_or_compute_delta(i, j);
 
                     for &k in indices.iter() {
-                        if k == i || k == j { continue; }
+                        if k == i || k == j {
+                            continue;
+                        }
 
                         let base = &self.frames[k];
                         let source = &self.frames[i];
                         let target = &self.frames[j];
                         let predicted_vector = apply_shift(&base.bound_vector, &delta);
-                        let pred_fillers = infer_predicted_fillers(
-                            &self.roles, base, source, target,
-                        );
+                        let pred_fillers =
+                            infer_predicted_fillers(&self.roles, base, source, target);
 
                         new_preds.push(AnalogicalPrediction {
                             base_label: base.label.clone(),
@@ -1414,10 +1448,7 @@ impl AnalogicalIndex {
     ///
     /// `known_fillers` is a list of `(role_idx, filler_str)` pairs.
     /// Returns predictions where ALL specified roles match the predicted fillers.
-    pub fn query_predictions(
-        &self,
-        known_fillers: &[(usize, &str)],
-    ) -> Vec<&AnalogicalPrediction> {
+    pub fn query_predictions(&self, known_fillers: &[(usize, &str)]) -> Vec<&AnalogicalPrediction> {
         self.predictions
             .iter()
             .filter(|p| {
@@ -1753,12 +1784,16 @@ impl AnalogicalIndex {
             // Epistemological guard: find frame indices by matching labels,
             // then check if source and target frames are observations
             if gate.require_source_from_observation {
-                let source_ok = self.frames.iter().enumerate().any(|(idx, f)| {
-                    f.label == pred.source_label && frame_is_observation(idx)
-                });
-                let target_ok = self.frames.iter().enumerate().any(|(idx, f)| {
-                    f.label == pred.target_label && frame_is_observation(idx)
-                });
+                let source_ok = self
+                    .frames
+                    .iter()
+                    .enumerate()
+                    .any(|(idx, f)| f.label == pred.source_label && frame_is_observation(idx));
+                let target_ok = self
+                    .frames
+                    .iter()
+                    .enumerate()
+                    .any(|(idx, f)| f.label == pred.target_label && frame_is_observation(idx));
                 if !source_ok || !target_ok {
                     continue;
                 }
@@ -2072,7 +2107,17 @@ pub fn factorize_svo_recursive(
     max_depth: usize,
     unmatched_threshold: f64,
 ) -> Option<NestedFact> {
-    factorize_level_simple(thought, roles, vocab, subj_candidates, verb_candidates, obj_candidates, 0, max_depth, unmatched_threshold)
+    factorize_level_simple(
+        thought,
+        roles,
+        vocab,
+        subj_candidates,
+        verb_candidates,
+        obj_candidates,
+        0,
+        max_depth,
+        unmatched_threshold,
+    )
 }
 
 /// Internal recursive helper that uses direct unbind + cleanup (no resonator).
@@ -2113,8 +2158,15 @@ fn factorize_level_simple(
     let object = if object_sim < unmatched_threshold && depth < max_depth {
         // The object doesn't match any vocab term well — try to factorize
         match factorize_level_simple(
-            &o_hv, roles, vocab, subj_candidates, verb_candidates, obj_candidates,
-            depth + 1, max_depth, unmatched_threshold,
+            &o_hv,
+            roles,
+            vocab,
+            subj_candidates,
+            verb_candidates,
+            obj_candidates,
+            depth + 1,
+            max_depth,
+            unmatched_threshold,
         ) {
             Some(inner) => NestedObject::Nested(Box::new(inner)),
             None => NestedObject::Terminal(o_str),
@@ -2198,7 +2250,9 @@ pub fn factorizability_for_signature(
             let (_, cause_sim) = vocab.cleanup_subset(&cause_hv, subj_candidates);
             let (_, effect_sim) = vocab.cleanup_subset(&effect_hv, obj_candidates);
             // Map to [0,1]: 0.25 similarity from noise, 0.85+ from signal
-            ((cause_sim.max(0.0) + effect_sim.max(0.0)) / 2.0).max(0.0).min(1.0)
+            ((cause_sim.max(0.0) + effect_sim.max(0.0)) / 2.0)
+                .max(0.0)
+                .min(1.0)
         }
         s if s == SIG_QUANTIFIED => {
             // 4-role XOR: SNR = 0.25. Remove quantifier first to get 3-role.
@@ -2207,9 +2261,17 @@ pub fn factorizability_for_signature(
             // just factorize the residual (which has cross-talk from quantifier).
             // This is the noisiest case — score is a lower bound.
             let svo = roles.extract_role_filler(thought, ROLE_AGENT);
-            factorize_triple(&svo, roles, vocab, subj_candidates, verb_candidates, obj_candidates, 20)
-                .map(|(_, _, _, e)| e)
-                .unwrap_or(0.0)
+            factorize_triple(
+                &svo,
+                roles,
+                vocab,
+                subj_candidates,
+                verb_candidates,
+                obj_candidates,
+                20,
+            )
+            .map(|(_, _, _, e)| e)
+            .unwrap_or(0.0)
         }
         // Default: treat as SVO (3-role) or unknown signature.
         // For SVO with 3-role XOR, use the resonator.
@@ -2217,9 +2279,17 @@ pub fn factorizability_for_signature(
         _ => {
             if signature & (SIG_SVO) == SIG_SVO {
                 // Standard SVO — use resonator
-                factorize_triple(thought, roles, vocab, subj_candidates, verb_candidates, obj_candidates, 20)
-                    .map(|(_, _, _, e)| e)
-                    .unwrap_or(0.0)
+                factorize_triple(
+                    thought,
+                    roles,
+                    vocab,
+                    subj_candidates,
+                    verb_candidates,
+                    obj_candidates,
+                    20,
+                )
+                .map(|(_, _, _, e)| e)
+                .unwrap_or(0.0)
             } else {
                 // Unknown signature — average cleanup of all bound roles
                 let mut total_sim = 0.0;
@@ -2232,7 +2302,11 @@ pub fn factorizability_for_signature(
                         count += 1;
                     }
                 }
-                if count > 0 { (total_sim / count as f64).min(1.0) } else { 0.0 }
+                if count > 0 {
+                    (total_sim / count as f64).min(1.0)
+                } else {
+                    0.0
+                }
             }
         }
     }
@@ -2253,8 +2327,13 @@ pub fn factorizability_score(
 ) -> f64 {
     // Default to SVO signature — most common case.
     factorizability_for_signature(
-        thought, roles, vocab, SIG_SVO,
-        subj_candidates, verb_candidates, obj_candidates,
+        thought,
+        roles,
+        vocab,
+        SIG_SVO,
+        subj_candidates,
+        verb_candidates,
+        obj_candidates,
     )
 }
 
@@ -2323,8 +2402,7 @@ impl PredictionUtility {
             0.0
         };
 
-        let evidential_grounding = (source_weight_a * source_weight_b).sqrt()
-            .min(1.0);
+        let evidential_grounding = (source_weight_a * source_weight_b).sqrt().min(1.0);
 
         PredictionUtility {
             algebraic_tightness,
@@ -2510,9 +2588,13 @@ impl AnalogicalIndex {
         // Case 2: existing pairs applied to new_idx as base
         if group.len() >= 3 {
             for &i in &group {
-                if i == new_idx { continue; }
+                if i == new_idx {
+                    continue;
+                }
                 for &j in &group {
-                    if j == new_idx || j <= i { continue; }
+                    if j == new_idx || j <= i {
+                        continue;
+                    }
                     let delta = self.get_or_compute_delta(i, j);
                     let w_i = self.frames[i].evidential_weight.max(0.0);
                     let w_j = self.frames[j].evidential_weight.max(0.0);
@@ -2567,7 +2649,11 @@ impl AnalogicalIndex {
         }
 
         // Sort by utility descending and keep top performers
-        scored.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+        scored.sort_by(|a, b| {
+            b.score
+                .partial_cmp(&a.score)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
 
         for sp in scored {
             self.push_prediction(AnalogicalPrediction {
@@ -2606,8 +2692,15 @@ impl AnalogicalIndex {
         nearest_distances: &[f64],
     ) -> usize {
         self.insert_synced_with_provenance(
-            label, bound_vector, fillers, provider,
-            mode, sample_count, damping, explore_threshold, nearest_distances,
+            label,
+            bound_vector,
+            fillers,
+            provider,
+            mode,
+            sample_count,
+            damping,
+            explore_threshold,
+            nearest_distances,
             ObservationProvenance::Ambient,
         )
     }
@@ -2639,7 +2732,10 @@ impl AnalogicalIndex {
             .collect();
 
         let sig_key = compute_signature_key(
-            &fillers.iter().map(|(i, h, s)| (*i, h, s.as_str())).collect::<Vec<_>>()
+            &fillers
+                .iter()
+                .map(|(i, h, s)| (*i, h, s.as_str()))
+                .collect::<Vec<_>>(),
         );
 
         self.frames.push(RoleFrame {
@@ -2661,8 +2757,12 @@ impl AnalogicalIndex {
 
         // 3. Weighted analogical inference
         self.incremental_analogize_weighted(
-            frame_idx, mode, sample_count, damping,
-            explore_threshold, nearest_distances,
+            frame_idx,
+            mode,
+            sample_count,
+            damping,
+            explore_threshold,
+            nearest_distances,
         );
 
         frame_idx
@@ -2736,7 +2836,8 @@ impl EpistemicStatus {
             (Self::Provisional, Self::Provisional.to_hv()),
             (Self::Causal, Self::Causal.to_hv()),
         ];
-        variants.iter()
+        variants
+            .iter()
             .min_by(|a, b| {
                 let da = hv.normalized_hamming_distance(&a.1);
                 let db = hv.normalized_hamming_distance(&b.1);
@@ -2778,15 +2879,24 @@ pub enum CausalRuleStatus {
     /// Manually provided — treated as epistemically certain.
     Axiom { source: String },
     /// Abductively discovered, passed trustworthiness threshold.
-    Validated { confirmations: usize, refutations: usize },
+    Validated {
+        confirmations: usize,
+        refutations: usize,
+    },
     /// Abductively discovered, below threshold.
-    Provisional { confirmations: usize, refutations: usize },
+    Provisional {
+        confirmations: usize,
+        refutations: usize,
+    },
 }
 
 impl CausalRuleStatus {
     /// Whether this rule can constrain analogical expansion.
     pub fn is_gating(&self) -> bool {
-        matches!(self, CausalRuleStatus::Axiom { .. } | CausalRuleStatus::Validated { .. })
+        matches!(
+            self,
+            CausalRuleStatus::Axiom { .. } | CausalRuleStatus::Validated { .. }
+        )
     }
 
     /// The rule's confidence for gate tolerance calculations.
@@ -2794,13 +2904,27 @@ impl CausalRuleStatus {
     pub fn confidence(&self) -> f64 {
         match self {
             CausalRuleStatus::Axiom { .. } => 1.0,
-            CausalRuleStatus::Validated { confirmations, refutations } => {
+            CausalRuleStatus::Validated {
+                confirmations,
+                refutations,
+            } => {
                 let total = confirmations + refutations;
-                if total == 0 { 0.5 } else { *confirmations as f64 / total as f64 }
+                if total == 0 {
+                    0.5
+                } else {
+                    *confirmations as f64 / total as f64
+                }
             }
-            CausalRuleStatus::Provisional { confirmations, refutations } => {
+            CausalRuleStatus::Provisional {
+                confirmations,
+                refutations,
+            } => {
                 let total = confirmations + refutations;
-                if total == 0 { 0.5 } else { *confirmations as f64 / total as f64 }
+                if total == 0 {
+                    0.5
+                } else {
+                    *confirmations as f64 / total as f64
+                }
             }
         }
     }
@@ -2892,7 +3016,11 @@ impl ProvisionalRule {
             CausalRuleStatus::Axiom { .. } => 1.0,
             _ => {
                 let total = self.confirmations + self.refutations;
-                if total == 0 { 0.5 } else { self.confirmations as f64 / total as f64 }
+                if total == 0 {
+                    0.5
+                } else {
+                    self.confirmations as f64 / total as f64
+                }
             }
         }
     }
@@ -2958,9 +3086,12 @@ impl ProvisionalRule {
         let tag = match &self.status {
             CausalRuleStatus::Axiom { source } => format!("⚑ AXIOM({})", source),
             CausalRuleStatus::Validated { .. } => "✓ VALIDATED".to_string(),
-            CausalRuleStatus::Provisional { .. } => {
-                (if self.is_trustworthy() { "✓ TRUSTED" } else { "(provisional)" }).to_string()
-            }
+            CausalRuleStatus::Provisional { .. } => (if self.is_trustworthy() {
+                "✓ TRUSTED"
+            } else {
+                "(provisional)"
+            })
+            .to_string(),
         };
         format!(
             "{}: {}/{} conf/ref — {:.0}% confidence {}",
@@ -3100,7 +3231,11 @@ impl CausalRuleAbductor {
 
         // ── Phase 1: Confirm or create rules from new pairs ──────
         // Check pairs (i, new_idx) where i ranges from max(0, new_idx-window) to new_idx-1
-        let i_start = if new_idx >= window { new_idx - window } else { 0 };
+        let i_start = if new_idx >= window {
+            new_idx - window
+        } else {
+            0
+        };
         for i in i_start..new_idx {
             let ante_hv = &frames[i].bound_vector;
             let cons_hv = &frames[new_idx].bound_vector;
@@ -3110,9 +3245,7 @@ impl CausalRuleAbductor {
             for rule in &mut self.rules {
                 let d_dist = rule.delta.normalized_hamming_distance(&delta);
                 let a_dist = rule.antecedent.normalized_hamming_distance(ante_hv);
-                if d_dist < self.match_threshold
-                    && a_dist < self.match_threshold
-                {
+                if d_dist < self.match_threshold && a_dist < self.match_threshold {
                     rule.confirm();
                     found = true;
                     break;
@@ -3129,43 +3262,42 @@ impl CausalRuleAbductor {
             }
         }
 
-            // ── Phase 2: Immediate refutation (with domain-boundary check) ──
-            // Check if the frame BEFORE the newest one matches a rule's
-            // antecedent but the newest frame is NOT the expected consequent.
-            //
-            // Domain-boundary check (Axiom 2+3): a refutation only counts
-            // if the pair (frames[i], frames[new_idx]) is in the same
-            // conceptual domain. Cross-domain transitions don't refute
-            // intra-domain rules because the rule was learned within a
-            // domain and has no authority over what happens when the
-            // system enters a different domain.
-            //
-            // Domain membership is determined by bound vector similarity:
-            // if frames[i] and frames[new_idx] are far apart (> 0.35 NHD),
-            // they're in different domains and the refutation is spurious.
-            if n >= 2 {
-                for i in i_start..new_idx {
-                    let ante_hv = &frames[i].bound_vector;
-                    let next_hv = &frames[new_idx].bound_vector;
+        // ── Phase 2: Immediate refutation (with domain-boundary check) ──
+        // Check if the frame BEFORE the newest one matches a rule's
+        // antecedent but the newest frame is NOT the expected consequent.
+        //
+        // Domain-boundary check (Axiom 2+3): a refutation only counts
+        // if the pair (frames[i], frames[new_idx]) is in the same
+        // conceptual domain. Cross-domain transitions don't refute
+        // intra-domain rules because the rule was learned within a
+        // domain and has no authority over what happens when the
+        // system enters a different domain.
+        //
+        // Domain membership is determined by bound vector similarity:
+        // if frames[i] and frames[new_idx] are far apart (> 0.35 NHD),
+        // they're in different domains and the refutation is spurious.
+        if n >= 2 {
+            for i in i_start..new_idx {
+                let ante_hv = &frames[i].bound_vector;
+                let next_hv = &frames[new_idx].bound_vector;
 
-                    // Domain boundary: same domain if bound vectors are
-                    // within 0.35 NHD of each other
-                    let domain_dist = ante_hv.normalized_hamming_distance(next_hv);
-                    let same_domain = domain_dist < 0.35;
+                // Domain boundary: same domain if bound vectors are
+                // within 0.35 NHD of each other
+                let domain_dist = ante_hv.normalized_hamming_distance(next_hv);
+                let same_domain = domain_dist < 0.35;
 
-                    for rule in &mut self.rules {
-                        let a_dist = rule.antecedent.normalized_hamming_distance(ante_hv);
-                        if a_dist < self.match_threshold {
-                            let cons_found =
-                                rule.consequent.normalized_hamming_distance(next_hv)
-                                    < self.match_threshold;
-                            if !cons_found && same_domain {
-                                rule.refute();
-                            }
+                for rule in &mut self.rules {
+                    let a_dist = rule.antecedent.normalized_hamming_distance(ante_hv);
+                    if a_dist < self.match_threshold {
+                        let cons_found = rule.consequent.normalized_hamming_distance(next_hv)
+                            < self.match_threshold;
+                        if !cons_found && same_domain {
+                            rule.refute();
                         }
                     }
                 }
             }
+        }
 
         // ── Phase 3: Resolve pending predictions ──────────────────
         // Check if the expected consequent appeared in a NEWER frame.
@@ -3193,8 +3325,7 @@ impl CausalRuleAbductor {
                 // antecedent, not before it).
                 frames.iter().enumerate().any(|(i, f)| {
                     i > pending_idx
-                        && cons.normalized_hamming_distance(&f.bound_vector)
-                            < self.match_threshold
+                        && cons.normalized_hamming_distance(&f.bound_vector) < self.match_threshold
                 })
             } else {
                 false
@@ -3341,8 +3472,7 @@ impl CausalRuleAbductor {
             // at frame_idx is a NEW event that expects a NEW consequent.
             let resolved = frames.iter().enumerate().any(|(i, f)| {
                 i > *frame_idx
-                    && cons.normalized_hamming_distance(&f.bound_vector)
-                        < self.match_threshold
+                    && cons.normalized_hamming_distance(&f.bound_vector) < self.match_threshold
             });
 
             if resolved {
@@ -3385,10 +3515,7 @@ impl CausalRuleAbductor {
 
     /// Return rules that pass the trustworthiness threshold.
     pub fn trustworthy_rules(&self) -> Vec<&ProvisionalRule> {
-        self.rules
-            .iter()
-            .filter(|r| r.is_trustworthy())
-            .collect()
+        self.rules.iter().filter(|r| r.is_trustworthy()).collect()
     }
 
     /// Number of pending (unresolved) predictions.
@@ -3547,7 +3674,11 @@ pub struct SignatureStats {
 
 impl SignatureStats {
     pub fn block_rate(&self) -> f64 {
-        if self.attempts == 0 { 0.0 } else { self.blocked as f64 / self.attempts as f64 }
+        if self.attempts == 0 {
+            0.0
+        } else {
+            self.blocked as f64 / self.attempts as f64
+        }
     }
     pub fn pass_rate(&self) -> f64 {
         1.0 - self.block_rate()
@@ -3662,7 +3793,9 @@ impl MetaIndex {
         provenance: ObservationProvenance,
     ) {
         let weight_hv = self.encode_weight(weight);
-        let meta_hv = self.roles.bind_triple(primary_hv, self.status_hv(status), &weight_hv);
+        let meta_hv = self
+            .roles
+            .bind_triple(primary_hv, self.status_hv(status), &weight_hv);
 
         let prov_str = match provenance {
             ObservationProvenance::Ambient => "ambient",
@@ -3696,7 +3829,10 @@ impl MetaIndex {
     ///
     /// The prediction is a `(status, weight)` pair — the analogically
     /// inferred epistemic state of the frame.
-    pub fn predict_epistemic_state(&self, primary_hv: &Hypervector) -> Option<(EpistemicStatus, f64)> {
+    pub fn predict_epistemic_state(
+        &self,
+        primary_hv: &Hypervector,
+    ) -> Option<(EpistemicStatus, f64)> {
         if self.index.prediction_count() < 1 {
             // Need at least one prediction to extract a result
             return None;
@@ -3707,11 +3843,17 @@ impl MetaIndex {
         // prediction whose AGENT filler matches primary_hv.
         for pred in self.index.predictions() {
             // Find the AGENT (role 0) predicted filler
-            if let Some(agent) = pred.predicted_fillers.iter().find(|f| f.role_idx == ROLE_AGENT) {
+            if let Some(agent) = pred
+                .predicted_fillers
+                .iter()
+                .find(|f| f.role_idx == ROLE_AGENT)
+            {
                 if agent.filler_hv.normalized_hamming_distance(primary_hv) < 0.1 {
                     // Found a prediction about this frame
                     // Extract the predicted status from ACTION
-                    let status_str = pred.predicted_fillers.iter()
+                    let status_str = pred
+                        .predicted_fillers
+                        .iter()
                         .find(|f| f.role_idx == ROLE_ACTION)
                         .map(|f| f.filler_str.as_str())
                         .unwrap_or("?");
@@ -3724,7 +3866,9 @@ impl MetaIndex {
                     };
 
                     // Extract predicted weight from PATIENT
-                    let weight_hv = pred.predicted_fillers.iter()
+                    let weight_hv = pred
+                        .predicted_fillers
+                        .iter()
                         .find(|f| f.role_idx == ROLE_PATIENT)
                         .map(|f| &f.filler_hv)?;
                     let weight = self.decode_weight(weight_hv);
@@ -3774,15 +3918,15 @@ impl MetaIndex {
             // Try to parse the label as {prefix}{number}
             let label = &frame.label;
             // Find where the numeric part starts
-            let digits_start = label.rfind(|c: char| c.is_ascii_digit())
-                .and_then(|end| {
-                    // Walk back to find the start of the digit sequence
-                    let start = (0..=end).rev()
-                        .find(|&i| !label[i..].chars().next().unwrap().is_ascii_digit())
-                        .map(|i| i + 1)
-                        .unwrap_or(0);
-                    Some((start, end + 1))
-                });
+            let digits_start = label.rfind(|c: char| c.is_ascii_digit()).and_then(|end| {
+                // Walk back to find the start of the digit sequence
+                let start = (0..=end)
+                    .rev()
+                    .find(|&i| !label[i..].chars().next().unwrap().is_ascii_digit())
+                    .map(|i| i + 1)
+                    .unwrap_or(0);
+                Some((start, end + 1))
+            });
 
             if let Some((start, _end)) = digits_start {
                 let prefix = label[..start].to_string();
@@ -3834,14 +3978,18 @@ impl MetaIndex {
         let mut targets = Vec::new();
 
         for pred in self.index.predictions() {
-            let predicted_agent = match pred.predicted_fillers.iter()
+            let predicted_agent = match pred
+                .predicted_fillers
+                .iter()
                 .find(|f| f.role_idx == ROLE_AGENT)
             {
                 Some(agent) => &agent.filler_hv,
                 None => continue,
             };
 
-            let weight = pred.predicted_fillers.iter()
+            let weight = pred
+                .predicted_fillers
+                .iter()
                 .find(|f| f.role_idx == ROLE_PATIENT)
                 .and_then(|f| Some(self.decode_weight(&f.filler_hv)))
                 .unwrap_or(0.0);
@@ -3902,9 +4050,9 @@ impl MetaIndex {
             let final_consequent = chain.last().unwrap();
 
             // Check if this consequent matches any known primary frame
-            let is_known = primary_frames.iter().any(|f| {
-                final_consequent.normalized_hamming_distance(&f.bound_vector) < 0.10
-            });
+            let is_known = primary_frames
+                .iter()
+                .any(|f| final_consequent.normalized_hamming_distance(&f.bound_vector) < 0.10);
 
             if !is_known {
                 // The consequent doesn't match any observed frame — logical gap
@@ -3932,7 +4080,10 @@ impl MetaIndex {
         source: &str,
     ) {
         let mut rule = ProvisionalRule::new_axiom(
-            antecedent, consequent, label.to_string(), source.to_string(),
+            antecedent,
+            consequent,
+            label.to_string(),
+            source.to_string(),
         );
         // Match threshold prevents axioms from gating unrelated frames
         rule.confirmations = 0;
@@ -3977,8 +4128,7 @@ impl MetaIndex {
 
         for rule in self.abductor.trustworthy_rules() {
             // Does the last frame match the rule's antecedent?
-            let a_dist =
-                rule.antecedent.normalized_hamming_distance(last_hv);
+            let a_dist = rule.antecedent.normalized_hamming_distance(last_hv);
             if a_dist >= 0.10 {
                 continue;
             }
@@ -3994,10 +4144,7 @@ impl MetaIndex {
             if !cons_at_next {
                 // The antecedent was observed but the expected consequent
                 // is not present. This is a gap.
-                targets.push((
-                    rule.consequent,
-                    format!("abduced_gap:{}", rule.label),
-                ));
+                targets.push((rule.consequent, format!("abduced_gap:{}", rule.label)));
             }
         }
 
@@ -4024,9 +4171,9 @@ impl MetaIndex {
 
         for rule in self.abductor.trustworthy_rules() {
             // Check if the last frame matches the rule's antecedent.
-            let a_dist = rule.antecedent.normalized_hamming_distance(
-                &primary_frames[last_idx].bound_vector,
-            );
+            let a_dist = rule
+                .antecedent
+                .normalized_hamming_distance(&primary_frames[last_idx].bound_vector);
             if a_dist < 0.10 {
                 // Antecedent observed. Is the expected consequent present?
                 let cons_at_next = if last_idx + 1 < primary_frames.len() {
@@ -4060,9 +4207,9 @@ impl MetaIndex {
             }
             if !antecedent_ever_seen {
                 // Consequent has never been observed either?
-                let cons_ever_seen = primary_frames.iter().any(|f| {
-                    rule.consequent.normalized_hamming_distance(&f.bound_vector) < 0.10
-                });
+                let cons_ever_seen = primary_frames
+                    .iter()
+                    .any(|f| rule.consequent.normalized_hamming_distance(&f.bound_vector) < 0.10);
                 if !cons_ever_seen {
                     // Neither antecedent nor consequent have been seen.
                     // This is a knowledge gap — the system is curious about it.
@@ -4083,7 +4230,8 @@ impl MetaIndex {
     /// Record a gate insertion attempt for signature-level block rate tracking.
     /// Called at every `insert_with_gate` invocation (both blocked and passed).
     pub fn record_gate_attempt(&mut self, signature_key: u64, was_blocked: bool, frame_idx: usize) {
-        let stats = self.signature_stats
+        let stats = self
+            .signature_stats
             .entry(signature_key)
             .or_insert_with(|| SignatureStats {
                 attempts: 0,
@@ -4102,7 +4250,10 @@ impl MetaIndex {
     ///
     /// Called after a frame is inserted via a rule-driven curiosity target.
     pub fn record_rule_dependency(&mut self, rule_id: usize, frame_id: usize) {
-        self.dependency_map.entry(rule_id).or_insert_with(Vec::new).push(frame_id);
+        self.dependency_map
+            .entry(rule_id)
+            .or_insert_with(Vec::new)
+            .push(frame_id);
     }
 
     /// Record that an analogical prediction involving parent frames
@@ -4112,7 +4263,10 @@ impl MetaIndex {
     /// Called after an analogical prediction is materialized into a frame.
     pub fn record_analogy_lineage(&mut self, parent_ids: &[usize], child_id: usize) {
         for &parent_id in parent_ids {
-            self.analogy_lineage.entry(parent_id).or_insert_with(Vec::new).push(child_id);
+            self.analogy_lineage
+                .entry(parent_id)
+                .or_insert_with(Vec::new)
+                .push(child_id);
         }
     }
 
@@ -4138,7 +4292,11 @@ impl MetaIndex {
     /// Returns the total number of frames suppressed.
     pub fn propagate_refutation(&mut self, rule_id: usize) -> usize {
         // Stage 1: collect all directly dependent frames
-        let direct_frames = self.dependency_map.get(&rule_id).cloned().unwrap_or_default();
+        let direct_frames = self
+            .dependency_map
+            .get(&rule_id)
+            .cloned()
+            .unwrap_or_default();
         if direct_frames.is_empty() {
             return 0;
         }
@@ -4173,9 +4331,15 @@ impl MetaIndex {
     /// Inject a hardcoded seed rule as an Axiom (immediately trustworthy).
     /// Used for bootstrapping: known causal patterns trigger curiosity-driven
     /// search before the abductor has enough data to discover its own rules.
-    pub fn inject_seed_rule(&mut self, label: &str, antecedent: Hypervector, consequent: Hypervector) {
+    pub fn inject_seed_rule(
+        &mut self,
+        label: &str,
+        antecedent: Hypervector,
+        consequent: Hypervector,
+    ) {
         let rule = crate::analogy::ProvisionalRule::new_axiom(
-            antecedent, consequent,
+            antecedent,
+            consequent,
             label.to_string(),
             "bootstrap".to_string(),
         );
@@ -4292,9 +4456,7 @@ impl ProcessIndex {
             ReasoningEvent::AnalogicalPrediction => {
                 Hypervector::encode_text_ngram("analogical_prediction", 3)
             }
-            ReasoningEvent::GateBlocked => {
-                Hypervector::encode_text_ngram("gate_blocked", 3)
-            }
+            ReasoningEvent::GateBlocked => Hypervector::encode_text_ngram("gate_blocked", 3),
             ReasoningEvent::AbductiveRulePromotion => {
                 Hypervector::encode_text_ngram("abductive_promotion", 3)
             }
@@ -4306,14 +4468,18 @@ impl ProcessIndex {
         // Bind triple: AGENT=PROC_CONSTANT, ACTION=event_type, PATIENT=PROC_CONSTANT
         // The PROC_CONSTANT in both AGENT and PATIENT ensures they cancel
         // in XOR deltas between events, isolating the event type shift.
-        let bound = self.roles.bind_triple(
-            &self.proc_constant, &event_type_hv, &self.proc_constant,
-        );
+        let bound =
+            self.roles
+                .bind_triple(&self.proc_constant, &event_type_hv, &self.proc_constant);
 
         let fillers = vec![
             (ROLE_AGENT, self.proc_constant, "proc_constant".to_string()),
             (ROLE_ACTION, event_type_hv, format!("{:?}", event)),
-            (ROLE_PATIENT, self.proc_constant, "proc_constant".to_string()),
+            (
+                ROLE_PATIENT,
+                self.proc_constant,
+                "proc_constant".to_string(),
+            ),
         ];
 
         let label = format!("proc_event_{}", self.event_count);
@@ -4342,10 +4508,9 @@ impl ProcessIndex {
     /// Returns the ACTION filler hypervector of the prediction, which
     /// encodes the predicted event type. The caller should compare
     /// this against known event type encodings.
-    pub fn decode_predicted_event_type(
-        pred: &AnalogicalPrediction,
-    ) -> Option<&Hypervector> {
-        pred.predicted_fillers.iter()
+    pub fn decode_predicted_event_type(pred: &AnalogicalPrediction) -> Option<&Hypervector> {
+        pred.predicted_fillers
+            .iter()
             .find(|f| f.role_idx == ROLE_ACTION)
             .map(|f| &f.filler_hv)
     }
@@ -4353,11 +4518,10 @@ impl ProcessIndex {
     /// Decode the predicted metadata value from an analogical prediction.
     ///
     /// Returns the PATIENT filler's decoded value (via FPE lookup).
-    pub fn decode_predicted_metadata(
-        &self,
-        pred: &AnalogicalPrediction,
-    ) -> Option<f64> {
-        let hv = pred.predicted_fillers.iter()
+    pub fn decode_predicted_metadata(&self, pred: &AnalogicalPrediction) -> Option<f64> {
+        let hv = pred
+            .predicted_fillers
+            .iter()
             .find(|f| f.role_idx == ROLE_PATIENT)
             .map(|f| &f.filler_hv)?;
         Some(self.decode_fpe(hv))
@@ -4601,8 +4765,11 @@ mod tests {
         // role contributions XOR'd together.
         //
         // Let's just verify that apply_shift is the pure XOR:
-        assert_eq!(predicted2, s3.bitwise_xor(&delta),
-            "apply_shift must be pure XOR");
+        assert_eq!(
+            predicted2,
+            s3.bitwise_xor(&delta),
+            "apply_shift must be pure XOR"
+        );
     }
 
     // ─── 6a. Full resonator factorization ──────────────────────────
@@ -4636,9 +4803,7 @@ mod tests {
             "dog".to_string(),
         ];
 
-        let result = factorize_triple(
-            &thought, &roles, &vocab, &subjects, &verbs, &objects, 30,
-        );
+        let result = factorize_triple(&thought, &roles, &vocab, &subjects, &verbs, &objects, 30);
         assert!(result.is_some(), "Should factorize successfully");
         let (s, v, o, energy) = result.unwrap();
         assert_eq!(s, "alice");
@@ -4669,9 +4834,7 @@ mod tests {
         let verbs = vec!["feed".to_string()];
         let objects = vec!["bone".to_string()];
 
-        let result = factorize_triple(
-            &thought, &roles, &vocab, &subjects, &verbs, &objects, 20,
-        );
+        let result = factorize_triple(&thought, &roles, &vocab, &subjects, &verbs, &objects, 20);
 
         // Should either return None (hallucination gate) or have low energy
         if let Some((_s, _v, _o, energy)) = result {
@@ -4709,7 +4872,9 @@ mod tests {
 
         for i in 0..roles.len() {
             for j in (i + 1)..roles.len() {
-                let dist = roles.role_vector(i).normalized_hamming_distance(roles.role_vector(j));
+                let dist = roles
+                    .role_vector(i)
+                    .normalized_hamming_distance(roles.role_vector(j));
                 assert!(
                     (dist - 0.50).abs() < 0.20,
                     "Role pair ({}, {}) should be pseudo-orthogonal (NHD ≈ 0.50), got {}",
@@ -4743,7 +4908,9 @@ mod tests {
             assert!(
                 rho < HD_DIMENSION,
                 "Role {} rho={} must be less than D={}",
-                i, rho, HD_DIMENSION
+                i,
+                rho,
+                HD_DIMENSION
             );
         }
     }
@@ -4803,9 +4970,21 @@ mod tests {
         assert_eq!(s_str, "alice", "Should extract alice, got {}", s_str);
         assert_eq!(v_str, "eat", "Should extract eat, got {}", v_str);
         assert_eq!(o_str, "apple", "Should extract apple, got {}", o_str);
-        assert!(s_sim > 0.50, "Subject similarity should be meaningful: {}", s_sim);
-        assert!(v_sim > 0.50, "Verb similarity should be meaningful: {}", v_sim);
-        assert!(o_sim > 0.50, "Object similarity should be meaningful: {}", o_sim);
+        assert!(
+            s_sim > 0.50,
+            "Subject similarity should be meaningful: {}",
+            s_sim
+        );
+        assert!(
+            v_sim > 0.50,
+            "Verb similarity should be meaningful: {}",
+            v_sim
+        );
+        assert!(
+            o_sim > 0.50,
+            "Object similarity should be meaningful: {}",
+            o_sim
+        );
     }
 
     // ─── 12. AnalogicalIndex — SignatureKey correctness ────────────
@@ -4825,9 +5004,17 @@ mod tests {
             (ROLE_ACTION, eat, "eat"),
             (ROLE_PATIENT, apple, "apple"),
         ];
-        let key_svo = compute_signature_key(&fillers_svo.iter().map(|(i, h, s)| (*i, h, *s)).collect::<Vec<_>>());
+        let key_svo = compute_signature_key(
+            &fillers_svo
+                .iter()
+                .map(|(i, h, s)| (*i, h, *s))
+                .collect::<Vec<_>>(),
+        );
         let expected_svo = (1u64 << ROLE_AGENT) | (1u64 << ROLE_ACTION) | (1u64 << ROLE_PATIENT);
-        assert_eq!(key_svo, expected_svo, "SVO signature should have bits 0,1,2 set");
+        assert_eq!(
+            key_svo, expected_svo,
+            "SVO signature should have bits 0,1,2 set"
+        );
 
         // Same structure → same key
         let bob = *vocab.get_vector("bob").unwrap();
@@ -4838,16 +5025,32 @@ mod tests {
             (ROLE_ACTION, throw, "throw"),
             (ROLE_PATIENT, ball, "ball"),
         ];
-        let key2 = compute_signature_key(&fillers2.iter().map(|(i, h, s)| (*i, h, *s)).collect::<Vec<_>>());
-        assert_eq!(key_svo, key2, "Same role structure → same key regardless of fillers");
+        let key2 = compute_signature_key(
+            &fillers2
+                .iter()
+                .map(|(i, h, s)| (*i, h, *s))
+                .collect::<Vec<_>>(),
+        );
+        assert_eq!(
+            key_svo, key2,
+            "Same role structure → same key regardless of fillers"
+        );
 
         // Different structure → different key
         let fillers_location: Vec<(usize, Hypervector, &str)> = vec![
             (ROLE_AGENT, alice, "alice"),
             (ROLE_LOCATION, apple, "apple"),
         ];
-        let key_loc = compute_signature_key(&fillers_location.iter().map(|(i, h, s)| (*i, h, *s)).collect::<Vec<_>>());
-        assert_ne!(key_svo, key_loc, "Different role sets should have different keys");
+        let key_loc = compute_signature_key(
+            &fillers_location
+                .iter()
+                .map(|(i, h, s)| (*i, h, *s))
+                .collect::<Vec<_>>(),
+        );
+        assert_ne!(
+            key_svo, key_loc,
+            "Different role sets should have different keys"
+        );
     }
 
     // ─── 13. AnalogicalIndex — basic insert and query ──────────────
@@ -4913,10 +5116,13 @@ mod tests {
         let apple = *vocab.get_vector("apple").unwrap();
         let ball = *vocab.get_vector("ball").unwrap();
 
-        let mk_triple = |a: Hypervector, v: Hypervector, o: Hypervector,
-                         a_s: &str, v_s: &str, o_s: &str|
-            -> (Hypervector, Vec<(usize, Hypervector, String)>)
-        {
+        let mk_triple = |a: Hypervector,
+                         v: Hypervector,
+                         o: Hypervector,
+                         a_s: &str,
+                         v_s: &str,
+                         o_s: &str|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(&a, &v, &o);
             let fillers = vec![
                 (ROLE_AGENT, a, a_s.to_string()),
@@ -4929,12 +5135,20 @@ mod tests {
         // ── Step 1: Insert S₁ = Eat(Alice, Apple) ──
         let (s1_hv, s1_fillers) = mk_triple(alice, eat, apple, "alice", "eat", "apple");
         index.insert("eat(alice,apple)", s1_hv, s1_fillers);
-        assert_eq!(index.prediction_count(), 0, "No predictions with only 1 frame");
+        assert_eq!(
+            index.prediction_count(),
+            0,
+            "No predictions with only 1 frame"
+        );
 
         // ── Step 2: Insert S₂ = Throw(Bob, Ball) ──
         let (s2_hv, s2_fillers) = mk_triple(bob, throw, ball, "bob", "throw", "ball");
         index.insert("throw(bob,ball)", s2_hv, s2_fillers);
-        assert_eq!(index.prediction_count(), 0, "No predictions with only 2 frames (need ≥3)");
+        assert_eq!(
+            index.prediction_count(),
+            0,
+            "No predictions with only 2 frames (need ≥3)"
+        );
 
         // ── Step 3: Insert S₃ = Eat(Alice, Ball) ──
         let (s3_hv, s3_fillers) = mk_triple(alice, eat, ball, "alice", "eat", "ball");
@@ -4952,7 +5166,10 @@ mod tests {
         // Some are trivial (predict S₂ or S₃), some are novel.
         // The most interesting: Throw(Bob, Apple) via Δ₁₂ applied to S₃.
 
-        assert!(index.prediction_count() >= 1, "Should have at least 1 prediction with 3 frames");
+        assert!(
+            index.prediction_count() >= 1,
+            "Should have at least 1 prediction with 3 frames"
+        );
 
         // ── Verify the specific prediction: Throw(Bob, Apple) ──
         let expected_novel = roles.bind_triple(&bob, &throw, &apple);
@@ -4960,7 +5177,9 @@ mod tests {
         let mut found_novel = false;
         let mut best_dist = 1.0;
         for (i, pred) in index.predictions().iter().enumerate() {
-            let dist = pred.predicted_vector.normalized_hamming_distance(&expected_novel);
+            let dist = pred
+                .predicted_vector
+                .normalized_hamming_distance(&expected_novel);
             if dist < best_dist {
                 best_dist = dist;
             }
@@ -4968,9 +5187,15 @@ mod tests {
                 found_novel = true;
                 eprintln!(
                     "  ✓ Found novel prediction: {}({},{}) → {}({},{}) applied to {}({},{})",
-                    pred.source_label, pred.source_label, pred.base_label,
-                    pred.target_label, pred.target_label, pred.base_label,
-                    pred.base_label, pred.base_label, pred.base_label,
+                    pred.source_label,
+                    pred.source_label,
+                    pred.base_label,
+                    pred.target_label,
+                    pred.target_label,
+                    pred.base_label,
+                    pred.base_label,
+                    pred.base_label,
+                    pred.base_label,
                 );
             }
         }
@@ -4984,7 +5209,9 @@ mod tests {
 
         // ── Verify the prediction passes the bound verification ──
         for (i, pred) in index.predictions().iter().enumerate() {
-            let dist = pred.predicted_vector.normalized_hamming_distance(&expected_novel);
+            let dist = pred
+                .predicted_vector
+                .normalized_hamming_distance(&expected_novel);
             if dist < 0.05 {
                 assert!(
                     index.verify_prediction(i, &expected_novel, 0.05),
@@ -5010,10 +5237,13 @@ mod tests {
         let apple = *vocab.get_vector("apple").unwrap();
         let ball = *vocab.get_vector("ball").unwrap();
 
-        let mk_all = |a: Hypervector, v: Hypervector, o: Hypervector,
-                       a_s: &str, v_s: &str, o_s: &str|
-            -> (Hypervector, Vec<(usize, Hypervector, String)>)
-        {
+        let mk_all = |a: Hypervector,
+                      v: Hypervector,
+                      o: Hypervector,
+                      a_s: &str,
+                      v_s: &str,
+                      o_s: &str|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(&a, &v, &o);
             let fillers: Vec<(usize, Hypervector, String)> = vec![
                 (ROLE_AGENT, a, a_s.to_string()),
@@ -5074,10 +5304,13 @@ mod tests {
         let ball = *vocab.get_vector("ball").unwrap();
         let cat = *vocab.get_vector("cat").unwrap();
 
-        let mk_all = |a: Hypervector, v: Hypervector, o: Hypervector,
-                       a_s: &str, v_s: &str, o_s: &str|
-            -> (Hypervector, Vec<(usize, Hypervector, String)>)
-        {
+        let mk_all = |a: Hypervector,
+                      v: Hypervector,
+                      o: Hypervector,
+                      a_s: &str,
+                      v_s: &str,
+                      o_s: &str|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(&a, &v, &o);
             let fillers: Vec<(usize, Hypervector, String)> = vec![
                 (ROLE_AGENT, a, a_s.to_string()),
@@ -5144,11 +5377,13 @@ mod tests {
 
         // Frame with different signature (agent only)
         let agent_hv = roles.bind_role_filler(ROLE_AGENT, &alice);
-        let agent_fillers: Vec<(usize, Hypervector, String)> = vec![
-            (ROLE_AGENT, alice, "alice".to_string()),
-        ];
+        let agent_fillers: Vec<(usize, Hypervector, String)> =
+            vec![(ROLE_AGENT, alice, "alice".to_string())];
         let agent_key = compute_signature_key(
-            &agent_fillers.iter().map(|(i, h, s)| (*i, h, s.as_str())).collect::<Vec<_>>()
+            &agent_fillers
+                .iter()
+                .map(|(i, h, s)| (*i, h, s.as_str()))
+                .collect::<Vec<_>>(),
         );
         // Need to push manually since insert computes its own key
         // Actually, insert already computes the key from the fillers. Let's just use it.
@@ -5157,7 +5392,8 @@ mod tests {
         // Should have 2 separate signature groups
         // Only the SVO group has ≥2 frames (just 1) — no cross-group predictions
         assert_eq!(
-            index.prediction_count(), 0,
+            index.prediction_count(),
+            0,
             "Different signatures should not produce cross-group predictions"
         );
 
@@ -5180,10 +5416,13 @@ mod tests {
         let apple = *vocab.get_vector("apple").unwrap();
         let ball = *vocab.get_vector("ball").unwrap();
 
-        let mk_all = |a: Hypervector, v: Hypervector, o: Hypervector,
-                       a_s: &str, v_s: &str, o_s: &str|
-            -> (Hypervector, Vec<(usize, Hypervector, String)>)
-        {
+        let mk_all = |a: Hypervector,
+                      v: Hypervector,
+                      o: Hypervector,
+                      a_s: &str,
+                      v_s: &str,
+                      o_s: &str|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(&a, &v, &o);
             let fillers: Vec<(usize, Hypervector, String)> = vec![
                 (ROLE_AGENT, a, a_s.to_string()),
@@ -5207,9 +5446,12 @@ mod tests {
         let count_second = index.prediction_count();
 
         // full_recompute generates more than incremental (includes symmetric pairs)
-        assert!(count_second > count_first,
+        assert!(
+            count_second > count_first,
             "full_recompute({}) should exceed incremental({})",
-            count_second, count_first);
+            count_second,
+            count_first
+        );
 
         // Second full_recompute should match the first
         let count_third = index.prediction_count();
@@ -5235,10 +5477,13 @@ mod tests {
         let apple = *vocab.get_vector("apple").unwrap();
         let ball = *vocab.get_vector("ball").unwrap();
 
-        let mk_all = |a: Hypervector, v: Hypervector, o: Hypervector,
-                       a_s: &str, v_s: &str, o_s: &str|
-            -> (Hypervector, Vec<(usize, Hypervector, String)>)
-        {
+        let mk_all = |a: Hypervector,
+                      v: Hypervector,
+                      o: Hypervector,
+                      a_s: &str,
+                      v_s: &str,
+                      o_s: &str|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(&a, &v, &o);
             let fillers: Vec<(usize, Hypervector, String)> = vec![
                 (ROLE_AGENT, a, a_s.to_string()),
@@ -5272,9 +5517,16 @@ mod tests {
         // patient: base(ball)  != source(apple)  → NOT clean
 
         // So max clean_matches should be 2 for this scenario.
-        let max_clean = index.predictions().iter().map(|p| p.clean_matches).max().unwrap_or(0);
-        assert_eq!(max_clean, 2,
-            "Max clean_matches for (S₁,S₂)→S₃ should be 2 (agent+action match, patient doesn't)");
+        let max_clean = index
+            .predictions()
+            .iter()
+            .map(|p| p.clean_matches)
+            .max()
+            .unwrap_or(0);
+        assert_eq!(
+            max_clean, 2,
+            "Max clean_matches for (S₁,S₂)→S₃ should be 2 (agent+action match, patient doesn't)"
+        );
 
         // Now add a fourth frame that shares ALL fillers with source on one role
         // S₄ = Throw(Bob, Apple) — same agent and action as S₂, but patient=apple (like S₁)
@@ -5296,9 +5548,11 @@ mod tests {
         let perfect_clean = index.predictions_with_min_clean(3).len();
 
         // With 4 frames, we should have at least some high-confidence predictions
-        assert!(high_clean >= 1,
+        assert!(
+            high_clean >= 1,
             "Should have predictions with clean_matches >= 2, got {}",
-            high_clean);
+            high_clean
+        );
 
         eprintln!(
             "  Plausibility breakdown: {} total, {} with ≥2 clean matches, {} with 3/3 clean matches",
@@ -5314,7 +5568,8 @@ mod tests {
             assert!(
                 first_ratio >= last_ratio,
                 "Sorted predictions should have highest plausibility first: {:.2} >= {:.2}",
-                first_ratio, last_ratio
+                first_ratio,
+                last_ratio
             );
         }
     }
@@ -5334,10 +5589,13 @@ mod tests {
         let apple = *vocab.get_vector("apple").unwrap();
         let ball = *vocab.get_vector("ball").unwrap();
 
-        let mk_all = |a: Hypervector, v: Hypervector, o: Hypervector,
-                       a_s: &str, v_s: &str, o_s: &str|
-            -> (Hypervector, Vec<(usize, Hypervector, String)>)
-        {
+        let mk_all = |a: Hypervector,
+                      v: Hypervector,
+                      o: Hypervector,
+                      a_s: &str,
+                      v_s: &str,
+                      o_s: &str|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(&a, &v, &o);
             let fillers: Vec<(usize, Hypervector, String)> = vec![
                 (ROLE_AGENT, a, a_s.to_string()),
@@ -5358,7 +5616,10 @@ mod tests {
         // Wait, incremental_analogize requires ≥2 frames, so after second insert
         // we should have some deltas but the third insert will reuse them
         let (cache_size_2, hits_2) = index.cache_stats();
-        eprintln!("  After 2 inserts: cache size={}, hits={}", cache_size_2, hits_2);
+        eprintln!(
+            "  After 2 inserts: cache size={}, hits={}",
+            cache_size_2, hits_2
+        );
 
         // Insert third frame — should hit cache for some deltas
         let (s3_2, f3_2) = mk_all(alice, eat, ball, "alice", "eat", "ball");
@@ -5450,10 +5711,13 @@ mod tests {
         let apple = *vocab.get_vector("apple").unwrap();
         let ball = *vocab.get_vector("ball").unwrap();
 
-        let mk_all = |a: Hypervector, v: Hypervector, o: Hypervector,
-                       a_s: &str, v_s: &str, o_s: &str|
-            -> (Hypervector, Vec<(usize, Hypervector, String)>)
-        {
+        let mk_all = |a: Hypervector,
+                      v: Hypervector,
+                      o: Hypervector,
+                      a_s: &str,
+                      v_s: &str,
+                      o_s: &str|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(&a, &v, &o);
             let fillers: Vec<(usize, Hypervector, String)> = vec![
                 (ROLE_AGENT, a, a_s.to_string()),
@@ -5515,10 +5779,13 @@ mod tests {
         let apple = *vocab.get_vector("apple").unwrap();
         let ball = *vocab.get_vector("ball").unwrap();
 
-        let mk_all = |a: Hypervector, v: Hypervector, o: Hypervector,
-                       a_s: &str, v_s: &str, o_s: &str|
-            -> (Hypervector, Vec<(usize, Hypervector, String)>)
-        {
+        let mk_all = |a: Hypervector,
+                      v: Hypervector,
+                      o: Hypervector,
+                      a_s: &str,
+                      v_s: &str,
+                      o_s: &str|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(&a, &v, &o);
             let fillers: Vec<(usize, Hypervector, String)> = vec![
                 (ROLE_AGENT, a, a_s.to_string()),
@@ -5548,7 +5815,9 @@ mod tests {
             let label = &index.frames()[idx].label;
             label != "s3" // s3 is prediction-derived
         };
-        let count_s3_derived = index.materializable_predictions(&gate, &s3_is_prediction).len();
+        let count_s3_derived = index
+            .materializable_predictions(&gate, &s3_is_prediction)
+            .len();
 
         // The epistemological guard should reduce the count when a frame
         // is treated as prediction-derived
@@ -5562,7 +5831,8 @@ mod tests {
         assert!(
             count_s3_derived <= count_all_obs,
             "Epistemological guard should not increase prediction count: {} <= {}",
-            count_s3_derived, count_all_obs
+            count_s3_derived,
+            count_all_obs
         );
     }
 
@@ -5584,10 +5854,13 @@ mod tests {
         let ball = *vocab.get_vector("ball").unwrap();
         let cat = *vocab.get_vector("cat").unwrap();
 
-        let mk_all = |a: Hypervector, v: Hypervector, o: Hypervector,
-                       a_s: &str, v_s: &str, o_s: &str|
-            -> (Hypervector, Vec<(usize, Hypervector, String)>)
-        {
+        let mk_all = |a: Hypervector,
+                      v: Hypervector,
+                      o: Hypervector,
+                      a_s: &str,
+                      v_s: &str,
+                      o_s: &str|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(&a, &v, &o);
             let fillers: Vec<(usize, Hypervector, String)> = vec![
                 (ROLE_AGENT, a, a_s.to_string()),
@@ -5644,7 +5917,8 @@ mod tests {
         assert!(
             count_5 >= count_1,
             "Higher max_per_insert should give at least as many predictions: {} >= {}",
-            count_5, count_1
+            count_5,
+            count_1
         );
     }
 
@@ -5692,7 +5966,10 @@ mod tests {
             (ROLE_EFFECT, cons, "yields_rise"),
         ];
         let sig = compute_signature_key(&fillers_for_sig);
-        assert_eq!(sig, expected_sig, "Conditional signature should have CAUSE+EFFECT bits");
+        assert_eq!(
+            sig, expected_sig,
+            "Conditional signature should have CAUSE+EFFECT bits"
+        );
 
         // Two conditionals with the SAME cause and different effects
         // should differ ONLY in the EFFECT contribution.
@@ -5787,8 +6064,10 @@ mod tests {
 
         // Verify the signature key has QUANTIFIER bit set
         // A quantified triple has 4 roles: AGENT, ACTION, PATIENT, QUANTIFIER
-        let expected_sig = (1u64 << ROLE_AGENT) | (1u64 << ROLE_ACTION)
-            | (1u64 << ROLE_PATIENT) | (1u64 << ROLE_QUANTIFIER);
+        let expected_sig = (1u64 << ROLE_AGENT)
+            | (1u64 << ROLE_ACTION)
+            | (1u64 << ROLE_PATIENT)
+            | (1u64 << ROLE_QUANTIFIER);
         let fillers_for_sig: Vec<(usize, &Hypervector, &str)> = vec![
             (ROLE_AGENT, alice, "alice"),
             (ROLE_ACTION, eat, "eat"),
@@ -5796,15 +6075,17 @@ mod tests {
             (ROLE_QUANTIFIER, &quant_hv, "0.8"),
         ];
         let sig = compute_signature_key(&fillers_for_sig);
-        assert_eq!(sig, expected_sig, "Quantified signature should have 4 bits set");
+        assert_eq!(
+            sig, expected_sig,
+            "Quantified signature should have 4 bits set"
+        );
 
         // Recover the SVO triple by removing quantifier XOR contribution.
         // Since the quantified vector is:
         //   triple ⊕ role_quantifier ⊕ ρ³¹(quant_hv)
         // XOR-ing out the quantifier binding recovers the triple exactly.
-        let without_quant = quantified.bitwise_xor(
-            &roles.bind_role_filler(ROLE_QUANTIFIER, &quant_hv)
-        );
+        let without_quant =
+            quantified.bitwise_xor(&roles.bind_role_filler(ROLE_QUANTIFIER, &quant_hv));
         let expected_triple = roles.bind_triple(alice, eat, apple);
         let triple_dist = without_quant.normalized_hamming_distance(&expected_triple);
         assert!(
@@ -5900,7 +6181,10 @@ mod tests {
 
         // Verify determinism and basic algebra
         let plain = roles.bind_nested_subject(&inner, caused, alarm);
-        assert_eq!(outer, plain, "bind_nested_subject should produce deterministic output");
+        assert_eq!(
+            outer, plain,
+            "bind_nested_subject should produce deterministic output"
+        );
 
         // Self-shift identity
         let delta = analogical_shift(&outer, &outer);
@@ -5934,21 +6218,37 @@ mod tests {
 
         // Segregated candidate lists (same at every level for simplicity)
         let subj_terms: Vec<String> = vec![
-            "alice".to_string(), "bob".to_string(), "charlie".to_string(),
+            "alice".to_string(),
+            "bob".to_string(),
+            "charlie".to_string(),
         ];
         let verb_terms: Vec<String> = vec![
-            "saw".to_string(), "ate".to_string(), "throw".to_string(),
-            "chase".to_string(), "feed".to_string(),
+            "saw".to_string(),
+            "ate".to_string(),
+            "throw".to_string(),
+            "chase".to_string(),
+            "feed".to_string(),
         ];
         let obj_terms: Vec<String> = vec![
-            "apple".to_string(), "ball".to_string(), "cat".to_string(),
-            "dog".to_string(), "mouse".to_string(), "bone".to_string(),
+            "apple".to_string(),
+            "ball".to_string(),
+            "cat".to_string(),
+            "dog".to_string(),
+            "mouse".to_string(),
+            "bone".to_string(),
         ];
 
         // Best-effort: the direct-unbind approach has SNR limitations
         // for 3-role XOR. The function must not panic.
         let result = factorize_svo_recursive(
-            &outer, &roles, &vocab, &subj_terms, &verb_terms, &obj_terms, 3, 0.30,
+            &outer,
+            &roles,
+            &vocab,
+            &subj_terms,
+            &verb_terms,
+            &obj_terms,
+            3,
+            0.30,
         );
 
         if let Some(fact) = result {
@@ -5987,16 +6287,29 @@ mod tests {
         let thought = roles.bind_triple(alice, eat, apple);
 
         let subj_terms: Vec<String> = ["alice", "bob", "charlie"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
         let verb_terms: Vec<String> = ["eat", "throw", "chase", "feed"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
         let obj_terms: Vec<String> = ["apple", "ball", "cat", "dog", "mouse", "bone"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
 
         // This may return None due to cross-talk — that's expected.
         // The important thing is it doesn't panic.
         let result = factorize_svo_recursive(
-            &thought, &roles, &vocab, &subj_terms, &verb_terms, &obj_terms, 3, 0.30,
+            &thought,
+            &roles,
+            &vocab,
+            &subj_terms,
+            &verb_terms,
+            &obj_terms,
+            3,
+            0.30,
         );
 
         if let Some(fact) = result {
@@ -6037,9 +6350,9 @@ mod tests {
         let ball = vocab.get_vector("ball").unwrap();
 
         // Build inner triples
-        let inner1 = roles.bind_triple(bob, ate, apple);   // Bob ate apple
+        let inner1 = roles.bind_triple(bob, ate, apple); // Bob ate apple
         let inner2 = roles.bind_triple(david, threw, ball); // David threw ball
-        let inner3 = roles.bind_triple(bob, ate, ball);     // Bob ate ball
+        let inner3 = roles.bind_triple(bob, ate, ball); // Bob ate ball
 
         // Build nested structures
         // S₁: Alice saw [Bob ate apple]
@@ -6103,8 +6416,11 @@ mod tests {
         // S₃ ⊕ Δ = (alice, saw, inner3) ⊕ (alice⊕charlie, saw⊕heard, inner1⊕inner2)
         //        = (charlie, heard, inner3 ⊕ inner1 ⊕ inner2)
         // This is a bit-exact identity.
-        let expected_outer = roles.bind_nested_object(charlie, heard,
-            &inner3.bitwise_xor(&inner1).bitwise_xor(&inner2));
+        let expected_outer = roles.bind_nested_object(
+            charlie,
+            heard,
+            &inner3.bitwise_xor(&inner1).bitwise_xor(&inner2),
+        );
         let dist = predicted.normalized_hamming_distance(&expected_outer);
         assert!(
             dist < 0.01,
@@ -6196,9 +6512,7 @@ mod tests {
         // sets it to "?" when base≠source, even though the XOR result ecb⊕fed⊕fed=ecb
         // is correct. The EFFECT role propagates cleanly because c1 and c3
         // share the same effect.)
-        let matches = index.query_predictions(&[
-            (ROLE_EFFECT, "bond_prices_fall"),
-        ]);
+        let matches = index.query_predictions(&[(ROLE_EFFECT, "bond_prices_fall")]);
 
         assert!(
             matches.len() >= 1,
@@ -6209,7 +6523,9 @@ mod tests {
         // Verify the prediction algebraically: find a prediction where
         // applying the delta to c3 gives the expected conditional.
         let any_correct: bool = index.predictions().iter().any(|p| {
-            if p.base_label != "c3" { return false; }
+            if p.base_label != "c3" {
+                return false;
+            }
             // Find the predicted vector and verify it matches the expected
             let expected = roles.encode_conditional(
                 vocab.get_vector("ecb_raises").unwrap(),
@@ -6223,7 +6539,8 @@ mod tests {
         );
 
         // Verify the fourth frame didn't generate cross-structure predictions
-        let svo_predictions: Vec<&AnalogicalPrediction> = index.predictions()
+        let svo_predictions: Vec<&AnalogicalPrediction> = index
+            .predictions()
             .iter()
             .filter(|p| p.base_label == "svo" || p.source_label == "svo" || p.target_label == "svo")
             .collect();
@@ -6261,18 +6578,14 @@ mod tests {
         };
 
         // Test display
-        assert_eq!(
-            outer.display(),
-            "alice saw [bob said [charlie ate apple]]"
-        );
+        assert_eq!(outer.display(), "alice saw [bob said [charlie ate apple]]");
 
         // Test collect_terminals
         let terms = outer.collect_terminals();
-        assert_eq!(terms, vec![
-            "alice", "saw",
-            "bob", "said",
-            "charlie", "ate", "apple",
-        ]);
+        assert_eq!(
+            terms,
+            vec!["alice", "saw", "bob", "said", "charlie", "ate", "apple",]
+        );
 
         // Test terminal-only fact
         let flat = NestedFact {
@@ -6303,15 +6616,25 @@ mod tests {
         let thought = roles.bind_triple(alice, eat, apple);
 
         let subj_terms: Vec<String> = ["alice", "bob", "charlie"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
         let verb_terms: Vec<String> = ["eat", "throw", "chase", "feed"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
         let obj_terms: Vec<String> = ["apple", "ball", "cat", "dog", "mouse", "bone"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
 
         let score = factorizability_score(
-            &thought, &roles, &vocab,
-            &subj_terms, &verb_terms, &obj_terms,
+            &thought,
+            &roles,
+            &vocab,
+            &subj_terms,
+            &verb_terms,
+            &obj_terms,
         );
 
         // Clean SVO triple should have high factorizability (≥0.65)
@@ -6331,16 +6654,20 @@ mod tests {
         let noise = Hypervector::new_random();
 
         let subj_terms: Vec<String> = ["alice", "bob", "charlie"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
         let verb_terms: Vec<String> = ["eat", "throw", "chase", "feed"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
         let obj_terms: Vec<String> = ["apple", "ball", "cat", "dog", "mouse", "bone"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
 
-        let score = factorizability_score(
-            &noise, &roles, &vocab,
-            &subj_terms, &verb_terms, &obj_terms,
-        );
+        let score =
+            factorizability_score(&noise, &roles, &vocab, &subj_terms, &verb_terms, &obj_terms);
 
         // Noise should have low factorizability (well below 0.65)
         assert!(
@@ -6365,15 +6692,26 @@ mod tests {
 
         let sig_cond = (1 << ROLE_CAUSE) | (1 << ROLE_EFFECT);
         let subj_terms: Vec<String> = ["fed_raises", "ecb_raises"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
         let verb_terms: Vec<String> = ["yields_rise", "bond_prices_fall"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
         let obj_terms: Vec<String> = ["yields_rise", "bond_prices_fall"]
-            .iter().map(|s| s.to_string()).collect();
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
 
         let score = factorizability_for_signature(
-            &thought, &roles, &vocab, sig_cond,
-            &subj_terms, &verb_terms, &obj_terms,
+            &thought,
+            &roles,
+            &vocab,
+            sig_cond,
+            &subj_terms,
+            &verb_terms,
+            &obj_terms,
         );
 
         // 2-role XOR conditional should have good factorizability
@@ -6421,12 +6759,14 @@ mod tests {
         assert!(
             s_high > s_medium,
             "High-quality should beat medium: {} > {}",
-            s_high, s_medium
+            s_high,
+            s_medium
         );
         assert!(
             s_medium > s_low,
             "Medium should beat low: {} > {}",
-            s_medium, s_low
+            s_medium,
+            s_low
         );
 
         // Verify the novelty bonus works: two predictions that are identical
@@ -6483,7 +6823,8 @@ mod tests {
         assert!(
             pw_high > pw_low,
             "Exploit should favor high-weight pairs: {} > {}",
-            pw_high, pw_low
+            pw_high,
+            pw_low
         );
 
         // Explore mode: lower weight → higher pair weight (inverse)
@@ -6493,7 +6834,8 @@ mod tests {
         assert!(
             pw_low_explore > pw_high_explore,
             "Explore should favor low-weight pairs: {} > {}",
-            pw_low_explore, pw_high_explore
+            pw_low_explore,
+            pw_high_explore
         );
 
         // Mode selection based on novelty rate
@@ -6523,7 +6865,11 @@ mod tests {
         // Some above threshold
         let distances = vec![0.1, 0.5, 0.6, 0.2];
         let rate = AnalogicalIndex::novelty_rate(&distances, 0.4);
-        assert!((rate - 0.5).abs() < 0.01, "Rate should be 0.5, got {}", rate);
+        assert!(
+            (rate - 0.5).abs() < 0.01,
+            "Rate should be 0.5, got {}",
+            rate
+        );
 
         // All above threshold
         let distances = vec![0.5, 0.6, 0.7];
@@ -6578,10 +6924,7 @@ mod tests {
 
         let provider = MockProvider {
             epoch: 1,
-            weights: vec![
-                ("s1".to_string(), 500.0),
-                ("s2".to_string(), 50.0),
-            ],
+            weights: vec![("s1".to_string(), 500.0), ("s2".to_string(), 50.0)],
         };
 
         let (epoch, weights) = provider.get_weights(None);
@@ -6607,11 +6950,14 @@ mod tests {
         struct MockProvider;
         impl WeightProvider for MockProvider {
             fn get_weights(&self, _since_epoch: Option<u64>) -> (u64, Vec<(String, f64)>) {
-                (1, vec![
-                    ("heavy".to_string(), 500.0),
-                    ("medium".to_string(), 200.0),
-                    ("light".to_string(), 50.0),
-                ])
+                (
+                    1,
+                    vec![
+                        ("heavy".to_string(), 500.0),
+                        ("medium".to_string(), 200.0),
+                        ("light".to_string(), 50.0),
+                    ],
+                )
             }
         }
 
@@ -6627,12 +6973,15 @@ mod tests {
         let apple = *vocab.get_vector("apple").unwrap();
         let ball = *vocab.get_vector("ball").unwrap();
 
-        let mk_frame = |a: &Hypervector, v: &Hypervector, o: &Hypervector| -> (Hypervector, Vec<(usize, Hypervector, String)>) {
+        let mk_frame = |a: &Hypervector,
+                        v: &Hypervector,
+                        o: &Hypervector|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(a, v, o);
             let fillers = vec![
-                (ROLE_AGENT, *a, "?" .to_string()),
-                (ROLE_ACTION, *v, "?" .to_string()),
-                (ROLE_PATIENT, *o, "?" .to_string()),
+                (ROLE_AGENT, *a, "?".to_string()),
+                (ROLE_ACTION, *v, "?".to_string()),
+                (ROLE_PATIENT, *o, "?".to_string()),
             ];
             (hv, fillers)
         };
@@ -6644,18 +6993,40 @@ mod tests {
         let (s_light, f_light) = mk_frame(&bob, &throw, &ball);
         let (s_probe, f_probe) = mk_frame(&alice, &eat, &ball);
 
-        index.insert_synced("heavy", s_heavy, f_heavy, &provider,
-            AttentionMode::Exploit, 10, 0.5, 0.4, &[]);
-        index.insert_synced("light", s_light, f_light, &provider,
-            AttentionMode::Exploit, 10, 0.5, 0.4, &[]);
+        index.insert_synced(
+            "heavy",
+            s_heavy,
+            f_heavy,
+            &provider,
+            AttentionMode::Exploit,
+            10,
+            0.5,
+            0.4,
+            &[],
+        );
+        index.insert_synced(
+            "light",
+            s_light,
+            f_light,
+            &provider,
+            AttentionMode::Exploit,
+            10,
+            0.5,
+            0.4,
+            &[],
+        );
 
         // At this point, both frames have their weights synced.
         // Verify: heavy should have weight 500, light weight 50.
-        let heavy_weight = index.frames().iter()
+        let heavy_weight = index
+            .frames()
+            .iter()
             .find(|f| f.label == "heavy")
             .map(|f| f.evidential_weight)
             .unwrap_or(0.0);
-        let light_weight = index.frames().iter()
+        let light_weight = index
+            .frames()
+            .iter()
             .find(|f| f.label == "light")
             .map(|f| f.evidential_weight)
             .unwrap_or(0.0);
@@ -6665,8 +7036,17 @@ mod tests {
 
         // Insert probe: this should generate analogies using heavy and light
         // as sources. Heavy should be preferred due to higher weight.
-        index.insert_synced("probe", s_probe, f_probe, &provider,
-            AttentionMode::Exploit, 10, 0.5, 0.4, &[]);
+        index.insert_synced(
+            "probe",
+            s_probe,
+            f_probe,
+            &provider,
+            AttentionMode::Exploit,
+            10,
+            0.5,
+            0.4,
+            &[],
+        );
 
         // Verify predictions exist
         assert!(
@@ -6681,10 +7061,18 @@ mod tests {
         let mut light_sources = 0_usize;
 
         for pred in index.predictions() {
-            if pred.source_label == "heavy" { heavy_sources += 1; }
-            if pred.source_label == "light" { light_sources += 1; }
-            if pred.target_label == "heavy" { heavy_sources += 1; }
-            if pred.target_label == "light" { light_sources += 1; }
+            if pred.source_label == "heavy" {
+                heavy_sources += 1;
+            }
+            if pred.source_label == "light" {
+                light_sources += 1;
+            }
+            if pred.target_label == "heavy" {
+                heavy_sources += 1;
+            }
+            if pred.target_label == "light" {
+                light_sources += 1;
+            }
         }
 
         // Heavy-weight frames should appear as sources more often than light
@@ -6692,7 +7080,8 @@ mod tests {
             heavy_sources >= light_sources,
             "Heavy-weight frames should appear in predictions at least as often \
              as light-weight: {} heavy vs {} light",
-            heavy_sources, light_sources
+            heavy_sources,
+            light_sources
         );
 
         eprintln!(
@@ -6721,9 +7110,18 @@ mod tests {
         assert_ne!(predicted, causal, "Predicted ≠ Causal");
 
         // Decoding should round-trip
-        assert_eq!(EpistemicStatus::from_hv(&observed), EpistemicStatus::Observed);
-        assert_eq!(EpistemicStatus::from_hv(&predicted), EpistemicStatus::Predicted);
-        assert_eq!(EpistemicStatus::from_hv(&provisional), EpistemicStatus::Provisional);
+        assert_eq!(
+            EpistemicStatus::from_hv(&observed),
+            EpistemicStatus::Observed
+        );
+        assert_eq!(
+            EpistemicStatus::from_hv(&predicted),
+            EpistemicStatus::Predicted
+        );
+        assert_eq!(
+            EpistemicStatus::from_hv(&provisional),
+            EpistemicStatus::Provisional
+        );
         assert_eq!(EpistemicStatus::from_hv(&causal), EpistemicStatus::Causal);
     }
 
@@ -6753,7 +7151,13 @@ mod tests {
         primary.insert("frame1", hv.clone(), fillers);
 
         // Generate meta-frame
-        meta.on_insert("frame1", &hv, EpistemicStatus::Observed, 500.0, ObservationProvenance::Ambient);
+        meta.on_insert(
+            "frame1",
+            &hv,
+            EpistemicStatus::Observed,
+            500.0,
+            ObservationProvenance::Ambient,
+        );
 
         // Verify meta-frame was created
         assert_eq!(
@@ -6781,7 +7185,13 @@ mod tests {
             (ROLE_PATIENT, ball, "ball".to_string()),
         ];
         primary.insert("frame2", hv2.clone(), fillers2);
-        meta.on_insert("frame2", &hv2, EpistemicStatus::Observed, 300.0, ObservationProvenance::Ambient);
+        meta.on_insert(
+            "frame2",
+            &hv2,
+            EpistemicStatus::Observed,
+            300.0,
+            ObservationProvenance::Ambient,
+        );
 
         assert_eq!(
             meta.meta_frame_count(),
@@ -6810,7 +7220,8 @@ mod tests {
             assert!(
                 error < 16.0,
                 "Weight round-trip error should be < 16.0 for w={}, got {}",
-                w, error
+                w,
+                error
             );
         }
     }
@@ -6832,10 +7243,13 @@ mod tests {
         let apple = *vocab.get_vector("apple").unwrap();
         let ball = *vocab.get_vector("ball").unwrap();
 
-        let mk_all = |a: Hypervector, v: Hypervector, o: Hypervector,
-                       a_s: &str, v_s: &str, o_s: &str|
-            -> (Hypervector, Vec<(usize, Hypervector, String)>)
-        {
+        let mk_all = |a: Hypervector,
+                      v: Hypervector,
+                      o: Hypervector,
+                      a_s: &str,
+                      v_s: &str,
+                      o_s: &str|
+         -> (Hypervector, Vec<(usize, Hypervector, String)>) {
             let hv = roles.bind_triple(&a, &v, &o);
             let fillers: Vec<(usize, Hypervector, String)> = vec![
                 (ROLE_AGENT, a, a_s.to_string()),
@@ -6851,13 +7265,31 @@ mod tests {
         let (s3_hv, s3_f) = mk_all(alice, eat, ball, "alice", "eat", "ball");
 
         primary.insert("s1", s1_hv.clone(), s1_f);
-        meta.on_insert("s1", &s1_hv, EpistemicStatus::Observed, 500.0, ObservationProvenance::Ambient);
+        meta.on_insert(
+            "s1",
+            &s1_hv,
+            EpistemicStatus::Observed,
+            500.0,
+            ObservationProvenance::Ambient,
+        );
 
         primary.insert("s2", s2_hv.clone(), s2_f);
-        meta.on_insert("s2", &s2_hv, EpistemicStatus::Observed, 500.0, ObservationProvenance::Ambient);
+        meta.on_insert(
+            "s2",
+            &s2_hv,
+            EpistemicStatus::Observed,
+            500.0,
+            ObservationProvenance::Ambient,
+        );
 
         primary.insert("s3", s3_hv.clone(), s3_f);
-        meta.on_insert("s3", &s3_hv, EpistemicStatus::Predicted, 50.0, ObservationProvenance::Analogical);
+        meta.on_insert(
+            "s3",
+            &s3_hv,
+            EpistemicStatus::Predicted,
+            50.0,
+            ObservationProvenance::Analogical,
+        );
 
         // With 3+ meta-frames in the same signature group, the MetaIndex
         // should have generated analogical predictions at the meta level.
@@ -6923,7 +7355,9 @@ mod tests {
 
             let label = format!("frame_{}", i);
             primary.insert_with_provenance(
-                &label, hv.clone(), fillers,
+                &label,
+                hv.clone(),
+                fillers,
                 // Alternate provenance to create a pattern
                 if i % 2 == 0 {
                     ObservationProvenance::DirectedFactorizable
@@ -6933,7 +7367,10 @@ mod tests {
             );
             let weight = if i % 2 == 0 { 400.0 } else { 100.0 };
             meta.on_insert(
-                &label, &hv, EpistemicStatus::Observed, weight,
+                &label,
+                &hv,
+                EpistemicStatus::Observed,
+                weight,
                 if i % 2 == 0 {
                     ObservationProvenance::DirectedFactorizable
                 } else {
@@ -6942,15 +7379,22 @@ mod tests {
             );
         }
 
-        eprintln!("  Primary frames: {}, Meta-frames: {}, Predictions: {}",
-            primary.frame_count(), meta.meta_frame_count(), meta.meta_prediction_count());
+        eprintln!(
+            "  Primary frames: {}, Meta-frames: {}, Predictions: {}",
+            primary.frame_count(),
+            meta.meta_frame_count(),
+            meta.meta_prediction_count()
+        );
 
         // ── Structural gap detection ───────────────────────────────
         // The geometric approach failed because analogical predictions
         // always interpolate within the known frame hull (max NHD ~0.33).
         // The structural approach uses label patterns instead.
         let structural_targets = meta.curiosity_targets_structural(primary.frames());
-        eprintln!("  Curiosity targets (structural): {}", structural_targets.len());
+        eprintln!(
+            "  Curiosity targets (structural): {}",
+            structural_targets.len()
+        );
 
         // The test name for frames are "frame_0", "frame_1", etc.
         // Strip the "gap_test/" prefix from the domain function names
@@ -6992,7 +7436,11 @@ mod tests {
         let verb_tech = Hypervector::encode_text_ngram("enables", 3);
 
         for domain in 0..2 {
-            let verb = if domain == 0 { &verb_finance } else { &verb_tech };
+            let verb = if domain == 0 {
+                &verb_finance
+            } else {
+                &verb_tech
+            };
             let domain_name = if domain == 0 { "finance" } else { "tech" };
 
             for i in 0..4 {
@@ -7024,8 +7472,11 @@ mod tests {
             }
         }
 
-        eprintln!("  Meta-frames: {}, Predictions: {}",
-            meta.meta_frame_count(), meta.meta_prediction_count());
+        eprintln!(
+            "  Meta-frames: {}, Predictions: {}",
+            meta.meta_frame_count(),
+            meta.meta_prediction_count()
+        );
 
         // ── The crucial empirical question ──────────────────────────
         // Does the MetaIndex detect that, in the finance domain,
@@ -7048,18 +7499,21 @@ mod tests {
                 || pred.target_label.starts_with("finance")
                 || pred.base_label.starts_with("finance");
 
-            if !is_finance { continue; }
+            if !is_finance {
+                continue;
+            }
 
             let is_directed_source = pred.source_label.starts_with("finance")
                 && (pred.source_label.contains("directed")
                     || pred.source_label.contains("frame/0")
                     || pred.source_label.contains("frame/2"));
             let is_ambient_source = pred.source_label.starts_with("finance")
-                && (pred.source_label.contains("frame/1")
-                    || pred.source_label.contains("frame/3"));
+                && (pred.source_label.contains("frame/1") || pred.source_label.contains("frame/3"));
 
             // Check the predicted PATIENT filler (weight) for the target
-            let target_weight_str = pred.predicted_fillers.iter()
+            let target_weight_str = pred
+                .predicted_fillers
+                .iter()
                 .find(|f| f.role_idx == ROLE_PATIENT)
                 .map(|f| f.filler_str.as_str())
                 .unwrap_or("weight:0.0");
@@ -7081,8 +7535,10 @@ mod tests {
         // have higher predicted weight than Ambient predictions
         // in the finance domain, because that's the ground-truth pattern.
         if !utility_if_directed.is_empty() && !utility_if_ambient.is_empty() {
-            let mean_directed = utility_if_directed.iter().sum::<f64>() / utility_if_directed.len() as f64;
-            let mean_ambient = utility_if_ambient.iter().sum::<f64>() / utility_if_ambient.len() as f64;
+            let mean_directed =
+                utility_if_directed.iter().sum::<f64>() / utility_if_directed.len() as f64;
+            let mean_ambient =
+                utility_if_ambient.iter().sum::<f64>() / utility_if_ambient.len() as f64;
 
             eprintln!("  Finance domain: mean predicted weight");
             eprintln!("    DirectedFactorizable sources: {:.1}", mean_directed);
@@ -7093,12 +7549,16 @@ mod tests {
                 mean_directed > mean_ambient,
                 "In finance domain, DirectedFactorizable predictions should have \
                  higher mean weight ({:.1}) than Ambient ({:.1})",
-                mean_directed, mean_ambient
+                mean_directed,
+                mean_ambient
             );
         } else {
             eprintln!("  Insufficient predictions for finance-domain comparison");
-            eprintln!("    directed={}, ambient={}",
-                utility_if_directed.len(), utility_if_ambient.len());
+            eprintln!(
+                "    directed={}, ambient={}",
+                utility_if_directed.len(),
+                utility_if_ambient.len()
+            );
         }
 
         // ── Domain-level pattern contrast ───────────────────────────
@@ -7111,9 +7571,13 @@ mod tests {
             let is_tech = pred.source_label.starts_with("tech")
                 || pred.target_label.starts_with("tech")
                 || pred.base_label.starts_with("tech");
-            if !is_tech { continue; }
+            if !is_tech {
+                continue;
+            }
 
-            let target_weight_str = pred.predicted_fillers.iter()
+            let target_weight_str = pred
+                .predicted_fillers
+                .iter()
                 .find(|f| f.role_idx == ROLE_PATIENT)
                 .map(|f| f.filler_str.as_str())
                 .unwrap_or("weight:0.0");
@@ -7126,7 +7590,10 @@ mod tests {
 
         if !utility_tech.is_empty() {
             let mean_tech = utility_tech.iter().sum::<f64>() / utility_tech.len() as f64;
-            eprintln!("  Tech domain (uniform): mean predicted weight = {:.1}", mean_tech);
+            eprintln!(
+                "  Tech domain (uniform): mean predicted weight = {:.1}",
+                mean_tech
+            );
         }
     }
 
@@ -7164,7 +7631,11 @@ mod tests {
         let consequent_2 = roles.bind_triple(&bnd_subj, &bnd_verb, &bonds_hv);
 
         let mut reasoner = CausalChainReasoner::new();
-        reasoner.add_rule(CausalRule::new(antecedent_1, antecedent_2, "inflation→yields"));
+        reasoner.add_rule(CausalRule::new(
+            antecedent_1,
+            antecedent_2,
+            "inflation→yields",
+        ));
         reasoner.add_rule(CausalRule::new(antecedent_2, consequent_2, "yields→bonds"));
 
         // ── Insert a frame matching R₁'s antecedent ────────────────
@@ -7178,12 +7649,7 @@ mod tests {
         // ── Run causal gap detection ───────────────────────────────
         // Forward chain from the frame: inflation → yields → bonds
         // If "bond prices fall" is not in primary_frames, it's a gap.
-        let gaps = meta.curiosity_targets_causal(
-            &reasoner,
-            primary.frames(),
-            3,
-            None,
-        );
+        let gaps = meta.curiosity_targets_causal(&reasoner, primary.frames(), 3, None);
 
         eprintln!("  Causal gaps detected: {}", gaps.len());
 
@@ -7215,9 +7681,11 @@ mod tests {
         label: &str,
         hv: Hypervector,
     ) -> usize {
-        let idx = primary.insert(label, hv, vec![
-            (ROLE_AGENT, hv, format!("filler:{}", label)),
-        ]);
+        let idx = primary.insert(
+            label,
+            hv,
+            vec![(ROLE_AGENT, hv, format!("filler:{}", label))],
+        );
         meta.abductor.process_frames(primary, 1);
         idx
     }
@@ -7238,19 +7706,11 @@ mod tests {
 
         // ── Tick 0: Inflation appears alone ──────────────────────
         abduce_tick(&mut primary, &mut meta, "frame_0", inflation_hv);
-        assert_eq!(
-            meta.abductor.rule_count(),
-            0,
-            "No rules with only 1 frame"
-        );
+        assert_eq!(meta.abductor.rule_count(), 0, "No rules with only 1 frame");
 
         // ── Tick 1: Yields follows — pair (0,1) creates rule ────
         abduce_tick(&mut primary, &mut meta, "frame_1", yields_hv);
-        assert_eq!(
-            meta.abductor.rule_count(),
-            1,
-            "One rule from first pair"
-        );
+        assert_eq!(meta.abductor.rule_count(), 1, "One rule from first pair");
 
         {
             let r = &meta.abductor.rules()[0];
@@ -7258,11 +7718,23 @@ mod tests {
 
             let a_dist = r.antecedent.normalized_hamming_distance(&inflation_hv);
             let c_dist = r.consequent.normalized_hamming_distance(&yields_hv);
-            assert!(a_dist < 0.10, "Antecedent should be inflation, got NHD={:.3}", a_dist);
-            assert!(c_dist < 0.10, "Consequent should be yields, got NHD={:.3}", c_dist);
+            assert!(
+                a_dist < 0.10,
+                "Antecedent should be inflation, got NHD={:.3}",
+                a_dist
+            );
+            assert!(
+                c_dist < 0.10,
+                "Consequent should be yields, got NHD={:.3}",
+                c_dist
+            );
             assert_eq!(r.confirmations, 1, "One confirmation after first pair");
             assert_eq!(r.refutations, 0, "No refutations yet");
-            assert!(!r.is_trustworthy(), "Rule not yet trustworthy (needs {} obs)", MIN_CAUSAL_OBSERVATIONS);
+            assert!(
+                !r.is_trustworthy(),
+                "Rule not yet trustworthy (needs {} obs)",
+                MIN_CAUSAL_OBSERVATIONS
+            );
         }
 
         // ── Tick 10: Inflation again ────────────────────────────
@@ -7277,7 +7749,10 @@ mod tests {
 
             assert_eq!(r.confirmations, 2, "Two confirmations after second pair");
             assert_eq!(r.refutations, 0, "Still no refutations");
-            assert!(!r.is_trustworthy(), "Not yet trustworthy — only 2 observations");
+            assert!(
+                !r.is_trustworthy(),
+                "Not yet trustworthy — only 2 observations"
+            );
         }
 
         // ── Tick 20: Inflation yet again ────────────────────────
@@ -7320,7 +7795,10 @@ mod tests {
         if !targets.is_empty() {
             let (target_hv, target_label) = &targets[0];
             let dist = target_hv.normalized_hamming_distance(&yields_hv);
-            eprintln!("  Gap target label={}, NHD to yields: {:.3}", target_label, dist);
+            eprintln!(
+                "  Gap target label={}, NHD to yields: {:.3}",
+                target_label, dist
+            );
             assert!(
                 dist < 0.10,
                 "Gap target should be close to expected yields, got NHD={:.3}",
@@ -7371,7 +7849,9 @@ mod tests {
 
     /// Check whether a hypervector is novel relative to existing frames.
     fn is_novel(hv: &Hypervector, frames: &[RoleFrame], threshold: f64) -> bool {
-        frames.iter().all(|f| f.bound_vector.normalized_hamming_distance(hv) > threshold)
+        frames
+            .iter()
+            .all(|f| f.bound_vector.normalized_hamming_distance(hv) > threshold)
     }
 
     // ─── 50. Analogical-abductive gate ─────────────────────────────
@@ -7393,7 +7873,10 @@ mod tests {
         assert!(axiom.is_axiom(), "Rule should be an axiom");
         assert!(axiom.is_gating(), "Axiom should gate");
         assert!(axiom.is_trustworthy(), "Axiom always trustworthy");
-        assert!((axiom.confidence() - 1.0).abs() < 0.01, "Axiom confidence = 1.0");
+        assert!(
+            (axiom.confidence() - 1.0).abs() < 0.01,
+            "Axiom confidence = 1.0"
+        );
 
         // ── Test 1: Axiom-consistent frame passes the gate ──────
         // A candidate frame close to the expected consequent (rising_yields)
@@ -7415,7 +7898,9 @@ mod tests {
         // (cons_dist ≈ 0.5 from rising_yields). The gate correctly blocks it.
         let candidate_contradicting = inflation;
         assert!(
-            !meta.abductor.is_consistent_with_gate(&candidate_contradicting),
+            !meta
+                .abductor
+                .is_consistent_with_gate(&candidate_contradicting),
             "Analogical frame in axiom's domain but not the expected consequent should be blocked"
         );
 
@@ -7429,7 +7914,11 @@ mod tests {
         // ── Test 4: insert_with_gate blocks contradictory analogical frame ──
         let fillers = vec![
             (ROLE_AGENT, inflation, "inflation".to_string()),
-            (ROLE_ACTION, Hypervector::encode_text_ngram("observed", 3), "observed".to_string()),
+            (
+                ROLE_ACTION,
+                Hypervector::encode_text_ngram("observed", 3),
+                "observed".to_string(),
+            ),
             (ROLE_PATIENT, inflation, "inflation_data".to_string()),
         ];
         let result = primary.insert_with_gate(
@@ -7448,7 +7937,11 @@ mod tests {
         // A frame matching the axiom's expected consequent passes freely.
         let consistent_fillers = vec![
             (ROLE_AGENT, yields, "yields".to_string()),
-            (ROLE_ACTION, Hypervector::encode_text_ngram("rise", 3), "rise".to_string()),
+            (
+                ROLE_ACTION,
+                Hypervector::encode_text_ngram("rise", 3),
+                "rise".to_string(),
+            ),
             (ROLE_PATIENT, yields, "yields_up".to_string()),
         ];
         let result = primary.insert_with_gate(
@@ -7466,7 +7959,11 @@ mod tests {
         // The gate only constrains analogical predictions.
         let obs_fillers = vec![
             (ROLE_AGENT, inflation, "inflation".to_string()),
-            (ROLE_ACTION, Hypervector::encode_text_ngram("observed", 3), "observed".to_string()),
+            (
+                ROLE_ACTION,
+                Hypervector::encode_text_ngram("observed", 3),
+                "observed".to_string(),
+            ),
             (ROLE_PATIENT, inflation, "inflation_data".to_string()),
         ];
         let obs_idx = primary.insert_with_provenance(
@@ -7487,10 +7984,7 @@ mod tests {
 
     /// Helper: check if an analogical prediction's event type matches
     /// the given event type name (e.g., "gate_blocked").
-    fn pred_event_type_matches(
-        pred: &AnalogicalPrediction,
-        event_type_name: &str,
-    ) -> bool {
+    fn pred_event_type_matches(pred: &AnalogicalPrediction, event_type_name: &str) -> bool {
         let expected_hv = Hypervector::encode_text_ngram(event_type_name, 3);
         ProcessIndex::decode_predicted_event_type(pred)
             .map(|hv| hv.normalized_hamming_distance(&expected_hv) < 0.15)
@@ -7537,13 +8031,10 @@ mod tests {
         // The system should predict that a GateBlocked follows an
         // AnalogicialPrediction. This is discovered by the delta
         // between an analogical event and a gate_block event.
-        let predicts_gate = predictions.iter().any(|p| {
-            pred_event_type_matches(p, "gate_blocked")
-        });
-        assert!(
-            predicts_gate,
-            "Should predict GateBlocked from A→B pattern"
-        );
+        let predicts_gate = predictions
+            .iter()
+            .any(|p| pred_event_type_matches(p, "gate_blocked"));
+        assert!(predicts_gate, "Should predict GateBlocked from A→B pattern");
 
         // ── Key assertion 2: the pattern was not explicitly stored ─
         // No single ProcessIndex frame encodes "gate_blocked" at
@@ -7551,7 +8042,9 @@ mod tests {
         // The gate_blocked events are at positions 3 and 7, not 11.
         let explicit_gate_at_11 = pi.index().frames().iter().any(|f| {
             f.label.contains("proc_event_11")
-                && f.fillers.iter().any(|fill| fill.filler_str.contains("GateBlocked"))
+                && f.fillers
+                    .iter()
+                    .any(|fill| fill.filler_str.contains("GateBlocked"))
         });
         assert!(
             !explicit_gate_at_11,
@@ -7561,7 +8054,10 @@ mod tests {
         // ── Key assertion 3: structural gap detection finds the gap ─
         // The labels are proc_event_0 through proc_event_9.
         // proc_event_10 doesn't exist yet.
-        let structural_gaps = pi.index().frames().iter()
+        let structural_gaps = pi
+            .index()
+            .frames()
+            .iter()
             .map(|f| &f.label)
             .filter(|l| l.starts_with("proc_event_"))
             .collect::<Vec<_>>();
@@ -7575,7 +8071,10 @@ mod tests {
         // missing" → the system expects gate_blocked at position 10.
         let structural_targets = {
             // Build a quick structural gap check on the labels
-            let mut indices: Vec<usize> = pi.index().frames().iter()
+            let mut indices: Vec<usize> = pi
+                .index()
+                .frames()
+                .iter()
                 .filter_map(|f| {
                     let label = &f.label;
                     if let Some(digits_start) = label.rfind(|c: char| c.is_ascii_digit()) {
@@ -7597,7 +8096,8 @@ mod tests {
         // Verify: combined inference = structural gap + analogical prediction
         // The system knows position 10 is missing (structural) and that
         // position 10 should be GateBlocked (analogical).
-        let missing_positions: Vec<usize> = structural_targets.iter()
+        let missing_positions: Vec<usize> = structural_targets
+            .iter()
             .filter(|pos| **pos >= pi.event_count())
             .copied()
             .collect();
@@ -7611,7 +8111,9 @@ mod tests {
             "ProcessIndex should discover A→B pattern through analogical inference"
         );
 
-        eprintln!("  ProcessIndex test passed: behavioral pattern discovered via analogical inference");
+        eprintln!(
+            "  ProcessIndex test passed: behavioral pattern discovered via analogical inference"
+        );
     }
 
     // ─── 52. Cross-level pattern discovery (ProcessIndex → MetaIndex) ─
@@ -7629,16 +8131,16 @@ mod tests {
         // discover that ConfidenceShift → GateBlocked is a behavioral pattern
         // — a cross-level regularity between meta-level and object-level events.
         let events: Vec<ReasoningEvent> = vec![
-            ReasoningEvent::ConfidenceShift,  // 0
-            ReasoningEvent::ConfidenceShift,  // 1
-            ReasoningEvent::GateBlocked,      // 2
-            ReasoningEvent::ConfidenceShift,  // 3
-            ReasoningEvent::ConfidenceShift,  // 4
-            ReasoningEvent::GateBlocked,      // 5
-            ReasoningEvent::ConfidenceShift,  // 6
-            ReasoningEvent::GateBlocked,      // 7
-            ReasoningEvent::ConfidenceShift,  // 8
-            ReasoningEvent::GateBlocked,      // 9
+            ReasoningEvent::ConfidenceShift, // 0
+            ReasoningEvent::ConfidenceShift, // 1
+            ReasoningEvent::GateBlocked,     // 2
+            ReasoningEvent::ConfidenceShift, // 3
+            ReasoningEvent::ConfidenceShift, // 4
+            ReasoningEvent::GateBlocked,     // 5
+            ReasoningEvent::ConfidenceShift, // 6
+            ReasoningEvent::GateBlocked,     // 7
+            ReasoningEvent::ConfidenceShift, // 8
+            ReasoningEvent::GateBlocked,     // 9
         ];
 
         for event in &events {
@@ -7657,9 +8159,9 @@ mod tests {
         // precede gate blocks. This is a CROSS-LEVEL pattern:
         // the ProcessIndex discovered a regularity between meta-level
         // events (ConfidenceShift) and object-level events (GateBlocked).
-        let predicts_gate_from_shift = predictions.iter().any(|p| {
-            pred_event_type_matches(p, "gate_blocked")
-        });
+        let predicts_gate_from_shift = predictions
+            .iter()
+            .any(|p| pred_event_type_matches(p, "gate_blocked"));
         assert!(
             predicts_gate_from_shift,
             "ProcessIndex should discover cross-level pattern: ConfidenceShift → GateBlocked"
@@ -7667,8 +8169,12 @@ mod tests {
 
         // ── Verify no single frame encodes the cross-level pattern ─
         let explicit_pattern = pi.index().frames().iter().any(|f| {
-            f.fillers.iter().any(|fill| fill.filler_str.contains("ConfidenceShift"))
-                && f.fillers.iter().any(|fill| fill.filler_str.contains("GateBlocked"))
+            f.fillers
+                .iter()
+                .any(|fill| fill.filler_str.contains("ConfidenceShift"))
+                && f.fillers
+                    .iter()
+                    .any(|fill| fill.filler_str.contains("GateBlocked"))
         });
         // No single frame has BOTH ConfidenceShift AND GateBlocked fillers.
         // The pattern emerges from the delta BETWEEN frames, not within one.
@@ -7679,7 +8185,8 @@ mod tests {
 
         // ── Verify gate_blocked is predicted, not just retrieved ──
         // Count how many predictions are GateBlocked predictions
-        let gate_predictions = predictions.iter()
+        let gate_predictions = predictions
+            .iter()
             .filter(|p| pred_event_type_matches(p, "gate_blocked"))
             .count();
         eprintln!(
@@ -7714,20 +8221,22 @@ mod tests {
         // "government enacts policy_change → derived_market_impact"
         let gov = conc_hv("government");
         let enacts = conc_hv("enacts");
-        let rule_ante_hv = conc_hv("seed_policy_change");  // filler
+        let rule_ante_hv = conc_hv("seed_policy_change"); // filler
         let rule_cons_hv = conc_hv("derived_market_impact");
         let seed_policy_hv = roles.bind_triple(&gov, &enacts, &rule_ante_hv);
 
         let mut reasoner = crate::reason::CausalChainReasoner::new();
         reasoner.add_rule(crate::reason::CausalRule::new(
-            seed_policy_hv, rule_cons_hv, "policy→market",
+            seed_policy_hv,
+            rule_cons_hv,
+            "policy→market",
         ));
         // Group A (5):  Analogical seed — same subject, different verbs
         //   "alice eats apple", "alice throws ball", "alice chases cat",
         //   "alice feeds dog", "alice holds bone"
         let alice = conc_hv("alice");
         let verbs = ["eats", "throws", "chases", "feeds", "holds"];
-        let objs  = ["apple", "ball", "cat", "dog", "bone"];
+        let objs = ["apple", "ball", "cat", "dog", "bone"];
         for i in 0..5 {
             let v = conc_hv(verbs[i]);
             let o = conc_hv(objs[i]);
@@ -7760,7 +8269,7 @@ mod tests {
         //   Pairs: (frame_0→frame_1), (frame_2→frame_3), singleton frame_4
         //   Enables the abductor to discover temporal rules.
         let trigger = conc_hv("trigger");
-        let effect  = conc_hv("effect");
+        let effect = conc_hv("effect");
         let trigger_v = conc_hv("causes");
         for i in 0..2 {
             let subj = conc_hv(&format!("cause_{}", i));
@@ -7856,7 +8365,10 @@ mod tests {
             "seed_structure",
         );
 
-        eprintln!("  Axioms registered: {}", meta.abductor.gating_rules().len());
+        eprintln!(
+            "  Axioms registered: {}",
+            meta.abductor.gating_rules().len()
+        );
 
         // ── Phase 0: Bootstrap on clean causal pairs ──────────────
         // Before the main loop with analogical insertion, see how the
@@ -7893,13 +8405,21 @@ mod tests {
         let fillers_s_b = vec![
             (ROLE_AGENT, singleton_subj_b, "cause_singleton".to_string()),
             (ROLE_ACTION, trigger_v, "causes".to_string()),
-            (ROLE_PATIENT, singleton_obj_b, "trigger_singleton".to_string()),
+            (
+                ROLE_PATIENT,
+                singleton_obj_b,
+                "trigger_singleton".to_string(),
+            ),
         ];
         bootstrap_primary.insert("boot_singleton", hv_s_b, fillers_s_b);
 
         // Process frames to create abduced rules from clean temporal pairs
-        bootstrap_meta.abductor.process_frames(&bootstrap_primary, 2);
-        bootstrap_meta.abductor.process_frames(&bootstrap_primary, 2);
+        bootstrap_meta
+            .abductor
+            .process_frames(&bootstrap_primary, 2);
+        bootstrap_meta
+            .abductor
+            .process_frames(&bootstrap_primary, 2);
 
         // Report trajectory for each process_frames call
         for step in 0..3 {
@@ -7913,7 +8433,9 @@ mod tests {
             for r in &r_obs {
                 eprintln!("      {}", r.status());
             }
-            bootstrap_meta.abductor.process_frames(&bootstrap_primary, 2);
+            bootstrap_meta
+                .abductor
+                .process_frames(&bootstrap_primary, 2);
         }
 
         eprintln!(
@@ -7935,8 +8457,8 @@ mod tests {
             structural_gaps: usize,
             causal_manual_targets: usize,
             causal_abduced_targets: usize,
-            cross_mechanism: usize,  // frames from mech A used by mech B
-            gate_blocked: usize,      // analogical predictions blocked by gate
+            cross_mechanism: usize, // frames from mech A used by mech B
+            gate_blocked: usize,    // analogical predictions blocked by gate
             stable_count: usize,
         }
 
@@ -7957,15 +8479,10 @@ mod tests {
             let mut new_analogical = 0usize;
             let max_analogical = 5usize;
 
-            let predictions: Vec<(
-                Hypervector,
-                Vec<(usize, Hypervector, String)>,
-            )> = primary
+            let predictions: Vec<(Hypervector, Vec<(usize, Hypervector, String)>)> = primary
                 .predictions()
                 .iter()
-                .filter(|pred| {
-                    is_novel(&pred.predicted_vector, primary.frames(), novel_threshold)
-                })
+                .filter(|pred| is_novel(&pred.predicted_vector, primary.frames(), novel_threshold))
                 .take(max_analogical)
                 .map(|pred| {
                     let fillers: Vec<(usize, Hypervector, String)> = pred
@@ -8027,16 +8544,24 @@ mod tests {
                     let fillers = vec![
                         (ROLE_AGENT, *target_hv, "derived_ante".to_string()),
                         (ROLE_ACTION, conc_hv("implies"), "implies".to_string()),
-                        (ROLE_PATIENT, *target_hv, format!("derived_cons_{}", iteration)),
+                        (
+                            ROLE_PATIENT,
+                            *target_hv,
+                            format!("derived_cons_{}", iteration),
+                        ),
                     ];
                     primary.insert_with_provenance(
-                        &label, *target_hv, fillers,
+                        &label,
+                        *target_hv,
+                        fillers,
                         ObservationProvenance::Analogical,
                     );
                     frame_origin.push(format!("causal_manual:it{}", iteration));
                     meta.on_insert(
-                        &label, target_hv,
-                        EpistemicStatus::Causal, 300.0,
+                        &label,
+                        target_hv,
+                        EpistemicStatus::Causal,
+                        300.0,
                         ObservationProvenance::Analogical,
                     );
                     new_manual += 1;
@@ -8053,16 +8578,24 @@ mod tests {
                     let fillers = vec![
                         (ROLE_AGENT, *target_hv, "abduced_ante".to_string()),
                         (ROLE_ACTION, conc_hv("predicts"), "predicts".to_string()),
-                        (ROLE_PATIENT, *target_hv, format!("abduced_cons_{}", iteration)),
+                        (
+                            ROLE_PATIENT,
+                            *target_hv,
+                            format!("abduced_cons_{}", iteration),
+                        ),
                     ];
                     primary.insert_with_provenance(
-                        &frame_label, *target_hv, fillers,
+                        &frame_label,
+                        *target_hv,
+                        fillers,
                         ObservationProvenance::DirectedFactorizable,
                     );
                     frame_origin.push(format!("causal_abduced:it{}", iteration));
                     meta.on_insert(
-                        &frame_label, target_hv,
-                        EpistemicStatus::Causal, 250.0,
+                        &frame_label,
+                        target_hv,
+                        EpistemicStatus::Causal,
+                        250.0,
                         ObservationProvenance::DirectedFactorizable,
                     );
                     new_abduced += 1;
@@ -8121,7 +8654,14 @@ mod tests {
                 let top_n = rules_by_obs.len().min(3);
                 let trajectories: Vec<String> = rules_by_obs[..top_n]
                     .iter()
-                    .map(|r| format!("{}/{} (c={:.0}%)", r.confirmations, r.refutations, r.confidence() * 100.0))
+                    .map(|r| {
+                        format!(
+                            "{}/{} (c={:.0}%)",
+                            r.confirmations,
+                            r.refutations,
+                            r.confidence() * 100.0
+                        )
+                    })
                     .collect();
                 eprintln!(
                     "  >> it {} most-tested rules: {}",
@@ -8131,21 +8671,33 @@ mod tests {
             }
 
             if stable_count >= convergence_window {
-                eprintln!("  Converged at iteration {} ({} stable iterations)", iteration, convergence_window);
+                eprintln!(
+                    "  Converged at iteration {} ({} stable iterations)",
+                    iteration, convergence_window
+                );
                 break;
             }
         }
 
         // ── Report ──────────────────────────────────────────────
         eprintln!("\n─── Convergence Report ───");
-        eprintln!("  {:>4} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8}",
-            "it", "frames", "new", "rules", "analog", "struct", "manual", "abduced", "blocked");
+        eprintln!(
+            "  {:>4} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8}",
+            "it", "frames", "new", "rules", "analog", "struct", "manual", "abduced", "blocked"
+        );
         for r in &reports {
-            eprintln!("  {:>4} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8}",
-                r.iteration, r.frame_count, r.new_frames, r.rule_count,
-                r.analogical_targets, r.structural_gaps,
-                r.causal_manual_targets, r.causal_abduced_targets,
-                r.gate_blocked);
+            eprintln!(
+                "  {:>4} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8} {:>8}",
+                r.iteration,
+                r.frame_count,
+                r.new_frames,
+                r.rule_count,
+                r.analogical_targets,
+                r.structural_gaps,
+                r.causal_manual_targets,
+                r.causal_abduced_targets,
+                r.gate_blocked
+            );
         }
 
         let last_report = reports.last().unwrap();
@@ -8154,14 +8706,14 @@ mod tests {
         eprintln!("  Total iterations:  {}", last_report.iteration);
         eprintln!("  Final frame count: {}", last_report.frame_count);
         eprintln!("  Final rule count:  {}", last_report.rule_count);
-        eprintln!("  Converged:         {}", last_report.stable_count >= convergence_window);
+        eprintln!(
+            "  Converged:         {}",
+            last_report.stable_count >= convergence_window
+        );
         eprintln!("  Stable iterations: {}", last_report.stable_count);
 
         // ── Assertions ──────────────────────────────────────────
-        assert!(
-            last_report.iteration > 0,
-            "Should run at least 1 iteration"
-        );
+        assert!(last_report.iteration > 0, "Should run at least 1 iteration");
 
         // Cross-mechanism interaction: we expect at least some mechanism
         // interaction if the architecture is properly connected
@@ -8175,7 +8727,10 @@ mod tests {
         eprintln!("  Total abduced targets: {}", abduced_total);
 
         // The system should have at least one abduced rule
-        eprintln!("  Trustworthy rules: {}", meta.abductor.trustworthy_rules().len());
+        eprintln!(
+            "  Trustworthy rules: {}",
+            meta.abductor.trustworthy_rules().len()
+        );
 
         // Log all rules for inspection
         for rule in meta.abductor.rules() {
@@ -8193,8 +8748,10 @@ mod tests {
         let novel_threshold = 0.03;
 
         eprintln!("\n=== GATE TOLERANCE SWEEP ===");
-        eprintln!("{:<8} {:<12} {:<12} {:<12}",
-            "gain", "blocked", "inserted", "block_rate");
+        eprintln!(
+            "{:<8} {:<12} {:<12} {:<12}",
+            "gain", "blocked", "inserted", "block_rate"
+        );
         eprintln!("{}", "-".repeat(48));
 
         let mut results: Vec<(f64, f64)> = Vec::new();
@@ -8226,7 +8783,11 @@ mod tests {
                 let hv = fpe_levels[seed_val];
                 let fillers = vec![
                     (ROLE_AGENT, hv, format!("seed_val_{}", seed_val)),
-                    (ROLE_ACTION, Hypervector::encode_text_ngram("test", 3), "test".to_string()),
+                    (
+                        ROLE_ACTION,
+                        Hypervector::encode_text_ngram("test", 3),
+                        "test".to_string(),
+                    ),
                     (ROLE_PATIENT, hv, format!("seed_{}", seed_val)),
                 ];
                 primary.insert(&format!("seed_fpe_{}", seed_val), hv, fillers);
@@ -8236,7 +8797,11 @@ mod tests {
             meta.abductor.tolerance_multiplier = gain;
             meta.abductor.domain_threshold = 0.50;
 
-            eprintln!("  gain={:.2}: predictions={}", gain, primary.predictions().len());
+            eprintln!(
+                "  gain={:.2}: predictions={}",
+                gain,
+                primary.predictions().len()
+            );
 
             let mut total_blocked = 0usize;
             let mut total_inserted = 0usize;
@@ -8245,7 +8810,9 @@ mod tests {
                 let predictions: Vec<(Hypervector, Vec<(usize, Hypervector, String)>)> = primary
                     .predictions()
                     .iter()
-                    .filter(|pred| is_novel(&pred.predicted_vector, primary.frames(), novel_threshold))
+                    .filter(|pred| {
+                        is_novel(&pred.predicted_vector, primary.frames(), novel_threshold)
+                    })
                     .map(|pred| {
                         let fillers: Vec<(usize, Hypervector, String)> = pred
                             .predicted_fillers
@@ -8263,7 +8830,9 @@ mod tests {
                 for (predicted_vector, pred_fillers) in &predictions {
                     let label = format!("sweep_g{:.2}_it{}", gain, iteration);
                     let result = primary.insert_with_gate(
-                        &label, *predicted_vector, pred_fillers.clone(),
+                        &label,
+                        *predicted_vector,
+                        pred_fillers.clone(),
                         ObservationProvenance::Analogical,
                         &meta.abductor,
                     );
@@ -8271,8 +8840,11 @@ mod tests {
                         total_blocked += 1;
                         continue;
                     }
-                    meta.on_insert(&label, predicted_vector,
-                        EpistemicStatus::Predicted, 200.0,
+                    meta.on_insert(
+                        &label,
+                        predicted_vector,
+                        EpistemicStatus::Predicted,
+                        200.0,
                         ObservationProvenance::Analogical,
                     );
                     total_inserted += 1;
@@ -8286,25 +8858,35 @@ mod tests {
                 0.0
             };
 
-            eprintln!("{:<8.2} {:<12} {:<12} {:<12.4}",
-                gain, total_blocked, total_inserted, block_rate);
+            eprintln!(
+                "{:<8.2} {:<12} {:<12} {:<12.4}",
+                gain, total_blocked, total_inserted, block_rate
+            );
             results.push((gain, block_rate));
         }
 
         // ── Compute g_empirical ────────────────────────────────
         eprintln!("\n=== EMPIRICAL GAIN ESTIMATES ===");
-        eprintln!("{:<14} {:<14} {:<14}", "multiplier_lo", "multiplier_hi", "g_empirical");
+        eprintln!(
+            "{:<14} {:<14} {:<14}",
+            "multiplier_lo", "multiplier_hi", "g_empirical"
+        );
         eprintln!("{}", "-".repeat(44));
 
         for w in results.windows(2) {
             let (m0, r0) = w[0];
             let (m1, r1) = w[1];
-            let g = if (m1 - m0).abs() > 1e-9 { (r1 - r0) / (m1 - m0) } else { f64::NAN };
+            let g = if (m1 - m0).abs() > 1e-9 {
+                (r1 - r0) / (m1 - m0)
+            } else {
+                f64::NAN
+            };
             eprintln!("{:<14.2} {:<14.2} {:<14.4}", m0, m1, g);
         }
 
         // Mean over linear region (0.5–1.5)
-        let linear: Vec<f64> = results.windows(2)
+        let linear: Vec<f64> = results
+            .windows(2)
             .filter(|w| w[0].0 >= 0.5 && w[1].0 <= 1.5)
             .map(|w| (w[1].1 - w[0].1) / (w[1].0 - w[0].0))
             .collect();
@@ -8349,23 +8931,55 @@ mod tests {
         let (event, reaction, impact) = match variant % 5 {
             0 => {
                 // Fed rate hike scenario
-                let size = ["25 basis points", "a quarter point", "0.25%", "25 bps",
-                            "a quarter percentage point", "25 basis points",
-                            "quarter point", "25 bps", "0.25 percent", "quarter point"][variant % 10];
-                let verb = ["raised", "lifted", "hiked", "increased", "boosted",
-                            "tightened", "raised", "lifted", "hiked", "increased"][variant % 10];
-                let reaction_verb = ["rose", "climbed", "jumped", "surged", "increased",
-                                     "rose", "climbed", "jumped", "moved higher", "increased"][variant % 10];
-                let sector = ["Technology stocks fell on the news.",
-                              "Growth stocks declined sharply.",
-                              "The tech sector sold off.",
-                              "Equity markets dropped.",
-                              "Stock indices declined.",
-                              "Tech shares weakened.",
-                              "The NASDAQ fell.",
-                              "Growth shares declined.",
-                              "Equities moved lower.",
-                              "The stock market dropped."][variant % 10].to_string();
+                let size = [
+                    "25 basis points",
+                    "a quarter point",
+                    "0.25%",
+                    "25 bps",
+                    "a quarter percentage point",
+                    "25 basis points",
+                    "quarter point",
+                    "25 bps",
+                    "0.25 percent",
+                    "quarter point",
+                ][variant % 10];
+                let verb = [
+                    "raised",
+                    "lifted",
+                    "hiked",
+                    "increased",
+                    "boosted",
+                    "tightened",
+                    "raised",
+                    "lifted",
+                    "hiked",
+                    "increased",
+                ][variant % 10];
+                let reaction_verb = [
+                    "rose",
+                    "climbed",
+                    "jumped",
+                    "surged",
+                    "increased",
+                    "rose",
+                    "climbed",
+                    "jumped",
+                    "moved higher",
+                    "increased",
+                ][variant % 10];
+                let sector = [
+                    "Technology stocks fell on the news.",
+                    "Growth stocks declined sharply.",
+                    "The tech sector sold off.",
+                    "Equity markets dropped.",
+                    "Stock indices declined.",
+                    "Tech shares weakened.",
+                    "The NASDAQ fell.",
+                    "Growth shares declined.",
+                    "Equities moved lower.",
+                    "The stock market dropped.",
+                ][variant % 10]
+                    .to_string();
                 (
                     format!("The Federal Reserve {} rates by {}.", verb, size),
                     format!("Treasury yields {} across the curve.", reaction_verb),
@@ -8374,26 +8988,54 @@ mod tests {
             }
             1 => {
                 // Inflation data scenario
-                let measure = ["CPI", "inflation", "core CPI", "consumer prices",
-                               "PCE", "CPI", "inflation", "core prices",
-                               "consumer inflation", "underlying inflation"][variant % 10];
-                let direction = ["rose", "increased", "came in hot", "exceeded forecasts",
-                                 "climbed", "rose", "increased", "surged",
-                                 "accelerated", "topped estimates"][variant % 10];
-                let level = ["0.4 percent", "0.3%", "more than expected",
-                             "above consensus", "0.35 percent", "0.4 percent",
-                             "hotter than expected", "0.3 percent",
-                             "above forecasts", "0.45 percent"][variant % 10];
-                let rate_outlook = ["Rate hike expectations increased.",
-                                    "The Fed is expected to tighten further.",
-                                    "Rate cut probabilities declined.",
-                                    "Hawkish bets increased.",
-                                    "The central bank faces pressure to act.",
-                                    "Rate hike odds rose.",
-                                    "The Fed will likely raise rates again.",
-                                    "Tightening expectations grew.",
-                                    "Policy normalization continues.",
-                                    "Further rate increases are likely."][variant % 10];
+                let measure = [
+                    "CPI",
+                    "inflation",
+                    "core CPI",
+                    "consumer prices",
+                    "PCE",
+                    "CPI",
+                    "inflation",
+                    "core prices",
+                    "consumer inflation",
+                    "underlying inflation",
+                ][variant % 10];
+                let direction = [
+                    "rose",
+                    "increased",
+                    "came in hot",
+                    "exceeded forecasts",
+                    "climbed",
+                    "rose",
+                    "increased",
+                    "surged",
+                    "accelerated",
+                    "topped estimates",
+                ][variant % 10];
+                let level = [
+                    "0.4 percent",
+                    "0.3%",
+                    "more than expected",
+                    "above consensus",
+                    "0.35 percent",
+                    "0.4 percent",
+                    "hotter than expected",
+                    "0.3 percent",
+                    "above forecasts",
+                    "0.45 percent",
+                ][variant % 10];
+                let rate_outlook = [
+                    "Rate hike expectations increased.",
+                    "The Fed is expected to tighten further.",
+                    "Rate cut probabilities declined.",
+                    "Hawkish bets increased.",
+                    "The central bank faces pressure to act.",
+                    "Rate hike odds rose.",
+                    "The Fed will likely raise rates again.",
+                    "Tightening expectations grew.",
+                    "Policy normalization continues.",
+                    "Further rate increases are likely.",
+                ][variant % 10];
                 (
                     format!("{} data {} {}.", measure, direction, level),
                     format!("The bond market sold off. {}", rate_outlook),
@@ -8402,28 +9044,55 @@ mod tests {
             }
             2 => {
                 // Tech earnings scenario
-                let company = ["Apple", "Microsoft", "Nvidia", "Amazon", "Google",
-                               "Meta", "Apple", "Microsoft", "Nvidia", "Amazon"][variant % 10];
-                let result = ["beat earnings estimates", "exceeded revenue forecasts",
-                              "surpassed quarterly expectations", "crushed profit targets",
-                              "delivered strong results", "beat consensus estimates",
-                              "reported record revenue", "exceeded all expectations",
-                              "surprised to the upside", "delivered solid growth"][variant % 10];
-                let reaction = ["shares surged", "the stock rallied", "equities gained",
-                                "the stock price jumped", "shares climbed",
-                                "the stock moved higher", "shares gained",
-                                "the stock price increased", "shares advanced",
-                                "equity rose"][variant % 10];
-                let tech_sector = ["The broader tech sector followed the rally.",
-                              "Other tech stocks also moved higher.",
-                              "The sector gained on the optimism.",
-                              "Tech stocks broadly advanced.",
-                              "The rally spread across the sector.",
-                              "Technology shares broadly rose.",
-                              "The sector participated in the rally.",
-                              "Growth stocks benefited from the news.",
-                              "Tech peers followed the leader.",
-                              "The sector rose in sympathy."][variant % 10].to_string();
+                let company = [
+                    "Apple",
+                    "Microsoft",
+                    "Nvidia",
+                    "Amazon",
+                    "Google",
+                    "Meta",
+                    "Apple",
+                    "Microsoft",
+                    "Nvidia",
+                    "Amazon",
+                ][variant % 10];
+                let result = [
+                    "beat earnings estimates",
+                    "exceeded revenue forecasts",
+                    "surpassed quarterly expectations",
+                    "crushed profit targets",
+                    "delivered strong results",
+                    "beat consensus estimates",
+                    "reported record revenue",
+                    "exceeded all expectations",
+                    "surprised to the upside",
+                    "delivered solid growth",
+                ][variant % 10];
+                let reaction = [
+                    "shares surged",
+                    "the stock rallied",
+                    "equities gained",
+                    "the stock price jumped",
+                    "shares climbed",
+                    "the stock moved higher",
+                    "shares gained",
+                    "the stock price increased",
+                    "shares advanced",
+                    "equity rose",
+                ][variant % 10];
+                let tech_sector = [
+                    "The broader tech sector followed the rally.",
+                    "Other tech stocks also moved higher.",
+                    "The sector gained on the optimism.",
+                    "Tech stocks broadly advanced.",
+                    "The rally spread across the sector.",
+                    "Technology shares broadly rose.",
+                    "The sector participated in the rally.",
+                    "Growth stocks benefited from the news.",
+                    "Tech peers followed the leader.",
+                    "The sector rose in sympathy.",
+                ][variant % 10]
+                    .to_string();
                 (
                     format!("{} {} after the market close.", company, result),
                     format!("In after-hours trading, {}.", reaction),
@@ -8432,31 +9101,43 @@ mod tests {
             }
             3 => {
                 // Oil / geopolitical scenario
-                let trigger = ["Supply disruptions", "Geopolitical tensions",
-                               "Production cuts", "OPEC output reductions",
-                               "Supply constraints", "Refinery outages",
-                               "Pipeline disruptions", "Export restrictions",
-                               "Supply fears", "Inventory drawdowns"][variant % 10];
-                let price_reaction = ["oil surged above 80 dollars",
-                                      "crude climbed to multi-year highs",
-                                      "energy prices jumped sharply",
-                                      "WTI rose above 85 dollars",
-                                      "Brent crude topped 90 dollars",
-                                      "oil prices spiked higher",
-                                      "crude rallied significantly",
-                                      "petroleum prices surged",
-                                      "the energy complex rallied",
-                                      "oil broke above recent resistance"][variant % 10];
-                let sector = ["Energy stocks led the market higher.",
-                              "Oil producers gained on the price move.",
-                              "Energy shares outperformed.",
-                              "Drillers and producers rallied.",
-                              "The energy sector was the top performer.",
-                              "Oil stocks gained sharply.",
-                              "Energy shares led the advance.",
-                              "The sector benefited from higher prices.",
-                              "Producers saw strong gains.",
-                              "Oil company stocks rose."][variant % 10].to_string();
+                let trigger = [
+                    "Supply disruptions",
+                    "Geopolitical tensions",
+                    "Production cuts",
+                    "OPEC output reductions",
+                    "Supply constraints",
+                    "Refinery outages",
+                    "Pipeline disruptions",
+                    "Export restrictions",
+                    "Supply fears",
+                    "Inventory drawdowns",
+                ][variant % 10];
+                let price_reaction = [
+                    "oil surged above 80 dollars",
+                    "crude climbed to multi-year highs",
+                    "energy prices jumped sharply",
+                    "WTI rose above 85 dollars",
+                    "Brent crude topped 90 dollars",
+                    "oil prices spiked higher",
+                    "crude rallied significantly",
+                    "petroleum prices surged",
+                    "the energy complex rallied",
+                    "oil broke above recent resistance",
+                ][variant % 10];
+                let sector = [
+                    "Energy stocks led the market higher.",
+                    "Oil producers gained on the price move.",
+                    "Energy shares outperformed.",
+                    "Drillers and producers rallied.",
+                    "The energy sector was the top performer.",
+                    "Oil stocks gained sharply.",
+                    "Energy shares led the advance.",
+                    "The sector benefited from higher prices.",
+                    "Producers saw strong gains.",
+                    "Oil company stocks rose.",
+                ][variant % 10]
+                    .to_string();
                 (
                     format!("{} pushed higher. {}", trigger, price_reaction),
                     "Gasoline prices also increased at the pump.".to_string(),
@@ -8465,26 +9146,43 @@ mod tests {
             }
             _ => {
                 // Housing / rates scenario
-                let indicator = ["Mortgage rates", "Home prices",
-                                 "Housing affordability", "Existing home sales",
-                                 "New home construction", "Mortgage demand",
-                                 "Homebuilder confidence", "Home prices",
-                                 "Housing inventory", "Mortgage rates"][variant % 10];
-                let direction = ["approached 7 percent", "rose to new highs",
-                                 "declined further", "fell sharply",
-                                 "weakened significantly", "deteriorated",
-                                 "dropped to multi-year lows", "cooled",
-                                 "continued to decline", "reached elevated levels"][variant % 10];
-                let reaction = ["Buyers pulled back from the market.",
-                                "Demand weakened considerably.",
-                                "Sales volumes continued to decline.",
-                                "The housing market slowed further.",
-                                "Activity ground to a halt.",
-                                "Purchases dropped sharply.",
-                                "Market activity continued to weaken.",
-                                "The slowdown persisted.",
-                                "Transaction volumes fell further.",
-                                "Buyer interest waned."][variant % 10].to_string();
+                let indicator = [
+                    "Mortgage rates",
+                    "Home prices",
+                    "Housing affordability",
+                    "Existing home sales",
+                    "New home construction",
+                    "Mortgage demand",
+                    "Homebuilder confidence",
+                    "Home prices",
+                    "Housing inventory",
+                    "Mortgage rates",
+                ][variant % 10];
+                let direction = [
+                    "approached 7 percent",
+                    "rose to new highs",
+                    "declined further",
+                    "fell sharply",
+                    "weakened significantly",
+                    "deteriorated",
+                    "dropped to multi-year lows",
+                    "cooled",
+                    "continued to decline",
+                    "reached elevated levels",
+                ][variant % 10];
+                let reaction = [
+                    "Buyers pulled back from the market.",
+                    "Demand weakened considerably.",
+                    "Sales volumes continued to decline.",
+                    "The housing market slowed further.",
+                    "Activity ground to a halt.",
+                    "Purchases dropped sharply.",
+                    "Market activity continued to weaken.",
+                    "The slowdown persisted.",
+                    "Transaction volumes fell further.",
+                    "Buyer interest waned.",
+                ][variant % 10]
+                    .to_string();
                 (
                     format!("{} {} this month.", indicator, direction),
                     reaction,
@@ -8519,7 +9217,10 @@ mod tests {
         let mut frame_counter = 0usize;
 
         let all_pages = generate_n_pages(n_pages);
-        eprintln!("\n====== INTEGRATION PIPELINE: {} PAGES (TOPICAL CLUSTERS) ======", n_pages);
+        eprintln!(
+            "\n====== INTEGRATION PIPELINE: {} PAGES (TOPICAL CLUSTERS) ======",
+            n_pages
+        );
         eprintln!("  Topics: 5 (rate_hike, cpi, tech_earnings, oil, housing)");
         eprintln!("  Variants per topic: {}", n_pages / 5);
         eprintln!("  Total pages: {}", all_pages.len());
@@ -8537,8 +9238,12 @@ mod tests {
             // Debug: print first 3 pages' extraction results
             if page_idx < 3 {
                 let triples = crate::nlp::extract_svo(page_text);
-                eprintln!("  DEBUG page {}: {} chars -> {} SVO triples",
-                    page_idx, page_text.len(), triples.len());
+                eprintln!(
+                    "  DEBUG page {}: {} chars -> {} SVO triples",
+                    page_idx,
+                    page_text.len(),
+                    triples.len()
+                );
                 for t in &triples {
                     eprintln!("    SVO: ({}, {}, {})", t.subject, t.verb, t.object);
                 }
@@ -8548,7 +9253,8 @@ mod tests {
             let triples = crate::nlp::extract_svo(page_text);
 
             // Step 2: Quality filter (removes extraction artifacts)
-            let quality_triples: Vec<&crate::nlp::SvoTriple> = triples.iter()
+            let quality_triples: Vec<&crate::nlp::SvoTriple> = triples
+                .iter()
                 .filter(|t| !t.subject.is_empty() && !t.verb.is_empty())
                 .filter(|t| crate::bridge::passes_quality_gate(t))
                 .collect();
@@ -8589,8 +9295,8 @@ mod tests {
                 let label = format!("bridge_{:05}", frame_counter);
                 frame_counter += 1;
                 let fillers = vec![
-                    (crate::analogy::ROLE_AGENT,   s_hv, triple.subject.clone()),
-                    (crate::analogy::ROLE_ACTION,  v_hv, triple.verb.clone()),
+                    (crate::analogy::ROLE_AGENT, s_hv, triple.subject.clone()),
+                    (crate::analogy::ROLE_ACTION, v_hv, triple.verb.clone()),
                     (crate::analogy::ROLE_PATIENT, o_hv, triple.object.clone()),
                 ];
                 let w = (triple.confidence * 400.0).clamp(0.0, 500.0);
@@ -8608,14 +9314,23 @@ mod tests {
                 });
                 // Fix up the frame with actual fillers and signature key
                 if let Some(f) = primary.frames_mut().last_mut() {
-                    f.fillers = fillers.iter().map(|(role, hv, s)| crate::analogy::RoleFiller {
-                        role_idx: *role, filler_hv: *hv, filler_str: s.clone(),
-                    }).collect();
+                    f.fillers = fillers
+                        .iter()
+                        .map(|(role, hv, s)| crate::analogy::RoleFiller {
+                            role_idx: *role,
+                            filler_hv: *hv,
+                            filler_str: s.clone(),
+                        })
+                        .collect();
                     f.signature_key = crate::analogy::compute_signature_key(
-                        &fillers.iter().map(|(r, h, s)| (*r, h, s.as_str())).collect::<Vec<_>>()
+                        &fillers
+                            .iter()
+                            .map(|(r, h, s)| (*r, h, s.as_str()))
+                            .collect::<Vec<_>>(),
                     );
                 }
-                primary.signature_index_mut()
+                primary
+                    .signature_index_mut()
                     .entry(fillers.iter().fold(0u64, |k, (r, _, _)| k | (1u64 << r)))
                     .or_insert_with(Vec::new)
                     .push(frame_idx);
@@ -8630,8 +9345,12 @@ mod tests {
                 meta.abductor.check_refutations(&primary);
             }
         }
-        eprintln!("  DEBUG extraction: {} extracted, {} quality-rejected, {} inserted",
-            total_extracted, total_quality_rejected, primary.frame_count());
+        eprintln!(
+            "  DEBUG extraction: {} extracted, {} quality-rejected, {} inserted",
+            total_extracted,
+            total_quality_rejected,
+            primary.frame_count()
+        );
 
         // Final abductor pass
         meta.abductor.process_frames(&primary, 2);
@@ -8647,9 +9366,8 @@ mod tests {
         let trustworthy_rules = meta.abductor.trustworthy_rules().len();
         let all_rules = meta.abductor.rules().len();
         let structural_gaps = meta.curiosity_targets_structural(primary.frames());
-        let abduced_targets = meta.curiosity_targets_abduced_weighted(
-            primary.frames(), &meta.signature_stats,
-        );
+        let abduced_targets =
+            meta.curiosity_targets_abduced_weighted(primary.frames(), &meta.signature_stats);
 
         eprintln!("\n─── DIAGNOSTIC REPORT ───");
         eprintln!("  Frame count:              {}", frame_count);
@@ -8662,31 +9380,44 @@ mod tests {
         // ── Decode all trustworthy rules ──────────────────────────────
         if trustworthy_rules > 0 {
             eprintln!("\n─── TRUSTWORTHY RULES (decoded) ───");
-            let trusted: Vec<&ProvisionalRule> = meta.abductor.rules().iter()
+            let trusted: Vec<&ProvisionalRule> = meta
+                .abductor
+                .rules()
+                .iter()
                 .filter(|r| r.is_trustworthy())
                 .collect();
 
             for (i, rule) in trusted.iter().enumerate() {
                 let find_closest = |target: &Hypervector| -> String {
-                    primary.frames().iter()
+                    primary
+                        .frames()
+                        .iter()
                         .min_by(|a, b| {
                             let da = target.normalized_hamming_distance(&a.bound_vector);
                             let db = target.normalized_hamming_distance(&b.bound_vector);
                             da.partial_cmp(&db).unwrap()
                         })
                         .map(|f| {
-                            let fillers: Vec<&str> = f.fillers.iter()
-                                .map(|r| r.filler_str.as_str()).collect();
+                            let fillers: Vec<&str> =
+                                f.fillers.iter().map(|r| r.filler_str.as_str()).collect();
                             format!("{} ({})", f.label, fillers.join(", "))
                         })
                         .unwrap_or_default()
                 };
 
-                eprintln!("  Trusted Rule {}: {} → {}",
-                    i + 1, find_closest(&rule.antecedent), find_closest(&rule.consequent));
-                eprintln!("           conf={} ref={} delta_nhd={:.3}",
-                    rule.confirmations, rule.refutations,
-                    rule.antecedent.normalized_hamming_distance(&rule.consequent));
+                eprintln!(
+                    "  Trusted Rule {}: {} → {}",
+                    i + 1,
+                    find_closest(&rule.antecedent),
+                    find_closest(&rule.consequent)
+                );
+                eprintln!(
+                    "           conf={} ref={} delta_nhd={:.3}",
+                    rule.confirmations,
+                    rule.refutations,
+                    rule.antecedent
+                        .normalized_hamming_distance(&rule.consequent)
+                );
             }
         }
 
@@ -8695,20 +9426,27 @@ mod tests {
             eprintln!("\n─── CURIOUSITY TARGETS (first 5) ───");
             for (i, (target_hv, label, weight)) in abduced_targets.iter().take(5).enumerate() {
                 let find_closest = |target: &Hypervector| -> String {
-                    primary.frames().iter()
+                    primary
+                        .frames()
+                        .iter()
                         .min_by(|a, b| {
                             let da = target.normalized_hamming_distance(&a.bound_vector);
                             let db = target.normalized_hamming_distance(&b.bound_vector);
                             da.partial_cmp(&db).unwrap()
                         })
                         .map(|f| {
-                            let fillers: Vec<&str> = f.fillers.iter()
-                                .map(|r| r.filler_str.as_str()).collect();
+                            let fillers: Vec<&str> =
+                                f.fillers.iter().map(|r| r.filler_str.as_str()).collect();
                             format!("{} ({})", f.label, fillers.join(", "))
                         })
                         .unwrap_or_default()
                 };
-                eprintln!("  Target {}: hv→ {} (weight={:.2})", i + 1, find_closest(target_hv), weight);
+                eprintln!(
+                    "  Target {}: hv→ {} (weight={:.2})",
+                    i + 1,
+                    find_closest(target_hv),
+                    weight
+                );
             }
         }
 
@@ -8717,15 +9455,24 @@ mod tests {
         assert!(frame_count > 0, "Bridge should extract SVO frames");
 
         if trustworthy_rules >= 3 {
-            eprintln!("  ✓ STRONG SEMANTIC SIGNAL — {} trustworthy rules at default parameters", trustworthy_rules);
+            eprintln!(
+                "  ✓ STRONG SEMANTIC SIGNAL — {} trustworthy rules at default parameters",
+                trustworthy_rules
+            );
             eprintln!("  The abductor finds repeated temporal patterns across topical clusters.");
             eprintln!("  Architecture is sound. Data was the bottleneck at 9 pages.");
         } else if trustworthy_rules > 0 {
-            eprintln!("  ∼ WEAK SIGNAL — {} trustworthy rules found, but fewer than 3", trustworthy_rules);
+            eprintln!(
+                "  ∼ WEAK SIGNAL — {} trustworthy rules found, but fewer than 3",
+                trustworthy_rules
+            );
             eprintln!("  Parameter tuning may help, but the architecture detects real patterns.");
         } else {
             eprintln!("  ✗ NO TRUSTWORTHY RULES at 300 pages with topical clusters.");
-            eprintln!("  All {} rules are provisional. Possible causes:", all_rules);
+            eprintln!(
+                "  All {} rules are provisional. Possible causes:",
+                all_rules
+            );
             eprintln!("    1. Trigram encoding diverges too much between surface variants");
             eprintln!("    2. Window=2 is too small even at 300 pages");
             eprintln!("    3. The 3-confirmation threshold needs adjustment");
@@ -8789,7 +9536,8 @@ mod tests {
         ];
 
         // Combine into a temporal sequence — 9 pages, each with ~3 sentences
-        let all_pages: Vec<&str> = page_a.iter()
+        let all_pages: Vec<&str> = page_a
+            .iter()
             .chain(page_b.iter())
             .chain(page_c.iter())
             .copied()
@@ -8802,8 +9550,11 @@ mod tests {
         for (page_idx, page_text) in all_pages.iter().enumerate() {
             // This is exactly what the forager's step() does now:
             let result = crate::bridge::ingest_text(
-                page_text, &mut primary, &mut meta,
-                0.05, &mut frame_counter,
+                page_text,
+                &mut primary,
+                &mut meta,
+                0.05,
+                &mut frame_counter,
             );
 
             if result.frames_inserted > 0 {
@@ -8834,9 +9585,8 @@ mod tests {
 
         // Curiosity targets
         let structural_gaps = meta.curiosity_targets_structural(primary.frames());
-        let abduced_targets = meta.curiosity_targets_abduced_weighted(
-            primary.frames(), &meta.signature_stats,
-        );
+        let abduced_targets =
+            meta.curiosity_targets_abduced_weighted(primary.frames(), &meta.signature_stats);
 
         eprintln!("\n─── DIAGNOSTIC REPORT ───");
         eprintln!("  Frame count:              {}", frame_count);
@@ -8852,17 +9602,23 @@ mod tests {
             // Decode the rule's antecedent and consequent by finding
             // frames with the closest bound vectors
             let find_closest_frame = |target: &Hypervector| -> String {
-                primary.frames().iter()
+                primary
+                    .frames()
+                    .iter()
                     .min_by(|a, b| {
                         let da = target.normalized_hamming_distance(&a.bound_vector);
                         let db = target.normalized_hamming_distance(&b.bound_vector);
                         da.partial_cmp(&db).unwrap()
                     })
                     .map(|f| {
-                        let fillers: Vec<&str> = f.fillers.iter()
-                            .map(|r| r.filler_str.as_str()).collect();
-                        format!("{} ({}) [{}]", f.label, fillers.join(", "),
-                            f.bound_vector.normalized_hamming_distance(target))
+                        let fillers: Vec<&str> =
+                            f.fillers.iter().map(|r| r.filler_str.as_str()).collect();
+                        format!(
+                            "{} ({}) [{}]",
+                            f.label,
+                            fillers.join(", "),
+                            f.bound_vector.normalized_hamming_distance(target)
+                        )
                     })
                     .unwrap_or_else(|| "? (no match)".to_string())
             };
@@ -8870,14 +9626,11 @@ mod tests {
             let ante_decoded = find_closest_frame(&rule.antecedent);
             let cons_decoded = find_closest_frame(&rule.consequent);
 
-            eprintln!("  Rule {}: {} → {}",
-                i + 1,
-                rule.label,
-                rule.status(),
-            );
+            eprintln!("  Rule {}: {} → {}", i + 1, rule.label, rule.status(),);
             eprintln!("         ante: {}", ante_decoded);
             eprintln!("         cons: {}", cons_decoded);
-            eprintln!("         conf={} ref={} status={}",
+            eprintln!(
+                "         conf={} ref={} status={}",
                 rule.confirmations,
                 rule.refutations,
                 rule.status(),
@@ -8885,15 +9638,24 @@ mod tests {
         }
 
         // ── Assertions — the pipeline should produce at least something ──
-        assert!(frame_count > 0, "Bridge should extract SVO frames from realistic text");
-        assert!(signature_groups > 0, "Frames should share at least one signature group");
+        assert!(
+            frame_count > 0,
+            "Bridge should extract SVO frames from realistic text"
+        );
+        assert!(
+            signature_groups > 0,
+            "Frames should share at least one signature group"
+        );
 
         eprintln!("\n─── VERDICT ───");
         if trustworthy_rules > 0 {
             eprintln!("  ✓ Abductor found trustworthy rules — temporal patterns detected");
         } else if all_rules > 0 {
             eprintln!("  ∼ Abductor found provisional rules, none yet trustworthy");
-            eprintln!("    (requires {} confirmations)", crate::analogy::MIN_CAUSAL_OBSERVATIONS);
+            eprintln!(
+                "    (requires {} confirmations)",
+                crate::analogy::MIN_CAUSAL_OBSERVATIONS
+            );
         } else {
             eprintln!("  ✗ Abductor found no rules — temporal pattern detection inactive");
             eprintln!("    Possible causes: window too small, frame rate too low,");
@@ -8905,14 +9667,19 @@ mod tests {
     fn test_measure_variant_nhd() {
         let roles = RoleDictionary::new();
         let cases = [
-            ("The Federal Reserve raised rates by 25 basis points.",
-             "The Federal Reserve hiked rates by a quarter point."),
-            ("Treasury yields rose across the curve.",
-             "Treasury yields climbed across the curve."),
-            ("Technology stocks fell on the news.",
-             "Growth stocks declined sharply."),
-            ("rates by 25 basis points .",
-             "rates by a quarter point ."),
+            (
+                "The Federal Reserve raised rates by 25 basis points.",
+                "The Federal Reserve hiked rates by a quarter point.",
+            ),
+            (
+                "Treasury yields rose across the curve.",
+                "Treasury yields climbed across the curve.",
+            ),
+            (
+                "Technology stocks fell on the news.",
+                "Growth stocks declined sharply.",
+            ),
+            ("rates by 25 basis points .", "rates by a quarter point ."),
         ];
         for (i, (s1, s2)) in cases.iter().enumerate() {
             let triples1 = crate::nlp::extract_svo(s1);
@@ -8939,11 +9706,17 @@ mod tests {
                 let v1 = Hypervector::encode_text_ngram(&t1.verb, 3);
                 let v2 = Hypervector::encode_text_ngram(&t2.verb, 3);
                 let v_nhd = v1.normalized_hamming_distance(&v2);
-                eprintln!("    Verb NHD only: {:.4} (\"{}\" vs \"{}\")", v_nhd, t1.verb, t2.verb);
+                eprintln!(
+                    "    Verb NHD only: {:.4} (\"{}\" vs \"{}\")",
+                    v_nhd, t1.verb, t2.verb
+                );
                 let o1 = Hypervector::encode_text_ngram(&t1.object, 3);
                 let o2 = Hypervector::encode_text_ngram(&t2.object, 3);
                 let o_nhd = o1.normalized_hamming_distance(&o2);
-                eprintln!("    Obj NHD only:  {:.4} (\"{}\" vs \"{}\")", o_nhd, t1.object, t2.object);
+                eprintln!(
+                    "    Obj NHD only:  {:.4} (\"{}\" vs \"{}\")",
+                    o_nhd, t1.object, t2.object
+                );
             }
         }
     }

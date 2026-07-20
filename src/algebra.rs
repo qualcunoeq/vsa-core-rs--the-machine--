@@ -23,6 +23,256 @@
 //   "slope of EXPR at X=VAL"       → differentiate, evaluate at VAL
 
 // ═══════════════════════════════════════════════════════════════════════
+// VARIABLE IDENTITY
+// ═══════════════════════════════════════════════════════════════════════
+
+/// A unique identifier for a logical variable.
+///
+/// Two `VarId`s with the same numeric value refer to the same logical variable.
+/// `VarId`s are allocated by a `VarGenerator` and never reused.
+#[derive(
+    Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, serde::Serialize, serde::Deserialize,
+)]
+pub struct VarId(pub u64);
+
+/// Whether a variable is rigid (bound by a quantifier or local context)
+/// or a meta-variable (unresolved search variable that may be assigned).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+pub enum VariableKind {
+    Rigid,
+    Meta,
+}
+
+/// A logical variable with a cosmetic display name.
+///
+/// Equality and hashing use only `id`, so two variables with the same ID
+/// but different display names are considered the same logical variable.
+#[derive(Clone, Debug)]
+pub struct Variable {
+    pub id: VarId,
+    pub kind: VariableKind,
+    pub display: std::sync::Arc<str>,
+}
+
+impl serde::Serialize for Variable {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = serializer.serialize_struct("Variable", 3)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("kind", &self.kind)?;
+        s.serialize_field("display", self.display.as_ref())?;
+        s.end()
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for Variable {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use serde::de;
+        #[derive(serde::Deserialize)]
+        struct VariableData {
+            id: VarId,
+            kind: VariableKind,
+            display: String,
+        }
+        let data = VariableData::deserialize(deserializer)?;
+        Ok(Variable {
+            id: data.id,
+            kind: data.kind,
+            display: std::sync::Arc::from(data.display),
+        })
+    }
+}
+
+impl PartialEq for Variable {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id && self.kind == other.kind
+    }
+}
+
+impl Eq for Variable {}
+
+impl std::hash::Hash for Variable {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.id.hash(state);
+        self.kind.hash(state);
+    }
+}
+
+impl Variable {
+    /// Create a variable directly (for testing or construction from parsed data).
+    pub fn new(id: VarId, kind: VariableKind, display: impl Into<std::sync::Arc<str>>) -> Self {
+        Variable {
+            id,
+            kind,
+            display: display.into(),
+        }
+    }
+
+    /// Create a fresh rigid variable with the given display name.
+    /// Prefer `VarGenerator::fresh_rigid()` for scoped logical code.
+    pub fn fresh_named(display: &str) -> Self {
+        // Use a static counter so each call gets a unique VarId.
+        use std::sync::atomic::{AtomicU64, Ordering};
+        static COUNTER: AtomicU64 = AtomicU64::new(1);
+        Variable {
+            id: VarId(COUNTER.fetch_add(1, Ordering::Relaxed)),
+            kind: VariableKind::Rigid,
+            display: std::sync::Arc::from(display),
+        }
+    }
+
+    /// Create or retrieve the legacy algebra variable for this display name.
+    /// Repeated `Variable::named("x")` calls denote the same free symbol.
+    pub fn named(display: &str) -> Self {
+        Self::interned(display)
+    }
+
+    /// Return the process-wide identity for a legacy display name.
+    ///
+    /// Older algebra code constructs variables from string literals in
+    /// separate expressions and expects those occurrences to denote the same
+    /// symbol. Scoped logical code must use `VarGenerator` instead.
+    pub fn interned(display: &str) -> Self {
+        use std::collections::HashMap;
+        use std::sync::{LazyLock, Mutex};
+        static INTERNED: LazyLock<Mutex<HashMap<String, Variable>>> =
+            LazyLock::new(|| Mutex::new(HashMap::new()));
+        let mut vars = INTERNED.lock().expect("legacy variable cache poisoned");
+        vars.entry(display.to_string())
+            .or_insert_with(|| Variable::fresh_named(display))
+            .clone()
+    }
+}
+
+impl std::fmt::Display for Variable {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.display)
+    }
+}
+
+/// Create a variable from a display name (convenience for legacy algebra code).
+/// Note: each call creates a unique VarId, so `Variable::from("x") != Variable::from("x")`.
+/// For the theorem prover, use `ParseContext::var()` to share identities.
+impl From<&str> for Variable {
+    fn from(name: &str) -> Self {
+        Variable::named(name)
+    }
+}
+
+/// Compare a Variable's display name against a string literal.
+/// This is only for legacy algebra code; the theorem prover should compare VarIds.
+impl PartialEq<str> for Variable {
+    fn eq(&self, other: &str) -> bool {
+        self.display.as_ref() == other
+    }
+}
+
+/// Allow `v == "x"` where v: Variable and "x" is &str.
+impl PartialEq<&str> for Variable {
+    fn eq(&self, other: &&str) -> bool {
+        self.display.as_ref() == *other
+    }
+}
+
+/// A scoped generator of fresh variable identities.
+///
+/// Each generator independently assigns monotonically increasing IDs,
+/// so tests and separate theorem environments produce deterministic IDs.
+#[derive(Debug, Default)]
+pub struct VarGenerator {
+    next_id: u64,
+}
+
+impl VarGenerator {
+    pub fn new() -> Self {
+        VarGenerator { next_id: 0 }
+    }
+
+    /// Allocate a fresh variable with the given display name and kind.
+    pub fn fresh(
+        &mut self,
+        display: impl Into<std::sync::Arc<str>>,
+        kind: VariableKind,
+    ) -> Variable {
+        let id = VarId(self.next_id);
+        self.next_id += 1;
+        Variable {
+            id,
+            kind,
+            display: display.into(),
+        }
+    }
+
+    /// Allocate a fresh rigid variable.
+    pub fn fresh_rigid(&mut self, display: impl Into<std::sync::Arc<str>>) -> Variable {
+        self.fresh(display, VariableKind::Rigid)
+    }
+
+    /// Allocate a fresh meta-variable.
+    pub fn fresh_meta(&mut self, display: impl Into<std::sync::Arc<str>>) -> Variable {
+        self.fresh(display, VariableKind::Meta)
+    }
+
+    /// How many variables have been generated so far.
+    pub fn count(&self) -> u64 {
+        self.next_id
+    }
+}
+
+/// Parsing context that tracks variable identities.
+///
+/// Ensures the same variable name within a parse scope gets the same `VarId`.
+#[derive(Debug, Default)]
+pub struct ParseContext {
+    generator: VarGenerator,
+    variables: std::collections::HashMap<String, Variable>,
+}
+
+impl ParseContext {
+    pub fn new() -> Self {
+        ParseContext {
+            generator: VarGenerator::new(),
+            variables: std::collections::HashMap::new(),
+        }
+    }
+
+    /// Get or create a rigid variable with the given display name.
+    /// Multiple calls with the same name return the same Variable.
+    pub fn var(&mut self, name: &str) -> Variable {
+        if let Some(v) = self.variables.get(name) {
+            v.clone()
+        } else {
+            let v = self.generator.fresh_rigid(name);
+            self.variables.insert(name.to_string(), v.clone());
+            v
+        }
+    }
+
+    /// Get or create a meta-variable with the given display name.
+    pub fn meta(&mut self, name: &str) -> Variable {
+        if let Some(v) = self.variables.get(name) {
+            v.clone()
+        } else {
+            let kind = VariableKind::Meta;
+            let v = self.generator.fresh(name, kind);
+            self.variables.insert(name.to_string(), v.clone());
+            v
+        }
+    }
+
+    /// Access the underlying generator.
+    pub fn generator(&mut self) -> &mut VarGenerator {
+        &mut self.generator
+    }
+
+    /// Reset the context (for reuse).
+    pub fn clear(&mut self) {
+        self.variables.clear();
+        self.generator = VarGenerator::new();
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // SYMBOLIC EXPRESSION AST
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -31,8 +281,8 @@
 pub enum SymExpr {
     /// Numeric constant.
     Num(f64),
-    /// Variable (e.g. "x", "y", "t").
-    Var(String),
+    /// Variable with logical identity.
+    Var(Variable),
     /// Addition: a + b
     Add(Box<SymExpr>, Box<SymExpr>),
     /// Subtraction: a - b
@@ -73,14 +323,14 @@ pub enum SymExpr {
     Atan(Box<SymExpr>),
     /// Limit: lim_{variable → approach} body
     Limit {
-        variable: String,
+        variable: Variable,
         approach: Box<SymExpr>,
         body: Box<SymExpr>,
     },
     /// Integral: ∫ body d(variable), optionally with bounds.
     /// When lower/upper are None, it's an indefinite integral.
     Integral {
-        variable: String,
+        variable: Variable,
         lower: Option<Box<SymExpr>>,
         upper: Option<Box<SymExpr>>,
         body: Box<SymExpr>,
@@ -214,16 +464,16 @@ impl SymExpr {
             SymExpr::Num(_) => SymExpr::Num(0.0),
 
             SymExpr::Var(v) => {
-                if v == var { SymExpr::Num(1.0) } else { SymExpr::Num(0.0) }
+                if v.display.as_ref() == var {
+                    SymExpr::Num(1.0)
+                } else {
+                    SymExpr::Num(0.0)
+                }
             }
 
-            SymExpr::Add(a, b) => {
-                a.differentiate(var) + b.differentiate(var)
-            }
+            SymExpr::Add(a, b) => a.differentiate(var) + b.differentiate(var),
 
-            SymExpr::Sub(a, b) => {
-                a.differentiate(var) - b.differentiate(var)
-            }
+            SymExpr::Sub(a, b) => a.differentiate(var) - b.differentiate(var),
 
             SymExpr::Mul(a, b) => {
                 // (a·b)' = a'·b + a·b'
@@ -252,16 +502,13 @@ impl SymExpr {
                     // Variable exponent: full formula
                     let u = base.as_ref().clone();
                     let v = exp.as_ref().clone();
-                    u.clone().pow(v.clone()) * (
-                        v.differentiate(var) * u.clone().ln()
-                        + v * u.clone().differentiate(var) / u
-                    )
+                    u.clone().pow(v.clone())
+                        * (v.differentiate(var) * u.clone().ln()
+                            + v * u.clone().differentiate(var) / u)
                 }
             }
 
-            SymExpr::Neg(a) => {
-                -a.differentiate(var)
-            }
+            SymExpr::Neg(a) => -a.differentiate(var),
 
             SymExpr::Sin(a) => {
                 // d(sin(u))/dx = cos(u)·u'
@@ -276,8 +523,7 @@ impl SymExpr {
             SymExpr::Tan(a) => {
                 // d(tan(u))/dx = sec²(u)·u' = (1/cos²(u))·u'
                 let u = a.as_ref().clone();
-                SymExpr::Num(1.0) / u.clone().cos().pow(SymExpr::Num(2.0))
-                    * a.differentiate(var)
+                SymExpr::Num(1.0) / u.clone().cos().pow(SymExpr::Num(2.0)) * a.differentiate(var)
             }
 
             SymExpr::Sqrt(a) => {
@@ -324,7 +570,8 @@ impl SymExpr {
             SymExpr::Acos(a) => {
                 // d(acos(u))/dx = -u' / sqrt(1 - u²)
                 let u = a.as_ref().clone();
-                -a.differentiate(var) / (SymExpr::Num(1.0) - u.clone().pow(SymExpr::Num(2.0))).sqrt()
+                -a.differentiate(var)
+                    / (SymExpr::Num(1.0) - u.clone().pow(SymExpr::Num(2.0))).sqrt()
             }
             SymExpr::Atan(a) => {
                 // d(atan(u))/dx = u' / (1 + u²)
@@ -334,18 +581,25 @@ impl SymExpr {
             // Differentiate under the limit/integral (differentiate the body).
             // This is valid when the limit variable and differentiation variable
             // are the same (the usual case for Leibniz-style "d/dx ∫ f(x) dx").
-            SymExpr::Limit { variable: _, approach: _, body } => {
-                SymExpr::Limit {
-                    variable: var.to_string(),
-                    approach: Box::new(SymExpr::Var(var.to_string())),
-                    body: Box::new(body.differentiate(var)),
-                }
-            }
-            SymExpr::Integral { variable: _, lower, upper, body } => {
+            SymExpr::Limit {
+                variable: _,
+                approach: _,
+                body,
+            } => SymExpr::Limit {
+                variable: Variable::named(var),
+                approach: Box::new(SymExpr::Var(Variable::named(var))),
+                body: Box::new(body.differentiate(var)),
+            },
+            SymExpr::Integral {
+                variable: _,
+                lower,
+                upper,
+                body,
+            } => {
                 // Differentiate under the integral: d/dx ∫ f(x,t) dt = ∫ ∂f/∂x dt
                 // For indefinite integrals, just differentiate the body.
                 SymExpr::Integral {
-                    variable: var.to_string(),
+                    variable: Variable::named(var),
                     lower: lower.clone(),
                     upper: upper.clone(),
                     body: Box::new(body.differentiate(var)),
@@ -444,22 +698,19 @@ impl SymExpr {
                 let b = b.distribute();
                 match (&a, &b) {
                     // c * (u + v) → c*u + c*v
-                    (SymExpr::Num(_) | SymExpr::Var(_),
-                     SymExpr::Add(ba, bb)) => {
+                    (SymExpr::Num(_) | SymExpr::Var(_), SymExpr::Add(ba, bb)) => {
                         let inner_a = ba.as_ref().clone();
                         let inner_b = bb.as_ref().clone();
                         (a.clone() * inner_a) + (a.clone() * inner_b)
                     }
                     // (u + v) * c → u*c + v*c
-                    (SymExpr::Add(aa, ab),
-                     SymExpr::Num(_) | SymExpr::Var(_)) => {
+                    (SymExpr::Add(aa, ab), SymExpr::Num(_) | SymExpr::Var(_)) => {
                         let inner_a = aa.as_ref().clone();
                         let inner_b = ab.as_ref().clone();
                         (inner_a * b.clone()) + (inner_b * b.clone())
                     }
                     // (u + v) * (x + y) → u*x + u*y + v*x + v*y
-                    (SymExpr::Add(aa, ab),
-                     SymExpr::Add(ba, bb)) => {
+                    (SymExpr::Add(aa, ab), SymExpr::Add(ba, bb)) => {
                         let (a1, a2) = (aa.as_ref().clone(), ab.as_ref().clone());
                         let (b1, b2) = (ba.as_ref().clone(), bb.as_ref().clone());
                         (a1.clone() * b1.clone())
@@ -468,38 +719,33 @@ impl SymExpr {
                             + (a2 * b2)
                     }
                     // c * (u - v) → c*u - c*v
-                    (SymExpr::Num(_) | SymExpr::Var(_),
-                     SymExpr::Sub(ba, bb)) => {
+                    (SymExpr::Num(_) | SymExpr::Var(_), SymExpr::Sub(ba, bb)) => {
                         let inner_a = ba.as_ref().clone();
                         let inner_b = bb.as_ref().clone();
                         (a.clone() * inner_a) - (a.clone() * inner_b)
                     }
                     // (u - v) * c → u*c - v*c
-                    (SymExpr::Sub(aa, ab),
-                     SymExpr::Num(_) | SymExpr::Var(_)) => {
+                    (SymExpr::Sub(aa, ab), SymExpr::Num(_) | SymExpr::Var(_)) => {
                         let inner_a = aa.as_ref().clone();
                         let inner_b = ab.as_ref().clone();
                         (inner_a * b.clone()) - (inner_b * b.clone())
                     }
                     // (u - v) * (x + y) → u*x + u*y - v*x - v*y
-                    (SymExpr::Sub(aa, ab),
-                     SymExpr::Add(ba, bb)) => {
+                    (SymExpr::Sub(aa, ab), SymExpr::Add(ba, bb)) => {
                         let (a1, a2) = (aa.as_ref().clone(), ab.as_ref().clone());
                         let (b1, b2) = (ba.as_ref().clone(), bb.as_ref().clone());
                         ((a1.clone() * b1.clone()) + (a1 * b2.clone()))
                             - ((a2.clone() * b1) + (a2 * b2))
                     }
                     // (u + v) * (x - y) → u*x - u*y + v*x - v*y
-                    (SymExpr::Add(aa, ab),
-                     SymExpr::Sub(ba, bb)) => {
+                    (SymExpr::Add(aa, ab), SymExpr::Sub(ba, bb)) => {
                         let (a1, a2) = (aa.as_ref().clone(), ab.as_ref().clone());
                         let (b1, b2) = (ba.as_ref().clone(), bb.as_ref().clone());
                         ((a1.clone() * b1.clone()) - (a1 * b2.clone()))
                             + ((a2.clone() * b1) - (a2 * b2))
                     }
                     // (u - v) * (x - y) → u*x - u*y - v*x + v*y
-                    (SymExpr::Sub(aa, ab),
-                     SymExpr::Sub(ba, bb)) => {
+                    (SymExpr::Sub(aa, ab), SymExpr::Sub(ba, bb)) => {
                         let (a1, a2) = (aa.as_ref().clone(), ab.as_ref().clone());
                         let (b1, b2) = (ba.as_ref().clone(), bb.as_ref().clone());
                         ((a1.clone() * b1.clone()) - (a1 * b2.clone()))
@@ -624,15 +870,10 @@ impl SymExpr {
                 match inner {
                     // -(x + y) → -x + -y (distribute Neg over Add)
                     SymExpr::Add(ba, bb) => {
-                        Self::collect_add_pair(
-                            SymExpr::Neg(ba),
-                            SymExpr::Neg(bb),
-                        )
+                        Self::collect_add_pair(SymExpr::Neg(ba), SymExpr::Neg(bb))
                     }
                     // -(x - y) → y - x
-                    SymExpr::Sub(ba, bb) => {
-                        SymExpr::Sub(bb, ba)
-                    }
+                    SymExpr::Sub(ba, bb) => SymExpr::Sub(bb, ba),
                     // -(-x) → x
                     SymExpr::Neg(a2) => *a2,
                     // -(5.0) → -5.0
@@ -640,9 +881,15 @@ impl SymExpr {
                     // Other: -sin(x), -Var("x"), etc.
                     _ => SymExpr::Neg(Box::new(inner)),
                 }
-            },
-            SymExpr::Div(a, b) => SymExpr::Div(Box::new(a.collect_like_terms()), Box::new(b.collect_like_terms())),
-            SymExpr::Pow(base, exp) => SymExpr::Pow(Box::new(base.collect_like_terms()), Box::new(exp.collect_like_terms())),
+            }
+            SymExpr::Div(a, b) => SymExpr::Div(
+                Box::new(a.collect_like_terms()),
+                Box::new(b.collect_like_terms()),
+            ),
+            SymExpr::Pow(base, exp) => SymExpr::Pow(
+                Box::new(base.collect_like_terms()),
+                Box::new(exp.collect_like_terms()),
+            ),
             SymExpr::Sin(a) => SymExpr::Sin(Box::new(a.collect_like_terms())),
             SymExpr::Cos(a) => SymExpr::Cos(Box::new(a.collect_like_terms())),
             SymExpr::Tan(a) => SymExpr::Tan(Box::new(a.collect_like_terms())),
@@ -682,28 +929,55 @@ impl SymExpr {
                 SymExpr::Sub(a, b) => {
                     // x - y → x + (-y)
                     let mut terms = extract_terms(*a);
-                    let neg_b = extract_terms(*b).into_iter().map(|mut t| { t.coeff = -t.coeff; t });
+                    let neg_b = extract_terms(*b).into_iter().map(|mut t| {
+                        t.coeff = -t.coeff;
+                        t
+                    });
                     terms.extend(neg_b);
                     terms
                 }
                 SymExpr::Num(n) => {
-                    vec![Term { coeff: n, factor: Box::new(SymExpr::Num(1.0)), is_const: true }]
+                    vec![Term {
+                        coeff: n,
+                        factor: Box::new(SymExpr::Num(1.0)),
+                        is_const: true,
+                    }]
                 }
                 SymExpr::Mul(a, b) => {
                     if let SymExpr::Num(n) = a.as_ref() {
-                        vec![Term { coeff: *n, factor: b.clone(), is_const: false }]
+                        vec![Term {
+                            coeff: *n,
+                            factor: b.clone(),
+                            is_const: false,
+                        }]
                     } else if let SymExpr::Num(n) = b.as_ref() {
-                        vec![Term { coeff: *n, factor: a.clone(), is_const: false }]
+                        vec![Term {
+                            coeff: *n,
+                            factor: a.clone(),
+                            is_const: false,
+                        }]
                     } else {
-                        vec![Term { coeff: 1.0, factor: Box::new(SymExpr::Mul(a.clone(), b.clone())), is_const: false }]
+                        vec![Term {
+                            coeff: 1.0,
+                            factor: Box::new(SymExpr::Mul(a.clone(), b.clone())),
+                            is_const: false,
+                        }]
                     }
                 }
-                SymExpr::Neg(a) => {
-                    extract_terms(*a).into_iter().map(|mut t| { t.coeff = -t.coeff; t }).collect()
-                }
+                SymExpr::Neg(a) => extract_terms(*a)
+                    .into_iter()
+                    .map(|mut t| {
+                        t.coeff = -t.coeff;
+                        t
+                    })
+                    .collect(),
                 // Variable or function without coefficient → coefficient 1
                 other => {
-                    vec![Term { coeff: 1.0, factor: Box::new(other), is_const: false }]
+                    vec![Term {
+                        coeff: 1.0,
+                        factor: Box::new(other),
+                        is_const: false,
+                    }]
                 }
             }
         }
@@ -716,7 +990,8 @@ impl SymExpr {
         }
 
         // Group by factor (string representation as heuristic key)
-        let mut grouped: std::collections::HashMap<String, (f64, Term)> = std::collections::HashMap::new();
+        let mut grouped: std::collections::HashMap<String, (f64, Term)> =
+            std::collections::HashMap::new();
         for term in terms {
             let (coeff, factor_str) = if term.is_const {
                 // All constants have the same factor
@@ -726,7 +1001,9 @@ impl SymExpr {
                 (term.coeff, factor_str)
             };
 
-            let entry = grouped.entry(factor_str).or_insert_with(|| (0.0, term.clone()));
+            let entry = grouped
+                .entry(factor_str)
+                .or_insert_with(|| (0.0, term.clone()));
             entry.0 += coeff;
         }
 
@@ -747,7 +1024,11 @@ impl SymExpr {
         result_terms.sort_by(|a, b| {
             if a.2 != b.2 {
                 // Constants after non-constants
-                if a.2 { std::cmp::Ordering::Greater } else { std::cmp::Ordering::Less }
+                if a.2 {
+                    std::cmp::Ordering::Greater
+                } else {
+                    std::cmp::Ordering::Less
+                }
             } else {
                 format!("{}", a.1).cmp(&format!("{}", b.1))
             }
@@ -817,18 +1098,18 @@ impl SymExpr {
         loop {
             let prev = expr.clone();
             // Identity rewrites FIRST (before expand destroys Pow forms)
-            expr = expr.apply_trig_pythagorean()
-                       .apply_exp_log_cancel();
+            expr = expr.apply_trig_pythagorean().apply_exp_log_cancel();
             // Then polynomial expansion + collection + simplification
-            expr = expr.expand()
-                       .collect_like_terms()
-                       .simplify();
+            expr = expr.expand().collect_like_terms().simplify();
             // Structural rewrites (neg distribution, rational forms)
-            expr = expr.apply_neg_distribute()
-                       .canonicalize_div()
-                       .collect_like_terms()
-                       .simplify();
-            if expr == prev { break; }
+            expr = expr
+                .apply_neg_distribute()
+                .canonicalize_div()
+                .collect_like_terms()
+                .simplify();
+            if expr == prev {
+                break;
+            }
         }
         expr
     }
@@ -912,12 +1193,21 @@ impl SymExpr {
             SymExpr::Acos(a) => SymExpr::Acos(Box::new(a.apply_trig_pythagorean())),
             SymExpr::Atan(a) => SymExpr::Atan(Box::new(a.apply_trig_pythagorean())),
             SymExpr::Num(_) | SymExpr::Var(_) => self,
-            SymExpr::Limit { variable, approach, body } => SymExpr::Limit {
+            SymExpr::Limit {
+                variable,
+                approach,
+                body,
+            } => SymExpr::Limit {
                 variable,
                 approach: Box::new(approach.apply_trig_pythagorean()),
                 body: Box::new(body.apply_trig_pythagorean()),
             },
-            SymExpr::Integral { variable, lower, upper, body } => SymExpr::Integral {
+            SymExpr::Integral {
+                variable,
+                lower,
+                upper,
+                body,
+            } => SymExpr::Integral {
                 variable,
                 lower: lower.map(|x| Box::new(x.apply_trig_pythagorean())),
                 upper: upper.map(|x| Box::new(x.apply_trig_pythagorean())),
@@ -1031,12 +1321,21 @@ impl SymExpr {
             SymExpr::Acos(a) => SymExpr::Acos(Box::new(a.apply_exp_log_cancel())),
             SymExpr::Atan(a) => SymExpr::Atan(Box::new(a.apply_exp_log_cancel())),
             SymExpr::Num(_) | SymExpr::Var(_) => self,
-            SymExpr::Limit { variable, approach, body } => SymExpr::Limit {
+            SymExpr::Limit {
+                variable,
+                approach,
+                body,
+            } => SymExpr::Limit {
                 variable,
                 approach: Box::new(approach.apply_exp_log_cancel()),
                 body: Box::new(body.apply_exp_log_cancel()),
             },
-            SymExpr::Integral { variable, lower, upper, body } => SymExpr::Integral {
+            SymExpr::Integral {
+                variable,
+                lower,
+                upper,
+                body,
+            } => SymExpr::Integral {
                 variable,
                 lower: lower.map(|x| Box::new(x.apply_exp_log_cancel())),
                 upper: upper.map(|x| Box::new(x.apply_exp_log_cancel())),
@@ -1049,9 +1348,7 @@ impl SymExpr {
     fn apply_neg_distribute(self) -> SymExpr {
         match self {
             SymExpr::Neg(inner) => match *inner {
-                SymExpr::Sub(a, b) => {
-                    b.apply_neg_distribute() - a.apply_neg_distribute()
-                }
+                SymExpr::Sub(a, b) => b.apply_neg_distribute() - a.apply_neg_distribute(),
                 SymExpr::Add(a, b) => {
                     let na = SymExpr::Neg(a).apply_neg_distribute();
                     let nb = SymExpr::Neg(b).apply_neg_distribute();
@@ -1095,12 +1392,21 @@ impl SymExpr {
             SymExpr::Acos(a) => SymExpr::Acos(Box::new(a.apply_neg_distribute())),
             SymExpr::Atan(a) => SymExpr::Atan(Box::new(a.apply_neg_distribute())),
             SymExpr::Num(_) | SymExpr::Var(_) => self,
-            SymExpr::Limit { variable, approach, body } => SymExpr::Limit {
+            SymExpr::Limit {
+                variable,
+                approach,
+                body,
+            } => SymExpr::Limit {
                 variable,
                 approach: Box::new(approach.apply_neg_distribute()),
                 body: Box::new(body.apply_neg_distribute()),
             },
-            SymExpr::Integral { variable, lower, upper, body } => SymExpr::Integral {
+            SymExpr::Integral {
+                variable,
+                lower,
+                upper,
+                body,
+            } => SymExpr::Integral {
                 variable,
                 lower: lower.map(|x| Box::new(x.apply_neg_distribute())),
                 upper: upper.map(|x| Box::new(x.apply_neg_distribute())),
@@ -1120,12 +1426,14 @@ impl SymExpr {
                     SymExpr::Num(k) if k != 1.0 && k != 0.0 => {
                         // Distribute over addition in numerator
                         match num {
-                            SymExpr::Add(a, b) => {
-                                SymExpr::Add(
-                                    Box::new(SymExpr::Div(a, Box::new(SymExpr::Num(k))).canonicalize_div()),
-                                    Box::new(SymExpr::Div(b, Box::new(SymExpr::Num(k))).canonicalize_div()),
-                                )
-                            }
+                            SymExpr::Add(a, b) => SymExpr::Add(
+                                Box::new(
+                                    SymExpr::Div(a, Box::new(SymExpr::Num(k))).canonicalize_div(),
+                                ),
+                                Box::new(
+                                    SymExpr::Div(b, Box::new(SymExpr::Num(k))).canonicalize_div(),
+                                ),
+                            ),
                             _ => SymExpr::Mul(Box::new(SymExpr::Num(1.0 / k)), Box::new(num)),
                         }
                     }
@@ -1164,12 +1472,21 @@ impl SymExpr {
             SymExpr::Acos(a) => SymExpr::Acos(Box::new(a.canonicalize_div())),
             SymExpr::Atan(a) => SymExpr::Atan(Box::new(a.canonicalize_div())),
             SymExpr::Num(_) | SymExpr::Var(_) => self,
-            SymExpr::Limit { variable, approach, body } => SymExpr::Limit {
+            SymExpr::Limit {
+                variable,
+                approach,
+                body,
+            } => SymExpr::Limit {
                 variable,
                 approach: Box::new(approach.canonicalize_div()),
                 body: Box::new(body.canonicalize_div()),
             },
-            SymExpr::Integral { variable, lower, upper, body } => SymExpr::Integral {
+            SymExpr::Integral {
+                variable,
+                lower,
+                upper,
+                body,
+            } => SymExpr::Integral {
                 variable,
                 lower: lower.map(|x| Box::new(x.canonicalize_div())),
                 upper: upper.map(|x| Box::new(x.canonicalize_div())),
@@ -1207,8 +1524,7 @@ pub fn equivalent(a: &SymExpr, b: &SymExpr) -> bool {
 
     // 2. Canonicalize the difference and check for zero
     let diff = (ca - cb).canonicalize();
-    diff.is_zero()
-        || matches!(&diff, SymExpr::Num(n) if n.abs() < 1e-12)
+    diff.is_zero() || matches!(&diff, SymExpr::Num(n) if n.abs() < 1e-12)
 }
 
 // ── Rule functions ───────────────────────────────────────────────────
@@ -1327,10 +1643,7 @@ fn apply_mul_rules(a: SymExpr, b: SymExpr) -> SymExpr {
             if let SymExpr::Var(bv) = base.as_ref() {
                 if v == bv {
                     if let SymExpr::Num(n) = exp.as_ref() {
-                        return SymExpr::Pow(
-                            Box::new(a),
-                            Box::new(SymExpr::Num(n + 1.0)),
-                        );
+                        return SymExpr::Pow(Box::new(a), Box::new(SymExpr::Num(n + 1.0)));
                     }
                 }
             }
@@ -1340,10 +1653,7 @@ fn apply_mul_rules(a: SymExpr, b: SymExpr) -> SymExpr {
             if let SymExpr::Var(bv) = base.as_ref() {
                 if v == bv {
                     if let SymExpr::Num(n) = exp.as_ref() {
-                        return SymExpr::Pow(
-                            Box::new(b),
-                            Box::new(SymExpr::Num(n + 1.0)),
-                        );
+                        return SymExpr::Pow(Box::new(b), Box::new(SymExpr::Num(n + 1.0)));
                     }
                 }
             }
@@ -1410,13 +1720,9 @@ fn apply_neg_rules(a: SymExpr) -> SymExpr {
         // -(Num) → Num
         SymExpr::Num(n) => SymExpr::Num(-n),
         // -(a + b) → -a + -b
-        SymExpr::Add(aa, ab) => {
-            -aa.as_ref().clone() + -ab.as_ref().clone()
-        }
+        SymExpr::Add(aa, ab) => -aa.as_ref().clone() + -ab.as_ref().clone(),
         // -(a - b) → -a + b = b - a
-        SymExpr::Sub(aa, ab) => {
-            ab.as_ref().clone() - aa.as_ref().clone()
-        }
+        SymExpr::Sub(aa, ab) => ab.as_ref().clone() - aa.as_ref().clone(),
         _ => SymExpr::Neg(Box::new(a)),
     }
 }
@@ -1514,26 +1820,54 @@ fn fold_numeric(expr: SymExpr) -> SymExpr {
             }
         }
         SymExpr::Sinh(a) => {
-            if let SymExpr::Num(x) = *a { SymExpr::Num(x.sinh()) } else { SymExpr::Sinh(Box::new(*a)) }
+            if let SymExpr::Num(x) = *a {
+                SymExpr::Num(x.sinh())
+            } else {
+                SymExpr::Sinh(Box::new(*a))
+            }
         }
         SymExpr::Cosh(a) => {
-            if let SymExpr::Num(x) = *a { SymExpr::Num(x.cosh()) } else { SymExpr::Cosh(Box::new(*a)) }
+            if let SymExpr::Num(x) = *a {
+                SymExpr::Num(x.cosh())
+            } else {
+                SymExpr::Cosh(Box::new(*a))
+            }
         }
         SymExpr::Tanh(a) => {
-            if let SymExpr::Num(x) = *a { SymExpr::Num(x.tanh()) } else { SymExpr::Tanh(Box::new(*a)) }
+            if let SymExpr::Num(x) = *a {
+                SymExpr::Num(x.tanh())
+            } else {
+                SymExpr::Tanh(Box::new(*a))
+            }
         }
         SymExpr::Asin(a) => {
             if let SymExpr::Num(x) = *a {
-                if (-1.0..=1.0).contains(&x) { SymExpr::Num(x.asin()) } else { SymExpr::Asin(Box::new(SymExpr::Num(x))) }
-            } else { SymExpr::Asin(Box::new(*a)) }
+                if (-1.0..=1.0).contains(&x) {
+                    SymExpr::Num(x.asin())
+                } else {
+                    SymExpr::Asin(Box::new(SymExpr::Num(x)))
+                }
+            } else {
+                SymExpr::Asin(Box::new(*a))
+            }
         }
         SymExpr::Acos(a) => {
             if let SymExpr::Num(x) = *a {
-                if (-1.0..=1.0).contains(&x) { SymExpr::Num(x.acos()) } else { SymExpr::Acos(Box::new(SymExpr::Num(x))) }
-            } else { SymExpr::Acos(Box::new(*a)) }
+                if (-1.0..=1.0).contains(&x) {
+                    SymExpr::Num(x.acos())
+                } else {
+                    SymExpr::Acos(Box::new(SymExpr::Num(x)))
+                }
+            } else {
+                SymExpr::Acos(Box::new(*a))
+            }
         }
         SymExpr::Atan(a) => {
-            if let SymExpr::Num(x) = *a { SymExpr::Num(x.atan()) } else { SymExpr::Atan(Box::new(*a)) }
+            if let SymExpr::Num(x) = *a {
+                SymExpr::Num(x.atan())
+            } else {
+                SymExpr::Atan(Box::new(*a))
+            }
         }
         // For binary ops that were already simplified, re-simplify children
         SymExpr::Add(a, b) => SymExpr::Add(Box::new(a.simplify()), Box::new(b.simplify())),
@@ -1652,11 +1986,21 @@ impl std::fmt::Display for SymExpr {
             SymExpr::Neg(a) => {
                 let a_str = match a.as_ref() {
                     // Atoms and function calls: no parens needed
-                    SymExpr::Num(_) | SymExpr::Var(_)
-                    | SymExpr::Sin(_) | SymExpr::Cos(_) | SymExpr::Tan(_)
-                    | SymExpr::Sqrt(_) | SymExpr::Exp(_) | SymExpr::Ln(_)
-                    | SymExpr::Abs(_) | SymExpr::Sinh(_) | SymExpr::Cosh(_) | SymExpr::Tanh(_)
-                    | SymExpr::Asin(_) | SymExpr::Acos(_) | SymExpr::Atan(_) => format!("{}", a),
+                    SymExpr::Num(_)
+                    | SymExpr::Var(_)
+                    | SymExpr::Sin(_)
+                    | SymExpr::Cos(_)
+                    | SymExpr::Tan(_)
+                    | SymExpr::Sqrt(_)
+                    | SymExpr::Exp(_)
+                    | SymExpr::Ln(_)
+                    | SymExpr::Abs(_)
+                    | SymExpr::Sinh(_)
+                    | SymExpr::Cosh(_)
+                    | SymExpr::Tanh(_)
+                    | SymExpr::Asin(_)
+                    | SymExpr::Acos(_)
+                    | SymExpr::Atan(_) => format!("{}", a),
                     // Parenthesize compound expressions: -(x + 1)
                     _ => format!("({})", a),
                 };
@@ -1675,17 +2019,24 @@ impl std::fmt::Display for SymExpr {
             SymExpr::Asin(a) => write!(f, "asin({})", a),
             SymExpr::Acos(a) => write!(f, "acos({})", a),
             SymExpr::Atan(a) => write!(f, "atan({})", a),
-            SymExpr::Limit { variable, approach, body } => {
+            SymExpr::Limit {
+                variable,
+                approach,
+                body,
+            } => {
                 write!(f, "lim_{{{}→{}}} {}", variable, approach, body)
             }
-            SymExpr::Integral { variable, lower, upper, body } => {
-                match (lower, upper) {
-                    (Some(l), Some(u)) => write!(f, "∫_{}^{} {} d{}", l, u, body, variable),
-                    (Some(l), None) => write!(f, "∫_{} {} d{}", l, body, variable),
-                    (None, Some(u)) => write!(f, "∫^{} {} d{}", u, body, variable),
-                    (None, None) => write!(f, "∫ {} d{}", body, variable),
-                }
-            }
+            SymExpr::Integral {
+                variable,
+                lower,
+                upper,
+                body,
+            } => match (lower, upper) {
+                (Some(l), Some(u)) => write!(f, "∫_{}^{} {} d{}", l, u, body, variable),
+                (Some(l), None) => write!(f, "∫_{} {} d{}", l, body, variable),
+                (None, Some(u)) => write!(f, "∫^{} {} d{}", u, body, variable),
+                (None, None) => write!(f, "∫ {} d{}", body, variable),
+            },
         }
     }
 }
@@ -1697,12 +2048,12 @@ impl std::fmt::Display for SymExpr {
 /// So: Add < Sub < Mul < Div < Pow < Atom  (Atom never needs parens).
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum OpPrec {
-    Add,    // +, -
-    Sub,    // right side of -
-    Mul,    // *, /
-    Div,    // right side of /
-    Pow,    // ^
-    Atom,   // numbers, vars, functions — highest
+    Add,  // +, -
+    Sub,  // right side of -
+    Mul,  // *, /
+    Div,  // right side of /
+    Pow,  // ^
+    Atom, // numbers, vars, functions — highest
 }
 
 fn op_prec(e: &SymExpr) -> OpPrec {
@@ -1841,13 +2192,16 @@ impl SymExpr {
             match v {
                 "pi" => Some(std::f64::consts::PI),
                 "e" => Some(std::f64::consts::E),
-                _ => vars.iter().find(|(name, _)| *name == v).map(|(_, val)| *val),
+                _ => vars
+                    .iter()
+                    .find(|(name, _)| *name == v)
+                    .map(|(_, val)| *val),
             }
         };
 
         match self {
             SymExpr::Num(n) => Some(*n),
-            SymExpr::Var(v) => lookup(v),
+            SymExpr::Var(v) => lookup(v.display.as_ref()),
             SymExpr::Add(a, b) => {
                 let av = a.evaluate(vars)?;
                 let bv = b.evaluate(vars)?;
@@ -1866,7 +2220,11 @@ impl SymExpr {
             SymExpr::Div(a, b) => {
                 let av = a.evaluate(vars)?;
                 let bv = b.evaluate(vars)?;
-                if bv == 0.0 { None } else { Some(av / bv) }
+                if bv == 0.0 {
+                    None
+                } else {
+                    Some(av / bv)
+                }
             }
             SymExpr::Pow(base, exp) => {
                 let bv = base.evaluate(vars)?;
@@ -1891,7 +2249,11 @@ impl SymExpr {
             }
             SymExpr::Sqrt(a) => {
                 let av = a.evaluate(vars)?;
-                if av < 0.0 { None } else { Some(av.sqrt()) }
+                if av < 0.0 {
+                    None
+                } else {
+                    Some(av.sqrt())
+                }
             }
             SymExpr::Exp(a) => {
                 let av = a.evaluate(vars)?;
@@ -1899,30 +2261,63 @@ impl SymExpr {
             }
             SymExpr::Ln(a) => {
                 let av = a.evaluate(vars)?;
-                if av <= 0.0 { None } else { Some(av.ln()) }
+                if av <= 0.0 {
+                    None
+                } else {
+                    Some(av.ln())
+                }
             }
             SymExpr::Abs(a) => {
                 let av = a.evaluate(vars)?;
                 Some(av.abs())
             }
-            SymExpr::Sinh(a) => { let av = a.evaluate(vars)?; Some(av.sinh()) }
-            SymExpr::Cosh(a) => { let av = a.evaluate(vars)?; Some(av.cosh()) }
-            SymExpr::Tanh(a) => { let av = a.evaluate(vars)?; Some(av.tanh()) }
+            SymExpr::Sinh(a) => {
+                let av = a.evaluate(vars)?;
+                Some(av.sinh())
+            }
+            SymExpr::Cosh(a) => {
+                let av = a.evaluate(vars)?;
+                Some(av.cosh())
+            }
+            SymExpr::Tanh(a) => {
+                let av = a.evaluate(vars)?;
+                Some(av.tanh())
+            }
             SymExpr::Asin(a) => {
                 let av = a.evaluate(vars)?;
-                if (-1.0..=1.0).contains(&av) { Some(av.asin()) } else { None }
+                if (-1.0..=1.0).contains(&av) {
+                    Some(av.asin())
+                } else {
+                    None
+                }
             }
             SymExpr::Acos(a) => {
                 let av = a.evaluate(vars)?;
-                if (-1.0..=1.0).contains(&av) { Some(av.acos()) } else { None }
+                if (-1.0..=1.0).contains(&av) {
+                    Some(av.acos())
+                } else {
+                    None
+                }
             }
-            SymExpr::Atan(a) => { let av = a.evaluate(vars)?; Some(av.atan()) }
+            SymExpr::Atan(a) => {
+                let av = a.evaluate(vars)?;
+                Some(av.atan())
+            }
             // Limits and integrals — numerical approximation
-            SymExpr::Limit { variable: _, approach: _, body } => {
+            SymExpr::Limit {
+                variable: _,
+                approach: _,
+                body,
+            } => {
                 let _ = body.evaluate(vars);
                 None
             }
-            SymExpr::Integral { variable, lower, upper, body } => {
+            SymExpr::Integral {
+                variable,
+                lower,
+                upper,
+                body,
+            } => {
                 if let (Some(low), Some(high)) = (lower, upper) {
                     let a = low.evaluate(vars)?;
                     let b = high.evaluate(vars)?;
@@ -1930,7 +2325,7 @@ impl SymExpr {
                         return Some(0.0);
                     }
                     // Numerical integration using adaptive Simpson's rule
-                    integrate_numeric(body, variable, a, b, vars)
+                    integrate_numeric(body, variable.display.as_ref(), a, b, vars)
                 } else {
                     // Indefinite integral — no numerical evaluation
                     let _ = body.evaluate(vars);
@@ -1949,7 +2344,7 @@ impl SymExpr {
 /// Returns `Some((slope, intercept))`.
 fn is_linear_in(expr: &SymExpr, var: &str) -> Option<(f64, f64)> {
     match expr {
-        SymExpr::Var(v) if v == var => Some((1.0, 0.0)),
+        SymExpr::Var(v) if v.display.as_ref() == var => Some((1.0, 0.0)),
         SymExpr::Num(n) => Some((0.0, *n)),
         SymExpr::Add(a, b) => {
             let la = is_linear_in(a, var);
@@ -1967,13 +2362,11 @@ fn is_linear_in(expr: &SymExpr, var: &str) -> Option<(f64, f64)> {
                 _ => None,
             }
         }
-        SymExpr::Mul(a, b) => {
-            match (a.as_ref(), b.as_ref()) {
-                (SymExpr::Num(n), SymExpr::Var(v)) if v == var => Some((*n, 0.0)),
-                (SymExpr::Var(v), SymExpr::Num(n)) if v == var => Some((*n, 0.0)),
-                _ => None,
-            }
-        }
+        SymExpr::Mul(a, b) => match (a.as_ref(), b.as_ref()) {
+            (SymExpr::Num(n), SymExpr::Var(v)) if v.display.as_ref() == var => Some((*n, 0.0)),
+            (SymExpr::Var(v), SymExpr::Num(n)) if v.display.as_ref() == var => Some((*n, 0.0)),
+            _ => None,
+        },
         SymExpr::Neg(a) => is_linear_in(a, var).map(|(m, c)| (-m, -c)),
         _ => None,
     }
@@ -2088,12 +2481,16 @@ fn is_constant_multiple_of(expr: &SymExpr, target: &SymExpr) -> Option<f64> {
             (SymExpr::Add(a1, b1), SymExpr::Add(a2, b2)) => {
                 let k = is_constant_multiple_of(a1, a2)?;
                 if let Some(k2) = is_constant_multiple_of(b1, b2) {
-                    if (k - k2).abs() < 1e-12 { return Some(k); }
+                    if (k - k2).abs() < 1e-12 {
+                        return Some(k);
+                    }
                 }
                 // Try cross: a1 = k*b2, b1 = k*a2
                 let k = is_constant_multiple_of(a1, b2)?;
                 if let Some(k2) = is_constant_multiple_of(b1, a2) {
-                    if (k - k2).abs() < 1e-12 { return Some(k); }
+                    if (k - k2).abs() < 1e-12 {
+                        return Some(k);
+                    }
                 }
                 None
             }
@@ -2103,7 +2500,11 @@ fn is_constant_multiple_of(expr: &SymExpr, target: &SymExpr) -> Option<f64> {
                 let k1 = is_constant_multiple_of(a, other)?;
                 let k2 = is_constant_multiple_of(b, other)?;
                 // Both terms must have the same multiplier
-                if (k1 - k2).abs() < 1e-12 { Some(k1 + k2) } else { None }
+                if (k1 - k2).abs() < 1e-12 {
+                    Some(k1 + k2)
+                } else {
+                    None
+                }
             }
             // e = k * (a + b): e must be the sum of two terms each k * a and k * b
             // This is handled by the recursive is_constant_multiple_of calls
@@ -2185,11 +2586,21 @@ fn try_u_substitution(expr: &SymExpr, var: &str) -> Option<SymExpr> {
     for i in 0..factors.len() {
         // Identify composition factor and extract (outer_name, inner_expr, extra_data)
         let (outer_name, inner, extra_n): (&str, SymExpr, Option<f64>) = match &factors[i] {
-            SymExpr::Sin(inner) if is_nonlinear_in(inner, var) => ("sin", inner.as_ref().clone(), None),
-            SymExpr::Cos(inner) if is_nonlinear_in(inner, var) => ("cos", inner.as_ref().clone(), None),
-            SymExpr::Exp(inner) if is_nonlinear_in(inner, var) => ("exp", inner.as_ref().clone(), None),
-            SymExpr::Ln(inner) if is_nonlinear_in(inner, var) => ("ln", inner.as_ref().clone(), None),
-            SymExpr::Sqrt(inner) if is_nonlinear_in(inner, var) => ("sqrt", inner.as_ref().clone(), None),
+            SymExpr::Sin(inner) if is_nonlinear_in(inner, var) => {
+                ("sin", inner.as_ref().clone(), None)
+            }
+            SymExpr::Cos(inner) if is_nonlinear_in(inner, var) => {
+                ("cos", inner.as_ref().clone(), None)
+            }
+            SymExpr::Exp(inner) if is_nonlinear_in(inner, var) => {
+                ("exp", inner.as_ref().clone(), None)
+            }
+            SymExpr::Ln(inner) if is_nonlinear_in(inner, var) => {
+                ("ln", inner.as_ref().clone(), None)
+            }
+            SymExpr::Sqrt(inner) if is_nonlinear_in(inner, var) => {
+                ("sqrt", inner.as_ref().clone(), None)
+            }
             SymExpr::Pow(base, exp) if is_nonlinear_in(base, var) => {
                 // Skip simple x^n — already handled by power rule
                 if matches!(base.as_ref(), SymExpr::Var(_)) {
@@ -2285,7 +2696,7 @@ fn try_u_substitution(expr: &SymExpr, var: &str) -> Option<SymExpr> {
 
 /// Build a linear expression `m*var + c`.
 fn make_linear(m: f64, c: f64, var: &str) -> SymExpr {
-    let x = SymExpr::Var(var.to_string());
+    let x = SymExpr::Var(Variable::named(var));
     let term = if m == 1.0 { x } else { SymExpr::Num(m) * x };
     if c == 0.0 {
         term
@@ -2306,21 +2717,27 @@ fn is_polynomial_in(expr: &SymExpr, var: &str) -> bool {
         SymExpr::Add(a, b) | SymExpr::Sub(a, b) | SymExpr::Mul(a, b) => {
             is_polynomial_in(a, var) && is_polynomial_in(b, var)
         }
-        SymExpr::Div(a, b) => {
-            matches!(b.as_ref(), SymExpr::Num(_))
-                && is_polynomial_in(a, var)
-        }
+        SymExpr::Div(a, b) => matches!(b.as_ref(), SymExpr::Num(_)) && is_polynomial_in(a, var),
         SymExpr::Neg(a) => is_polynomial_in(a, var),
         SymExpr::Pow(base, exp) => {
-            matches!(exp.as_ref(), SymExpr::Num(_))
-                && is_polynomial_in(base, var)
+            matches!(exp.as_ref(), SymExpr::Num(_)) && is_polynomial_in(base, var)
         }
         // Functions of var are not polynomial
-        SymExpr::Sin(_) | SymExpr::Cos(_) | SymExpr::Tan(_)
-            | SymExpr::Exp(_) | SymExpr::Ln(_) | SymExpr::Sqrt(_)
-            | SymExpr::Abs(_) | SymExpr::Sinh(_) | SymExpr::Cosh(_) | SymExpr::Tanh(_)
-            | SymExpr::Asin(_) | SymExpr::Acos(_) | SymExpr::Atan(_)
-            | SymExpr::Limit { .. } | SymExpr::Integral { .. } => false,
+        SymExpr::Sin(_)
+        | SymExpr::Cos(_)
+        | SymExpr::Tan(_)
+        | SymExpr::Exp(_)
+        | SymExpr::Ln(_)
+        | SymExpr::Sqrt(_)
+        | SymExpr::Abs(_)
+        | SymExpr::Sinh(_)
+        | SymExpr::Cosh(_)
+        | SymExpr::Tanh(_)
+        | SymExpr::Asin(_)
+        | SymExpr::Acos(_)
+        | SymExpr::Atan(_)
+        | SymExpr::Limit { .. }
+        | SymExpr::Integral { .. } => false,
     }
 }
 
@@ -2328,7 +2745,7 @@ fn is_polynomial_in(expr: &SymExpr, var: &str) -> bool {
 /// Returns `None` if the expression is not linear in `var`.
 fn extract_linear_coeff(expr: &SymExpr, var: &str) -> Option<f64> {
     match expr {
-        SymExpr::Var(v) if v == var => Some(1.0),
+        SymExpr::Var(v) if v.display.as_ref() == var => Some(1.0),
         SymExpr::Num(_) => Some(0.0),
         SymExpr::Add(a, b) => {
             let ma = extract_linear_coeff(a, var);
@@ -2347,12 +2764,8 @@ fn extract_linear_coeff(expr: &SymExpr, var: &str) -> Option<f64> {
             }
         }
         SymExpr::Mul(a, b) => match (a.as_ref(), b.as_ref()) {
-            (SymExpr::Num(n), _) => {
-                extract_linear_coeff(b, var).map(|m| *n * m)
-            }
-            (_, SymExpr::Num(n)) => {
-                extract_linear_coeff(a, var).map(|m| *n * m)
-            }
+            (SymExpr::Num(n), _) => extract_linear_coeff(b, var).map(|m| *n * m),
+            (_, SymExpr::Num(n)) => extract_linear_coeff(a, var).map(|m| *n * m),
             _ => None,
         },
         SymExpr::Neg(a) => extract_linear_coeff(a, var).map(|m| -m),
@@ -2368,26 +2781,33 @@ fn extract_linear_coeff(expr: &SymExpr, var: &str) -> Option<f64> {
 }
 
 /// Check whether an expression contains `var`.
-fn contains_var(expr: &SymExpr, var: &str) -> bool {
+pub(crate) fn contains_var(expr: &SymExpr, var: &str) -> bool {
     match expr {
-        SymExpr::Var(v) => v == var,
+        SymExpr::Var(v) => v.display.as_ref() == var,
         SymExpr::Num(_) => false,
         SymExpr::Add(a, b) | SymExpr::Sub(a, b) | SymExpr::Mul(a, b) => {
             contains_var(a, var) || contains_var(b, var)
         }
-        SymExpr::Div(a, b) | SymExpr::Pow(a, b) => {
-            contains_var(a, var) || contains_var(b, var)
-        }
+        SymExpr::Div(a, b) | SymExpr::Pow(a, b) => contains_var(a, var) || contains_var(b, var),
         SymExpr::Neg(a) => contains_var(a, var),
-        SymExpr::Sin(a) | SymExpr::Cos(a) | SymExpr::Tan(a)
-            | SymExpr::Exp(a) | SymExpr::Ln(a) | SymExpr::Sqrt(a)
-            | SymExpr::Abs(a) | SymExpr::Sinh(a) | SymExpr::Cosh(a) | SymExpr::Tanh(a)
-            | SymExpr::Asin(a) | SymExpr::Acos(a) | SymExpr::Atan(a) => contains_var(a, var),
+        SymExpr::Sin(a)
+        | SymExpr::Cos(a)
+        | SymExpr::Tan(a)
+        | SymExpr::Exp(a)
+        | SymExpr::Ln(a)
+        | SymExpr::Sqrt(a)
+        | SymExpr::Abs(a)
+        | SymExpr::Sinh(a)
+        | SymExpr::Cosh(a)
+        | SymExpr::Tanh(a)
+        | SymExpr::Asin(a)
+        | SymExpr::Acos(a)
+        | SymExpr::Atan(a) => contains_var(a, var),
         SymExpr::Limit { variable, body, .. } => {
-            variable == var || contains_var(body, var)
+            variable.display.as_ref() == var || contains_var(body, var)
         }
         SymExpr::Integral { variable, body, .. } => {
-            variable == var || contains_var(body, var)
+            variable.display.as_ref() == var || contains_var(body, var)
         }
     }
 }
@@ -2421,19 +2841,17 @@ fn integrate_partial_fractions_1_over_product(denom: &SymExpr, var: &str) -> Opt
     let u2 = make_linear(m2, c2, var);
     let det_expr = SymExpr::Num(det);
 
-    Some(
-        (SymExpr::Num(m1) * u1.abs().ln() - SymExpr::Num(m2) * u2.abs().ln()) / det_expr,
-    )
+    Some((SymExpr::Num(m1) * u1.abs().ln() - SymExpr::Num(m2) * u2.abs().ln()) / det_expr)
 }
 
 /// Build `m * x` where m is a numeric coefficient.
 fn x_times(m: f64, var: &str) -> SymExpr {
     if m == 1.0 {
-        SymExpr::Var(var.to_string())
+        SymExpr::Var(Variable::named(var))
     } else if m == 0.0 {
         SymExpr::Num(0.0)
     } else {
-        SymExpr::Num(m) * SymExpr::Var(var.to_string())
+        SymExpr::Num(m) * SymExpr::Var(Variable::named(var))
     }
 }
 
@@ -2460,13 +2878,11 @@ impl SymExpr {
     pub fn integrate(&self, var: &str) -> Option<SymExpr> {
         match self {
             // ∫ c dx = c*x
-            SymExpr::Num(_) => {
-                Some(self.clone() * SymExpr::Var(var.to_string()))
-            }
+            SymExpr::Num(_) => Some(self.clone() * SymExpr::Var(Variable::named(var))),
 
             // ∫ x dx = x²/2
-            SymExpr::Var(v) if v == var => {
-                let x = SymExpr::Var(var.to_string());
+            SymExpr::Var(v) if v.display.as_ref() == var => {
+                let x = SymExpr::Var(Variable::named(var));
                 Some(x.pow(SymExpr::Num(2.0)) / SymExpr::Num(2.0))
             }
 
@@ -2497,7 +2913,7 @@ impl SymExpr {
                         if let Some((m, _c)) = is_linear_in(inner, var) {
                             if m != 0.0 {
                                 let u = inner.as_ref().clone();
-                                let x = SymExpr::Var(var.to_string());
+                                let x = SymExpr::Var(Variable::named(var));
                                 // ∫ ln(ax+b) dx = ((ax+b)/a)*ln(ax+b) - x
                                 return Some(u.clone() / SymExpr::Num(m) * u.ln() - x);
                             }
@@ -2507,7 +2923,7 @@ impl SymExpr {
                         if let Some((m, _c)) = is_linear_in(inner, var) {
                             if m != 0.0 {
                                 let u = inner.as_ref().clone();
-                                let x = SymExpr::Var(var.to_string());
+                                let x = SymExpr::Var(Variable::named(var));
                                 return Some(u.clone() / SymExpr::Num(m) * u.ln() - x);
                             }
                         }
@@ -2550,14 +2966,16 @@ impl SymExpr {
                 // Special: sin²(x) and cos²(x)
                 if exp_val == Some(2.0) {
                     match base.as_ref() {
-                        SymExpr::Sin(inner) if matches!(inner.as_ref(), SymExpr::Var(v) if v == var) => {
-                            let x = SymExpr::Var(var.to_string());
+                        SymExpr::Sin(inner) if matches!(inner.as_ref(), SymExpr::Var(v) if v.display.as_ref() == var) =>
+                        {
+                            let x = SymExpr::Var(Variable::named(var));
                             let half = SymExpr::Num(0.5);
                             let sin2x = (SymExpr::Num(2.0) * x.clone()).sin();
                             return Some(half * x - sin2x / SymExpr::Num(4.0));
                         }
-                        SymExpr::Cos(inner) if matches!(inner.as_ref(), SymExpr::Var(v) if v == var) => {
-                            let x = SymExpr::Var(var.to_string());
+                        SymExpr::Cos(inner) if matches!(inner.as_ref(), SymExpr::Var(v) if v.display.as_ref() == var) =>
+                        {
+                            let x = SymExpr::Var(Variable::named(var));
                             let half = SymExpr::Num(0.5);
                             let sin2x = (SymExpr::Num(2.0) * x.clone()).sin();
                             return Some(half * x + sin2x / SymExpr::Num(4.0));
@@ -2568,15 +2986,15 @@ impl SymExpr {
 
                 // General power rule: ∫ xⁿ dx = xⁿ⁺¹/(n+1)
                 if let SymExpr::Var(v) = base.as_ref() {
-                    if v == var {
+                    if v.display.as_ref() == var {
                         if let Some(n) = exp_val {
                             if n != -1.0 {
                                 let n1 = n + 1.0;
-                                let x = SymExpr::Var(var.to_string());
+                                let x = SymExpr::Var(Variable::named(var));
                                 return Some(x.pow(SymExpr::Num(n1)) / SymExpr::Num(n1));
                             } else {
                                 // ∫ 1/x dx = ln|x|
-                                let x = SymExpr::Var(var.to_string());
+                                let x = SymExpr::Var(Variable::named(var));
                                 return Some(x.abs().ln());
                             }
                         }
@@ -2603,7 +3021,7 @@ impl SymExpr {
             // ── Trigonometric ────────────────────────────────────────
             SymExpr::Sin(inner) => {
                 if let SymExpr::Var(v) = inner.as_ref() {
-                    if v == var {
+                    if v.display.as_ref() == var {
                         return Some(-inner.as_ref().clone().cos());
                     }
                 }
@@ -2619,7 +3037,7 @@ impl SymExpr {
 
             SymExpr::Cos(inner) => {
                 if let SymExpr::Var(v) = inner.as_ref() {
-                    if v == var {
+                    if v.display.as_ref() == var {
                         return Some(inner.as_ref().clone().sin());
                     }
                 }
@@ -2636,7 +3054,7 @@ impl SymExpr {
             // ── Exponential ──────────────────────────────────────────
             SymExpr::Exp(inner) => {
                 if let SymExpr::Var(v) = inner.as_ref() {
-                    if v == var {
+                    if v.display.as_ref() == var {
                         return Some(self.clone());
                     }
                 }
@@ -2656,8 +3074,8 @@ impl SymExpr {
                 if let SymExpr::Num(n) = num.as_ref() {
                     if *n == 1.0 {
                         if let SymExpr::Var(v) = den.as_ref() {
-                            if v == var {
-                                let x = SymExpr::Var(var.to_string());
+                            if v.display.as_ref() == var {
+                                let x = SymExpr::Var(Variable::named(var));
                                 return Some(x.abs().ln());
                             }
                         }
@@ -2714,8 +3132,8 @@ impl SymExpr {
             SymExpr::Ln(inner) => {
                 // ∫ ln(x) dx = x*ln(x) - x
                 if let SymExpr::Var(v) = inner.as_ref() {
-                    if v == var {
-                        let x = SymExpr::Var(var.to_string());
+                    if v.display.as_ref() == var {
+                        let x = SymExpr::Var(Variable::named(var));
                         return Some(x.clone() * x.clone().ln() - x);
                     }
                 }
@@ -2726,8 +3144,8 @@ impl SymExpr {
             SymExpr::Sqrt(inner) => {
                 // ∫ sqrt(x) dx = (2/3)*x^(3/2)
                 if let SymExpr::Var(v) = inner.as_ref() {
-                    if v == var {
-                        let x = SymExpr::Var(var.to_string());
+                    if v.display.as_ref() == var {
+                        let x = SymExpr::Var(Variable::named(var));
                         return Some(SymExpr::Num(2.0 / 3.0) * x.pow(SymExpr::Num(1.5)));
                     }
                 }
@@ -2876,8 +3294,10 @@ impl SymExpr {
                         if let Some(m_val) = m_coeff {
                             let kexpr = SymExpr::Num(k);
                             let m_expr = SymExpr::Num(m_val);
-                            return Some(m_expr * other.clone().sin() / (kexpr.clone() * kexpr.clone())
-                                - poly.clone() * other.clone().cos() / kexpr);
+                            return Some(
+                                m_expr * other.clone().sin() / (kexpr.clone() * kexpr.clone())
+                                    - poly.clone() * other.clone().cos() / kexpr,
+                            );
                         }
                         // poly is not linear in var — this pattern doesn't apply
                         return None;
@@ -2892,8 +3312,10 @@ impl SymExpr {
                         let m_coeff = extract_linear_coeff(poly, var);
                         if let Some(m_val) = m_coeff {
                             let m_expr = SymExpr::Num(m_val);
-                            return Some(m_expr * other.clone().cos() / (kexpr.clone() * kexpr.clone())
-                                + poly.clone() * other.clone().sin() / kexpr);
+                            return Some(
+                                m_expr * other.clone().cos() / (kexpr.clone() * kexpr.clone())
+                                    + poly.clone() * other.clone().sin() / kexpr,
+                            );
                         }
                         // poly is not linear in var — this pattern doesn't apply
                         return None;
@@ -2931,6 +3353,10 @@ impl SymExpr {
 
 /// Parse a mathematical expression string into a symbolic expression tree.
 ///
+/// Each call creates a fresh parse context, so the same variable name in
+/// different parse calls will have different logical identities.
+/// Use `parse_with_context` to share identity across multiple parses.
+///
 /// Supports:
 /// - Numbers: `2`, `3.14`
 /// - Variables: `x`, `y`, `t`
@@ -2949,7 +3375,18 @@ impl SymExpr {
 pub fn parse(s: &str) -> Result<SymExpr, String> {
     let chars: Vec<char> = s.chars().collect();
     let mut pos = 0;
-    parse_add_sub(&chars, &mut pos)
+    let mut ctx = ParseContext::new();
+    parse_add_sub(&chars, &mut pos, &mut ctx)
+}
+
+/// Parse with an explicit parse context for variable identity sharing.
+///
+/// Multiple calls with the same `ParseContext` will give the same variable
+/// identity to variables with the same display name.
+pub fn parse_with_context(s: &str, ctx: &mut ParseContext) -> Result<SymExpr, String> {
+    let chars: Vec<char> = s.chars().collect();
+    let mut pos = 0;
+    parse_add_sub(&chars, &mut pos, ctx)
 }
 
 // ── Parser internals ─────────────────────────────────────────────────
@@ -2977,26 +3414,34 @@ fn expect(chars: &[char], pos: &mut usize, c: char) -> Result<(), String> {
         *pos += 1;
         Ok(())
     } else {
-        let found = if *pos < chars.len() { chars[*pos].to_string() } else { "end of input".to_string() };
+        let found = if *pos < chars.len() {
+            chars[*pos].to_string()
+        } else {
+            "end of input".to_string()
+        };
         Err(format!("expected '{}', found {}", c, found))
     }
 }
 
 /// Parse addition and subtraction (lowest precedence).
-fn parse_add_sub(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
-    let mut left = parse_mul_div(chars, pos)?;
+fn parse_add_sub(
+    chars: &[char],
+    pos: &mut usize,
+    ctx: &mut ParseContext,
+) -> Result<SymExpr, String> {
+    let mut left = parse_mul_div(chars, pos, ctx)?;
 
     loop {
         skip_ws(chars, pos);
         match peek(chars, *pos) {
             Some('+') => {
                 *pos += 1;
-                let right = parse_mul_div(chars, pos)?;
+                let right = parse_mul_div(chars, pos, ctx)?;
                 left = SymExpr::Add(Box::new(left), Box::new(right));
             }
             Some('-') => {
                 *pos += 1;
-                let right = parse_mul_div(chars, pos)?;
+                let right = parse_mul_div(chars, pos, ctx)?;
                 left = SymExpr::Sub(Box::new(left), Box::new(right));
             }
             _ => break,
@@ -3007,26 +3452,30 @@ fn parse_add_sub(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
 }
 
 /// Parse multiplication and division.
-fn parse_mul_div(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
-    let mut left = parse_power(chars, pos)?;
+fn parse_mul_div(
+    chars: &[char],
+    pos: &mut usize,
+    ctx: &mut ParseContext,
+) -> Result<SymExpr, String> {
+    let mut left = parse_power(chars, pos, ctx)?;
 
     loop {
         skip_ws(chars, pos);
         match peek(chars, *pos) {
             Some('*') => {
                 *pos += 1;
-                let right = parse_power(chars, pos)?;
+                let right = parse_power(chars, pos, ctx)?;
                 left = SymExpr::Mul(Box::new(left), Box::new(right));
             }
             Some('/') => {
                 *pos += 1;
-                let right = parse_power(chars, pos)?;
+                let right = parse_power(chars, pos, ctx)?;
                 left = SymExpr::Div(Box::new(left), Box::new(right));
             }
             // Implicit multiplication: 2x, x(x+1), 3sin(x), x^2x, etc.
             // Triggered when next char starts a new factor.
             _ if is_implicit_mul_start(chars, *pos) => {
-                let right = parse_power(chars, pos)?;
+                let right = parse_power(chars, pos, ctx)?;
                 left = SymExpr::Mul(Box::new(left), Box::new(right));
             }
             _ => break,
@@ -3037,15 +3486,15 @@ fn parse_mul_div(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
 }
 
 /// Parse power (right-associative).
-fn parse_power(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
-    let base = parse_unary(chars, pos)?;
+fn parse_power(chars: &[char], pos: &mut usize, ctx: &mut ParseContext) -> Result<SymExpr, String> {
+    let base = parse_unary(chars, pos, ctx)?;
 
     skip_ws(chars, pos);
 
     // Explicit power: a ^ b  (right-associative)
     if peek(chars, *pos) == Some('^') {
         *pos += 1;
-        let exp = parse_power(chars, pos)?;
+        let exp = parse_power(chars, pos, ctx)?;
         return Ok(SymExpr::Pow(Box::new(base), Box::new(exp)));
     }
 
@@ -3056,30 +3505,32 @@ fn parse_power(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
 /// multiplication factor (variable, function name, digit, or open paren).
 fn is_implicit_mul_start(chars: &[char], pos: usize) -> bool {
     match peek(chars, pos) {
-        Some(c) => c.is_ascii_alphabetic() || c == '_' || c == '(' || c.is_ascii_digit(),
+        Some(c) => {
+            c.is_ascii_alphabetic() || c == '_' || c == '(' || c == '[' || c.is_ascii_digit()
+        }
         None => false,
     }
 }
 
 /// Parse unary minus/plus.
-fn parse_unary(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
+fn parse_unary(chars: &[char], pos: &mut usize, ctx: &mut ParseContext) -> Result<SymExpr, String> {
     skip_ws(chars, pos);
     match peek(chars, *pos) {
         Some('-') => {
             *pos += 1;
-            let expr = parse_unary(chars, pos)?;
+            let expr = parse_unary(chars, pos, ctx)?;
             Ok(SymExpr::Neg(Box::new(expr)))
         }
         Some('+') => {
             *pos += 1;
-            parse_unary(chars, pos)
+            parse_unary(chars, pos, ctx)
         }
-        _ => parse_atom(chars, pos),
+        _ => parse_atom(chars, pos, ctx),
     }
 }
 
 /// Parse atoms: numbers, variables, function calls, parenthesized expressions.
-fn parse_atom(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
+fn parse_atom(chars: &[char], pos: &mut usize, ctx: &mut ParseContext) -> Result<SymExpr, String> {
     skip_ws(chars, pos);
 
     if *pos >= chars.len() {
@@ -3088,11 +3539,12 @@ fn parse_atom(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
 
     let c = chars[*pos];
 
-    // Parenthesized expression
-    if c == '(' {
+    // Parenthesized expression or bracket group
+    if c == '(' || c == '[' {
+        let close = if c == '(' { ')' } else { ']' };
         *pos += 1;
-        let expr = parse_add_sub(chars, pos)?;
-        expect(chars, pos, ')')?;
+        let expr = parse_add_sub(chars, pos, ctx)?;
+        expect(chars, pos, close)?;
         return Ok(expr);
     }
 
@@ -3103,13 +3555,13 @@ fn parse_atom(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
 
     // Variable or function name
     if c.is_ascii_alphabetic() || c == '_' {
-        return parse_name(chars, pos);
+        return parse_name(chars, pos, ctx);
     }
 
     // Absolute value |...|
     if c == '|' {
         *pos += 1;
-        let expr = parse_add_sub(chars, pos)?;
+        let expr = parse_add_sub(chars, pos, ctx)?;
         expect(chars, pos, '|')?;
         return Ok(SymExpr::Abs(Box::new(expr)));
     }
@@ -3131,7 +3583,7 @@ fn parse_number(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
 }
 
 /// Parse a name: variable or function call.
-fn parse_name(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
+fn parse_name(chars: &[char], pos: &mut usize, ctx: &mut ParseContext) -> Result<SymExpr, String> {
     let start = *pos;
     while *pos < chars.len() && (chars[*pos].is_ascii_alphanumeric() || chars[*pos] == '_') {
         *pos += 1;
@@ -3143,14 +3595,25 @@ fn parse_name(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
     // followed by implicit multiplication: x(x+1) → x*(x+1)
     let is_known_function = matches!(
         name.as_str(),
-        "sin" | "cos" | "tan" | "sqrt" | "exp" | "ln" | "abs"
-        | "sinh" | "cosh" | "tanh" | "asin" | "acos" | "atan"
+        "sin"
+            | "cos"
+            | "tan"
+            | "sqrt"
+            | "exp"
+            | "ln"
+            | "abs"
+            | "sinh"
+            | "cosh"
+            | "tanh"
+            | "asin"
+            | "acos"
+            | "atan"
     );
 
     skip_ws(chars, pos);
     if is_known_function && *pos < chars.len() && chars[*pos] == '(' {
         *pos += 1; // consume '('
-        let arg = parse_add_sub(chars, pos)?;
+        let arg = parse_add_sub(chars, pos, ctx)?;
         expect(chars, pos, ')')?;
         match name.as_str() {
             "sin" => Ok(SymExpr::Sin(Box::new(arg))),
@@ -3173,7 +3636,7 @@ fn parse_name(chars: &[char], pos: &mut usize) -> Result<SymExpr, String> {
         match name.as_str() {
             "pi" => Ok(SymExpr::Num(std::f64::consts::PI)),
             "e" => Ok(SymExpr::Num(std::f64::consts::E)),
-            _ => Ok(SymExpr::Var(name)),
+            _ => Ok(SymExpr::Var(ctx.var(&name))),
         }
     }
 }
@@ -3212,9 +3675,8 @@ pub fn differentiate_str_with_rules(
 
     // Check if hardcoded produced a meaningful result
     // (different from the input and not an error indicator)
-    let hardcoded_ok = !hardcoded.contains("ERROR")
-        && !hardcoded.contains("cannot")
-        && hardcoded != expr_str;
+    let hardcoded_ok =
+        !hardcoded.contains("ERROR") && !hardcoded.contains("cannot") && hardcoded != expr_str;
 
     if hardcoded_ok {
         return Ok(hardcoded);
@@ -3222,7 +3684,7 @@ pub fn differentiate_str_with_rules(
 
     // Fallback: try rule engine for Differentiate rules
     let mut extra = std::collections::HashMap::new();
-    extra.insert(var.to_string(), SymExpr::Var(var.to_string()));
+    extra.insert(var.to_string(), SymExpr::Var(Variable::named(var)));
     for rule in rules.iter().rev() {
         if rule.domain != crate::math_ingest::RuleDomain::Differentiate {
             continue;
@@ -3267,19 +3729,341 @@ pub fn evaluate_str(expr_str: &str, vars: &[(&str, f64)]) -> Option<f64> {
 
 /// Parse a string that may contain `=`, returning `(lhs, rhs)`.
 ///
+/// Uses a single shared parse context so variables with the same name on
+/// both sides of `=` have the same logical identity.
+///
 /// If no `=` is found, the entire string is treated as `lhs` with rhs = 0.
 pub fn parse_equation(s: &str) -> Result<(SymExpr, SymExpr), String> {
     let s = s.trim();
-    // Find `=` sign, being careful about <=, >=, ==
-    if let Some(pos) = s.find('=') {
+    // Find `=` sign at depth 0 (not inside parentheses, brackets, or abs)
+    let eq_pos = find_eq_at_depth_zero(s);
+    let mut ctx = ParseContext::new();
+    if let Some(pos) = eq_pos {
         let lhs_str = s[..pos].trim();
         let rhs_str = s[pos + 1..].trim();
-        let lhs = parse(lhs_str)?;
-        let rhs = parse(rhs_str)?;
+        let lhs = parse_with_context(lhs_str, &mut ctx)?;
+        let rhs = parse_with_context(rhs_str, &mut ctx)?;
         Ok((lhs, rhs))
     } else {
-        let expr = parse(s)?;
+        let expr = parse_with_context(s, &mut ctx)?;
         Ok((expr, SymExpr::Num(0.0)))
+    }
+}
+
+/// Find the last `=` that is at bracket/paren/brace depth 0 (not inside ( ) [ ] { } or | |).
+/// Uses the last `=` so that chained equations like `a = b = c` split as `a = b | c`
+/// rather than `a | b = c`.
+/// Returns byte index (for slicing &str) not character index.
+fn find_eq_at_depth_zero(s: &str) -> Option<usize> {
+    let mut depth = 0i32;
+    let mut abs_depth = 0i32;
+    let mut last_eq: Option<usize> = None;
+    let chars: Vec<(usize, char)> = s.char_indices().collect();
+    let mut ci = 0;
+    while ci < chars.len() {
+        let (_byte_i, c) = chars[ci];
+        match c {
+            '(' | '[' | '{' => depth += 1,
+            ')' | ']' | '}' => depth = depth.saturating_sub(1),
+            '|' if abs_depth == 0 && (ci == 0 || chars[ci - 1].1 != '|') => {
+                abs_depth = 1;
+            }
+            '|' if abs_depth > 0 => {
+                abs_depth = 0;
+            }
+            '=' if depth == 0 && abs_depth == 0 => {
+                // Check for ==, <=, >=
+                if ci + 1 < chars.len()
+                    && (chars[ci + 1].1 == '=' || chars[ci + 1].1 == '>' || chars[ci + 1].1 == '<')
+                {
+                    ci += 2; // skip the two-char operator (2 char positions)
+                    continue;
+                }
+                last_eq = Some(_byte_i); // track last = at depth 0 (byte index)
+                ci += 1;
+                continue;
+            }
+            _ => {}
+        }
+        ci += 1;
+    }
+    last_eq
+}
+
+/// Evaluate an equation (lhs = rhs) with variable bindings.
+/// Returns lhs_value / rhs_value (≈1.0 means equation holds).
+pub fn evaluate_equation(eq: &(SymExpr, SymExpr), vars: &[(&str, f64)]) -> Option<f64> {
+    let lhs_val = eq.0.evaluate(vars)?;
+    let rhs_val = eq.1.evaluate(vars)?;
+    if rhs_val == 0.0 {
+        None
+    } else {
+        Some(lhs_val / rhs_val)
+    }
+}
+
+/// Substitute a variable in an expression with another expression tree.
+pub fn substitute_var(expr: &SymExpr, var: &str, replacement: &SymExpr) -> SymExpr {
+    match expr {
+        SymExpr::Num(_) => expr.clone(),
+        SymExpr::Var(v) => {
+            if v.display.as_ref() == var {
+                replacement.clone()
+            } else {
+                expr.clone()
+            }
+        }
+        SymExpr::Add(a, b) => SymExpr::Add(
+            Box::new(substitute_var(a, var, replacement)),
+            Box::new(substitute_var(b, var, replacement)),
+        ),
+        SymExpr::Sub(a, b) => SymExpr::Sub(
+            Box::new(substitute_var(a, var, replacement)),
+            Box::new(substitute_var(b, var, replacement)),
+        ),
+        SymExpr::Mul(a, b) => SymExpr::Mul(
+            Box::new(substitute_var(a, var, replacement)),
+            Box::new(substitute_var(b, var, replacement)),
+        ),
+        SymExpr::Div(a, b) => SymExpr::Div(
+            Box::new(substitute_var(a, var, replacement)),
+            Box::new(substitute_var(b, var, replacement)),
+        ),
+        SymExpr::Pow(a, b) => SymExpr::Pow(
+            Box::new(substitute_var(a, var, replacement)),
+            Box::new(substitute_var(b, var, replacement)),
+        ),
+        SymExpr::Neg(a) => SymExpr::Neg(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Sin(a) => SymExpr::Sin(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Cos(a) => SymExpr::Cos(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Tan(a) => SymExpr::Tan(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Sqrt(a) => SymExpr::Sqrt(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Exp(a) => SymExpr::Exp(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Ln(a) => SymExpr::Ln(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Abs(a) => SymExpr::Abs(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Sinh(a) => SymExpr::Sinh(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Cosh(a) => SymExpr::Cosh(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Tanh(a) => SymExpr::Tanh(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Asin(a) => SymExpr::Asin(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Acos(a) => SymExpr::Acos(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Atan(a) => SymExpr::Atan(Box::new(substitute_var(a, var, replacement))),
+        SymExpr::Limit {
+            variable,
+            approach,
+            body,
+        } => SymExpr::Limit {
+            variable: variable.clone(),
+            approach: Box::new(substitute_var(approach, var, replacement)),
+            body: Box::new(substitute_var(body, var, replacement)),
+        },
+        SymExpr::Integral {
+            variable,
+            lower,
+            upper,
+            body,
+        } => SymExpr::Integral {
+            variable: variable.clone(),
+            lower: lower
+                .as_ref()
+                .map(|b| Box::new(substitute_var(b, var, replacement))),
+            upper: upper
+                .as_ref()
+                .map(|b| Box::new(substitute_var(b, var, replacement))),
+            body: Box::new(substitute_var(body, var, replacement)),
+        },
+    }
+}
+
+/// Chain two equations by substituting the shared variable.
+/// eq1: lhs1 = rhs1, eq2: lhs2 = rhs2
+/// Finds the common variable, solves eq2 for it, substitutes into eq1.
+/// Returns (new_lhs, new_rhs).
+pub fn chain_equations(
+    eq1_lhs: &SymExpr,
+    eq1_rhs: &SymExpr,
+    eq2_lhs: &SymExpr,
+    eq2_rhs: &SymExpr,
+) -> Option<(SymExpr, SymExpr)> {
+    let mut vars1 = Vec::new();
+    collect_variables(eq1_lhs, &mut vars1);
+    collect_variables(eq1_rhs, &mut vars1);
+
+    let mut vars2 = Vec::new();
+    collect_variables(eq2_lhs, &mut vars2);
+    collect_variables(eq2_rhs, &mut vars2);
+
+    let shared: Vec<&str> = vars1
+        .iter()
+        .filter(|v| vars2.contains(v))
+        .map(|s| s.as_str())
+        .collect();
+
+    if shared.is_empty() {
+        return None;
+    }
+    let var = shared[0];
+
+    let (target_side, other_side) = if contains_var(eq2_lhs, var) {
+        (eq2_lhs.clone(), eq2_rhs.clone())
+    } else if contains_var(eq2_rhs, var) {
+        (eq2_rhs.clone(), eq2_lhs.clone())
+    } else {
+        return None;
+    };
+
+    let expr_for_var = isolate_var_in_expr(&target_side, &other_side, var)?;
+    let new_lhs = substitute_var(eq1_lhs, var, &expr_for_var);
+    let new_rhs = substitute_var(eq1_rhs, var, &expr_for_var);
+    Some((new_lhs, new_rhs))
+}
+
+/// Collect all variable names from an expression.
+fn collect_variables(expr: &SymExpr, vars: &mut Vec<String>) {
+    match expr {
+        SymExpr::Var(v) => {
+            if !vars.contains(&v.to_string()) {
+                vars.push(v.to_string());
+            }
+        }
+        SymExpr::Add(a, b)
+        | SymExpr::Sub(a, b)
+        | SymExpr::Mul(a, b)
+        | SymExpr::Div(a, b)
+        | SymExpr::Pow(a, b) => {
+            collect_variables(a, vars);
+            collect_variables(b, vars);
+        }
+        SymExpr::Neg(a)
+        | SymExpr::Sin(a)
+        | SymExpr::Cos(a)
+        | SymExpr::Tan(a)
+        | SymExpr::Sqrt(a)
+        | SymExpr::Exp(a)
+        | SymExpr::Ln(a)
+        | SymExpr::Abs(a)
+        | SymExpr::Sinh(a)
+        | SymExpr::Cosh(a)
+        | SymExpr::Tanh(a)
+        | SymExpr::Asin(a)
+        | SymExpr::Acos(a)
+        | SymExpr::Atan(a) => {
+            collect_variables(a, vars);
+        }
+        SymExpr::Limit { body, .. } => collect_variables(body, vars),
+        SymExpr::Integral { body, .. } => collect_variables(body, vars),
+        SymExpr::Num(_) => {}
+    }
+}
+
+/// Isolate a variable in `target_side` by inverting operations.
+/// Given `target_side = other_side`, finds `var = expr`.
+fn isolate_var_in_expr(target_side: &SymExpr, other_side: &SymExpr, var: &str) -> Option<SymExpr> {
+    if matches!(target_side, SymExpr::Var(variable) if variable.display.as_ref() == var) {
+        return Some(other_side.clone());
+    }
+
+    let clone_box = |b: &Box<SymExpr>| -> SymExpr { *b.clone() };
+    let clone_side = |s: &SymExpr| -> SymExpr { s.clone() };
+
+    match target_side {
+        SymExpr::Add(a, b) => {
+            if contains_var(a, var) {
+                let new_rhs =
+                    SymExpr::Sub(Box::new(clone_side(other_side)), Box::new(clone_box(b)));
+                isolate_var_in_expr(a, &new_rhs, var)
+            } else {
+                let new_rhs =
+                    SymExpr::Sub(Box::new(clone_side(other_side)), Box::new(clone_box(a)));
+                isolate_var_in_expr(b, &new_rhs, var)
+            }
+        }
+        SymExpr::Sub(a, b) => {
+            if contains_var(a, var) {
+                let new_rhs =
+                    SymExpr::Add(Box::new(clone_side(other_side)), Box::new(clone_box(b)));
+                isolate_var_in_expr(a, &new_rhs, var)
+            } else {
+                let new_rhs =
+                    SymExpr::Sub(Box::new(clone_box(a)), Box::new(clone_side(other_side)));
+                isolate_var_in_expr(b, &new_rhs, var)
+            }
+        }
+        SymExpr::Mul(a, b) => {
+            if contains_var(a, var) {
+                let new_rhs =
+                    SymExpr::Div(Box::new(clone_side(other_side)), Box::new(clone_box(b)));
+                isolate_var_in_expr(a, &new_rhs, var)
+            } else {
+                let new_rhs =
+                    SymExpr::Div(Box::new(clone_side(other_side)), Box::new(clone_box(a)));
+                isolate_var_in_expr(b, &new_rhs, var)
+            }
+        }
+        SymExpr::Div(a, b) => {
+            if contains_var(a, var) {
+                let new_rhs =
+                    SymExpr::Mul(Box::new(clone_side(other_side)), Box::new(clone_box(b)));
+                isolate_var_in_expr(a, &new_rhs, var)
+            } else {
+                let new_rhs =
+                    SymExpr::Div(Box::new(clone_box(a)), Box::new(clone_side(other_side)));
+                isolate_var_in_expr(b, &new_rhs, var)
+            }
+        }
+        SymExpr::Pow(a, b) => {
+            if contains_var(a, var) {
+                let inv = SymExpr::Div(Box::new(SymExpr::Num(1.0)), Box::new(clone_box(b)));
+                let new_rhs = SymExpr::Pow(Box::new(clone_side(other_side)), Box::new(inv));
+                isolate_var_in_expr(a, &new_rhs, var)
+            } else {
+                let new_rhs = SymExpr::Div(
+                    Box::new(SymExpr::Ln(Box::new(clone_side(other_side)))),
+                    Box::new(SymExpr::Ln(Box::new(clone_box(a)))),
+                );
+                isolate_var_in_expr(b, &new_rhs, var)
+            }
+        }
+        SymExpr::Neg(a) => {
+            let new_rhs = SymExpr::Neg(Box::new(clone_side(other_side)));
+            isolate_var_in_expr(a, &new_rhs, var)
+        }
+        SymExpr::Sin(a) => {
+            let new_rhs = SymExpr::Asin(Box::new(clone_side(other_side)));
+            isolate_var_in_expr(a, &new_rhs, var)
+        }
+        SymExpr::Cos(a) => {
+            let new_rhs = SymExpr::Acos(Box::new(clone_side(other_side)));
+            isolate_var_in_expr(a, &new_rhs, var)
+        }
+        SymExpr::Tan(a) => {
+            let new_rhs = SymExpr::Atan(Box::new(clone_side(other_side)));
+            isolate_var_in_expr(a, &new_rhs, var)
+        }
+        SymExpr::Ln(a) => {
+            let new_rhs = SymExpr::Exp(Box::new(clone_side(other_side)));
+            isolate_var_in_expr(a, &new_rhs, var)
+        }
+        SymExpr::Exp(a) => {
+            let new_rhs = SymExpr::Ln(Box::new(clone_side(other_side)));
+            isolate_var_in_expr(a, &new_rhs, var)
+        }
+        SymExpr::Sqrt(a) => {
+            let new_rhs = SymExpr::Pow(
+                Box::new(clone_side(other_side)),
+                Box::new(SymExpr::Num(2.0)),
+            );
+            isolate_var_in_expr(a, &new_rhs, var)
+        }
+        SymExpr::Abs(a) => isolate_var_in_expr(a, other_side, var),
+        SymExpr::Limit { body, .. } => isolate_var_in_expr(body, other_side, var),
+        SymExpr::Integral { body, .. } => isolate_var_in_expr(body, other_side, var),
+        SymExpr::Sinh(a)
+        | SymExpr::Cosh(a)
+        | SymExpr::Tanh(a)
+        | SymExpr::Asin(a)
+        | SymExpr::Acos(a)
+        | SymExpr::Atan(a) => isolate_var_in_expr(a, other_side, var),
+        SymExpr::Num(_) | SymExpr::Var(_) => None,
     }
 }
 
@@ -3290,7 +4074,7 @@ pub(crate) fn collect_poly_coeffs(expr: &SymExpr, var: &str) -> Option<Vec<f64>>
     match expr {
         SymExpr::Num(c) => Some(vec![*c]),
         SymExpr::Var(v) => {
-            if v == var {
+            if v.display.as_ref() == var {
                 Some(vec![0.0, 1.0])
             } else {
                 None
@@ -3351,7 +4135,7 @@ pub(crate) fn collect_poly_coeffs(expr: &SymExpr, var: &str) -> Option<Vec<f64>>
         SymExpr::Pow(base, exp) => {
             if let SymExpr::Num(n) = exp.as_ref() {
                 if let SymExpr::Var(v) = base.as_ref() {
-                    if v == var {
+                    if v.display.as_ref() == var {
                         let deg = *n as usize;
                         if deg == 0 {
                             return Some(vec![1.0]);
@@ -3508,8 +4292,18 @@ fn solve_polynomial(coeffs: &[f64], var: &str) -> Vec<String> {
             let real = -b / (2.0 * a);
             let imag = sqrt_neg / (2.0 * a);
             return vec![
-                format!("{} = {} + {}i", var, format_solution(real), format_solution(imag)),
-                format!("{} = {} - {}i", var, format_solution(real), format_solution(imag)),
+                format!(
+                    "{} = {} + {}i",
+                    var,
+                    format_solution(real),
+                    format_solution(imag)
+                ),
+                format!(
+                    "{} = {} - {}i",
+                    var,
+                    format_solution(real),
+                    format_solution(imag)
+                ),
             ];
         } else {
             let sqrt_disc = disc.sqrt();
@@ -3525,9 +4319,8 @@ fn solve_polynomial(coeffs: &[f64], var: &str) -> Vec<String> {
     // Degree 4: try Ferrari's exact closed-form before rational root / Newton
     if deg == 4 {
         // coeffs = [e, d, c, b, a] for a*x⁴ + b*x³ + c*x² + d*x + e = 0
-        let quartic_solutions = solve_quartic_ferrari(
-            coeffs[4], coeffs[3], coeffs[2], coeffs[1], coeffs[0], var,
-        );
+        let quartic_solutions =
+            solve_quartic_ferrari(coeffs[4], coeffs[3], coeffs[2], coeffs[1], coeffs[0], var);
         if let Some(solutions) = quartic_solutions {
             if !solutions.is_empty() {
                 return solutions;
@@ -3599,7 +4392,10 @@ fn solve_polynomial(coeffs: &[f64], var: &str) -> Vec<String> {
         return numeric_solutions;
     }
 
-    vec![format!("cannot solve degree {} symbolically or numerically", deg)]
+    vec![format!(
+        "cannot solve degree {} symbolically or numerically",
+        deg
+    )]
 }
 
 // ── Ferrari's Method for Quartic Equations ────────────────────────────────
@@ -3634,9 +4430,7 @@ fn find_cubic_real_root(a: f64, b: f64, c: f64, d: f64) -> Option<f64> {
 ///
 /// Returns exact radical solutions as strings. Returns `None` if the quartic
 /// form doesn't apply (e.g., complex intermediates, requiring numeric solver).
-fn solve_quartic_ferrari(
-    a: f64, b: f64, c: f64, d: f64, e: f64, var: &str,
-) -> Option<Vec<String>> {
+fn solve_quartic_ferrari(a: f64, b: f64, c: f64, d: f64, e: f64, var: &str) -> Option<Vec<String>> {
     if a.abs() < 1e-12 {
         return None;
     }
@@ -3775,9 +4569,7 @@ fn solve_polynomial_newton(coeffs: &[f64], var: &str) -> Vec<String> {
     const MIN_ROOT_DIST: f64 = 1e-6;
 
     // Derivative coefficients
-    let deriv: Vec<f64> = (1..coeffs.len())
-        .map(|i| i as f64 * coeffs[i])
-        .collect();
+    let deriv: Vec<f64> = (1..coeffs.len()).map(|i| i as f64 * coeffs[i]).collect();
 
     fn poly_val(c: &[f64], x: f64) -> f64 {
         eval_poly(c, x)
@@ -3861,7 +4653,8 @@ fn solve_polynomial_newton(coeffs: &[f64], var: &str) -> Vec<String> {
 
     roots.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
     roots.dedup();
-    roots.iter()
+    roots
+        .iter()
         .map(|r| format!("{} = {}", var, format_solution(*r)))
         .collect()
 }
@@ -3898,7 +4691,7 @@ fn try_solve_product(expr: &SymExpr, var: &str) -> Option<Vec<String>> {
                     // If right side is (x - c), extract root
                     if let SymExpr::Sub(inner, num) = b.as_ref() {
                         if let SymExpr::Var(v) = inner.as_ref() {
-                            if v == var {
+                            if v.display.as_ref() == var {
                                 if let SymExpr::Num(n) = num.as_ref() {
                                     let mut sols = l;
                                     sols.push(format!("{} = {}", var, format_solution(*n)));
@@ -3922,7 +4715,7 @@ fn try_solve_product(expr: &SymExpr, var: &str) -> Option<Vec<String>> {
                 (None, Some(r)) => {
                     if let SymExpr::Sub(inner, num) = a.as_ref() {
                         if let SymExpr::Var(v) = inner.as_ref() {
-                            if v == var {
+                            if v.display.as_ref() == var {
                                 if let SymExpr::Num(n) = num.as_ref() {
                                     let mut sols = r;
                                     sols.push(format!("{} = {}", var, format_solution(*n)));
@@ -3949,7 +4742,7 @@ fn try_solve_product(expr: &SymExpr, var: &str) -> Option<Vec<String>> {
         SymExpr::Sub(inner, num) => {
             // Check for (x - c) pattern
             if let SymExpr::Var(v) = inner.as_ref() {
-                if v == var {
+                if v.display.as_ref() == var {
                     if let SymExpr::Num(n) = num.as_ref() {
                         return Some(vec![format!("{} = {}", var, format_solution(*n))]);
                     }
@@ -3964,7 +4757,7 @@ fn try_solve_product(expr: &SymExpr, var: &str) -> Option<Vec<String>> {
         SymExpr::Add(inner, num) => {
             // Check for (x + c) = (x - (-c))
             if let SymExpr::Var(v) = inner.as_ref() {
-                if v == var {
+                if v.display.as_ref() == var {
                     if let SymExpr::Num(n) = num.as_ref() {
                         return Some(vec![format!("{} = {}", var, format_solution(-n))]);
                     }
@@ -3979,14 +4772,14 @@ fn try_solve_product(expr: &SymExpr, var: &str) -> Option<Vec<String>> {
         SymExpr::Pow(base, exp) => {
             // x^n = 0 → x = 0
             if let SymExpr::Var(v) = base.as_ref() {
-                if v == var {
+                if v.display.as_ref() == var {
                     return Some(vec![format!("{} = 0", var)]);
                 }
             }
             None
         }
         SymExpr::Var(v) => {
-            if v == var {
+            if v.display.as_ref() == var {
                 Some(vec![format!("{} = 0", var)])
             } else {
                 None
@@ -4037,22 +4830,17 @@ fn extract_trig_exp_term(expr: &SymExpr, var: &str) -> Option<(f64, TrigExpKind,
             }
             Some((1.0, TrigExpKind::Exp, (**inner).clone()))
         }
-        SymExpr::Mul(a, b) => {
-            match (a.as_ref(), b.as_ref()) {
-                (SymExpr::Num(n), rest) => {
-                    extract_trig_exp_term(rest, var)
-                        .map(|(c, kind, inner)| (c * n, kind, inner))
-                }
-                (rest, SymExpr::Num(n)) => {
-                    extract_trig_exp_term(rest, var)
-                        .map(|(c, kind, inner)| (c * n, kind, inner))
-                }
-                _ => None,
+        SymExpr::Mul(a, b) => match (a.as_ref(), b.as_ref()) {
+            (SymExpr::Num(n), rest) => {
+                extract_trig_exp_term(rest, var).map(|(c, kind, inner)| (c * n, kind, inner))
             }
-        }
+            (rest, SymExpr::Num(n)) => {
+                extract_trig_exp_term(rest, var).map(|(c, kind, inner)| (c * n, kind, inner))
+            }
+            _ => None,
+        },
         SymExpr::Neg(inner) => {
-            extract_trig_exp_term(inner, var)
-                .map(|(c, kind, inner)| (-c, kind, inner))
+            extract_trig_exp_term(inner, var).map(|(c, kind, inner)| (-c, kind, inner))
         }
         _ => None,
     }
@@ -4219,9 +5007,7 @@ fn find_func_inners(expr: &SymExpr, kind: &TrigExpKind, var: &str) -> Vec<SymExp
     inners
 }
 
-fn find_func_inners_rec(
-    expr: &SymExpr, kind: &TrigExpKind, var: &str, results: &mut Vec<SymExpr>,
-) {
+fn find_func_inners_rec(expr: &SymExpr, kind: &TrigExpKind, var: &str, results: &mut Vec<SymExpr>) {
     match expr {
         SymExpr::Sin(inner) if *kind == TrigExpKind::Sin => {
             if is_linear_in(inner, var).is_some() {
@@ -4247,11 +5033,7 @@ fn find_func_inners_rec(
             find_func_inners_rec(a, kind, var, results);
             find_func_inners_rec(b, kind, var, results);
         }
-        SymExpr::Neg(a)
-        | SymExpr::Sin(a)
-        | SymExpr::Cos(a)
-        | SymExpr::Tan(a)
-        | SymExpr::Exp(a) => {
+        SymExpr::Neg(a) | SymExpr::Sin(a) | SymExpr::Cos(a) | SymExpr::Tan(a) | SymExpr::Exp(a) => {
             find_func_inners_rec(a, kind, var, results);
         }
         SymExpr::Pow(base, _exp) => {
@@ -4264,15 +5046,22 @@ fn find_func_inners_rec(
 /// Collect quadratic coefficients `[a0, a1, a2]` for `a0 + a1*u + a2*u^2 = 0`
 /// where `u = kind(inner)`. Returns `None` if `a2 ≈ 0` (not a quadratic).
 fn collect_quadratic_coeffs(
-    expr: &SymExpr, kind: &TrigExpKind, inner: &SymExpr,
+    expr: &SymExpr,
+    kind: &TrigExpKind,
+    inner: &SymExpr,
 ) -> Option<(f64, f64, f64)> {
     let mut a0 = 0.0;
     let mut a1 = 0.0;
     let mut a2 = 0.0;
 
     fn collect(
-        expr: &SymExpr, kind: &TrigExpKind, inner: &SymExpr,
-        sign: f64, a0: &mut f64, a1: &mut f64, a2: &mut f64,
+        expr: &SymExpr,
+        kind: &TrigExpKind,
+        inner: &SymExpr,
+        sign: f64,
+        a0: &mut f64,
+        a1: &mut f64,
+        a2: &mut f64,
     ) {
         match expr {
             SymExpr::Num(n) => *a0 += sign * n,
@@ -4354,8 +5143,14 @@ fn try_solve_mixed_trig_identity(expr: &SymExpr, var: &str) -> Option<Vec<String
             let mut c1 = 0.0; // coefficient of cos(inner)
 
             fn collect_mixed_term(
-                expr: &SymExpr, sin_inner: &SymExpr, cos_inner: &SymExpr,
-                sign: f64, s2: &mut f64, s1: &mut f64, c2: &mut f64, c1: &mut f64,
+                expr: &SymExpr,
+                sin_inner: &SymExpr,
+                cos_inner: &SymExpr,
+                sign: f64,
+                s2: &mut f64,
+                s1: &mut f64,
+                c2: &mut f64,
+                c1: &mut f64,
             ) {
                 match expr {
                     SymExpr::Num(n) => {} // handled separately
@@ -4367,13 +5162,16 @@ fn try_solve_mixed_trig_identity(expr: &SymExpr, var: &str) -> Option<Vec<String
                         collect_mixed_term(a, sin_inner, cos_inner, sign, s2, s1, c2, c1);
                         collect_mixed_term(b, sin_inner, cos_inner, -sign, s2, s1, c2, c1);
                     }
-                    SymExpr::Neg(a) => collect_mixed_term(a, sin_inner, cos_inner, -sign, s2, s1, c2, c1),
+                    SymExpr::Neg(a) => {
+                        collect_mixed_term(a, sin_inner, cos_inner, -sign, s2, s1, c2, c1)
+                    }
                     // sin(inner)²
                     SymExpr::Pow(base, exp) => {
                         if matches!(exp.as_ref(), SymExpr::Num(n) if (*n - 2.0).abs() < 1e-12) {
                             if matches!(base.as_ref(), SymExpr::Sin(e) if e.as_ref() == sin_inner) {
                                 *s2 += sign;
-                            } else if matches!(base.as_ref(), SymExpr::Cos(e) if e.as_ref() == cos_inner) {
+                            } else if matches!(base.as_ref(), SymExpr::Cos(e) if e.as_ref() == cos_inner)
+                            {
                                 *c2 += sign;
                             }
                         }
@@ -4384,14 +5182,20 @@ fn try_solve_mixed_trig_identity(expr: &SymExpr, var: &str) -> Option<Vec<String
                     SymExpr::Cos(e) if e.as_ref() == cos_inner => *c1 += sign,
                     // k * func(inner) or k * func(inner)²
                     SymExpr::Mul(a, b) => {
-                        let (k, rest) = if let SymExpr::Num(n) = a.as_ref() { (n, b.as_ref()) }
-                            else if let SymExpr::Num(n) = b.as_ref() { (n, a.as_ref()) }
-                            else { return };
+                        let (k, rest) = if let SymExpr::Num(n) = a.as_ref() {
+                            (n, b.as_ref())
+                        } else if let SymExpr::Num(n) = b.as_ref() {
+                            (n, a.as_ref())
+                        } else {
+                            return;
+                        };
                         match rest {
                             SymExpr::Pow(base, exp) if matches!(exp.as_ref(), SymExpr::Num(n) if (*n - 2.0).abs() < 1e-12) => {
-                                if matches!(base.as_ref(), SymExpr::Sin(e) if e.as_ref() == sin_inner) {
+                                if matches!(base.as_ref(), SymExpr::Sin(e) if e.as_ref() == sin_inner)
+                                {
                                     *s2 += sign * k;
-                                } else if matches!(base.as_ref(), SymExpr::Cos(e) if e.as_ref() == cos_inner) {
+                                } else if matches!(base.as_ref(), SymExpr::Cos(e) if e.as_ref() == cos_inner)
+                                {
                                     *c2 += sign * k;
                                 }
                             }
@@ -4405,7 +5209,9 @@ fn try_solve_mixed_trig_identity(expr: &SymExpr, var: &str) -> Option<Vec<String
             }
 
             // Collect coefficients from the expression
-            collect_mixed_term(expr, sin_inner, cos_inner, 1.0, &mut s2, &mut s1, &mut c2, &mut c1);
+            collect_mixed_term(
+                expr, sin_inner, cos_inner, 1.0, &mut s2, &mut s1, &mut c2, &mut c1,
+            );
             let constant = collect_constant(expr, 1.0);
 
             // Check for pattern: a*sin² + b*cos + c = 0 (no cos², no sin)
@@ -4425,7 +5231,9 @@ fn try_solve_mixed_trig_identity(expr: &SymExpr, var: &str) -> Option<Vec<String
 
                     let mut solutions = Vec::new();
                     for u in [u1, u2] {
-                        if let Some(sols) = solve_trig_exp_inner(1.0, &TrigExpKind::Cos, cos_inner, u, var) {
+                        if let Some(sols) =
+                            solve_trig_exp_inner(1.0, &TrigExpKind::Cos, cos_inner, u, var)
+                        {
                             for sol in sols {
                                 if sol != "no solution" {
                                     solutions.push(sol);
@@ -4458,7 +5266,9 @@ fn try_solve_mixed_trig_identity(expr: &SymExpr, var: &str) -> Option<Vec<String
 
                     let mut solutions = Vec::new();
                     for u in [u1, u2] {
-                        if let Some(sols) = solve_trig_exp_inner(1.0, &TrigExpKind::Sin, sin_inner, u, var) {
+                        if let Some(sols) =
+                            solve_trig_exp_inner(1.0, &TrigExpKind::Sin, sin_inner, u, var)
+                        {
                             for sol in sols {
                                 if sol != "no solution" {
                                     solutions.push(sol);
@@ -4488,7 +5298,12 @@ fn try_solve_mixed_trig_identity(expr: &SymExpr, var: &str) -> Option<Vec<String
 /// - `a*exp(kx+d)² + b*exp(kx+d) + c = 0` — same for exp (setting u = e^(kx+d) > 0)
 /// - `a*exp(2kx+2d) + b*exp(kx+d) + c = 0` — exp power relationship
 fn try_solve_quadratic_disguise(expr: &SymExpr, var: &str) -> Option<Vec<String>> {
-    for kind in &[TrigExpKind::Sin, TrigExpKind::Cos, TrigExpKind::Tan, TrigExpKind::Exp] {
+    for kind in &[
+        TrigExpKind::Sin,
+        TrigExpKind::Cos,
+        TrigExpKind::Tan,
+        TrigExpKind::Exp,
+    ] {
         let inners = find_func_inners(expr, kind, var);
         for inner in inners {
             let Some((a0, a1, a2)) = collect_quadratic_coeffs(expr, kind, &inner) else {
@@ -4533,7 +5348,9 @@ fn try_solve_quadratic_disguise(expr: &SymExpr, var: &str) -> Option<Vec<String>
 /// Collect constant term and linear exp terms from an expression.
 /// Each exp term is (sign*coeff, m, d) for coeff * exp(m*x + d).
 fn collect_exp_and_const_terms(
-    expr: &SymExpr, var: &str, sign: f64,
+    expr: &SymExpr,
+    var: &str,
+    sign: f64,
     exp_terms: &mut Vec<(f64, f64, f64)>,
     constant: &mut f64,
 ) {
@@ -4622,7 +5439,8 @@ fn try_solve_exp_quadratic_power(expr: &SymExpr, var: &str) -> Option<Vec<String
                 let inner = make_linear(m1, d1, var);
                 let mut solutions = Vec::new();
                 for &u in &[u1, u2] {
-                    if let Some(sols) = solve_trig_exp_inner(1.0, &TrigExpKind::Exp, &inner, u, var) {
+                    if let Some(sols) = solve_trig_exp_inner(1.0, &TrigExpKind::Exp, &inner, u, var)
+                    {
                         for sol in sols {
                             if sol != "no solution" {
                                 solutions.push(sol);
@@ -4687,7 +5505,7 @@ pub fn solve_eq(lhs: &SymExpr, rhs: &SymExpr, var: &str) -> Vec<String> {
     // Check for x^n = c form
     if let SymExpr::Pow(base, exp) = &expanded {
         if let SymExpr::Var(v) = base.as_ref() {
-            if v == var {
+            if v.display.as_ref() == var {
                 // x^n = 0 → x = 0
                 // This would be caught by the try_solve_product above
             }
@@ -4702,7 +5520,9 @@ pub fn solve_eq(lhs: &SymExpr, rhs: &SymExpr, var: &str) -> Vec<String> {
         }
     }
 
-    vec![format!("cannot solve equation symbolically")]
+    vec![format!(
+        "I do not know how to solve this equation symbolically"
+    )]
 }
 
 /// Parse and solve an equation string with respect to a variable.
@@ -4740,7 +5560,11 @@ pub fn integrate_str(expr_str: &str, var: &str) -> Option<String> {
 /// The rule engine contains pattern → template rules from textbook formulas
 /// and bootstrap entries. If the hardcoded integration fails, it tries
 /// each matching Integrate-domain rule against the expression.
-pub fn integrate_str_with_rules(expr_str: &str, var: &str, rules: &[crate::math_ingest::ComputationRule]) -> Option<String> {
+pub fn integrate_str_with_rules(
+    expr_str: &str,
+    var: &str,
+    rules: &[crate::math_ingest::ComputationRule],
+) -> Option<String> {
     let expr = parse(expr_str).ok()?;
 
     // First try hardcoded integration
@@ -4752,7 +5576,10 @@ pub fn integrate_str_with_rules(expr_str: &str, var: &str, rules: &[crate::math_
     // Fallback: try rule engine
     let mut extra = std::collections::HashMap::new();
     // Bind integration constant variable
-    extra.insert(var.to_string(), crate::algebra::SymExpr::Var(var.to_string()));
+    extra.insert(
+        var.to_string(),
+        crate::algebra::SymExpr::Var(Variable::named(var)),
+    );
     for rule in rules.iter().rev() {
         if rule.domain != crate::math_ingest::RuleDomain::Integrate {
             continue;
@@ -4779,7 +5606,11 @@ pub fn integrate_definite(expr_str: &str, var: &str, a: f64, b: f64) -> Option<f
 }
 
 /// Solve an equation using hardcoded solver + fallback to rule engine.
-pub fn solve_str_with_rules(input: &str, var: &str, rules: &[crate::math_ingest::ComputationRule]) -> Result<String, String> {
+pub fn solve_str_with_rules(
+    input: &str,
+    var: &str,
+    rules: &[crate::math_ingest::ComputationRule],
+) -> Result<String, String> {
     let (lhs, rhs) = parse_equation(input)?;
     let solutions = solve_eq(&lhs, &rhs, var);
 
@@ -4791,7 +5622,10 @@ pub fn solve_str_with_rules(input: &str, var: &str, rules: &[crate::math_ingest:
     // Fallback: try rule engine for Solve rules
     let expr = (lhs.clone() - rhs.clone()).simplify();
     let mut extra = std::collections::HashMap::new();
-    extra.insert(var.to_string(), crate::algebra::SymExpr::Var(var.to_string()));
+    extra.insert(
+        var.to_string(),
+        crate::algebra::SymExpr::Var(Variable::named(var)),
+    );
     for rule in rules.iter().rev() {
         if rule.domain != crate::math_ingest::RuleDomain::Solve {
             continue;
@@ -4814,13 +5648,19 @@ pub fn solve_str_with_rules(input: &str, var: &str, rules: &[crate::math_ingest:
 /// Collect all variable names from an expression into a list.
 fn collect_vars(expr: &SymExpr, vars: &mut Vec<String>) {
     match expr {
-        SymExpr::Var(v) => vars.push(v.clone()),
+        SymExpr::Var(v) => vars.push(v.to_string()),
         SymExpr::Add(a, b) | SymExpr::Sub(a, b) | SymExpr::Mul(a, b) => {
             collect_vars(a, vars);
             collect_vars(b, vars);
         }
-        SymExpr::Neg(a) | SymExpr::Sin(a) | SymExpr::Cos(a) | SymExpr::Tan(a)
-            | SymExpr::Exp(a) | SymExpr::Ln(a) | SymExpr::Sqrt(a) | SymExpr::Abs(a) => {
+        SymExpr::Neg(a)
+        | SymExpr::Sin(a)
+        | SymExpr::Cos(a)
+        | SymExpr::Tan(a)
+        | SymExpr::Exp(a)
+        | SymExpr::Ln(a)
+        | SymExpr::Sqrt(a)
+        | SymExpr::Abs(a) => {
             collect_vars(a, vars);
         }
         SymExpr::Pow(base, exp) => {
@@ -4836,13 +5676,16 @@ fn collect_vars(expr: &SymExpr, vars: &mut Vec<String>) {
 /// Returns the coefficient for each variable in `row` and the constant term in `constant`.
 /// Returns an error if a non-linear term is encountered.
 fn extract_linear_terms(
-    expr: &SymExpr, vars: &[String], sign: f64,
-    row: &mut [f64], constant: &mut f64,
+    expr: &SymExpr,
+    vars: &[String],
+    sign: f64,
+    row: &mut [f64],
+    constant: &mut f64,
 ) -> Result<(), String> {
     match expr {
         SymExpr::Num(n) => *constant += sign * n,
         SymExpr::Var(v) => {
-            if let Some(idx) = vars.iter().position(|x| x == v) {
+            if let Some(idx) = vars.iter().position(|x| x == v.display.as_ref()) {
                 row[idx] += sign;
             }
         }
@@ -4859,7 +5702,7 @@ fn extract_linear_terms(
             // Num * Var
             if let SymExpr::Num(k) = a.as_ref() {
                 if let SymExpr::Var(v) = b.as_ref() {
-                    if let Some(idx) = vars.iter().position(|x| x == v) {
+                    if let Some(idx) = vars.iter().position(|x| x == v.display.as_ref()) {
                         row[idx] += sign * k;
                         return Ok(());
                     }
@@ -4868,7 +5711,7 @@ fn extract_linear_terms(
             // Var * Num
             if let SymExpr::Num(k) = b.as_ref() {
                 if let SymExpr::Var(v) = a.as_ref() {
-                    if let Some(idx) = vars.iter().position(|x| x == v) {
+                    if let Some(idx) = vars.iter().position(|x| x == v.display.as_ref()) {
                         row[idx] += sign * k;
                         return Ok(());
                     }
@@ -4881,7 +5724,7 @@ fn extract_linear_terms(
             if let SymExpr::Var(v) = base.as_ref() {
                 if let SymExpr::Num(n) = exp.as_ref() {
                     if (*n - 1.0).abs() < 1e-12 {
-                        if let Some(idx) = vars.iter().position(|x| x == v) {
+                        if let Some(idx) = vars.iter().position(|x| x == v.display.as_ref()) {
                             row[idx] += sign;
                             return Ok(());
                         }
@@ -4908,7 +5751,8 @@ fn gaussian_elimination(matrix: &[Vec<f64>], rhs: &[f64]) -> Result<Vec<f64>, St
     }
 
     // Build augmented matrix
-    let mut aug: Vec<Vec<f64>> = matrix.iter()
+    let mut aug: Vec<Vec<f64>> = matrix
+        .iter()
         .enumerate()
         .map(|(i, row)| {
             let mut r = row.clone();
@@ -4966,7 +5810,8 @@ fn gaussian_elimination(matrix: &[Vec<f64>], rhs: &[f64]) -> Result<Vec<f64>, St
 ///
 /// Returns a formatted solution string like `"x = 2, y = 1"`.
 pub fn solve_system_str(input: &str) -> Result<String, String> {
-    let equations: Vec<&str> = input.split(';')
+    let equations: Vec<&str> = input
+        .split(';')
         .map(|s| s.trim())
         .filter(|s| !s.is_empty())
         .collect();
@@ -4998,7 +5843,9 @@ pub fn solve_system_str(input: &str) -> Result<String, String> {
     if parsed.len() < n {
         return Err(format!(
             "need at least {} equations for {} variables, got {}",
-            n, n, parsed.len()
+            n,
+            n,
+            parsed.len()
         ));
     }
 
@@ -5049,7 +5896,9 @@ mod tests {
     #[test]
     fn test_parse_variable() {
         let e = parse("x").unwrap();
-        assert_eq!(e, SymExpr::Var("x".to_string()));
+        // `parse()` creates a fresh scope; verify the parsed symbol rather
+        // than comparing it to a variable allocated in another scope.
+        assert!(matches!(&e, SymExpr::Var(v) if v.display.as_ref() == "x"));
         assert_eq!(format!("{}", e), "x");
     }
 
@@ -5185,8 +6034,16 @@ mod tests {
         let d = e.differentiate("x").simplify();
         // d/dx sin(x²) = cos(x²) * 2x
         let ds = format!("{}", d);
-        assert!(ds.contains("cos(x^2)") || ds.contains("cos(x²)"), "got: {}", ds);
-        assert!(ds.contains("2*x") || ds.contains("x*2") || ds.contains("2x"), "got: {}", ds);
+        assert!(
+            ds.contains("cos(x^2)") || ds.contains("cos(x²)"),
+            "got: {}",
+            ds
+        );
+        assert!(
+            ds.contains("2*x") || ds.contains("x*2") || ds.contains("2x"),
+            "got: {}",
+            ds
+        );
     }
 
     #[test]
@@ -5262,7 +6119,14 @@ mod tests {
 
     #[test]
     fn test_evaluate_variable() {
-        assert!((SymExpr::Var("x".to_string()).evaluate(&[("x", 5.0)]).unwrap() - 5.0).abs() < 1e-12);
+        assert!(
+            (SymExpr::Var(Variable::named("x"))
+                .evaluate(&[("x", 5.0)])
+                .unwrap()
+                - 5.0)
+                .abs()
+                < 1e-12
+        );
     }
 
     #[test]
@@ -5316,63 +6180,63 @@ mod tests {
 
     #[test]
     fn test_simplify_zero_add() {
-        let e = SymExpr::Num(0.0) + SymExpr::Var("x".to_string());
+        let e = SymExpr::Num(0.0) + SymExpr::Var(Variable::named("x"));
         let s = e.simplify();
         assert_eq!(format!("{}", s), "x");
     }
 
     #[test]
     fn test_simplify_add_zero() {
-        let e = SymExpr::Var("x".to_string()) + SymExpr::Num(0.0);
+        let e = SymExpr::Var(Variable::named("x")) + SymExpr::Num(0.0);
         let s = e.simplify();
         assert_eq!(format!("{}", s), "x");
     }
 
     #[test]
     fn test_simplify_mul_zero() {
-        let e = SymExpr::Num(0.0) * SymExpr::Var("x".to_string());
+        let e = SymExpr::Num(0.0) * SymExpr::Var(Variable::named("x"));
         let s = e.simplify();
         assert_eq!(format!("{}", s), "0");
     }
 
     #[test]
     fn test_simplify_mul_one() {
-        let e = SymExpr::Num(1.0) * SymExpr::Var("x".to_string());
+        let e = SymExpr::Num(1.0) * SymExpr::Var(Variable::named("x"));
         let s = e.simplify();
         assert_eq!(format!("{}", s), "x");
     }
 
     #[test]
     fn test_simplify_pow_zero() {
-        let e = SymExpr::Var("x".to_string()).pow(SymExpr::Num(0.0));
+        let e = SymExpr::Var(Variable::named("x")).pow(SymExpr::Num(0.0));
         let s = e.simplify();
         assert_eq!(format!("{}", s), "1");
     }
 
     #[test]
     fn test_simplify_pow_one() {
-        let e = SymExpr::Var("x".to_string()).pow(SymExpr::Num(1.0));
+        let e = SymExpr::Var(Variable::named("x")).pow(SymExpr::Num(1.0));
         let s = e.simplify();
         assert_eq!(format!("{}", s), "x");
     }
 
     #[test]
     fn test_simplify_double_neg() {
-        let e = -(-SymExpr::Var("x".to_string()));
+        let e = -(-SymExpr::Var(Variable::named("x")));
         let s = e.simplify();
         assert_eq!(format!("{}", s), "x");
     }
 
     #[test]
     fn test_simplify_sub_self() {
-        let e = SymExpr::Var("x".to_string()) - SymExpr::Var("x".to_string());
+        let e = SymExpr::Var(Variable::named("x")) - SymExpr::Var(Variable::named("x"));
         let s = e.simplify();
         assert_eq!(format!("{}", s), "0");
     }
 
     #[test]
     fn test_simplify_div_self() {
-        let e = SymExpr::Var("x".to_string()) / SymExpr::Var("x".to_string());
+        let e = SymExpr::Var(Variable::named("x")) / SymExpr::Var(Variable::named("x"));
         let s = e.simplify();
         assert_eq!(format!("{}", s), "1");
     }
@@ -5502,7 +6366,11 @@ mod tests {
     fn test_diff_sin_3x() {
         let r = differentiate_str("sin(3*x)", "x").unwrap();
         // = cos(3x) * 3
-        assert!(r.contains("cos(3*x)") || r.contains("cos(3x)"), "got: {}", r);
+        assert!(
+            r.contains("cos(3*x)") || r.contains("cos(3x)"),
+            "got: {}",
+            r
+        );
         assert!(r.contains("3") || r.contains("*"), "got: {}", r);
     }
 
@@ -5517,9 +6385,11 @@ mod tests {
     #[test]
     fn test_simplify_neg_add() {
         // -(x + 1) → -x + -1  (which displays as -x + -1)
-        let e = SymExpr::Neg(Box::new(
-            SymExpr::Add(Box::new(SymExpr::Var("x".to_string())), Box::new(SymExpr::Num(1.0)))
-        )).simplify();
+        let e = SymExpr::Neg(Box::new(SymExpr::Add(
+            Box::new(SymExpr::Var(Variable::named("x"))),
+            Box::new(SymExpr::Num(1.0)),
+        )))
+        .simplify();
         let s = format!("{}", e);
         assert!(s.contains("-x"), "got: {}", s);
         assert!(s.contains("-1") || s.contains("1"), "got: {}", s);
@@ -5529,9 +6399,10 @@ mod tests {
     fn test_simplify_a_minus_neg_b() {
         // x - (-y) → x + y
         let e = SymExpr::Sub(
-            Box::new(SymExpr::Var("x".to_string())),
-            Box::new(SymExpr::Neg(Box::new(SymExpr::Var("y".to_string())))),
-        ).simplify();
+            Box::new(SymExpr::Var(Variable::named("x"))),
+            Box::new(SymExpr::Neg(Box::new(SymExpr::Var(Variable::named("y"))))),
+        )
+        .simplify();
         assert_eq!(format!("{}", e), "x + y");
     }
 
@@ -5550,9 +6421,11 @@ mod tests {
     #[test]
     fn test_simplify_neg_sub() {
         // -(x - y) → y - x
-        let e = SymExpr::Neg(Box::new(
-            SymExpr::Sub(Box::new(SymExpr::Var("x".to_string())), Box::new(SymExpr::Var("y".to_string())))
-        )).simplify();
+        let e = SymExpr::Neg(Box::new(SymExpr::Sub(
+            Box::new(SymExpr::Var(Variable::named("x"))),
+            Box::new(SymExpr::Var(Variable::named("y"))),
+        )))
+        .simplify();
         assert_eq!(format!("{}", e), "y - x");
     }
 
@@ -5639,13 +6512,21 @@ mod tests {
     fn test_integrate_sin_linear() {
         let r = integrate_str("sin(2*x)", "x").unwrap();
         // = -cos(2*x)/2
-        assert!(r.contains("-cos(2*x)/2") || r.contains("(-cos(2*x))/2"), "got: {}", r);
+        assert!(
+            r.contains("-cos(2*x)/2") || r.contains("(-cos(2*x))/2"),
+            "got: {}",
+            r
+        );
     }
 
     #[test]
     fn test_integrate_cos_linear() {
         let r = integrate_str("cos(2*x)", "x").unwrap();
-        assert!(r.contains("sin(2*x)/2") || r.contains("(sin(2*x))/2"), "got: {}", r);
+        assert!(
+            r.contains("sin(2*x)/2") || r.contains("(sin(2*x))/2"),
+            "got: {}",
+            r
+        );
     }
 
     #[test]
@@ -5664,7 +6545,11 @@ mod tests {
     fn test_integrate_linear_power() {
         let r = integrate_str("(2*x + 1)^3", "x").unwrap();
         // = (2x+1)^4 / (2*4) = (2x+1)^4 / 8
-        assert!(r.contains("(2*x + 1)^4/8") || r.contains("(2*x + 1)^4/8"), "got: {}", r);
+        assert!(
+            r.contains("(2*x + 1)^4/8") || r.contains("(2*x + 1)^4/8"),
+            "got: {}",
+            r
+        );
     }
 
     #[test]
@@ -5706,7 +6591,7 @@ mod tests {
     fn test_definite_integral_x_sq() {
         // ∫₀¹ x² dx = [x³/3]₀¹ = 1/3
         let r = integrate_definite("x^2", "x", 0.0, 1.0).unwrap();
-        assert!((r - 1.0/3.0).abs() < 1e-10, "got {}", r);
+        assert!((r - 1.0 / 3.0).abs() < 1e-10, "got {}", r);
     }
 
     // ── MathEngine integration tests ──────────────────────────────────
@@ -5741,7 +6626,11 @@ mod tests {
         // Result should contain "sin(x)" (may have " + C" appended)
         assert!(r.is_some(), "expected Some, got None");
         let s = r.unwrap();
-        assert!(s.contains("sin(x)"), "expected sin(x) in result, got: {}", s);
+        assert!(
+            s.contains("sin(x)"),
+            "expected sin(x) in result, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -5776,14 +6665,14 @@ mod tests {
 
     #[test]
     fn test_distribute_num_times_add() {
-        let e = SymExpr::Num(3.0) * (SymExpr::Var("x".to_string()) + SymExpr::Num(1.0));
+        let e = SymExpr::Num(3.0) * (SymExpr::Var(Variable::named("x")) + SymExpr::Num(1.0));
         let d = e.distribute().simplify();
         assert_eq!(format!("{}", d), "3*x + 3");
     }
 
     #[test]
     fn test_distribute_add_times_num() {
-        let e = (SymExpr::Var("x".to_string()) + SymExpr::Num(2.0)) * SymExpr::Num(3.0);
+        let e = (SymExpr::Var(Variable::named("x")) + SymExpr::Num(2.0)) * SymExpr::Num(3.0);
         let d = e.distribute().simplify();
         // Distribution: x*3 + 2*3 → 3*x + 6  (note: x*3 displays as x*3, not 3*x,
         // because commutation isn't implemented in simplify)
@@ -5838,7 +6727,7 @@ mod tests {
 
     #[test]
     fn test_distribute_sub() {
-        let e = SymExpr::Num(2.0) * (SymExpr::Var("x".to_string()) - SymExpr::Num(3.0));
+        let e = SymExpr::Num(2.0) * (SymExpr::Var(Variable::named("x")) - SymExpr::Num(3.0));
         let d = e.distribute().simplify();
         // Distribution of Num * Sub → 2*x - 6
         let s = format!("{}", d);
@@ -6036,7 +6925,10 @@ mod tests {
         // ∫ 1/((x+1)*(x-2)) dx via the Div handler
         let expr = parse("1/((x+1)*(x-2))").unwrap();
         let result = expr.integrate("x");
-        assert!(result.is_some(), "partial fractions integration should work");
+        assert!(
+            result.is_some(),
+            "partial fractions integration should work"
+        );
         let s = format!("{}", result.unwrap().simplify());
         assert!(s.contains("ln"), "expected ln terms, got: {}", s);
     }
@@ -6050,7 +6942,11 @@ mod tests {
         let result = expr.integrate("x");
         assert!(result.is_some(), "by-parts should work for linear*sin");
         let s = format!("{}", result.unwrap().simplify());
-        assert!(s.contains("sin") || s.contains("cos"), "expected trig terms, got: {}", s);
+        assert!(
+            s.contains("sin") || s.contains("cos"),
+            "expected trig terms, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -6060,7 +6956,11 @@ mod tests {
         let result = expr.integrate("x");
         assert!(result.is_some(), "by-parts should work for linear*cos");
         let s = format!("{}", result.unwrap().simplify());
-        assert!(s.contains("sin") || s.contains("cos"), "expected trig terms, got: {}", s);
+        assert!(
+            s.contains("sin") || s.contains("cos"),
+            "expected trig terms, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -6070,7 +6970,11 @@ mod tests {
         let result = expr.integrate("x");
         assert!(result.is_some(), "by-parts should work for linear*exp");
         let s = format!("{}", result.unwrap().simplify());
-        assert!(s.contains("exp") || s.contains("e^"), "expected exp terms, got: {}", s);
+        assert!(
+            s.contains("exp") || s.contains("e^"),
+            "expected exp terms, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -6080,7 +6984,11 @@ mod tests {
         let result = expr.integrate("x");
         assert!(result.is_some(), "x*sin(kx) should integrate");
         let s = format!("{}", result.unwrap().simplify());
-        assert!(s.contains("sin") && s.contains("cos"), "expected trig terms, got: {}", s);
+        assert!(
+            s.contains("sin") && s.contains("cos"),
+            "expected trig terms, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -6099,12 +7007,10 @@ mod tests {
     fn test_definite_integral_numeric_simple() {
         // ∫_0^1 x^2 dx = 1/3
         let expr = SymExpr::Integral {
-            variable: "x".to_string(),
+            variable: Variable::named("x"),
             lower: Some(Box::new(SymExpr::Num(0.0))),
             upper: Some(Box::new(SymExpr::Num(1.0))),
-            body: Box::new(
-                SymExpr::Var("x".to_string()).pow(SymExpr::Num(2.0)),
-            ),
+            body: Box::new(SymExpr::Var(Variable::named("x")).pow(SymExpr::Num(2.0))),
         };
         let val = expr.evaluate(&[]).unwrap();
         let diff = (val - 1.0 / 3.0).abs();
@@ -6115,10 +7021,10 @@ mod tests {
     fn test_definite_integral_numeric_sin() {
         // ∫_0^π sin(x) dx = 2
         let expr = SymExpr::Integral {
-            variable: "x".to_string(),
+            variable: Variable::named("x"),
             lower: Some(Box::new(SymExpr::Num(0.0))),
             upper: Some(Box::new(SymExpr::Num(std::f64::consts::PI))),
-            body: Box::new(SymExpr::Var("x".to_string()).sin()),
+            body: Box::new(SymExpr::Var(Variable::named("x")).sin()),
         };
         let val = expr.evaluate(&[]).unwrap();
         let diff = (val - 2.0).abs();
@@ -6129,12 +7035,15 @@ mod tests {
     fn test_definite_integral_numeric_invalid_skip() {
         // Indefinite integral (no bounds) should return None
         let expr = SymExpr::Integral {
-            variable: "x".to_string(),
+            variable: Variable::named("x"),
             lower: None,
             upper: None,
-            body: Box::new(SymExpr::Var("x".to_string()).pow(SymExpr::Num(2.0))),
+            body: Box::new(SymExpr::Var(Variable::named("x")).pow(SymExpr::Num(2.0))),
         };
-        assert!(expr.evaluate(&[]).is_none(), "indefinite integral should return None");
+        assert!(
+            expr.evaluate(&[]).is_none(),
+            "indefinite integral should return None"
+        );
     }
 
     // ── Solver Tests ──────────────────────────────────────────────────
@@ -6174,7 +7083,11 @@ mod tests {
     fn test_solve_quadratic_irrational() {
         let r = solve_str("x^2 - 2 = 0", "x").unwrap();
         // x = ±√2 ≈ ±1.414...
-        assert!(r.contains("1.414") || r.contains("1.4142135624"), "got: {}", r);
+        assert!(
+            r.contains("1.414") || r.contains("1.4142135624"),
+            "got: {}",
+            r
+        );
     }
 
     #[test]
@@ -6186,7 +7099,11 @@ mod tests {
     #[test]
     fn test_solve_identity() {
         let r = solve_str("x = x", "x").unwrap();
-        assert!(r.contains("identity") || r.contains("all real"), "got: {}", r);
+        assert!(
+            r.contains("identity") || r.contains("all real"),
+            "got: {}",
+            r
+        );
     }
 
     #[test]
@@ -6287,7 +7204,11 @@ mod tests {
     #[test]
     fn test_solve_trig_cos_no_solution() {
         let r = solve_str("cos(x) = 2", "x").unwrap();
-        assert!(r.contains("no solution"), "expected no solution, got: {}", r);
+        assert!(
+            r.contains("no solution"),
+            "expected no solution, got: {}",
+            r
+        );
     }
 
     #[test]
@@ -6314,7 +7235,11 @@ mod tests {
     #[test]
     fn test_solve_exp_no_solution() {
         let r = solve_str("exp(x) = -1", "x").unwrap();
-        assert!(r.contains("no solution"), "expected no solution, got: {}", r);
+        assert!(
+            r.contains("no solution"),
+            "expected no solution, got: {}",
+            r
+        );
     }
 
     #[test]
@@ -6343,7 +7268,11 @@ mod tests {
         // (sin(x) - 1)(x - 2) = 0 → sin(x) = 1 and x = 2
         let r = solve_str("(sin(x) - 1)*(x - 2) = 0", "x").unwrap();
         assert!(r.contains("x = 2"), "expected x = 2, got: {}", r);
-        assert!(r.contains("1.570"), "expected x ≈ 1.5708 (sin(x)=1), got: {}", r);
+        assert!(
+            r.contains("1.570"),
+            "expected x ≈ 1.5708 (sin(x)=1), got: {}",
+            r
+        );
     }
 
     #[test]
@@ -6351,7 +7280,11 @@ mod tests {
         // (cos(x) - 0)*(x + 1) = 0 → cos(x) = 0 or x = -1
         let r = solve_str("(cos(x))*(x + 1) = 0", "x").unwrap();
         assert!(r.contains("x = -1"), "expected x = -1, got: {}", r);
-        assert!(r.contains("1.570"), "expected x ≈ 1.5708 (cos(x)=0), got: {}", r);
+        assert!(
+            r.contains("1.570"),
+            "expected x ≈ 1.5708 (cos(x)=0), got: {}",
+            r
+        );
     }
 
     #[test]
@@ -6359,7 +7292,11 @@ mod tests {
         // (exp(x) - 2)*(x - 3) = 0 → exp(x) = 2 or x = 3
         let r = solve_str("(exp(x) - 2)*(x - 3) = 0", "x").unwrap();
         assert!(r.contains("x = 3"), "expected x = 3, got: {}", r);
-        assert!(r.contains("0.693"), "expected x ≈ ln(2) ≈ 0.693, got: {}", r);
+        assert!(
+            r.contains("0.693"),
+            "expected x ≈ ln(2) ≈ 0.693, got: {}",
+            r
+        );
     }
 
     #[test]
@@ -6404,7 +7341,11 @@ mod tests {
         // So result = [-3, 1] meaning -3 + x, i.e. x - 3
         let result = synthetic_divide(&[6.0, -5.0, 1.0], 2.0);
         assert_eq!(result.len(), 2);
-        assert!((result[0] - (-3.0)).abs() < 1e-10, "expected -3, got {}", result[0]);
+        assert!(
+            (result[0] - (-3.0)).abs() < 1e-10,
+            "expected -3, got {}",
+            result[0]
+        );
         assert!((result[1] - 1.0).abs() < 1e-10);
     }
 
@@ -6412,9 +7353,21 @@ mod tests {
     fn test_collect_poly_coeffs_simple() {
         let expr = parse("3*x^2 + 2*x - 5").unwrap();
         let coeffs = collect_poly_coeffs(&expr, "x").unwrap();
-        assert!((coeffs[0] - (-5.0)).abs() < 1e-10, "constant {}, expected -5", coeffs[0]);
-        assert!((coeffs[1] - 2.0).abs() < 1e-10, "linear {}, expected 2", coeffs[1]);
-        assert!((coeffs[2] - 3.0).abs() < 1e-10, "quadratic {}, expected 3", coeffs[2]);
+        assert!(
+            (coeffs[0] - (-5.0)).abs() < 1e-10,
+            "constant {}, expected -5",
+            coeffs[0]
+        );
+        assert!(
+            (coeffs[1] - 2.0).abs() < 1e-10,
+            "linear {}, expected 2",
+            coeffs[1]
+        );
+        assert!(
+            (coeffs[2] - 3.0).abs() < 1e-10,
+            "quadratic {}, expected 3",
+            coeffs[2]
+        );
     }
 
     #[test]
@@ -6454,7 +7407,11 @@ mod tests {
     fn test_newton_cubic_simple() {
         // x^3 - 6x^2 + 11x - 6 = 0 → roots 1, 2, 3
         let r = solve_str("x^3 - 6*x^2 + 11*x - 6 = 0", "x").unwrap();
-        assert!(r.contains("x = 1") || r.contains("x = 2") || r.contains("x = 3"), "got: {}", r);
+        assert!(
+            r.contains("x = 1") || r.contains("x = 2") || r.contains("x = 3"),
+            "got: {}",
+            r
+        );
     }
 
     // ── EQUIVALENCE CHECKING ──────────────────────────────────────────
@@ -6464,41 +7421,60 @@ mod tests {
         // (x+1)^2 ≡ x^2 + 2x + 1
         let a = parse("(x+1)^2").unwrap();
         let b = parse("x^2 + 2*x + 1").unwrap();
-        assert!(a.equivalent_to(&b), "(x+1)^2 should be equivalent to x^2+2x+1");
+        assert!(
+            a.equivalent_to(&b),
+            "(x+1)^2 should be equivalent to x^2+2x+1"
+        );
     }
 
     #[test]
     fn test_equivalent_difference_of_squares() {
         let a = parse("(x-1)*(x+1)").unwrap();
         let b = parse("x^2 - 1").unwrap();
-        assert!(a.equivalent_to(&b), "(x-1)(x+1) should be equivalent to x^2-1");
+        assert!(
+            a.equivalent_to(&b),
+            "(x-1)(x+1) should be equivalent to x^2-1"
+        );
     }
 
     #[test]
     fn test_equivalent_square_of_difference() {
         let a = parse("(x-1)^2").unwrap();
         let b = parse("x^2 - 2*x + 1").unwrap();
-        assert!(a.equivalent_to(&b), "(x-1)^2 should be equivalent to x^2-2x+1");
+        assert!(
+            a.equivalent_to(&b),
+            "(x-1)^2 should be equivalent to x^2-2x+1"
+        );
     }
 
     #[test]
     fn test_equivalent_self() {
         let a = parse("2*x^3 + 5*x").unwrap();
-        assert!(a.equivalent_to(&a), "expression should be equivalent to itself");
+        assert!(
+            a.equivalent_to(&a),
+            "expression should be equivalent to itself"
+        );
     }
 
     #[test]
     fn test_not_equivalent() {
         let a = parse("x^2 + 1").unwrap();
         let b = parse("x^2 + 2").unwrap();
-        assert!(!a.equivalent_to(&b), "x^2+1 should NOT be equivalent to x^2+2");
+        assert!(
+            !a.equivalent_to(&b),
+            "x^2+1 should NOT be equivalent to x^2+2"
+        );
     }
 
     #[test]
     fn test_collect_like_terms_simple() {
         let e = parse("x + x").unwrap().collect_like_terms();
         let s = format!("{}", e);
-        assert!(s.contains("2*x") || s.contains("2x"), "x+x should become 2x, got: {}", s);
+        assert!(
+            s.contains("2*x") || s.contains("2x"),
+            "x+x should become 2x, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -6516,11 +7492,20 @@ mod tests {
         let expr = parse("x^2*sin(x)").unwrap();
         eprintln!("DEBUG: expr = {}", expr);
         let result = expr.integrate("x");
-        eprintln!("DEBUG: result = {:?}", result.as_ref().map(|r| format!("{}", r)));
-        assert!(result.is_some(), "x²·sin(x) should integrate via recursive IBP");
+        eprintln!(
+            "DEBUG: result = {:?}",
+            result.as_ref().map(|r| format!("{}", r))
+        );
+        assert!(
+            result.is_some(),
+            "x²·sin(x) should integrate via recursive IBP"
+        );
         let s = format!("{}", result.unwrap().simplify());
-        assert!(s.contains("x") || s.contains("sin") || s.contains("cos"),
-            "expected trig expression, got: {}", s);
+        assert!(
+            s.contains("x") || s.contains("sin") || s.contains("cos"),
+            "expected trig expression, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -6528,7 +7513,10 @@ mod tests {
         // ∫ x³·sin(x) dx — requires recursive IBP (degree 3)
         let expr = parse("x^3*sin(x)").unwrap();
         let result = expr.integrate("x");
-        assert!(result.is_some(), "x³·sin(x) should integrate via recursive IBP");
+        assert!(
+            result.is_some(),
+            "x³·sin(x) should integrate via recursive IBP"
+        );
     }
 
     #[test]
@@ -6538,8 +7526,11 @@ mod tests {
         let result = expr.integrate("x");
         assert!(result.is_some(), "x·ln(x) should integrate via LIATE IBP");
         let s = format!("{}", result.unwrap().simplify());
-        assert!(s.contains("ln") || s.contains("log"),
-            "expected ln/ln term, got: {}", s);
+        assert!(
+            s.contains("ln") || s.contains("log"),
+            "expected ln/ln term, got: {}",
+            s
+        );
     }
 
     #[test]
@@ -6556,7 +7547,10 @@ mod tests {
     fn test_u_sub_x_sin_x_sq() {
         // ∫ x·sin(x²) dx = -cos(x²)/2
         let r = integrate_str("x*sin(x^2)", "x");
-        assert!(r.is_some(), "x·sin(x²) should integrate via u-sub, got None");
+        assert!(
+            r.is_some(),
+            "x·sin(x²) should integrate via u-sub, got None"
+        );
         let s = r.unwrap();
         assert!(s.contains("cos"), "expected cos term, got: {}", s);
         // Verify by numeric evaluation: d/dx F at a point should match original
@@ -6566,8 +7560,14 @@ mod tests {
         for &x in &[0.3, 1.7, -0.5] {
             let fv = f_prime.evaluate(&[("x", x)]).unwrap();
             let ov = original.evaluate(&[("x", x)]).unwrap();
-            assert!((fv - ov).abs() < 1e-6,
-                "F'({}) = {}, expected {}; F = {}", x, fv, ov, s);
+            assert!(
+                (fv - ov).abs() < 1e-6,
+                "F'({}) = {}, expected {}; F = {}",
+                x,
+                fv,
+                ov,
+                s
+            );
         }
     }
 
@@ -6585,8 +7585,14 @@ mod tests {
         for &x in &[0.3, 1.7, -0.5] {
             let fv = f_prime.evaluate(&[("x", x)]).unwrap();
             let ov = original.evaluate(&[("x", x)]).unwrap();
-            assert!((fv - ov).abs() < 1e-6,
-                "F'({}) = {}, expected {}; F = {}", x, fv, ov, s);
+            assert!(
+                (fv - ov).abs() < 1e-6,
+                "F'({}) = {}, expected {}; F = {}",
+                x,
+                fv,
+                ov,
+                s
+            );
         }
     }
 
@@ -6664,14 +7670,22 @@ mod tests {
         // This integral genuinely has no elementary antiderivative.
         // The system correctly returns None.
         let r = integrate_str("x*sin(x^2)*cos(x)", "x");
-        assert!(r.is_none(), "x·sin(x²)·cos(x) should remain unintegrable, got {:?}", r);
+        assert!(
+            r.is_none(),
+            "x·sin(x²)·cos(x) should remain unintegrable, got {:?}",
+            r
+        );
     }
 
     #[test]
     fn test_integrate_unknown_product_still_none() {
         // ∫ sin(x)*cos(x) dx — no integration pattern, should still be None
         let r = integrate_str("sin(x)*cos(x)", "x");
-        assert!(r.is_none(), "sin(x)*cos(x) should remain unintegrable, got {:?}", r);
+        assert!(
+            r.is_none(),
+            "sin(x)*cos(x) should remain unintegrable, got {:?}",
+            r
+        );
     }
 
     // ── Quadratic-in-disguise Tests ───────────────────────────────────
@@ -6711,7 +7725,11 @@ mod tests {
         // e^x = 2 → x = ln(2)
         let r = solve_str("exp(2*x) - 3*exp(x) + 2 = 0", "x").unwrap();
         assert!(r.contains("x = 0"), "expected x = 0, got: {}", r);
-        assert!(r.contains("0.693"), "expected x ≈ ln(2) ≈ 0.693, got: {}", r);
+        assert!(
+            r.contains("0.693"),
+            "expected x ≈ ln(2) ≈ 0.693, got: {}",
+            r
+        );
     }
 
     #[test]
@@ -6758,7 +7776,11 @@ mod tests {
         // tan²(x) - 3*tan(x) = 0 → tan(x)(tan(x)-3) = 0
         let r = solve_str("tan(x)^2 - 3*tan(x) = 0", "x").unwrap();
         assert!(r.contains("x = 0"), "expected x = 0, got: {}", r);
-        assert!(r.contains("1.249"), "expected tan(x)=3 gives x≈1.249, got: {}", r);
+        assert!(
+            r.contains("1.249"),
+            "expected tan(x)=3 gives x≈1.249, got: {}",
+            r
+        );
     }
 
     // ── Mixed Trig Identity Tests ─────────────────────────────────────
@@ -6876,21 +7898,33 @@ mod tests {
     fn test_solve_system_no_solution() {
         // Inconsistent: x + y = 1, x + y = 2
         let r = solve_system_str("x + y = 1; x + y = 2");
-        assert!(r.is_err(), "expected error for inconsistent system, got {:?}", r);
+        assert!(
+            r.is_err(),
+            "expected error for inconsistent system, got {:?}",
+            r
+        );
     }
 
     #[test]
     fn test_solve_system_non_linear() {
         // Non-linear term xy
         let r = solve_system_str("x*y = 1; x + y = 2");
-        assert!(r.is_err(), "expected error for non-linear system, got {:?}", r);
+        assert!(
+            r.is_err(),
+            "expected error for non-linear system, got {:?}",
+            r
+        );
     }
 
     #[test]
     fn test_solve_system_insufficient() {
         // 2 equations for 3 variables
         let r = solve_system_str("x + y + z = 6; x - y = 1");
-        assert!(r.is_err(), "expected error for underdetermined system, got {:?}", r);
+        assert!(
+            r.is_err(),
+            "expected error for underdetermined system, got {:?}",
+            r
+        );
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -6903,16 +7937,24 @@ mod tests {
     fn test_canonicalize_trig_pythagorean_sin_sq_plus_cos_sq() {
         let expr = parse("sin(x)^2 + cos(x)^2").unwrap();
         let canon = expr.canonicalize();
-        assert_eq!(canon, SymExpr::Num(1.0),
-            "sin²x+cos²x should canonicalize to 1, got: {}", canon);
+        assert_eq!(
+            canon,
+            SymExpr::Num(1.0),
+            "sin²x+cos²x should canonicalize to 1, got: {}",
+            canon
+        );
     }
 
     #[test]
     fn test_canonicalize_trig_pythagorean_cos_sq_plus_sin_sq() {
         let expr = parse("cos(x)^2 + sin(x)^2").unwrap();
         let canon = expr.canonicalize();
-        assert_eq!(canon, SymExpr::Num(1.0),
-            "cos²x+sin²x should canonicalize to 1, got: {}", canon);
+        assert_eq!(
+            canon,
+            SymExpr::Num(1.0),
+            "cos²x+sin²x should canonicalize to 1, got: {}",
+            canon
+        );
     }
 
     #[test]
@@ -6921,10 +7963,12 @@ mod tests {
         let expr = parse("sin(x)^2 + cos(x)^2 + z").unwrap();
         let canon = expr.canonicalize();
         let display = format!("{}", canon);
-        assert!(display.contains("z") || display.contains("Z"),
-            "should contain z, got: {}", display);
-        assert!(display.contains("1"),
-            "should contain 1, got: {}", display);
+        assert!(
+            display.contains("z") || display.contains("Z"),
+            "should contain z, got: {}",
+            display
+        );
+        assert!(display.contains("1"), "should contain 1, got: {}", display);
     }
 
     #[test]
@@ -6934,8 +7978,7 @@ mod tests {
         let canon = expr.canonicalize();
         // After collect_like_terms, z comes before 1 (non-const before const)
         let display = format!("{}", canon);
-        assert!(display.contains("z"),
-            "should contain z, got: {}", display);
+        assert!(display.contains("z"), "should contain z, got: {}", display);
     }
 
     #[test]
@@ -6945,8 +7988,11 @@ mod tests {
         let canon = expr.canonicalize();
         // Two different arguments → replace each pair with 1 → 1 + 1 → should simplify to Num(2.0) or 2
         let display = format!("{}", canon);
-        assert!(display == "2" || display.contains("2"),
-            "sin²x+cos²x+sin²y+cos²y should canonicalize to 2, got: {}", display);
+        assert!(
+            display == "2" || display.contains("2"),
+            "sin²x+cos²x+sin²y+cos²y should canonicalize to 2, got: {}",
+            display
+        );
     }
 
     #[test]
@@ -6955,8 +8001,11 @@ mod tests {
         let expr = parse("sin(x)^2 + cos(y)^2").unwrap();
         let canon = expr.canonicalize();
         let one = SymExpr::Num(1.0);
-        assert_ne!(canon, one,
-            "sin²x+cos²y should NOT canonicalize to 1, got: {}", canon);
+        assert_ne!(
+            canon, one,
+            "sin²x+cos²y should NOT canonicalize to 1, got: {}",
+            canon
+        );
     }
 
     // ── Exp / Log cancellation ───────────────────────────────────────
@@ -6966,8 +8015,12 @@ mod tests {
         // e^(ln(x)) → x
         let expr = parse("exp(ln(x))").unwrap();
         let canon = expr.canonicalize();
-        assert_eq!(canon, SymExpr::Var("x".to_string()),
-            "e^(ln(x)) should canonicalize to x, got: {}", canon);
+        assert_eq!(
+            format!("{}", canon),
+            "x",
+            "e^(ln(x)) should canonicalize to x, got: {}",
+            canon
+        );
     }
 
     #[test]
@@ -6975,8 +8028,12 @@ mod tests {
         // ln(e^x) → x
         let expr = parse("ln(exp(x))").unwrap();
         let canon = expr.canonicalize();
-        assert_eq!(canon, SymExpr::Var("x".to_string()),
-            "ln(e^x) should canonicalize to x, got: {}", canon);
+        assert_eq!(
+            format!("{}", canon),
+            "x",
+            "ln(e^x) should canonicalize to x, got: {}",
+            canon
+        );
     }
 
     #[test]
@@ -6985,8 +8042,11 @@ mod tests {
         let expr = parse("exp(ln(sin(x)))").unwrap();
         let canon = expr.canonicalize();
         let display = format!("{}", canon);
-        assert!(display == "sin(x)" || display.contains("sin"),
-            "e^(ln(sin(x))) should canonicalize to sin(x), got: {}", display);
+        assert!(
+            display == "sin(x)" || display.contains("sin"),
+            "e^(ln(sin(x))) should canonicalize to sin(x), got: {}",
+            display
+        );
     }
 
     // ── Negative distribution ────────────────────────────────────────
@@ -6996,9 +8056,12 @@ mod tests {
         // -(x-y) → y-x
         let expr = parse("-(x-y)").unwrap();
         let canon = expr.canonicalize();
-        let expected = parse("y - x").unwrap().canonicalize();
-        assert_eq!(canon, expected,
-            "-(x-y) should canonicalize to y-x, got: {}", canon);
+        assert_eq!(
+            format!("{}", canon),
+            "y - x",
+            "-(x-y) should canonicalize to y-x, got: {}",
+            canon
+        );
     }
 
     #[test]
@@ -7006,9 +8069,12 @@ mod tests {
         // -(x+y) → -x-y
         let expr = parse("-(x+y)").unwrap();
         let canon = expr.canonicalize();
-        let expected = parse("-x - y").unwrap().canonicalize();
-        assert_eq!(canon, expected,
-            "-(x+y) should canonicalize to same as -x-y, got: {}", canon);
+        assert_eq!(
+            format!("{}", canon),
+            "-x - y",
+            "-(x+y) should canonicalize to same as -x-y, got: {}",
+            canon
+        );
     }
 
     #[test]
@@ -7016,8 +8082,12 @@ mod tests {
         // -(-x) → x
         let expr = parse("-(-x)").unwrap();
         let canon = expr.canonicalize();
-        assert_eq!(canon, SymExpr::Var("x".to_string()),
-            "-(-x) should canonicalize to x, got: {}", canon);
+        assert_eq!(
+            format!("{}", canon),
+            "x",
+            "-(-x) should canonicalize to x, got: {}",
+            canon
+        );
     }
 
     // ── Division canonicalization ────────────────────────────────────
@@ -7028,8 +8098,11 @@ mod tests {
         let expr = parse("x/2").unwrap();
         let canon = expr.canonicalize();
         let expected = parse("0.5*x").unwrap().canonicalize();
-        assert_eq!(canon, expected,
-            "x/2 should canonicalize to 0.5*x, got: {}", canon);
+        assert_eq!(
+            canon, expected,
+            "x/2 should canonicalize to 0.5*x, got: {}",
+            canon
+        );
     }
 
     #[test]
@@ -7038,8 +8111,11 @@ mod tests {
         let expr = parse("(x+1)/2").unwrap();
         let canon = expr.canonicalize();
         let expected = parse("0.5*x + 0.5").unwrap().canonicalize();
-        assert_eq!(canon, expected,
-            "(x+1)/2 should canonicalize to 0.5*x+0.5, got: {}", canon);
+        assert_eq!(
+            canon, expected,
+            "(x+1)/2 should canonicalize to 0.5*x+0.5, got: {}",
+            canon
+        );
     }
 
     #[test]
@@ -7047,8 +8123,12 @@ mod tests {
         // x/1 → x
         let expr = parse("x/1").unwrap();
         let canon = expr.canonicalize();
-        assert_eq!(canon, SymExpr::Var("x".to_string()),
-            "x/1 should canonicalize to x, got: {}", canon);
+        assert_eq!(
+            format!("{}", canon),
+            "x",
+            "x/1 should canonicalize to x, got: {}",
+            canon
+        );
     }
 
     // ── Equivalent (free function) ────────────────────────────────────
@@ -7246,6 +8326,9 @@ mod tests {
     fn test_equivalent_same_expression() {
         // (x^3 + 2*x^2 + 3*x + 4) ≡ itself (complex expression)
         let a = parse("x^3 + 2*x^2 + 3*x + 4").unwrap();
-        assert!(equivalent(&a, &a), "expression should be equivalent to itself");
+        assert!(
+            equivalent(&a, &a),
+            "expression should be equivalent to itself"
+        );
     }
 }

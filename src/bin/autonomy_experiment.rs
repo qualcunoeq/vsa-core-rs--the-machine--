@@ -25,12 +25,8 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 use std::time::Instant;
-use the_machine::diagnostic::{
-    absorb_diagnosis, seed_diagnostic_knowledge, seed_error_classifier,
-};
-use the_machine::meta_reasoning::{
-    assess, solve_autonomously, ReasoningState, SolutionResult,
-};
+use the_machine::diagnostic::{absorb_diagnosis, seed_diagnostic_knowledge, seed_error_classifier};
+use the_machine::meta_reasoning::{assess, solve_autonomously, ReasoningState, SolutionResult};
 use the_machine::qa::QaEngine;
 use the_machine::VSABrain;
 
@@ -51,10 +47,15 @@ struct SimActuator {
 
 impl SimActuator {
     fn new() -> Self {
-        SimActuator { actions_taken: Vec::new() }
+        SimActuator {
+            actions_taken: Vec::new(),
+        }
     }
 
-    async fn send_request(&mut self, request: &the_machine::actuator::ActionRequest) -> the_machine::actuator::ActionResult {
+    async fn send_request(
+        &mut self,
+        request: &the_machine::actuator::ActionRequest,
+    ) -> the_machine::actuator::ActionResult {
         self.actions_taken.push((
             format!("{:?}", request.action_type),
             request.params.get("command").cloned().unwrap_or_default(),
@@ -72,7 +73,8 @@ impl SimActuator {
                 } else if cmd.contains("id; ls -la /var/run") {
                     "uid=0(root) gid=0(root)\n/var/run:".to_string()
                 } else if cmd.contains("df -h") {
-                    "Filesystem Size Used Avail Use% Mounted on\n/dev/sda1 20G 20G 0 100% /".to_string()
+                    "Filesystem Size Used Avail Use% Mounted on\n/dev/sda1 20G 20G 0 100% /"
+                        .to_string()
                 } else if cmd.contains("echo ready") {
                     "ready".to_string()
                 } else {
@@ -116,13 +118,24 @@ async fn experiment_1() {
     // Step 1: Assess
     let state = assess(problem, &brain, &qa, &classifier);
     eprintln!("  Initial assessment: {:?}", state.name());
-    assert!(matches!(state, ReasoningState::Confident { .. }),
-        "E1 FAIL: Should be Confident for known problem with rules");
+    assert!(
+        matches!(state, ReasoningState::Confident { .. }),
+        "E1 FAIL: Should be Confident for known problem with rules"
+    );
     eprintln!("  ✓ Confident (trigger match + plan available)");
 
     // Step 2: Execute the plan (simulated)
-    if let ReasoningState::Confident { plan, confidence, category } = state {
-        eprintln!("  Plan: {} steps (confidence={:.2})", plan.len(), confidence);
+    if let ReasoningState::Confident {
+        plan,
+        confidence,
+        category,
+    } = state
+    {
+        eprintln!(
+            "  Plan: {} steps (confidence={:.2})",
+            plan.len(),
+            confidence
+        );
         eprintln!("  Category: {}", category);
         eprintln!("  ✓ Experiment 1 PASSED");
     }
@@ -148,14 +161,24 @@ async fn experiment_2() {
     // Step 1: Assess — should be Uncertain (structural match, no trigger)
     let state = assess(problem, &brain, &qa, &classifier);
     eprintln!("  Initial assessment: {}", state.name());
-    assert!(matches!(state, ReasoningState::Uncertain { .. }),
-        "E2 FAIL: Should be Uncertain for novel error (got {})", state.name());
+    assert!(
+        matches!(state, ReasoningState::Uncertain { .. }),
+        "E2 FAIL: Should be Uncertain for novel error (got {})",
+        state.name()
+    );
     eprintln!("  ✓ Correctly identified as Uncertain (structural analogy)");
 
     // Step 2: Test the hypothesis via resolve_uncertain
     if let ReasoningState::Uncertain { hypotheses, .. } = state {
-        eprintln!("  Hypotheses: {} (best={:.2})", hypotheses.len(), hypotheses[0].confidence);
-        eprintln!("  Best hypothesis: {} via {:?}", hypotheses[0].category, hypotheses[0].source);
+        eprintln!(
+            "  Hypotheses: {} (best={:.2})",
+            hypotheses.len(),
+            hypotheses[0].confidence
+        );
+        eprintln!(
+            "  Best hypothesis: {} via {:?}",
+            hypotheses[0].category, hypotheses[0].source
+        );
 
         // Simulate testing the hypothesis (resolve_uncertain would call the actuator)
         qa.store_fact("target_service", "is_not", "listening", "hypothesis_test");
@@ -211,19 +234,43 @@ async fn experiment_3() {
 
     // Stage 2: Act on assessment
     match state1 {
-        ReasoningState::Confident { plan, confidence, category } => {
-            eprintln!("  Iter 0: Confident → executing plan ({} steps, conf={:.2})", plan.len(), confidence);
+        ReasoningState::Confident {
+            plan,
+            confidence,
+            category,
+        } => {
+            eprintln!(
+                "  Iter 0: Confident → executing plan ({} steps, conf={:.2})",
+                plan.len(),
+                confidence
+            );
             // Simulate plan execution
             for step in &plan {
-                eprintln!("  Execute: ({}, {}, {})", step.action.0, step.action.1, step.action.2);
-                qa.store_fact(&step.achieves.0, &step.achieves.1, &step.achieves.2, "executed");
+                eprintln!(
+                    "  Execute: ({}, {}, {})",
+                    step.action.0, step.action.1, step.action.2
+                );
+                qa.store_fact(
+                    &step.achieves.0,
+                    &step.achieves.1,
+                    &step.achieves.2,
+                    "executed",
+                );
             }
             qa.forward_chain(0.75);
             qa.store_fact("service", "is", "running", "verification");
         }
         ReasoningState::Uncertain { hypotheses, .. } => {
-            eprintln!("  Iter 0: Uncertain → testing hypothesis: {}", hypotheses[0].category);
-            qa.store_fact("another_process", "is_listening_on", "same_port", "hypothesis_test");
+            eprintln!(
+                "  Iter 0: Uncertain → testing hypothesis: {}",
+                hypotheses[0].category
+            );
+            qa.store_fact(
+                "another_process",
+                "is_listening_on",
+                "same_port",
+                "hypothesis_test",
+            );
             qa.forward_chain(0.75);
         }
         ReasoningState::Stuck { .. } => {
@@ -234,7 +281,10 @@ async fn experiment_3() {
     // Stage 3: Check goal
     let (goal_ok, _) = qa.verify_fact("service", "is", "running");
     eprintln!("  Goal achieved: {}", goal_ok);
-    assert!(goal_ok, "E3 FAIL: Should achieve goal after multi-step solve");
+    assert!(
+        goal_ok,
+        "E3 FAIL: Should achieve goal after multi-step solve"
+    );
 
     eprintln!("  ✓ Experiment 3 PASSED");
 }

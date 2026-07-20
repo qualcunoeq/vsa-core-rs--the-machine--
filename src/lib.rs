@@ -31,6 +31,7 @@ pub mod drift;
 pub mod drives;
 pub mod evidence;
 pub mod expression_evaluation;
+pub mod expression_simplification;
 pub mod experiment;
 pub mod forager;
 pub mod formalization;

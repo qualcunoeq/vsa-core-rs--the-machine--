@@ -40,6 +40,7 @@ pub enum CapabilityIoType {
     TargetVariable,
     DerivedFact,
     ExactValue,
+    SimplifiedExpression,
     SolutionSet,
 }
 
@@ -196,6 +197,39 @@ impl CapabilitySpec {
         }
     }
 
+    pub fn expression_simplification_v1() -> Self {
+        Self {
+            id: "expression_simplification".into(),
+            version: 1,
+            kind: CapabilityKind::Transformation,
+            dependencies: Vec::new(),
+            consumes: vec![CapabilityIoType::Expression],
+            produces: vec![CapabilityIoType::SimplifiedExpression],
+            supported_object_types: vec![SubjectObjectType::Expression],
+            supported_operations: vec![OperationKind::Simplify],
+            supported_answer_forms: vec![AnswerForm::SimplifiedExpression],
+            input_requirements: vec![
+                InputRequirement::ParseableExpressionSubject,
+                InputRequirement::ReplayVerifier,
+            ],
+            fact_policy: None,
+            executor: "expression_simplification::execute_expression_simplification".into(),
+            verifier: "expression_simplification::replay_expression_simplification".into(),
+            regression_cases: vec![
+                "expression_simplification::symbolic_expression_simplifies_and_replays".into(),
+                "expression_simplification::numeric_expression_simplifies_and_replays".into(),
+                "expression_simplification::equation_is_not_accepted_as_expression".into(),
+            ],
+            quality_gate: CapabilityQualityGate {
+                positive_cases: 2,
+                negative_cases: 1,
+                adversarial_cases: 1,
+                false_authorizations: 0,
+                replay_failures: 0,
+            },
+        }
+    }
+
     pub fn linear_equation_solve_v1() -> Self {
         Self {
             id: "linear_equation_solve".into(),
@@ -318,6 +352,7 @@ impl CapabilityRegistry {
         let mut registry = Self::default();
         registry.register(CapabilitySpec::function_application_v1());
         registry.register(CapabilitySpec::expression_evaluation_v1());
+        registry.register(CapabilitySpec::expression_simplification_v1());
         registry.register(CapabilitySpec::linear_equation_solve_v1());
         registry.register(CapabilitySpec::quadratic_equation_solve_v1());
         registry.register(CapabilitySpec::substitution_v1());
@@ -561,6 +596,7 @@ mod tests {
             registry.dependency_order().unwrap(),
             vec![
                 "expression_evaluation".to_string(),
+                "expression_simplification".to_string(),
                 "function_application".to_string(),
                 "linear_equation_solve".to_string(),
                 "quadratic_equation_solve".to_string(),

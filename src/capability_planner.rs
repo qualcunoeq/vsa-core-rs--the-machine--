@@ -56,6 +56,15 @@ pub enum CapabilityChainPlanningFailure {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainRepairFailure {
+    ExecutionNotFailed(CapabilityChainExecutionStatus),
+    MissingFailedStep,
+    InvalidFailedStep(usize),
+    EmptyReplacement,
+    UnknownCapability(String),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityChainRankedCandidate {
     pub candidate_id: String,
     pub cost: PlanCost,
@@ -168,6 +177,95 @@ impl CapabilityChainPreferenceReceipt {
             alternatives,
         }
     }
+}
+
+/// Proposal-only replacement for one failed chain step. Constructing a
+/// candidate never installs, authorizes, or executes the replacement plan.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainRepairCandidate {
+    pub execution_id: String,
+    pub failed_step: usize,
+    pub original_plan: CapabilityChainPlan,
+    pub replacement_capabilities: Vec<String>,
+    pub proposed_plan: CapabilityChainPlan,
+    pub evaluation: PlanRepairEvaluation,
+}
+
+/// Generate replacement-subchain proposals for the failed step of a terminal
+/// chain execution. The caller must revalidate artifact compatibility and
+/// apply a separate decision policy before any proposal can be used.
+pub fn propose_capability_chain_repairs(
+    execution: &CapabilityChainExecutionReceipt,
+    replacements: impl IntoIterator<Item = Vec<String>>,
+    registry: &CapabilityRegistry,
+) -> Result<Vec<CapabilityChainRepairCandidate>, CapabilityChainRepairFailure> {
+    if execution.status != CapabilityChainExecutionStatus::Failed {
+        return Err(CapabilityChainRepairFailure::ExecutionNotFailed(
+            execution.status,
+        ));
+    }
+    let failed_step = execution
+        .failed_step
+        .ok_or(CapabilityChainRepairFailure::MissingFailedStep)?;
+    if failed_step >= execution.plan.steps.len() {
+        return Err(CapabilityChainRepairFailure::InvalidFailedStep(failed_step));
+    }
+    let mut proposals = Vec::new();
+    for replacement_capabilities in replacements {
+        if replacement_capabilities.is_empty() {
+            return Err(CapabilityChainRepairFailure::EmptyReplacement);
+        }
+        for capability_id in &replacement_capabilities {
+            if registry.get(capability_id).is_none() {
+                return Err(CapabilityChainRepairFailure::UnknownCapability(
+                    capability_id.clone(),
+                ));
+            }
+        }
+        let mut steps = execution.plan.steps[..failed_step].to_vec();
+        steps.extend(replacement_capabilities.iter().cloned());
+        steps.extend(execution.plan.steps[failed_step + 1..].iter().cloned());
+        let proposed_plan = CapabilityChainPlan {
+            goal: execution.plan.goal,
+            steps,
+        };
+        let original_cost = execution
+            .plan
+            .cost(registry)
+            .map_err(|error| CapabilityChainRepairFailure::UnknownCapability(format!(
+                "{error:?}"
+            )))?;
+        let replacement_cost = proposed_plan
+            .cost(registry)
+            .map_err(|error| CapabilityChainRepairFailure::UnknownCapability(format!(
+                "{error:?}"
+            )))?;
+        let evaluation = PlanRepairEvaluation {
+            plan_id: execution.execution_id.clone(),
+            old_cost: original_cost,
+            replacement_cost,
+            cost_delta: PlanCostDelta {
+                steps: replacement_cost.steps as i64 - original_cost.steps as i64,
+                dependency_edges: replacement_cost.dependency_edges as i64
+                    - original_cost.dependency_edges as i64,
+                verification_steps: replacement_cost.verification_steps as i64
+                    - original_cost.verification_steps as i64,
+            },
+            added_capabilities: replacement_capabilities.clone(),
+            removed_capabilities: vec![execution.plan.steps[failed_step].clone()],
+            invalidated_fact_ids: Vec::new(),
+            replacement_fact_ids: Vec::new(),
+        };
+        proposals.push(CapabilityChainRepairCandidate {
+            execution_id: execution.execution_id.clone(),
+            failed_step,
+            original_plan: execution.plan.clone(),
+            replacement_capabilities,
+            proposed_plan,
+            evaluation,
+        });
+    }
+    Ok(proposals)
 }
 
 impl CapabilityChainPlan {
@@ -2426,6 +2524,57 @@ mod tests {
             ledger.complete_failure("chain-execution-1", 1, "late failure"),
             Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(_))
         ));
+    }
+
+    #[test]
+    fn failed_chain_produces_proposal_only_repair_candidates() {
+        let mut registry = CapabilityRegistry::production();
+        let mut alternate = CapabilitySpec::expression_simplification_v1();
+        alternate.id = "alternate_simplification".into();
+        registry.register(alternate);
+        let plan = CapabilityChainPlan {
+            goal: CapabilityIoType::SimplifiedExpression,
+            steps: vec!["expression_simplification".into()],
+        };
+        let mut ledger = CapabilityChainExecutionLedger::default();
+        ledger.start("chain-repair-1", plan).unwrap();
+        let failed = ledger
+            .complete_failure("chain-repair-1", 0, "replay mismatch")
+            .unwrap();
+        let proposals = propose_capability_chain_repairs(
+            &failed,
+            vec![vec!["alternate_simplification".into()]],
+            &registry,
+        )
+        .unwrap();
+        assert_eq!(proposals.len(), 1);
+        assert_eq!(
+            proposals[0].proposed_plan.steps,
+            vec!["alternate_simplification".to_string()]
+        );
+        assert_eq!(proposals[0].evaluation.cost_delta.steps, 0);
+        assert_eq!(proposals[0].failed_step, 0);
+    }
+
+    #[test]
+    fn active_chain_cannot_generate_repair_proposals() {
+        let registry = CapabilityRegistry::production();
+        let plan = CapabilityChainPlan {
+            goal: CapabilityIoType::SimplifiedExpression,
+            steps: vec!["expression_simplification".into()],
+        };
+        let mut ledger = CapabilityChainExecutionLedger::default();
+        let running = ledger.start("chain-repair-2", plan).unwrap();
+        assert_eq!(
+            propose_capability_chain_repairs(
+                &running,
+                vec![vec!["expression_simplification".into()]],
+                &registry,
+            ),
+            Err(CapabilityChainRepairFailure::ExecutionNotFailed(
+                CapabilityChainExecutionStatus::Running
+            ))
+        );
     }
 
     #[test]

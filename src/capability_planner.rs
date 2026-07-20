@@ -8,7 +8,10 @@ use crate::capabilities::{
     CapabilityIoType, CapabilityRegistry, CapabilitySelection,
 };
 use crate::constant_rate_model::{ModelArtifactType, ModelConstructorRegistry, ModelSelection};
-use crate::evidence::{DerivedFact, DerivedFactIndex, FactPolicyRejection, FactStatus};
+use crate::evidence::{
+    DerivedFact, DerivedFactIndex, FactConflict, FactIndexInsert, FactIndexRejection, FactPolicy,
+    FactPolicyRejection, FactStatus,
+};
 use crate::formalization::{AnswerForm, FormalizedTarget, OperationKind, SubjectObjectType};
 use serde::Serialize;
 use std::collections::{BTreeMap, BTreeSet};
@@ -394,6 +397,18 @@ pub enum PlanExecutionRejection {
     EmptyVerificationReceipt,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum ExecutionFactCommitFailure {
+    UnknownAttempt(String),
+    AttemptNotSucceeded(String),
+    FactIdsMismatch {
+        expected: Vec<String>,
+        provided: Vec<String>,
+    },
+    Policy(FactIndexRejection),
+    Conflict(FactConflict),
+}
+
 /// Lifecycle ledger for execution attempts. It records state transitions but
 /// deliberately delegates actual capability execution and verification to
 /// their existing typed modules.
@@ -480,6 +495,50 @@ impl PlanExecutionLedger {
         receipt.failed_step = Some(failed_step.into());
         receipt.failure_reason = Some(reason.into());
         Ok(receipt.clone())
+    }
+
+    /// Atomically publish verified outputs from a successful attempt into the
+    /// derived-fact ledger. The ledger is staged on a clone so policy failure
+    /// or contradiction cannot leave a partial result behind.
+    pub fn commit_verified_facts(
+        &self,
+        attempt_id: &str,
+        facts: Vec<(String, DerivedFact)>,
+        index: &mut DerivedFactIndex,
+        policy: &FactPolicy,
+    ) -> Result<Vec<FactIndexInsert>, ExecutionFactCommitFailure> {
+        let receipt = self
+            .attempts
+            .get(attempt_id)
+            .ok_or_else(|| ExecutionFactCommitFailure::UnknownAttempt(attempt_id.to_string()))?;
+        if receipt.status != PlanExecutionStatus::Succeeded {
+            return Err(ExecutionFactCommitFailure::AttemptNotSucceeded(
+                attempt_id.to_string(),
+            ));
+        }
+        let mut expected = receipt.produced_fact_ids.clone();
+        let mut provided = facts
+            .iter()
+            .map(|(_, fact)| fact.id.clone())
+            .collect::<Vec<_>>();
+        expected.sort();
+        provided.sort();
+        if expected != provided {
+            return Err(ExecutionFactCommitFailure::FactIdsMismatch { expected, provided });
+        }
+        let mut staged = index.clone();
+        let mut outcomes = Vec::new();
+        for (key, fact) in facts {
+            match staged.insert(key, fact, policy) {
+                Ok(FactIndexInsert::Added) => outcomes.push(FactIndexInsert::Added),
+                Ok(FactIndexInsert::Conflict(conflict)) => {
+                    return Err(ExecutionFactCommitFailure::Conflict(conflict));
+                }
+                Err(reason) => return Err(ExecutionFactCommitFailure::Policy(reason)),
+            }
+        }
+        *index = staged;
+        Ok(outcomes)
     }
 }
 
@@ -1455,6 +1514,28 @@ mod tests {
             succeeded.verification_receipt.as_deref(),
             Some("independent replay verified")
         );
+        let committed = executions
+            .commit_verified_facts(
+                "attempt-success",
+                vec![(
+                    "distance-result".into(),
+                    DerivedFact {
+                        id: "derived-result".into(),
+                        content: "distance = 12".into(),
+                        parent_lineage: vec!["derived-1".into()],
+                        provenance: "attempt-success replay receipt".into(),
+                        proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+                        precision: crate::evidence::FactPrecision::Exact,
+                        assumptions: Vec::new(),
+                        domain: None,
+                    },
+                )],
+                &mut index,
+                &FactPolicy::verified_transformation(),
+            )
+            .unwrap();
+        assert_eq!(committed, vec![FactIndexInsert::Added]);
+        assert_eq!(index.candidates("distance-result").len(), 1);
         assert!(matches!(
             executions.complete_failure("attempt-success", "step", "late failure"),
             Err(PlanExecutionRejection::AttemptAlreadyTerminal(_))
@@ -1470,6 +1551,10 @@ mod tests {
         assert_eq!(
             stale[0].1.invalidations[0].issue,
             PlanFactIssue::Inactive(FactStatus::Invalidated)
+        );
+        assert_eq!(
+            index.lifecycle("derived-result").unwrap().status,
+            FactStatus::Invalidated
         );
         assert!(matches!(
             executions.start("attempt-stale", "distance-plan", &plan, &index),

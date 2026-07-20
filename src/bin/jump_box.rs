@@ -934,6 +934,7 @@ mod tests {
             target: "192.168.100.10".to_string(),
             params: [("port".to_string(), "22".to_string())].into(),
             timeout_secs: 30,
+            simulation_mode: the_machine::actuator::SimulationMode::Simulated,
         };
 
         let client_json = serde_json::to_string(&request).unwrap();

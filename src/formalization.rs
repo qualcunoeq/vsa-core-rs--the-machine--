@@ -7,10 +7,10 @@
 
 use crate::math_methods::{MathDomain, TaskShape};
 use regex::Regex;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DefinitionKind {
     Function,
@@ -23,7 +23,7 @@ pub enum DefinitionKind {
     PhysicalQuantity,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ModelingObligation {
     DefineObject,
@@ -59,7 +59,7 @@ impl ModelingObligation {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ModelingDistance {
     ExecutableObject = 0,
@@ -81,7 +81,7 @@ impl ModelingDistance {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FormalizationStatus {
     Structured,
@@ -93,7 +93,7 @@ pub enum FormalizationStatus {
 /// Input dependencies are tracked independently from formalization distance.
 /// A prompt may therefore be both direct-instantiation-shaped and diagram
 /// dependent; the distance must not hide that separate integration blocker.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum InputDependency {
     TextOnly,
@@ -117,7 +117,7 @@ impl InputDependency {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SuppliedObjectKind {
     ExplicitDefinition,
@@ -149,7 +149,7 @@ impl SuppliedObjectKind {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum InstantiationTargetKind {
     EvaluateAtArguments,
@@ -181,7 +181,7 @@ impl InstantiationTargetKind {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RepresentationReadiness {
     RepresentationReady,
@@ -295,37 +295,37 @@ impl FormalizationStatus {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EntityAnnotation {
     pub label: String,
     pub source_fragment: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FactAnnotation {
     pub statement: String,
     pub source_fragment: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TargetAnnotation {
     pub statement: String,
     pub source_fragment: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AssumptionAnnotation {
     pub statement: String,
     pub source_fragment: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ConstraintAnnotation {
     pub statement: String,
     pub source_fragment: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FormalizationCase {
     pub prompt: String,
     pub expected_domain: MathDomain,
@@ -337,6 +337,135 @@ pub struct FormalizationCase {
     pub expected_constraints: Vec<ConstraintAnnotation>,
     pub allowed_methods: Vec<String>,
     pub expected_answer: Option<String>,
+}
+
+/// Curriculum tier used by the formalization benchmark.  Tiers describe the
+/// distance from language to a typed problem, not the difficulty of the final
+/// arithmetic executor.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum FormalizationTier {
+    ExplicitObject,
+    DirectInstantiation,
+    ProseModeling,
+    MethodSelection,
+    SpecialistReasoning,
+}
+
+impl FormalizationTier {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::ExplicitObject => "explicit_object",
+            Self::DirectInstantiation => "direct_instantiation",
+            Self::ProseModeling => "prose_modeling",
+            Self::MethodSelection => "method_selection",
+            Self::SpecialistReasoning => "specialist_reasoning",
+        }
+    }
+}
+
+/// A manually reviewed gold item for the formalization curriculum.  This is
+/// intentionally separate from `FormalizationTrace`: traces are heuristic
+/// observations, while gold cases are human-authorized expectations used to
+/// measure field-level extraction and false authorization.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FormalizationGoldCase {
+    pub id: String,
+    pub tier: FormalizationTier,
+    pub prompt: String,
+    pub definitions: Vec<DefinitionKind>,
+    pub facts: Vec<FactAnnotation>,
+    pub target: TargetAnnotation,
+    pub assumptions: Vec<AssumptionAnnotation>,
+    pub constraints: Vec<ConstraintAnnotation>,
+    pub obligations: Vec<ModelingObligation>,
+    pub authorization_expected: bool,
+    pub allowed_methods: Vec<String>,
+    pub expected_answer: Option<String>,
+}
+
+impl FormalizationGoldCase {
+    /// Validate the annotation contract without executing a solver.  An empty
+    /// result means the case is internally well-formed; it does not claim
+    /// that the machine can solve the case.
+    pub fn validation_errors(&self) -> Vec<String> {
+        let mut errors = Vec::new();
+        if self.id.trim().is_empty() {
+            errors.push("id is empty".to_string());
+        }
+        if self.prompt.trim().is_empty() {
+            errors.push("prompt is empty".to_string());
+        }
+        if self.target.statement.trim().is_empty() {
+            errors.push("target statement is empty".to_string());
+        }
+        if self.target.source_fragment.trim().is_empty() {
+            errors.push("target source_fragment is empty".to_string());
+        }
+        if self.authorization_expected {
+            if self.allowed_methods.is_empty() {
+                errors.push("authorization_expected requires allowed_methods".to_string());
+            }
+            if self.expected_answer.is_none() {
+                errors.push("authorization_expected requires expected_answer".to_string());
+            }
+            if self.tier > FormalizationTier::DirectInstantiation {
+                errors.push(
+                    "authorization_expected is only valid for explicit/direct tiers".to_string(),
+                );
+            }
+        }
+        for (idx, fact) in self.facts.iter().enumerate() {
+            if fact.statement.trim().is_empty() {
+                errors.push(format!("fact[{idx}] statement is empty"));
+            }
+            if fact.source_fragment.trim().is_empty() {
+                errors.push(format!("fact[{idx}] source_fragment is empty"));
+            }
+        }
+        errors
+    }
+
+    pub fn is_valid(&self) -> bool {
+        self.validation_errors().is_empty()
+    }
+}
+
+/// Versioned corpus envelope.  Versioning prevents a future change to the
+/// annotation contract from silently reinterpreting old gold labels.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FormalizationCorpus {
+    pub schema_version: u32,
+    pub cases: Vec<FormalizationGoldCase>,
+}
+
+impl FormalizationCorpus {
+    pub const CURRENT_SCHEMA_VERSION: u32 = 1;
+
+    pub fn validation_errors(&self) -> Vec<String> {
+        let mut errors = Vec::new();
+        if self.schema_version != Self::CURRENT_SCHEMA_VERSION {
+            errors.push(format!(
+                "unsupported schema_version {}; expected {}",
+                self.schema_version,
+                Self::CURRENT_SCHEMA_VERSION
+            ));
+        }
+        let mut ids = BTreeSet::new();
+        for (idx, case) in self.cases.iter().enumerate() {
+            for error in case.validation_errors() {
+                errors.push(format!("case[{idx}] {}: {error}", case.id));
+            }
+            if !ids.insert(case.id.clone()) {
+                errors.push(format!("duplicate case id: {}", case.id));
+            }
+        }
+        errors
+    }
+
+    pub fn is_valid(&self) -> bool {
+        self.validation_errors().is_empty()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -1177,5 +1306,58 @@ mod tests {
         assert!(audit.conservative_lower_bound >= ModelingDistance::MethodSelection);
         assert!(audit.false_low_distance_reason.is_some());
         assert!(!audit.authorization_safe());
+    }
+
+    #[test]
+    fn gold_case_validation_requires_evidence_for_authorization() {
+        let case = FormalizationGoldCase {
+            id: "tier1-f".into(),
+            tier: FormalizationTier::DirectInstantiation,
+            prompt: "Let f(x)=x+1. Evaluate f(2).".into(),
+            definitions: vec![DefinitionKind::Function],
+            facts: vec![],
+            target: TargetAnnotation {
+                statement: "evaluate f at 2".into(),
+                source_fragment: "Evaluate f(2)".into(),
+            },
+            assumptions: vec![],
+            constraints: vec![],
+            obligations: vec![],
+            authorization_expected: true,
+            allowed_methods: vec!["definition_application".into()],
+            expected_answer: Some("3".into()),
+        };
+        assert!(case.is_valid());
+    }
+
+    #[test]
+    fn corpus_rejects_duplicate_ids_and_unsupported_schema() {
+        let target = TargetAnnotation {
+            statement: "compute".into(),
+            source_fragment: "compute".into(),
+        };
+        let make_case = || FormalizationGoldCase {
+            id: "duplicate".into(),
+            tier: FormalizationTier::ExplicitObject,
+            prompt: "x=1".into(),
+            definitions: vec![],
+            facts: vec![],
+            target: target.clone(),
+            assumptions: vec![],
+            constraints: vec![],
+            obligations: vec![],
+            authorization_expected: false,
+            allowed_methods: vec![],
+            expected_answer: None,
+        };
+        let corpus = FormalizationCorpus {
+            schema_version: 99,
+            cases: vec![make_case(), make_case()],
+        };
+        let errors = corpus.validation_errors();
+        assert!(errors
+            .iter()
+            .any(|e| e.contains("unsupported schema_version")));
+        assert!(errors.iter().any(|e| e.contains("duplicate case id")));
     }
 }

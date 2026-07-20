@@ -3036,6 +3036,13 @@ impl QaEngine {
         self.facts.len()
     }
 
+    /// Read-only access for diagnostics and bootstrap reporting. Callers must
+    /// use `store_fact`/`store_triple` for mutations so all indexes and
+    /// provenance stores stay synchronized.
+    pub fn facts(&self) -> &[QaFact] {
+        &self.facts
+    }
+
     /// Forward-chain through causal rules: for each stored fact, check if
     /// it matches any rule's antecedent above the chain threshold.  If so,
     /// store the rule's consequent as a new fact.  Repeat until fixed point.
@@ -5463,6 +5470,29 @@ pub fn seed_concept_definitions(qa: &mut QaEngine) {
 // ═══════════════════════════════════════════════════════════════════════════
 // TESTS
 // ═══════════════════════════════════════════════════════════════════════════
+
+/// Seed only the small, curated physics formula set into the QA index. This
+/// compatibility entry point is deliberately explicit: broad textbook or
+/// Wikipedia caches are not loaded here, and formula facts are not answers by
+/// themselves. Specialist routing still requires a typed method and a
+/// verification receipt.
+pub fn seed_symbolic_facts(qa: &mut QaEngine) {
+    for (subject, verb, object, source, _confidence) in
+        crate::physics::seed_physics_knowledge().extract_formula_facts()
+    {
+        if !qa.is_known_fact(&subject, &verb, &object) {
+            qa.store_fact(&subject, &verb, &object, &source);
+        }
+    }
+}
+
+/// Formula-derived fact generation is intentionally disabled until a typed
+/// variable-binding and verification receipt is available. Returning zero
+/// keeps the legacy loop observable without allowing heuristic VSA facts to
+/// become executable mathematics or factual answers.
+pub fn derive_symbolic_facts(_qa: &mut QaEngine) -> usize {
+    0
+}
 
 #[cfg(test)]
 mod tests {

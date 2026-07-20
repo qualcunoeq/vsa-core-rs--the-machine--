@@ -6,10 +6,10 @@
 //! all schema side conditions are discharged.  No method in this module
 //! executes an expression.
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct MathMethodId(pub String);
 
 impl MathMethodId {
@@ -18,7 +18,7 @@ impl MathMethodId {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum MathDomain {
     Algebra,
@@ -31,7 +31,7 @@ pub enum MathDomain {
     General,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum MathMethodFamily {
     DefinitionApplication,
@@ -45,7 +45,7 @@ pub enum MathMethodFamily {
     Inequality,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TaskShape {
     ComputeExplicitValue,

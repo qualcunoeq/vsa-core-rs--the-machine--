@@ -1,7 +1,7 @@
 //! Shared evidence provenance and acceptance policy primitives.
 
 use serde::Serialize;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -45,6 +45,27 @@ pub enum FactPrecision {
     Measured,
 }
 
+impl DerivedProofKind {
+    pub fn compose(self, other: Self) -> Self {
+        match (self, other) {
+            (Self::Measurement, _) | (_, Self::Measurement) => Self::Measurement,
+            (Self::ApproximateTransformation, _)
+            | (_, Self::ApproximateTransformation) => Self::ApproximateTransformation,
+            (Self::ExactTransformation, Self::ExactTransformation) => Self::ExactTransformation,
+        }
+    }
+}
+
+impl FactPrecision {
+    pub fn compose(self, other: Self) -> Self {
+        match (self, other) {
+            (Self::Measured, _) | (_, Self::Measured) => Self::Measured,
+            (Self::Approximate, _) | (_, Self::Approximate) => Self::Approximate,
+            (Self::Exact, Self::Exact) => Self::Exact,
+        }
+    }
+}
+
 /// A transformation output is deliberately not an `EvidenceItem`.  It may
 /// be consumed by later verified transformations, but it cannot silently
 /// become prompt evidence for model selection.
@@ -58,6 +79,11 @@ pub struct DerivedFact {
     pub precision: FactPrecision,
     pub assumptions: Vec<String>,
     pub domain: Option<String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum FactDerivationRejection {
+    NoParents,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -173,6 +199,48 @@ impl DerivedFactIndex {
 }
 
 impl DerivedFact {
+    /// Compose verified parent facts without discarding their quality
+    /// metadata.  This is deliberately coarse: it propagates semantic
+    /// classes, not numeric error bars.
+    pub fn derive_from(
+        id: impl Into<String>,
+        content: impl Into<String>,
+        parents: &[&DerivedFact],
+        provenance: impl Into<String>,
+        assumptions: &[String],
+        domain: Option<String>,
+    ) -> Result<Self, FactDerivationRejection> {
+        let Some(first) = parents.first() else {
+            return Err(FactDerivationRejection::NoParents);
+        };
+        let mut lineage = BTreeSet::new();
+        let mut inherited_assumptions = BTreeSet::new();
+        let mut proof_kind = first.proof_kind;
+        let mut precision = first.precision;
+        let mut common_domain = first.domain.clone();
+        for parent in parents {
+            lineage.insert(parent.id.clone());
+            lineage.extend(parent.parent_lineage.iter().cloned());
+            inherited_assumptions.extend(parent.assumptions.iter().cloned());
+            proof_kind = proof_kind.compose(parent.proof_kind);
+            precision = precision.compose(parent.precision);
+            if common_domain != parent.domain {
+                common_domain = None;
+            }
+        }
+        inherited_assumptions.extend(assumptions.iter().cloned());
+        Ok(Self {
+            id: id.into(),
+            content: content.into(),
+            parent_lineage: lineage.into_iter().collect(),
+            provenance: provenance.into(),
+            proof_kind,
+            precision,
+            assumptions: inherited_assumptions.into_iter().collect(),
+            domain: domain.or(common_domain),
+        })
+    }
+
     pub fn as_inferred_evidence(&self) -> EvidenceItem {
         EvidenceItem {
             content: self.content.clone(),
@@ -403,6 +471,52 @@ mod tests {
         assert_eq!(
             policy.evaluate(&approximate, EvidenceStatus::Inferred),
             Err(FactPolicyRejection::ProofKindNotAllowed)
+        );
+    }
+
+    #[test]
+    fn fact_composition_propagates_quality_and_lineage() {
+        let mut exact = derived_fact("exact", "mass = 2kg", "prompt-mass");
+        exact.domain = Some("mechanics".into());
+        let mut measured = derived_fact("measured", "velocity = 3m/s", "sensor-velocity");
+        measured.proof_kind = DerivedProofKind::Measurement;
+        measured.precision = FactPrecision::Measured;
+        measured.assumptions = vec!["calibrated sensor".into()];
+        measured.domain = Some("mechanics".into());
+        let result = DerivedFact::derive_from(
+            "momentum",
+            "momentum = 6kg*m/s",
+            &[&exact, &measured],
+            "verified momentum transformation",
+            &["parallel vectors".into()],
+            None,
+        )
+        .unwrap();
+        assert_eq!(result.proof_kind, DerivedProofKind::Measurement);
+        assert_eq!(result.precision, FactPrecision::Measured);
+        assert_eq!(result.domain.as_deref(), Some("mechanics"));
+        assert_eq!(
+            result.parent_lineage,
+            vec!["exact", "measured", "prompt-mass", "sensor-velocity"]
+        );
+        assert_eq!(
+            result.assumptions,
+            vec!["calibrated sensor", "parallel vectors"]
+        );
+    }
+
+    #[test]
+    fn fact_composition_rejects_parentless_conclusions() {
+        assert_eq!(
+            DerivedFact::derive_from(
+                "guess",
+                "x = 42",
+                &[],
+                "unverified",
+                &[],
+                None,
+            ),
+            Err(FactDerivationRejection::NoParents)
         );
     }
 

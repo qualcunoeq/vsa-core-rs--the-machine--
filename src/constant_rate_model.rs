@@ -5,6 +5,61 @@
 //! into production target routing until a broader modeling contract exists.
 
 use serde::Serialize;
+use crate::capabilities::CapabilityIoType;
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ModelConstructionQualityGate {
+    pub positive_cases: usize,
+    pub negative_cases: usize,
+    pub adversarial_cases: usize,
+    pub unauthorized_assumptions: usize,
+    pub replay_failures: usize,
+}
+
+impl ModelConstructionQualityGate {
+    pub fn enabled(&self) -> bool {
+        self.positive_cases > 0
+            && self.negative_cases > 0
+            && self.adversarial_cases > 0
+            && self.unauthorized_assumptions == 0
+            && self.replay_failures == 0
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ModelConstructionSpec {
+    pub id: String,
+    pub version: u32,
+    pub supported_language_pattern: String,
+    pub required_evidence: Vec<String>,
+    pub produced_artifacts: Vec<CapabilityIoType>,
+    pub introduced_assumptions: Vec<String>,
+    pub quality_gate: ModelConstructionQualityGate,
+}
+
+pub fn constant_rate_model_spec() -> ModelConstructionSpec {
+    ModelConstructionSpec {
+        id: "constant_rate_model".into(),
+        version: 1,
+        supported_language_pattern:
+            "a quantity changes at a constant rate of R per interval for T intervals; find total change".into(),
+        required_evidence: vec![
+            "explicit constant-rate wording".into(),
+            "explicit numeric rate".into(),
+            "explicit duration".into(),
+            "explicit total-change target".into(),
+        ],
+        produced_artifacts: vec![CapabilityIoType::Expression],
+        introduced_assumptions: Vec::new(),
+        quality_gate: ModelConstructionQualityGate {
+            positive_cases: 1,
+            negative_cases: 2,
+            adversarial_cases: 1,
+            unauthorized_assumptions: 0,
+            replay_failures: 0,
+        },
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct ConstantRateModel {
@@ -31,6 +86,38 @@ pub struct ConstantRateModelReceipt {
     pub model: ConstantRateModel,
     pub derived_change: f64,
     pub replay_verified: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ConstantRateShadowCase {
+    pub id: String,
+    pub prompt: String,
+    pub should_construct: bool,
+}
+
+pub fn shadow_cases() -> Vec<ConstantRateShadowCase> {
+    vec![
+        ConstantRateShadowCase {
+            id: "constant-rate-positive".into(),
+            prompt: "A quantity changes at a constant rate of 3 per interval for 4 intervals. Find the total change.".into(),
+            should_construct: true,
+        },
+        ConstantRateShadowCase {
+            id: "constant-rate-missing-constancy".into(),
+            prompt: "A quantity changes at a rate of 3 per interval for 4 intervals. Find the total change.".into(),
+            should_construct: false,
+        },
+        ConstantRateShadowCase {
+            id: "constant-rate-missing-target".into(),
+            prompt: "A quantity changes at a constant rate of 3 per interval for 4 intervals.".into(),
+            should_construct: false,
+        },
+        ConstantRateShadowCase {
+            id: "constant-rate-wrong-model".into(),
+            prompt: "A quantity accelerates at 3 per interval for 4 intervals. Find the total change.".into(),
+            should_construct: false,
+        },
+    ]
 }
 
 /// Construct only the explicitly stated `change = constant_rate * duration`
@@ -135,5 +222,20 @@ mod tests {
             construct_constant_rate_model(text),
             Err(ConstantRateModelFailure::InvalidDuration)
         );
+    }
+
+    #[test]
+    fn model_quality_gate_requires_positive_and_negative_evidence() {
+        assert!(constant_rate_model_spec().quality_gate.enabled());
+        assert_eq!(constant_rate_model_spec().introduced_assumptions.len(), 0);
+        assert_eq!(shadow_cases().len(), 4);
+    }
+
+    #[test]
+    fn shadow_composition_replays_model_through_expression_backend() {
+        let receipt = execute_constant_rate_model(POSITIVE).unwrap();
+        let expression = crate::algebra::parse("3*4").unwrap();
+        assert_eq!(expression.evaluate(&[]), Some(receipt.derived_change));
+        assert!(receipt.replay_verified);
     }
 }

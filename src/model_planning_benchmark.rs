@@ -12,7 +12,7 @@ use crate::capability_planner::{
 use crate::constant_rate_model::{
     ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec,
     ModelConstructorEntry, ModelConstructorRegistry, ModelEvidenceContext, ModelEvidenceState,
-    ModelMatcherResult,
+    ModelMatcherResult, EvidenceOrigin, EvidenceStatus,
 };
 use serde::Serialize;
 
@@ -188,6 +188,8 @@ mod tests {
             version: 1,
             supported_language_pattern: "synthetic benchmark pattern".into(),
             required_evidence: vec!["synthetic discriminating evidence".into()],
+            allowed_evidence_origins: vec![EvidenceOrigin::Prompt, EvidenceOrigin::Clarification],
+            allowed_evidence_statuses: vec![EvidenceStatus::Explicit, EvidenceStatus::Confirmed],
             model_artifacts: vec![ModelArtifactType::Relation],
             produced_artifacts: vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
             introduced_assumptions: Vec::new(),

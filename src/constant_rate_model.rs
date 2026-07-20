@@ -33,11 +33,46 @@ pub struct ModelConstructionSpec {
     pub version: u32,
     pub supported_language_pattern: String,
     pub required_evidence: Vec<String>,
+    pub allowed_evidence_origins: Vec<EvidenceOrigin>,
+    pub allowed_evidence_statuses: Vec<EvidenceStatus>,
     pub model_artifacts: Vec<ModelArtifactType>,
     pub produced_artifacts: Vec<CapabilityIoType>,
     pub introduced_assumptions: Vec<String>,
     pub validation_rules: Vec<String>,
     pub quality_gate: ModelConstructionQualityGate,
+}
+
+impl ModelConstructionSpec {
+    pub fn accepts_evidence(&self, evidence: &EvidenceItem) -> bool {
+        self.allowed_evidence_origins.contains(&evidence.origin)
+            && self.allowed_evidence_statuses.contains(&evidence.status)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum EvidenceOrigin {
+    Prompt,
+    Clarification,
+    Derived,
+    Retrieved,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum EvidenceStatus {
+    Explicit,
+    Confirmed,
+    Inferred,
+    Rejected,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct EvidenceItem {
+    pub content: String,
+    pub origin: EvidenceOrigin,
+    pub status: EvidenceStatus,
+    pub provenance: String,
 }
 
 /// Formal artifacts created by a model constructor.  These describe the
@@ -87,13 +122,21 @@ pub struct ModelDiscoveryTrace {
 pub struct ModelEvidenceContext {
     pub original_text: String,
     pub supplemental_evidence: Vec<String>,
+    pub evidence_items: Vec<EvidenceItem>,
 }
 
 impl ModelEvidenceContext {
     pub fn new(original_text: impl Into<String>) -> Self {
+        let original_text = original_text.into();
         Self {
-            original_text: original_text.into(),
+            original_text: original_text.clone(),
             supplemental_evidence: Vec::new(),
+            evidence_items: vec![EvidenceItem {
+                content: original_text,
+                origin: EvidenceOrigin::Prompt,
+                status: EvidenceStatus::Explicit,
+                provenance: "original_prompt".into(),
+            }],
         }
     }
 
@@ -115,6 +158,7 @@ pub struct ClarificationAnswer {
 pub struct ModelEvidenceState {
     pub original_text: String,
     pub clarification_answers: Vec<ClarificationAnswer>,
+    pub evidence_items: Vec<EvidenceItem>,
 }
 
 impl ModelEvidenceState {
@@ -122,6 +166,7 @@ impl ModelEvidenceState {
         Self {
             original_text: original_text.into(),
             clarification_answers: Vec::new(),
+            evidence_items: Vec::new(),
         }
     }
 
@@ -129,7 +174,28 @@ impl ModelEvidenceState {
         let answer = answer.into();
         self.clarification_answers.push(ClarificationAnswer {
             question: request.question.clone(),
-            answer,
+            answer: answer.clone(),
+        });
+        self.evidence_items.push(EvidenceItem {
+            content: answer,
+            origin: EvidenceOrigin::Clarification,
+            status: EvidenceStatus::Confirmed,
+            provenance: request.question.clone(),
+        });
+    }
+
+    pub fn add_evidence(
+        &mut self,
+        content: impl Into<String>,
+        origin: EvidenceOrigin,
+        status: EvidenceStatus,
+        provenance: impl Into<String>,
+    ) {
+        self.evidence_items.push(EvidenceItem {
+            content: content.into(),
+            origin,
+            status,
+            provenance: provenance.into(),
         });
     }
 
@@ -137,10 +203,18 @@ impl ModelEvidenceState {
         ModelEvidenceContext {
             original_text: self.original_text.clone(),
             supplemental_evidence: self
-                .clarification_answers
+                .evidence_items
                 .iter()
-                .map(|answer| answer.answer.clone())
+                .map(|evidence| evidence.content.clone())
                 .collect(),
+            evidence_items: std::iter::once(EvidenceItem {
+                content: self.original_text.clone(),
+                origin: EvidenceOrigin::Prompt,
+                status: EvidenceStatus::Explicit,
+                provenance: "original_prompt".into(),
+            })
+            .chain(self.evidence_items.iter().cloned())
+            .collect(),
         }
     }
 }
@@ -239,6 +313,7 @@ pub enum ModelRegistryError {
     EmptyVersion,
     DuplicateVersionedId { id: String, version: u32 },
     MissingEvidence { id: String },
+    MissingEvidencePolicy { id: String },
     MissingModelArtifacts { id: String },
     MissingProducedArtifacts { id: String },
 }
@@ -299,6 +374,11 @@ impl ModelConstructorRegistry {
         }
         if spec.required_evidence.is_empty() {
             return Err(ModelRegistryError::MissingEvidence {
+                id: spec.id.clone(),
+            });
+        }
+        if spec.allowed_evidence_origins.is_empty() || spec.allowed_evidence_statuses.is_empty() {
+            return Err(ModelRegistryError::MissingEvidencePolicy {
                 id: spec.id.clone(),
             });
         }
@@ -481,6 +561,8 @@ pub fn constant_rate_model_spec() -> ModelConstructionSpec {
             "explicit duration".into(),
             "explicit total-change target".into(),
         ],
+        allowed_evidence_origins: vec![EvidenceOrigin::Prompt, EvidenceOrigin::Clarification],
+        allowed_evidence_statuses: vec![EvidenceStatus::Explicit, EvidenceStatus::Confirmed],
         model_artifacts: vec![
             ModelArtifactType::Quantity,
             ModelArtifactType::Relation,
@@ -716,6 +798,8 @@ mod tests {
             version,
             supported_language_pattern: "test pattern".into(),
             required_evidence: vec!["explicit test evidence".into()],
+            allowed_evidence_origins: vec![EvidenceOrigin::Prompt, EvidenceOrigin::Clarification],
+            allowed_evidence_statuses: vec![EvidenceStatus::Explicit, EvidenceStatus::Confirmed],
             model_artifacts: vec![ModelArtifactType::Relation],
             produced_artifacts: vec![CapabilityIoType::Expression],
             introduced_assumptions: Vec::new(),
@@ -966,5 +1050,33 @@ mod tests {
         assert!(candidate.confidence_reason.contains("PatternNotMatched"));
         assert!(candidate.introduced_assumptions.is_empty());
         assert!(candidate.preference_score.evidence_completeness == 0);
+    }
+
+    #[test]
+    fn evidence_lifecycle_preserves_origin_status_and_policy() {
+        let mut state = ModelEvidenceState::new("explicit prompt evidence");
+        let request = ClarificationRequest {
+            question: "Which interpretation?".into(),
+            required_information: vec!["continuous or discrete".into()],
+            resolves_candidates: vec!["model@v1".into()],
+        };
+        state.add_answer(&request, "continuous");
+        state.add_evidence(
+            "derived relation",
+            EvidenceOrigin::Derived,
+            EvidenceStatus::Inferred,
+            "model output",
+        );
+        let context = state.context();
+        assert_eq!(context.evidence_items[0].origin, EvidenceOrigin::Prompt);
+        assert_eq!(context.evidence_items[0].status, EvidenceStatus::Explicit);
+        assert_eq!(context.evidence_items[1].origin, EvidenceOrigin::Clarification);
+        assert_eq!(context.evidence_items[1].status, EvidenceStatus::Confirmed);
+        assert_eq!(context.evidence_items[2].origin, EvidenceOrigin::Derived);
+        assert_eq!(context.evidence_items[2].status, EvidenceStatus::Inferred);
+        let spec = constant_rate_model_spec();
+        assert!(spec.accepts_evidence(&context.evidence_items[0]));
+        assert!(spec.accepts_evidence(&context.evidence_items[1]));
+        assert!(!spec.accepts_evidence(&context.evidence_items[2]));
     }
 }

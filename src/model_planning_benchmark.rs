@@ -69,6 +69,18 @@ pub fn cases() -> Vec<ModelPlanningBenchmarkCase> {
             goal: CapabilityIoType::ExactValue,
             expected: ExpectedPlanningOutcome::NoEligibleModel,
         },
+        ModelPlanningBenchmarkCase {
+            id: "linear-relationship-plan-ready".into(),
+            prompt: "y increases by 3 for every unit increase in x, and y equals 2 when x is 0. Find y when x is 4.".into(),
+            goal: CapabilityIoType::ExactValue,
+            expected: ExpectedPlanningOutcome::PlanReady,
+        },
+        ModelPlanningBenchmarkCase {
+            id: "linear-relationship-missing-baseline-denied".into(),
+            prompt: "y increases by 3 for every unit increase in x. Find y when x is 4.".into(),
+            goal: CapabilityIoType::ExactValue,
+            expected: ExpectedPlanningOutcome::NoEligibleModel,
+        },
     ]
 }
 
@@ -123,7 +135,7 @@ mod tests {
     #[test]
     fn production_benchmark_has_one_reachable_chain_and_safe_denials() {
         let results = production_results();
-        assert_eq!(results.len(), 4);
+        assert_eq!(results.len(), 6);
         assert!(results.iter().all(|result| result.passed));
         let ready = results
             .iter()
@@ -135,6 +147,17 @@ mod tests {
                 assert_eq!(plan.capability_plan.selected_capability, "expression_evaluation");
             }
             other => panic!("unexpected positive outcome: {other:?}"),
+        }
+        let linear = results
+            .iter()
+            .find(|result| result.id() == "linear-relationship-plan-ready")
+            .expect("linear positive case present");
+        match &linear.actual {
+            ActualPlanningOutcome::PlanReady(plan) => {
+                assert_eq!(plan.model_step.model_id, "linear_relationship_model");
+                assert_eq!(plan.capability_plan.selected_capability, "expression_evaluation");
+            }
+            other => panic!("unexpected linear outcome: {other:?}"),
         }
     }
 

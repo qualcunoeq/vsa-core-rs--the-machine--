@@ -113,8 +113,8 @@ impl ModelConstructorRegistry {
         Self { entries: Vec::new() }
     }
 
-    /// The only constructor currently enabled for the production model
-    /// registry.  Additional constructors must earn their own quality gate.
+    /// Constructors enabled for the production model registry.  Additional
+    /// constructors must earn their own quality gate and non-overlap review.
     pub fn production() -> Self {
         let mut registry = Self::new();
         registry
@@ -123,6 +123,12 @@ impl ModelConstructorRegistry {
                 matcher: constant_rate_match,
             })
             .expect("constant-rate model registry entry is valid");
+        registry
+            .register(ModelConstructorEntry {
+                spec: crate::linear_relationship_model::linear_relationship_model_spec(),
+                matcher: crate::linear_relationship_model::linear_relationship_match,
+            })
+            .expect("linear-relationship model registry entry is valid");
         registry
     }
 
@@ -587,7 +593,7 @@ mod tests {
     #[test]
     fn registry_production_keeps_constant_rate_as_unique_route() {
         let registry = ModelConstructorRegistry::production();
-        assert_eq!(registry.entries().count(), 1);
+        assert_eq!(registry.entries().count(), 2);
         assert_eq!(
             registry.discover(POSITIVE).selection,
             ModelSelection::UniqueVersioned {
@@ -601,6 +607,22 @@ mod tests {
                 .selection,
             ModelSelection::None
         );
+    }
+
+    #[test]
+    fn registry_production_selects_linear_relationship_without_overlap() {
+        let registry = ModelConstructorRegistry::production();
+        let trace = registry.discover(
+            "y increases by 3 for every unit increase in x, and y equals 2 when x is 0. Find y when x is 4.",
+        );
+        assert_eq!(
+            trace.selection,
+            ModelSelection::UniqueVersioned {
+                id: "linear_relationship_model".into(),
+                version: 1,
+            }
+        );
+        assert_eq!(trace.candidates.iter().filter(|candidate| candidate.eligible).count(), 1);
     }
 
     #[test]

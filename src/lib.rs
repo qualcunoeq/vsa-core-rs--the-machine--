@@ -17,6 +17,7 @@ pub mod bridge;
 pub mod broker;
 pub mod capabilities;
 pub mod capability_planner;
+pub mod constant_rate_model;
 pub mod chess_eval;
 pub mod chess_learner;
 pub mod code_bridge;

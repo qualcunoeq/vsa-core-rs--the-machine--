@@ -218,6 +218,7 @@ impl ModelCapabilityPlan {
 pub struct PlanDependencyIndex {
     plan_facts: BTreeMap<String, BTreeSet<String>>,
     fact_plans: BTreeMap<String, BTreeSet<String>>,
+    replacement_history: Vec<PlanReplacementReceipt>,
 }
 
 impl PlanDependencyIndex {
@@ -282,6 +283,64 @@ impl PlanDependencyIndex {
             })
             .collect()
     }
+
+    pub fn replacement_history(&self) -> &[PlanReplacementReceipt] {
+        &self.replacement_history
+    }
+
+    /// Install an already accepted repair into the dependency index. All
+    /// validation happens before the old mapping is removed; this operation
+    /// changes plan bookkeeping only and never executes a capability.
+    pub fn install_repair(
+        &mut self,
+        plan_id: &str,
+        old_plan: &GoalCapabilityPlan,
+        candidate: &PlanRepairCandidate,
+        decision: &PlanRepairDecision,
+        fact_index: &DerivedFactIndex,
+    ) -> Result<PlanReplacementReceipt, PlanReplacementFailure> {
+        if candidate.plan_id != plan_id || decision.evaluation.plan_id != plan_id {
+            return Err(PlanReplacementFailure::PlanIdMismatch {
+                expected: plan_id.to_string(),
+                candidate: candidate.plan_id.clone(),
+            });
+        }
+        let stale_plan = old_plan.lifecycle(fact_index);
+        if stale_plan.is_active() {
+            return Err(PlanReplacementFailure::PlanStillActive(stale_plan));
+        }
+        if !decision.is_accepted() {
+            return Err(PlanReplacementFailure::DecisionRejected(
+                decision.rejections.clone(),
+            ));
+        }
+        let replacement_lifecycle = candidate.replacement.lifecycle(fact_index);
+        if !replacement_lifecycle.is_active() {
+            return Err(PlanReplacementFailure::ReplacementStillStale(
+                replacement_lifecycle,
+            ));
+        }
+        let old_fact_ids = self.facts_for_plan(plan_id);
+        let replacement_fact_ids = candidate
+            .replacement
+            .derived_fact_proofs
+            .iter()
+            .map(|proof| proof.fact_id.clone())
+            .collect::<BTreeSet<_>>()
+            .into_iter()
+            .collect::<Vec<_>>();
+        let receipt = PlanReplacementReceipt {
+            plan_id: plan_id.to_string(),
+            stale_plan,
+            old_fact_ids,
+            replacement_fact_ids,
+            evaluation: decision.evaluation.clone(),
+        };
+        self.unregister(plan_id);
+        self.register(plan_id, &candidate.replacement);
+        self.replacement_history.push(receipt.clone());
+        Ok(receipt)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -289,6 +348,23 @@ pub enum PlanRepairFailure {
     PlanStillActive,
     Planning(CapabilityPlanningFailure),
     ReplacementStillStale(PlanLifecycle),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum PlanReplacementFailure {
+    PlanIdMismatch { expected: String, candidate: String },
+    PlanStillActive(PlanLifecycle),
+    DecisionRejected(Vec<RepairDecisionRejection>),
+    ReplacementStillStale(PlanLifecycle),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PlanReplacementReceipt {
+    pub plan_id: String,
+    pub stale_plan: PlanLifecycle,
+    pub old_fact_ids: Vec<String>,
+    pub replacement_fact_ids: Vec<String>,
+    pub evaluation: PlanRepairEvaluation,
 }
 
 /// A proposal for replacing a stale plan. The caller must explicitly review
@@ -1264,28 +1340,26 @@ mod tests {
         };
         let old_fact = make_fact("derived-old", "distance = 12");
         let new_fact = make_fact("derived-new", "distance = 15");
-        let context = ReasoningContext::with_derived_facts(
-            BTreeSet::new(),
-            vec![old_fact.clone(), new_fact.clone()],
-        );
+        let initial_context =
+            ReasoningContext::with_derived_facts(BTreeSet::new(), vec![old_fact.clone()]);
         let mut index = DerivedFactIndex::default();
         index
             .insert(
                 "distance-old",
-                old_fact,
+                old_fact.clone(),
                 &FactPolicy::verified_transformation(),
             )
             .unwrap();
         index
             .insert(
                 "distance-new",
-                new_fact,
+                new_fact.clone(),
                 &FactPolicy::verified_transformation(),
             )
             .unwrap();
         let plan = plan_for_goal_with_context(
             CapabilityIoType::ExactValue,
-            &context,
+            &initial_context,
             &derived_fact_registry(),
         )
         .unwrap();
@@ -1293,7 +1367,7 @@ mod tests {
             replan_stale_plan(
                 "distance-plan",
                 &plan,
-                &context,
+                &initial_context,
                 &index,
                 &derived_fact_registry(),
             ),
@@ -1303,10 +1377,14 @@ mod tests {
         index
             .invalidate("derived-old", "upstream input corrected", None)
             .unwrap();
+        let repair_context = ReasoningContext::with_derived_facts(
+            BTreeSet::new(),
+            vec![old_fact.clone(), new_fact.clone()],
+        );
         let candidate = replan_stale_plan(
             "distance-plan",
             &plan,
-            &context,
+            &repair_context,
             &index,
             &derived_fact_registry(),
         )
@@ -1330,6 +1408,23 @@ mod tests {
         let decision = policy.evaluate(&plan, &candidate, &index);
         assert!(decision.is_accepted());
         assert!(decision.rejections.is_empty());
+
+        let mut dependencies = PlanDependencyIndex::default();
+        dependencies.register("distance-plan", &plan);
+        let receipt = dependencies
+            .install_repair("distance-plan", &plan, &candidate, &decision, &index)
+            .unwrap();
+        assert_eq!(receipt.old_fact_ids, vec!["derived-old"]);
+        assert_eq!(receipt.replacement_fact_ids, vec!["derived-new"]);
+        assert_eq!(
+            dependencies.facts_for_plan("distance-plan"),
+            vec!["derived-new"]
+        );
+        assert_eq!(dependencies.replacement_history().len(), 1);
+        assert_eq!(
+            dependencies.lifecycle("distance-plan", &index).unwrap().status,
+            PlanStatus::Active
+        );
 
         let mut expensive = candidate.clone();
         expensive.replacement.cost.steps += 1;

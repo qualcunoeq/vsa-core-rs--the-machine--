@@ -467,6 +467,57 @@ pub struct ImprovementExperimentReceipt {
     pub decision: ImprovementExperimentDecision,
 }
 
+/// The bounded next step after an experiment has been recorded.
+///
+/// Recommendations are diagnostic/review artifacts only.  In particular,
+/// `ReviewForApproval` does not install or apply an improvement.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum ImprovementRecommendationAction {
+    ReviewForApproval,
+    GatherMoreEvidence,
+    Reject,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ImprovementRecommendation {
+    pub experiment_id: String,
+    pub proposal: ExecutionImprovementProposal,
+    pub experiment_decision: ImprovementExperimentDecision,
+    pub action: ImprovementRecommendationAction,
+    pub rationale: String,
+}
+
+impl ImprovementExperimentReceipt {
+    /// Convert an immutable experiment result into an auditable next-step
+    /// recommendation.  This never changes runtime behavior or applies a
+    /// proposal.
+    pub fn recommendation(&self) -> ImprovementRecommendation {
+        let (action, rationale) = if self.result.passed {
+            (
+                ImprovementRecommendationAction::ReviewForApproval,
+                "experiment reduced the target failure pattern while preserving the required safety invariant".into(),
+            )
+        } else if !self.result.safety_preserved {
+            (
+                ImprovementRecommendationAction::Reject,
+                "experiment introduced a new false authorization or otherwise failed the safety invariant".into(),
+            )
+        } else {
+            (
+                ImprovementRecommendationAction::GatherMoreEvidence,
+                "experiment preserved safety but did not demonstrate a reduction in the target failure pattern".into(),
+            )
+        };
+        ImprovementRecommendation {
+            experiment_id: self.experiment_id.clone(),
+            proposal: self.spec.evaluation.proposal.clone(),
+            experiment_decision: self.decision,
+            action,
+            rationale,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum ImprovementExperimentLedgerRejection {
     DuplicateExperiment(String),
@@ -515,6 +566,18 @@ impl ImprovementExperimentLedger {
 
     pub fn receipts(&self) -> impl Iterator<Item = &ImprovementExperimentReceipt> {
         self.receipts.values()
+    }
+
+    pub fn recommendation(&self, experiment_id: &str) -> Option<ImprovementRecommendation> {
+        self.receipts
+            .get(experiment_id)
+            .map(ImprovementExperimentReceipt::recommendation)
+    }
+
+    pub fn recommendations(&self) -> impl Iterator<Item = ImprovementRecommendation> + '_ {
+        self.receipts
+            .values()
+            .map(ImprovementExperimentReceipt::recommendation)
     }
 }
 
@@ -1895,6 +1958,20 @@ mod tests {
             receipt.decision,
             ImprovementExperimentDecision::Passed
         );
+        let recommendation = receipt.recommendation();
+        assert_eq!(
+            recommendation.action,
+            ImprovementRecommendationAction::ReviewForApproval
+        );
+        assert_eq!(recommendation.experiment_id, "runtime-reliability-1");
+        assert!(recommendation.rationale.contains("safety invariant"));
+        assert_eq!(
+            experiment_ledger
+                .recommendation("runtime-reliability-1")
+                .unwrap()
+                .action,
+            ImprovementRecommendationAction::ReviewForApproval
+        );
         assert_eq!(experiment_ledger.receipts().count(), 1);
         assert!(matches!(
             experiment_ledger.record("runtime-reliability-1", experiment.clone(), result),
@@ -1910,6 +1987,35 @@ mod tests {
         assert_eq!(
             failed_receipt.decision,
             ImprovementExperimentDecision::Failed
+        );
+        assert_eq!(
+            failed_receipt.recommendation().action,
+            ImprovementRecommendationAction::Reject
+        );
+        assert_eq!(experiment_ledger.recommendations().count(), 2);
+
+        let no_benefit = ImprovementExperimentSpec {
+            evaluation: failed_receipt.spec.evaluation.clone(),
+            baseline_failure_occurrences: 2,
+            baseline_false_authorizations: 0,
+            require_no_new_false_authorizations: true,
+        }
+        .assess(2, 0);
+        let no_benefit_receipt = experiment_ledger
+            .record(
+                "runtime-reliability-3",
+                ImprovementExperimentSpec {
+                    evaluation: failed_receipt.spec.evaluation.clone(),
+                    baseline_failure_occurrences: 2,
+                    baseline_false_authorizations: 0,
+                    require_no_new_false_authorizations: true,
+                },
+                no_benefit,
+            )
+            .unwrap();
+        assert_eq!(
+            no_benefit_receipt.recommendation().action,
+            ImprovementRecommendationAction::GatherMoreEvidence
         );
         let mut one_off = proposals[0].clone();
         one_off.pattern.occurrences = 1;

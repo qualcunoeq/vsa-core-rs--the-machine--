@@ -691,6 +691,10 @@ mod tests {
                 content: "distance = 12".into(),
                 parent_lineage: vec!["constant-rate-model".into()],
                 provenance: "verified expression evaluation".into(),
+                proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+                precision: crate::evidence::FactPrecision::Exact,
+                assumptions: Vec::new(),
+                domain: None,
             }],
         );
         let plan = plan_for_goal_with_context(
@@ -717,6 +721,10 @@ mod tests {
                 content: "answer = 42".into(),
                 parent_lineage: Vec::new(),
                 provenance: "unverified guess".into(),
+                proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+                precision: crate::evidence::FactPrecision::Exact,
+                assumptions: Vec::new(),
+                domain: None,
             }],
         );
         assert!(matches!(

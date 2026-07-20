@@ -29,6 +29,22 @@ pub struct EvidenceItem {
     pub provenance: String,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum DerivedProofKind {
+    ExactTransformation,
+    ApproximateTransformation,
+    Measurement,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum FactPrecision {
+    Exact,
+    Approximate,
+    Measured,
+}
+
 /// A transformation output is deliberately not an `EvidenceItem`.  It may
 /// be consumed by later verified transformations, but it cannot silently
 /// become prompt evidence for model selection.
@@ -38,6 +54,10 @@ pub struct DerivedFact {
     pub content: String,
     pub parent_lineage: Vec<String>,
     pub provenance: String,
+    pub proof_kind: DerivedProofKind,
+    pub precision: FactPrecision,
+    pub assumptions: Vec<String>,
+    pub domain: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -182,12 +202,16 @@ pub enum EvidencePolicyRejection {
 pub enum FactPolicyRejection {
     LineageMissing,
     StatusNotAllowed,
+    ProofKindNotAllowed,
+    PrecisionNotAllowed,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct FactPolicy {
     pub allowed_statuses: Vec<EvidenceStatus>,
     pub require_lineage: bool,
+    pub allowed_proof_kinds: Vec<DerivedProofKind>,
+    pub allowed_precision: Vec<FactPrecision>,
 }
 
 impl FactPolicy {
@@ -199,6 +223,25 @@ impl FactPolicy {
                 EvidenceStatus::Inferred,
             ],
             require_lineage: true,
+            allowed_proof_kinds: vec![
+                DerivedProofKind::ExactTransformation,
+                DerivedProofKind::ApproximateTransformation,
+                DerivedProofKind::Measurement,
+            ],
+            allowed_precision: vec![
+                FactPrecision::Exact,
+                FactPrecision::Approximate,
+                FactPrecision::Measured,
+            ],
+        }
+    }
+
+    pub fn exact_transformation() -> Self {
+        Self {
+            allowed_statuses: vec![EvidenceStatus::Explicit, EvidenceStatus::Confirmed, EvidenceStatus::Inferred],
+            require_lineage: true,
+            allowed_proof_kinds: vec![DerivedProofKind::ExactTransformation],
+            allowed_precision: vec![FactPrecision::Exact],
         }
     }
 
@@ -212,6 +255,12 @@ impl FactPolicy {
         }
         if self.require_lineage && fact.parent_lineage.is_empty() {
             return Err(FactPolicyRejection::LineageMissing);
+        }
+        if !self.allowed_proof_kinds.contains(&fact.proof_kind) {
+            return Err(FactPolicyRejection::ProofKindNotAllowed);
+        }
+        if !self.allowed_precision.contains(&fact.precision) {
+            return Err(FactPolicyRejection::PrecisionNotAllowed);
         }
         Ok(())
     }
@@ -296,6 +345,10 @@ mod tests {
             content: "x squared equals 25".into(),
             parent_lineage: vec!["prompt-span-x-equals-5".into()],
             provenance: "verified substitution".into(),
+            proof_kind: DerivedProofKind::ExactTransformation,
+            precision: FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: None,
         };
         assert_eq!(
             FactPolicy::verified_transformation().evaluate(&fact, EvidenceStatus::Inferred),
@@ -317,10 +370,39 @@ mod tests {
             content: "unjustified result".into(),
             parent_lineage: Vec::new(),
             provenance: "unknown".into(),
+            proof_kind: DerivedProofKind::ExactTransformation,
+            precision: FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: None,
         };
         assert_eq!(
             FactPolicy::verified_transformation().evaluate(&fact, EvidenceStatus::Inferred),
             Err(FactPolicyRejection::LineageMissing)
+        );
+    }
+
+    #[test]
+    fn exact_fact_policy_rejects_approximate_and_measured_results() {
+        let mut approximate = DerivedFact {
+            id: "approx".into(),
+            content: "pi = 3.14".into(),
+            parent_lineage: vec!["numeric-evaluation".into()],
+            provenance: "bounded approximation".into(),
+            proof_kind: DerivedProofKind::ApproximateTransformation,
+            precision: FactPrecision::Approximate,
+            assumptions: Vec::new(),
+            domain: None,
+        };
+        let policy = FactPolicy::exact_transformation();
+        assert_eq!(
+            policy.evaluate(&approximate, EvidenceStatus::Inferred),
+            Err(FactPolicyRejection::ProofKindNotAllowed)
+        );
+        approximate.proof_kind = DerivedProofKind::Measurement;
+        approximate.precision = FactPrecision::Measured;
+        assert_eq!(
+            policy.evaluate(&approximate, EvidenceStatus::Inferred),
+            Err(FactPolicyRejection::ProofKindNotAllowed)
         );
     }
 
@@ -330,6 +412,10 @@ mod tests {
             content: content.into(),
             parent_lineage: vec![parent.into()],
             provenance: "verified transformation".into(),
+            proof_kind: DerivedProofKind::ExactTransformation,
+            precision: FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: None,
         }
     }
 
@@ -356,6 +442,10 @@ mod tests {
             content: "answer = 42".into(),
             parent_lineage: Vec::new(),
             provenance: "guess".into(),
+            proof_kind: DerivedProofKind::ExactTransformation,
+            precision: FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: None,
         };
         assert_eq!(
             index.insert("answer", fact, &policy),

@@ -68,6 +68,7 @@ pub struct ModelCandidateTrace {
     pub missing_evidence: Vec<String>,
     pub introduced_assumptions: Vec<String>,
     pub confidence_reason: String,
+    pub preference_score: ModelPreferenceScore,
     pub rejection: Option<String>,
 }
 
@@ -75,6 +76,30 @@ pub struct ModelCandidateTrace {
 pub struct ModelDiscoveryTrace {
     pub candidates: Vec<ModelCandidateTrace>,
     pub selection: ModelSelection,
+    /// Diagnostic ordering only.  This never changes `selection`; tied or
+    /// competing eligible models remain ambiguous.
+    pub ranked_candidates: Vec<String>,
+}
+
+/// Deterministic shadow score for future model comparison.  It is deliberately
+/// not a probability and is not consulted by authorization.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+pub struct ModelPreferenceScore {
+    pub evidence_completeness: usize,
+    pub verification_strength: usize,
+    pub assumption_penalty: usize,
+    pub artifact_fit: usize,
+}
+
+impl ModelPreferenceScore {
+    fn ranking_key(self) -> (usize, usize, usize, usize) {
+        (
+            self.evidence_completeness,
+            self.verification_strength,
+            usize::MAX - self.assumption_penalty,
+            self.artifact_fit,
+        )
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -249,6 +274,16 @@ impl ModelConstructorRegistry {
             if assessment.eligible && seen_ids.insert(versioned_id.clone()) {
                 eligible_ids.push((entry.spec.id.clone(), entry.spec.version, versioned_id));
             }
+            let preference_score = ModelPreferenceScore {
+                evidence_completeness: assessment.evidence_used.len(),
+                verification_strength: if entry.spec.quality_gate.replay_failures == 0 {
+                    1
+                } else {
+                    0
+                },
+                assumption_penalty: entry.spec.introduced_assumptions.len(),
+                artifact_fit: entry.spec.produced_artifacts.len(),
+            };
             candidates.push(ModelCandidateTrace {
                 id: entry.spec.id.clone(),
                 version: entry.spec.version,
@@ -263,10 +298,27 @@ impl ModelConstructorRegistry {
                         .clone()
                         .unwrap_or_else(|| "candidate rejected".into())
                 },
+                preference_score,
                 eligible: assessment.eligible,
                 rejection: assessment.rejection,
             });
         }
+        let mut ranked = candidates
+            .iter()
+            .filter(|candidate| candidate.eligible)
+            .map(|candidate| {
+                (
+                    format!("{}@v{}", candidate.id, candidate.version),
+                    candidate.preference_score.ranking_key(),
+                )
+            })
+            .collect::<Vec<_>>();
+        ranked.sort_by(|left, right| {
+            right
+                .1
+                .cmp(&left.1)
+                .then(left.0.cmp(&right.0))
+        });
         let selection = match eligible_ids.len() {
             0 => ModelSelection::None,
             1 => {
@@ -280,7 +332,11 @@ impl ModelConstructorRegistry {
                     .collect(),
             ),
         };
-        ModelDiscoveryTrace { candidates, selection }
+        ModelDiscoveryTrace {
+            candidates,
+            selection,
+            ranked_candidates: ranked.into_iter().map(|(id, _)| id).collect(),
+        }
     }
 }
 
@@ -714,6 +770,10 @@ mod tests {
             ModelSelection::Ambiguous(vec!["a_model@v1".into(), "z_model@v1".into()])
         );
         assert!(trace.candidates.iter().all(|candidate| candidate.eligible));
+        assert_eq!(
+            trace.ranked_candidates,
+            vec!["a_model@v1".to_string(), "z_model@v1".to_string()]
+        );
     }
 
     #[test]
@@ -767,5 +827,6 @@ mod tests {
         assert!(!candidate.missing_evidence.is_empty());
         assert!(candidate.confidence_reason.contains("PatternNotMatched"));
         assert!(candidate.introduced_assumptions.is_empty());
+        assert!(candidate.preference_score.evidence_completeness == 0);
     }
 }

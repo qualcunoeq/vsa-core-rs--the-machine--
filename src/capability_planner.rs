@@ -268,6 +268,25 @@ pub fn propose_capability_chain_repairs(
     Ok(proposals)
 }
 
+/// Compare chain-repair proposals using the same non-authorizing preference
+/// machinery as ordinary chains. Candidate IDs are deterministic fingerprints
+/// of the failed execution, step, and replacement subchain.
+pub fn diagnose_capability_chain_repair_preferences(
+    candidates: &[CapabilityChainRepairCandidate],
+    registry: &CapabilityRegistry,
+) -> Result<CapabilityChainPreferenceReceipt, CapabilityChainPlanningFailure> {
+    let chains = candidates.iter().map(|candidate| {
+        let candidate_id = format!(
+            "{}:step{}:{}",
+            candidate.execution_id,
+            candidate.failed_step,
+            candidate.replacement_capabilities.join("->")
+        );
+        (candidate_id, candidate.proposed_plan.clone())
+    });
+    diagnose_capability_chain_preferences(chains, registry)
+}
+
 impl CapabilityChainPlan {
     /// Compute deterministic chain cost for diagnostics and preference
     /// reporting. Cost never authorizes a plan or resolves an ambiguity.
@@ -2574,6 +2593,39 @@ mod tests {
             Err(CapabilityChainRepairFailure::ExecutionNotFailed(
                 CapabilityChainExecutionStatus::Running
             ))
+        );
+    }
+
+    #[test]
+    fn chain_repair_preferences_remain_ambiguous_on_equal_cost_repairs() {
+        let mut registry = CapabilityRegistry::production();
+        for id in ["alternate_a", "alternate_b"] {
+            let mut alternate = CapabilitySpec::expression_simplification_v1();
+            alternate.id = id.into();
+            registry.register(alternate);
+        }
+        let plan = CapabilityChainPlan {
+            goal: CapabilityIoType::SimplifiedExpression,
+            steps: vec!["expression_simplification".into()],
+        };
+        let mut ledger = CapabilityChainExecutionLedger::default();
+        ledger.start("chain-repair-3", plan).unwrap();
+        let failed = ledger
+            .complete_failure("chain-repair-3", 0, "replay mismatch")
+            .unwrap();
+        let proposals = propose_capability_chain_repairs(
+            &failed,
+            vec![vec!["alternate_b".into()], vec!["alternate_a".into()]],
+            &registry,
+        )
+        .unwrap();
+        let receipt = diagnose_capability_chain_repair_preferences(&proposals, &registry).unwrap();
+        assert_eq!(
+            receipt.preference,
+            CapabilityChainPreference::Ambiguous(vec![
+                "chain-repair-3:step0:alternate_a".into(),
+                "chain-repair-3:step0:alternate_b".into(),
+            ])
         );
     }
 

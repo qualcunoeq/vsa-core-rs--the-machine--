@@ -8,7 +8,7 @@ use crate::capabilities::{
     CapabilityIoType, CapabilityRegistry, CapabilitySelection,
 };
 use crate::constant_rate_model::{ModelArtifactType, ModelConstructorRegistry, ModelSelection};
-use crate::evidence::{DerivedFact, FactPolicyRejection};
+use crate::evidence::{DerivedFact, DerivedFactIndex, FactPolicyRejection, FactStatus};
 use crate::formalization::{AnswerForm, FormalizedTarget, OperationKind, SubjectObjectType};
 use serde::Serialize;
 use std::collections::{BTreeMap, BTreeSet};
@@ -78,6 +78,42 @@ pub struct DerivedFactProof {
     pub parent_lineage: Vec<String>,
 }
 
+/// A fact issue that prevents a previously constructed plan from remaining
+/// executable. Missing facts are reported separately from inactive facts so
+/// a stale plan cannot be mistaken for one whose dependencies are not loaded.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum PlanFactIssue {
+    Missing,
+    Inactive(FactStatus),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PlanFactInvalidation {
+    pub fact_id: String,
+    pub issue: PlanFactIssue,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum PlanStatus {
+    Active,
+    Stale,
+}
+
+/// Dynamic lifecycle view for a plan. The original plan proof is retained;
+/// this view is recomputed against the current fact ledger and never triggers
+/// implicit execution or replacement.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PlanLifecycle {
+    pub status: PlanStatus,
+    pub invalidations: Vec<PlanFactInvalidation>,
+}
+
+impl PlanLifecycle {
+    pub fn is_active(&self) -> bool {
+        self.status == PlanStatus::Active
+    }
+}
+
 /// Inputs available to goal-directed planning.  Derived facts are kept
 /// separate from model evidence and are admitted only through a capability's
 /// declared lineage policy.
@@ -142,6 +178,13 @@ pub struct GoalCapabilityPlan {
     pub derived_fact_proofs: Vec<DerivedFactProof>,
 }
 
+impl GoalCapabilityPlan {
+    /// Re-evaluate plan usability against the current fact lifecycle ledger.
+    pub fn lifecycle(&self, index: &DerivedFactIndex) -> PlanLifecycle {
+        plan_lifecycle(&self.derived_fact_proofs, index)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct ModelPlanStep {
     pub model_id: String,
@@ -161,6 +204,36 @@ pub struct ModelCapabilityPlan {
     pub capability_plan: GoalCapabilityPlan,
     pub cost: PlanCost,
     pub selection_reason: PlanSelectionReason,
+}
+
+impl ModelCapabilityPlan {
+    pub fn lifecycle(&self, index: &DerivedFactIndex) -> PlanLifecycle {
+        self.capability_plan.lifecycle(index)
+    }
+}
+
+fn plan_lifecycle(proofs: &[DerivedFactProof], index: &DerivedFactIndex) -> PlanLifecycle {
+    let mut invalidations = Vec::new();
+    for proof in proofs {
+        let issue = match index.lifecycle(&proof.fact_id) {
+            None => PlanFactIssue::Missing,
+            Some(lifecycle) if lifecycle.status == FactStatus::Active => continue,
+            Some(lifecycle) => PlanFactIssue::Inactive(lifecycle.status),
+        };
+        invalidations.push(PlanFactInvalidation {
+            fact_id: proof.fact_id.clone(),
+            issue,
+        });
+    }
+    invalidations.sort_by(|left, right| left.fact_id.cmp(&right.fact_id));
+    PlanLifecycle {
+        status: if invalidations.is_empty() {
+            PlanStatus::Active
+        } else {
+            PlanStatus::Stale
+        },
+        invalidations,
+    }
 }
 
 fn plan_metadata(
@@ -474,7 +547,7 @@ mod tests {
     use crate::capabilities::{
         CapabilityIoType, CapabilityRegistry, CapabilitySpec, InputRequirement,
     };
-    use crate::evidence::{DerivedFact, FactPolicy};
+    use crate::evidence::{DerivedFact, DerivedFactIndex, FactIndexInsert, FactPolicy};
     use crate::formalization::assess_prompt;
     use crate::constant_rate_model::ModelConstructorRegistry;
 
@@ -736,5 +809,92 @@ mod tests {
             Err(CapabilityPlanningFailure::InvalidDerivedFacts { capability, .. })
                 if capability == "derived_fact_consumer"
         ));
+    }
+
+    #[test]
+    fn plan_becomes_stale_when_required_fact_is_invalidated() {
+        let fact = DerivedFact {
+            id: "derived-1".into(),
+            content: "distance = 12".into(),
+            parent_lineage: vec!["constant-rate-model".into()],
+            provenance: "verified expression evaluation".into(),
+            proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+            precision: crate::evidence::FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: None,
+        };
+        let context = ReasoningContext::with_derived_facts(
+            BTreeSet::new(),
+            vec![fact.clone()],
+        );
+        let mut index = DerivedFactIndex::default();
+        assert_eq!(
+            index.insert(
+                "distance",
+                fact,
+                &FactPolicy::verified_transformation(),
+            ),
+            Ok(FactIndexInsert::Added)
+        );
+        let plan = plan_for_goal_with_context(
+            CapabilityIoType::ExactValue,
+            &context,
+            &derived_fact_registry(),
+        )
+        .unwrap();
+        assert_eq!(
+            plan.lifecycle(&index),
+            PlanLifecycle {
+                status: PlanStatus::Active,
+                invalidations: Vec::new(),
+            }
+        );
+
+        index
+            .invalidate("derived-1", "upstream input corrected", None)
+            .unwrap();
+        assert_eq!(
+            plan.lifecycle(&index),
+            PlanLifecycle {
+                status: PlanStatus::Stale,
+                invalidations: vec![PlanFactInvalidation {
+                    fact_id: "derived-1".into(),
+                    issue: PlanFactIssue::Inactive(FactStatus::Invalidated),
+                }],
+            }
+        );
+    }
+
+    #[test]
+    fn plan_lifecycle_is_stale_when_required_fact_is_missing() {
+        let context = ReasoningContext::with_derived_facts(
+            BTreeSet::new(),
+            vec![DerivedFact {
+                id: "derived-1".into(),
+                content: "distance = 12".into(),
+                parent_lineage: vec!["constant-rate-model".into()],
+                provenance: "verified expression evaluation".into(),
+                proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+                precision: crate::evidence::FactPrecision::Exact,
+                assumptions: Vec::new(),
+                domain: None,
+            }],
+        );
+        let plan = plan_for_goal_with_context(
+            CapabilityIoType::ExactValue,
+            &context,
+            &derived_fact_registry(),
+        )
+        .unwrap();
+        assert_eq!(
+            plan.lifecycle(&DerivedFactIndex::default()),
+            PlanLifecycle {
+                status: PlanStatus::Stale,
+                invalidations: vec![PlanFactInvalidation {
+                    fact_id: "derived-1".into(),
+                    issue: PlanFactIssue::Missing,
+                }],
+            }
+        );
     }
 }

@@ -63,6 +63,7 @@ pub enum ModelSelection {
 pub struct ModelCandidateTrace {
     pub id: String,
     pub version: u32,
+    pub required_evidence: Vec<String>,
     pub eligible: bool,
     pub evidence_used: Vec<String>,
     pub missing_evidence: Vec<String>,
@@ -79,6 +80,23 @@ pub struct ModelDiscoveryTrace {
     /// Diagnostic ordering only.  This never changes `selection`; tied or
     /// competing eligible models remain ambiguous.
     pub ranked_candidates: Vec<String>,
+    pub ambiguity: Option<ModelAmbiguityReceipt>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ModelAmbiguityReason {
+    MultipleEligibleConstructors,
+    NoUniqueDiscriminator,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ModelAmbiguityReceipt {
+    pub candidate_ids: Vec<String>,
+    pub distinguishing_evidence_missing: Vec<String>,
+    pub competing_assumptions: Vec<String>,
+    pub ranked_candidates: Vec<String>,
+    pub reason: ModelAmbiguityReason,
 }
 
 /// Deterministic shadow score for future model comparison.  It is deliberately
@@ -287,6 +305,7 @@ impl ModelConstructorRegistry {
             candidates.push(ModelCandidateTrace {
                 id: entry.spec.id.clone(),
                 version: entry.spec.version,
+                required_evidence: entry.spec.required_evidence.clone(),
                 evidence_used: assessment.evidence_used,
                 missing_evidence: assessment.missing_evidence,
                 introduced_assumptions: entry.spec.introduced_assumptions.clone(),
@@ -332,10 +351,27 @@ impl ModelConstructorRegistry {
                     .collect(),
             ),
         };
+        let ambiguity = match &selection {
+            ModelSelection::Ambiguous(ids) => Some(ModelAmbiguityReceipt {
+                candidate_ids: ids.clone(),
+                distinguishing_evidence_missing: vec![
+                    "explicit evidence selecting one eligible model over the others".into(),
+                ],
+                competing_assumptions: candidates
+                    .iter()
+                    .filter(|candidate| candidate.eligible)
+                    .flat_map(|candidate| candidate.introduced_assumptions.clone())
+                    .collect(),
+                ranked_candidates: ranked.iter().map(|(id, _)| id.clone()).collect(),
+                reason: ModelAmbiguityReason::NoUniqueDiscriminator,
+            }),
+            _ => None,
+        };
         ModelDiscoveryTrace {
             candidates,
             selection,
             ranked_candidates: ranked.into_iter().map(|(id, _)| id).collect(),
+            ambiguity,
         }
     }
 }
@@ -774,6 +810,13 @@ mod tests {
             trace.ranked_candidates,
             vec!["a_model@v1".to_string(), "z_model@v1".to_string()]
         );
+        let ambiguity = trace.ambiguity.expect("ambiguity receipt");
+        assert_eq!(ambiguity.candidate_ids, vec!["a_model@v1", "z_model@v1"]);
+        assert_eq!(
+            ambiguity.reason,
+            ModelAmbiguityReason::NoUniqueDiscriminator
+        );
+        assert_eq!(ambiguity.ranked_candidates, trace.ranked_candidates);
     }
 
     #[test]

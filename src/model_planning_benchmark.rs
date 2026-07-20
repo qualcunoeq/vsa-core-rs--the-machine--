@@ -9,7 +9,10 @@ use crate::capabilities::{CapabilityIoType, CapabilityRegistry};
 use crate::capability_planner::{
     plan_model_to_goal, ModelCapabilityPlan, ModelPlanningFailure,
 };
-use crate::constant_rate_model::{ModelConstructorRegistry, ModelSelection};
+use crate::constant_rate_model::{
+    ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec,
+    ModelConstructorEntry, ModelConstructorRegistry, ModelMatcherResult,
+};
 use serde::Serialize;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -17,6 +20,7 @@ use serde::Serialize;
 pub enum ExpectedPlanningOutcome {
     PlanReady,
     NoEligibleModel,
+    AmbiguousModel,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -96,11 +100,12 @@ pub fn cases() -> Vec<ModelPlanningBenchmarkCase> {
     ]
 }
 
-pub fn evaluate(
+pub fn evaluate_cases(
+    cases: Vec<ModelPlanningBenchmarkCase>,
     model_registry: &ModelConstructorRegistry,
     capability_registry: &CapabilityRegistry,
 ) -> Vec<ModelPlanningBenchmarkResult> {
-    cases()
+    cases
         .into_iter()
         .map(|case| {
             let actual = match plan_model_to_goal(
@@ -122,6 +127,7 @@ pub fn evaluate(
                 (&case.expected, &actual),
                 (ExpectedPlanningOutcome::PlanReady, ActualPlanningOutcome::PlanReady(_))
                     | (ExpectedPlanningOutcome::NoEligibleModel, ActualPlanningOutcome::NoEligibleModel)
+                    | (ExpectedPlanningOutcome::AmbiguousModel, ActualPlanningOutcome::AmbiguousModel(_))
             );
             ModelPlanningBenchmarkResult {
                 case_id: case.id,
@@ -131,6 +137,13 @@ pub fn evaluate(
             }
         })
         .collect()
+}
+
+pub fn evaluate(
+    model_registry: &ModelConstructorRegistry,
+    capability_registry: &CapabilityRegistry,
+) -> Vec<ModelPlanningBenchmarkResult> {
+    evaluate_cases(cases(), model_registry, capability_registry)
 }
 
 pub fn production_results() -> Vec<ModelPlanningBenchmarkResult> {
@@ -143,6 +156,30 @@ pub fn production_results() -> Vec<ModelPlanningBenchmarkResult> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn always_matches(_: &str) -> ModelMatcherResult {
+        ModelMatcherResult::eligible(vec!["synthetic discriminating evidence".into()])
+    }
+
+    fn synthetic_spec(id: &str) -> ModelConstructionSpec {
+        ModelConstructionSpec {
+            id: id.into(),
+            version: 1,
+            supported_language_pattern: "synthetic benchmark pattern".into(),
+            required_evidence: vec!["synthetic discriminating evidence".into()],
+            model_artifacts: vec![ModelArtifactType::Relation],
+            produced_artifacts: vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+            introduced_assumptions: Vec::new(),
+            validation_rules: vec!["synthetic validator".into()],
+            quality_gate: ModelConstructionQualityGate {
+                positive_cases: 1,
+                negative_cases: 1,
+                adversarial_cases: 1,
+                unauthorized_assumptions: 0,
+                replay_failures: 0,
+            },
+        }
+    }
 
     #[test]
     fn production_benchmark_has_one_reachable_chain_and_safe_denials() {
@@ -192,6 +229,45 @@ mod tests {
             .unwrap();
         assert_eq!(result.actual, ActualPlanningOutcome::NoEligibleModel);
         assert!(result.passed);
+    }
+
+    #[test]
+    fn ambiguity_benchmark_reports_abstention_and_receipt() {
+        let mut registry = ModelConstructorRegistry::new();
+        registry
+            .register(ModelConstructorEntry {
+                spec: synthetic_spec("synthetic_a"),
+                matcher: always_matches,
+            })
+            .unwrap();
+        registry
+            .register(ModelConstructorEntry {
+                spec: synthetic_spec("synthetic_b"),
+                matcher: always_matches,
+            })
+            .unwrap();
+        let case = ModelPlanningBenchmarkCase {
+            id: "ambiguous-models".into(),
+            prompt: "synthetic evidence".into(),
+            goal: CapabilityIoType::ExactValue,
+            expected: ExpectedPlanningOutcome::AmbiguousModel,
+        };
+        let results = evaluate_cases(vec![case], &registry, &CapabilityRegistry::production());
+        assert!(results[0].passed);
+        match &results[0].actual {
+            ActualPlanningOutcome::AmbiguousModel(ids) => {
+                assert_eq!(
+                    ids,
+                    &vec![
+                        String::from("synthetic_a@v1"),
+                        String::from("synthetic_b@v1"),
+                    ]
+                );
+            }
+            other => panic!("expected ambiguity, got {other:?}"),
+        }
+        let trace = registry.discover("synthetic evidence");
+        assert!(trace.ambiguity.is_some());
     }
 
     impl ModelPlanningBenchmarkResult {

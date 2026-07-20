@@ -37,6 +37,26 @@ pub struct ModelConstructionSpec {
     pub quality_gate: ModelConstructionQualityGate,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum ModelSelection {
+    Unique(String),
+    Ambiguous(Vec<String>),
+    None,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ModelCandidateTrace {
+    pub id: String,
+    pub eligible: bool,
+    pub rejection: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ModelDiscoveryTrace {
+    pub candidates: Vec<ModelCandidateTrace>,
+    pub selection: ModelSelection,
+}
+
 pub fn constant_rate_model_spec() -> ModelConstructionSpec {
     ModelConstructionSpec {
         id: "constant_rate_model".into(),
@@ -57,6 +77,33 @@ pub fn constant_rate_model_spec() -> ModelConstructionSpec {
             adversarial_cases: 1,
             unauthorized_assumptions: 0,
             replay_failures: 0,
+        },
+    }
+}
+
+/// Shadow model discovery.  Candidate matching is performed by the
+/// constructor's strict evidence parser; registry order never resolves two
+/// eligible models.
+pub fn discover_models(text: &str) -> ModelDiscoveryTrace {
+    let spec = constant_rate_model_spec();
+    let (eligible, rejection) = if !spec.quality_gate.enabled() {
+        (false, Some("quality_gate_failed".into()))
+    } else {
+        match construct_constant_rate_model(text) {
+            Ok(_) => (true, None),
+            Err(error) => (false, Some(format!("{error:?}"))),
+        }
+    };
+    ModelDiscoveryTrace {
+        candidates: vec![ModelCandidateTrace {
+            id: spec.id.clone(),
+            eligible,
+            rejection,
+        }],
+        selection: if eligible {
+            ModelSelection::Unique(spec.id)
+        } else {
+            ModelSelection::None
         },
     }
 }
@@ -237,5 +284,20 @@ mod tests {
         let expression = crate::algebra::parse("3*4").unwrap();
         assert_eq!(expression.evaluate(&[]), Some(receipt.derived_change));
         assert!(receipt.replay_verified);
+    }
+
+    #[test]
+    fn model_discovery_requires_unique_evidence_match() {
+        assert_eq!(
+            discover_models(POSITIVE).selection,
+            ModelSelection::Unique("constant_rate_model".into())
+        );
+        assert_eq!(
+            discover_models(
+                "A quantity changes at a rate of 3 per interval for 4 intervals. Find the total change."
+            )
+            .selection,
+            ModelSelection::None
+        );
     }
 }

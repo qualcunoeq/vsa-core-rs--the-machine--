@@ -40,6 +40,9 @@ struct Aggregate {
     answer_form_present: usize,
     answer_form_correct: usize,
     operation_recognition_correct: usize,
+    object_candidates_found: usize,
+    object_inventory_nonempty: usize,
+    object_candidates_expected: usize,
     target_operation_supported: usize,
     target_verifier_available: usize,
     target_incomplete_reasons: BTreeMap<String, usize>,
@@ -156,6 +159,9 @@ impl Aggregate {
             answer_form_present: 0,
             answer_form_correct: 0,
             operation_recognition_correct: 0,
+            object_candidates_found: 0,
+            object_inventory_nonempty: 0,
+            object_candidates_expected: 0,
             target_operation_supported: 0,
             target_verifier_available: 0,
             target_incomplete_reasons: BTreeMap::new(),
@@ -217,6 +223,11 @@ impl Aggregate {
         self.target_provenance_complete +=
             usize::from(completeness.provenance == TargetFieldStatus::Complete);
         self.target_complete += usize::from(target_completion.complete);
+        let inventory = &target_completion.target.object_inventory;
+        self.object_candidates_found += inventory.objects.len();
+        self.object_inventory_nonempty += usize::from(!inventory.objects.is_empty());
+        self.object_candidates_expected +=
+            score.definitions.expected + score.facts.expected + score.entities.expected;
         match &target_completion.build_trace.binding_status {
             the_machine::formalization::BindingStatus::Complete => self.binding_complete += 1,
             the_machine::formalization::BindingStatus::Missing(_) => self.binding_missing += 1,

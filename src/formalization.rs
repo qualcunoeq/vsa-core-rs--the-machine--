@@ -776,7 +776,14 @@ pub enum OperationFrame {
 pub enum SubjectObjectType {
     Expression,
     Relation,
+    Equation,
     Function,
+    Sequence,
+    Set,
+    Quantity,
+    PhysicalEntity,
+    Algorithm,
+    Proposition,
     Definition,
     Comparison,
     Unknown,
@@ -828,6 +835,78 @@ pub struct SubjectResolution {
     pub selected: Option<SubjectCandidate>,
     pub alternatives: Vec<SubjectCandidate>,
     pub blockers: Vec<SubjectGap>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ObjectCandidate {
+    pub id: String,
+    pub kind: SubjectObjectType,
+    pub source_span: TextSpan,
+    pub mentions: Vec<TextSpan>,
+    pub defining_spans: Vec<TextSpan>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub struct ObjectInventory {
+    pub objects: Vec<ObjectCandidate>,
+    pub definitions: Vec<ObjectCandidate>,
+    pub relations: Vec<ObjectCandidate>,
+}
+
+fn inventory_from_resolution(resolution: &SubjectResolution) -> ObjectInventory {
+    let mut subjects = resolution.alternatives.clone();
+    if let Some(selected) = &resolution.selected {
+        if !subjects
+            .iter()
+            .any(|candidate| candidate.object_id == selected.object_id)
+        {
+            subjects.push(selected.clone());
+        }
+    }
+    let objects = subjects
+        .iter()
+        .map(|candidate| ObjectCandidate {
+            id: candidate.object_id.clone(),
+            kind: candidate.object_type,
+            source_span: candidate.source_spans.first().cloned().unwrap_or(TextSpan {
+                source_fragment: candidate.object.clone(),
+            }),
+            mentions: candidate.source_spans.clone(),
+            defining_spans: if candidate.definition_available {
+                candidate.source_spans.clone()
+            } else {
+                Vec::new()
+            },
+        })
+        .collect::<Vec<_>>();
+    ObjectInventory {
+        definitions: objects
+            .iter()
+            .filter(|object| {
+                matches!(
+                    object.kind,
+                    SubjectObjectType::Function
+                        | SubjectObjectType::Definition
+                        | SubjectObjectType::Sequence
+                        | SubjectObjectType::Set
+                )
+            })
+            .cloned()
+            .collect(),
+        relations: objects
+            .iter()
+            .filter(|object| {
+                matches!(
+                    object.kind,
+                    SubjectObjectType::Relation
+                        | SubjectObjectType::Equation
+                        | SubjectObjectType::Proposition
+                )
+            })
+            .cloned()
+            .collect(),
+        objects,
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -923,6 +1002,7 @@ pub struct FormalizedTarget {
     pub frame: Option<OperationFrame>,
     pub subject: Option<String>,
     pub subject_resolution: SubjectResolution,
+    pub object_inventory: ObjectInventory,
     pub target_variable: Option<String>,
     pub arguments: Vec<TargetArgumentBinding>,
     pub domain: Option<String>,
@@ -1781,13 +1861,13 @@ fn resolve_subject(
                 lhs, relation, rhs, ..
             } => (
                 format!("{lhs} {relation} {rhs}"),
-                SubjectObjectType::Relation,
+                SubjectObjectType::Equation,
             ),
             FormalizedFact::Expression { expression, .. } => {
                 (expression.clone(), SubjectObjectType::Expression)
             }
             FormalizedFact::LogicalPremise { statement, .. } => {
-                (statement.clone(), SubjectObjectType::Definition)
+                (statement.clone(), SubjectObjectType::Proposition)
             }
         };
         if candidates
@@ -1907,6 +1987,7 @@ fn build_target_completion(
         .map(|value| value.statement.as_str())
         .unwrap_or_default();
     let subject_resolution = resolve_subject(question, target_text, formalized_facts);
+    let object_inventory = inventory_from_resolution(&subject_resolution);
     let subject = subject_resolution
         .selected
         .as_ref()
@@ -2206,6 +2287,7 @@ fn build_target_completion(
             frame,
             subject,
             subject_resolution,
+            object_inventory,
             target_variable,
             arguments,
             domain,
@@ -2755,6 +2837,24 @@ mod tests {
         );
         assert!(resolution.selected.as_ref().unwrap().definition_available);
         assert!(resolution.blockers.is_empty());
+        assert_eq!(
+            trace
+                .target_completion
+                .target
+                .object_inventory
+                .definitions
+                .len(),
+            2
+        );
+        assert_eq!(
+            trace
+                .target_completion
+                .target
+                .object_inventory
+                .objects
+                .len(),
+            3
+        );
     }
 
     #[test]

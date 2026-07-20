@@ -287,6 +287,34 @@ pub fn diagnose_capability_chain_repair_preferences(
     diagnose_capability_chain_preferences(chains, registry)
 }
 
+/// Repair-specific explanation context around the shared chain preference
+/// explanation. An empty proposal set yields no explanation.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainRepairPreferenceExplanation {
+    pub execution_id: String,
+    pub failed_step: usize,
+    pub original_capability: String,
+    pub preference: CapabilityChainPreference,
+    pub explanation: CapabilityChainPreferenceExplanation,
+}
+
+pub fn explain_capability_chain_repair_preferences(
+    candidates: &[CapabilityChainRepairCandidate],
+    registry: &CapabilityRegistry,
+) -> Result<Option<CapabilityChainRepairPreferenceExplanation>, CapabilityChainPlanningFailure> {
+    let Some(first) = candidates.first() else {
+        return Ok(None);
+    };
+    let receipt = diagnose_capability_chain_repair_preferences(candidates, registry)?;
+    Ok(Some(CapabilityChainRepairPreferenceExplanation {
+        execution_id: first.execution_id.clone(),
+        failed_step: first.failed_step,
+        original_capability: first.original_plan.steps[first.failed_step].clone(),
+        preference: receipt.preference.clone(),
+        explanation: receipt.explain(),
+    }))
+}
+
 impl CapabilityChainPlan {
     /// Compute deterministic chain cost for diagnostics and preference
     /// reporting. Cost never authorizes a plan or resolves an ambiguity.
@@ -2627,6 +2655,13 @@ mod tests {
                 "chain-repair-3:step0:alternate_b".into(),
             ])
         );
+        let explanation = explain_capability_chain_repair_preferences(&proposals, &registry)
+            .unwrap()
+            .unwrap();
+        assert_eq!(explanation.execution_id, "chain-repair-3");
+        assert_eq!(explanation.failed_step, 0);
+        assert_eq!(explanation.original_capability, "expression_simplification");
+        assert!(explanation.explanation.preferred_because.is_empty());
     }
 
     #[test]

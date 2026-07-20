@@ -35,6 +35,26 @@ pub enum CapabilityPlanningFailure {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainPlan {
+    pub goal: CapabilityIoType,
+    pub steps: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainPlanningFailure {
+    NoProducer(CapabilityIoType),
+    AmbiguousProducers {
+        goal: CapabilityIoType,
+        candidates: Vec<String>,
+    },
+    DependencyUnavailable {
+        capability: String,
+        dependency: String,
+    },
+    DependencyCycle(String),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct DerivedFactRejection {
     pub fact_id: String,
     pub reason: FactPolicyRejection,
@@ -1535,6 +1555,79 @@ pub fn plan_target(
     })
 }
 
+/// Plan a typed dataflow chain by searching backward from `goal`.
+///
+/// This planner is intentionally conservative: a goal with more than one
+/// eligible producer is ambiguous, even if one route looks shorter.  The
+/// returned steps are dependency-first and dataflow-first; execution and
+/// verification remain separate authorization stages.
+pub fn plan_capability_chain(
+    goal: CapabilityIoType,
+    available_inputs: &BTreeSet<CapabilityIoType>,
+    registry: &CapabilityRegistry,
+) -> Result<CapabilityChainPlan, CapabilityChainPlanningFailure> {
+    fn satisfy(
+        goal: CapabilityIoType,
+        available: &mut BTreeSet<CapabilityIoType>,
+        registry: &CapabilityRegistry,
+        visiting: &mut BTreeSet<String>,
+        steps: &mut Vec<String>,
+    ) -> Result<(), CapabilityChainPlanningFailure> {
+        if available.contains(&goal) {
+            return Ok(());
+        }
+        let candidates = registry
+            .capabilities
+            .values()
+            .filter(|capability| {
+                capability.quality_gate.enabled() && capability.produces.contains(&goal)
+            })
+            .collect::<Vec<_>>();
+        if candidates.is_empty() {
+            return Err(CapabilityChainPlanningFailure::NoProducer(goal));
+        }
+        if candidates.len() != 1 {
+            return Err(CapabilityChainPlanningFailure::AmbiguousProducers {
+                goal,
+                candidates: candidates.iter().map(|capability| capability.id.clone()).collect(),
+            });
+        }
+        let capability = candidates[0];
+        if !visiting.insert(capability.id.clone()) {
+            return Err(CapabilityChainPlanningFailure::DependencyCycle(
+                capability.id.clone(),
+            ));
+        }
+        for dependency in &capability.dependencies {
+            let dependency_spec = registry.get(dependency).ok_or_else(|| {
+                CapabilityChainPlanningFailure::DependencyUnavailable {
+                    capability: capability.id.clone(),
+                    dependency: dependency.clone(),
+                }
+            })?;
+            if !dependency_spec.quality_gate.enabled() {
+                return Err(CapabilityChainPlanningFailure::DependencyUnavailable {
+                    capability: capability.id.clone(),
+                    dependency: dependency.clone(),
+                });
+            }
+        }
+        for input in &capability.consumes {
+            satisfy(*input, available, registry, visiting, steps)?;
+        }
+        visiting.remove(&capability.id);
+        steps.push(capability.id.clone());
+        available.extend(capability.produces.iter().copied());
+        Ok(())
+    }
+
+    let mut available = available_inputs.clone();
+    let mut visiting = BTreeSet::new();
+    let mut steps = Vec::new();
+    satisfy(goal, &mut available, registry, &mut visiting, &mut steps)?;
+    Ok(CapabilityChainPlan { goal, steps })
+}
+
 /// Select one capability that can produce `goal` from the explicitly
 /// available artifacts.  This is deliberately one-step dataflow planning;
 /// dependencies are expanded, but missing data inputs are not invented.
@@ -1735,6 +1828,56 @@ mod tests {
     use crate::evidence::{DerivedFact, DerivedFactIndex, FactIndexInsert, FactPolicy};
     use crate::formalization::assess_prompt;
     use crate::constant_rate_model::ModelConstructorRegistry;
+
+    #[test]
+    fn typed_chain_planner_composes_unique_dataflow_steps() {
+        let mut registry = CapabilityRegistry::default();
+        registry.register(CapabilitySpec::expression_simplification_v1());
+        let mut evaluate = CapabilitySpec::expression_evaluation_v1();
+        evaluate.id = "evaluate_simplified_expression".into();
+        evaluate.consumes = vec![
+            CapabilityIoType::SimplifiedExpression,
+            CapabilityIoType::BindingSet,
+        ];
+        registry.register(evaluate);
+        let plan = plan_capability_chain(
+            CapabilityIoType::ExactValue,
+            &BTreeSet::from([CapabilityIoType::Expression, CapabilityIoType::BindingSet]),
+            &registry,
+        )
+        .unwrap();
+        assert_eq!(
+            plan.steps,
+            vec![
+                "expression_simplification".to_string(),
+                "evaluate_simplified_expression".to_string(),
+            ]
+        );
+    }
+
+    #[test]
+    fn typed_chain_planner_abstains_on_competing_producers() {
+        let mut registry = CapabilityRegistry::default();
+        let first = CapabilitySpec::expression_simplification_v1();
+        let mut second = first.clone();
+        second.id = "alternate_simplification".into();
+        registry.register(first);
+        registry.register(second);
+        assert_eq!(
+            plan_capability_chain(
+                CapabilityIoType::SimplifiedExpression,
+                &BTreeSet::from([CapabilityIoType::Expression]),
+                &registry,
+            ),
+            Err(CapabilityChainPlanningFailure::AmbiguousProducers {
+                goal: CapabilityIoType::SimplifiedExpression,
+                candidates: vec![
+                    "alternate_simplification".to_string(),
+                    "expression_simplification".to_string(),
+                ],
+            })
+        );
+    }
 
     #[test]
     fn function_plan_expands_dependencies_first() {

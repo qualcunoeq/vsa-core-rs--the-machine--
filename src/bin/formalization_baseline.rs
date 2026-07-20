@@ -179,6 +179,7 @@ struct BaselineReport {
     total: Aggregate,
     development: Aggregate,
     holdout: Aggregate,
+    by_tier: BTreeMap<String, Aggregate>,
     by_transformation: BTreeMap<String, Aggregate>,
 }
 
@@ -213,6 +214,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         total: Aggregate::new(),
         development: Aggregate::new(),
         holdout: Aggregate::new(),
+        by_tier: BTreeMap::new(),
         by_transformation: BTreeMap::new(),
     };
     for case in &corpus.cases {
@@ -226,6 +228,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             &mut report.development
         };
         split.add(&case.id, &score, case.authorization_expected, authorized);
+        report
+            .by_tier
+            .entry(case.tier.label().into())
+            .or_insert_with(Aggregate::new)
+            .add(&case.id, &score, case.authorization_expected, authorized);
         report
             .by_transformation
             .entry(case.transformation.label().into())

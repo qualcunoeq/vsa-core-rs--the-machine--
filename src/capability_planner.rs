@@ -518,6 +518,88 @@ impl ImprovementExperimentReceipt {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum ImprovementApprovalDecision {
+    Approved,
+    Deferred,
+    Rejected,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ImprovementApprovalReceipt {
+    pub approval_id: String,
+    pub experiment_id: String,
+    pub recommendation: ImprovementRecommendation,
+    pub decision: ImprovementApprovalDecision,
+    pub rationale: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum ImprovementApprovalLedgerRejection {
+    DuplicateApproval(String),
+    UnknownExperiment(String),
+    RecommendationNotReviewable {
+        experiment_id: String,
+        action: ImprovementRecommendationAction,
+    },
+}
+
+/// Records an explicit review decision without applying any change.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct ImprovementApprovalLedger {
+    approvals: BTreeMap<String, ImprovementApprovalReceipt>,
+}
+
+impl ImprovementApprovalLedger {
+    pub fn record(
+        &mut self,
+        approval_id: impl Into<String>,
+        experiments: &ImprovementExperimentLedger,
+        experiment_id: &str,
+        decision: ImprovementApprovalDecision,
+        rationale: impl Into<String>,
+    ) -> Result<ImprovementApprovalReceipt, ImprovementApprovalLedgerRejection> {
+        let approval_id = approval_id.into();
+        if self.approvals.contains_key(&approval_id) {
+            return Err(ImprovementApprovalLedgerRejection::DuplicateApproval(
+                approval_id,
+            ));
+        }
+        let recommendation = experiments
+            .recommendation(experiment_id)
+            .ok_or_else(|| ImprovementApprovalLedgerRejection::UnknownExperiment(
+                experiment_id.into(),
+            ))?;
+        if decision == ImprovementApprovalDecision::Approved
+            && recommendation.action != ImprovementRecommendationAction::ReviewForApproval
+        {
+            return Err(
+                ImprovementApprovalLedgerRejection::RecommendationNotReviewable {
+                    experiment_id: experiment_id.into(),
+                    action: recommendation.action,
+                },
+            );
+        }
+        let receipt = ImprovementApprovalReceipt {
+            approval_id: approval_id.clone(),
+            experiment_id: experiment_id.into(),
+            recommendation,
+            decision,
+            rationale: rationale.into(),
+        };
+        self.approvals.insert(approval_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn receipt(&self, approval_id: &str) -> Option<&ImprovementApprovalReceipt> {
+        self.approvals.get(approval_id)
+    }
+
+    pub fn receipts(&self) -> impl Iterator<Item = &ImprovementApprovalReceipt> {
+        self.approvals.values()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum ImprovementExperimentLedgerRejection {
     DuplicateExperiment(String),
@@ -1972,6 +2054,28 @@ mod tests {
                 .action,
             ImprovementRecommendationAction::ReviewForApproval
         );
+        let mut approval_ledger = ImprovementApprovalLedger::default();
+        let approval = approval_ledger
+            .record(
+                "approval-1",
+                &experiment_ledger,
+                "runtime-reliability-1",
+                ImprovementApprovalDecision::Approved,
+                "reviewed benchmark receipt",
+            )
+            .unwrap();
+        assert_eq!(approval.decision, ImprovementApprovalDecision::Approved);
+        assert_eq!(approval_ledger.receipts().count(), 1);
+        assert!(matches!(
+            approval_ledger.record(
+                "approval-1",
+                &experiment_ledger,
+                "runtime-reliability-1",
+                ImprovementApprovalDecision::Approved,
+                "duplicate",
+            ),
+            Err(ImprovementApprovalLedgerRejection::DuplicateApproval(_))
+        ));
         assert_eq!(experiment_ledger.receipts().count(), 1);
         assert!(matches!(
             experiment_ledger.record("runtime-reliability-1", experiment.clone(), result),
@@ -1992,6 +2096,16 @@ mod tests {
             failed_receipt.recommendation().action,
             ImprovementRecommendationAction::Reject
         );
+        assert!(matches!(
+            approval_ledger.record(
+                "approval-unsafe",
+                &experiment_ledger,
+                "runtime-reliability-2",
+                ImprovementApprovalDecision::Approved,
+                "should not pass the approval boundary",
+            ),
+            Err(ImprovementApprovalLedgerRejection::RecommendationNotReviewable { .. })
+        ));
         assert_eq!(experiment_ledger.recommendations().count(), 2);
 
         let no_benefit = ImprovementExperimentSpec {

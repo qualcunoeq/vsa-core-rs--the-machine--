@@ -135,6 +135,16 @@ pub struct ConstantRateModelReceipt {
     pub replay_verified: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct ConstantRateChainReceipt {
+    pub model_receipt: ConstantRateModelReceipt,
+    pub transformation: String,
+    pub expression_source: String,
+    pub numeric_result: f64,
+    pub plan_steps: Vec<String>,
+    pub replay_verified: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct ConstantRateShadowCase {
     pub id: String,
@@ -227,6 +237,50 @@ pub fn execute_constant_rate_model(
     })
 }
 
+/// End-to-end shadow-to-production route for the first modeling island.
+/// Model discovery is the authorization boundary; arithmetic is delegated to
+/// the existing deterministic expression backend and replayed independently.
+pub fn execute_constant_rate_chain(
+    text: &str,
+) -> Result<ConstantRateChainReceipt, ConstantRateModelFailure> {
+    let discovery = discover_models(text);
+    if discovery.selection != ModelSelection::Unique("constant_rate_model".into()) {
+        return Err(ConstantRateModelFailure::PatternNotMatched);
+    }
+    let model_receipt = execute_constant_rate_model(text)?;
+    let expression_source = format!("{}*{}", model_receipt.model.rate, model_receipt.model.duration);
+    let expression = crate::algebra::parse(&expression_source)
+        .map_err(|_| ConstantRateModelFailure::VerificationFailed)?;
+    let numeric_result = expression
+        .evaluate(&[])
+        .ok_or(ConstantRateModelFailure::VerificationFailed)?;
+    // Replay from the model's extracted premises, not the first evaluation.
+    let replay_expression = crate::algebra::parse(&format!(
+        "{}*{}",
+        model_receipt.model.rate, model_receipt.model.duration
+    ))
+    .map_err(|_| ConstantRateModelFailure::VerificationFailed)?;
+    let replay_result = replay_expression
+        .evaluate(&[])
+        .ok_or(ConstantRateModelFailure::VerificationFailed)?;
+    if (numeric_result - replay_result).abs() > 1e-12
+        || (numeric_result - model_receipt.derived_change).abs() > 1e-12
+    {
+        return Err(ConstantRateModelFailure::VerificationFailed);
+    }
+    Ok(ConstantRateChainReceipt {
+        model_receipt,
+        transformation: "change = rate × duration".into(),
+        expression_source,
+        numeric_result,
+        plan_steps: vec![
+            "constant_rate_model_v1".into(),
+            "expression_evaluation_v1".into(),
+        ],
+        replay_verified: true,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -298,6 +352,25 @@ mod tests {
             )
             .selection,
             ModelSelection::None
+        );
+    }
+
+    #[test]
+    fn production_chain_models_then_evaluates_and_replays() {
+        let receipt = execute_constant_rate_chain(POSITIVE).unwrap();
+        assert_eq!(receipt.numeric_result, 12.0);
+        assert_eq!(receipt.plan_steps.len(), 2);
+        assert!(receipt.replay_verified);
+        assert!(receipt.model_receipt.replay_verified);
+    }
+
+    #[test]
+    fn production_chain_rejects_unauthorized_model() {
+        let text =
+            "A quantity changes at a rate of 3 per interval for 4 intervals. Find the total change.";
+        assert_eq!(
+            execute_constant_rate_chain(text),
+            Err(ConstantRateModelFailure::PatternNotMatched)
         );
     }
 }

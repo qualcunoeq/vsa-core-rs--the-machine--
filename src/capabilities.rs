@@ -6,7 +6,7 @@
 
 use crate::formalization::{AnswerForm, OperationKind, SubjectObjectType};
 use serde::Serialize;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -46,6 +46,9 @@ impl CapabilityQualityGate {
 pub struct CapabilitySpec {
     pub id: String,
     pub version: u32,
+    /// Other enabled capabilities required by this capability's executor.
+    /// Dependencies are capability IDs, not registry insertion positions.
+    pub dependencies: Vec<String>,
     pub supported_object_types: Vec<SubjectObjectType>,
     pub supported_operations: Vec<OperationKind>,
     pub supported_answer_forms: Vec<AnswerForm>,
@@ -59,6 +62,7 @@ pub struct CapabilitySpec {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityRejection {
     QualityGateFailed,
+    DependencyUnavailable(String),
     MissingSubject,
     ObjectTypeMismatch,
     OperationMismatch,
@@ -91,6 +95,7 @@ impl CapabilitySpec {
         Self {
             id: "function_application".into(),
             version: 1,
+            dependencies: vec!["expression_evaluation".into()],
             supported_object_types: vec![SubjectObjectType::Function],
             supported_operations: vec![OperationKind::Evaluate],
             supported_answer_forms: vec![AnswerForm::ExactValue, AnswerForm::SimplifiedExpression],
@@ -121,6 +126,7 @@ impl CapabilitySpec {
         Self {
             id: "expression_evaluation".into(),
             version: 1,
+            dependencies: Vec::new(),
             supported_object_types: vec![SubjectObjectType::Expression],
             supported_operations: vec![OperationKind::Evaluate],
             supported_answer_forms: vec![AnswerForm::ExactValue],
@@ -151,6 +157,7 @@ impl CapabilitySpec {
         Self {
             id: "linear_equation_solve".into(),
             version: 1,
+            dependencies: Vec::new(),
             supported_object_types: vec![SubjectObjectType::Equation],
             supported_operations: vec![OperationKind::Solve],
             supported_answer_forms: vec![
@@ -205,6 +212,53 @@ impl CapabilityRegistry {
         self.capabilities.get(id)
     }
 
+    /// Return a deterministic dependency-first order, rejecting missing
+    /// dependencies and cycles before a planner can use the registry.
+    pub fn dependency_order(&self) -> Result<Vec<String>, Vec<String>> {
+        fn visit(
+            id: &str,
+            registry: &CapabilityRegistry,
+            visiting: &mut BTreeSet<String>,
+            visited: &mut BTreeSet<String>,
+            order: &mut Vec<String>,
+            errors: &mut Vec<String>,
+        ) {
+            if visited.contains(id) {
+                return;
+            }
+            if !visiting.insert(id.to_string()) {
+                errors.push(format!("dependency_cycle:{id}"));
+                return;
+            }
+            let Some(capability) = registry.get(id) else {
+                errors.push(format!("missing_capability:{id}"));
+                visiting.remove(id);
+                return;
+            };
+            for dependency in &capability.dependencies {
+                visit(dependency, registry, visiting, visited, order, errors);
+            }
+            visiting.remove(id);
+            visited.insert(id.to_string());
+            order.push(id.to_string());
+        }
+
+        let mut visiting = BTreeSet::new();
+        let mut visited = BTreeSet::new();
+        let mut order = Vec::new();
+        let mut errors = Vec::new();
+        for id in self.capabilities.keys() {
+            visit(id, self, &mut visiting, &mut visited, &mut order, &mut errors);
+        }
+        if errors.is_empty() {
+            Ok(order)
+        } else {
+            errors.sort();
+            errors.dedup();
+            Err(errors)
+        }
+    }
+
     pub fn accepts(
         &self,
         id: &str,
@@ -231,6 +285,14 @@ impl CapabilityRegistry {
             let mut rejections = Vec::new();
             if !capability.quality_gate.enabled() {
                 rejections.push(CapabilityRejection::QualityGateFailed);
+            }
+            for dependency in &capability.dependencies {
+                match self.get(dependency) {
+                    Some(spec) if spec.quality_gate.enabled() => {}
+                    _ => rejections.push(CapabilityRejection::DependencyUnavailable(
+                        dependency.clone(),
+                    )),
+                }
             }
             let Some(subject) = target.subject_resolution.selected.as_ref() else {
                 candidates.push(CapabilityCandidate {
@@ -345,6 +407,15 @@ mod tests {
         let registry = CapabilityRegistry::production();
         let function = registry.get("function_application").unwrap();
         assert_eq!(function.version, 1);
+        assert_eq!(function.dependencies, vec!["expression_evaluation"]);
+        assert_eq!(
+            registry.dependency_order().unwrap(),
+            vec![
+                "expression_evaluation".to_string(),
+                "function_application".to_string(),
+                "linear_equation_solve".to_string(),
+            ]
+        );
         assert!(registry.accepts(
             "function_application",
             SubjectObjectType::Function,
@@ -424,5 +495,25 @@ mod tests {
             registry.discover(&quadratic.target_completion.target).selection,
             CapabilitySelection::None
         );
+    }
+
+    #[test]
+    fn dependency_order_rejects_cycles_and_missing_nodes() {
+        let mut cyclic = CapabilityRegistry::default();
+        let mut first = CapabilitySpec::expression_evaluation_v1();
+        let mut second = CapabilitySpec::linear_equation_solve_v1();
+        first.dependencies = vec![second.id.clone()];
+        second.dependencies = vec![first.id.clone()];
+        cyclic.register(first);
+        cyclic.register(second);
+        let errors = cyclic.dependency_order().unwrap_err();
+        assert!(errors.iter().any(|error| error.contains("dependency_cycle")));
+
+        let mut missing = CapabilityRegistry::default();
+        let mut function = CapabilitySpec::function_application_v1();
+        function.dependencies = vec!["missing".into()];
+        missing.register(function);
+        let errors = missing.dependency_order().unwrap_err();
+        assert!(errors.iter().any(|error| error == "missing_capability:missing"));
     }
 }

@@ -2064,7 +2064,15 @@ fn build_target_completion(
         && (target_text.to_ascii_lowercase().contains("find")
             || target_text.to_ascii_lowercase().contains("what is"))
     {
-        operation = if subject
+        operation = if subject_resolution
+            .selected
+            .as_ref()
+            .map(|candidate| candidate.object_type == SubjectObjectType::Function)
+            .unwrap_or(false)
+            && target_text.contains('(')
+        {
+            OperationKind::Evaluate
+        } else if subject
             .as_ref()
             .map(|value| value.contains('='))
             .unwrap_or(false)

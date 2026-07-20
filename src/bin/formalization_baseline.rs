@@ -13,6 +13,7 @@ use the_machine::formalization::{
     FormalizationScore, OperationKind, OperationStatus, TargetCompletion, TargetFieldStatus,
     TargetStatus,
 };
+use the_machine::function_application::execute_function_application;
 
 #[derive(Debug, Serialize)]
 struct Aggregate {
@@ -44,6 +45,7 @@ struct Aggregate {
     object_inventory_nonempty: usize,
     object_candidates_expected: usize,
     object_type_metrics: BTreeMap<String, ObjectTypeMetrics>,
+    function_shadow: FunctionShadowMetrics,
     target_operation_supported: usize,
     target_verifier_available: usize,
     target_incomplete_reasons: BTreeMap<String, usize>,
@@ -84,6 +86,15 @@ struct TargetGapRecord {
 struct ObjectTypeMetrics {
     found: usize,
     grounded: usize,
+}
+
+#[derive(Debug, Default, Serialize)]
+struct FunctionShadowMetrics {
+    candidates: usize,
+    authorized: usize,
+    executed: usize,
+    replay_verified: usize,
+    failures: BTreeMap<String, usize>,
 }
 
 #[derive(Debug, Default, Serialize)]
@@ -170,6 +181,7 @@ impl Aggregate {
             object_inventory_nonempty: 0,
             object_candidates_expected: 0,
             object_type_metrics: BTreeMap::new(),
+            function_shadow: FunctionShadowMetrics::default(),
             target_operation_supported: 0,
             target_verifier_available: 0,
             target_incomplete_reasons: BTreeMap::new(),
@@ -249,6 +261,33 @@ impl Aggregate {
                 .unwrap_or(false)
             {
                 metrics.grounded += 1;
+            }
+        }
+        let function_candidate = target_completion.target.operation == OperationKind::Evaluate
+            && target_completion
+                .target
+                .subject_resolution
+                .selected
+                .as_ref()
+                .map(|subject| {
+                    subject.object_type == the_machine::formalization::SubjectObjectType::Function
+                })
+                .unwrap_or(false);
+        if function_candidate {
+            self.function_shadow.candidates += 1;
+            match execute_function_application(&target_completion.target) {
+                Ok(receipt) => {
+                    self.function_shadow.authorized += 1;
+                    self.function_shadow.executed += 1;
+                    self.function_shadow.replay_verified += usize::from(receipt.replay_verified);
+                }
+                Err(error) => {
+                    *self
+                        .function_shadow
+                        .failures
+                        .entry(format!("{error:?}"))
+                        .or_default() += 1;
+                }
             }
         }
         match &target_completion.build_trace.binding_status {

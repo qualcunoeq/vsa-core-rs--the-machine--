@@ -29,6 +29,7 @@ pub mod drives;
 pub mod experiment;
 pub mod forager;
 pub mod formalization;
+pub mod function_application;
 pub mod hierarchy;
 pub mod hnsw;
 pub mod indexer;

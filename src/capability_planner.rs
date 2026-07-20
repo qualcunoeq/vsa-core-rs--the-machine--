@@ -367,6 +367,122 @@ pub struct PlanReplacementReceipt {
     pub evaluation: PlanRepairEvaluation,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum PlanExecutionStatus {
+    Running,
+    Succeeded,
+    Failed,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PlanExecutionReceipt {
+    pub attempt_id: String,
+    pub plan_id: String,
+    pub status: PlanExecutionStatus,
+    pub failed_step: Option<String>,
+    pub failure_reason: Option<String>,
+    pub verification_receipt: Option<String>,
+    pub produced_fact_ids: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum PlanExecutionRejection {
+    StalePlan(PlanLifecycle),
+    AttemptAlreadyExists(String),
+    UnknownAttempt(String),
+    AttemptAlreadyTerminal(String),
+    EmptyVerificationReceipt,
+}
+
+/// Lifecycle ledger for execution attempts. It records state transitions but
+/// deliberately delegates actual capability execution and verification to
+/// their existing typed modules.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct PlanExecutionLedger {
+    attempts: BTreeMap<String, PlanExecutionReceipt>,
+}
+
+impl PlanExecutionLedger {
+    pub fn start(
+        &mut self,
+        attempt_id: impl Into<String>,
+        plan_id: impl Into<String>,
+        plan: &GoalCapabilityPlan,
+        fact_index: &DerivedFactIndex,
+    ) -> Result<PlanExecutionReceipt, PlanExecutionRejection> {
+        let attempt_id = attempt_id.into();
+        let plan_id = plan_id.into();
+        if self.attempts.contains_key(&attempt_id) {
+            return Err(PlanExecutionRejection::AttemptAlreadyExists(attempt_id));
+        }
+        let lifecycle = plan.lifecycle(fact_index);
+        if !lifecycle.is_active() {
+            return Err(PlanExecutionRejection::StalePlan(lifecycle));
+        }
+        let receipt = PlanExecutionReceipt {
+            attempt_id: attempt_id.clone(),
+            plan_id,
+            status: PlanExecutionStatus::Running,
+            failed_step: None,
+            failure_reason: None,
+            verification_receipt: None,
+            produced_fact_ids: Vec::new(),
+        };
+        self.attempts.insert(attempt_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn attempt(&self, attempt_id: &str) -> Option<&PlanExecutionReceipt> {
+        self.attempts.get(attempt_id)
+    }
+
+    pub fn complete_success(
+        &mut self,
+        attempt_id: &str,
+        verification_receipt: impl Into<String>,
+        produced_fact_ids: Vec<String>,
+    ) -> Result<PlanExecutionReceipt, PlanExecutionRejection> {
+        let receipt = self
+            .attempts
+            .get_mut(attempt_id)
+            .ok_or_else(|| PlanExecutionRejection::UnknownAttempt(attempt_id.to_string()))?;
+        if receipt.status != PlanExecutionStatus::Running {
+            return Err(PlanExecutionRejection::AttemptAlreadyTerminal(
+                attempt_id.to_string(),
+            ));
+        }
+        let verification_receipt = verification_receipt.into();
+        if verification_receipt.trim().is_empty() {
+            return Err(PlanExecutionRejection::EmptyVerificationReceipt);
+        }
+        receipt.status = PlanExecutionStatus::Succeeded;
+        receipt.verification_receipt = Some(verification_receipt);
+        receipt.produced_fact_ids = produced_fact_ids;
+        Ok(receipt.clone())
+    }
+
+    pub fn complete_failure(
+        &mut self,
+        attempt_id: &str,
+        failed_step: impl Into<String>,
+        reason: impl Into<String>,
+    ) -> Result<PlanExecutionReceipt, PlanExecutionRejection> {
+        let receipt = self
+            .attempts
+            .get_mut(attempt_id)
+            .ok_or_else(|| PlanExecutionRejection::UnknownAttempt(attempt_id.to_string()))?;
+        if receipt.status != PlanExecutionStatus::Running {
+            return Err(PlanExecutionRejection::AttemptAlreadyTerminal(
+                attempt_id.to_string(),
+            ));
+        }
+        receipt.status = PlanExecutionStatus::Failed;
+        receipt.failed_step = Some(failed_step.into());
+        receipt.failure_reason = Some(reason.into());
+        Ok(receipt.clone())
+    }
+}
+
 /// A proposal for replacing a stale plan. The caller must explicitly review
 /// and register/execute the replacement; construction has no side effects.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -1313,6 +1429,37 @@ mod tests {
         );
         assert!(dependencies.stale_plans(&index).is_empty());
 
+        let mut executions = PlanExecutionLedger::default();
+        let running = executions
+            .start("attempt-fail", "distance-plan", &plan, &index)
+            .unwrap();
+        assert_eq!(running.status, PlanExecutionStatus::Running);
+        let failed = executions
+            .complete_failure("attempt-fail", "derived_fact_consumer", "executor error")
+            .unwrap();
+        assert_eq!(failed.status, PlanExecutionStatus::Failed);
+        assert_eq!(failed.failed_step.as_deref(), Some("derived_fact_consumer"));
+
+        executions
+            .start("attempt-success", "distance-plan", &plan, &index)
+            .unwrap();
+        let succeeded = executions
+            .complete_success(
+                "attempt-success",
+                "independent replay verified",
+                vec!["derived-result".into()],
+            )
+            .unwrap();
+        assert_eq!(succeeded.status, PlanExecutionStatus::Succeeded);
+        assert_eq!(
+            succeeded.verification_receipt.as_deref(),
+            Some("independent replay verified")
+        );
+        assert!(matches!(
+            executions.complete_failure("attempt-success", "step", "late failure"),
+            Err(PlanExecutionRejection::AttemptAlreadyTerminal(_))
+        ));
+
         index
             .invalidate("derived-1", "upstream input corrected", None)
             .unwrap();
@@ -1324,6 +1471,10 @@ mod tests {
             stale[0].1.invalidations[0].issue,
             PlanFactIssue::Inactive(FactStatus::Invalidated)
         );
+        assert!(matches!(
+            executions.start("attempt-stale", "distance-plan", &plan, &index),
+            Err(PlanExecutionRejection::StalePlan(_))
+        ));
     }
 
     #[test]

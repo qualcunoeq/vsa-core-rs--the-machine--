@@ -377,7 +377,7 @@ pub enum PlanExecutionStatus {
     Failed,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub enum ExecutionFailureKind {
     CapabilityUnavailable,
     InputRejected,
@@ -392,6 +392,15 @@ pub struct ExecutionFailureDiagnosis {
     pub failed_step: String,
     pub kind: ExecutionFailureKind,
     pub reason: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ExecutionFailurePattern {
+    pub plan_id: String,
+    pub failed_step: String,
+    pub kind: ExecutionFailureKind,
+    pub occurrences: usize,
+    pub reasons: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -551,6 +560,39 @@ impl PlanExecutionLedger {
 
     pub fn failure_diagnoses(&self) -> impl Iterator<Item = &ExecutionFailureDiagnosis> {
         self.diagnoses.values()
+    }
+
+    /// Aggregate explicit failure history into inspectable process signals.
+    /// These statistics are diagnostic only; they do not alter capability
+    /// scores, model selection, or authorization policy.
+    pub fn failure_patterns(&self) -> Vec<ExecutionFailurePattern> {
+        let mut grouped: BTreeMap<
+            (String, String, ExecutionFailureKind),
+            (usize, BTreeSet<String>),
+        > = BTreeMap::new();
+        for diagnosis in self.diagnoses.values() {
+            let entry = grouped
+                .entry((
+                    diagnosis.plan_id.clone(),
+                    diagnosis.failed_step.clone(),
+                    diagnosis.kind,
+                ))
+                .or_insert_with(|| (0, BTreeSet::new()));
+            entry.0 += 1;
+            entry.1.insert(diagnosis.reason.clone());
+        }
+        grouped
+            .into_iter()
+            .map(|((plan_id, failed_step, kind), (occurrences, reasons))| {
+                ExecutionFailurePattern {
+                    plan_id,
+                    failed_step,
+                    kind,
+                    occurrences,
+                    reasons: reasons.into_iter().collect(),
+                }
+            })
+            .collect()
     }
 
     /// Atomically publish verified outputs from a successful attempt into the
@@ -1562,7 +1604,23 @@ mod tests {
             executions.diagnosis("attempt-fail").unwrap().reason,
             "executor error"
         );
-        assert_eq!(executions.failure_diagnoses().count(), 1);
+        executions
+            .start("attempt-fail-2", "distance-plan", &plan, &index)
+            .unwrap();
+        executions
+            .complete_failure("attempt-fail-2", "derived_fact_consumer", "executor error")
+            .unwrap();
+        assert_eq!(executions.failure_diagnoses().count(), 2);
+        assert_eq!(
+            executions.failure_patterns(),
+            vec![ExecutionFailurePattern {
+                plan_id: "distance-plan".into(),
+                failed_step: "derived_fact_consumer".into(),
+                kind: ExecutionFailureKind::RuntimeFailure,
+                occurrences: 2,
+                reasons: vec!["executor error".into()],
+            }]
+        );
 
         executions
             .start("attempt-success", "distance-plan", &plan, &index)

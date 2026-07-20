@@ -61,6 +61,25 @@ pub struct CapabilityChainRankedCandidate {
     pub cost: PlanCost,
 }
 
+/// Diagnostic preference among already-valid capability chains. A preference
+/// is never an authorization decision: callers must apply an independent
+/// policy before selecting or executing any candidate.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainPreference {
+    NoCandidates,
+    Preferred(String),
+    Ambiguous(Vec<String>),
+}
+
+/// Auditable record of chain ranking and any deterministic preference it
+/// exposes. Equal-cost candidates remain ambiguous even when their IDs give
+/// the ranked list a stable order.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainPreferenceReceipt {
+    pub ranked_candidates: Vec<CapabilityChainRankedCandidate>,
+    pub preference: CapabilityChainPreference,
+}
+
 impl CapabilityChainPlan {
     /// Compute deterministic chain cost for diagnostics and preference
     /// reporting. Cost never authorizes a plan or resolves an ambiguity.
@@ -109,6 +128,35 @@ pub fn rank_capability_chains(
             .then(left.candidate_id.cmp(&right.candidate_id))
     });
     Ok(ranked)
+}
+
+/// Produce a diagnostic chain-preference receipt. This records a unique
+/// lowest-cost preference only; ties are explicitly reported as ambiguous.
+/// The receipt does not select, authorize, or execute a chain.
+pub fn diagnose_capability_chain_preferences(
+    candidates: impl IntoIterator<Item = (String, CapabilityChainPlan)>,
+    registry: &CapabilityRegistry,
+) -> Result<CapabilityChainPreferenceReceipt, CapabilityChainPlanningFailure> {
+    let ranked_candidates = rank_capability_chains(candidates, registry)?;
+    let preference = match ranked_candidates.first() {
+        None => CapabilityChainPreference::NoCandidates,
+        Some(first) => {
+            let tied = ranked_candidates
+                .iter()
+                .take_while(|candidate| candidate.cost == first.cost)
+                .map(|candidate| candidate.candidate_id.clone())
+                .collect::<Vec<_>>();
+            if tied.len() == 1 {
+                CapabilityChainPreference::Preferred(tied[0].clone())
+            } else {
+                CapabilityChainPreference::Ambiguous(tied)
+            }
+        }
+    };
+    Ok(CapabilityChainPreferenceReceipt {
+        ranked_candidates,
+        preference,
+    })
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -2114,6 +2162,68 @@ mod tests {
         assert_eq!(ranked[0].candidate_id, "short");
         assert_eq!(ranked[0].cost.steps, 1);
         assert_eq!(ranked[1].cost.steps, 2);
+    }
+
+    #[test]
+    fn chain_preference_receipt_keeps_unique_preference_non_authorizing() {
+        let registry = CapabilityRegistry::production();
+        let receipt = diagnose_capability_chain_preferences(
+            vec![
+                (
+                    "long".into(),
+                    CapabilityChainPlan {
+                        goal: CapabilityIoType::ExactValue,
+                        steps: vec![
+                            "expression_simplification".into(),
+                            "expression_evaluation".into(),
+                        ],
+                    },
+                ),
+                (
+                    "short".into(),
+                    CapabilityChainPlan {
+                        goal: CapabilityIoType::SimplifiedExpression,
+                        steps: vec!["expression_simplification".into()],
+                    },
+                ),
+            ],
+            &registry,
+        )
+        .unwrap();
+        assert_eq!(
+            receipt.preference,
+            CapabilityChainPreference::Preferred("short".into())
+        );
+        assert_eq!(receipt.ranked_candidates[0].candidate_id, "short");
+    }
+
+    #[test]
+    fn equal_cost_chain_preference_is_ambiguous() {
+        let registry = CapabilityRegistry::production();
+        let plan = |goal| CapabilityChainPlan {
+            goal,
+            steps: vec!["expression_simplification".into()],
+        };
+        let receipt = diagnose_capability_chain_preferences(
+            vec![
+                ("b".into(), plan(CapabilityIoType::SimplifiedExpression)),
+                ("a".into(), plan(CapabilityIoType::SimplifiedExpression)),
+            ],
+            &registry,
+        )
+        .unwrap();
+        assert_eq!(
+            receipt.preference,
+            CapabilityChainPreference::Ambiguous(vec!["a".into(), "b".into()])
+        );
+    }
+
+    #[test]
+    fn empty_chain_preference_receipt_is_explicit() {
+        let registry = CapabilityRegistry::production();
+        let receipt = diagnose_capability_chain_preferences(Vec::new(), &registry).unwrap();
+        assert_eq!(receipt.preference, CapabilityChainPreference::NoCandidates);
+        assert!(receipt.ranked_candidates.is_empty());
     }
 
     #[test]

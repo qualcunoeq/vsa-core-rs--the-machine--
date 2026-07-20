@@ -418,6 +418,93 @@ pub struct ExecutionImprovementProposal {
     pub rationale: String,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum ImprovementRisk {
+    Low,
+    Medium,
+    High,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ImprovementEvaluation {
+    pub proposal: ExecutionImprovementProposal,
+    pub expected_effect: String,
+    pub risk: ImprovementRisk,
+    pub validation_requirements: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ImprovementEvaluationPolicy {
+    pub minimum_occurrences: usize,
+}
+
+impl ImprovementEvaluationPolicy {
+    pub fn strict() -> Self {
+        Self {
+            minimum_occurrences: 2,
+        }
+    }
+
+    pub fn evaluate(
+        &self,
+        proposal: &ExecutionImprovementProposal,
+    ) -> Result<ImprovementEvaluation, ImprovementEvaluationRejection> {
+        if proposal.pattern.occurrences < self.minimum_occurrences {
+            return Err(ImprovementEvaluationRejection::InsufficientRecurrence {
+                observed: proposal.pattern.occurrences,
+                required: self.minimum_occurrences,
+            });
+        }
+        let (expected_effect, risk, validation_requirements) = match proposal.area {
+            ImprovementArea::CapabilityCoverage => (
+                "increase reachable verified operations without weakening authorization".into(),
+                ImprovementRisk::High,
+                vec![
+                    "add positive and negative regression cases".into(),
+                    "preserve zero false-authorizations invariant".into(),
+                    "require independent replay verification".into(),
+                ],
+            ),
+            ImprovementArea::InputFormalization => (
+                "improve grounded inputs while preserving explicit evidence boundaries".into(),
+                ImprovementRisk::High,
+                vec![
+                    "add representative extraction cases".into(),
+                    "test ambiguity and missing-evidence abstention".into(),
+                    "compare authorization regressions".into(),
+                ],
+            ),
+            ImprovementArea::Verification => (
+                "increase independent verification coverage".into(),
+                ImprovementRisk::High,
+                vec![
+                    "add replay and negative verification tests".into(),
+                    "keep execution success gated on a verification receipt".into(),
+                ],
+            ),
+            ImprovementArea::RuntimeReliability => (
+                "improve reproducibility and failure handling without changing semantics".into(),
+                ImprovementRisk::Medium,
+                vec![
+                    "reproduce the failure deterministically".into(),
+                    "run capability regression tests before and after the change".into(),
+                ],
+            ),
+        };
+        Ok(ImprovementEvaluation {
+            proposal: proposal.clone(),
+            expected_effect,
+            risk,
+            validation_requirements,
+        })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum ImprovementEvaluationRejection {
+    InsufficientRecurrence { observed: usize, required: usize },
+}
+
 impl ExecutionFailurePattern {
     /// Convert a recurring operational pattern into an explicit review item.
     /// This is advisory process knowledge, never an automatic policy update.
@@ -1677,6 +1764,21 @@ mod tests {
         assert_eq!(proposals.len(), 1);
         assert_eq!(proposals[0].area, ImprovementArea::RuntimeReliability);
         assert!(proposals[0].rationale.contains("runtime"));
+        let evaluation = ImprovementEvaluationPolicy::strict()
+            .evaluate(&proposals[0])
+            .unwrap();
+        assert_eq!(evaluation.risk, ImprovementRisk::Medium);
+        assert!(!evaluation.validation_requirements.is_empty());
+        assert!(evaluation.expected_effect.contains("reproducibility"));
+        let mut one_off = proposals[0].clone();
+        one_off.pattern.occurrences = 1;
+        assert_eq!(
+            ImprovementEvaluationPolicy::strict().evaluate(&one_off),
+            Err(ImprovementEvaluationRejection::InsufficientRecurrence {
+                observed: 1,
+                required: 2,
+            })
+        );
 
         executions
             .start("attempt-success", "distance-plan", &plan, &index)

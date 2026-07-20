@@ -212,16 +212,99 @@ impl ModelCapabilityPlan {
     }
 }
 
+/// Auditable reverse index from fact dependencies to plans. Registration is
+/// explicit: the index never discovers or invents plan dependencies.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct PlanDependencyIndex {
+    plan_facts: BTreeMap<String, BTreeSet<String>>,
+    fact_plans: BTreeMap<String, BTreeSet<String>>,
+}
+
+impl PlanDependencyIndex {
+    pub fn register(&mut self, plan_id: impl Into<String>, plan: &GoalCapabilityPlan) {
+        let plan_id = plan_id.into();
+        self.unregister(&plan_id);
+        let fact_ids = plan
+            .derived_fact_proofs
+            .iter()
+            .map(|proof| proof.fact_id.clone())
+            .collect::<BTreeSet<_>>();
+        for fact_id in &fact_ids {
+            self.fact_plans
+                .entry(fact_id.clone())
+                .or_default()
+                .insert(plan_id.clone());
+        }
+        self.plan_facts.insert(plan_id, fact_ids);
+    }
+
+    pub fn unregister(&mut self, plan_id: &str) {
+        let Some(fact_ids) = self.plan_facts.remove(plan_id) else {
+            return;
+        };
+        for fact_id in fact_ids {
+            if let Some(plans) = self.fact_plans.get_mut(&fact_id) {
+                plans.remove(plan_id);
+                if plans.is_empty() {
+                    self.fact_plans.remove(&fact_id);
+                }
+            }
+        }
+    }
+
+    pub fn facts_for_plan(&self, plan_id: &str) -> Vec<String> {
+        self.plan_facts
+            .get(plan_id)
+            .map(|facts| facts.iter().cloned().collect())
+            .unwrap_or_default()
+    }
+
+    pub fn plans_depending_on(&self, fact_id: &str) -> Vec<String> {
+        self.fact_plans
+            .get(fact_id)
+            .map(|plans| plans.iter().cloned().collect())
+            .unwrap_or_default()
+    }
+
+    pub fn lifecycle(&self, plan_id: &str, index: &DerivedFactIndex) -> Option<PlanLifecycle> {
+        self.plan_facts
+            .get(plan_id)
+            .map(|fact_ids| plan_lifecycle_for_ids(fact_ids, index))
+    }
+
+    pub fn stale_plans(&self, index: &DerivedFactIndex) -> Vec<(String, PlanLifecycle)> {
+        self.plan_facts
+            .keys()
+            .filter_map(|plan_id| {
+                let lifecycle = self.lifecycle(plan_id, index)?;
+                (lifecycle.status == PlanStatus::Stale)
+                    .then(|| (plan_id.clone(), lifecycle))
+            })
+            .collect()
+    }
+}
+
 fn plan_lifecycle(proofs: &[DerivedFactProof], index: &DerivedFactIndex) -> PlanLifecycle {
+    let fact_ids = proofs
+        .iter()
+        .map(|proof| proof.fact_id.clone())
+        .collect::<BTreeSet<_>>();
+    plan_lifecycle_for_ids(&fact_ids, index)
+}
+
+fn plan_lifecycle_for_ids(
+    fact_ids: &BTreeSet<String>,
+    index: &DerivedFactIndex,
+) -> PlanLifecycle {
     let mut invalidations = Vec::new();
-    for proof in proofs {
-        let issue = match index.lifecycle(&proof.fact_id) {
+    for fact_id in fact_ids {
+        let issue = match index.lifecycle(fact_id) {
             None => PlanFactIssue::Missing,
             Some(lifecycle) if lifecycle.status == FactStatus::Active => continue,
             Some(lifecycle) => PlanFactIssue::Inactive(lifecycle.status),
         };
         invalidations.push(PlanFactInvalidation {
-            fact_id: proof.fact_id.clone(),
+            fact_id: fact_id.clone(),
             issue,
         });
     }
@@ -895,6 +978,58 @@ mod tests {
                     issue: PlanFactIssue::Missing,
                 }],
             }
+        );
+    }
+
+    #[test]
+    fn plan_dependency_index_reports_stale_dependents() {
+        let fact = DerivedFact {
+            id: "derived-1".into(),
+            content: "distance = 12".into(),
+            parent_lineage: vec!["constant-rate-model".into()],
+            provenance: "verified expression evaluation".into(),
+            proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+            precision: crate::evidence::FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: None,
+        };
+        let context = ReasoningContext::with_derived_facts(
+            BTreeSet::new(),
+            vec![fact.clone()],
+        );
+        let plan = plan_for_goal_with_context(
+            CapabilityIoType::ExactValue,
+            &context,
+            &derived_fact_registry(),
+        )
+        .unwrap();
+        let mut index = DerivedFactIndex::default();
+        index
+            .insert("distance", fact, &FactPolicy::verified_transformation())
+            .unwrap();
+
+        let mut dependencies = PlanDependencyIndex::default();
+        dependencies.register("distance-plan", &plan);
+        assert_eq!(
+            dependencies.facts_for_plan("distance-plan"),
+            vec!["derived-1"]
+        );
+        assert_eq!(
+            dependencies.plans_depending_on("derived-1"),
+            vec!["distance-plan"]
+        );
+        assert!(dependencies.stale_plans(&index).is_empty());
+
+        index
+            .invalidate("derived-1", "upstream input corrected", None)
+            .unwrap();
+        let stale = dependencies.stale_plans(&index);
+        assert_eq!(stale.len(), 1);
+        assert_eq!(stale[0].0, "distance-plan");
+        assert_eq!(stale[0].1.status, PlanStatus::Stale);
+        assert_eq!(
+            stale[0].1.invalidations[0].issue,
+            PlanFactIssue::Inactive(FactStatus::Invalidated)
         );
     }
 }

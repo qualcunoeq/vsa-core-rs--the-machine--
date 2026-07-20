@@ -8,9 +8,10 @@ use crate::capabilities::{
     CapabilityIoType, CapabilityRegistry, CapabilitySelection,
 };
 use crate::constant_rate_model::{ModelArtifactType, ModelConstructorRegistry, ModelSelection};
+use crate::evidence::{DerivedFact, FactPolicyRejection};
 use crate::formalization::{AnswerForm, FormalizedTarget, OperationKind, SubjectObjectType};
 use serde::Serialize;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityPlanningFailure {
@@ -23,6 +24,17 @@ pub enum CapabilityPlanningFailure {
         capability: String,
         missing: Vec<CapabilityIoType>,
     },
+    MissingFactPolicy(String),
+    InvalidDerivedFacts {
+        capability: String,
+        rejections: Vec<DerivedFactRejection>,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct DerivedFactRejection {
+    pub fact_id: String,
+    pub reason: FactPolicyRejection,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -60,6 +72,41 @@ pub struct InputProof {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct DerivedFactProof {
+    pub capability: String,
+    pub fact_id: String,
+    pub parent_lineage: Vec<String>,
+}
+
+/// Inputs available to goal-directed planning.  Derived facts are kept
+/// separate from model evidence and are admitted only through a capability's
+/// declared lineage policy.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct ReasoningContext {
+    pub available_inputs: BTreeSet<CapabilityIoType>,
+    pub derived_facts: Vec<DerivedFact>,
+}
+
+impl ReasoningContext {
+    pub fn new(available_inputs: BTreeSet<CapabilityIoType>) -> Self {
+        Self {
+            available_inputs,
+            derived_facts: Vec::new(),
+        }
+    }
+
+    pub fn with_derived_facts(
+        available_inputs: BTreeSet<CapabilityIoType>,
+        derived_facts: Vec<DerivedFact>,
+    ) -> Self {
+        Self {
+            available_inputs,
+            derived_facts,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityPlanStep {
     pub capability_id: String,
     pub version: u32,
@@ -92,6 +139,7 @@ pub struct GoalCapabilityPlan {
     pub selection_reason: PlanSelectionReason,
     pub dependency_proofs: Vec<DependencyProof>,
     pub input_proofs: Vec<InputProof>,
+    pub derived_fact_proofs: Vec<DerivedFactProof>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -237,6 +285,22 @@ pub fn plan_for_goal(
     available_inputs: &BTreeSet<CapabilityIoType>,
     registry: &CapabilityRegistry,
 ) -> Result<GoalCapabilityPlan, CapabilityPlanningFailure> {
+    plan_for_goal_with_context(
+        goal,
+        &ReasoningContext::new(available_inputs.clone()),
+        registry,
+    )
+}
+
+/// Goal-directed planning with a unified artifact context.  Raw model
+/// evidence is intentionally absent here; derived facts enter only through a
+/// capability that explicitly consumes `DerivedFact` and declares a
+/// lineage-validating `FactPolicy`.
+pub fn plan_for_goal_with_context(
+    goal: CapabilityIoType,
+    context: &ReasoningContext,
+    registry: &CapabilityRegistry,
+) -> Result<GoalCapabilityPlan, CapabilityPlanningFailure> {
     let mut candidates = registry
         .capabilities
         .values()
@@ -246,11 +310,70 @@ pub fn plan_for_goal(
     if candidates.is_empty() {
         return Err(CapabilityPlanningFailure::NoProducer(goal));
     }
+    let mut candidate_fact_proofs = BTreeMap::new();
+    let mut candidate_failures = BTreeMap::new();
     candidates.retain(|capability| {
-        capability
-            .consumes
-            .iter()
-            .all(|input| available_inputs.contains(input))
+        let mut eligible = true;
+        let mut missing = Vec::new();
+        for input in &capability.consumes {
+            if *input == CapabilityIoType::DerivedFact {
+                let Some(policy) = capability.fact_policy.as_ref() else {
+                    eligible = false;
+                    candidate_failures.insert(
+                        capability.id.clone(),
+                        CapabilityPlanningFailure::MissingFactPolicy(capability.id.clone()),
+                    );
+                    continue;
+                };
+                let mut proofs = Vec::new();
+                let mut rejections = Vec::new();
+                for fact in &context.derived_facts {
+                    match policy.evaluate(fact, crate::evidence::EvidenceStatus::Inferred) {
+                        Ok(()) => proofs.push(DerivedFactProof {
+                            capability: capability.id.clone(),
+                            fact_id: fact.id.clone(),
+                            parent_lineage: fact.parent_lineage.clone(),
+                        }),
+                        Err(reason) => rejections.push(DerivedFactRejection {
+                            fact_id: fact.id.clone(),
+                            reason,
+                        }),
+                    }
+                }
+                if proofs.is_empty() {
+                    eligible = false;
+                    candidate_failures.insert(
+                        capability.id.clone(),
+                        if context.derived_facts.is_empty() {
+                            CapabilityPlanningFailure::MissingInputs {
+                                capability: capability.id.clone(),
+                                missing: vec![CapabilityIoType::DerivedFact],
+                            }
+                        } else {
+                            CapabilityPlanningFailure::InvalidDerivedFacts {
+                                capability: capability.id.clone(),
+                                rejections,
+                            }
+                        },
+                    );
+                } else {
+                    candidate_fact_proofs.insert(capability.id.clone(), proofs);
+                }
+            } else if !context.available_inputs.contains(input) {
+                eligible = false;
+                missing.push(*input);
+            }
+        }
+        if !missing.is_empty() {
+            candidate_failures.insert(
+                capability.id.clone(),
+                CapabilityPlanningFailure::MissingInputs {
+                    capability: capability.id.clone(),
+                    missing,
+                },
+            );
+        }
+        eligible
     });
     if candidates.is_empty() {
         let mut possible = registry
@@ -259,16 +382,16 @@ pub fn plan_for_goal(
             .filter(|capability| capability.quality_gate.enabled())
             .filter(|capability| capability.produces.contains(&goal));
         let capability = possible.next().expect("producer checked above");
+        if let Some(failure) = candidate_failures.remove(&capability.id) {
+            return Err(failure);
+        }
         let missing = capability
             .consumes
             .iter()
-            .filter(|input| !available_inputs.contains(input))
+            .filter(|input| !context.available_inputs.contains(input))
             .copied()
             .collect();
-        return Err(CapabilityPlanningFailure::MissingInputs {
-            capability: capability.id.clone(),
-            missing,
-        });
+        return Err(CapabilityPlanningFailure::MissingInputs { capability: capability.id.clone(), missing });
     }
     if candidates.len() > 1 {
         return Err(CapabilityPlanningFailure::AmbiguousCapabilities(
@@ -285,16 +408,17 @@ pub fn plan_for_goal(
         &mut steps,
     )?;
     let (cost, dependency_proofs, input_proofs) =
-        plan_metadata(&selected.id, &steps, registry, Some(available_inputs));
+        plan_metadata(&selected.id, &steps, registry, Some(&context.available_inputs));
     Ok(GoalCapabilityPlan {
         goal,
-        available_inputs: available_inputs.iter().copied().collect(),
+        available_inputs: context.available_inputs.iter().copied().collect(),
         selected_capability: selected.id.clone(),
         steps,
         cost,
         selection_reason: PlanSelectionReason::UniqueGoalProducer,
         dependency_proofs,
         input_proofs,
+        derived_fact_proofs: candidate_fact_proofs.remove(&selected.id).unwrap_or_default(),
     })
 }
 
@@ -347,7 +471,10 @@ pub fn plan_model_to_goal(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::capabilities::{CapabilityIoType, CapabilityRegistry};
+    use crate::capabilities::{
+        CapabilityIoType, CapabilityRegistry, CapabilitySpec, InputRequirement,
+    };
+    use crate::evidence::{DerivedFact, FactPolicy};
     use crate::formalization::assess_prompt;
     use crate::constant_rate_model::ModelConstructorRegistry;
 
@@ -538,5 +665,68 @@ mod tests {
         .target_completion
         .target;
         assert!(plan_target(&target, &CapabilityRegistry::production()).is_err());
+    }
+
+    fn derived_fact_registry() -> CapabilityRegistry {
+        let mut registry = CapabilityRegistry::default();
+        let mut capability = CapabilitySpec::expression_evaluation_v1();
+        capability.id = "derived_fact_consumer".into();
+        capability.consumes = vec![CapabilityIoType::DerivedFact];
+        capability.produces = vec![CapabilityIoType::ExactValue];
+        capability.input_requirements = vec![
+            InputRequirement::VerifiedDerivedFact,
+            InputRequirement::ReplayVerifier,
+        ];
+        capability.fact_policy = Some(FactPolicy::verified_transformation());
+        registry.register(capability);
+        registry
+    }
+
+    #[test]
+    fn context_planner_admits_only_lineage_bearing_derived_facts() {
+        let context = ReasoningContext::with_derived_facts(
+            BTreeSet::new(),
+            vec![DerivedFact {
+                id: "derived-1".into(),
+                content: "distance = 12".into(),
+                parent_lineage: vec!["constant-rate-model".into()],
+                provenance: "verified expression evaluation".into(),
+            }],
+        );
+        let plan = plan_for_goal_with_context(
+            CapabilityIoType::ExactValue,
+            &context,
+            &derived_fact_registry(),
+        )
+        .unwrap();
+        assert_eq!(plan.selected_capability, "derived_fact_consumer");
+        assert_eq!(plan.derived_fact_proofs.len(), 1);
+        assert_eq!(plan.derived_fact_proofs[0].fact_id, "derived-1");
+        assert_eq!(
+            plan.derived_fact_proofs[0].parent_lineage,
+            vec!["constant-rate-model"]
+        );
+    }
+
+    #[test]
+    fn context_planner_rejects_unlineaged_derived_facts() {
+        let context = ReasoningContext::with_derived_facts(
+            BTreeSet::new(),
+            vec![DerivedFact {
+                id: "untrusted".into(),
+                content: "answer = 42".into(),
+                parent_lineage: Vec::new(),
+                provenance: "unverified guess".into(),
+            }],
+        );
+        assert!(matches!(
+            plan_for_goal_with_context(
+                CapabilityIoType::ExactValue,
+                &context,
+                &derived_fact_registry(),
+            ),
+            Err(CapabilityPlanningFailure::InvalidDerivedFacts { capability, .. })
+                if capability == "derived_fact_consumer"
+        ));
     }
 }

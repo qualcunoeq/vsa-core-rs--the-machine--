@@ -4,6 +4,7 @@
 //! entry describes the object/operation/result boundary; the executor still
 //! performs its own detailed authorization and verification.
 
+use crate::evidence::FactPolicy;
 use crate::formalization::{AnswerForm, OperationKind, SubjectObjectType};
 use serde::Serialize;
 use std::collections::{BTreeMap, BTreeSet};
@@ -21,6 +22,7 @@ pub enum InputRequirement {
     LinearRelation,
     ExplicitSubstitutionBindings,
     NoFreeVariables,
+    VerifiedDerivedFact,
     ReplayVerifier,
 }
 
@@ -35,6 +37,7 @@ pub enum CapabilityIoType {
     Equation,
     BindingSet,
     TargetVariable,
+    DerivedFact,
     ExactValue,
     SolutionSet,
 }
@@ -79,6 +82,8 @@ pub struct CapabilitySpec {
     pub supported_operations: Vec<OperationKind>,
     pub supported_answer_forms: Vec<AnswerForm>,
     pub input_requirements: Vec<InputRequirement>,
+    /// Required when this capability consumes `DerivedFact`.
+    pub fact_policy: Option<FactPolicy>,
     pub executor: String,
     pub verifier: String,
     pub regression_cases: Vec<String>,
@@ -137,6 +142,7 @@ impl CapabilitySpec {
                 InputRequirement::ExplicitExpressionBody,
                 InputRequirement::ReplayVerifier,
             ],
+            fact_policy: None,
             executor: "function_application::execute_function_application".into(),
             verifier: "function_application::replay_substitution".into(),
             regression_cases: vec![
@@ -170,6 +176,7 @@ impl CapabilitySpec {
                 InputRequirement::AllExpressionVariablesBound,
                 InputRequirement::ReplayVerifier,
             ],
+            fact_policy: None,
             executor: "expression_evaluation::execute_expression_evaluation".into(),
             verifier: "expression_evaluation::replay_expression_evaluation".into(),
             regression_cases: vec![
@@ -209,6 +216,7 @@ impl CapabilitySpec {
                 InputRequirement::LinearRelation,
                 InputRequirement::ReplayVerifier,
             ],
+            fact_policy: None,
             executor: "linear_equation::execute_linear_equation".into(),
             verifier: "linear_equation::replay_linear_equation".into(),
             regression_cases: vec![
@@ -244,6 +252,7 @@ impl CapabilitySpec {
                 InputRequirement::AllExpressionVariablesBound,
                 InputRequirement::ReplayVerifier,
             ],
+            fact_policy: None,
             executor: "substitution::execute_substitution".into(),
             verifier: "substitution::replay_substitution".into(),
             regression_cases: vec![
@@ -451,6 +460,10 @@ impl CapabilityRegistry {
                             })
                     }
                     InputRequirement::NoFreeVariables | InputRequirement::ReplayVerifier => true,
+                    // Raw target discovery has no derived-fact ledger.  Such
+                    // capabilities are admitted only by the context-aware
+                    // goal planner after lineage validation.
+                    InputRequirement::VerifiedDerivedFact => false,
                 };
                 if !satisfied {
                     rejections.push(CapabilityRejection::InputRequirementMissing(*requirement));

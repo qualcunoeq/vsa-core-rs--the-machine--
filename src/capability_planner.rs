@@ -403,6 +403,51 @@ pub struct ExecutionFailurePattern {
     pub reasons: Vec<String>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum ImprovementArea {
+    CapabilityCoverage,
+    InputFormalization,
+    Verification,
+    RuntimeReliability,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ExecutionImprovementProposal {
+    pub pattern: ExecutionFailurePattern,
+    pub area: ImprovementArea,
+    pub rationale: String,
+}
+
+impl ExecutionFailurePattern {
+    /// Convert a recurring operational pattern into an explicit review item.
+    /// This is advisory process knowledge, never an automatic policy update.
+    pub fn improvement_proposal(&self) -> ExecutionImprovementProposal {
+        let (area, rationale) = match self.kind {
+            ExecutionFailureKind::CapabilityUnavailable => (
+                ImprovementArea::CapabilityCoverage,
+                "review whether a verified capability is missing for this step".into(),
+            ),
+            ExecutionFailureKind::InputRejected => (
+                ImprovementArea::InputFormalization,
+                "inspect evidence, bindings, and input-grounding requirements".into(),
+            ),
+            ExecutionFailureKind::VerificationFailed => (
+                ImprovementArea::Verification,
+                "inspect executor output and its independent verifier".into(),
+            ),
+            ExecutionFailureKind::RuntimeFailure => (
+                ImprovementArea::RuntimeReliability,
+                "inspect runtime behavior and reproducibility for this step".into(),
+            ),
+        };
+        ExecutionImprovementProposal {
+            pattern: self.clone(),
+            area,
+            rationale,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct PlanExecutionReceipt {
     pub attempt_id: String,
@@ -592,6 +637,13 @@ impl PlanExecutionLedger {
                     reasons: reasons.into_iter().collect(),
                 }
             })
+            .collect()
+    }
+
+    pub fn improvement_proposals(&self) -> Vec<ExecutionImprovementProposal> {
+        self.failure_patterns()
+            .iter()
+            .map(ExecutionFailurePattern::improvement_proposal)
             .collect()
     }
 
@@ -1621,6 +1673,10 @@ mod tests {
                 reasons: vec!["executor error".into()],
             }]
         );
+        let proposals = executions.improvement_proposals();
+        assert_eq!(proposals.len(), 1);
+        assert_eq!(proposals[0].area, ImprovementArea::RuntimeReliability);
+        assert!(proposals[0].rationale.contains("runtime"));
 
         executions
             .start("attempt-success", "distance-plan", &plan, &index)

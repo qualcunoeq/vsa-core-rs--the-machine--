@@ -8,9 +8,10 @@ use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, env, fs};
 use the_machine::formalization::{
-    assess_direct_instantiation, assess_prompt, score_formalization, AuthorizationDenialTrace,
-    FieldScore, FormalizationCorpus, FormalizationGoldCase, FormalizationScore, OperationStatus,
-    TargetCompletion, TargetFieldStatus,
+    assess_direct_instantiation, assess_prompt, infer_answer_form, score_formalization,
+    AuthorizationDenialTrace, FieldScore, FormalizationCorpus, FormalizationGoldCase,
+    FormalizationScore, OperationKind, OperationStatus, TargetCompletion, TargetFieldStatus,
+    TargetStatus,
 };
 
 #[derive(Debug, Serialize)]
@@ -29,6 +30,12 @@ struct Aggregate {
     target_requested_form_complete: usize,
     target_provenance_complete: usize,
     target_complete: usize,
+    target_constructed: usize,
+    target_ambiguous: usize,
+    target_incomplete: usize,
+    answer_form_present: usize,
+    answer_form_correct: usize,
+    operation_recognition_correct: usize,
     target_operation_supported: usize,
     target_verifier_available: usize,
     target_incomplete_reasons: BTreeMap<String, usize>,
@@ -59,6 +66,11 @@ struct Aggregate {
 struct OperationMetrics {
     cases: usize,
     target_complete: usize,
+    target_ambiguous: usize,
+    target_incomplete: usize,
+    answer_form_present: usize,
+    answer_form_correct: usize,
+    operation_recognition_correct: usize,
     operation_supported: usize,
     verifier_available: usize,
     authorized: usize,
@@ -116,6 +128,12 @@ impl Aggregate {
             target_requested_form_complete: 0,
             target_provenance_complete: 0,
             target_complete: 0,
+            target_constructed: 0,
+            target_ambiguous: 0,
+            target_incomplete: 0,
+            answer_form_present: 0,
+            answer_form_correct: 0,
+            operation_recognition_correct: 0,
             target_operation_supported: 0,
             target_verifier_available: 0,
             target_incomplete_reasons: BTreeMap::new(),
@@ -176,6 +194,19 @@ impl Aggregate {
         self.target_provenance_complete +=
             usize::from(completeness.provenance == TargetFieldStatus::Complete);
         self.target_complete += usize::from(target_completion.complete);
+        match target_completion.build_trace.final_status {
+            TargetStatus::Complete => self.target_constructed += 1,
+            TargetStatus::Ambiguous(_) => self.target_ambiguous += 1,
+            TargetStatus::Incomplete(_) => self.target_incomplete += 1,
+        }
+        let expected_form = expected_answer_form(gold_operation, &target_completion.target);
+        let form_present = target_completion.target.answer_form.is_some();
+        self.answer_form_present += usize::from(form_present);
+        self.answer_form_correct += usize::from(
+            form_present
+                && expected_form.is_some()
+                && target_completion.target.answer_form == expected_form,
+        );
         self.target_operation_supported += usize::from(target_completion.operation_supported);
         self.target_verifier_available += usize::from(target_completion.verifier_available);
         for reason in &target_completion.reasons {
@@ -190,6 +221,9 @@ impl Aggregate {
             OperationStatus::Ambiguous(_) => "ambiguous".into(),
             OperationStatus::NotIdentified => "not_identified".into(),
         };
+        let recognition_correct =
+            operation_recognition_correct(gold_operation, &predicted_operation);
+        self.operation_recognition_correct += usize::from(recognition_correct);
         *self
             .operation_confusion
             .entry(format!("{gold_operation}->{predicted_operation}"))
@@ -199,6 +233,21 @@ impl Aggregate {
             .entry(predicted_operation.clone())
             .or_default();
         operation_entry.cases += 1;
+        operation_entry.target_ambiguous += usize::from(matches!(
+            target_completion.build_trace.final_status,
+            TargetStatus::Ambiguous(_)
+        ));
+        operation_entry.target_incomplete += usize::from(matches!(
+            target_completion.build_trace.final_status,
+            TargetStatus::Incomplete(_)
+        ));
+        operation_entry.answer_form_present += usize::from(form_present);
+        operation_entry.answer_form_correct += usize::from(
+            form_present
+                && expected_form.is_some()
+                && target_completion.target.answer_form == expected_form,
+        );
+        operation_entry.operation_recognition_correct += usize::from(recognition_correct);
         operation_entry.target_complete += usize::from(matches!(
             target_completion.build_trace.final_status,
             the_machine::formalization::TargetStatus::Complete
@@ -326,6 +375,46 @@ fn gold_operation(statement: &str) -> &'static str {
     } else {
         "unknown"
     }
+}
+
+fn gold_operation_kind(operation: &str) -> Option<OperationKind> {
+    match operation {
+        "evaluate" | "find_or_evaluate" => Some(OperationKind::Evaluate),
+        "solve" => Some(OperationKind::Solve),
+        "simplify" => Some(OperationKind::Simplify),
+        "substitute" => Some(OperationKind::Substitute),
+        "compare" => Some(OperationKind::Compare),
+        "verify" => Some(OperationKind::Verify),
+        "prove" => Some(OperationKind::Prove),
+        "count" => Some(OperationKind::Count),
+        _ => None,
+    }
+}
+
+fn operation_recognition_correct(gold: &str, predicted: &str) -> bool {
+    match gold_operation_kind(gold) {
+        Some(operation) => {
+            predicted == operation.label()
+                || predicted == format!("unsupported:{}", operation.label())
+        }
+        None => predicted == "not_identified",
+    }
+}
+
+fn expected_answer_form(
+    gold_operation: &str,
+    target: &the_machine::formalization::FormalizedTarget,
+) -> Option<the_machine::formalization::AnswerForm> {
+    let operation = gold_operation_kind(gold_operation)?;
+    infer_answer_form(
+        target
+            .provenance
+            .as_ref()
+            .and_then(|provenance| provenance.operation_span.as_ref())
+            .map(|span| span.source_fragment.as_str())
+            .unwrap_or_default(),
+        operation,
+    )
 }
 
 fn evaluate_case(

@@ -1647,7 +1647,7 @@ fn operation_from_text(text: &str) -> OperationKind {
     }
 }
 
-fn answer_form_from_text(text: &str, operation: OperationKind) -> Option<AnswerForm> {
+pub fn infer_answer_form(text: &str, operation: OperationKind) -> Option<AnswerForm> {
     let lower = text.to_ascii_lowercase();
     if lower.contains("prove") || lower.contains("show that") {
         Some(AnswerForm::Proof)
@@ -1777,7 +1777,7 @@ fn build_target_completion(
         });
     }
     let lower = target_text.to_ascii_lowercase();
-    let answer_form = answer_form_from_text(target_text, operation);
+    let answer_form = infer_answer_form(target_text, operation);
     let domain = ["real", "integer", "natural", "positive", "complex"]
         .iter()
         .find(|word| lower.contains(**word))
@@ -1981,7 +1981,12 @@ fn build_target_completion(
             status,
             TargetFieldStatus::Missing | TargetFieldStatus::Ambiguous
         ) {
-            reasons.push(format!("{name}_incomplete"));
+            let suffix = if status == TargetFieldStatus::Ambiguous {
+                "ambiguous"
+            } else {
+                "incomplete"
+            };
+            reasons.push(format!("{name}_{suffix}"));
         }
     }
     let complete =

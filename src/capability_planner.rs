@@ -24,6 +24,31 @@ pub enum CapabilityPlanningFailure {
     },
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+pub struct PlanCost {
+    pub steps: usize,
+    pub dependency_edges: usize,
+    pub verification_steps: usize,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum PlanSelectionReason {
+    UniqueTargetCapability,
+    UniqueGoalProducer,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct DependencyProof {
+    pub capability: String,
+    pub dependency: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct InputProof {
+    pub capability: String,
+    pub input: CapabilityIoType,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityPlanStep {
     pub capability_id: String,
@@ -41,6 +66,10 @@ pub struct CapabilityPlan {
     pub answer_form: Option<AnswerForm>,
     pub selected_capability: String,
     pub steps: Vec<CapabilityPlanStep>,
+    pub cost: PlanCost,
+    pub selection_reason: PlanSelectionReason,
+    pub dependency_proofs: Vec<DependencyProof>,
+    pub input_proofs: Vec<InputProof>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -49,6 +78,48 @@ pub struct GoalCapabilityPlan {
     pub available_inputs: Vec<CapabilityIoType>,
     pub selected_capability: String,
     pub steps: Vec<CapabilityPlanStep>,
+    pub cost: PlanCost,
+    pub selection_reason: PlanSelectionReason,
+    pub dependency_proofs: Vec<DependencyProof>,
+    pub input_proofs: Vec<InputProof>,
+}
+
+fn plan_metadata(
+    selected: &str,
+    steps: &[CapabilityPlanStep],
+    registry: &CapabilityRegistry,
+    available_inputs: Option<&BTreeSet<CapabilityIoType>>,
+) -> (PlanCost, Vec<DependencyProof>, Vec<InputProof>) {
+    let mut dependency_proofs = Vec::new();
+    let mut input_proofs = Vec::new();
+    for step in steps {
+        if let Some(capability) = registry.get(&step.capability_id) {
+            for dependency in &capability.dependencies {
+                dependency_proofs.push(DependencyProof {
+                    capability: capability.id.clone(),
+                    dependency: dependency.clone(),
+                });
+            }
+            if step.capability_id == selected {
+                if let Some(available) = available_inputs {
+                    for input in &capability.consumes {
+                        if available.contains(input) {
+                            input_proofs.push(InputProof {
+                                capability: capability.id.clone(),
+                                input: *input,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let cost = PlanCost {
+        steps: steps.len(),
+        dependency_edges: dependency_proofs.len(),
+        verification_steps: steps.iter().filter(|step| !step.verifier.is_empty()).count(),
+    };
+    (cost, dependency_proofs, input_proofs)
 }
 
 fn dependency_steps(
@@ -112,12 +183,18 @@ pub fn plan_target(
         &mut BTreeSet::new(),
         &mut steps,
     )?;
+    let (cost, dependency_proofs, input_proofs) =
+        plan_metadata(&selected, &steps, registry, None);
     Ok(CapabilityPlan {
         operation: target.operation,
         subject_type,
         answer_form: target.answer_form,
         selected_capability: selected,
         steps,
+        cost,
+        selection_reason: PlanSelectionReason::UniqueTargetCapability,
+        dependency_proofs,
+        input_proofs,
     })
 }
 
@@ -176,11 +253,17 @@ pub fn plan_for_goal(
         &mut BTreeSet::new(),
         &mut steps,
     )?;
+    let (cost, dependency_proofs, input_proofs) =
+        plan_metadata(&selected.id, &steps, registry, Some(available_inputs));
     Ok(GoalCapabilityPlan {
         goal,
         available_inputs: available_inputs.iter().copied().collect(),
         selected_capability: selected.id.clone(),
         steps,
+        cost,
+        selection_reason: PlanSelectionReason::UniqueGoalProducer,
+        dependency_proofs,
+        input_proofs,
     })
 }
 
@@ -211,6 +294,16 @@ mod tests {
         );
         assert_eq!(plan.steps[0].version, 1);
         assert!(!plan.steps[0].verifier.is_empty());
+        assert_eq!(plan.cost.steps, 2);
+        assert_eq!(plan.cost.dependency_edges, 1);
+        assert_eq!(plan.selection_reason, PlanSelectionReason::UniqueTargetCapability);
+        assert_eq!(
+            plan.dependency_proofs,
+            vec![DependencyProof {
+                capability: "function_application".into(),
+                dependency: "expression_evaluation".into(),
+            }]
+        );
         assert_eq!(
             plan.steps[0].produces,
             vec![CapabilityIoType::ExactValue]
@@ -229,6 +322,7 @@ mod tests {
         let plan = plan_target(&target, &CapabilityRegistry::production()).unwrap();
         assert_eq!(plan.selected_capability, "expression_evaluation");
         assert_eq!(plan.steps.len(), 1);
+        assert_eq!(plan.cost.steps, 1);
     }
 
     #[test]
@@ -256,6 +350,7 @@ mod tests {
         .unwrap();
         assert_eq!(plan.selected_capability, "substitution");
         assert_eq!(plan.steps.len(), 1);
+        assert_eq!(plan.cost.steps, 1);
     }
 
     #[test]
@@ -286,5 +381,48 @@ mod tests {
             ),
             Err(CapabilityPlanningFailure::AmbiguousCapabilities(_))
         ));
+    }
+
+    #[test]
+    fn composition_benchmark_substitution_target_is_one_step() {
+        let target = assess_prompt(
+            "composition-substitution",
+            "Substitute x=4 into x^2-1.",
+            "Math",
+            false,
+        )
+        .target_completion
+        .target;
+        let plan = plan_target(&target, &CapabilityRegistry::production()).unwrap();
+        assert_eq!(plan.selected_capability, "substitution");
+        assert_eq!(plan.cost.steps, 1);
+    }
+
+    #[test]
+    fn composition_benchmark_linear_target_is_one_step() {
+        let target = assess_prompt(
+            "composition-linear",
+            "Solve for x: 3*x+2=11.",
+            "Math",
+            false,
+        )
+        .target_completion
+        .target;
+        let plan = plan_target(&target, &CapabilityRegistry::production()).unwrap();
+        assert_eq!(plan.selected_capability, "linear_equation_solve");
+        assert_eq!(plan.cost.steps, 1);
+    }
+
+    #[test]
+    fn composition_benchmark_rejects_unmodeled_function_equation_chain() {
+        let target = assess_prompt(
+            "composition-function-equation",
+            "Given f(x)=x+5. Find x when f(x)=12.",
+            "Math",
+            false,
+        )
+        .target_completion
+        .target;
+        assert!(plan_target(&target, &CapabilityRegistry::production()).is_err());
     }
 }

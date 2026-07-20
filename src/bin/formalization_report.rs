@@ -24,6 +24,7 @@ struct Report {
     by_distance: BTreeMap<String, usize>,
     by_status: BTreeMap<String, usize>,
     by_domain: BTreeMap<String, usize>,
+    by_dependency: BTreeMap<String, usize>,
     obligations: BTreeMap<String, usize>,
     traces: Vec<FormalizationTrace>,
 }
@@ -43,6 +44,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut by_distance = BTreeMap::new();
     let mut by_status = BTreeMap::new();
     let mut by_domain = BTreeMap::new();
+    let mut by_dependency = BTreeMap::new();
     let mut obligations = BTreeMap::new();
     for trace in &traces {
         *by_distance
@@ -62,6 +64,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             the_machine::math_methods::MathDomain::General => "general",
         };
         *by_domain.entry(domain.to_string()).or_insert(0) += 1;
+        for dependency in &trace.input_dependencies {
+            *by_dependency
+                .entry(dependency.label().to_string())
+                .or_insert(0) += 1;
+        }
         for obligation in &trace.obligations {
             *obligations
                 .entry(obligation.label().to_string())
@@ -77,6 +84,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         by_distance,
         by_status,
         by_domain,
+        by_dependency,
         obligations,
         traces,
     };
@@ -96,6 +104,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     markdown.push_str("\n## Formalization status\n\n| Status | Questions |\n|---|---:|\n");
     for (status, count) in &report.by_status {
         markdown.push_str(&format!("| {} | {} |\n", status, count));
+    }
+    markdown.push_str(
+        "\n## Input dependencies (orthogonal)\n\n| Dependency | Questions |\n|---|---:|\n",
+    );
+    for (dependency, count) in &report.by_dependency {
+        markdown.push_str(&format!("| {} | {} |\n", dependency, count));
     }
     markdown.push_str("\n## Modeling obligations\n\n| Obligation | Questions |\n|---|---:|\n");
     for (obligation, count) in &report.obligations {

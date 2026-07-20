@@ -8,6 +8,7 @@
 use crate::math_methods::{MathDomain, TaskShape};
 use regex::Regex;
 use serde::Serialize;
+use std::collections::BTreeSet;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -89,6 +90,133 @@ pub enum FormalizationStatus {
     AttachmentRequired,
 }
 
+/// Input dependencies are tracked independently from formalization distance.
+/// A prompt may therefore be both direct-instantiation-shaped and diagram
+/// dependent; the distance must not hide that separate integration blocker.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum InputDependency {
+    TextOnly,
+    Image,
+    Diagram,
+    Table,
+    Graph,
+    MissingAttachment,
+}
+
+impl InputDependency {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::TextOnly => "text_only",
+            Self::Image => "image",
+            Self::Diagram => "diagram",
+            Self::Table => "table",
+            Self::Graph => "graph",
+            Self::MissingAttachment => "missing_attachment",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SuppliedObjectKind {
+    ExplicitDefinition,
+    ExplicitEquation,
+    ExplicitRecurrence,
+    ExplicitAlgorithm,
+    ExplicitTransformationRule,
+    ExplicitTheoremStatement,
+    ExplicitDataTable,
+    ExplicitLogicalPremises,
+    ExplicitPhysicalLaw,
+    Unclear,
+}
+
+impl SuppliedObjectKind {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::ExplicitDefinition => "explicit_definition",
+            Self::ExplicitEquation => "explicit_equation",
+            Self::ExplicitRecurrence => "explicit_recurrence",
+            Self::ExplicitAlgorithm => "explicit_algorithm",
+            Self::ExplicitTransformationRule => "explicit_transformation_rule",
+            Self::ExplicitTheoremStatement => "explicit_theorem_statement",
+            Self::ExplicitDataTable => "explicit_data_table",
+            Self::ExplicitLogicalPremises => "explicit_logical_premises",
+            Self::ExplicitPhysicalLaw => "explicit_physical_law",
+            Self::Unclear => "unclear",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum InstantiationTargetKind {
+    EvaluateAtArguments,
+    SubstituteValues,
+    ApplyOnce,
+    VerifyInstance,
+    ClassifyObject,
+    ComputeDerivedProperty,
+    DetermineWhetherConditionHolds,
+    ProduceCounterexample,
+    ProveConsequence,
+    Other,
+}
+
+impl InstantiationTargetKind {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::EvaluateAtArguments => "evaluate_at_arguments",
+            Self::SubstituteValues => "substitute_values",
+            Self::ApplyOnce => "apply_once",
+            Self::VerifyInstance => "verify_instance",
+            Self::ClassifyObject => "classify_object",
+            Self::ComputeDerivedProperty => "compute_derived_property",
+            Self::DetermineWhetherConditionHolds => "determine_condition",
+            Self::ProduceCounterexample => "produce_counterexample",
+            Self::ProveConsequence => "prove_consequence",
+            Self::Other => "other",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RepresentationReadiness {
+    RepresentationReady,
+    NearReady,
+    FalseDirectInstantiation,
+}
+
+impl RepresentationReadiness {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::RepresentationReady => "representation_ready",
+            Self::NearReady => "near_ready",
+            Self::FalseDirectInstantiation => "false_direct_instantiation",
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct DirectInstantiationAssessment {
+    pub question_id: String,
+    pub supplied_object: SuppliedObjectKind,
+    pub target: InstantiationTargetKind,
+    pub readiness: RepresentationReadiness,
+    pub definition_isolated: bool,
+    pub binders_identified: bool,
+    pub domain_identified: bool,
+    pub target_identified: bool,
+    pub quantifiers_preserved: bool,
+    pub side_conditions_identified: bool,
+    pub one_step_representable: bool,
+    pub verifier_available: bool,
+    pub missing_representation: Vec<String>,
+    pub authorization_blockers: Vec<String>,
+}
+
 impl FormalizationStatus {
     pub fn label(self) -> &'static str {
         match self {
@@ -153,6 +281,7 @@ pub struct FormalizationTrace {
     /// benchmark `has_image` flag alone does not establish that the prompt's
     /// reasoning depends on the attachment.
     pub textual_attachment_reference: bool,
+    pub input_dependencies: BTreeSet<InputDependency>,
     pub domain: MathDomain,
     pub task_shape: TaskShape,
     pub status: FormalizationStatus,
@@ -232,6 +361,318 @@ fn classify_task(question: &str) -> TaskShape {
     }
 }
 
+fn classify_supplied_object(question: &str, trace: &FormalizationTrace) -> SuppliedObjectKind {
+    let text = question.to_ascii_lowercase();
+    if has_any(
+        &text,
+        &["pseudocode", "algorithm", "procedure", "step 1", "step 2"],
+    ) {
+        SuppliedObjectKind::ExplicitAlgorithm
+    } else if has_any(&text, &["recurrence", "recursive", "a_n+1", "a_{n+1}"]) {
+        SuppliedObjectKind::ExplicitRecurrence
+    } else if has_any(&text, &["data table", "following table", "table below"]) {
+        SuppliedObjectKind::ExplicitDataTable
+    } else if has_any(
+        &text,
+        &[
+            "theorem states",
+            "the theorem says",
+            "lemma states",
+            "criterion states",
+        ],
+    ) {
+        SuppliedObjectKind::ExplicitTheoremStatement
+    } else if has_any(&text, &["physical law", "law of", "is given by", "obeys"]) {
+        SuppliedObjectKind::ExplicitPhysicalLaw
+    } else if has_any(
+        &text,
+        &[
+            "if and only if",
+            "assume that",
+            "suppose that",
+            "given that",
+        ],
+    ) && trace.facts.len() >= 1
+    {
+        SuppliedObjectKind::ExplicitLogicalPremises
+    } else if has_any(
+        &text,
+        &["transform", "mapping", "operator", "send ", "maps "],
+    ) {
+        SuppliedObjectKind::ExplicitTransformationRule
+    } else if !trace.definitions.is_empty() {
+        SuppliedObjectKind::ExplicitDefinition
+    } else if text.contains('=') || !trace.facts.is_empty() {
+        SuppliedObjectKind::ExplicitEquation
+    } else {
+        SuppliedObjectKind::Unclear
+    }
+}
+
+fn classify_instantiation_target(question: &str, task: TaskShape) -> InstantiationTargetKind {
+    let text = question.to_ascii_lowercase();
+    if task == TaskShape::ProveIdentity
+        || has_any(&text, &["prove that", "show that", "establish that"])
+    {
+        InstantiationTargetKind::ProveConsequence
+    } else if has_any(&text, &["counterexample", "disprove"]) {
+        InstantiationTargetKind::ProduceCounterexample
+    } else if has_any(
+        &text,
+        &["verify", "check whether", "check if", "test whether"],
+    ) {
+        InstantiationTargetKind::VerifyInstance
+    } else if has_any(&text, &["substitute", "plug in", "substitution of"]) {
+        InstantiationTargetKind::SubstituteValues
+    } else if has_any(
+        &text,
+        &[
+            "at x =",
+            "at n =",
+            "evaluate at",
+            "value of f(",
+            "compute f(",
+        ],
+    ) {
+        InstantiationTargetKind::EvaluateAtArguments
+    } else if has_any(
+        &text,
+        &[
+            "apply the",
+            "apply once",
+            "next step",
+            "next term",
+            "trace the",
+        ],
+    ) {
+        InstantiationTargetKind::ApplyOnce
+    } else if has_any(
+        &text,
+        &[
+            "check whether",
+            "check if",
+            "test whether",
+            "is it true that",
+        ],
+    ) {
+        InstantiationTargetKind::DetermineWhetherConditionHolds
+    } else if task == TaskShape::CountObjects
+        || has_any(&text, &["classify", "which class", "what type"])
+    {
+        InstantiationTargetKind::ClassifyObject
+    } else if has_any(
+        &text,
+        &[
+            "derive",
+            "resulting",
+            "consequent",
+            "what is the",
+            "compute",
+        ],
+    ) {
+        InstantiationTargetKind::ComputeDerivedProperty
+    } else {
+        InstantiationTargetKind::Other
+    }
+}
+
+/// Second-level audit of low-distance predictions.  This remains diagnostic:
+/// no method is authorized by this heuristic and no executor is called.
+pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstantiationAssessment {
+    let source = trace.target_source();
+    let source_lower = source.to_ascii_lowercase();
+    let supplied_object = classify_supplied_object(&source, trace);
+    let mut target = classify_instantiation_target(&source, trace.task_shape);
+    if target == InstantiationTargetKind::ApplyOnce
+        && !matches!(
+            classify_supplied_object(&source, trace),
+            SuppliedObjectKind::ExplicitAlgorithm
+                | SuppliedObjectKind::ExplicitRecurrence
+                | SuppliedObjectKind::ExplicitTransformationRule
+        )
+    {
+        // “What is the next step?” in a clinical or procedural narrative is
+        // not application of a supplied mathematical rule.
+        target = InstantiationTargetKind::Other;
+    }
+    let definition_isolated = !matches!(supplied_object, SuppliedObjectKind::Unclear);
+    let binders_identified = !trace.definitions.is_empty() || !trace.facts.is_empty();
+    let domain_identified = !trace.constraints.is_empty();
+    let target_identified = trace.target.is_some();
+    let quantifiers_preserved = !trace
+        .obligations
+        .contains(&ModelingObligation::ExtractQuantifiers);
+    let side_conditions_identified = !trace
+        .obligations
+        .contains(&ModelingObligation::IdentifyDomain)
+        && !trace
+            .obligations
+            .contains(&ModelingObligation::ResolveEntityReference);
+    let direct_target = matches!(
+        target,
+        InstantiationTargetKind::EvaluateAtArguments
+            | InstantiationTargetKind::SubstituteValues
+            | InstantiationTargetKind::ApplyOnce
+            | InstantiationTargetKind::VerifyInstance
+            | InstantiationTargetKind::DetermineWhetherConditionHolds
+    );
+    // These phrases commonly co-occur with a supplied equation/definition,
+    // but their answers require specialist mathematics rather than one-step
+    // binding.  Keeping them out of the ready bucket prevents false low-
+    // distance classifications from becoming future execution routes.
+    let specialist_surface = has_any(
+        &source_lower,
+        &[
+            "asymptotic",
+            "density",
+            "homotopy",
+            "cohomology",
+            "moduli",
+            "quiver",
+            "eigenvalue",
+            "poincare polynomial",
+            "spectral norm",
+            "lie algebra",
+            "tropical",
+            "automorphism",
+            "quantum",
+            "conormal",
+            "natural number",
+            "smallest possible",
+            "minimum number",
+            "rank of",
+            "infimum",
+            "growth rate",
+        ],
+    );
+    let concrete_binding = has_any(
+        &source_lower,
+        &[
+            "at x =",
+            "at n =",
+            "at t =",
+            "evaluate at",
+            "substitute",
+            "plug in",
+            "next term",
+            "next step",
+            "given x =",
+            "given n =",
+        ],
+    );
+    let one_step_representable = definition_isolated
+        && target_identified
+        && direct_target
+        && concrete_binding
+        && !specialist_surface
+        && !matches!(
+            supplied_object,
+            SuppliedObjectKind::ExplicitTheoremStatement
+                | SuppliedObjectKind::ExplicitPhysicalLaw
+                | SuppliedObjectKind::ExplicitLogicalPremises
+        )
+        && trace.textual_attachment_reference == false;
+    let verifier_available = one_step_representable
+        && matches!(
+            target,
+            InstantiationTargetKind::EvaluateAtArguments
+                | InstantiationTargetKind::SubstituteValues
+                | InstantiationTargetKind::ApplyOnce
+                | InstantiationTargetKind::VerifyInstance
+                | InstantiationTargetKind::DetermineWhetherConditionHolds
+        );
+    let mut missing_representation = Vec::new();
+    if !definition_isolated {
+        missing_representation.push("supplied_object".into());
+    }
+    if !target_identified {
+        missing_representation.push("target".into());
+    }
+    if !domain_identified {
+        missing_representation.push("domain_or_side_conditions".into());
+    }
+    if !quantifiers_preserved {
+        missing_representation.push("quantifiers".into());
+    }
+    if !side_conditions_identified {
+        missing_representation.push("entity_or_domain_constraints".into());
+    }
+    if trace.textual_attachment_reference {
+        missing_representation.push("visual_input".into());
+    }
+    let mut authorization_blockers = Vec::new();
+    if !direct_target {
+        authorization_blockers.push("target_not_explicit_instantiation".into());
+    }
+    if !concrete_binding {
+        authorization_blockers.push("concrete_argument_binding_missing".into());
+    }
+    if specialist_surface {
+        authorization_blockers.push("specialist_surface_requires_modeling".into());
+    }
+    if matches!(
+        supplied_object,
+        SuppliedObjectKind::ExplicitTheoremStatement
+            | SuppliedObjectKind::ExplicitPhysicalLaw
+            | SuppliedObjectKind::ExplicitLogicalPremises
+    ) {
+        authorization_blockers.push("method_or_premise_reasoning_required".into());
+    }
+    if trace.textual_attachment_reference {
+        authorization_blockers.push("visual_input_unresolved".into());
+    }
+    if !verifier_available {
+        authorization_blockers.push("independent_verifier_unavailable".into());
+    }
+    authorization_blockers.sort();
+    authorization_blockers.dedup();
+    let readiness = if matches!(trace.task_shape, TaskShape::ProveIdentity)
+        || matches!(
+            supplied_object,
+            SuppliedObjectKind::ExplicitTheoremStatement | SuppliedObjectKind::ExplicitPhysicalLaw
+        )
+        || !direct_target
+        || specialist_surface
+        || trace.textual_attachment_reference
+    {
+        RepresentationReadiness::FalseDirectInstantiation
+    } else if one_step_representable && verifier_available && missing_representation.is_empty() {
+        RepresentationReadiness::RepresentationReady
+    } else {
+        RepresentationReadiness::NearReady
+    };
+    DirectInstantiationAssessment {
+        question_id: trace.question_id.clone(),
+        supplied_object,
+        target,
+        readiness,
+        definition_isolated,
+        binders_identified,
+        domain_identified,
+        target_identified,
+        quantifiers_preserved,
+        side_conditions_identified,
+        one_step_representable,
+        verifier_available,
+        missing_representation,
+        authorization_blockers,
+    }
+}
+
+trait TraceQuestionSource {
+    fn target_source(&self) -> String;
+}
+
+impl TraceQuestionSource for FormalizationTrace {
+    fn target_source(&self) -> String {
+        self.target
+            .as_ref()
+            .map(|target| target.source_fragment.clone())
+            .or_else(|| self.facts.first().map(|fact| fact.source_fragment.clone()))
+            .unwrap_or_default()
+    }
+}
+
 /// Conservative, non-executing assessment used by the formalization report.
 /// It records missing modeling work instead of guessing a formal object.
 pub fn assess_prompt(
@@ -262,7 +703,25 @@ pub fn assess_prompt(
             "plot",
         ],
     );
-    if has_image || textual_attachment_reference {
+    let mut input_dependencies = BTreeSet::from([InputDependency::TextOnly]);
+    if textual_attachment_reference {
+        input_dependencies.remove(&InputDependency::TextOnly);
+        if has_image {
+            input_dependencies.insert(InputDependency::Image);
+        } else {
+            input_dependencies.insert(InputDependency::MissingAttachment);
+        }
+        if has_any(&lower, &["diagram", "figure", "pictured", "shown below"]) {
+            input_dependencies.insert(InputDependency::Diagram);
+        }
+        if has_any(&lower, &["table", "tabulated"]) {
+            input_dependencies.insert(InputDependency::Table);
+        }
+        if has_any(&lower, &["graph", "plot", "axis", "axes"]) {
+            input_dependencies.insert(InputDependency::Graph);
+        }
+    }
+    if textual_attachment_reference {
         obligations.push(ModelingObligation::ParseAttachment);
     }
     if has_any(
@@ -447,7 +906,10 @@ pub fn assess_prompt(
     } else {
         ModelingDistance::ExecutableObject
     };
-    let status = if has_image {
+    // The benchmark's `has_image` flag is metadata, not proof that the
+    // question's reasoning depends on an image.  Keep attachment need on the
+    // dependency axis; only textual visual references affect this status.
+    let status = if textual_attachment_reference {
         FormalizationStatus::AttachmentRequired
     } else if target.is_none() || !obligations.is_empty() {
         FormalizationStatus::PartiallyStructured
@@ -459,6 +921,7 @@ pub fn assess_prompt(
         category: category.into(),
         has_image,
         textual_attachment_reference,
+        input_dependencies,
         domain,
         task_shape,
         status,
@@ -514,5 +977,58 @@ mod tests {
             ModelingDistance::SpecialistReasoning
         );
         assert!(trace.textual_attachment_reference);
+        assert!(trace.input_dependencies.contains(&InputDependency::Image));
+        assert!(trace.input_dependencies.contains(&InputDependency::Diagram));
+    }
+
+    #[test]
+    fn image_metadata_without_visual_reference_does_not_change_distance_dependency() {
+        let trace = assess_prompt("q", "Solve for x: 3x + 2 = 11, for real x.", "Math", true);
+        assert_eq!(
+            trace.modeling_distance,
+            ModelingDistance::DirectInstantiation
+        );
+        assert_eq!(trace.status, FormalizationStatus::Structured);
+        assert_eq!(
+            trace.input_dependencies,
+            BTreeSet::from([InputDependency::TextOnly])
+        );
+    }
+
+    #[test]
+    fn direct_audit_rejects_clinical_next_step_as_rule_application() {
+        let trace = assess_prompt(
+            "q",
+            "The patient has a rash. What is the next step in management?",
+            "Biology/Medicine",
+            false,
+        );
+        let audit = assess_direct_instantiation(&trace);
+        assert_eq!(audit.target, InstantiationTargetKind::Other);
+        assert_eq!(
+            audit.readiness,
+            RepresentationReadiness::FalseDirectInstantiation
+        );
+    }
+
+    #[test]
+    fn direct_audit_requires_concrete_binding_and_verifier() {
+        let trace = assess_prompt(
+            "q",
+            "Let f(x) = x + 1 for real x. Evaluate at x = 2.",
+            "Math",
+            false,
+        );
+        let audit = assess_direct_instantiation(&trace);
+        assert_eq!(
+            audit.supplied_object,
+            SuppliedObjectKind::ExplicitDefinition
+        );
+        assert_eq!(audit.target, InstantiationTargetKind::EvaluateAtArguments);
+        assert_eq!(
+            audit.readiness,
+            RepresentationReadiness::RepresentationReady
+        );
+        assert!(audit.verifier_available);
     }
 }

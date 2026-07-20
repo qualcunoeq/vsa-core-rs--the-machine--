@@ -18,7 +18,19 @@ Scanned **2500** questions. The benchmark flags **271** rows with textual visual
 
 | Status | Questions |
 |---|---:|
-| attachment_required | 2500 |
+| attachment_required | 271 |
+| partially_structured | 1666 |
+| structured | 563 |
+
+## Input dependencies (orthogonal)
+
+| Dependency | Questions |
+|---|---:|
+| diagram | 111 |
+| graph | 73 |
+| image | 271 |
+| table | 132 |
+| text_only | 2229 |
 
 ## Modeling obligations
 
@@ -31,7 +43,7 @@ Scanned **2500** questions. The benchmark flags **271** rows with textual visual
 | establish_initial_conditions | 138 |
 | extract_quantifiers | 60 |
 | identify_domain | 148 |
-| parse_attachment | 2500 |
+| parse_attachment | 271 |
 | resolve_entity_reference | 323 |
 | select_approximation_regime | 80 |
 | select_specialized_method | 349 |

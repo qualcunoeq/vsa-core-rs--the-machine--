@@ -1,0 +1,4580 @@
+{
+  "corpus_schema_version": 1,
+  "corpus_sha256": "7e54029275ae508c58b491df3bf898c143c5b7098cbc07a906f27b6526f22053",
+  "split_rule": "case suffix 01-14=development, 15-20=holdout within each tier",
+  "total": {
+    "cases": 60,
+    "exact_target": 0,
+    "structural_target": 39,
+    "target_kind_matches": 49,
+    "target_subject_overlap": 40,
+    "target_semantic_equivalent": 39,
+    "target_operation_detected": 39,
+    "target_subject_complete": 42,
+    "target_variable_complete": 3,
+    "target_arguments_complete": 60,
+    "target_domain_complete": 60,
+    "target_requested_form_complete": 60,
+    "target_provenance_complete": 43,
+    "target_complete": 19,
+    "target_operation_supported": 38,
+    "target_verifier_available": 38,
+    "target_incomplete_reasons": {
+      "operation_kind_incomplete": 21,
+      "provenance_incomplete": 17,
+      "subject_incomplete": 18,
+      "target_variable_incomplete": 10
+    },
+    "operation_confusion": {
+      "compare->not_identified": 1,
+      "count->unsupported:count": 1,
+      "evaluate->evaluate": 16,
+      "evaluate->solve": 1,
+      "find_or_evaluate->evaluate": 8,
+      "find_or_evaluate->solve": 3,
+      "simplify->not_identified": 3,
+      "solve->solve": 8,
+      "substitute->not_identified": 1,
+      "unknown->evaluate": 1,
+      "unknown->not_identified": 13,
+      "unknown->solve": 1,
+      "verify->not_identified": 3
+    },
+    "authorization_correct": 33,
+    "definitions": {
+      "matched": 4,
+      "expected": 21,
+      "predicted": 15,
+      "precision": 0.26666666666666666,
+      "recall": 0.19047619047619047
+    },
+    "facts": {
+      "matched": 12,
+      "expected": 69,
+      "predicted": 45,
+      "precision": 0.26666666666666666,
+      "recall": 0.17391304347826086
+    },
+    "entities": {
+      "matched": 0,
+      "expected": 21,
+      "predicted": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "assumptions": {
+      "matched": 0,
+      "expected": 3,
+      "predicted": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "constraints": {
+      "matched": 0,
+      "expected": 9,
+      "predicted": 6,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "obligations": {
+      "matched": 0,
+      "expected": 35,
+      "predicted": 35,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "invented_definitions": 11,
+    "invented_facts": 33,
+    "invented_entities": 0,
+    "invented_assumptions": 0,
+    "invented_constraints": 6,
+    "invented_obligations": 35,
+    "false_authorizations": 0,
+    "false_denials": 27,
+    "denial_funnel": {
+      "target_incomplete": 27
+    },
+    "all_denial_blockers": {
+      "bindings_incomplete": 26,
+      "concrete_argument_binding_missing": 26,
+      "independent_verifier_unavailable": 27,
+      "operation_unsupported": 27,
+      "representation_incomplete": 25,
+      "target_incomplete": 27,
+      "target_not_explicit_instantiation": 26,
+      "verification_unavailable": 27
+    },
+    "denial_cases": [
+      {
+        "case_id": "t0-01",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-02",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-03",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-04",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": true,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-05",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-06",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-07",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-08",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-09",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": true,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-10",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-11",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-12",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-13",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-14",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-16",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-18",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-19",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-01",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-02",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-03",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-04",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-07",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": true,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-11",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-12",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-14",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-19",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-20",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      }
+    ],
+    "failures": {
+      "assumptions_recall": [
+        "t2-17",
+        "t2-18"
+      ],
+      "constraints_recall": [
+        "t0-04",
+        "t0-09",
+        "t0-17",
+        "t0-20",
+        "t1-05",
+        "t1-16",
+        "t2-09",
+        "t2-10",
+        "t2-11"
+      ],
+      "definitions_recall": [
+        "t0-11",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-05",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-10",
+        "t1-11",
+        "t1-14",
+        "t1-15",
+        "t1-16",
+        "t1-17",
+        "t1-18",
+        "t1-19",
+        "t1-20"
+      ],
+      "entities_recall": [
+        "t2-01",
+        "t2-02",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-12",
+        "t2-13",
+        "t2-14",
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "facts_recall": [
+        "t0-07",
+        "t0-08",
+        "t0-09",
+        "t0-11",
+        "t0-15",
+        "t0-17",
+        "t0-18",
+        "t0-20",
+        "t1-01",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-05",
+        "t1-06",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-10",
+        "t1-11",
+        "t1-12",
+        "t1-13",
+        "t1-14",
+        "t1-15",
+        "t1-16",
+        "t1-17",
+        "t1-18",
+        "t1-19",
+        "t1-20",
+        "t2-01",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-09",
+        "t2-10",
+        "t2-11",
+        "t2-12",
+        "t2-13",
+        "t2-14",
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "false_denial": [
+        "t0-01",
+        "t0-02",
+        "t0-03",
+        "t0-04",
+        "t0-05",
+        "t0-06",
+        "t0-07",
+        "t0-08",
+        "t0-09",
+        "t0-10",
+        "t0-11",
+        "t0-12",
+        "t0-13",
+        "t0-14",
+        "t0-16",
+        "t0-18",
+        "t0-19",
+        "t1-01",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-07",
+        "t1-11",
+        "t1-12",
+        "t1-14",
+        "t1-19",
+        "t1-20"
+      ],
+      "obligations_recall": [
+        "t0-03",
+        "t0-10",
+        "t0-16",
+        "t0-17",
+        "t0-20",
+        "t1-05",
+        "t1-06",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-13",
+        "t1-16",
+        "t2-01",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-09",
+        "t2-10",
+        "t2-11",
+        "t2-12",
+        "t2-13",
+        "t2-14",
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "target": [
+        "t0-03",
+        "t0-10",
+        "t0-15",
+        "t0-16",
+        "t0-17",
+        "t1-02",
+        "t1-03",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-13",
+        "t1-15",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-09",
+        "t2-10",
+        "t2-13",
+        "t2-14",
+        "t2-17"
+      ]
+    }
+  },
+  "development": {
+    "cases": 42,
+    "exact_target": 0,
+    "structural_target": 26,
+    "target_kind_matches": 35,
+    "target_subject_overlap": 26,
+    "target_semantic_equivalent": 26,
+    "target_operation_detected": 26,
+    "target_subject_complete": 30,
+    "target_variable_complete": 3,
+    "target_arguments_complete": 42,
+    "target_domain_complete": 42,
+    "target_requested_form_complete": 42,
+    "target_provenance_complete": 28,
+    "target_complete": 14,
+    "target_operation_supported": 26,
+    "target_verifier_available": 26,
+    "target_incomplete_reasons": {
+      "operation_kind_incomplete": 16,
+      "provenance_incomplete": 14,
+      "subject_incomplete": 12,
+      "target_variable_incomplete": 6
+    },
+    "operation_confusion": {
+      "evaluate->evaluate": 11,
+      "find_or_evaluate->evaluate": 5,
+      "find_or_evaluate->solve": 2,
+      "simplify->not_identified": 2,
+      "solve->solve": 7,
+      "substitute->not_identified": 1,
+      "unknown->evaluate": 1,
+      "unknown->not_identified": 10,
+      "verify->not_identified": 3
+    },
+    "authorization_correct": 20,
+    "definitions": {
+      "matched": 4,
+      "expected": 15,
+      "predicted": 11,
+      "precision": 0.36363636363636365,
+      "recall": 0.26666666666666666
+    },
+    "facts": {
+      "matched": 10,
+      "expected": 47,
+      "predicted": 32,
+      "precision": 0.3125,
+      "recall": 0.2127659574468085
+    },
+    "entities": {
+      "matched": 0,
+      "expected": 13,
+      "predicted": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "assumptions": {
+      "matched": 0,
+      "expected": 0,
+      "predicted": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "constraints": {
+      "matched": 0,
+      "expected": 6,
+      "predicted": 5,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "obligations": {
+      "matched": 0,
+      "expected": 23,
+      "predicted": 26,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "invented_definitions": 7,
+    "invented_facts": 22,
+    "invented_entities": 0,
+    "invented_assumptions": 0,
+    "invented_constraints": 5,
+    "invented_obligations": 26,
+    "false_authorizations": 0,
+    "false_denials": 22,
+    "denial_funnel": {
+      "target_incomplete": 22
+    },
+    "all_denial_blockers": {
+      "bindings_incomplete": 21,
+      "concrete_argument_binding_missing": 21,
+      "independent_verifier_unavailable": 22,
+      "operation_unsupported": 22,
+      "representation_incomplete": 20,
+      "target_incomplete": 22,
+      "target_not_explicit_instantiation": 21,
+      "verification_unavailable": 22
+    },
+    "denial_cases": [
+      {
+        "case_id": "t0-01",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-02",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-03",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-04",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": true,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-05",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-06",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-07",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-08",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-09",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": true,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-10",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-11",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-12",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-13",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-14",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-01",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-02",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-03",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-04",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-07",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": true,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-11",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-12",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-14",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      }
+    ],
+    "failures": {
+      "constraints_recall": [
+        "t0-04",
+        "t0-09",
+        "t1-05",
+        "t2-09",
+        "t2-10",
+        "t2-11"
+      ],
+      "definitions_recall": [
+        "t0-11",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-05",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-10",
+        "t1-11",
+        "t1-14"
+      ],
+      "entities_recall": [
+        "t2-01",
+        "t2-02",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-12",
+        "t2-13",
+        "t2-14"
+      ],
+      "facts_recall": [
+        "t0-07",
+        "t0-08",
+        "t0-09",
+        "t0-11",
+        "t1-01",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-05",
+        "t1-06",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-10",
+        "t1-11",
+        "t1-12",
+        "t1-13",
+        "t1-14",
+        "t2-01",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-09",
+        "t2-10",
+        "t2-11",
+        "t2-12",
+        "t2-13",
+        "t2-14"
+      ],
+      "false_denial": [
+        "t0-01",
+        "t0-02",
+        "t0-03",
+        "t0-04",
+        "t0-05",
+        "t0-06",
+        "t0-07",
+        "t0-08",
+        "t0-09",
+        "t0-10",
+        "t0-11",
+        "t0-12",
+        "t0-13",
+        "t0-14",
+        "t1-01",
+        "t1-02",
+        "t1-03",
+        "t1-04",
+        "t1-07",
+        "t1-11",
+        "t1-12",
+        "t1-14"
+      ],
+      "obligations_recall": [
+        "t0-03",
+        "t0-10",
+        "t1-05",
+        "t1-06",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-13",
+        "t2-01",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-06",
+        "t2-07",
+        "t2-08",
+        "t2-09",
+        "t2-10",
+        "t2-11",
+        "t2-12",
+        "t2-13",
+        "t2-14"
+      ],
+      "target": [
+        "t0-03",
+        "t0-10",
+        "t1-02",
+        "t1-03",
+        "t1-07",
+        "t1-08",
+        "t1-09",
+        "t1-13",
+        "t2-02",
+        "t2-03",
+        "t2-04",
+        "t2-05",
+        "t2-09",
+        "t2-10",
+        "t2-13",
+        "t2-14"
+      ]
+    }
+  },
+  "holdout": {
+    "cases": 18,
+    "exact_target": 0,
+    "structural_target": 13,
+    "target_kind_matches": 14,
+    "target_subject_overlap": 14,
+    "target_semantic_equivalent": 13,
+    "target_operation_detected": 13,
+    "target_subject_complete": 12,
+    "target_variable_complete": 0,
+    "target_arguments_complete": 18,
+    "target_domain_complete": 18,
+    "target_requested_form_complete": 18,
+    "target_provenance_complete": 15,
+    "target_complete": 5,
+    "target_operation_supported": 12,
+    "target_verifier_available": 12,
+    "target_incomplete_reasons": {
+      "operation_kind_incomplete": 5,
+      "provenance_incomplete": 3,
+      "subject_incomplete": 6,
+      "target_variable_incomplete": 4
+    },
+    "operation_confusion": {
+      "compare->not_identified": 1,
+      "count->unsupported:count": 1,
+      "evaluate->evaluate": 5,
+      "evaluate->solve": 1,
+      "find_or_evaluate->evaluate": 3,
+      "find_or_evaluate->solve": 1,
+      "simplify->not_identified": 1,
+      "solve->solve": 1,
+      "unknown->not_identified": 3,
+      "unknown->solve": 1
+    },
+    "authorization_correct": 13,
+    "definitions": {
+      "matched": 0,
+      "expected": 6,
+      "predicted": 4,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "facts": {
+      "matched": 2,
+      "expected": 22,
+      "predicted": 13,
+      "precision": 0.15384615384615385,
+      "recall": 0.09090909090909091
+    },
+    "entities": {
+      "matched": 0,
+      "expected": 8,
+      "predicted": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "assumptions": {
+      "matched": 0,
+      "expected": 3,
+      "predicted": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "constraints": {
+      "matched": 0,
+      "expected": 3,
+      "predicted": 1,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "obligations": {
+      "matched": 0,
+      "expected": 12,
+      "predicted": 9,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "invented_definitions": 4,
+    "invented_facts": 11,
+    "invented_entities": 0,
+    "invented_assumptions": 0,
+    "invented_constraints": 1,
+    "invented_obligations": 9,
+    "false_authorizations": 0,
+    "false_denials": 5,
+    "denial_funnel": {
+      "target_incomplete": 5
+    },
+    "all_denial_blockers": {
+      "bindings_incomplete": 5,
+      "concrete_argument_binding_missing": 5,
+      "independent_verifier_unavailable": 5,
+      "operation_unsupported": 5,
+      "representation_incomplete": 5,
+      "target_incomplete": 5,
+      "target_not_explicit_instantiation": 5,
+      "verification_unavailable": 5
+    },
+    "denial_cases": [
+      {
+        "case_id": "t0-16",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-18",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t0-19",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-19",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      },
+      {
+        "case_id": "t1-20",
+        "gold_should_authorize": true,
+        "target_complete": false,
+        "representation_complete": false,
+        "bindings_complete": false,
+        "constraints_complete": true,
+        "operation_supported": false,
+        "verification_available": false,
+        "first_blocker": "target_incomplete",
+        "all_blockers": [
+          "bindings_incomplete",
+          "concrete_argument_binding_missing",
+          "independent_verifier_unavailable",
+          "operation_unsupported",
+          "representation_incomplete",
+          "target_incomplete",
+          "target_not_explicit_instantiation",
+          "verification_unavailable"
+        ]
+      }
+    ],
+    "failures": {
+      "assumptions_recall": [
+        "t2-17",
+        "t2-18"
+      ],
+      "constraints_recall": [
+        "t0-17",
+        "t0-20",
+        "t1-16"
+      ],
+      "definitions_recall": [
+        "t1-15",
+        "t1-16",
+        "t1-17",
+        "t1-18",
+        "t1-19",
+        "t1-20"
+      ],
+      "entities_recall": [
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "facts_recall": [
+        "t0-15",
+        "t0-17",
+        "t0-18",
+        "t0-20",
+        "t1-15",
+        "t1-16",
+        "t1-17",
+        "t1-18",
+        "t1-19",
+        "t1-20",
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "false_denial": [
+        "t0-16",
+        "t0-18",
+        "t0-19",
+        "t1-19",
+        "t1-20"
+      ],
+      "obligations_recall": [
+        "t0-16",
+        "t0-17",
+        "t0-20",
+        "t1-16",
+        "t2-15",
+        "t2-16",
+        "t2-17",
+        "t2-18",
+        "t2-19",
+        "t2-20"
+      ],
+      "target": [
+        "t0-15",
+        "t0-16",
+        "t0-17",
+        "t1-15",
+        "t2-17"
+      ]
+    }
+  },
+  "by_tier": {
+    "direct_instantiation": {
+      "cases": 20,
+      "exact_target": 0,
+      "structural_target": 13,
+      "target_kind_matches": 14,
+      "target_subject_overlap": 13,
+      "target_semantic_equivalent": 13,
+      "target_operation_detected": 15,
+      "target_subject_complete": 17,
+      "target_variable_complete": 0,
+      "target_arguments_complete": 20,
+      "target_domain_complete": 20,
+      "target_requested_form_complete": 20,
+      "target_provenance_complete": 16,
+      "target_complete": 11,
+      "target_operation_supported": 15,
+      "target_verifier_available": 15,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 5,
+        "provenance_incomplete": 4,
+        "subject_incomplete": 3,
+        "target_variable_incomplete": 3
+      },
+      "operation_confusion": {
+        "evaluate->evaluate": 11,
+        "evaluate->solve": 1,
+        "find_or_evaluate->solve": 2,
+        "substitute->not_identified": 1,
+        "unknown->evaluate": 1,
+        "unknown->not_identified": 1,
+        "verify->not_identified": 3
+      },
+      "authorization_correct": 10,
+      "definitions": {
+        "matched": 4,
+        "expected": 20,
+        "predicted": 15,
+        "precision": 0.26666666666666666,
+        "recall": 0.2
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 21,
+        "predicted": 17,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 4,
+        "predicted": 7,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 11,
+      "invented_facts": 17,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 7,
+      "false_authorizations": 0,
+      "false_denials": 10,
+      "denial_funnel": {
+        "target_incomplete": 10
+      },
+      "all_denial_blockers": {
+        "bindings_incomplete": 9,
+        "concrete_argument_binding_missing": 9,
+        "independent_verifier_unavailable": 10,
+        "operation_unsupported": 10,
+        "representation_incomplete": 10,
+        "target_incomplete": 10,
+        "target_not_explicit_instantiation": 9,
+        "verification_unavailable": 10
+      },
+      "denial_cases": [
+        {
+          "case_id": "t1-01",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-02",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-03",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-04",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-07",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": true,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-11",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-12",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-14",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-19",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-20",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        }
+      ],
+      "failures": {
+        "constraints_recall": [
+          "t1-05",
+          "t1-16"
+        ],
+        "definitions_recall": [
+          "t1-02",
+          "t1-03",
+          "t1-04",
+          "t1-05",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-10",
+          "t1-11",
+          "t1-14",
+          "t1-15",
+          "t1-16",
+          "t1-17",
+          "t1-18",
+          "t1-19",
+          "t1-20"
+        ],
+        "facts_recall": [
+          "t1-01",
+          "t1-02",
+          "t1-03",
+          "t1-04",
+          "t1-05",
+          "t1-06",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-10",
+          "t1-11",
+          "t1-12",
+          "t1-13",
+          "t1-14",
+          "t1-15",
+          "t1-16",
+          "t1-17",
+          "t1-18",
+          "t1-19",
+          "t1-20"
+        ],
+        "false_denial": [
+          "t1-01",
+          "t1-02",
+          "t1-03",
+          "t1-04",
+          "t1-07",
+          "t1-11",
+          "t1-12",
+          "t1-14",
+          "t1-19",
+          "t1-20"
+        ],
+        "obligations_recall": [
+          "t1-05",
+          "t1-06",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-13",
+          "t1-16"
+        ],
+        "target": [
+          "t1-02",
+          "t1-03",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-13",
+          "t1-15"
+        ]
+      }
+    },
+    "explicit_object": {
+      "cases": 20,
+      "exact_target": 0,
+      "structural_target": 15,
+      "target_kind_matches": 15,
+      "target_subject_overlap": 16,
+      "target_semantic_equivalent": 15,
+      "target_operation_detected": 14,
+      "target_subject_complete": 20,
+      "target_variable_complete": 3,
+      "target_arguments_complete": 20,
+      "target_domain_complete": 20,
+      "target_requested_form_complete": 20,
+      "target_provenance_complete": 16,
+      "target_complete": 8,
+      "target_operation_supported": 14,
+      "target_verifier_available": 14,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 6,
+        "provenance_incomplete": 4,
+        "target_variable_incomplete": 6
+      },
+      "operation_confusion": {
+        "compare->not_identified": 1,
+        "evaluate->evaluate": 5,
+        "simplify->not_identified": 3,
+        "solve->solve": 8,
+        "unknown->not_identified": 2,
+        "unknown->solve": 1
+      },
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 1,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "facts": {
+        "matched": 12,
+        "expected": 22,
+        "predicted": 21,
+        "precision": 0.5714285714285714,
+        "recall": 0.5454545454545454
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 4,
+        "predicted": 3,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 1,
+        "predicted": 4,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 9,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 3,
+      "invented_obligations": 4,
+      "false_authorizations": 0,
+      "false_denials": 17,
+      "denial_funnel": {
+        "target_incomplete": 17
+      },
+      "all_denial_blockers": {
+        "bindings_incomplete": 17,
+        "concrete_argument_binding_missing": 17,
+        "independent_verifier_unavailable": 17,
+        "operation_unsupported": 17,
+        "representation_incomplete": 15,
+        "target_incomplete": 17,
+        "target_not_explicit_instantiation": 17,
+        "verification_unavailable": 17
+      },
+      "denial_cases": [
+        {
+          "case_id": "t0-01",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-02",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-03",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-04",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": true,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-05",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-06",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-07",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-08",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-09",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": true,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-10",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-11",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-12",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-13",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-14",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-16",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-18",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-19",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        }
+      ],
+      "failures": {
+        "constraints_recall": [
+          "t0-04",
+          "t0-09",
+          "t0-17",
+          "t0-20"
+        ],
+        "definitions_recall": [
+          "t0-11"
+        ],
+        "facts_recall": [
+          "t0-07",
+          "t0-08",
+          "t0-09",
+          "t0-11",
+          "t0-15",
+          "t0-17",
+          "t0-18",
+          "t0-20"
+        ],
+        "false_denial": [
+          "t0-01",
+          "t0-02",
+          "t0-03",
+          "t0-04",
+          "t0-05",
+          "t0-06",
+          "t0-07",
+          "t0-08",
+          "t0-09",
+          "t0-10",
+          "t0-11",
+          "t0-12",
+          "t0-13",
+          "t0-14",
+          "t0-16",
+          "t0-18",
+          "t0-19"
+        ],
+        "obligations_recall": [
+          "t0-03",
+          "t0-10",
+          "t0-16",
+          "t0-17",
+          "t0-20"
+        ],
+        "target": [
+          "t0-03",
+          "t0-10",
+          "t0-15",
+          "t0-16",
+          "t0-17"
+        ]
+      }
+    },
+    "prose_modeling": {
+      "cases": 20,
+      "exact_target": 0,
+      "structural_target": 11,
+      "target_kind_matches": 20,
+      "target_subject_overlap": 11,
+      "target_semantic_equivalent": 11,
+      "target_operation_detected": 10,
+      "target_subject_complete": 5,
+      "target_variable_complete": 0,
+      "target_arguments_complete": 20,
+      "target_domain_complete": 20,
+      "target_requested_form_complete": 20,
+      "target_provenance_complete": 11,
+      "target_complete": 0,
+      "target_operation_supported": 9,
+      "target_verifier_available": 9,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 10,
+        "provenance_incomplete": 9,
+        "subject_incomplete": 15,
+        "target_variable_incomplete": 1
+      },
+      "operation_confusion": {
+        "count->unsupported:count": 1,
+        "find_or_evaluate->evaluate": 8,
+        "find_or_evaluate->solve": 1,
+        "unknown->not_identified": 10
+      },
+      "authorization_correct": 20,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 26,
+        "predicted": 7,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 21,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 3,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 30,
+        "predicted": 24,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 7,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 3,
+      "invented_obligations": 24,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "denial_funnel": {},
+      "all_denial_blockers": {},
+      "denial_cases": [],
+      "failures": {
+        "assumptions_recall": [
+          "t2-17",
+          "t2-18"
+        ],
+        "constraints_recall": [
+          "t2-09",
+          "t2-10",
+          "t2-11"
+        ],
+        "entities_recall": [
+          "t2-01",
+          "t2-02",
+          "t2-04",
+          "t2-05",
+          "t2-06",
+          "t2-07",
+          "t2-08",
+          "t2-12",
+          "t2-13",
+          "t2-14",
+          "t2-15",
+          "t2-16",
+          "t2-17",
+          "t2-18",
+          "t2-19",
+          "t2-20"
+        ],
+        "facts_recall": [
+          "t2-01",
+          "t2-02",
+          "t2-03",
+          "t2-04",
+          "t2-05",
+          "t2-06",
+          "t2-07",
+          "t2-08",
+          "t2-09",
+          "t2-10",
+          "t2-11",
+          "t2-12",
+          "t2-13",
+          "t2-14",
+          "t2-15",
+          "t2-16",
+          "t2-17",
+          "t2-18",
+          "t2-19",
+          "t2-20"
+        ],
+        "obligations_recall": [
+          "t2-01",
+          "t2-02",
+          "t2-03",
+          "t2-04",
+          "t2-05",
+          "t2-06",
+          "t2-07",
+          "t2-08",
+          "t2-09",
+          "t2-10",
+          "t2-11",
+          "t2-12",
+          "t2-13",
+          "t2-14",
+          "t2-15",
+          "t2-16",
+          "t2-17",
+          "t2-18",
+          "t2-19",
+          "t2-20"
+        ],
+        "target": [
+          "t2-02",
+          "t2-03",
+          "t2-04",
+          "t2-05",
+          "t2-09",
+          "t2-10",
+          "t2-13",
+          "t2-14",
+          "t2-17"
+        ]
+      }
+    }
+  },
+  "by_transformation": {
+    "bind_entities_across_sentences": {
+      "cases": 1,
+      "exact_target": 0,
+      "structural_target": 1,
+      "target_kind_matches": 1,
+      "target_subject_overlap": 1,
+      "target_semantic_equivalent": 1,
+      "target_operation_detected": 1,
+      "target_subject_complete": 0,
+      "target_variable_complete": 0,
+      "target_arguments_complete": 1,
+      "target_domain_complete": 1,
+      "target_requested_form_complete": 1,
+      "target_provenance_complete": 1,
+      "target_complete": 0,
+      "target_operation_supported": 1,
+      "target_verifier_available": 1,
+      "target_incomplete_reasons": {
+        "subject_incomplete": 1
+      },
+      "operation_confusion": {
+        "find_or_evaluate->evaluate": 1
+      },
+      "authorization_correct": 1,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 1,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 0,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 1,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "denial_funnel": {},
+      "all_denial_blockers": {},
+      "denial_cases": [],
+      "failures": {
+        "entities_recall": [
+          "t2-15"
+        ],
+        "facts_recall": [
+          "t2-15"
+        ],
+        "obligations_recall": [
+          "t2-15"
+        ]
+      }
+    },
+    "construct_single_equation": {
+      "cases": 6,
+      "exact_target": 0,
+      "structural_target": 4,
+      "target_kind_matches": 6,
+      "target_subject_overlap": 4,
+      "target_semantic_equivalent": 4,
+      "target_operation_detected": 4,
+      "target_subject_complete": 0,
+      "target_variable_complete": 0,
+      "target_arguments_complete": 6,
+      "target_domain_complete": 6,
+      "target_requested_form_complete": 6,
+      "target_provenance_complete": 4,
+      "target_complete": 0,
+      "target_operation_supported": 4,
+      "target_verifier_available": 4,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 2,
+        "provenance_incomplete": 2,
+        "subject_incomplete": 6
+      },
+      "operation_confusion": {
+        "find_or_evaluate->evaluate": 4,
+        "unknown->not_identified": 2
+      },
+      "authorization_correct": 6,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 6,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 7,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 8,
+        "predicted": 8,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 0,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 8,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "denial_funnel": {},
+      "all_denial_blockers": {},
+      "denial_cases": [],
+      "failures": {
+        "assumptions_recall": [
+          "t2-17",
+          "t2-18"
+        ],
+        "entities_recall": [
+          "t2-01",
+          "t2-02",
+          "t2-12",
+          "t2-16",
+          "t2-17",
+          "t2-18"
+        ],
+        "facts_recall": [
+          "t2-01",
+          "t2-02",
+          "t2-12",
+          "t2-16",
+          "t2-17",
+          "t2-18"
+        ],
+        "obligations_recall": [
+          "t2-01",
+          "t2-02",
+          "t2-12",
+          "t2-16",
+          "t2-17",
+          "t2-18"
+        ],
+        "target": [
+          "t2-02",
+          "t2-17"
+        ]
+      }
+    },
+    "construct_small_system": {
+      "cases": 3,
+      "exact_target": 0,
+      "structural_target": 3,
+      "target_kind_matches": 3,
+      "target_subject_overlap": 3,
+      "target_semantic_equivalent": 3,
+      "target_operation_detected": 3,
+      "target_subject_complete": 0,
+      "target_variable_complete": 0,
+      "target_arguments_complete": 3,
+      "target_domain_complete": 3,
+      "target_requested_form_complete": 3,
+      "target_provenance_complete": 3,
+      "target_complete": 0,
+      "target_operation_supported": 2,
+      "target_verifier_available": 2,
+      "target_incomplete_reasons": {
+        "subject_incomplete": 3
+      },
+      "operation_confusion": {
+        "count->unsupported:count": 1,
+        "find_or_evaluate->evaluate": 2
+      },
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 6,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 6,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 6,
+        "predicted": 4,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 0,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 4,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "denial_funnel": {},
+      "all_denial_blockers": {},
+      "denial_cases": [],
+      "failures": {
+        "entities_recall": [
+          "t2-07",
+          "t2-08",
+          "t2-19"
+        ],
+        "facts_recall": [
+          "t2-07",
+          "t2-08",
+          "t2-19"
+        ],
+        "obligations_recall": [
+          "t2-07",
+          "t2-08",
+          "t2-19"
+        ]
+      }
+    },
+    "extract_domain_restriction": {
+      "cases": 5,
+      "exact_target": 0,
+      "structural_target": 4,
+      "target_kind_matches": 4,
+      "target_subject_overlap": 4,
+      "target_semantic_equivalent": 4,
+      "target_operation_detected": 4,
+      "target_subject_complete": 5,
+      "target_variable_complete": 1,
+      "target_arguments_complete": 5,
+      "target_domain_complete": 5,
+      "target_requested_form_complete": 5,
+      "target_provenance_complete": 4,
+      "target_complete": 2,
+      "target_operation_supported": 4,
+      "target_verifier_available": 4,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 1,
+        "provenance_incomplete": 1,
+        "target_variable_incomplete": 2
+      },
+      "operation_confusion": {
+        "evaluate->evaluate": 1,
+        "find_or_evaluate->solve": 1,
+        "simplify->not_identified": 1,
+        "solve->solve": 2
+      },
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 1,
+        "predicted": 1,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "facts": {
+        "matched": 1,
+        "expected": 5,
+        "predicted": 5,
+        "precision": 0.2,
+        "recall": 0.2
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 5,
+        "predicted": 3,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 1,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 1,
+      "invented_facts": 4,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 3,
+      "invented_obligations": 1,
+      "false_authorizations": 0,
+      "false_denials": 2,
+      "denial_funnel": {
+        "target_incomplete": 2
+      },
+      "all_denial_blockers": {
+        "bindings_incomplete": 2,
+        "concrete_argument_binding_missing": 2,
+        "independent_verifier_unavailable": 2,
+        "operation_unsupported": 2,
+        "target_incomplete": 2,
+        "target_not_explicit_instantiation": 2,
+        "verification_unavailable": 2
+      },
+      "denial_cases": [
+        {
+          "case_id": "t0-04",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": true,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-09",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": true,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        }
+      ],
+      "failures": {
+        "constraints_recall": [
+          "t0-04",
+          "t0-09",
+          "t0-17",
+          "t1-05",
+          "t2-11"
+        ],
+        "definitions_recall": [
+          "t1-05"
+        ],
+        "facts_recall": [
+          "t0-09",
+          "t0-17",
+          "t1-05",
+          "t2-11"
+        ],
+        "false_denial": [
+          "t0-04",
+          "t0-09"
+        ],
+        "obligations_recall": [
+          "t0-17",
+          "t1-05",
+          "t2-11"
+        ],
+        "target": [
+          "t0-17"
+        ]
+      }
+    },
+    "extract_explicit_equation": {
+      "cases": 16,
+      "exact_target": 0,
+      "structural_target": 12,
+      "target_kind_matches": 12,
+      "target_subject_overlap": 13,
+      "target_semantic_equivalent": 12,
+      "target_operation_detected": 12,
+      "target_subject_complete": 16,
+      "target_variable_complete": 2,
+      "target_arguments_complete": 16,
+      "target_domain_complete": 16,
+      "target_requested_form_complete": 16,
+      "target_provenance_complete": 13,
+      "target_complete": 7,
+      "target_operation_supported": 12,
+      "target_verifier_available": 12,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 4,
+        "provenance_incomplete": 3,
+        "target_variable_incomplete": 5
+      },
+      "operation_confusion": {
+        "compare->not_identified": 1,
+        "evaluate->evaluate": 5,
+        "simplify->not_identified": 2,
+        "solve->solve": 6,
+        "unknown->not_identified": 1,
+        "unknown->solve": 1
+      },
+      "authorization_correct": 1,
+      "definitions": {
+        "matched": 0,
+        "expected": 1,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "facts": {
+        "matched": 11,
+        "expected": 18,
+        "predicted": 16,
+        "precision": 0.6875,
+        "recall": 0.6111111111111112
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 3,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 5,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 3,
+      "false_authorizations": 0,
+      "false_denials": 15,
+      "denial_funnel": {
+        "target_incomplete": 15
+      },
+      "all_denial_blockers": {
+        "bindings_incomplete": 15,
+        "concrete_argument_binding_missing": 15,
+        "independent_verifier_unavailable": 15,
+        "operation_unsupported": 15,
+        "representation_incomplete": 15,
+        "target_incomplete": 15,
+        "target_not_explicit_instantiation": 15,
+        "verification_unavailable": 15
+      },
+      "denial_cases": [
+        {
+          "case_id": "t0-01",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-02",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-03",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-05",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-06",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-07",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-08",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-10",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-11",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-12",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-13",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-14",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-16",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-18",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t0-19",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        }
+      ],
+      "failures": {
+        "definitions_recall": [
+          "t0-11"
+        ],
+        "facts_recall": [
+          "t0-07",
+          "t0-08",
+          "t0-11",
+          "t0-15",
+          "t0-18"
+        ],
+        "false_denial": [
+          "t0-01",
+          "t0-02",
+          "t0-03",
+          "t0-05",
+          "t0-06",
+          "t0-07",
+          "t0-08",
+          "t0-10",
+          "t0-11",
+          "t0-12",
+          "t0-13",
+          "t0-14",
+          "t0-16",
+          "t0-18",
+          "t0-19"
+        ],
+        "obligations_recall": [
+          "t0-03",
+          "t0-10",
+          "t0-16"
+        ],
+        "target": [
+          "t0-03",
+          "t0-10",
+          "t0-15",
+          "t0-16"
+        ]
+      }
+    },
+    "extract_quantifier_structure": {
+      "cases": 3,
+      "exact_target": 0,
+      "structural_target": 1,
+      "target_kind_matches": 3,
+      "target_subject_overlap": 1,
+      "target_semantic_equivalent": 1,
+      "target_operation_detected": 0,
+      "target_subject_complete": 3,
+      "target_variable_complete": 0,
+      "target_arguments_complete": 3,
+      "target_domain_complete": 3,
+      "target_requested_form_complete": 3,
+      "target_provenance_complete": 1,
+      "target_complete": 0,
+      "target_operation_supported": 0,
+      "target_verifier_available": 0,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 3,
+        "provenance_incomplete": 2
+      },
+      "operation_confusion": {
+        "unknown->not_identified": 3
+      },
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 6,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 3,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 5,
+        "predicted": 2,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 6,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 3,
+      "invented_obligations": 2,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "denial_funnel": {},
+      "all_denial_blockers": {},
+      "denial_cases": [],
+      "failures": {
+        "constraints_recall": [
+          "t0-20",
+          "t2-09",
+          "t2-10"
+        ],
+        "facts_recall": [
+          "t0-20",
+          "t2-09",
+          "t2-10"
+        ],
+        "obligations_recall": [
+          "t0-20",
+          "t2-09",
+          "t2-10"
+        ],
+        "target": [
+          "t2-09",
+          "t2-10"
+        ]
+      }
+    },
+    "identify_requested_target": {
+      "cases": 1,
+      "exact_target": 0,
+      "structural_target": 1,
+      "target_kind_matches": 1,
+      "target_subject_overlap": 1,
+      "target_semantic_equivalent": 1,
+      "target_operation_detected": 0,
+      "target_subject_complete": 0,
+      "target_variable_complete": 0,
+      "target_arguments_complete": 1,
+      "target_domain_complete": 1,
+      "target_requested_form_complete": 1,
+      "target_provenance_complete": 1,
+      "target_complete": 0,
+      "target_operation_supported": 0,
+      "target_verifier_available": 0,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 1,
+        "subject_incomplete": 1
+      },
+      "operation_confusion": {
+        "unknown->not_identified": 1
+      },
+      "authorization_correct": 1,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 1,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 0,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 0,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "denial_funnel": {},
+      "all_denial_blockers": {},
+      "denial_cases": [],
+      "failures": {
+        "entities_recall": [
+          "t2-20"
+        ],
+        "facts_recall": [
+          "t2-20"
+        ],
+        "obligations_recall": [
+          "t2-20"
+        ]
+      }
+    },
+    "instantiate_definition": {
+      "cases": 19,
+      "exact_target": 0,
+      "structural_target": 12,
+      "target_kind_matches": 13,
+      "target_subject_overlap": 12,
+      "target_semantic_equivalent": 12,
+      "target_operation_detected": 14,
+      "target_subject_complete": 16,
+      "target_variable_complete": 0,
+      "target_arguments_complete": 19,
+      "target_domain_complete": 19,
+      "target_requested_form_complete": 19,
+      "target_provenance_complete": 15,
+      "target_complete": 10,
+      "target_operation_supported": 14,
+      "target_verifier_available": 14,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 5,
+        "provenance_incomplete": 4,
+        "subject_incomplete": 3,
+        "target_variable_incomplete": 3
+      },
+      "operation_confusion": {
+        "evaluate->evaluate": 10,
+        "evaluate->solve": 1,
+        "find_or_evaluate->solve": 2,
+        "substitute->not_identified": 1,
+        "unknown->evaluate": 1,
+        "unknown->not_identified": 1,
+        "verify->not_identified": 3
+      },
+      "authorization_correct": 9,
+      "definitions": {
+        "matched": 4,
+        "expected": 19,
+        "predicted": 14,
+        "precision": 0.2857142857142857,
+        "recall": 0.21052631578947367
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 20,
+        "predicted": 16,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 1,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 7,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 10,
+      "invented_facts": 16,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 7,
+      "false_authorizations": 0,
+      "false_denials": 10,
+      "denial_funnel": {
+        "target_incomplete": 10
+      },
+      "all_denial_blockers": {
+        "bindings_incomplete": 9,
+        "concrete_argument_binding_missing": 9,
+        "independent_verifier_unavailable": 10,
+        "operation_unsupported": 10,
+        "representation_incomplete": 10,
+        "target_incomplete": 10,
+        "target_not_explicit_instantiation": 9,
+        "verification_unavailable": 10
+      },
+      "denial_cases": [
+        {
+          "case_id": "t1-01",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-02",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-03",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-04",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-07",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": true,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-11",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-12",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-14",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-19",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        },
+        {
+          "case_id": "t1-20",
+          "gold_should_authorize": true,
+          "target_complete": false,
+          "representation_complete": false,
+          "bindings_complete": false,
+          "constraints_complete": true,
+          "operation_supported": false,
+          "verification_available": false,
+          "first_blocker": "target_incomplete",
+          "all_blockers": [
+            "bindings_incomplete",
+            "concrete_argument_binding_missing",
+            "independent_verifier_unavailable",
+            "operation_unsupported",
+            "representation_incomplete",
+            "target_incomplete",
+            "target_not_explicit_instantiation",
+            "verification_unavailable"
+          ]
+        }
+      ],
+      "failures": {
+        "constraints_recall": [
+          "t1-16"
+        ],
+        "definitions_recall": [
+          "t1-02",
+          "t1-03",
+          "t1-04",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-10",
+          "t1-11",
+          "t1-14",
+          "t1-15",
+          "t1-16",
+          "t1-17",
+          "t1-18",
+          "t1-19",
+          "t1-20"
+        ],
+        "facts_recall": [
+          "t1-01",
+          "t1-02",
+          "t1-03",
+          "t1-04",
+          "t1-06",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-10",
+          "t1-11",
+          "t1-12",
+          "t1-13",
+          "t1-14",
+          "t1-15",
+          "t1-16",
+          "t1-17",
+          "t1-18",
+          "t1-19",
+          "t1-20"
+        ],
+        "false_denial": [
+          "t1-01",
+          "t1-02",
+          "t1-03",
+          "t1-04",
+          "t1-07",
+          "t1-11",
+          "t1-12",
+          "t1-14",
+          "t1-19",
+          "t1-20"
+        ],
+        "obligations_recall": [
+          "t1-06",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-13",
+          "t1-16"
+        ],
+        "target": [
+          "t1-02",
+          "t1-03",
+          "t1-07",
+          "t1-08",
+          "t1-09",
+          "t1-13",
+          "t1-15"
+        ]
+      }
+    },
+    "translate_comparison_to_inequality": {
+      "cases": 3,
+      "exact_target": 0,
+      "structural_target": 0,
+      "target_kind_matches": 3,
+      "target_subject_overlap": 0,
+      "target_semantic_equivalent": 0,
+      "target_operation_detected": 0,
+      "target_subject_complete": 0,
+      "target_variable_complete": 0,
+      "target_arguments_complete": 3,
+      "target_domain_complete": 3,
+      "target_requested_form_complete": 3,
+      "target_provenance_complete": 0,
+      "target_complete": 0,
+      "target_operation_supported": 0,
+      "target_verifier_available": 0,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 3,
+        "provenance_incomplete": 3,
+        "subject_incomplete": 3
+      },
+      "operation_confusion": {
+        "unknown->not_identified": 3
+      },
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 2,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 6,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 0,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 6,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "denial_funnel": {},
+      "all_denial_blockers": {},
+      "denial_cases": [],
+      "failures": {
+        "entities_recall": [
+          "t2-04",
+          "t2-14"
+        ],
+        "facts_recall": [
+          "t2-03",
+          "t2-04",
+          "t2-14"
+        ],
+        "obligations_recall": [
+          "t2-03",
+          "t2-04",
+          "t2-14"
+        ],
+        "target": [
+          "t2-03",
+          "t2-04",
+          "t2-14"
+        ]
+      }
+    },
+    "translate_rate_statement": {
+      "cases": 3,
+      "exact_target": 0,
+      "structural_target": 1,
+      "target_kind_matches": 3,
+      "target_subject_overlap": 1,
+      "target_semantic_equivalent": 1,
+      "target_operation_detected": 1,
+      "target_subject_complete": 2,
+      "target_variable_complete": 0,
+      "target_arguments_complete": 3,
+      "target_domain_complete": 3,
+      "target_requested_form_complete": 3,
+      "target_provenance_complete": 1,
+      "target_complete": 0,
+      "target_operation_supported": 1,
+      "target_verifier_available": 1,
+      "target_incomplete_reasons": {
+        "operation_kind_incomplete": 2,
+        "provenance_incomplete": 2,
+        "subject_incomplete": 1
+      },
+      "operation_confusion": {
+        "find_or_evaluate->evaluate": 1,
+        "unknown->not_identified": 2
+      },
+      "authorization_correct": 3,
+      "definitions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "facts": {
+        "matched": 0,
+        "expected": 4,
+        "predicted": 2,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "entities": {
+        "matched": 0,
+        "expected": 3,
+        "predicted": 0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "assumptions": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "constraints": {
+        "matched": 0,
+        "expected": 0,
+        "predicted": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "obligations": {
+        "matched": 0,
+        "expected": 4,
+        "predicted": 3,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "invented_definitions": 0,
+      "invented_facts": 2,
+      "invented_entities": 0,
+      "invented_assumptions": 0,
+      "invented_constraints": 0,
+      "invented_obligations": 3,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "denial_funnel": {},
+      "all_denial_blockers": {},
+      "denial_cases": [],
+      "failures": {
+        "entities_recall": [
+          "t2-05",
+          "t2-06",
+          "t2-13"
+        ],
+        "facts_recall": [
+          "t2-05",
+          "t2-06",
+          "t2-13"
+        ],
+        "obligations_recall": [
+          "t2-05",
+          "t2-06",
+          "t2-13"
+        ],
+        "target": [
+          "t2-05",
+          "t2-13"
+        ]
+      }
+    }
+  }
+}

@@ -9,8 +9,8 @@ use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, env, fs};
 use the_machine::formalization::{
     assess_direct_instantiation, assess_prompt, score_formalization, AuthorizationDenialTrace,
-    FieldScore, FormalizationCorpus, FormalizationGoldCase, FormalizationScore, TargetCompletion,
-    TargetFieldStatus,
+    FieldScore, FormalizationCorpus, FormalizationGoldCase, FormalizationScore, OperationStatus,
+    TargetCompletion, TargetFieldStatus,
 };
 
 #[derive(Debug, Serialize)]
@@ -32,6 +32,7 @@ struct Aggregate {
     target_operation_supported: usize,
     target_verifier_available: usize,
     target_incomplete_reasons: BTreeMap<String, usize>,
+    operation_confusion: BTreeMap<String, usize>,
     authorization_correct: usize,
     definitions: Counts,
     facts: Counts,
@@ -108,6 +109,7 @@ impl Aggregate {
             target_operation_supported: 0,
             target_verifier_available: 0,
             target_incomplete_reasons: BTreeMap::new(),
+            operation_confusion: BTreeMap::new(),
             authorization_correct: 0,
             definitions: Counts::default(),
             facts: Counts::default(),
@@ -138,6 +140,7 @@ impl Aggregate {
         authorized: bool,
         denial: Option<AuthorizationDenialTrace>,
         target_completion: &TargetCompletion,
+        gold_operation: &str,
     ) {
         self.cases += 1;
         self.exact_target += usize::from(score.target_exact);
@@ -170,6 +173,16 @@ impl Aggregate {
                 .entry(reason.clone())
                 .or_default() += 1;
         }
+        let predicted_operation = match &target_completion.target.operation_status {
+            OperationStatus::Recognized(operation) => operation.label().to_string(),
+            OperationStatus::Unsupported(name) => format!("unsupported:{name}"),
+            OperationStatus::Ambiguous(_) => "ambiguous".into(),
+            OperationStatus::NotIdentified => "not_identified".into(),
+        };
+        *self
+            .operation_confusion
+            .entry(format!("{gold_operation}->{predicted_operation}"))
+            .or_default() += 1;
         self.authorization_correct += usize::from(score.authorization_correct);
         self.definitions.add(score.definitions);
         self.facts.add(score.facts);
@@ -266,6 +279,32 @@ fn holdout(id: &str) -> bool {
         .unwrap_or(false)
 }
 
+fn gold_operation(statement: &str) -> &'static str {
+    let lower = statement.to_ascii_lowercase();
+    if lower.contains("prove") || lower.contains("show") {
+        "prove"
+    } else if lower.contains("how many") || lower.contains("count") {
+        "count"
+    } else if lower.contains("simplify") {
+        "simplify"
+    } else if lower.contains("substitute") || lower.contains("plug in") {
+        "substitute"
+    } else if lower.contains("solve") {
+        "solve"
+    } else if lower.contains("evaluate") || lower.contains("compute") || lower.contains("calculate")
+    {
+        "evaluate"
+    } else if lower.contains("compare") {
+        "compare"
+    } else if lower.contains("verify") || lower.contains("check") {
+        "verify"
+    } else if lower.contains("find") || lower.contains("what is") {
+        "find_or_evaluate"
+    } else {
+        "unknown"
+    }
+}
+
 fn evaluate_case(
     case: &FormalizationGoldCase,
 ) -> (
@@ -307,6 +346,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     for case in &corpus.cases {
         let (score, authorized, denial, target_completion) = evaluate_case(case);
+        let expected_operation = gold_operation(&case.target.statement);
         report.total.add(
             &case.id,
             &score,
@@ -314,6 +354,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             authorized,
             Some(denial.clone()),
             &target_completion,
+            expected_operation,
         );
         let split = if holdout(&case.id) {
             &mut report.holdout
@@ -327,6 +368,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             authorized,
             Some(denial.clone()),
             &target_completion,
+            expected_operation,
         );
         report
             .by_tier
@@ -339,6 +381,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 authorized,
                 Some(denial.clone()),
                 &target_completion,
+                expected_operation,
             );
         report
             .by_transformation
@@ -351,6 +394,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 authorized,
                 Some(denial),
                 &target_completion,
+                expected_operation,
             );
     }
     let output = serde_json::to_string_pretty(&report)?;

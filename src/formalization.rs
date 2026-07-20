@@ -693,7 +693,75 @@ pub enum OperationKind {
     Simplify,
     Compare,
     Verify,
+    Prove,
+    Count,
     Unknown,
+}
+
+impl OperationKind {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Evaluate => "evaluate",
+            Self::Substitute => "substitute",
+            Self::Solve => "solve",
+            Self::Simplify => "simplify",
+            Self::Compare => "compare",
+            Self::Verify => "verify",
+            Self::Prove => "prove",
+            Self::Count => "count",
+            Self::Unknown => "unknown",
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum OperationStatus {
+    Recognized(OperationKind),
+    Ambiguous(Vec<OperationKind>),
+    Unsupported(String),
+    NotIdentified,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TextSpan {
+    pub source_fragment: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TargetProvenance {
+    pub operation_span: Option<TextSpan>,
+    pub subject_span: Option<TextSpan>,
+    pub variable_spans: Vec<TextSpan>,
+    pub argument_spans: Vec<TextSpan>,
+    pub domain_span: Option<TextSpan>,
+    pub answer_form_span: Option<TextSpan>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum OperationFrame {
+    Evaluate {
+        expression: String,
+        bindings: Vec<TargetArgumentBinding>,
+    },
+    Simplify {
+        expression: String,
+    },
+    Solve {
+        relation: String,
+        variables: Vec<String>,
+        domain: Option<String>,
+    },
+    Compare {
+        subject: String,
+    },
+    Substitute {
+        subject: String,
+        bindings: Vec<TargetArgumentBinding>,
+    },
+    Unsupported {
+        requested: String,
+    },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -727,12 +795,14 @@ pub struct TargetArgumentBinding {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FormalizedTarget {
     pub operation: OperationKind,
+    pub operation_status: OperationStatus,
+    pub frame: Option<OperationFrame>,
     pub subject: Option<String>,
     pub target_variable: Option<String>,
     pub arguments: Vec<TargetArgumentBinding>,
     pub domain: Option<String>,
     pub requested_form: Option<String>,
-    pub provenance: Option<String>,
+    pub provenance: Option<TargetProvenance>,
     pub completeness: TargetCompleteness,
 }
 
@@ -1482,7 +1552,11 @@ fn completeness_for(
 
 fn operation_from_text(text: &str) -> OperationKind {
     let lower = text.to_ascii_lowercase();
-    if lower.contains("simplify") {
+    if lower.contains("prove") || lower.contains("show that") {
+        OperationKind::Prove
+    } else if lower.contains("how many") || lower.contains("count") {
+        OperationKind::Count
+    } else if lower.contains("simplify") {
         OperationKind::Simplify
     } else if lower.contains("substitute") || lower.contains("plug in") {
         OperationKind::Substitute
@@ -1645,6 +1719,66 @@ fn build_target_completion(
             TargetFieldStatus::Missing
         },
     };
+    let operation_status = match operation {
+        OperationKind::Unknown => OperationStatus::NotIdentified,
+        OperationKind::Prove | OperationKind::Count => {
+            OperationStatus::Unsupported(operation.label().to_string())
+        }
+        recognized => OperationStatus::Recognized(recognized),
+    };
+    let frame = match operation {
+        OperationKind::Evaluate => subject.clone().map(|expression| OperationFrame::Evaluate {
+            expression,
+            bindings: arguments.clone(),
+        }),
+        OperationKind::Simplify => subject
+            .clone()
+            .map(|expression| OperationFrame::Simplify { expression }),
+        OperationKind::Solve => subject.clone().map(|relation| OperationFrame::Solve {
+            relation,
+            variables: target_variable.clone().into_iter().collect(),
+            domain: domain.clone(),
+        }),
+        OperationKind::Compare => subject
+            .clone()
+            .map(|subject| OperationFrame::Compare { subject }),
+        OperationKind::Substitute => subject.clone().map(|subject| OperationFrame::Substitute {
+            subject,
+            bindings: arguments.clone(),
+        }),
+        OperationKind::Prove | OperationKind::Count => Some(OperationFrame::Unsupported {
+            requested: target_text.into(),
+        }),
+        OperationKind::Verify | OperationKind::Unknown => None,
+    };
+    let provenance = target.map(|value| TargetProvenance {
+        operation_span: Some(TextSpan {
+            source_fragment: value.statement.clone(),
+        }),
+        subject_span: subject.as_ref().map(|subject| TextSpan {
+            source_fragment: subject.clone(),
+        }),
+        variable_spans: target_variable
+            .as_ref()
+            .map(|variable| {
+                vec![TextSpan {
+                    source_fragment: variable.clone(),
+                }]
+            })
+            .unwrap_or_default(),
+        argument_spans: arguments
+            .iter()
+            .map(|argument| TextSpan {
+                source_fragment: argument.provenance.clone(),
+            })
+            .collect(),
+        domain_span: domain.as_ref().map(|value| TextSpan {
+            source_fragment: value.clone(),
+        }),
+        answer_form_span: requested_form.as_ref().map(|value| TextSpan {
+            source_fragment: value.clone(),
+        }),
+    });
     let capability = operation_capability(operation);
     let mut reasons = Vec::new();
     for (name, status) in [
@@ -1668,12 +1802,14 @@ fn build_target_completion(
     TargetCompletion {
         target: FormalizedTarget {
             operation,
+            operation_status,
+            frame,
             subject,
             target_variable,
             arguments,
             domain,
             requested_form,
-            provenance: target.map(|value| value.source_fragment.clone()),
+            provenance,
             completeness,
         },
         reasons,
@@ -1820,7 +1956,7 @@ pub fn assess_prompt(
             "which",
         ],
     ) {
-        let statement = question
+        let request_clause = question
             .split(['?', '\n'])
             .rev()
             .find(|part| {
@@ -1840,6 +1976,31 @@ pub fn assess_prompt(
             })
             .unwrap_or(question)
             .trim()
+            .to_string();
+        let statement = request_clause
+            .rsplit_once(". ")
+            .map(|(_, clause)| clause.trim())
+            .filter(|clause| {
+                has_any(
+                    &clause.to_ascii_lowercase(),
+                    &[
+                        "find",
+                        "compute",
+                        "calculate",
+                        "determine",
+                        "evaluate",
+                        "solve",
+                        "what is",
+                        "which",
+                        "simplify",
+                        "compare",
+                        "check",
+                        "prove",
+                        "show",
+                    ],
+                )
+            })
+            .unwrap_or(&request_clause)
             .to_string();
         Some(TargetAnnotation {
             statement,

@@ -105,6 +105,35 @@ impl RepresentationCost {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ClusterCoherence {
+    SuperficialVocabulary,
+    SharedShapeOnly,
+    ParameterizedMethodFamily,
+    ExactMethod,
+}
+
+impl ClusterCoherence {
+    fn rank(self) -> u8 {
+        match self {
+            Self::SuperficialVocabulary => 0,
+            Self::SharedShapeOnly => 1,
+            Self::ParameterizedMethodFamily => 2,
+            Self::ExactMethod => 3,
+        }
+    }
+
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::SuperficialVocabulary => "superficial_vocabulary",
+            Self::SharedShapeOnly => "shared_shape_only",
+            Self::ParameterizedMethodFamily => "parameterized_method_family",
+            Self::ExactMethod => "exact_method",
+        }
+    }
+}
+
 /// One manually reviewed or trace-derived annotation.  The fields are kept
 /// local to the question; a global confidence score would hide which premise
 /// or side condition is actually missing.
@@ -121,6 +150,14 @@ pub struct MethodClusterAnnotation {
     pub verifier_available: VerificationAvailability,
     pub estimated_steps: usize,
     pub representation_cost: RepresentationCost,
+    pub coherence: ClusterCoherence,
+    pub method_variant: String,
+    pub image_independent: bool,
+    pub non_proof_target: bool,
+    pub useful_conclusion: bool,
+    /// Heuristic reconnaissance rows are never pack eligible until a human
+    /// (or an independently validated annotator) reviews this flag.
+    pub reviewed: bool,
     /// True only when the question's formal object and target are sufficiently
     /// specified for a typed method schema to be authored.  This is diagnostic
     /// evidence, never an execution permission.
@@ -136,6 +173,52 @@ impl MethodClusterAnnotation {
             && self.verifier_available.rank() >= minimum_verification.rank()
             && self.estimated_steps == 1
             && self.representation_cost <= RepresentationCost::Medium
+            && self.coherence.rank() >= ClusterCoherence::ParameterizedMethodFamily.rank()
+            && self.image_independent
+            && self.non_proof_target
+            && self.useful_conclusion
+            && self.reviewed
+    }
+
+    pub fn failure_reasons(&self) -> Vec<String> {
+        let mut failures = Vec::new();
+        if !self.structurally_compatible {
+            failures.push("structural_incompatibility".to_string());
+        }
+        if !self.premises_explicit {
+            failures.push("premises_not_explicit".to_string());
+        }
+        if !self.definitions_explicit {
+            failures.push("definitions_not_explicit".to_string());
+        }
+        if !self.side_conditions_extractable {
+            failures.push("side_conditions_not_extractable".to_string());
+        }
+        if self.verifier_available.rank() < VerificationAvailability::Replay.rank() {
+            failures.push("verifier_unavailable".to_string());
+        }
+        if self.estimated_steps != 1 {
+            failures.push("multi_step".to_string());
+        }
+        if self.representation_cost > RepresentationCost::Medium {
+            failures.push("representation_cost".to_string());
+        }
+        if self.coherence.rank() < ClusterCoherence::ParameterizedMethodFamily.rank() {
+            failures.push("coherence_too_weak".to_string());
+        }
+        if !self.image_independent {
+            failures.push("image_dependency".to_string());
+        }
+        if !self.non_proof_target {
+            failures.push("proof_target".to_string());
+        }
+        if !self.useful_conclusion {
+            failures.push("no_useful_conclusion".to_string());
+        }
+        if !self.reviewed {
+            failures.push("annotation_not_reviewed".to_string());
+        }
+        failures
     }
 }
 
@@ -165,6 +248,13 @@ pub struct MethodClusterSummary {
     pub estimated_steps_total: usize,
     pub maximum_representation_cost: RepresentationCost,
     pub best_verification: VerificationAvailability,
+    pub coherence: ClusterCoherence,
+    pub method_variants: Vec<String>,
+    pub image_independent: usize,
+    pub non_proof_targets: usize,
+    pub useful_conclusions: usize,
+    pub reviewed: usize,
+    pub failure_reasons: Vec<String>,
 }
 
 impl MethodClusterSummary {
@@ -175,6 +265,11 @@ impl MethodClusterSummary {
     ) -> bool {
         self.eligible >= minimum_questions
             && self.best_verification.rank() >= minimum_verification.rank()
+            && self.coherence.rank() >= ClusterCoherence::ParameterizedMethodFamily.rank()
+            && self.image_independent == self.total_questions
+            && self.non_proof_targets == self.total_questions
+            && self.useful_conclusions == self.total_questions
+            && self.reviewed == self.total_questions
     }
 
     pub fn mean_estimated_steps(&self) -> f64 {
@@ -224,6 +319,13 @@ impl MethodClusterReport {
             step_total: usize,
             maximum_cost: Option<RepresentationCost>,
             best_verification: Option<VerificationAvailability>,
+            coherence: Option<ClusterCoherence>,
+            method_variants: Vec<String>,
+            image_independent: usize,
+            non_proof_targets: usize,
+            useful_conclusions: usize,
+            reviewed: usize,
+            failure_reasons: Vec<String>,
         }
 
         let mut grouped: BTreeMap<MethodClusterKey, Accumulator> = BTreeMap::new();
@@ -244,6 +346,23 @@ impl MethodClusterReport {
             entry.one_step += usize::from(annotation.estimated_steps == 1);
             entry.eligible += usize::from(annotation.eligible(VerificationAvailability::Replay));
             entry.step_total += annotation.estimated_steps;
+            entry.image_independent += usize::from(annotation.image_independent);
+            entry.non_proof_targets += usize::from(annotation.non_proof_target);
+            entry.useful_conclusions += usize::from(annotation.useful_conclusion);
+            entry.reviewed += usize::from(annotation.reviewed);
+            if !entry.method_variants.contains(&annotation.method_variant) {
+                entry
+                    .method_variants
+                    .push(annotation.method_variant.clone());
+            }
+            entry.coherence = Some(entry.coherence.map_or(annotation.coherence, |current| {
+                current.min(annotation.coherence)
+            }));
+            for failure in annotation.failure_reasons() {
+                if !entry.failure_reasons.contains(&failure) {
+                    entry.failure_reasons.push(failure);
+                }
+            }
             entry.maximum_cost = Some(
                 entry
                     .maximum_cost
@@ -270,7 +389,18 @@ impl MethodClusterReport {
             .map(|(key, mut acc)| {
                 acc.ids.sort();
                 acc.named_methods.sort();
+                acc.method_variants.sort();
+                acc.failure_reasons.sort();
                 let total = acc.ids.len();
+                let coherence = if acc.method_variants.len() > 1 {
+                    // Different named/normalized variants are not one exact
+                    // method.  Keep them visible as a shared-shape cluster,
+                    // but never let taxonomy manufacture pack coherence.
+                    ClusterCoherence::SharedShapeOnly
+                } else {
+                    acc.coherence
+                        .unwrap_or(ClusterCoherence::SuperficialVocabulary)
+                };
                 MethodClusterSummary {
                     key,
                     question_ids: acc.ids,
@@ -290,6 +420,13 @@ impl MethodClusterReport {
                     best_verification: acc
                         .best_verification
                         .unwrap_or(VerificationAvailability::None),
+                    coherence,
+                    method_variants: acc.method_variants,
+                    image_independent: acc.image_independent,
+                    non_proof_targets: acc.non_proof_targets,
+                    useful_conclusions: acc.useful_conclusions,
+                    reviewed: acc.reviewed,
+                    failure_reasons: acc.failure_reasons,
                 }
             })
             .collect();
@@ -341,6 +478,30 @@ impl MethodClusterReport {
                 cluster.maximum_representation_cost.label(),
                 methods
             ));
+            out.push_str(&format!(
+                "  - coherence: {}; variants: {}; image-independent: {}/{}; non-proof: {}/{}; useful conclusions: {}/{}; reviewed: {}/{}; IDs: {}\n",
+                cluster.coherence.label(),
+                if cluster.method_variants.is_empty() {
+                    "—".to_string()
+                } else {
+                    cluster.method_variants.join(", ")
+                },
+                cluster.image_independent,
+                cluster.total_questions,
+                cluster.non_proof_targets,
+                cluster.total_questions,
+                cluster.useful_conclusions,
+                cluster.total_questions,
+                cluster.reviewed,
+                cluster.total_questions,
+                cluster.question_ids.join(", ")
+            ));
+            if !cluster.failure_reasons.is_empty() {
+                out.push_str(&format!(
+                    "  - gate failures: {}\n",
+                    cluster.failure_reasons.join(", ")
+                ));
+            }
         }
         out
     }
@@ -374,6 +535,12 @@ mod tests {
             verifier_available: verifier,
             estimated_steps: 1,
             representation_cost: RepresentationCost::Low,
+            coherence: ClusterCoherence::ParameterizedMethodFamily,
+            method_variant: "demo".to_string(),
+            image_independent: true,
+            non_proof_target: true,
+            useful_conclusion: true,
+            reviewed: true,
             structurally_compatible: compatible,
         }
     }

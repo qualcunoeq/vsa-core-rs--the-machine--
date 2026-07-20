@@ -15,6 +15,7 @@ use the_machine::formalization::{
 };
 use the_machine::function_application::execute_function_application;
 use the_machine::expression_evaluation::execute_expression_evaluation;
+use the_machine::linear_equation::execute_linear_equation;
 use the_machine::capabilities::{CapabilityRegistry, CapabilitySelection};
 
 #[derive(Debug, Serialize)]
@@ -49,6 +50,7 @@ struct Aggregate {
     object_type_metrics: BTreeMap<String, ObjectTypeMetrics>,
     function_shadow: FunctionShadowMetrics,
     expression_shadow: FunctionShadowMetrics,
+    linear_equation_shadow: FunctionShadowMetrics,
     capability_reachability: BTreeMap<String, CapabilityReachabilityMetrics>,
     target_operation_supported: usize,
     target_verifier_available: usize,
@@ -197,6 +199,7 @@ impl Aggregate {
             object_type_metrics: BTreeMap::new(),
             function_shadow: FunctionShadowMetrics::default(),
             expression_shadow: FunctionShadowMetrics::default(),
+            linear_equation_shadow: FunctionShadowMetrics::default(),
             capability_reachability: BTreeMap::new(),
             target_operation_supported: 0,
             target_verifier_available: 0,
@@ -362,6 +365,35 @@ impl Aggregate {
                 Err(error) => {
                     *self
                         .expression_shadow
+                        .failures
+                        .entry(format!("{error:?}"))
+                        .or_default() += 1;
+                }
+            }
+        }
+        let linear_candidate = target_completion.target.operation == OperationKind::Solve
+            && target_completion
+                .target
+                .subject_resolution
+                .selected
+                .as_ref()
+                .map(|subject| {
+                    subject.object_type
+                        == the_machine::formalization::SubjectObjectType::Equation
+                })
+                .unwrap_or(false);
+        if linear_candidate {
+            self.linear_equation_shadow.candidates += 1;
+            match execute_linear_equation(&target_completion.target) {
+                Ok(receipt) => {
+                    self.linear_equation_shadow.authorized += 1;
+                    self.linear_equation_shadow.executed += 1;
+                    self.linear_equation_shadow.replay_verified +=
+                        usize::from(receipt.replay_verified);
+                }
+                Err(error) => {
+                    *self
+                        .linear_equation_shadow
                         .failures
                         .entry(format!("{error:?}"))
                         .or_default() += 1;

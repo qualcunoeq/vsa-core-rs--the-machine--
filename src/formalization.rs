@@ -1720,10 +1720,24 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
         return None;
     }
     let relation = Regex::new(
-        r"(?i)([A-Za-z_][A-Za-z0-9_()^*/+\-. ]*?)\s*(<=|>=|=|<|>)\s*([A-Za-z0-9_()^*/+\-. ]+)",
+        r"(?i)([A-Za-z0-9_(][A-Za-z0-9_()^*/+\-. ]*?)\s*(<=|>=|=|<|>)\s*([A-Za-z0-9_()^*/+\-. ]+)",
     )
     .expect("static relation regex");
-    let captures = relation.captures(question)?;
+    // In anchored requests such as `Solve for x: 3*x+2=11`, the colon
+    // separates the instruction from the relation.  Searching the whole
+    // sentence would otherwise begin at the `x` in `for x` because the
+    // relation grammar intentionally excludes prose and colons.
+    let relation_source = question
+        .split_once(':')
+        .filter(|(prefix, _)| {
+            has_any(
+                &prefix.to_ascii_lowercase(),
+                &["solve", "given", "let", "find", "determine"],
+            )
+        })
+        .map(|(_, body)| body)
+        .unwrap_or(question);
+    let captures = relation.captures(relation_source)?;
     let mut lhs = captures.get(1)?.as_str().trim().to_string();
     let operator = captures.get(2)?.as_str().to_string();
     let rhs = captures

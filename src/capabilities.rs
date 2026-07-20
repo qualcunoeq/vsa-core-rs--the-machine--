@@ -16,6 +16,9 @@ pub enum InputRequirement {
     ExplicitExpressionBody,
     ParseableExpressionSubject,
     AllExpressionVariablesBound,
+    SingleEquationSubject,
+    SingleTargetVariable,
+    LinearRelation,
     NoFreeVariables,
     ReplayVerifier,
 }
@@ -143,6 +146,41 @@ impl CapabilitySpec {
             },
         }
     }
+
+    pub fn linear_equation_solve_v1() -> Self {
+        Self {
+            id: "linear_equation_solve".into(),
+            version: 1,
+            supported_object_types: vec![SubjectObjectType::Equation],
+            supported_operations: vec![OperationKind::Solve],
+            supported_answer_forms: vec![
+                AnswerForm::ExactValue,
+                AnswerForm::SolutionSet,
+                AnswerForm::SingleSelectedSolution,
+            ],
+            input_requirements: vec![
+                InputRequirement::SingleEquationSubject,
+                InputRequirement::SingleTargetVariable,
+                InputRequirement::LinearRelation,
+                InputRequirement::ReplayVerifier,
+            ],
+            executor: "linear_equation::execute_linear_equation".into(),
+            verifier: "linear_equation::replay_linear_equation".into(),
+            regression_cases: vec![
+                "linear_equation::unique_solution_executes_and_replays".into(),
+                "linear_equation::fractional_solution_executes_and_replays".into(),
+                "linear_equation::quadratic_is_denied".into(),
+                "linear_equation::multiple_variables_are_denied".into(),
+            ],
+            quality_gate: CapabilityQualityGate {
+                positive_cases: 2,
+                negative_cases: 1,
+                adversarial_cases: 1,
+                false_authorizations: 0,
+                replay_failures: 0,
+            },
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
@@ -155,6 +193,7 @@ impl CapabilityRegistry {
         let mut registry = Self::default();
         registry.register(CapabilitySpec::function_application_v1());
         registry.register(CapabilitySpec::expression_evaluation_v1());
+        registry.register(CapabilitySpec::linear_equation_solve_v1());
         registry
     }
 
@@ -241,6 +280,31 @@ impl CapabilityRegistry {
                                 binding.status
                                     == crate::formalization::TargetFieldStatus::Complete
                             }) || !subject.object.chars().any(|c| c.is_ascii_alphabetic())
+                        }
+                    }
+                    InputRequirement::SingleEquationSubject => {
+                        subject.object_type == SubjectObjectType::Equation
+                            && !subject.object.trim().is_empty()
+                    }
+                    InputRequirement::SingleTargetVariable => {
+                        target.target_variable.is_some()
+                            && target.target_variable.as_deref().unwrap_or_default().len() == 1
+                    }
+                    InputRequirement::LinearRelation => {
+                        if subject.object_type != SubjectObjectType::Equation {
+                            true
+                        } else if let Some(variable) = target.target_variable.as_deref() {
+                            crate::algebra_island::parse_problem(&format!(
+                                "Solve for {variable}: {}",
+                                subject.object
+                            ))
+                            .map(|problem| {
+                                problem.operation
+                                    == crate::algebra_island::AlgebraOperation::SolveLinearEquation
+                            })
+                            .unwrap_or(false)
+                        } else {
+                            false
                         }
                     }
                     InputRequirement::NoFreeVariables | InputRequirement::ReplayVerifier => true,
@@ -335,5 +399,30 @@ mod tests {
             .find(|candidate| candidate.id == "expression_evaluation")
             .unwrap();
         assert!(expression.eligible);
+    }
+
+    #[test]
+    fn linear_solver_is_selected_only_for_linear_equations() {
+        let registry = CapabilityRegistry::production();
+        let trace = crate::formalization::assess_prompt(
+            "cap-linear-1",
+            "Solve for x: 3*x+2=11.",
+            "Math",
+            false,
+        );
+        assert_eq!(
+            registry.discover(&trace.target_completion.target).selection,
+            CapabilitySelection::Unique("linear_equation_solve".into())
+        );
+        let quadratic = crate::formalization::assess_prompt(
+            "cap-linear-2",
+            "Solve for x: x^2=4.",
+            "Math",
+            false,
+        );
+        assert_eq!(
+            registry.discover(&quadratic.target_completion.target).selection,
+            CapabilitySelection::None
+        );
     }
 }

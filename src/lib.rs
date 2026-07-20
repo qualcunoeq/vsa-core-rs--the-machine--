@@ -39,6 +39,7 @@ pub mod kernel;
 pub mod knowledge;
 pub mod language_decoder;
 pub mod ledger;
+pub mod linear_equation;
 pub mod math;
 pub mod math_ingest;
 pub mod math_method_mining;

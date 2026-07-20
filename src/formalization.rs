@@ -684,6 +684,39 @@ pub struct TargetComparison {
     pub semantically_equivalent: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum FormalizedFact {
+    Equation {
+        lhs: String,
+        relation: String,
+        rhs: String,
+        source_fragment: String,
+    },
+    Expression {
+        expression: String,
+        source_fragment: String,
+    },
+    LogicalPremise {
+        statement: String,
+        source_fragment: String,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum FormalizedConstraint {
+    DomainOrSideCondition {
+        statement: String,
+        source_fragment: String,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CompletenessStatus {
+    Complete,
+    Incomplete(Vec<ModelingObligation>),
+    Ambiguous(Vec<String>),
+}
+
 fn normalized_text(value: &str) -> String {
     value
         .split_whitespace()
@@ -802,9 +835,13 @@ pub struct FormalizationTrace {
     pub definitions: Vec<DefinitionKind>,
     pub entities: Vec<EntityAnnotation>,
     pub facts: Vec<FactAnnotation>,
+    pub formalized_facts: Vec<FormalizedFact>,
+    pub facts_completeness: CompletenessStatus,
     pub target: Option<TargetAnnotation>,
     pub assumptions: Vec<AssumptionAnnotation>,
     pub constraints: Vec<ConstraintAnnotation>,
+    pub formalized_constraints: Vec<FormalizedConstraint>,
+    pub constraints_completeness: CompletenessStatus,
     pub obligations: Vec<ModelingObligation>,
     pub modeling_distance: ModelingDistance,
 }
@@ -1243,6 +1280,120 @@ impl TraceQuestionSource for FormalizationTrace {
     }
 }
 
+fn extract_explicit_relation(question: &str) -> Option<(String, String, String)> {
+    let relation = Regex::new(
+        r"(?i)([A-Za-z_][A-Za-z0-9_()^*/+\-. ]*?)\s*(<=|>=|=|<|>)\s*([A-Za-z0-9_()^*/+\-. ]+)",
+    )
+    .expect("static relation regex");
+    let captures = relation.captures(question)?;
+    let mut lhs = captures.get(1)?.as_str().trim().to_string();
+    let operator = captures.get(2)?.as_str().to_string();
+    let rhs = captures
+        .get(3)?
+        .as_str()
+        .trim()
+        .split([',', '?', ';'])
+        .next()
+        .unwrap_or_default()
+        .trim()
+        .trim_end_matches(" for real x")
+        .trim_end_matches(" for x")
+        .trim_end_matches('.')
+        .to_string();
+    for prefix in [
+        "given ",
+        "let ",
+        "if ",
+        "where ",
+        "solve ",
+        "the equation ",
+        "for real x, ",
+    ] {
+        if lhs.to_ascii_lowercase().starts_with(prefix) {
+            lhs = lhs[prefix.len()..].trim().to_string();
+        }
+    }
+    if lhs.is_empty() || rhs.is_empty() {
+        None
+    } else {
+        Some((lhs, operator, rhs))
+    }
+}
+
+fn extract_expression_payload(question: &str) -> Option<String> {
+    let lower = question.to_ascii_lowercase();
+    for verb in [
+        "evaluate ",
+        "compute ",
+        "calculate ",
+        "simplify ",
+        "compare ",
+    ] {
+        if let Some(start) = lower.find(verb) {
+            let payload = question[start + verb.len()..]
+                .split(['.', '?', '\n'])
+                .next()
+                .unwrap_or_default()
+                .trim()
+                .trim_end_matches(" exactly")
+                .trim();
+            if !payload.is_empty() {
+                return Some(payload.to_string());
+            }
+        }
+    }
+    None
+}
+
+fn formalized_facts(facts: &[FactAnnotation], question: &str) -> Vec<FormalizedFact> {
+    if let Some((lhs, relation, rhs)) = extract_explicit_relation(question) {
+        return vec![FormalizedFact::Equation {
+            lhs,
+            relation,
+            rhs,
+            source_fragment: question.into(),
+        }];
+    }
+    if let Some(expression) = extract_expression_payload(question) {
+        return vec![FormalizedFact::Expression {
+            expression,
+            source_fragment: question.into(),
+        }];
+    }
+    facts
+        .iter()
+        .map(|fact| {
+            if fact.statement.contains("quantified") {
+                FormalizedFact::LogicalPremise {
+                    statement: fact.statement.clone(),
+                    source_fragment: fact.source_fragment.clone(),
+                }
+            } else {
+                FormalizedFact::Expression {
+                    expression: fact.statement.clone(),
+                    source_fragment: fact.source_fragment.clone(),
+                }
+            }
+        })
+        .collect()
+}
+
+fn completeness_for(
+    obligations: &[ModelingObligation],
+    relevant: &[ModelingObligation],
+) -> CompletenessStatus {
+    let unresolved: Vec<_> = relevant
+        .iter()
+        .copied()
+        .filter(|obligation| obligations.contains(obligation))
+        .collect();
+    if unresolved.is_empty() {
+        CompletenessStatus::Complete
+    } else {
+        CompletenessStatus::Incomplete(unresolved)
+    }
+}
+
 /// Conservative, non-executing assessment used by the formalization report.
 /// It records missing modeling work instead of guessing a formal object.
 pub fn assess_prompt(
@@ -1343,8 +1494,16 @@ pub fn assess_prompt(
         obligations.push(ModelingObligation::ExtractQuantifiers);
     }
     if lower.contains('=') || has_any(&lower, &["equation", "given that", "satisfies", "where"]) {
+        let statement = extract_explicit_relation(question)
+            .map(|(lhs, relation, rhs)| format!("{lhs} {relation} {rhs}"))
+            .unwrap_or_else(|| "explicit relation or equation signal".into());
         facts.push(FactAnnotation {
-            statement: "explicit relation or equation signal".into(),
+            statement,
+            source_fragment: question.into(),
+        });
+    } else if let Some(expression) = extract_expression_payload(question) {
+        facts.push(FactAnnotation {
+            statement: expression,
             source_fragment: question.into(),
         });
     } else if matches!(
@@ -1453,6 +1612,30 @@ pub fn assess_prompt(
     obligations.sort_by_key(|obligation| obligation.label());
     obligations.dedup();
 
+    let typed_facts = formalized_facts(&facts, question);
+    let typed_constraints = constraints
+        .iter()
+        .map(|constraint| FormalizedConstraint::DomainOrSideCondition {
+            statement: constraint.statement.clone(),
+            source_fragment: constraint.source_fragment.clone(),
+        })
+        .collect();
+    let facts_completeness = completeness_for(
+        &obligations,
+        &[
+            ModelingObligation::ConstructEquation,
+            ModelingObligation::ExtractQuantifiers,
+            ModelingObligation::DefineObject,
+        ],
+    );
+    let constraints_completeness = completeness_for(
+        &obligations,
+        &[
+            ModelingObligation::IdentifyDomain,
+            ModelingObligation::ResolveEntityReference,
+        ],
+    );
+
     let explicit_object = !facts.is_empty() || !definitions.is_empty();
     let distance = if textual_attachment_reference
         || task_shape == TaskShape::ProveIdentity
@@ -1498,9 +1681,13 @@ pub fn assess_prompt(
         definitions,
         entities,
         facts,
+        formalized_facts: typed_facts,
+        facts_completeness,
         target,
         assumptions,
         constraints,
+        formalized_constraints: typed_constraints,
+        constraints_completeness,
         obligations,
         modeling_distance: distance,
     }

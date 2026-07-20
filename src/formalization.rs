@@ -280,6 +280,22 @@ pub struct DirectInstantiationAssessment {
     pub false_low_distance_reason: Option<FalseLowDistanceReason>,
 }
 
+/// Gate-by-gate explanation for a denied direct-instantiation attempt.  This
+/// is diagnostic only; it does not relax `authorization_safe()`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct AuthorizationDenialTrace {
+    pub case_id: String,
+    pub gold_should_authorize: bool,
+    pub target_complete: bool,
+    pub representation_complete: bool,
+    pub bindings_complete: bool,
+    pub constraints_complete: bool,
+    pub operation_supported: bool,
+    pub verification_available: bool,
+    pub first_blocker: String,
+    pub all_blockers: Vec<String>,
+}
+
 impl DirectInstantiationAssessment {
     /// The only predicate a future executor may use to authorize a
     /// prompt-supplied direct application.  Surface distance alone is never
@@ -298,6 +314,70 @@ impl DirectInstantiationAssessment {
             && self.missing_representation.is_empty()
             && self.authorization_blockers.is_empty()
             && self.false_low_distance_reason.is_none()
+    }
+
+    pub fn denial_trace(&self, gold_should_authorize: bool) -> AuthorizationDenialTrace {
+        let target_complete = self.target_identified
+            && !self.authorization_blockers.iter().any(|b| {
+                b == "target_not_explicit_instantiation" || b == "concrete_argument_binding_missing"
+            });
+        let representation_complete = self.missing_representation.is_empty();
+        let bindings_complete = self.binders_identified
+            && !self
+                .authorization_blockers
+                .iter()
+                .any(|b| b == "concrete_argument_binding_missing");
+        let constraints_complete = self.side_conditions_identified;
+        let operation_supported = self.one_step_representable;
+        let verification_available = self.verifier_available;
+        let mut all_blockers = self.authorization_blockers.clone();
+        if !target_complete {
+            all_blockers.push("target_incomplete".into());
+        }
+        if !representation_complete {
+            all_blockers.push("representation_incomplete".into());
+        }
+        if !bindings_complete {
+            all_blockers.push("bindings_incomplete".into());
+        }
+        if !constraints_complete {
+            all_blockers.push("constraints_incomplete".into());
+        }
+        if !operation_supported {
+            all_blockers.push("operation_unsupported".into());
+        }
+        if !verification_available {
+            all_blockers.push("verification_unavailable".into());
+        }
+        all_blockers.sort();
+        all_blockers.dedup();
+        let first_blocker = if !target_complete {
+            "target_incomplete"
+        } else if !representation_complete {
+            "representation_incomplete"
+        } else if !bindings_complete {
+            "bindings_incomplete"
+        } else if !constraints_complete {
+            "constraints_incomplete"
+        } else if !operation_supported {
+            "operation_unsupported"
+        } else if !verification_available {
+            "verification_unavailable"
+        } else {
+            "authorization_contract_or_lower_bound"
+        };
+        AuthorizationDenialTrace {
+            case_id: self.question_id.clone(),
+            gold_should_authorize,
+            target_complete,
+            representation_complete,
+            bindings_complete,
+            constraints_complete,
+            operation_supported,
+            verification_available,
+            first_blocker: first_blocker.into(),
+            all_blockers,
+        }
     }
 }
 
@@ -589,11 +669,19 @@ pub struct FormalizationScore {
     pub constraints: FieldScore,
     pub obligations: FieldScore,
     pub target_exact: bool,
+    pub target_comparison: TargetComparison,
     /// Structural target agreement is deliberately weaker than textual
     /// equality: a trace may include the full prompt sentence while the gold
     /// target stores only the requested operation.
     pub target_structural: bool,
     pub authorization_correct: bool,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct TargetComparison {
+    pub kind_matches: bool,
+    pub subject_overlap: bool,
+    pub semantically_equivalent: bool,
 }
 
 fn normalized_text(value: &str) -> String {
@@ -610,6 +698,26 @@ fn target_tokens(value: &str) -> BTreeSet<String> {
         .filter(|token| token.len() > 1)
         .map(str::to_string)
         .collect()
+}
+
+fn target_kind(value: &str) -> Option<&'static str> {
+    let text = normalized_text(value);
+    [
+        ("solve", "solve"),
+        ("evaluate", "evaluate"),
+        ("compute", "compute"),
+        ("calculate", "calculate"),
+        ("find", "find"),
+        ("determine", "determine"),
+        ("simplify", "simplify"),
+        ("compare", "compare"),
+        ("prove", "prove"),
+        ("show", "prove"),
+        ("check", "verify"),
+        ("verify", "verify"),
+    ]
+    .iter()
+    .find_map(|(needle, kind)| text.contains(needle).then_some(*kind))
 }
 
 fn set_score(
@@ -636,8 +744,16 @@ pub fn score_formalization(
         .unwrap_or_default();
     let gold_tokens = target_tokens(&gold.target.statement);
     let predicted_tokens = target_tokens(predicted_target);
-    let target_structural = !gold_tokens.is_empty()
-        && gold_tokens.intersection(&predicted_tokens).count() * 2 >= gold_tokens.len();
+    let kind_matches = target_kind(&gold.target.statement) == target_kind(predicted_target);
+    let subject_overlap = gold_tokens
+        .intersection(&predicted_tokens)
+        .any(|token| !["the", "for", "at", "of", "and", "is"].contains(&token.as_str()));
+    let target_comparison = TargetComparison {
+        kind_matches,
+        subject_overlap,
+        semantically_equivalent: kind_matches && subject_overlap,
+    };
+    let target_structural = target_comparison.semantically_equivalent;
     FormalizationScore {
         definitions: set_score(
             gold.definitions.iter().map(|v| v.label().to_string()),
@@ -664,6 +780,7 @@ pub fn score_formalization(
             trace.obligations.iter().map(|v| v.label().to_string()),
         ),
         target_exact: gold.target.statement == predicted_target,
+        target_comparison,
         target_structural,
         authorization_correct: gold.authorization_expected == actual_authorization,
     }

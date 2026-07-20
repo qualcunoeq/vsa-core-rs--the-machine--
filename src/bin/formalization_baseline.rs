@@ -8,8 +8,8 @@ use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, env, fs};
 use the_machine::formalization::{
-    assess_direct_instantiation, assess_prompt, score_formalization, FieldScore,
-    FormalizationCorpus, FormalizationGoldCase, FormalizationScore,
+    assess_direct_instantiation, assess_prompt, score_formalization, AuthorizationDenialTrace,
+    FieldScore, FormalizationCorpus, FormalizationGoldCase, FormalizationScore,
 };
 
 #[derive(Debug, Serialize)]
@@ -17,6 +17,9 @@ struct Aggregate {
     cases: usize,
     exact_target: usize,
     structural_target: usize,
+    target_kind_matches: usize,
+    target_subject_overlap: usize,
+    target_semantic_equivalent: usize,
     authorization_correct: usize,
     definitions: Counts,
     facts: Counts,
@@ -32,6 +35,9 @@ struct Aggregate {
     invented_obligations: usize,
     false_authorizations: usize,
     false_denials: usize,
+    denial_funnel: BTreeMap<String, usize>,
+    all_denial_blockers: BTreeMap<String, usize>,
+    denial_cases: Vec<AuthorizationDenialTrace>,
     failures: BTreeMap<String, Vec<String>>,
 }
 
@@ -76,6 +82,9 @@ impl Aggregate {
             cases: 0,
             exact_target: 0,
             structural_target: 0,
+            target_kind_matches: 0,
+            target_subject_overlap: 0,
+            target_semantic_equivalent: 0,
             authorization_correct: 0,
             definitions: Counts::default(),
             facts: Counts::default(),
@@ -91,6 +100,9 @@ impl Aggregate {
             invented_obligations: 0,
             false_authorizations: 0,
             false_denials: 0,
+            denial_funnel: BTreeMap::new(),
+            all_denial_blockers: BTreeMap::new(),
+            denial_cases: Vec::new(),
             failures: BTreeMap::new(),
         }
     }
@@ -101,10 +113,15 @@ impl Aggregate {
         score: &FormalizationScore,
         should_authorize: bool,
         authorized: bool,
+        denial: Option<AuthorizationDenialTrace>,
     ) {
         self.cases += 1;
         self.exact_target += usize::from(score.target_exact);
         self.structural_target += usize::from(score.target_structural);
+        self.target_kind_matches += usize::from(score.target_comparison.kind_matches);
+        self.target_subject_overlap += usize::from(score.target_comparison.subject_overlap);
+        self.target_semantic_equivalent +=
+            usize::from(score.target_comparison.semantically_equivalent);
         self.authorization_correct += usize::from(score.authorization_correct);
         self.definitions.add(score.definitions);
         self.facts.add(score.facts);
@@ -142,6 +159,16 @@ impl Aggregate {
         }
         if !authorized && should_authorize {
             self.false_denials += 1;
+            if let Some(denial) = denial {
+                *self
+                    .denial_funnel
+                    .entry(denial.first_blocker.clone())
+                    .or_default() += 1;
+                for blocker in &denial.all_blockers {
+                    *self.all_denial_blockers.entry(blocker.clone()).or_default() += 1;
+                }
+                self.denial_cases.push(denial);
+            }
             self.failures
                 .entry("false_denial".into())
                 .or_default()
@@ -191,10 +218,17 @@ fn holdout(id: &str) -> bool {
         .unwrap_or(false)
 }
 
-fn evaluate_case(case: &FormalizationGoldCase) -> (FormalizationScore, bool) {
+fn evaluate_case(
+    case: &FormalizationGoldCase,
+) -> (FormalizationScore, bool, AuthorizationDenialTrace) {
     let trace = assess_prompt(&case.id, &case.prompt, "Math", false);
-    let authorized = assess_direct_instantiation(&trace).authorization_safe();
-    (score_formalization(case, &trace, authorized), authorized)
+    let assessment = assess_direct_instantiation(&trace);
+    let authorized = assessment.authorization_safe();
+    (
+        score_formalization(case, &trace, authorized),
+        authorized,
+        assessment.denial_trace(case.authorization_expected),
+    )
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -218,26 +252,48 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         by_transformation: BTreeMap::new(),
     };
     for case in &corpus.cases {
-        let (score, authorized) = evaluate_case(case);
-        report
-            .total
-            .add(&case.id, &score, case.authorization_expected, authorized);
+        let (score, authorized, denial) = evaluate_case(case);
+        report.total.add(
+            &case.id,
+            &score,
+            case.authorization_expected,
+            authorized,
+            Some(denial.clone()),
+        );
         let split = if holdout(&case.id) {
             &mut report.holdout
         } else {
             &mut report.development
         };
-        split.add(&case.id, &score, case.authorization_expected, authorized);
+        split.add(
+            &case.id,
+            &score,
+            case.authorization_expected,
+            authorized,
+            Some(denial.clone()),
+        );
         report
             .by_tier
             .entry(case.tier.label().into())
             .or_insert_with(Aggregate::new)
-            .add(&case.id, &score, case.authorization_expected, authorized);
+            .add(
+                &case.id,
+                &score,
+                case.authorization_expected,
+                authorized,
+                Some(denial.clone()),
+            );
         report
             .by_transformation
             .entry(case.transformation.label().into())
             .or_insert_with(Aggregate::new)
-            .add(&case.id, &score, case.authorization_expected, authorized);
+            .add(
+                &case.id,
+                &score,
+                case.authorization_expected,
+                authorized,
+                Some(denial),
+            );
     }
     let output = serde_json::to_string_pretty(&report)?;
     println!("{output}");

@@ -108,6 +108,10 @@ pub enum FactIndexInsert {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum FactIndexQueryFailure {
     Conflict(FactConflict),
+    Unavailable {
+        key: String,
+        facts: Vec<(String, FactStatus)>,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -122,10 +126,35 @@ pub enum FactSelectionRejection {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum FactSelectionFailure {
     Conflict(FactConflict),
+    Unavailable {
+        key: String,
+        facts: Vec<(String, FactStatus)>,
+    },
     NoAcceptableFacts {
         key: String,
         rejections: Vec<(String, FactSelectionRejection)>,
     },
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum FactStatus {
+    Active,
+    Superseded,
+    Invalidated,
+    Conflicted,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct FactLifecycle {
+    pub status: FactStatus,
+    pub cause: Option<String>,
+    pub replacement: Option<String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum FactStateTransitionRejection {
+    UnknownFact,
 }
 
 /// Consumer-side policy for selecting facts from the ledger.  This is
@@ -198,6 +227,7 @@ impl FactSelectionPolicy {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
 pub struct DerivedFactIndex {
     entries: BTreeMap<String, Vec<DerivedFact>>,
+    lifecycle: BTreeMap<String, FactLifecycle>,
 }
 
 impl DerivedFactIndex {
@@ -211,17 +241,40 @@ impl DerivedFactIndex {
             .evaluate(&fact, EvidenceStatus::Inferred)
             .map_err(FactIndexRejection::Policy)?;
         let key = key.into();
-        let entries = self.entries.entry(key.clone()).or_default();
-        entries.push(fact);
-        let mut contents = entries
-            .iter()
-            .map(|entry| entry.content.clone())
-            .collect::<Vec<_>>();
-        contents.sort();
-        contents.dedup();
-        if contents.len() > 1 {
-            Ok(FactIndexInsert::Conflict(self.conflict_for(&key)))
+        let fact_id = fact.id.clone();
+        let conflict = {
+            let entries = self.entries.entry(key.clone()).or_default();
+            entries.push(fact);
+            let mut contents = entries
+                .iter()
+                .map(|entry| entry.content.clone())
+                .collect::<Vec<_>>();
+            contents.sort();
+            contents.dedup();
+            contents.len() > 1
+        };
+        if conflict {
+            let receipt = self.conflict_for(&key);
+            for fact_id in &receipt.fact_ids {
+                self.lifecycle.insert(
+                    fact_id.clone(),
+                    FactLifecycle {
+                        status: FactStatus::Conflicted,
+                        cause: Some(format!("conflict:{key}")),
+                        replacement: None,
+                    },
+                );
+            }
+            Ok(FactIndexInsert::Conflict(receipt))
         } else {
+            self.lifecycle.insert(
+                fact_id,
+                FactLifecycle {
+                    status: FactStatus::Active,
+                    cause: None,
+                    replacement: None,
+                },
+            );
             Ok(FactIndexInsert::Added)
         }
     }
@@ -235,6 +288,10 @@ impl DerivedFactIndex {
             .values()
             .flat_map(|facts| facts.iter())
             .find(|fact| fact.id == id)
+    }
+
+    pub fn lifecycle(&self, id: &str) -> Option<&FactLifecycle> {
+        self.lifecycle.get(id)
     }
 
     pub fn ancestors_of(&self, id: &str) -> Vec<String> {
@@ -291,7 +348,22 @@ impl DerivedFactIndex {
         if contents.len() > 1 {
             Err(FactIndexQueryFailure::Conflict(self.conflict_for(key)))
         } else {
-            Ok(candidates)
+            let unavailable = candidates
+                .iter()
+                .filter_map(|fact| {
+                    self.lifecycle(fact.id.as_str())
+                        .filter(|state| state.status != FactStatus::Active)
+                        .map(|state| (fact.id.clone(), state.status))
+                })
+                .collect::<Vec<_>>();
+            if !unavailable.is_empty() {
+                Err(FactIndexQueryFailure::Unavailable {
+                    key: key.to_string(),
+                    facts: unavailable,
+                })
+            } else {
+                Ok(candidates)
+            }
         }
     }
 
@@ -304,6 +376,9 @@ impl DerivedFactIndex {
             .usable(key)
             .map_err(|failure| match failure {
                 FactIndexQueryFailure::Conflict(conflict) => FactSelectionFailure::Conflict(conflict),
+                FactIndexQueryFailure::Unavailable { key, facts } => {
+                    FactSelectionFailure::Unavailable { key, facts }
+                }
             })?;
         let mut accepted = Vec::new();
         let mut rejected = Vec::new();
@@ -321,6 +396,66 @@ impl DerivedFactIndex {
         } else {
             Ok(accepted)
         }
+    }
+
+    pub fn invalidate(
+        &mut self,
+        id: &str,
+        cause: impl Into<String>,
+        replacement: Option<String>,
+    ) -> Result<Vec<String>, FactStateTransitionRejection> {
+        if self.fact(id).is_none() {
+            return Err(FactStateTransitionRejection::UnknownFact);
+        }
+        let cause = cause.into();
+        let mut affected = self.invalidation_closure(id);
+        affected.push(id.to_string());
+        affected.sort();
+        affected.dedup();
+        for affected_id in &affected {
+            self.lifecycle.insert(
+                affected_id.clone(),
+                FactLifecycle {
+                    status: FactStatus::Invalidated,
+                    cause: Some(cause.clone()),
+                    replacement: replacement.clone(),
+                },
+            );
+        }
+        Ok(affected)
+    }
+
+    pub fn supersede(
+        &mut self,
+        id: &str,
+        replacement: impl Into<String>,
+        cause: impl Into<String>,
+    ) -> Result<Vec<String>, FactStateTransitionRejection> {
+        if self.fact(id).is_none() {
+            return Err(FactStateTransitionRejection::UnknownFact);
+        }
+        let replacement = replacement.into();
+        let cause = cause.into();
+        let affected = self.invalidation_closure(id);
+        self.lifecycle.insert(
+            id.to_string(),
+            FactLifecycle {
+                status: FactStatus::Superseded,
+                cause: Some(cause.clone()),
+                replacement: Some(replacement.clone()),
+            },
+        );
+        for affected_id in &affected {
+            self.lifecycle.insert(
+                affected_id.clone(),
+                FactLifecycle {
+                    status: FactStatus::Invalidated,
+                    cause: Some(cause.clone()),
+                    replacement: Some(replacement.clone()),
+                },
+            );
+        }
+        Ok(affected)
     }
 
     pub fn conflicts(&self) -> Vec<FactConflict> {
@@ -743,6 +878,65 @@ mod tests {
         assert_eq!(index.dependents_of("base"), vec!["arrival", "distance"]);
         assert_eq!(index.invalidation_closure("base"), vec!["arrival", "distance"]);
         assert!(index.fact("missing").is_none());
+    }
+
+    #[test]
+    fn fact_invalidation_is_non_destructive_and_blocks_selection() {
+        let policy = FactPolicy::verified_transformation();
+        let base = derived_fact("base", "time = 5s", "prompt-time");
+        let derived = DerivedFact::derive_from(
+            "distance",
+            "distance = 50m",
+            &[&base],
+            "rate transformation",
+            &[],
+            Some("mechanics".into()),
+        )
+        .unwrap();
+        let mut index = DerivedFactIndex::default();
+        index.insert("time", base, &policy).unwrap();
+        index.insert("distance", derived, &policy).unwrap();
+
+        let affected = index
+            .invalidate("base", "time corrected by user", Some("time-new".into()))
+            .unwrap();
+        assert_eq!(affected, vec!["base", "distance"]);
+        assert_eq!(
+            index.lifecycle("base").map(|state| state.status),
+            Some(FactStatus::Invalidated)
+        );
+        assert_eq!(
+            index.lifecycle("distance").map(|state| state.status),
+            Some(FactStatus::Invalidated)
+        );
+        assert!(matches!(
+            index.select("distance", &FactSelectionPolicy::exact_algebra()),
+            Err(FactSelectionFailure::Unavailable { key, .. }) if key == "distance"
+        ));
+        assert!(index.fact("distance").is_some());
+    }
+
+    #[test]
+    fn superseding_a_fact_preserves_history_and_invalidates_dependents() {
+        let policy = FactPolicy::verified_transformation();
+        let base = derived_fact("base", "x = 5", "prompt-x");
+        let derived = DerivedFact::derive_from(
+            "double",
+            "2x = 10",
+            &[&base],
+            "doubling",
+            &[],
+            None,
+        )
+        .unwrap();
+        let mut index = DerivedFactIndex::default();
+        index.insert("x", base, &policy).unwrap();
+        index.insert("double", derived, &policy).unwrap();
+        let affected = index.supersede("base", "base-new", "clarification").unwrap();
+        assert_eq!(affected, vec!["double"]);
+        assert_eq!(index.lifecycle("base").unwrap().status, FactStatus::Superseded);
+        assert_eq!(index.lifecycle("double").unwrap().status, FactStatus::Invalidated);
+        assert_eq!(index.fact("base").unwrap().content, "x = 5");
     }
 
     fn derived_fact(id: &str, content: &str, parent: &str) -> DerivedFact {

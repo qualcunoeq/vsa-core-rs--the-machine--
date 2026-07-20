@@ -59,7 +59,17 @@ struct Aggregate {
     denial_funnel: BTreeMap<String, usize>,
     all_denial_blockers: BTreeMap<String, usize>,
     denial_cases: Vec<AuthorizationDenialTrace>,
+    target_gaps: Vec<TargetGapRecord>,
     failures: BTreeMap<String, Vec<String>>,
+}
+
+#[derive(Debug, Serialize)]
+struct TargetGapRecord {
+    case_id: String,
+    operation: String,
+    status: String,
+    missing_fields: Vec<String>,
+    blocking_reasons: Vec<String>,
 }
 
 #[derive(Debug, Default, Serialize)]
@@ -157,6 +167,7 @@ impl Aggregate {
             denial_funnel: BTreeMap::new(),
             all_denial_blockers: BTreeMap::new(),
             denial_cases: Vec::new(),
+            target_gaps: Vec::new(),
             failures: BTreeMap::new(),
         }
     }
@@ -221,6 +232,31 @@ impl Aggregate {
             OperationStatus::Ambiguous(_) => "ambiguous".into(),
             OperationStatus::NotIdentified => "not_identified".into(),
         };
+        let target_status = match &target_completion.build_trace.final_status {
+            TargetStatus::Complete => "complete",
+            TargetStatus::Ambiguous(_) => "ambiguous",
+            TargetStatus::Incomplete(_) => "incomplete",
+        };
+        if target_status != "complete" {
+            let mut missing_fields = target_completion.reasons.clone();
+            match &target_completion.build_trace.binding_status {
+                the_machine::formalization::BindingStatus::Missing(fields)
+                | the_machine::formalization::BindingStatus::Ambiguous(fields)
+                | the_machine::formalization::BindingStatus::Conflicting(fields) => {
+                    missing_fields.extend(fields.iter().cloned());
+                }
+                the_machine::formalization::BindingStatus::Complete => {}
+            }
+            missing_fields.sort();
+            missing_fields.dedup();
+            self.target_gaps.push(TargetGapRecord {
+                case_id: id.into(),
+                operation: predicted_operation.clone(),
+                status: target_status.into(),
+                missing_fields,
+                blocking_reasons: target_completion.reasons.clone(),
+            });
+        }
         let recognition_correct =
             operation_recognition_correct(gold_operation, &predicted_operation);
         self.operation_recognition_correct += usize::from(recognition_correct);

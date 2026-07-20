@@ -781,6 +781,14 @@ pub enum TargetFieldStatus {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum BindingStatus {
+    Complete,
+    Missing(Vec<String>),
+    Ambiguous(Vec<String>),
+    Conflicting(Vec<String>),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TargetCompleteness {
     pub operation_kind: TargetFieldStatus,
     pub subject: TargetFieldStatus,
@@ -827,6 +835,7 @@ impl AnswerForm {
 pub struct TargetBuildTrace {
     pub operation: OperationStatus,
     pub subject: TargetFieldStatus,
+    pub binding_status: BindingStatus,
     pub bindings: TargetFieldStatus,
     pub requested_form: TargetFieldStatus,
     pub provenance: TargetFieldStatus,
@@ -1998,9 +2007,19 @@ fn build_target_completion(
     } else {
         TargetStatus::Incomplete(reasons.clone())
     };
+    let binding_status = match arguments_status {
+        TargetFieldStatus::Complete | TargetFieldStatus::NotRequired => BindingStatus::Complete,
+        TargetFieldStatus::Ambiguous => {
+            BindingStatus::Ambiguous(vec!["argument_binding_ambiguous".into()])
+        }
+        TargetFieldStatus::Missing => {
+            BindingStatus::Missing(vec!["required_argument_binding_missing".into()])
+        }
+    };
     let build_trace = TargetBuildTrace {
         operation: operation_status.clone(),
         subject: completeness.subject,
+        binding_status,
         bindings: completeness.arguments,
         requested_form: completeness.requested_form,
         provenance: completeness.provenance,
@@ -2500,6 +2519,7 @@ mod tests {
             target.build_trace.final_status,
             TargetStatus::Complete
         ));
+        assert_eq!(target.build_trace.binding_status, BindingStatus::Complete);
     }
 
     #[test]

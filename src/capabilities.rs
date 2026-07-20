@@ -39,6 +39,13 @@ pub enum CapabilityIoType {
     SolutionSet,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CapabilityKind {
+    Transformation,
+    ModelConstruction,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityQualityGate {
     pub positive_cases: usize,
@@ -62,6 +69,7 @@ impl CapabilityQualityGate {
 pub struct CapabilitySpec {
     pub id: String,
     pub version: u32,
+    pub kind: CapabilityKind,
     /// Other enabled capabilities required by this capability's executor.
     /// Dependencies are capability IDs, not registry insertion positions.
     pub dependencies: Vec<String>,
@@ -113,6 +121,7 @@ impl CapabilitySpec {
         Self {
             id: "function_application".into(),
             version: 1,
+            kind: CapabilityKind::Transformation,
             dependencies: vec!["expression_evaluation".into()],
             consumes: vec![
                 CapabilityIoType::FunctionDefinition,
@@ -149,6 +158,7 @@ impl CapabilitySpec {
         Self {
             id: "expression_evaluation".into(),
             version: 1,
+            kind: CapabilityKind::Transformation,
             dependencies: Vec::new(),
             consumes: vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
             produces: vec![CapabilityIoType::ExactValue],
@@ -182,6 +192,7 @@ impl CapabilitySpec {
         Self {
             id: "linear_equation_solve".into(),
             version: 1,
+            kind: CapabilityKind::Transformation,
             dependencies: Vec::new(),
             consumes: vec![CapabilityIoType::Equation, CapabilityIoType::TargetVariable],
             produces: vec![CapabilityIoType::SolutionSet],
@@ -220,6 +231,7 @@ impl CapabilitySpec {
         Self {
             id: "substitution".into(),
             version: 1,
+            kind: CapabilityKind::Transformation,
             dependencies: Vec::new(),
             consumes: vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
             produces: vec![CapabilityIoType::Expression],
@@ -601,5 +613,14 @@ mod tests {
             CapabilityRegistry::production().discover(&target).selection,
             CapabilitySelection::Unique("substitution".into())
         );
+    }
+
+    #[test]
+    fn production_capabilities_are_transformations_only() {
+        let registry = CapabilityRegistry::production();
+        assert!(registry
+            .capabilities
+            .values()
+            .all(|capability| capability.kind == CapabilityKind::Transformation));
     }
 }

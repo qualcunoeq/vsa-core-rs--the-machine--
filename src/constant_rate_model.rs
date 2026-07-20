@@ -6,6 +6,9 @@
 
 use serde::Serialize;
 use crate::capabilities::CapabilityIoType;
+pub use crate::evidence::{
+    EvidenceItem, EvidenceOrigin, EvidencePolicy, EvidencePolicyRejection, EvidenceStatus,
+};
 use std::collections::BTreeSet;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -33,8 +36,7 @@ pub struct ModelConstructionSpec {
     pub version: u32,
     pub supported_language_pattern: String,
     pub required_evidence: Vec<String>,
-    pub allowed_evidence_origins: Vec<EvidenceOrigin>,
-    pub allowed_evidence_statuses: Vec<EvidenceStatus>,
+    pub evidence_policy: EvidencePolicy,
     pub model_artifacts: Vec<ModelArtifactType>,
     pub produced_artifacts: Vec<CapabilityIoType>,
     pub introduced_assumptions: Vec<String>,
@@ -44,35 +46,8 @@ pub struct ModelConstructionSpec {
 
 impl ModelConstructionSpec {
     pub fn accepts_evidence(&self, evidence: &EvidenceItem) -> bool {
-        self.allowed_evidence_origins.contains(&evidence.origin)
-            && self.allowed_evidence_statuses.contains(&evidence.status)
+        self.evidence_policy.evaluate(evidence).is_ok()
     }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum EvidenceOrigin {
-    Prompt,
-    Clarification,
-    Derived,
-    Retrieved,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum EvidenceStatus {
-    Explicit,
-    Confirmed,
-    Inferred,
-    Rejected,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-pub struct EvidenceItem {
-    pub content: String,
-    pub origin: EvidenceOrigin,
-    pub status: EvidenceStatus,
-    pub provenance: String,
 }
 
 /// Formal artifacts created by a model constructor.  These describe the
@@ -377,7 +352,7 @@ impl ModelConstructorRegistry {
                 id: spec.id.clone(),
             });
         }
-        if spec.allowed_evidence_origins.is_empty() || spec.allowed_evidence_statuses.is_empty() {
+        if !spec.evidence_policy.valid() {
             return Err(ModelRegistryError::MissingEvidencePolicy {
                 id: spec.id.clone(),
             });
@@ -561,8 +536,7 @@ pub fn constant_rate_model_spec() -> ModelConstructionSpec {
             "explicit duration".into(),
             "explicit total-change target".into(),
         ],
-        allowed_evidence_origins: vec![EvidenceOrigin::Prompt, EvidenceOrigin::Clarification],
-        allowed_evidence_statuses: vec![EvidenceStatus::Explicit, EvidenceStatus::Confirmed],
+        evidence_policy: EvidencePolicy::strict_prompt_confirmed(),
         model_artifacts: vec![
             ModelArtifactType::Quantity,
             ModelArtifactType::Relation,
@@ -798,8 +772,7 @@ mod tests {
             version,
             supported_language_pattern: "test pattern".into(),
             required_evidence: vec!["explicit test evidence".into()],
-            allowed_evidence_origins: vec![EvidenceOrigin::Prompt, EvidenceOrigin::Clarification],
-            allowed_evidence_statuses: vec![EvidenceStatus::Explicit, EvidenceStatus::Confirmed],
+            evidence_policy: EvidencePolicy::strict_prompt_confirmed(),
             model_artifacts: vec![ModelArtifactType::Relation],
             produced_artifacts: vec![CapabilityIoType::Expression],
             introduced_assumptions: Vec::new(),

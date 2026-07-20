@@ -7,7 +7,7 @@
 use crate::capabilities::CapabilityIoType;
 use crate::constant_rate_model::{
     ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec, ModelEvidenceContext,
-    ModelMatcherResult, EvidenceOrigin, EvidenceStatus,
+    ModelMatcherResult, EvidencePolicy,
 };
 use serde::Serialize;
 
@@ -58,8 +58,7 @@ pub fn proportional_model_spec() -> ModelConstructionSpec {
             "explicit numeric input".into(),
             "explicit target y".into(),
         ],
-        allowed_evidence_origins: vec![EvidenceOrigin::Prompt, EvidenceOrigin::Clarification],
-        allowed_evidence_statuses: vec![EvidenceStatus::Explicit, EvidenceStatus::Confirmed],
+        evidence_policy: EvidencePolicy::strict_prompt_confirmed(),
         model_artifacts: vec![
             ModelArtifactType::Quantity,
             ModelArtifactType::Relation,

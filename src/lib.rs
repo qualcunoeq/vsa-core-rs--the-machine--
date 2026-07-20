@@ -29,6 +29,7 @@ pub mod development;
 pub mod diagnostic;
 pub mod drift;
 pub mod drives;
+pub mod evidence;
 pub mod expression_evaluation;
 pub mod experiment;
 pub mod forager;

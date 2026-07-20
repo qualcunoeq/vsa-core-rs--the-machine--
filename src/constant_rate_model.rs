@@ -96,7 +96,18 @@ pub struct ModelAmbiguityReceipt {
     pub distinguishing_evidence_missing: Vec<String>,
     pub competing_assumptions: Vec<String>,
     pub ranked_candidates: Vec<String>,
+    pub clarification_request: ClarificationRequest,
     pub reason: ModelAmbiguityReason,
+}
+
+/// A structured request for evidence that could resolve model ambiguity.  It
+/// is a diagnostic/action boundary: producing this request never authorizes a
+/// model or executes a plan.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ClarificationRequest {
+    pub question: String,
+    pub required_information: Vec<String>,
+    pub resolves_candidates: Vec<String>,
 }
 
 /// Deterministic shadow score for future model comparison.  It is deliberately
@@ -363,6 +374,16 @@ impl ModelConstructorRegistry {
                     .flat_map(|candidate| candidate.introduced_assumptions.clone())
                     .collect(),
                 ranked_candidates: ranked.iter().map(|(id, _)| id.clone()).collect(),
+                clarification_request: ClarificationRequest {
+                    question: format!(
+                        "Which model interpretation should be used: {}?",
+                        ids.join(", ")
+                    ),
+                    required_information: vec![
+                        "an explicit fact that distinguishes one eligible model interpretation".into(),
+                    ],
+                    resolves_candidates: ids.clone(),
+                },
                 reason: ModelAmbiguityReason::NoUniqueDiscriminator,
             }),
             _ => None,
@@ -817,6 +838,14 @@ mod tests {
             ModelAmbiguityReason::NoUniqueDiscriminator
         );
         assert_eq!(ambiguity.ranked_candidates, trace.ranked_candidates);
+        assert_eq!(
+            ambiguity.clarification_request.resolves_candidates,
+            ambiguity.candidate_ids
+        );
+        assert!(ambiguity
+            .clarification_request
+            .question
+            .contains("Which model interpretation"));
     }
 
     #[test]

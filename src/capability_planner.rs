@@ -17,6 +17,11 @@ pub enum CapabilityPlanningFailure {
     AmbiguousCapabilities(Vec<String>),
     DependencyUnavailable(String),
     DependencyCycle(String),
+    NoProducer(CapabilityIoType),
+    MissingInputs {
+        capability: String,
+        missing: Vec<CapabilityIoType>,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -34,6 +39,14 @@ pub struct CapabilityPlan {
     pub operation: OperationKind,
     pub subject_type: SubjectObjectType,
     pub answer_form: Option<AnswerForm>,
+    pub selected_capability: String,
+    pub steps: Vec<CapabilityPlanStep>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct GoalCapabilityPlan {
+    pub goal: CapabilityIoType,
+    pub available_inputs: Vec<CapabilityIoType>,
     pub selected_capability: String,
     pub steps: Vec<CapabilityPlanStep>,
 }
@@ -108,10 +121,73 @@ pub fn plan_target(
     })
 }
 
+/// Select one capability that can produce `goal` from the explicitly
+/// available artifacts.  This is deliberately one-step dataflow planning;
+/// dependencies are expanded, but missing data inputs are not invented.
+pub fn plan_for_goal(
+    goal: CapabilityIoType,
+    available_inputs: &BTreeSet<CapabilityIoType>,
+    registry: &CapabilityRegistry,
+) -> Result<GoalCapabilityPlan, CapabilityPlanningFailure> {
+    let mut candidates = registry
+        .capabilities
+        .values()
+        .filter(|capability| capability.quality_gate.enabled())
+        .filter(|capability| capability.produces.contains(&goal))
+        .collect::<Vec<_>>();
+    if candidates.is_empty() {
+        return Err(CapabilityPlanningFailure::NoProducer(goal));
+    }
+    candidates.retain(|capability| {
+        capability
+            .consumes
+            .iter()
+            .all(|input| available_inputs.contains(input))
+    });
+    if candidates.is_empty() {
+        let mut possible = registry
+            .capabilities
+            .values()
+            .filter(|capability| capability.quality_gate.enabled())
+            .filter(|capability| capability.produces.contains(&goal));
+        let capability = possible.next().expect("producer checked above");
+        let missing = capability
+            .consumes
+            .iter()
+            .filter(|input| !available_inputs.contains(input))
+            .copied()
+            .collect();
+        return Err(CapabilityPlanningFailure::MissingInputs {
+            capability: capability.id.clone(),
+            missing,
+        });
+    }
+    if candidates.len() > 1 {
+        return Err(CapabilityPlanningFailure::AmbiguousCapabilities(
+            candidates.into_iter().map(|capability| capability.id.clone()).collect(),
+        ));
+    }
+    let selected = candidates[0];
+    let mut steps = Vec::new();
+    dependency_steps(
+        &selected.id,
+        registry,
+        &mut BTreeSet::new(),
+        &mut BTreeSet::new(),
+        &mut steps,
+    )?;
+    Ok(GoalCapabilityPlan {
+        goal,
+        available_inputs: available_inputs.iter().copied().collect(),
+        selected_capability: selected.id.clone(),
+        steps,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::capabilities::CapabilityRegistry;
+    use crate::capabilities::{CapabilityIoType, CapabilityRegistry};
     use crate::formalization::assess_prompt;
 
     #[test]
@@ -164,5 +240,51 @@ mod tests {
             plan_target(&target, &CapabilityRegistry::production()),
             Err(CapabilityPlanningFailure::NoEligibleCapability)
         );
+    }
+
+    #[test]
+    fn goal_planner_selects_substitution_from_typed_inputs() {
+        let available = BTreeSet::from([
+            CapabilityIoType::Expression,
+            CapabilityIoType::BindingSet,
+        ]);
+        let plan = plan_for_goal(
+            CapabilityIoType::Expression,
+            &available,
+            &CapabilityRegistry::production(),
+        )
+        .unwrap();
+        assert_eq!(plan.selected_capability, "substitution");
+        assert_eq!(plan.steps.len(), 1);
+    }
+
+    #[test]
+    fn goal_planner_rejects_missing_inputs() {
+        let available = BTreeSet::from([CapabilityIoType::Equation]);
+        assert!(matches!(
+            plan_for_goal(
+                CapabilityIoType::SolutionSet,
+                &available,
+                &CapabilityRegistry::production()
+            ),
+            Err(CapabilityPlanningFailure::MissingInputs { .. })
+        ));
+    }
+
+    #[test]
+    fn goal_planner_abstains_on_multiple_exact_value_producers() {
+        let available = BTreeSet::from([
+            CapabilityIoType::Expression,
+            CapabilityIoType::FunctionDefinition,
+            CapabilityIoType::BindingSet,
+        ]);
+        assert!(matches!(
+            plan_for_goal(
+                CapabilityIoType::ExactValue,
+                &available,
+                &CapabilityRegistry::production()
+            ),
+            Err(CapabilityPlanningFailure::AmbiguousCapabilities(_))
+        ));
     }
 }

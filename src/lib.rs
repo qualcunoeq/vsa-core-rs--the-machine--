@@ -38,6 +38,7 @@ pub mod ledger;
 pub mod math;
 pub mod math_ingest;
 pub mod math_methods;
+pub mod math_method_mining;
 pub mod meta_reasoning;
 pub mod methods;
 pub mod monitor;

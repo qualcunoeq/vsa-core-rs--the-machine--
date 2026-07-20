@@ -375,6 +375,88 @@ impl PlanRepairCandidate {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct RepairDecisionPolicy {
+    pub allow_cost_increase: bool,
+    pub require_verification: bool,
+}
+
+impl RepairDecisionPolicy {
+    pub fn strict() -> Self {
+        Self {
+            allow_cost_increase: false,
+            require_verification: true,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum RepairDecisionRejection {
+    ReplacementStillStale(PlanLifecycle),
+    CostIncrease(PlanCostDelta),
+    MissingVerifier(String),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PlanRepairDecision {
+    pub evaluation: PlanRepairEvaluation,
+    pub accepted: bool,
+    pub rejections: Vec<RepairDecisionRejection>,
+}
+
+impl PlanRepairDecision {
+    pub fn is_accepted(&self) -> bool {
+        self.accepted
+    }
+}
+
+impl RepairDecisionPolicy {
+    /// Evaluate one candidate. This is a gate and receipt, not a ranking or
+    /// replacement operation; callers must still resolve competing accepted
+    /// candidates explicitly.
+    pub fn evaluate(
+        &self,
+        old_plan: &GoalCapabilityPlan,
+        candidate: &PlanRepairCandidate,
+        fact_index: &DerivedFactIndex,
+    ) -> PlanRepairDecision {
+        let evaluation = candidate.evaluate_against(old_plan);
+        let mut rejections = Vec::new();
+        let replacement_lifecycle = candidate.replacement.lifecycle(fact_index);
+        if !replacement_lifecycle.is_active() {
+            rejections.push(RepairDecisionRejection::ReplacementStillStale(
+                replacement_lifecycle,
+            ));
+        }
+        if !self.allow_cost_increase
+            && (evaluation.cost_delta.steps > 0
+                || evaluation.cost_delta.dependency_edges > 0
+                || evaluation.cost_delta.verification_steps > 0)
+        {
+            rejections.push(RepairDecisionRejection::CostIncrease(
+                evaluation.cost_delta,
+            ));
+        }
+        if self.require_verification {
+            rejections.extend(
+                candidate
+                    .replacement
+                    .steps
+                    .iter()
+                    .filter(|step| step.verifier.is_empty())
+                    .map(|step| RepairDecisionRejection::MissingVerifier(
+                        step.capability_id.clone(),
+                    )),
+            );
+        }
+        PlanRepairDecision {
+            accepted: rejections.is_empty(),
+            evaluation,
+            rejections,
+        }
+    }
+}
+
 /// Replan a stale goal using only facts that are currently active in the
 /// ledger. This deliberately returns a candidate rather than mutating the
 /// old plan or executing the replacement.
@@ -1243,5 +1325,24 @@ mod tests {
         assert!(evaluation.removed_capabilities.is_empty());
         assert_eq!(evaluation.invalidated_fact_ids, vec!["derived-old"]);
         assert_eq!(evaluation.replacement_fact_ids, vec!["derived-new"]);
+
+        let policy = RepairDecisionPolicy::strict();
+        let decision = policy.evaluate(&plan, &candidate, &index);
+        assert!(decision.is_accepted());
+        assert!(decision.rejections.is_empty());
+
+        let mut expensive = candidate.clone();
+        expensive.replacement.cost.steps += 1;
+        let rejected = policy.evaluate(&plan, &expensive, &index);
+        assert!(!rejected.is_accepted());
+        assert!(rejected
+            .rejections
+            .contains(&RepairDecisionRejection::CostIncrease(
+                PlanCostDelta {
+                    steps: 1,
+                    dependency_edges: 0,
+                    verification_steps: 0,
+                }
+            )));
     }
 }

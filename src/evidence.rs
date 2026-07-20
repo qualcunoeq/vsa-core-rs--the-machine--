@@ -1,6 +1,7 @@
 //! Shared evidence provenance and acceptance policy primitives.
 
 use serde::Serialize;
+use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -37,6 +38,118 @@ pub struct DerivedFact {
     pub content: String,
     pub parent_lineage: Vec<String>,
     pub provenance: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct FactConflict {
+    pub key: String,
+    pub fact_ids: Vec<String>,
+    pub contents: Vec<String>,
+    pub lineages: Vec<Vec<String>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum FactIndexRejection {
+    Policy(FactPolicyRejection),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum FactIndexInsert {
+    Added,
+    Conflict(FactConflict),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum FactIndexQueryFailure {
+    Conflict(FactConflict),
+}
+
+/// A small relevance index for derived facts.  Keys are supplied by the
+/// producer (for example `distance` or `equation:lhs`) rather than guessed
+/// from prose.  Facts are accepted only after lineage validation.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct DerivedFactIndex {
+    entries: BTreeMap<String, Vec<DerivedFact>>,
+}
+
+impl DerivedFactIndex {
+    pub fn insert(
+        &mut self,
+        key: impl Into<String>,
+        fact: DerivedFact,
+        policy: &FactPolicy,
+    ) -> Result<FactIndexInsert, FactIndexRejection> {
+        policy
+            .evaluate(&fact, EvidenceStatus::Inferred)
+            .map_err(FactIndexRejection::Policy)?;
+        let key = key.into();
+        let entries = self.entries.entry(key.clone()).or_default();
+        entries.push(fact);
+        let mut contents = entries
+            .iter()
+            .map(|entry| entry.content.clone())
+            .collect::<Vec<_>>();
+        contents.sort();
+        contents.dedup();
+        if contents.len() > 1 {
+            Ok(FactIndexInsert::Conflict(self.conflict_for(&key)))
+        } else {
+            Ok(FactIndexInsert::Added)
+        }
+    }
+
+    pub fn keys(&self) -> impl Iterator<Item = &String> {
+        self.entries.keys()
+    }
+
+    pub fn candidates(&self, key: &str) -> &[DerivedFact] {
+        self.entries.get(key).map(Vec::as_slice).unwrap_or(&[])
+    }
+
+    /// Return facts only when the key is internally consistent.  A caller
+    /// must resolve the conflict before allowing any downstream action.
+    pub fn usable(&self, key: &str) -> Result<&[DerivedFact], FactIndexQueryFailure> {
+        let candidates = self.candidates(key);
+        let mut contents = candidates
+            .iter()
+            .map(|entry| entry.content.clone())
+            .collect::<Vec<_>>();
+        contents.sort();
+        contents.dedup();
+        if contents.len() > 1 {
+            Err(FactIndexQueryFailure::Conflict(self.conflict_for(key)))
+        } else {
+            Ok(candidates)
+        }
+    }
+
+    pub fn conflicts(&self) -> Vec<FactConflict> {
+        self.entries
+            .iter()
+            .filter_map(|(key, entries)| {
+                let mut contents = entries
+                    .iter()
+                    .map(|entry| entry.content.clone())
+                    .collect::<Vec<_>>();
+                contents.sort();
+                contents.dedup();
+                (contents.len() > 1).then(|| self.conflict_for(key))
+            })
+            .collect()
+    }
+
+    fn conflict_for(&self, key: &str) -> FactConflict {
+        let entries = self.candidates(key);
+        FactConflict {
+            key: key.to_string(),
+            fact_ids: entries.iter().map(|entry| entry.id.clone()).collect(),
+            contents: entries.iter().map(|entry| entry.content.clone()).collect(),
+            lineages: entries
+                .iter()
+                .map(|entry| entry.parent_lineage.clone())
+                .collect(),
+        }
+    }
 }
 
 impl DerivedFact {
@@ -209,5 +322,66 @@ mod tests {
             FactPolicy::verified_transformation().evaluate(&fact, EvidenceStatus::Inferred),
             Err(FactPolicyRejection::LineageMissing)
         );
+    }
+
+    fn derived_fact(id: &str, content: &str, parent: &str) -> DerivedFact {
+        DerivedFact {
+            id: id.into(),
+            content: content.into(),
+            parent_lineage: vec![parent.into()],
+            provenance: "verified transformation".into(),
+        }
+    }
+
+    #[test]
+    fn derived_fact_index_validates_lineage_and_supports_relevance_queries() {
+        let mut index = DerivedFactIndex::default();
+        let policy = FactPolicy::verified_transformation();
+        assert_eq!(
+            index.insert("distance", derived_fact("d1", "distance = 50m", "rate-time"), &policy),
+            Ok(FactIndexInsert::Added)
+        );
+        assert_eq!(index.candidates("mass"), &[]);
+        let usable = index.usable("distance").unwrap();
+        assert_eq!(usable.len(), 1);
+        assert_eq!(usable[0].id, "d1");
+    }
+
+    #[test]
+    fn derived_fact_index_rejects_unlineaged_facts() {
+        let mut index = DerivedFactIndex::default();
+        let policy = FactPolicy::verified_transformation();
+        let fact = DerivedFact {
+            id: "guess".into(),
+            content: "answer = 42".into(),
+            parent_lineage: Vec::new(),
+            provenance: "guess".into(),
+        };
+        assert_eq!(
+            index.insert("answer", fact, &policy),
+            Err(FactIndexRejection::Policy(FactPolicyRejection::LineageMissing))
+        );
+    }
+
+    #[test]
+    fn derived_fact_index_surfaces_conflicting_valid_lineages() {
+        let mut index = DerivedFactIndex::default();
+        let policy = FactPolicy::verified_transformation();
+        assert_eq!(
+            index.insert("distance", derived_fact("d1", "distance = 50m", "proof-a"), &policy),
+            Ok(FactIndexInsert::Added)
+        );
+        let result = index.insert(
+            "distance",
+            derived_fact("d2", "distance = 60m", "proof-b"),
+            &policy,
+        );
+        assert!(matches!(result, Ok(FactIndexInsert::Conflict(_))));
+        assert!(matches!(
+            index.usable("distance"),
+            Err(FactIndexQueryFailure::Conflict(conflict))
+                if conflict.key == "distance" && conflict.fact_ids == vec!["d1", "d2"]
+        ));
+        assert_eq!(index.conflicts().len(), 1);
     }
 }

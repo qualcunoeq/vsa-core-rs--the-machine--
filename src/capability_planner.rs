@@ -974,6 +974,25 @@ pub struct CapabilityChainProofAbstractionCalibrationReport {
     pub safety_overconfidence_count: usize,
     pub tolerance_basis_points: usize,
     pub calibrated: bool,
+    pub risk_summaries: Vec<CapabilityChainProofAbstractionCalibrationRiskSummary>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionCalibrationRiskSummary {
+    pub risk: ImprovementRisk,
+    pub observations: usize,
+    pub mean_absolute_pass_error_basis_points: usize,
+    pub mean_absolute_safety_error_basis_points: usize,
+    pub overconfidence_count: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionUncertaintyPriority {
+    pub risk: ImprovementRisk,
+    pub evidence_gap_basis_points: usize,
+    pub calibration_error_basis_points: usize,
+    pub observed_calibration_cases: usize,
+    pub uncertainty_score: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -2633,12 +2652,15 @@ impl CapabilityChainProofAbstractionCalibrationLedger {
                 safety_overconfidence_count: 0,
                 tolerance_basis_points,
                 calibrated: false,
+                risk_summaries: Vec::new(),
             };
         }
         let mut pass_error = 0usize;
         let mut safety_error = 0usize;
         let mut pass_overconfidence = 0usize;
         let mut safety_overconfidence = 0usize;
+        let mut risk_totals =
+            BTreeMap::<u8, (ImprovementRisk, usize, usize, usize, usize)>::new();
         for observation in self.observations.values() {
             let actual_pass = usize::from(observation.actual_passed) * 10_000;
             let actual_safety = usize::from(observation.actual_safety_preserved) * 10_000;
@@ -2654,9 +2676,40 @@ impl CapabilityChainProofAbstractionCalibrationLedger {
             safety_overconfidence += usize::from(
                 observation.predicted_safety_rate_basis_points > actual_safety,
             );
+            let risk_key = match observation.risk {
+                ImprovementRisk::Low => 0,
+                ImprovementRisk::Medium => 1,
+                ImprovementRisk::High => 2,
+            };
+            let totals = risk_totals
+                .entry(risk_key)
+                .or_insert((observation.risk, 0, 0, 0, 0));
+            totals.1 += 1;
+            totals.2 += observation
+                .predicted_pass_rate_basis_points
+                .abs_diff(actual_pass);
+            totals.3 += observation
+                .predicted_safety_rate_basis_points
+                .abs_diff(actual_safety);
+            totals.4 += usize::from(
+                observation.predicted_pass_rate_basis_points > actual_pass
+                    || observation.predicted_safety_rate_basis_points > actual_safety,
+            );
         }
         let mean_pass_error = pass_error / observations;
         let mean_safety_error = safety_error / observations;
+        let risk_summaries = risk_totals
+            .into_values()
+            .map(|(risk, count, pass_total, safety_total, overconfidence)| {
+                CapabilityChainProofAbstractionCalibrationRiskSummary {
+                    risk,
+                    observations: count,
+                    mean_absolute_pass_error_basis_points: pass_total / count,
+                    mean_absolute_safety_error_basis_points: safety_total / count,
+                    overconfidence_count: overconfidence,
+                }
+            })
+            .collect();
         CapabilityChainProofAbstractionCalibrationReport {
             observations,
             mean_absolute_pass_error_basis_points: mean_pass_error,
@@ -2666,7 +2719,56 @@ impl CapabilityChainProofAbstractionCalibrationLedger {
             tolerance_basis_points,
             calibrated: mean_pass_error <= tolerance_basis_points
                 && mean_safety_error <= tolerance_basis_points,
+            risk_summaries,
         }
+    }
+
+    /// Identify risk classes where additional calibration observations would
+    /// reduce uncertainty most. Missing calibration history is treated as
+    /// uncertain, not as evidence of safety or failure.
+    pub fn uncertainty_priorities(
+        &self,
+        profile: &CapabilityChainProofAbstractionMetaLearningProfile,
+    ) -> Vec<CapabilityChainProofAbstractionUncertaintyPriority> {
+        let report = self.assess(usize::MAX);
+        let mut priorities = profile
+            .advisory_priors()
+            .into_iter()
+            .map(|prior| {
+                let summary = report.risk_summaries.iter().find(|summary| summary.risk == prior.risk);
+                let (observed, calibration_error) = match summary {
+                    Some(summary) => (
+                        summary.observations,
+                        (summary.mean_absolute_pass_error_basis_points
+                            + summary.mean_absolute_safety_error_basis_points)
+                            / 2,
+                    ),
+                    None => (0, 10_000),
+                };
+                let evidence_gap = 10_000usize.saturating_sub(prior.evidence_strength_basis_points);
+                CapabilityChainProofAbstractionUncertaintyPriority {
+                    risk: prior.risk,
+                    evidence_gap_basis_points: evidence_gap,
+                    calibration_error_basis_points: calibration_error,
+                    observed_calibration_cases: observed,
+                    uncertainty_score: evidence_gap.saturating_add(calibration_error),
+                }
+            })
+            .collect::<Vec<_>>();
+        priorities.sort_by(|left, right| {
+            right
+                .uncertainty_score
+                .cmp(&left.uncertainty_score)
+                .then_with(|| {
+                    let rank = |risk| match risk {
+                        ImprovementRisk::Low => 0,
+                        ImprovementRisk::Medium => 1,
+                        ImprovementRisk::High => 2,
+                    };
+                    rank(left.risk).cmp(&rank(right.risk))
+                })
+        });
+        priorities
     }
 }
 
@@ -6486,6 +6588,9 @@ mod tests {
         assert_eq!(calibration_report.pass_overconfidence_count, 1);
         assert_eq!(calibration_report.safety_overconfidence_count, 1);
         assert!(calibration_report.calibrated);
+        assert_eq!(calibration_report.risk_summaries.len(), 1);
+        assert_eq!(calibration_report.risk_summaries[0].risk, ImprovementRisk::Medium);
+        assert_eq!(calibration_report.risk_summaries[0].observations, 2);
         assert!(matches!(
             calibration.record(CapabilityChainProofAbstractionCalibrationObservation {
                 observation_id: "calibration-1".into(),
@@ -6526,6 +6631,11 @@ mod tests {
                 .historical_success_signal,
             25
         );
+        let uncertainty = calibration.uncertainty_priorities(&profile);
+        assert_eq!(uncertainty.len(), 1);
+        assert_eq!(uncertainty[0].risk, ImprovementRisk::Medium);
+        assert_eq!(uncertainty[0].observed_calibration_cases, 2);
+        assert!(uncertainty[0].uncertainty_score > 0);
         assert!(matches!(
             abstraction_experiments.record("abstraction-experiment-1", experiment),
             Err(CapabilityChainProofAbstractionExperimentLedgerRejection::DuplicateExperiment(_))

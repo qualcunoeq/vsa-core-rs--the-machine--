@@ -1025,6 +1025,46 @@ pub struct CapabilityChainProofConceptRetrievalReceipt {
     pub diagnostic_only: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptPlanningProposal {
+    pub concept_id: String,
+    pub plan: CapabilityChainPlan,
+    pub input_artifacts: Vec<CapabilityIoType>,
+    pub output_artifacts: Vec<CapabilityIoType>,
+    pub supporting_instances: usize,
+    pub diagnostic_only: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofConceptPlanningRejection {
+    UnknownCapability {
+        concept_id: String,
+        capability_id: String,
+    },
+    MissingDeclaredInput {
+        concept_id: String,
+        artifact: CapabilityIoType,
+    },
+    GoalNotProduced {
+        concept_id: String,
+        artifact: CapabilityIoType,
+    },
+    IncompatibleHandoff {
+        concept_id: String,
+        from_capability: String,
+        to_capability: String,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptPlanningReceipt {
+    pub available_inputs: Vec<CapabilityIoType>,
+    pub goal_artifact: CapabilityIoType,
+    pub proposals: Vec<CapabilityChainProofConceptPlanningProposal>,
+    pub rejections: Vec<CapabilityChainProofConceptPlanningRejection>,
+    pub diagnostic_only: bool,
+}
+
 impl CapabilityChainProofConceptDiscoveryReceipt {
     /// Extract an observed contract boundary for each concept using the
     /// registry's declared first-step inputs and last-step outputs. This is a
@@ -1314,6 +1354,105 @@ impl CapabilityChainProofConceptIndex {
             available_inputs: canonical_inputs,
             goal_artifact,
             candidates,
+            diagnostic_only: true,
+        }
+    }
+
+    /// Turn relevant validated concepts into advisory capability-chain
+    /// proposals. Registry lookup and typed handoff checks prevent stale or
+    /// malformed concepts from being suggested, while execution and trust
+    /// authorization remain with the normal planner and executor.
+    pub fn propose_planning_assistance(
+        &self,
+        available_inputs: &[CapabilityIoType],
+        goal_artifact: CapabilityIoType,
+        registry: &CapabilityRegistry,
+    ) -> CapabilityChainProofConceptPlanningReceipt {
+        let retrieval = self.retrieve_relevant(available_inputs, goal_artifact);
+        let mut proposals = Vec::new();
+        let mut rejections = Vec::new();
+        for candidate in retrieval.candidates {
+            let Some(contract) = self.concepts.get(&candidate.concept_id) else {
+                continue;
+            };
+            let mut specs = Vec::new();
+            let mut rejected = false;
+            for capability_id in &contract.capabilities {
+                match registry.get(capability_id) {
+                    Some(spec) => specs.push(spec),
+                    None => {
+                        rejections.push(
+                            CapabilityChainProofConceptPlanningRejection::UnknownCapability {
+                                concept_id: contract.concept_id.clone(),
+                                capability_id: capability_id.clone(),
+                            },
+                        );
+                        rejected = true;
+                        break;
+                    }
+                }
+            }
+            if rejected {
+                continue;
+            }
+            let first = specs
+                .first()
+                .expect("validated concepts have at least one capability");
+            let last = specs
+                .last()
+                .expect("validated concepts have at least one capability");
+            for input in &contract.input_artifacts {
+                if !first.consumes.contains(input) {
+                    rejections.push(
+                        CapabilityChainProofConceptPlanningRejection::MissingDeclaredInput {
+                            concept_id: contract.concept_id.clone(),
+                            artifact: *input,
+                        },
+                    );
+                    rejected = true;
+                }
+            }
+            if !last.produces.contains(&goal_artifact) {
+                rejections.push(
+                    CapabilityChainProofConceptPlanningRejection::GoalNotProduced {
+                        concept_id: contract.concept_id.clone(),
+                        artifact: goal_artifact,
+                    },
+                );
+                rejected = true;
+            }
+            for (from, to) in specs.iter().zip(specs.iter().skip(1)) {
+                if !from.produces.iter().any(|output| to.consumes.contains(output)) {
+                    rejections.push(
+                        CapabilityChainProofConceptPlanningRejection::IncompatibleHandoff {
+                            concept_id: contract.concept_id.clone(),
+                            from_capability: from.id.clone(),
+                            to_capability: to.id.clone(),
+                        },
+                    );
+                    rejected = true;
+                }
+            }
+            if rejected {
+                continue;
+            }
+            proposals.push(CapabilityChainProofConceptPlanningProposal {
+                concept_id: contract.concept_id.clone(),
+                plan: CapabilityChainPlan {
+                    goal: goal_artifact,
+                    steps: contract.capabilities.clone(),
+                },
+                input_artifacts: contract.input_artifacts.clone(),
+                output_artifacts: contract.output_artifacts.clone(),
+                supporting_instances: contract.supporting_instances,
+                diagnostic_only: true,
+            });
+        }
+        CapabilityChainProofConceptPlanningReceipt {
+            available_inputs: retrieval.available_inputs,
+            goal_artifact,
+            proposals,
+            rejections,
             diagnostic_only: true,
         }
     }
@@ -7518,6 +7657,42 @@ mod tests {
             CapabilityIoType::EquationClassification,
         );
         assert!(wrong_context.candidates.is_empty());
+
+        let production = CapabilityRegistry::production();
+        let reusable_analysis = CapabilityChainProofConceptContract {
+            concept_id: "equation-analysis-concept".into(),
+            capabilities: vec![
+                "equation_normalization".into(),
+                "equation_classification".into(),
+            ],
+            input_artifacts: vec![CapabilityIoType::Equation],
+            output_artifacts: vec![CapabilityIoType::EquationClassification],
+            source_pattern_ids: vec!["pattern-a".into(), "pattern-b".into()],
+            supporting_instances: 7,
+            parameterized_signature: "equation -> classification".into(),
+            diagnostic_only: true,
+        };
+        let reusable_validation = reusable_analysis.validate(2, 2, 0, 0);
+        let mut planning_index = CapabilityChainProofConceptIndex::default();
+        planning_index
+            .insert(reusable_analysis, &reusable_validation)
+            .unwrap();
+        let planning = planning_index.propose_planning_assistance(
+            &[CapabilityIoType::Equation],
+            CapabilityIoType::EquationClassification,
+            &production,
+        );
+        assert!(planning.diagnostic_only);
+        assert!(planning.rejections.is_empty());
+        assert_eq!(planning.proposals.len(), 1);
+        assert_eq!(
+            planning.proposals[0].plan.steps,
+            vec![
+                "equation_normalization".to_string(),
+                "equation_classification".to_string()
+            ]
+        );
+        assert_eq!(planning.proposals[0].supporting_instances, 7);
     }
 
     #[test]

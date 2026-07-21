@@ -1056,6 +1056,49 @@ pub enum CapabilityChainProofAbstractionParetoPlanningFailure {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionUnlockOpportunity {
+    pub family_id: String,
+    pub expected_future_value: usize,
+}
+
+/// A research candidate whose result may unlock a reusable family of future
+/// experiments. The unlock estimate is evidence for trajectory planning only;
+/// it does not create or enable that family.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionTrajectoryCandidate {
+    pub experiment_id: String,
+    pub risk: ImprovementRisk,
+    pub expected_capability_gain: usize,
+    pub expected_uncertainty_reduction: usize,
+    pub unlocks: Vec<CapabilityChainProofAbstractionUnlockOpportunity>,
+    pub validation_cost: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionTrajectoryPortfolio {
+    pub experiment_ids: Vec<String>,
+    pub capability_gain: usize,
+    pub uncertainty_reduction: usize,
+    pub expected_future_value: usize,
+    pub unlocked_families: Vec<String>,
+    pub validation_cost: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionTrajectoryReceipt {
+    pub budget: usize,
+    pub frontier: Vec<CapabilityChainProofAbstractionTrajectoryPortfolio>,
+    pub ambiguous: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionTrajectoryPlanningFailure {
+    DuplicateExperiment(String),
+    DuplicateUnlockFamily { experiment_id: String, family_id: String },
+    ZeroValidationCost(String),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofAbstractionCalibrationLedgerRejection {
     DuplicateObservation(String),
     RateOutOfRange,
@@ -2548,6 +2591,185 @@ pub fn plan_dual_objective_experiment_frontier(
         })
         .collect::<Vec<_>>();
     Ok(CapabilityChainProofAbstractionParetoPortfolioReceipt {
+        budget,
+        ambiguous: frontier.len() > 1,
+        frontier,
+    })
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct TrajectoryPortfolioState {
+    capability_gain: usize,
+    uncertainty_reduction: usize,
+    unlocked_family_values: BTreeMap<String, usize>,
+    validation_cost: usize,
+    experiment_ids: Vec<String>,
+}
+
+impl TrajectoryPortfolioState {
+    fn expected_future_value(&self) -> usize {
+        self.unlocked_family_values.values().copied().sum()
+    }
+}
+
+fn trajectory_state_dominates(
+    left: &TrajectoryPortfolioState,
+    right: &TrajectoryPortfolioState,
+) -> bool {
+    let left_future_value = left.expected_future_value();
+    let right_future_value = right.expected_future_value();
+    left.capability_gain >= right.capability_gain
+        && left.uncertainty_reduction >= right.uncertainty_reduction
+        && left_future_value >= right_future_value
+        && (left.capability_gain > right.capability_gain
+            || left.uncertainty_reduction > right.uncertainty_reduction
+            || left_future_value > right_future_value
+            || (left.capability_gain == right.capability_gain
+                && left.uncertainty_reduction == right.uncertainty_reduction
+                && left_future_value == right_future_value
+                && left.validation_cost < right.validation_cost))
+}
+
+fn prune_trajectory_states(
+    mut states: Vec<TrajectoryPortfolioState>,
+) -> Vec<TrajectoryPortfolioState> {
+    states.sort_by(|left, right| {
+        right
+            .capability_gain
+            .cmp(&left.capability_gain)
+            .then_with(|| {
+                right
+                    .uncertainty_reduction
+                    .cmp(&left.uncertainty_reduction)
+            })
+            .then_with(|| {
+                right
+                    .expected_future_value()
+                    .cmp(&left.expected_future_value())
+            })
+            .then_with(|| left.validation_cost.cmp(&right.validation_cost))
+            .then_with(|| left.experiment_ids.cmp(&right.experiment_ids))
+    });
+    states.dedup_by(|left, right| {
+        left.capability_gain == right.capability_gain
+            && left.uncertainty_reduction == right.uncertainty_reduction
+            && left.expected_future_value() == right.expected_future_value()
+            && left.validation_cost == right.validation_cost
+            && left.experiment_ids == right.experiment_ids
+            && left.unlocked_family_values == right.unlocked_family_values
+    });
+    states
+        .iter()
+        .enumerate()
+        .filter(|(index, state)| {
+            !states.iter().enumerate().any(|(other_index, other)| {
+                index != &other_index && trajectory_state_dominates(other, state)
+            })
+        })
+        .map(|(_, state)| state.clone())
+        .collect()
+}
+
+/// Plan bounded research trajectories with three explicit objectives:
+/// direct capability gain, uncertainty reduction, and value from newly
+/// unlocked experiment families. The returned frontier preserves tradeoffs;
+/// it does not select, execute, or deploy a trajectory.
+pub fn plan_research_trajectory_frontier(
+    candidates: Vec<CapabilityChainProofAbstractionTrajectoryCandidate>,
+    budget: usize,
+) -> Result<CapabilityChainProofAbstractionTrajectoryReceipt,
+    CapabilityChainProofAbstractionTrajectoryPlanningFailure> {
+    let mut seen = BTreeSet::new();
+    for candidate in &candidates {
+        if candidate.validation_cost == 0 {
+            return Err(
+                CapabilityChainProofAbstractionTrajectoryPlanningFailure::ZeroValidationCost(
+                    candidate.experiment_id.clone(),
+                ),
+            );
+        }
+        if !seen.insert(candidate.experiment_id.clone()) {
+            return Err(
+                CapabilityChainProofAbstractionTrajectoryPlanningFailure::DuplicateExperiment(
+                    candidate.experiment_id.clone(),
+                ),
+            );
+        }
+        let mut family_ids = BTreeSet::new();
+        for unlock in &candidate.unlocks {
+            if !family_ids.insert(unlock.family_id.clone()) {
+                return Err(
+                    CapabilityChainProofAbstractionTrajectoryPlanningFailure::DuplicateUnlockFamily {
+                        experiment_id: candidate.experiment_id.clone(),
+                        family_id: unlock.family_id.clone(),
+                    },
+                );
+            }
+        }
+    }
+    let mut candidates = candidates;
+    candidates.sort_by(|left, right| left.experiment_id.cmp(&right.experiment_id));
+    let mut states: Vec<Vec<TrajectoryPortfolioState>> =
+        vec![Vec::new(); budget.saturating_add(1)];
+    states[0].push(TrajectoryPortfolioState {
+        capability_gain: 0,
+        uncertainty_reduction: 0,
+        unlocked_family_values: BTreeMap::new(),
+        validation_cost: 0,
+        experiment_ids: Vec::new(),
+    });
+    for candidate in candidates {
+        let cost = candidate.validation_cost;
+        if cost > budget {
+            continue;
+        }
+        for capacity in (cost..=budget).rev() {
+            let additions = states[capacity - cost]
+                .iter()
+                .map(|previous| {
+                    let mut unlocked_family_values = previous.unlocked_family_values.clone();
+                    for unlock in &candidate.unlocks {
+                        let value = unlocked_family_values
+                            .entry(unlock.family_id.clone())
+                            .or_insert(0);
+                        *value = (*value).max(unlock.expected_future_value);
+                    }
+                    let mut experiment_ids = previous.experiment_ids.clone();
+                    experiment_ids.push(candidate.experiment_id.clone());
+                    experiment_ids.sort();
+                    TrajectoryPortfolioState {
+                        capability_gain: previous
+                            .capability_gain
+                            .saturating_add(candidate.expected_capability_gain),
+                        uncertainty_reduction: previous
+                            .uncertainty_reduction
+                            .saturating_add(candidate.expected_uncertainty_reduction),
+                        unlocked_family_values,
+                        validation_cost: previous.validation_cost.saturating_add(cost),
+                        experiment_ids,
+                    }
+                })
+                .collect::<Vec<_>>();
+            states[capacity].extend(additions);
+            states[capacity] = prune_trajectory_states(std::mem::take(&mut states[capacity]));
+        }
+    }
+    let frontier = prune_trajectory_states(states.into_iter().flatten().collect())
+        .into_iter()
+        .map(|state| {
+            let expected_future_value = state.expected_future_value();
+            let unlocked_families = state.unlocked_family_values.keys().cloned().collect();
+            CapabilityChainProofAbstractionTrajectoryPortfolio {
+                experiment_ids: state.experiment_ids,
+                capability_gain: state.capability_gain,
+                uncertainty_reduction: state.uncertainty_reduction,
+                expected_future_value,
+                unlocked_families,
+                validation_cost: state.validation_cost,
+            }
+        })
+        .collect::<Vec<_>>();
+    Ok(CapabilityChainProofAbstractionTrajectoryReceipt {
         budget,
         ambiguous: frontier.len() > 1,
         frontier,
@@ -7087,6 +7309,79 @@ mod tests {
             ),
             Err(
                 CapabilityChainProofAbstractionParetoPlanningFailure::DuplicateExperiment(_)
+            )
+        ));
+        let trajectory_frontier = plan_research_trajectory_frontier(
+            vec![
+                CapabilityChainProofAbstractionTrajectoryCandidate {
+                    experiment_id: "trajectory-a".into(),
+                    risk: ImprovementRisk::Low,
+                    expected_capability_gain: 10,
+                    expected_uncertainty_reduction: 2,
+                    unlocks: vec![CapabilityChainProofAbstractionUnlockOpportunity {
+                        family_id: "family-a".into(),
+                        expected_future_value: 10,
+                    }],
+                    validation_cost: 2,
+                },
+                CapabilityChainProofAbstractionTrajectoryCandidate {
+                    experiment_id: "trajectory-b".into(),
+                    risk: ImprovementRisk::Medium,
+                    expected_capability_gain: 2,
+                    expected_uncertainty_reduction: 10,
+                    unlocks: vec![CapabilityChainProofAbstractionUnlockOpportunity {
+                        family_id: "family-b".into(),
+                        expected_future_value: 10,
+                    }],
+                    validation_cost: 2,
+                },
+                CapabilityChainProofAbstractionTrajectoryCandidate {
+                    experiment_id: "trajectory-c".into(),
+                    risk: ImprovementRisk::High,
+                    expected_capability_gain: 6,
+                    expected_uncertainty_reduction: 6,
+                    unlocks: vec![CapabilityChainProofAbstractionUnlockOpportunity {
+                        family_id: "family-c".into(),
+                        expected_future_value: 10,
+                    }],
+                    validation_cost: 2,
+                },
+            ],
+            4,
+        )
+        .unwrap();
+        assert!(trajectory_frontier.ambiguous);
+        assert_eq!(trajectory_frontier.frontier.len(), 3);
+        assert!(trajectory_frontier.frontier.iter().all(|portfolio| {
+            portfolio.expected_future_value == 20
+                && portfolio.unlocked_families.len() == 2
+                && portfolio.validation_cost == 4
+        }));
+        assert!(matches!(
+            plan_research_trajectory_frontier(
+                vec![CapabilityChainProofAbstractionTrajectoryCandidate {
+                    experiment_id: "duplicate-unlock".into(),
+                    risk: ImprovementRisk::Low,
+                    expected_capability_gain: 1,
+                    expected_uncertainty_reduction: 1,
+                    unlocks: vec![
+                        CapabilityChainProofAbstractionUnlockOpportunity {
+                            family_id: "same-family".into(),
+                            expected_future_value: 1,
+                        },
+                        CapabilityChainProofAbstractionUnlockOpportunity {
+                            family_id: "same-family".into(),
+                            expected_future_value: 2,
+                        },
+                    ],
+                    validation_cost: 1,
+                }],
+                1,
+            ),
+            Err(
+                CapabilityChainProofAbstractionTrajectoryPlanningFailure::DuplicateUnlockFamily {
+                    ..
+                }
             )
         ));
         assert!(matches!(

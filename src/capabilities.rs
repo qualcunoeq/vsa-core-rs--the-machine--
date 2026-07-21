@@ -17,6 +17,7 @@ pub enum InputRequirement {
     ExplicitExpressionBody,
     ParseableExpressionSubject,
     ParseableEquation,
+    ClassifiableEquation,
     AllExpressionVariablesBound,
     SingleEquationSubject,
     SingleTargetVariable,
@@ -40,6 +41,7 @@ pub enum CapabilityIoType {
     Equation,
     EquationSystem,
     NormalizedEquation,
+    EquationClassification,
     BindingSet,
     TargetVariable,
     VariableSet,
@@ -412,6 +414,39 @@ impl CapabilitySpec {
             },
         }
     }
+
+    pub fn equation_classification_v1() -> Self {
+        Self {
+            id: "equation_classification".into(),
+            version: 1,
+            kind: CapabilityKind::Transformation,
+            dependencies: Vec::new(),
+            consumes: vec![CapabilityIoType::NormalizedEquation],
+            produces: vec![CapabilityIoType::EquationClassification],
+            supported_object_types: vec![SubjectObjectType::Equation],
+            supported_operations: vec![OperationKind::Simplify],
+            supported_answer_forms: vec![AnswerForm::SimplifiedExpression],
+            input_requirements: vec![
+                InputRequirement::ClassifiableEquation,
+                InputRequirement::ReplayVerifier,
+            ],
+            fact_policy: None,
+            executor: "equation_classification::execute_equation_classification".into(),
+            verifier: "equation_classification::replay_equation_classification".into(),
+            regression_cases: vec![
+                "equation_classification::classifies_linear_and_replays".into(),
+                "equation_classification::classifies_quadratic_and_replays".into(),
+                "equation_classification::rejects_multiple_variables".into(),
+            ],
+            quality_gate: CapabilityQualityGate {
+                positive_cases: 2,
+                negative_cases: 1,
+                adversarial_cases: 1,
+                false_authorizations: 0,
+                replay_failures: 0,
+            },
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
@@ -426,6 +461,7 @@ impl CapabilityRegistry {
         registry.register(CapabilitySpec::expression_evaluation_v1());
         registry.register(CapabilitySpec::expression_simplification_v1());
         registry.register(CapabilitySpec::equation_normalization_v1());
+        registry.register(CapabilitySpec::equation_classification_v1());
         registry.register(CapabilitySpec::linear_equation_solve_v1());
         registry.register(CapabilitySpec::quadratic_equation_solve_v1());
         registry.register(CapabilitySpec::linear_system_solve_v1());
@@ -568,6 +604,11 @@ impl CapabilityRegistry {
                             && subject.object.contains('=')
                             && crate::algebra::parse_equation(subject.object.trim()).is_ok()
                     }
+                    InputRequirement::ClassifiableEquation => {
+                        subject.object_type == SubjectObjectType::Equation
+                            && subject.object.contains('=')
+                            && crate::algebra::parse_equation(subject.object.trim()).is_ok()
+                    }
                     InputRequirement::AllExpressionVariablesBound => {
                         if subject.object_type != SubjectObjectType::Expression {
                             true
@@ -678,6 +719,7 @@ mod tests {
         assert_eq!(
             registry.dependency_order().unwrap(),
             vec![
+                "equation_classification".to_string(),
                 "equation_normalization".to_string(),
                 "expression_evaluation".to_string(),
                 "expression_simplification".to_string(),

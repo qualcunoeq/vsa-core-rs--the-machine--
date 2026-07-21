@@ -1022,6 +1022,39 @@ pub enum CapabilityChainProofAbstractionInformationGainFailure {
     ZeroValidationCost(String),
 }
 
+/// An experiment scored against both objectives of the improvement research
+/// loop: direct capability benefit and information gained about future
+/// improvements.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionDualObjectiveCandidate {
+    pub experiment_id: String,
+    pub risk: ImprovementRisk,
+    pub expected_capability_gain: usize,
+    pub expected_uncertainty_reduction: usize,
+    pub validation_cost: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionParetoPortfolio {
+    pub experiment_ids: Vec<String>,
+    pub capability_gain: usize,
+    pub uncertainty_reduction: usize,
+    pub validation_cost: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionParetoPortfolioReceipt {
+    pub budget: usize,
+    pub frontier: Vec<CapabilityChainProofAbstractionParetoPortfolio>,
+    pub ambiguous: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionParetoPlanningFailure {
+    DuplicateExperiment(String),
+    ZeroValidationCost(String),
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofAbstractionCalibrationLedgerRejection {
     DuplicateObservation(String),
@@ -2386,6 +2419,138 @@ pub fn select_calibration_experiment_portfolio(
         selected_validation_cost: selected.validation_cost,
         ambiguous: selected.tied_portfolios.len() > 1,
         tied_portfolios: selected.tied_portfolios,
+    })
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ParetoPortfolioState {
+    capability_gain: usize,
+    uncertainty_reduction: usize,
+    validation_cost: usize,
+    experiment_ids: Vec<String>,
+}
+
+fn pareto_state_dominates(
+    left: &ParetoPortfolioState,
+    right: &ParetoPortfolioState,
+) -> bool {
+    left.capability_gain >= right.capability_gain
+        && left.uncertainty_reduction >= right.uncertainty_reduction
+        && (left.capability_gain > right.capability_gain
+            || left.uncertainty_reduction > right.uncertainty_reduction
+            || (left.capability_gain == right.capability_gain
+                && left.uncertainty_reduction == right.uncertainty_reduction
+                && left.validation_cost < right.validation_cost))
+}
+
+fn prune_pareto_states(mut states: Vec<ParetoPortfolioState>) -> Vec<ParetoPortfolioState> {
+    states.sort_by(|left, right| {
+        right
+            .capability_gain
+            .cmp(&left.capability_gain)
+            .then_with(|| {
+                right
+                    .uncertainty_reduction
+                    .cmp(&left.uncertainty_reduction)
+            })
+            .then_with(|| left.validation_cost.cmp(&right.validation_cost))
+            .then_with(|| left.experiment_ids.cmp(&right.experiment_ids))
+    });
+    states.dedup_by(|left, right| {
+        left.capability_gain == right.capability_gain
+            && left.uncertainty_reduction == right.uncertainty_reduction
+            && left.validation_cost == right.validation_cost
+            && left.experiment_ids == right.experiment_ids
+    });
+    states
+        .iter()
+        .enumerate()
+        .filter(|(index, state)| {
+            !states.iter().enumerate().any(|(other_index, other)| {
+                index != &other_index && pareto_state_dominates(other, state)
+            })
+        })
+        .map(|(_, state)| state.clone())
+        .collect()
+}
+
+/// Return the nondominated portfolios under a validation budget. The frontier
+/// keeps direct capability gain and uncertainty reduction as separate
+/// objectives; callers must choose between genuine tradeoffs explicitly.
+/// This is a planning diagnostic and never executes or authorizes experiments.
+pub fn plan_dual_objective_experiment_frontier(
+    candidates: Vec<CapabilityChainProofAbstractionDualObjectiveCandidate>,
+    budget: usize,
+) -> Result<CapabilityChainProofAbstractionParetoPortfolioReceipt,
+    CapabilityChainProofAbstractionParetoPlanningFailure> {
+    let mut seen = BTreeSet::new();
+    for candidate in &candidates {
+        if candidate.validation_cost == 0 {
+            return Err(
+                CapabilityChainProofAbstractionParetoPlanningFailure::ZeroValidationCost(
+                    candidate.experiment_id.clone(),
+                ),
+            );
+        }
+        if !seen.insert(candidate.experiment_id.clone()) {
+            return Err(
+                CapabilityChainProofAbstractionParetoPlanningFailure::DuplicateExperiment(
+                    candidate.experiment_id.clone(),
+                ),
+            );
+        }
+    }
+    let mut candidates = candidates;
+    candidates.sort_by(|left, right| left.experiment_id.cmp(&right.experiment_id));
+    let mut states: Vec<Vec<ParetoPortfolioState>> =
+        vec![Vec::new(); budget.saturating_add(1)];
+    states[0].push(ParetoPortfolioState {
+        capability_gain: 0,
+        uncertainty_reduction: 0,
+        validation_cost: 0,
+        experiment_ids: Vec::new(),
+    });
+    for candidate in candidates {
+        let cost = candidate.validation_cost;
+        if cost > budget {
+            continue;
+        }
+        for capacity in (cost..=budget).rev() {
+            let additions = states[capacity - cost]
+                .iter()
+                .map(|previous| {
+                    let mut experiment_ids = previous.experiment_ids.clone();
+                    experiment_ids.push(candidate.experiment_id.clone());
+                    experiment_ids.sort();
+                    ParetoPortfolioState {
+                        capability_gain: previous
+                            .capability_gain
+                            .saturating_add(candidate.expected_capability_gain),
+                        uncertainty_reduction: previous
+                            .uncertainty_reduction
+                            .saturating_add(candidate.expected_uncertainty_reduction),
+                        validation_cost: previous.validation_cost.saturating_add(cost),
+                        experiment_ids,
+                    }
+                })
+                .collect::<Vec<_>>();
+            states[capacity].extend(additions);
+            states[capacity] = prune_pareto_states(std::mem::take(&mut states[capacity]));
+        }
+    }
+    let frontier = prune_pareto_states(states.into_iter().flatten().collect())
+        .into_iter()
+        .map(|state| CapabilityChainProofAbstractionParetoPortfolio {
+            experiment_ids: state.experiment_ids,
+            capability_gain: state.capability_gain,
+            uncertainty_reduction: state.uncertainty_reduction,
+            validation_cost: state.validation_cost,
+        })
+        .collect::<Vec<_>>();
+    Ok(CapabilityChainProofAbstractionParetoPortfolioReceipt {
+        budget,
+        ambiguous: frontier.len() > 1,
+        frontier,
     })
 }
 
@@ -6854,6 +7019,74 @@ mod tests {
             ),
             Err(
                 CapabilityChainProofAbstractionInformationGainFailure::ZeroValidationCost(_)
+            )
+        ));
+        let dual_frontier = plan_dual_objective_experiment_frontier(
+            vec![
+                CapabilityChainProofAbstractionDualObjectiveCandidate {
+                    experiment_id: "dual-a".into(),
+                    risk: ImprovementRisk::Low,
+                    expected_capability_gain: 10,
+                    expected_uncertainty_reduction: 2,
+                    validation_cost: 2,
+                },
+                CapabilityChainProofAbstractionDualObjectiveCandidate {
+                    experiment_id: "dual-b".into(),
+                    risk: ImprovementRisk::Medium,
+                    expected_capability_gain: 2,
+                    expected_uncertainty_reduction: 10,
+                    validation_cost: 2,
+                },
+                CapabilityChainProofAbstractionDualObjectiveCandidate {
+                    experiment_id: "dual-c".into(),
+                    risk: ImprovementRisk::High,
+                    expected_capability_gain: 6,
+                    expected_uncertainty_reduction: 6,
+                    validation_cost: 2,
+                },
+            ],
+            4,
+        )
+        .unwrap();
+        assert!(dual_frontier.ambiguous);
+        assert_eq!(dual_frontier.frontier.len(), 3);
+        assert!(dual_frontier.frontier.iter().any(|portfolio| {
+            portfolio.experiment_ids == vec!["dual-a", "dual-b"]
+                && portfolio.capability_gain == 12
+                && portfolio.uncertainty_reduction == 12
+        }));
+        assert!(dual_frontier.frontier.iter().any(|portfolio| {
+            portfolio.experiment_ids == vec!["dual-a", "dual-c"]
+                && portfolio.capability_gain == 16
+                && portfolio.uncertainty_reduction == 8
+        }));
+        assert!(dual_frontier.frontier.iter().any(|portfolio| {
+            portfolio.experiment_ids == vec!["dual-b", "dual-c"]
+                && portfolio.capability_gain == 8
+                && portfolio.uncertainty_reduction == 16
+        }));
+        assert!(matches!(
+            plan_dual_objective_experiment_frontier(
+                vec![
+                    CapabilityChainProofAbstractionDualObjectiveCandidate {
+                        experiment_id: "duplicate-dual".into(),
+                        risk: ImprovementRisk::Low,
+                        expected_capability_gain: 1,
+                        expected_uncertainty_reduction: 1,
+                        validation_cost: 1,
+                    },
+                    CapabilityChainProofAbstractionDualObjectiveCandidate {
+                        experiment_id: "duplicate-dual".into(),
+                        risk: ImprovementRisk::Low,
+                        expected_capability_gain: 1,
+                        expected_uncertainty_reduction: 1,
+                        validation_cost: 1,
+                    },
+                ],
+                1,
+            ),
+            Err(
+                CapabilityChainProofAbstractionParetoPlanningFailure::DuplicateExperiment(_)
             )
         ));
         assert!(matches!(

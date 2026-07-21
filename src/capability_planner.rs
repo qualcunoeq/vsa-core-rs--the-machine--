@@ -862,6 +862,78 @@ impl CapabilityChainProofIndex {
         self.get(&proof.reasoning_fingerprint())
     }
 
+    /// Search indexed proof fragments for a compatible composed proof. The
+    /// search is bounded and deterministic: available inputs must satisfy the
+    /// first fragment, each extension must consume an artifact produced by the
+    /// current trace, and candidates are visited in fingerprint order.
+    pub fn search_composed_proof(
+        &self,
+        available_inputs: &BTreeSet<String>,
+        goal_artifact: &str,
+        max_depth: usize,
+    ) -> Option<CapabilityChainProofTrace> {
+        if max_depth == 0 {
+            return None;
+        }
+        let mut frontier = self
+            .proofs
+            .values()
+            .filter(|proof| {
+                proof.steps.first().is_some_and(|step| {
+                    step.input_artifacts
+                        .iter()
+                        .all(|input| available_inputs.contains(input))
+                })
+            })
+            .cloned()
+            .collect::<Vec<_>>();
+        let mut seen = frontier
+            .iter()
+            .map(CapabilityChainProofTrace::reasoning_fingerprint)
+            .collect::<BTreeSet<_>>();
+
+        for _ in 0..max_depth {
+            frontier.sort_by_key(CapabilityChainProofTrace::reasoning_fingerprint);
+            for proof in &frontier {
+                if proof
+                    .final_artifacts
+                    .iter()
+                    .any(|artifact| artifact == goal_artifact)
+                {
+                    return Some(proof.clone());
+                }
+            }
+            let mut next = Vec::new();
+            for current in &frontier {
+                for candidate in self.proofs.values() {
+                    let Some(first_step) = candidate.steps.first() else {
+                        continue;
+                    };
+                    if !first_step
+                        .input_artifacts
+                        .iter()
+                        .all(|input| current.final_artifacts.contains(input))
+                    {
+                        continue;
+                    }
+                    let Ok(composed) = compose_capability_chain_proofs(current, candidate)
+                    else {
+                        continue;
+                    };
+                    let fingerprint = composed.reasoning_fingerprint();
+                    if seen.insert(fingerprint) {
+                        next.push(composed);
+                    }
+                }
+            }
+            if next.is_empty() {
+                return None;
+            }
+            frontier = next;
+        }
+        None
+    }
+
     pub fn len(&self) -> usize {
         self.proofs.len()
     }
@@ -3878,6 +3950,19 @@ mod tests {
         );
         assert_eq!(composed.final_artifacts, vec!["value"]);
         assert!(composed.replay_verified);
+
+        let mut graph = CapabilityChainProofIndex::default();
+        graph.insert(first.clone()).unwrap();
+        graph.insert(second.clone()).unwrap();
+        let reused = graph
+            .search_composed_proof(
+                &BTreeSet::from(["raw-expression".to_string()]),
+                "value",
+                2,
+            )
+            .unwrap();
+        assert_eq!(reused.final_artifacts, vec!["value"]);
+        assert_eq!(reused.steps.len(), 2);
 
         let mut incompatible = second.clone();
         incompatible.steps[0].input_artifacts = vec!["other-expression".into()];

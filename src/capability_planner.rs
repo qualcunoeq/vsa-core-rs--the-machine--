@@ -8,6 +8,13 @@ use crate::capabilities::{
     CapabilityIoType, CapabilityRegistry, CapabilitySelection,
 };
 use crate::constant_rate_model::{ModelArtifactType, ModelConstructorRegistry, ModelSelection};
+use crate::equation_classification::{
+    execute_equation_classification, route_classified_equation, EquationClassificationFailure,
+    EquationClassificationReceipt, EquationRoutingFailure,
+};
+use crate::equation_normalization::{
+    execute_equation_normalization, EquationNormalizationFailure,
+};
 use crate::evidence::{
     DerivedFact, DerivedFactIndex, FactConflict, FactIndexInsert, FactIndexRejection, FactPolicy,
     FactPolicyRejection, FactStatus,
@@ -38,6 +45,29 @@ pub enum CapabilityPlanningFailure {
 pub struct CapabilityChainPlan {
     pub goal: CapabilityIoType,
     pub steps: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum EquationChainPlanningFailure {
+    UnsupportedGoal(CapabilityIoType),
+    MissingTargetVariable,
+    Normalization(EquationNormalizationFailure),
+    Classification(EquationClassificationFailure),
+    Routing(EquationRoutingFailure),
+    CapabilityUnavailable(String),
+}
+
+/// A source-grounded equation plan. Classification is performed and verified
+/// before the solver is selected; this is still a planning receipt and does
+/// not authorize execution.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct EquationChainPlan {
+    pub source: String,
+    pub target_variable: String,
+    pub normalized_equation: String,
+    pub classification: EquationClassificationReceipt,
+    pub selected_solver: String,
+    pub chain: CapabilityChainPlan,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -2402,6 +2432,69 @@ pub fn plan_capability_chain(
     Ok(CapabilityChainPlan { goal, steps })
 }
 
+/// Build the normalization → classification → solver chain for one grounded
+/// equation. The verified classifier resolves the otherwise ambiguous linear
+/// and quadratic producers before a solver step is selected.
+pub fn plan_equation_chain(
+    source: &str,
+    target_variable: &str,
+    goal: CapabilityIoType,
+    registry: &CapabilityRegistry,
+) -> Result<EquationChainPlan, EquationChainPlanningFailure> {
+    if goal != CapabilityIoType::SolutionSet {
+        return Err(EquationChainPlanningFailure::UnsupportedGoal(goal));
+    }
+    if target_variable.trim().is_empty() {
+        return Err(EquationChainPlanningFailure::MissingTargetVariable);
+    }
+    let normalized = execute_equation_normalization(source)
+        .map_err(EquationChainPlanningFailure::Normalization)?;
+    let classification = execute_equation_classification(&normalized.normalized_equation)
+        .map_err(EquationChainPlanningFailure::Classification)?;
+    let selected_solver = route_classified_equation(&classification, registry)
+        .map_err(EquationChainPlanningFailure::Routing)?;
+    for capability_id in ["equation_normalization", "equation_classification"] {
+        let Some(capability) = registry.get(capability_id) else {
+            return Err(EquationChainPlanningFailure::CapabilityUnavailable(
+                capability_id.into(),
+            ));
+        };
+        if !capability.quality_gate.enabled() {
+            return Err(EquationChainPlanningFailure::CapabilityUnavailable(
+                capability_id.into(),
+            ));
+        }
+    }
+    let Some(solver) = registry.get(&selected_solver) else {
+        return Err(EquationChainPlanningFailure::CapabilityUnavailable(
+            selected_solver,
+        ));
+    };
+    if !solver.quality_gate.enabled()
+        || !solver.consumes.contains(&CapabilityIoType::NormalizedEquation)
+        || !solver.consumes.contains(&CapabilityIoType::TargetVariable)
+    {
+        return Err(EquationChainPlanningFailure::CapabilityUnavailable(
+            solver.id.clone(),
+        ));
+    }
+    Ok(EquationChainPlan {
+        source: source.trim().into(),
+        target_variable: target_variable.trim().into(),
+        normalized_equation: normalized.normalized_equation,
+        classification,
+        selected_solver: selected_solver.clone(),
+        chain: CapabilityChainPlan {
+            goal,
+            steps: vec![
+                "equation_normalization".into(),
+                "equation_classification".into(),
+                selected_solver,
+            ],
+        },
+    })
+}
+
 /// Select one capability that can produce `goal` from the explicitly
 /// available artifacts.  This is deliberately one-step dataflow planning;
 /// dependencies are expanded, but missing data inputs are not invented.
@@ -3148,6 +3241,57 @@ mod tests {
                 "equation_classification"
             ]
         );
+    }
+
+    #[test]
+    fn equation_planner_uses_verified_classification_for_linear_routing() {
+        let plan = plan_equation_chain(
+            "2*x + 3 = 7",
+            "x",
+            CapabilityIoType::SolutionSet,
+            &CapabilityRegistry::production(),
+        )
+        .unwrap();
+
+        assert_eq!(plan.classification.class, crate::equation_classification::EquationClass::Linear);
+        assert_eq!(plan.selected_solver, "linear_equation_solve");
+        assert_eq!(
+            plan.chain.steps,
+            vec![
+                "equation_normalization",
+                "equation_classification",
+                "linear_equation_solve"
+            ]
+        );
+    }
+
+    #[test]
+    fn equation_planner_routes_quadratic_without_trying_linear_solver() {
+        let plan = plan_equation_chain(
+            "x^2 - 4 = 0",
+            "x",
+            CapabilityIoType::SolutionSet,
+            &CapabilityRegistry::production(),
+        )
+        .unwrap();
+
+        assert_eq!(plan.selected_solver, "quadratic_equation_solve");
+        assert!(!plan.chain.steps.contains(&"linear_equation_solve".into()));
+    }
+
+    #[test]
+    fn equation_planner_abstains_on_unsupported_degree() {
+        assert!(matches!(
+            plan_equation_chain(
+                "x^3 = 1",
+                "x",
+                CapabilityIoType::SolutionSet,
+                &CapabilityRegistry::production(),
+            ),
+            Err(EquationChainPlanningFailure::Routing(
+                EquationRoutingFailure::UnsupportedClass
+            ))
+        ));
     }
 
     #[test]

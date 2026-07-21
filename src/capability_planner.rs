@@ -825,6 +825,11 @@ pub struct CapabilityChainProofPolicyPreferenceReceipt {
 pub enum CapabilityChainProofSynthesisSource {
     ReusedProof(CapabilityChainProofTrace),
     CapabilityPlanPending(CapabilityChainPlan),
+    MixedPrefixPlanPending {
+        prefix: CapabilityChainProofTrace,
+        handoff_artifacts: Vec<String>,
+        plan: CapabilityChainPlan,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -838,6 +843,9 @@ pub struct CapabilityChainProofSynthesisReceipt {
 pub enum CapabilityChainProofSynthesisFailure {
     NoProofOrCapabilityPlan,
     CapabilityPlanInsufficientProofSteps { required: usize, available: usize },
+    PrefixNotIndexed(String),
+    UnverifiedPrefix(String),
+    IncompatibleHandoff { produced: Vec<String>, handoff: Vec<String> },
 }
 
 /// Explicit cache of proof-bearing reasoning traces. Insertion is deliberate:
@@ -1083,6 +1091,57 @@ impl CapabilityChainProofIndex {
             goal_artifact: goal_artifact.into(),
             policy: policy.clone(),
             source: CapabilityChainProofSynthesisSource::CapabilityPlanPending(plan),
+        })
+    }
+
+    /// Build a mixed-source synthesis draft from an indexed proof prefix and
+    /// a pending capability plan. The handoff is explicit and validated, but
+    /// no capability executes and no trust wrapper is materialized.
+    pub fn synthesize_mixed_prefix_plan(
+        &self,
+        prefix: &CapabilityChainProofTrace,
+        handoff_artifacts: Vec<String>,
+        goal_artifact: &str,
+        policy: &VerifiedArtifactPolicy,
+        pending_plan: CapabilityChainPlan,
+    ) -> Result<CapabilityChainProofSynthesisReceipt, CapabilityChainProofSynthesisFailure> {
+        let fingerprint = prefix.reasoning_fingerprint();
+        if self.get(&fingerprint).is_none() {
+            return Err(CapabilityChainProofSynthesisFailure::PrefixNotIndexed(
+                fingerprint,
+            ));
+        }
+        if !prefix.replay_verified {
+            return Err(CapabilityChainProofSynthesisFailure::UnverifiedPrefix(
+                prefix.execution_id.clone(),
+            ));
+        }
+        if handoff_artifacts.is_empty()
+            || !handoff_artifacts
+                .iter()
+                .any(|artifact| prefix.final_artifacts.contains(artifact))
+        {
+            return Err(CapabilityChainProofSynthesisFailure::IncompatibleHandoff {
+                produced: prefix.final_artifacts.clone(),
+                handoff: handoff_artifacts,
+            });
+        }
+        if pending_plan.steps.len() < policy.minimum_proof_steps {
+            return Err(
+                CapabilityChainProofSynthesisFailure::CapabilityPlanInsufficientProofSteps {
+                    required: policy.minimum_proof_steps,
+                    available: pending_plan.steps.len(),
+                },
+            );
+        }
+        Ok(CapabilityChainProofSynthesisReceipt {
+            goal_artifact: goal_artifact.into(),
+            policy: policy.clone(),
+            source: CapabilityChainProofSynthesisSource::MixedPrefixPlanPending {
+                prefix: prefix.clone(),
+                handoff_artifacts,
+                plan: pending_plan,
+            },
         })
     }
 
@@ -4251,6 +4310,23 @@ mod tests {
             pending.source,
             CapabilityChainProofSynthesisSource::CapabilityPlanPending(pending_plan)
         );
+        let mixed_plan = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["new_capability".into(), "verification".into()],
+        };
+        let mixed = policy_graph
+            .synthesize_mixed_prefix_plan(
+                &first,
+                vec!["simplified-expression".into()],
+                "new-value",
+                &strict_policy,
+                mixed_plan.clone(),
+            )
+            .unwrap();
+        assert!(matches!(
+            mixed.source,
+            CapabilityChainProofSynthesisSource::MixedPrefixPlanPending { .. }
+        ));
 
         let mut alternate = second.clone();
         alternate.execution_id = "proof-compose-alternate".into();

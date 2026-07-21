@@ -1166,6 +1166,78 @@ pub struct CapabilityChainStrategicRouteComparisonReceipt {
     pub diagnostic_only: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainStrategicRouteDecision {
+    NoCandidates,
+    ExploitStored(Vec<String>),
+    ExploreFresh(String),
+    Ambiguous(Vec<String>),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainStrategicRouteDecisionReceipt {
+    pub minimum_stored_support: usize,
+    pub frontier_candidate_ids: Vec<String>,
+    pub decision: CapabilityChainStrategicRouteDecision,
+    pub diagnostic_only: bool,
+}
+
+impl CapabilityChainStrategicRouteComparisonReceipt {
+    /// Classify a Pareto frontier as precedent, exploration, or an explicit
+    /// tradeoff. The support threshold is caller-controlled and this remains
+    /// advisory; it never authorizes either route.
+    pub fn diagnose_exploration(
+        &self,
+        minimum_stored_support: usize,
+    ) -> CapabilityChainStrategicRouteDecisionReceipt {
+        let frontier = self
+            .frontier_candidate_ids
+            .iter()
+            .filter_map(|candidate_id| {
+                self.candidates
+                    .iter()
+                    .find(|candidate| &candidate.candidate_id == candidate_id)
+            })
+            .collect::<Vec<_>>();
+        let stored = frontier
+            .iter()
+            .filter(|candidate| {
+                candidate.source == CapabilityChainStrategicRouteSource::StoredStrategy
+                    && candidate.supporting_instances >= minimum_stored_support
+            })
+            .map(|candidate| candidate.candidate_id.clone())
+            .collect::<Vec<_>>();
+        let fresh = frontier
+            .iter()
+            .find(|candidate| {
+                candidate.source == CapabilityChainStrategicRouteSource::FreshCapabilityPlan
+            })
+            .map(|candidate| candidate.candidate_id.clone());
+        let decision = match (stored.is_empty(), fresh, frontier.is_empty()) {
+            (_, _, true) => CapabilityChainStrategicRouteDecision::NoCandidates,
+            (false, Some(fresh_id), _) => {
+                let mut ids = stored.clone();
+                ids.push(fresh_id);
+                ids.sort();
+                CapabilityChainStrategicRouteDecision::Ambiguous(ids)
+            }
+            (false, None, _) => CapabilityChainStrategicRouteDecision::ExploitStored(stored),
+            (true, Some(fresh_id), _) => {
+                CapabilityChainStrategicRouteDecision::ExploreFresh(fresh_id)
+            }
+            (true, None, _) => CapabilityChainStrategicRouteDecision::Ambiguous(
+                frontier.iter().map(|candidate| candidate.candidate_id.clone()).collect(),
+            ),
+        };
+        CapabilityChainStrategicRouteDecisionReceipt {
+            minimum_stored_support,
+            frontier_candidate_ids: self.frontier_candidate_ids.clone(),
+            decision,
+            diagnostic_only: true,
+        }
+    }
+}
+
 impl CapabilityChainProofConceptStrategyContract {
     pub fn from_proposal(
         proposal: &CapabilityChainProofConceptPlanningProposal,
@@ -8531,6 +8603,18 @@ mod tests {
         assert!(route_comparison
             .frontier_candidate_ids
             .contains(&strategy_id));
+        let mixed_decision = route_comparison.diagnose_exploration(3);
+        assert!(matches!(
+            mixed_decision.decision,
+            CapabilityChainStrategicRouteDecision::Ambiguous(_)
+        ));
+        let exploratory_decision = route_comparison.diagnose_exploration(5);
+        assert_eq!(
+            exploratory_decision.decision,
+            CapabilityChainStrategicRouteDecision::ExploreFresh(
+                "fresh-capability-plan".into()
+            )
+        );
     }
 
     #[test]

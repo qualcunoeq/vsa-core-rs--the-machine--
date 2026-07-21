@@ -1229,6 +1229,7 @@ pub struct DerivedFactProof {
     pub capability: String,
     pub fact_id: String,
     pub parent_lineage: Vec<String>,
+    pub retrieval_receipt: Option<String>,
 }
 
 /// A fact issue that prevents a previously constructed plan from remaining
@@ -1274,6 +1275,7 @@ impl PlanLifecycle {
 pub struct ReasoningContext {
     pub available_inputs: BTreeSet<CapabilityIoType>,
     pub derived_facts: Vec<DerivedFact>,
+    pub fact_retrieval_receipts: BTreeMap<String, String>,
 }
 
 impl ReasoningContext {
@@ -1281,6 +1283,7 @@ impl ReasoningContext {
         Self {
             available_inputs,
             derived_facts: Vec::new(),
+            fact_retrieval_receipts: BTreeMap::new(),
         }
     }
 
@@ -1291,6 +1294,7 @@ impl ReasoningContext {
         Self {
             available_inputs,
             derived_facts,
+            fact_retrieval_receipts: BTreeMap::new(),
         }
     }
 
@@ -1302,9 +1306,18 @@ impl ReasoningContext {
         index: &DerivedFactIndex,
     ) -> Result<Self, FactIndexQueryFailure> {
         let mut derived_facts = Vec::new();
+        let mut fact_retrieval_receipts = BTreeMap::new();
         for key in index.keys() {
             match index.usable(key) {
-                Ok(facts) => derived_facts.extend(facts.iter().cloned()),
+                Ok(facts) => {
+                    for fact in facts {
+                        fact_retrieval_receipts.insert(
+                            fact.id.clone(),
+                            format!("fact_index_retrieval:{key}:{}", fact.id),
+                        );
+                        derived_facts.push(fact.clone());
+                    }
+                }
                 Err(FactIndexQueryFailure::Conflict(conflict)) => {
                     return Err(FactIndexQueryFailure::Conflict(conflict));
                 }
@@ -1314,6 +1327,7 @@ impl ReasoningContext {
         Ok(Self {
             available_inputs,
             derived_facts,
+            fact_retrieval_receipts,
         })
     }
 }
@@ -2543,6 +2557,7 @@ pub fn replan_stale_plan(
             })
             .cloned()
             .collect(),
+        fact_retrieval_receipts: context.fact_retrieval_receipts.clone(),
     };
     let replacement = plan_for_goal_with_context(plan.goal, &active_context, registry)
         .map_err(PlanRepairFailure::Planning)?;
@@ -3051,6 +3066,10 @@ pub fn plan_for_goal_with_context(
                             capability: capability.id.clone(),
                             fact_id: fact.id.clone(),
                             parent_lineage: fact.parent_lineage.clone(),
+                            retrieval_receipt: context
+                                .fact_retrieval_receipts
+                                .get(&fact.id)
+                                .cloned(),
                         }),
                         Err(reason) => rejections.push(DerivedFactRejection {
                             fact_id: fact.id.clone(),
@@ -4247,6 +4266,10 @@ mod tests {
             plan.derived_fact_proofs[0].parent_lineage,
             vec!["constant-rate-model"]
         );
+        assert_eq!(
+            plan.derived_fact_proofs[0].retrieval_receipt,
+            None
+        );
     }
 
     #[test]
@@ -4305,6 +4328,10 @@ mod tests {
         .unwrap();
         assert_eq!(plan.selected_capability, "derived_fact_consumer");
         assert_eq!(plan.derived_fact_proofs[0].fact_id, "indexed-derived");
+        assert_eq!(
+            plan.derived_fact_proofs[0].retrieval_receipt,
+            Some("fact_index_retrieval:distance:indexed-derived".into())
+        );
     }
 
     #[test]

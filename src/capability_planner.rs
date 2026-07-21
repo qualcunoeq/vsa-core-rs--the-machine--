@@ -849,6 +849,25 @@ pub enum CapabilityChainProofSynthesisFailure {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofSynthesisValidationFailure {
+    NotMixedSynthesis,
+    PlanMismatch,
+    HandoffNotRecorded(Vec<String>),
+    Composition(CapabilityChainProofFailure),
+    Artifact(VerifiedArtifactFailure),
+    Policy(VerifiedArtifactPolicyFailure),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofSynthesisValidationReceipt<T> {
+    pub artifact: VerifiedArtifact<T>,
+    pub prefix_fingerprint: String,
+    pub execution_id: String,
+    pub handoff_artifacts: Vec<String>,
+    pub policy: VerifiedArtifactPolicyReceipt,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityChainProofSynthesisCandidate {
     pub candidate_id: String,
     pub prefix_fingerprint: String,
@@ -1802,6 +1821,61 @@ pub fn compose_capability_chain_proofs(
         retrieved_facts,
         final_artifacts: second.final_artifacts.clone(),
         replay_verified: true,
+    })
+}
+
+/// Validate execution of a selected mixed synthesis draft and materialize a
+/// trusted artifact only after prefix composition and consumer policy checks
+/// succeed. The execution receipt must match the pending plan exactly.
+pub fn validate_mixed_synthesis_execution<T>(
+    source: &CapabilityChainProofSynthesisSource,
+    execution: &CapabilityChainExecutionReceipt,
+    artifact: T,
+    policy: &VerifiedArtifactPolicy,
+) -> Result<CapabilityChainProofSynthesisValidationReceipt<T>, CapabilityChainProofSynthesisValidationFailure>
+{
+    let CapabilityChainProofSynthesisSource::MixedPrefixPlanPending {
+        prefix,
+        handoff_artifacts,
+        plan,
+    } = source
+    else {
+        return Err(CapabilityChainProofSynthesisValidationFailure::NotMixedSynthesis);
+    };
+    if execution.plan != *plan {
+        return Err(CapabilityChainProofSynthesisValidationFailure::PlanMismatch);
+    }
+    let recorded_inputs = execution
+        .steps
+        .first()
+        .map(|step| &step.input_artifacts)
+        .cloned()
+        .unwrap_or_default();
+    if !handoff_artifacts
+        .iter()
+        .any(|artifact| recorded_inputs.contains(artifact))
+    {
+        return Err(
+            CapabilityChainProofSynthesisValidationFailure::HandoffNotRecorded(
+                handoff_artifacts.clone(),
+            ),
+        );
+    }
+    let continuation = compose_capability_chain_proof(execution)
+        .map_err(CapabilityChainProofSynthesisValidationFailure::Composition)?;
+    let composite = compose_capability_chain_proofs(prefix, &continuation)
+        .map_err(CapabilityChainProofSynthesisValidationFailure::Composition)?;
+    let verified = VerifiedArtifact::from_chain(artifact, composite)
+        .map_err(CapabilityChainProofSynthesisValidationFailure::Artifact)?;
+    let policy_receipt = policy
+        .evaluate(&verified)
+        .map_err(CapabilityChainProofSynthesisValidationFailure::Policy)?;
+    Ok(CapabilityChainProofSynthesisValidationReceipt {
+        artifact: verified,
+        prefix_fingerprint: prefix.reasoning_fingerprint(),
+        execution_id: execution.execution_id.clone(),
+        handoff_artifacts: handoff_artifacts.clone(),
+        policy: policy_receipt,
     })
 }
 
@@ -4419,6 +4493,45 @@ mod tests {
             mixed.source,
             CapabilityChainProofSynthesisSource::MixedPrefixPlanPending { .. }
         ));
+        let mut mixed_ledger = CapabilityChainExecutionLedger::default();
+        mixed_ledger
+            .start("mixed-execution-1", mixed_plan.clone())
+            .unwrap();
+        mixed_ledger
+            .record_step(
+                "mixed-execution-1",
+                CapabilityChainStepReceipt {
+                    step_index: 0,
+                    capability_id: "new_capability".into(),
+                    input_artifacts: vec!["simplified-expression".into()],
+                    output_artifacts: vec!["intermediate".into()],
+                    verification_receipt: "new capability replay".into(),
+                },
+            )
+            .unwrap();
+        mixed_ledger
+            .record_step(
+                "mixed-execution-1",
+                CapabilityChainStepReceipt {
+                    step_index: 1,
+                    capability_id: "verification".into(),
+                    input_artifacts: vec!["intermediate".into()],
+                    output_artifacts: vec!["new-value".into()],
+                    verification_receipt: "new verification replay".into(),
+                },
+            )
+            .unwrap();
+        let mixed_execution = mixed_ledger.complete_success("mixed-execution-1").unwrap();
+        let validated = validate_mixed_synthesis_execution(
+            &mixed.source,
+            &mixed_execution,
+            "new-value",
+            &strict_policy,
+        )
+        .unwrap();
+        assert_eq!(validated.artifact.artifact, "new-value");
+        assert_eq!(validated.artifact.proof_trace.steps.len(), 3);
+        assert!(validated.artifact.proof_trace.replay_verified);
         let short_continuation = CapabilityChainPlan {
             goal: CapabilityIoType::ExactValue,
             steps: vec!["new_capability".into()],

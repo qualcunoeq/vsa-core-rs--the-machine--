@@ -4,9 +4,7 @@
 //! missing modeling steps.  It only expands the unique capability selected
 //! for an already-grounded target and returns its dependency-first closure.
 
-use crate::capabilities::{
-    CapabilityIoType, CapabilityRegistry, CapabilitySelection,
-};
+use crate::capabilities::{CapabilityIoType, CapabilityRegistry, CapabilitySelection, CapabilitySpec};
 use crate::constant_rate_model::{ModelArtifactType, ModelConstructorRegistry, ModelSelection};
 use crate::equation_classification::{
     execute_equation_classification, route_classified_equation, EquationClassificationFailure,
@@ -1028,6 +1026,51 @@ pub enum CapabilityChainProofAbstractionMaterializationRejection {
     MissingVerificationReceipt,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum CapabilityRegistryEvolutionStatus {
+    Prepared,
+    Applied,
+    Failed,
+    RolledBack,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityRegistryEvolutionReceipt {
+    pub evolution_id: String,
+    pub capability_id: String,
+    pub pattern_id: String,
+    pub deployment_id: String,
+    pub candidate: CapabilitySpec,
+    pub status: CapabilityRegistryEvolutionStatus,
+    pub verification_receipt: Option<String>,
+    pub failure_reason: Option<String>,
+    pub rollback_reason: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityRegistryEvolutionRejection {
+    DuplicateEvolution(String),
+    CapabilityIdMismatch,
+    CapabilityVersionMismatch,
+    GoalNotProduced(CapabilityIoType),
+    CandidateNotExecutable,
+    CapabilityAlreadyRegistered(String),
+    UnknownEvolution(String),
+    CandidateMismatch,
+    EvolutionAlreadyTerminal(CapabilityRegistryEvolutionStatus),
+    MissingVerificationReceipt,
+    RollbackRequiresApplied,
+    RegistryStateMismatch,
+}
+
+/// Explicitly integrates an approved abstraction into the live registry.
+/// Preparation remains a pure contract check; only `apply` mutates the
+/// registry, and it registers exactly the candidate that was prepared.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityRegistryEvolutionLedger {
+    evolutions: BTreeMap<String, CapabilityRegistryEvolutionReceipt>,
+}
+
 /// Records the lifecycle of an explicitly approved abstraction deployment.
 /// This ledger is intentionally observational: it does not modify the
 /// capability registry or planner, so applying a receipt still requires a
@@ -1868,6 +1911,138 @@ impl CapabilityChainProofAbstractionDeploymentReceipt {
             final_artifacts: proposal.final_artifacts.clone(),
             verification_receipt,
         })
+    }
+}
+
+impl CapabilityRegistryEvolutionLedger {
+    pub fn prepare(
+        &mut self,
+        evolution_id: impl Into<String>,
+        descriptor: &CapabilityChainProofAbstractionCapability,
+        candidate: CapabilitySpec,
+        registry: &CapabilityRegistry,
+    ) -> Result<CapabilityRegistryEvolutionReceipt, CapabilityRegistryEvolutionRejection> {
+        let evolution_id = evolution_id.into();
+        if self.evolutions.contains_key(&evolution_id) {
+            return Err(CapabilityRegistryEvolutionRejection::DuplicateEvolution(
+                evolution_id,
+            ));
+        }
+        if candidate.id != descriptor.capability_id {
+            return Err(CapabilityRegistryEvolutionRejection::CapabilityIdMismatch);
+        }
+        if candidate.version != descriptor.version {
+            return Err(CapabilityRegistryEvolutionRejection::CapabilityVersionMismatch);
+        }
+        if !candidate.produces.contains(&descriptor.goal) {
+            return Err(CapabilityRegistryEvolutionRejection::GoalNotProduced(
+                descriptor.goal,
+            ));
+        }
+        if candidate.executor.trim().is_empty()
+            || candidate.verifier.trim().is_empty()
+            || !candidate.quality_gate.enabled()
+        {
+            return Err(CapabilityRegistryEvolutionRejection::CandidateNotExecutable);
+        }
+        if registry.get(&candidate.id).is_some() {
+            return Err(CapabilityRegistryEvolutionRejection::CapabilityAlreadyRegistered(
+                candidate.id,
+            ));
+        }
+        let receipt = CapabilityRegistryEvolutionReceipt {
+            evolution_id: evolution_id.clone(),
+            capability_id: candidate.id.clone(),
+            pattern_id: descriptor.pattern_id.clone(),
+            deployment_id: descriptor.deployment_id.clone(),
+            candidate,
+            status: CapabilityRegistryEvolutionStatus::Prepared,
+            verification_receipt: None,
+            failure_reason: None,
+            rollback_reason: None,
+        };
+        self.evolutions.insert(evolution_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn apply(
+        &mut self,
+        evolution_id: &str,
+        registry: &mut CapabilityRegistry,
+        candidate: &CapabilitySpec,
+        verification_receipt: impl Into<String>,
+    ) -> Result<CapabilityRegistryEvolutionReceipt, CapabilityRegistryEvolutionRejection> {
+        let receipt = self.evolutions.get_mut(evolution_id).ok_or_else(|| {
+            CapabilityRegistryEvolutionRejection::UnknownEvolution(evolution_id.into())
+        })?;
+        if receipt.status != CapabilityRegistryEvolutionStatus::Prepared {
+            return Err(CapabilityRegistryEvolutionRejection::EvolutionAlreadyTerminal(
+                receipt.status,
+            ));
+        }
+        if &receipt.candidate != candidate {
+            return Err(CapabilityRegistryEvolutionRejection::CandidateMismatch);
+        }
+        if registry.get(&candidate.id).is_some() {
+            return Err(CapabilityRegistryEvolutionRejection::CapabilityAlreadyRegistered(
+                candidate.id.clone(),
+            ));
+        }
+        let verification_receipt = verification_receipt.into();
+        if verification_receipt.trim().is_empty() {
+            return Err(CapabilityRegistryEvolutionRejection::MissingVerificationReceipt);
+        }
+        registry.register(candidate.clone());
+        receipt.status = CapabilityRegistryEvolutionStatus::Applied;
+        receipt.verification_receipt = Some(verification_receipt);
+        Ok(receipt.clone())
+    }
+
+    pub fn mark_failed(
+        &mut self,
+        evolution_id: &str,
+        reason: impl Into<String>,
+    ) -> Result<CapabilityRegistryEvolutionReceipt, CapabilityRegistryEvolutionRejection> {
+        let receipt = self.evolutions.get_mut(evolution_id).ok_or_else(|| {
+            CapabilityRegistryEvolutionRejection::UnknownEvolution(evolution_id.into())
+        })?;
+        if receipt.status != CapabilityRegistryEvolutionStatus::Prepared {
+            return Err(CapabilityRegistryEvolutionRejection::EvolutionAlreadyTerminal(
+                receipt.status,
+            ));
+        }
+        receipt.status = CapabilityRegistryEvolutionStatus::Failed;
+        receipt.failure_reason = Some(reason.into());
+        Ok(receipt.clone())
+    }
+
+    pub fn rollback(
+        &mut self,
+        evolution_id: &str,
+        registry: &mut CapabilityRegistry,
+        reason: impl Into<String>,
+    ) -> Result<CapabilityRegistryEvolutionReceipt, CapabilityRegistryEvolutionRejection> {
+        let receipt = self.evolutions.get_mut(evolution_id).ok_or_else(|| {
+            CapabilityRegistryEvolutionRejection::UnknownEvolution(evolution_id.into())
+        })?;
+        if receipt.status != CapabilityRegistryEvolutionStatus::Applied {
+            return Err(CapabilityRegistryEvolutionRejection::RollbackRequiresApplied);
+        }
+        if registry.get(&receipt.capability_id) != Some(&receipt.candidate) {
+            return Err(CapabilityRegistryEvolutionRejection::RegistryStateMismatch);
+        }
+        registry.capabilities.remove(&receipt.capability_id);
+        receipt.status = CapabilityRegistryEvolutionStatus::RolledBack;
+        receipt.rollback_reason = Some(reason.into());
+        Ok(receipt.clone())
+    }
+
+    pub fn receipt(&self, evolution_id: &str) -> Option<&CapabilityRegistryEvolutionReceipt> {
+        self.evolutions.get(evolution_id)
+    }
+
+    pub fn receipts(&self) -> impl Iterator<Item = &CapabilityRegistryEvolutionReceipt> {
+        self.evolutions.values()
     }
 }
 
@@ -5254,6 +5429,59 @@ mod tests {
         );
         let registry = CapabilityRegistry::production();
         assert!(registry.get(&materialized.capability_id).is_none());
+        let mut evolution_registry = registry.clone();
+        let mut candidate = CapabilitySpec::expression_evaluation_v1();
+        candidate.id = materialized.capability_id.clone();
+        let mut evolution_ledger = CapabilityRegistryEvolutionLedger::default();
+        let prepared_evolution = evolution_ledger
+            .prepare(
+                "abstraction-evolution-1",
+                &materialized,
+                candidate.clone(),
+                &evolution_registry,
+            )
+            .unwrap();
+        assert_eq!(
+            prepared_evolution.status,
+            CapabilityRegistryEvolutionStatus::Prepared
+        );
+        assert!(matches!(
+            evolution_ledger.apply(
+                "abstraction-evolution-1",
+                &mut evolution_registry,
+                &candidate,
+                "",
+            ),
+            Err(CapabilityRegistryEvolutionRejection::MissingVerificationReceipt)
+        ));
+        let applied_evolution = evolution_ledger
+            .apply(
+                "abstraction-evolution-1",
+                &mut evolution_registry,
+                &candidate,
+                "registry integration replay receipt",
+            )
+            .unwrap();
+        assert_eq!(
+            applied_evolution.status,
+            CapabilityRegistryEvolutionStatus::Applied
+        );
+        assert_eq!(
+            evolution_registry.get(&materialized.capability_id),
+            Some(&candidate)
+        );
+        let rolled_back_evolution = evolution_ledger
+            .rollback(
+                "abstraction-evolution-1",
+                &mut evolution_registry,
+                "post-registration regression",
+            )
+            .unwrap();
+        assert_eq!(
+            rolled_back_evolution.status,
+            CapabilityRegistryEvolutionStatus::RolledBack
+        );
+        assert!(evolution_registry.get(&materialized.capability_id).is_none());
         let rolled_back = abstraction_deployments
             .rollback("abstraction-deployment-1", "regression detected")
             .unwrap();

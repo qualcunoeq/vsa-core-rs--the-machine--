@@ -1099,6 +1099,55 @@ pub enum CapabilityChainProofAbstractionTrajectoryPlanningFailure {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionUnlockCalibrationObservation {
+    pub observation_id: String,
+    pub family_id: String,
+    pub predicted_unlock_probability_basis_points: usize,
+    pub actual_unlocked: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionUnlockCalibrationFamilySummary {
+    pub family_id: String,
+    pub observations: usize,
+    pub mean_absolute_error_basis_points: usize,
+    pub overconfidence_count: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionUnlockCalibrationReport {
+    pub observations: usize,
+    pub mean_absolute_error_basis_points: usize,
+    pub overconfidence_count: usize,
+    pub tolerance_basis_points: usize,
+    pub calibrated: bool,
+    pub family_summaries: Vec<CapabilityChainProofAbstractionUnlockCalibrationFamilySummary>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionUnlockCalibrationPrior {
+    pub family_id: String,
+    pub attempts: usize,
+    pub observed_unlocks: usize,
+    pub empirical_unlock_rate_basis_points: usize,
+    pub posterior_unlock_rate_basis_points: usize,
+    pub evidence_strength_basis_points: usize,
+    pub calibration_error_basis_points: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection {
+    DuplicateObservation(String),
+    RateOutOfRange,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainProofAbstractionUnlockCalibrationLedger {
+    observations:
+        BTreeMap<String, CapabilityChainProofAbstractionUnlockCalibrationObservation>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofAbstractionCalibrationLedgerRejection {
     DuplicateObservation(String),
     RateOutOfRange,
@@ -3306,6 +3355,141 @@ impl CapabilityChainProofAbstractionCalibrationLedger {
                 })
         });
         priorities
+    }
+}
+
+impl CapabilityChainProofAbstractionUnlockCalibrationLedger {
+    pub fn record(
+        &mut self,
+        observation: CapabilityChainProofAbstractionUnlockCalibrationObservation,
+    ) -> Result<CapabilityChainProofAbstractionUnlockCalibrationObservation,
+        CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection> {
+        if self.observations.contains_key(&observation.observation_id) {
+            return Err(
+                CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection::DuplicateObservation(
+                    observation.observation_id,
+                ),
+            );
+        }
+        if observation.predicted_unlock_probability_basis_points > 10_000 {
+            return Err(
+                CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection::RateOutOfRange,
+            );
+        }
+        self.observations
+            .insert(observation.observation_id.clone(), observation.clone());
+        Ok(observation)
+    }
+
+    pub fn observations(
+        &self,
+    ) -> impl Iterator<Item = &CapabilityChainProofAbstractionUnlockCalibrationObservation> {
+        self.observations.values()
+    }
+
+    /// Audit whether family-unlock forecasts match observed unlock outcomes.
+    /// This produces evidence for trajectory review and never changes a
+    /// trajectory, capability registry, or authorization policy.
+    pub fn assess(
+        &self,
+        tolerance_basis_points: usize,
+    ) -> CapabilityChainProofAbstractionUnlockCalibrationReport {
+        let observations = self.observations.len();
+        if observations == 0 {
+            return CapabilityChainProofAbstractionUnlockCalibrationReport {
+                observations: 0,
+                mean_absolute_error_basis_points: 0,
+                overconfidence_count: 0,
+                tolerance_basis_points,
+                calibrated: false,
+                family_summaries: Vec::new(),
+            };
+        }
+        let mut total_error = 0usize;
+        let mut overconfidence = 0usize;
+        let mut family_totals = BTreeMap::<String, (usize, usize, usize)>::new();
+        for observation in self.observations.values() {
+            let actual = usize::from(observation.actual_unlocked) * 10_000;
+            let error = observation
+                .predicted_unlock_probability_basis_points
+                .abs_diff(actual);
+            total_error = total_error.saturating_add(error);
+            overconfidence += usize::from(
+                observation.predicted_unlock_probability_basis_points > actual,
+            );
+            let totals = family_totals
+                .entry(observation.family_id.clone())
+                .or_insert((0, 0, 0));
+            totals.0 += 1;
+            totals.1 = totals.1.saturating_add(error);
+            totals.2 += usize::from(
+                observation.predicted_unlock_probability_basis_points > actual,
+            );
+        }
+        let mean_error = total_error / observations;
+        let family_summaries = family_totals
+            .into_iter()
+            .map(|(family_id, (count, error, overconfidence))| {
+                CapabilityChainProofAbstractionUnlockCalibrationFamilySummary {
+                    family_id,
+                    observations: count,
+                    mean_absolute_error_basis_points: error / count,
+                    overconfidence_count: overconfidence,
+                }
+            })
+            .collect();
+        CapabilityChainProofAbstractionUnlockCalibrationReport {
+            observations,
+            mean_absolute_error_basis_points: mean_error,
+            overconfidence_count: overconfidence,
+            tolerance_basis_points,
+            calibrated: mean_error <= tolerance_basis_points,
+            family_summaries,
+        }
+    }
+
+    /// Produce smoothed, family-specific unlock priors for trajectory review.
+    /// These priors are advisory and require a separate caller decision before
+    /// they can influence any planning request.
+    pub fn advisory_priors(
+        &self,
+    ) -> Vec<CapabilityChainProofAbstractionUnlockCalibrationPrior> {
+        const PRIOR_WEIGHT: usize = 10;
+        let report = self.assess(usize::MAX);
+        let mut totals = BTreeMap::<String, (usize, usize)>::new();
+        for observation in self.observations.values() {
+            let entry = totals
+                .entry(observation.family_id.clone())
+                .or_insert((0, 0));
+            entry.0 += 1;
+            entry.1 += usize::from(observation.actual_unlocked);
+        }
+        totals
+            .into_iter()
+            .map(|(family_id, (attempts, observed_unlocks))| {
+                let posterior_denominator = attempts + PRIOR_WEIGHT;
+                let summary = report
+                    .family_summaries
+                    .iter()
+                    .find(|summary| summary.family_id == family_id)
+                    .expect("family totals must have a calibration summary");
+                CapabilityChainProofAbstractionUnlockCalibrationPrior {
+                    family_id,
+                    attempts,
+                    observed_unlocks,
+                    empirical_unlock_rate_basis_points: observed_unlocks * 10_000 / attempts,
+                    posterior_unlock_rate_basis_points: observed_unlocks
+                        .saturating_mul(10_000)
+                        .saturating_add(5_000 * PRIOR_WEIGHT)
+                        / posterior_denominator,
+                    evidence_strength_basis_points: attempts
+                        .saturating_mul(10_000)
+                        / posterior_denominator,
+                    calibration_error_basis_points: summary
+                        .mean_absolute_error_basis_points,
+                }
+            })
+            .collect()
     }
 }
 
@@ -7383,6 +7567,61 @@ mod tests {
                     ..
                 }
             )
+        ));
+        let mut unlock_calibration =
+            CapabilityChainProofAbstractionUnlockCalibrationLedger::default();
+        unlock_calibration
+            .record(CapabilityChainProofAbstractionUnlockCalibrationObservation {
+                observation_id: "unlock-calibration-a".into(),
+                family_id: "family-a".into(),
+                predicted_unlock_probability_basis_points: 8_000,
+                actual_unlocked: true,
+            })
+            .unwrap();
+        unlock_calibration
+            .record(CapabilityChainProofAbstractionUnlockCalibrationObservation {
+                observation_id: "unlock-calibration-b".into(),
+                family_id: "family-b".into(),
+                predicted_unlock_probability_basis_points: 9_000,
+                actual_unlocked: false,
+            })
+            .unwrap();
+        let unlock_report = unlock_calibration.assess(5_500);
+        assert_eq!(unlock_report.observations, 2);
+        assert_eq!(unlock_report.mean_absolute_error_basis_points, 5_500);
+        assert_eq!(unlock_report.overconfidence_count, 1);
+        assert!(unlock_report.calibrated);
+        assert_eq!(unlock_report.family_summaries.len(), 2);
+        let unlock_priors = unlock_calibration.advisory_priors();
+        assert_eq!(unlock_priors.len(), 2);
+        assert_eq!(unlock_priors[0].family_id, "family-a");
+        assert_eq!(unlock_priors[0].posterior_unlock_rate_basis_points, 5_454);
+        assert_eq!(unlock_priors[0].evidence_strength_basis_points, 909);
+        assert!(matches!(
+            unlock_calibration.record(
+                CapabilityChainProofAbstractionUnlockCalibrationObservation {
+                    observation_id: "unlock-calibration-a".into(),
+                    family_id: "family-a".into(),
+                    predicted_unlock_probability_basis_points: 8_000,
+                    actual_unlocked: true,
+                }
+            ),
+            Err(
+                CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection::DuplicateObservation(
+                    _
+                )
+            )
+        ));
+        assert!(matches!(
+            unlock_calibration.record(
+                CapabilityChainProofAbstractionUnlockCalibrationObservation {
+                    observation_id: "unlock-calibration-invalid".into(),
+                    family_id: "family-a".into(),
+                    predicted_unlock_probability_basis_points: 10_001,
+                    actual_unlocked: true,
+                }
+            ),
+            Err(CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection::RateOutOfRange)
         ));
         assert!(matches!(
             abstraction_experiments.record("abstraction-experiment-1", experiment),

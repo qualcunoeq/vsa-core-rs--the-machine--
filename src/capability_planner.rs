@@ -1133,6 +1133,11 @@ impl VerifiedArtifactPolicy {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofFailure {
     ExecutionNotSuccessful(CapabilityChainExecutionStatus),
+    UnverifiedProofInput(String),
+    IncompatibleProofs {
+        produced: Vec<String>,
+        required: Vec<String>,
+    },
     IncompleteSteps { expected: usize, recorded: usize },
     MissingVerificationReceipt(usize),
     MissingFactRetrievalReceipt(String),
@@ -1222,6 +1227,117 @@ pub fn compose_capability_chain_proof_with_retrieved_facts(
         steps,
         retrieved_facts,
         final_artifacts,
+        replay_verified: true,
+    })
+}
+
+/// Compose two independently verified traces when the first trace produces
+/// an artifact consumed by the second. This is proof composition, not
+/// execution: every input trace must already be replay-verified.
+pub fn compose_capability_chain_proofs(
+    first: &CapabilityChainProofTrace,
+    second: &CapabilityChainProofTrace,
+) -> Result<CapabilityChainProofTrace, CapabilityChainProofFailure> {
+    if !first.replay_verified {
+        return Err(CapabilityChainProofFailure::UnverifiedProofInput(
+            first.execution_id.clone(),
+        ));
+    }
+    if !second.replay_verified {
+        return Err(CapabilityChainProofFailure::UnverifiedProofInput(
+            second.execution_id.clone(),
+        ));
+    }
+    if first.steps.len() != first.plan.steps.len() {
+        return Err(CapabilityChainProofFailure::IncompleteSteps {
+            expected: first.plan.steps.len(),
+            recorded: first.steps.len(),
+        });
+    }
+    if second.steps.len() != second.plan.steps.len() {
+        return Err(CapabilityChainProofFailure::IncompleteSteps {
+            expected: second.plan.steps.len(),
+            recorded: second.steps.len(),
+        });
+    }
+    for step in first.steps.iter().chain(second.steps.iter()) {
+        if step.verification_receipt.trim().is_empty() {
+            return Err(CapabilityChainProofFailure::MissingVerificationReceipt(
+                step.step_index,
+            ));
+        }
+    }
+    let required = second
+        .steps
+        .first()
+        .map(|step| step.input_artifacts.clone())
+        .unwrap_or_default();
+    if first.steps.is_empty() || second.steps.is_empty() {
+        return Err(CapabilityChainProofFailure::IncompatibleProofs {
+            produced: first.final_artifacts.clone(),
+            required,
+        });
+    }
+    if !first
+        .final_artifacts
+        .iter()
+        .any(|artifact| required.contains(artifact))
+    {
+        return Err(CapabilityChainProofFailure::IncompatibleProofs {
+            produced: first.final_artifacts.clone(),
+            required,
+        });
+    }
+
+    let mut steps = first.steps.clone();
+    let offset = steps.len();
+    steps.extend(second.steps.iter().map(|step| CapabilityChainProofStep {
+        step_index: step.step_index + offset,
+        capability_id: step.capability_id.clone(),
+        input_artifacts: step.input_artifacts.clone(),
+        output_artifacts: step.output_artifacts.clone(),
+        verification_receipt: step.verification_receipt.clone(),
+    }));
+    let mut retrieved_facts = first.retrieved_facts.clone();
+    retrieved_facts.extend(second.retrieved_facts.clone());
+    let mut seen_retrievals = BTreeSet::new();
+    for fact in &retrieved_facts {
+        if fact
+            .retrieval_receipt
+            .as_deref()
+            .unwrap_or_default()
+            .trim()
+            .is_empty()
+        {
+            return Err(CapabilityChainProofFailure::MissingFactRetrievalReceipt(
+                fact.fact_id.clone(),
+            ));
+        }
+        let key = (fact.capability.clone(), fact.fact_id.clone());
+        if !seen_retrievals.insert(key) {
+            return Err(CapabilityChainProofFailure::DuplicateFactRetrieval {
+                capability: fact.capability.clone(),
+                fact_id: fact.fact_id.clone(),
+            });
+        }
+    }
+    retrieved_facts.sort_by(|left, right| {
+        left.fact_id
+            .cmp(&right.fact_id)
+            .then_with(|| left.capability.cmp(&right.capability))
+            .then_with(|| left.retrieval_receipt.cmp(&right.retrieval_receipt))
+    });
+    let mut plan_steps = first.plan.steps.clone();
+    plan_steps.extend(second.plan.steps.clone());
+    Ok(CapabilityChainProofTrace {
+        execution_id: format!("compose:{}+{}", first.execution_id, second.execution_id),
+        plan: CapabilityChainPlan {
+            goal: second.plan.goal,
+            steps: plan_steps,
+        },
+        steps,
+        retrieved_facts,
+        final_artifacts: second.final_artifacts.clone(),
         replay_verified: true,
     })
 }
@@ -3704,6 +3820,71 @@ mod tests {
             ))
         );
         assert!(!index.is_empty());
+    }
+
+    #[test]
+    fn verified_proofs_compose_when_artifacts_are_compatible() {
+        let first = CapabilityChainProofTrace {
+            execution_id: "proof-compose-first".into(),
+            plan: CapabilityChainPlan {
+                goal: CapabilityIoType::ExactValue,
+                steps: vec!["expression_simplification".into()],
+            },
+            steps: vec![CapabilityChainProofStep {
+                step_index: 0,
+                capability_id: "expression_simplification".into(),
+                input_artifacts: vec!["raw-expression".into()],
+                output_artifacts: vec!["simplified-expression".into()],
+                verification_receipt: "simplification replay".into(),
+            }],
+            retrieved_facts: Vec::new(),
+            final_artifacts: vec!["simplified-expression".into()],
+            replay_verified: true,
+        };
+        let second = CapabilityChainProofTrace {
+            execution_id: "proof-compose-second".into(),
+            plan: CapabilityChainPlan {
+                goal: CapabilityIoType::ExactValue,
+                steps: vec!["evaluate_simplified_expression".into()],
+            },
+            steps: vec![CapabilityChainProofStep {
+                step_index: 0,
+                capability_id: "evaluate_simplified_expression".into(),
+                input_artifacts: vec!["simplified-expression".into()],
+                output_artifacts: vec!["value".into()],
+                verification_receipt: "evaluation replay".into(),
+            }],
+            retrieved_facts: Vec::new(),
+            final_artifacts: vec!["value".into()],
+            replay_verified: true,
+        };
+
+        let composed = compose_capability_chain_proofs(&first, &second).unwrap();
+        assert_eq!(composed.steps.len(), 2);
+        assert_eq!(
+            composed
+                .steps
+                .iter()
+                .map(|step| step.step_index)
+                .collect::<Vec<_>>(),
+            vec![0, 1]
+        );
+        assert_eq!(
+            composed.plan.steps,
+            vec![
+                "expression_simplification".to_string(),
+                "evaluate_simplified_expression".to_string()
+            ]
+        );
+        assert_eq!(composed.final_artifacts, vec!["value"]);
+        assert!(composed.replay_verified);
+
+        let mut incompatible = second.clone();
+        incompatible.steps[0].input_artifacts = vec!["other-expression".into()];
+        assert!(matches!(
+            compose_capability_chain_proofs(&first, &incompatible),
+            Err(CapabilityChainProofFailure::IncompatibleProofs { .. })
+        ));
     }
 
     #[test]

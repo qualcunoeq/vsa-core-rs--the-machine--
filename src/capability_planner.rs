@@ -981,6 +981,26 @@ pub struct CapabilityChainProofConceptCompositionReceipt {
     pub diagnostic_only: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofConceptIndexFailure {
+    ValidationNotPassed(String),
+    DuplicateConcept(String),
+}
+
+/// A governed memory of validated concept contracts. It is intentionally
+/// separate from the executable capability registry.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainProofConceptIndex {
+    concepts: BTreeMap<String, CapabilityChainProofConceptContract>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptNoveltyReceipt {
+    pub candidate_id: String,
+    pub equivalent_concept_ids: Vec<String>,
+    pub passed: bool,
+}
+
 impl CapabilityChainProofConceptDiscoveryReceipt {
     /// Extract an observed contract boundary for each concept using the
     /// registry's declared first-step inputs and last-step outputs. This is a
@@ -1166,6 +1186,64 @@ pub fn compose_validated_proof_concepts(
         parameterized_signature,
         diagnostic_only: true,
     })
+}
+
+impl CapabilityChainProofConceptIndex {
+    pub fn insert(
+        &mut self,
+        contract: CapabilityChainProofConceptContract,
+        validation: &CapabilityChainProofConceptValidationReceipt,
+    ) -> Result<String, CapabilityChainProofConceptIndexFailure> {
+        if validation.concept_id != contract.concept_id || !validation.passed {
+            return Err(CapabilityChainProofConceptIndexFailure::ValidationNotPassed(
+                contract.concept_id,
+            ));
+        }
+        if self.concepts.contains_key(&contract.concept_id) {
+            return Err(CapabilityChainProofConceptIndexFailure::DuplicateConcept(
+                contract.concept_id,
+            ));
+        }
+        let concept_id = contract.concept_id.clone();
+        self.concepts.insert(concept_id.clone(), contract);
+        Ok(concept_id)
+    }
+
+    pub fn get(&self, concept_id: &str) -> Option<&CapabilityChainProofConceptContract> {
+        self.concepts.get(concept_id)
+    }
+
+    pub fn len(&self) -> usize {
+        self.concepts.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.concepts.is_empty()
+    }
+
+    /// Compare a candidate against validated concept contracts by behavior,
+    /// not by name. Equivalent macros are reported rather than duplicated.
+    pub fn assess_novelty(
+        &self,
+        candidate: &CapabilityChainProofConceptContract,
+    ) -> CapabilityChainProofConceptNoveltyReceipt {
+        let equivalent_concept_ids = self
+            .concepts
+            .iter()
+            .filter(|(_, existing)| {
+                existing.capabilities == candidate.capabilities
+                    && existing.input_artifacts == candidate.input_artifacts
+                    && existing.output_artifacts == candidate.output_artifacts
+                    && existing.parameterized_signature == candidate.parameterized_signature
+            })
+            .map(|(concept_id, _)| concept_id.clone())
+            .collect::<Vec<_>>();
+        CapabilityChainProofConceptNoveltyReceipt {
+            candidate_id: candidate.concept_id.clone(),
+            passed: equivalent_concept_ids.is_empty(),
+            equivalent_concept_ids,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -7290,6 +7368,50 @@ mod tests {
             Err(
                 CapabilityChainProofConceptCompositionFailure::IncompatibleHandoff { .. }
             )
+        ));
+        let mut concept_index = CapabilityChainProofConceptIndex::default();
+        concept_index.insert(left_concept.clone(), &left_validation).unwrap();
+        concept_index
+            .insert(right_concept.clone(), &right_validation)
+            .unwrap();
+        assert_eq!(concept_index.len(), 2);
+        assert!(matches!(
+            concept_index.insert(left_concept.clone(), &left_validation),
+            Err(CapabilityChainProofConceptIndexFailure::DuplicateConcept(_))
+        ));
+        let mut renamed = left_concept.clone();
+        renamed.concept_id = "renamed-left".into();
+        let novelty = concept_index.assess_novelty(&renamed);
+        assert!(!novelty.passed);
+        assert_eq!(novelty.equivalent_concept_ids, vec!["concept-left"]);
+        let composed_contract = CapabilityChainProofConceptContract {
+            concept_id: composed_concept.concept_id.clone(),
+            capabilities: composed_concept.capabilities.clone(),
+            input_artifacts: composed_concept.input_artifacts.clone(),
+            output_artifacts: composed_concept.output_artifacts.clone(),
+            source_pattern_ids: composed_concept.source_pattern_ids.clone(),
+            supporting_instances: composed_concept.supporting_instances,
+            parameterized_signature: composed_concept.parameterized_signature.clone(),
+            diagnostic_only: true,
+        };
+        let composed_novelty = concept_index.assess_novelty(&composed_contract);
+        assert!(composed_novelty.passed);
+        assert!(matches!(
+            concept_index.insert(
+                composed_contract,
+                &CapabilityChainProofConceptValidationReceipt {
+                    concept_id: composed_concept.concept_id,
+                    required_pattern_support: 2,
+                    observed_pattern_support: 2,
+                    held_out_cases: 0,
+                    held_out_replay_failures: 0,
+                    held_out_false_authorizations: 0,
+                    contract_complete: true,
+                    passed: false,
+                    rationale: "not validated".into(),
+                },
+            ),
+            Err(CapabilityChainProofConceptIndexFailure::ValidationNotPassed(_))
         ));
     }
 

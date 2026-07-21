@@ -3060,6 +3060,31 @@ mod tests {
     }
 
     #[test]
+    fn chain_planner_exposes_equation_normalization_as_typed_preprocessing() {
+        let plan = plan_capability_chain(
+            CapabilityIoType::NormalizedEquation,
+            &BTreeSet::from([CapabilityIoType::Equation]),
+            &CapabilityRegistry::production(),
+        )
+        .unwrap();
+
+        assert_eq!(plan.goal, CapabilityIoType::NormalizedEquation);
+        assert_eq!(plan.steps, vec!["equation_normalization"]);
+    }
+
+    #[test]
+    fn chain_planner_reuses_existing_normalized_equation_without_reprocessing() {
+        let plan = plan_capability_chain(
+            CapabilityIoType::NormalizedEquation,
+            &BTreeSet::from([CapabilityIoType::NormalizedEquation]),
+            &CapabilityRegistry::production(),
+        )
+        .unwrap();
+
+        assert!(plan.steps.is_empty());
+    }
+
+    #[test]
     fn model_plan_composes_unique_constructor_with_expression_evaluation() {
         let plan = plan_model_to_goal(
             "A quantity changes at a constant rate of 3 per interval for 4 intervals. Find the total change.",

@@ -1065,6 +1065,67 @@ pub struct CapabilityChainProofConceptPlanningReceipt {
     pub diagnostic_only: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofConceptPlanningPreference {
+    NoCandidates,
+    Preferred(String),
+    Ambiguous(Vec<String>),
+}
+
+/// Diagnostic comparison of concept-guided routes. Preference is deliberately
+/// separate from proposal validity and never authorizes the selected route.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptPlanningPreferenceReceipt {
+    pub goal_artifact: CapabilityIoType,
+    pub proposals: Vec<CapabilityChainProofConceptPlanningProposal>,
+    pub preference: CapabilityChainProofConceptPlanningPreference,
+    pub diagnostic_only: bool,
+}
+
+impl CapabilityChainProofConceptPlanningReceipt {
+    /// Rank already-validated proposals by shorter capability route first and
+    /// stronger observed support second. Equal evidence remains ambiguous.
+    pub fn rank_preference(&self) -> CapabilityChainProofConceptPlanningPreferenceReceipt {
+        let mut proposals = self.proposals.clone();
+        proposals.sort_by(|left, right| {
+            left.plan
+                .steps
+                .len()
+                .cmp(&right.plan.steps.len())
+                .then_with(|| right.supporting_instances.cmp(&left.supporting_instances))
+                .then_with(|| left.concept_id.cmp(&right.concept_id))
+        });
+        let preference = match proposals.first() {
+            None => CapabilityChainProofConceptPlanningPreference::NoCandidates,
+            Some(best) => {
+                let best_steps = best.plan.steps.len();
+                let best_support = best.supporting_instances;
+                let tied = proposals
+                    .iter()
+                    .filter(|proposal| {
+                        proposal.plan.steps.len() == best_steps
+                            && proposal.supporting_instances == best_support
+                    })
+                    .map(|proposal| proposal.concept_id.clone())
+                    .collect::<Vec<_>>();
+                if tied.len() == 1 {
+                    CapabilityChainProofConceptPlanningPreference::Preferred(
+                        tied[0].clone(),
+                    )
+                } else {
+                    CapabilityChainProofConceptPlanningPreference::Ambiguous(tied)
+                }
+            }
+        };
+        CapabilityChainProofConceptPlanningPreferenceReceipt {
+            goal_artifact: self.goal_artifact,
+            proposals,
+            preference,
+            diagnostic_only: true,
+        }
+    }
+}
+
 impl CapabilityChainProofConceptDiscoveryReceipt {
     /// Extract an observed contract boundary for each concept using the
     /// registry's declared first-step inputs and last-step outputs. This is a
@@ -7693,6 +7754,26 @@ mod tests {
             ]
         );
         assert_eq!(planning.proposals[0].supporting_instances, 7);
+        assert_eq!(
+            planning.rank_preference().preference,
+            CapabilityChainProofConceptPlanningPreference::Preferred(
+                "equation-analysis-concept".into()
+            )
+        );
+        let mut competing = planning.proposals[0].clone();
+        competing.concept_id = "equation-analysis-alternative".into();
+        let ambiguous = CapabilityChainProofConceptPlanningReceipt {
+            available_inputs: planning.available_inputs.clone(),
+            goal_artifact: planning.goal_artifact,
+            proposals: vec![planning.proposals[0].clone(), competing],
+            rejections: Vec::new(),
+            diagnostic_only: true,
+        }
+        .rank_preference();
+        assert!(matches!(
+            ambiguous.preference,
+            CapabilityChainProofConceptPlanningPreference::Ambiguous(_)
+        ));
     }
 
     #[test]

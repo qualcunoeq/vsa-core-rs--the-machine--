@@ -1005,6 +1005,34 @@ impl CapabilityChainProofIndex {
         goal_artifact: &str,
         max_depth: usize,
     ) -> Option<CapabilityChainProofTrace> {
+        self.search_composed_proof_internal(available_inputs, goal_artifact, max_depth, None)
+    }
+
+    /// Search proof fragments while applying a consumer trust policy at the
+    /// goal boundary. Incompatible paths are never returned as solutions;
+    /// preference and ranking remain separate diagnostics.
+    pub fn search_composed_proof_with_policy(
+        &self,
+        available_inputs: &BTreeSet<String>,
+        goal_artifact: &str,
+        max_depth: usize,
+        policy: &VerifiedArtifactPolicy,
+    ) -> Option<CapabilityChainProofTrace> {
+        self.search_composed_proof_internal(
+            available_inputs,
+            goal_artifact,
+            max_depth,
+            Some(policy),
+        )
+    }
+
+    fn search_composed_proof_internal(
+        &self,
+        available_inputs: &BTreeSet<String>,
+        goal_artifact: &str,
+        max_depth: usize,
+        policy: Option<&VerifiedArtifactPolicy>,
+    ) -> Option<CapabilityChainProofTrace> {
         if max_depth == 0 {
             return None;
         }
@@ -1024,15 +1052,34 @@ impl CapabilityChainProofIndex {
             .iter()
             .map(CapabilityChainProofTrace::reasoning_fingerprint)
             .collect::<BTreeSet<_>>();
+        let acceptable = |proof: &CapabilityChainProofTrace| {
+            if !proof
+                .final_artifacts
+                .iter()
+                .any(|artifact| artifact == goal_artifact)
+            {
+                return false;
+            }
+            let Some(policy) = policy else {
+                return true;
+            };
+            let final_receipt = proof
+                .steps
+                .last()
+                .map(|step| step.verification_receipt.clone())
+                .unwrap_or_default();
+            let candidate = VerifiedArtifact {
+                artifact: (),
+                proof_trace: proof.clone(),
+                final_verification_receipt: final_receipt,
+            };
+            policy.evaluate(&candidate).is_ok()
+        };
 
         for _ in 0..max_depth {
             frontier.sort_by_key(CapabilityChainProofTrace::reasoning_fingerprint);
             for proof in &frontier {
-                if proof
-                    .final_artifacts
-                    .iter()
-                    .any(|artifact| artifact == goal_artifact)
-                {
+                if acceptable(proof) {
                     return Some(proof.clone());
                 }
             }
@@ -4097,6 +4144,24 @@ mod tests {
         assert_eq!(reused.final_artifacts, vec!["value"]);
         assert_eq!(reused.steps.len(), 2);
 
+        let mut policy_graph = CapabilityChainProofIndex::default();
+        policy_graph.insert(first.clone()).unwrap();
+        policy_graph.insert(second.clone()).unwrap();
+        policy_graph.insert(composed.clone()).unwrap();
+        let strict_policy = VerifiedArtifactPolicy {
+            minimum_proof_steps: 2,
+            ..VerifiedArtifactPolicy::default()
+        };
+        let policy_reused = policy_graph
+            .search_composed_proof_with_policy(
+                &BTreeSet::from(["raw-expression".to_string()]),
+                "value",
+                2,
+                &strict_policy,
+            )
+            .unwrap();
+        assert_eq!(policy_reused.steps.len(), 2);
+
         let mut alternate = second.clone();
         alternate.execution_id = "proof-compose-alternate".into();
         alternate.plan.steps = vec!["alternate_evaluation".into()];
@@ -4106,10 +4171,6 @@ mod tests {
         assert_eq!(preference.candidates.len(), 2);
         assert!(preference.ambiguous);
         assert_eq!(preference.preferred_fingerprint, None);
-        let strict_policy = VerifiedArtifactPolicy {
-            minimum_proof_steps: 2,
-            ..VerifiedArtifactPolicy::default()
-        };
         let constrained = graph.rank_goal_proofs_with_policy("value", &strict_policy);
         assert!(constrained.accepted.candidates.is_empty());
         assert_eq!(constrained.rejected.len(), 2);

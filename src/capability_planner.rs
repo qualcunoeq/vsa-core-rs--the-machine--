@@ -906,6 +906,24 @@ pub struct CapabilityChainProofAbstraction {
     pub representative_fingerprint: String,
 }
 
+/// A recurring contiguous capability sequence observed across distinct proof
+/// shapes. This is a concept candidate only: it carries supporting instances
+/// but is not an executable capability or a registry mutation.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptSchema {
+    pub concept_id: String,
+    pub capabilities: Vec<String>,
+    pub source_pattern_ids: Vec<String>,
+    pub supporting_instances: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptDiscoveryReceipt {
+    pub minimum_pattern_support: usize,
+    pub schemas: Vec<CapabilityChainProofConceptSchema>,
+    pub diagnostic_only: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityChainProofAbstractionProposal {
     pub pattern: CapabilityChainProofAbstraction,
@@ -1657,6 +1675,64 @@ impl CapabilityChainProofIndex {
                 });
         }
         grouped.into_values().collect()
+    }
+
+    /// Discover recurring capability subsequences across distinct proof
+    /// shapes. Subsequence support is evidence for a reusable concept schema,
+    /// not permission to execute or register a new capability.
+    pub fn discover_proof_concept_schemas(
+        &self,
+        minimum_pattern_support: usize,
+    ) -> CapabilityChainProofConceptDiscoveryReceipt {
+        let required_support = minimum_pattern_support.max(2);
+        let abstractions = self.abstract_proof_shapes();
+        let instances_by_pattern = abstractions
+            .iter()
+            .map(|abstraction| (abstraction.pattern_id.clone(), abstraction.instances))
+            .collect::<BTreeMap<_, _>>();
+        let mut grouped = BTreeMap::<Vec<String>, BTreeSet<String>>::new();
+        for abstraction in &abstractions {
+            let capabilities = &abstraction.capabilities;
+            let mut seen_sequences = BTreeSet::new();
+            for start in 0..capabilities.len() {
+                for end in (start + 2)..=capabilities.len() {
+                    seen_sequences.insert(capabilities[start..end].to_vec());
+                }
+            }
+            for sequence in seen_sequences {
+                grouped
+                    .entry(sequence)
+                    .or_default()
+                    .insert(abstraction.pattern_id.clone());
+            }
+        }
+        let schemas = grouped
+            .into_iter()
+            .filter_map(|(capabilities, source_ids)| {
+                if source_ids.len() < required_support {
+                    return None;
+                }
+                let source_pattern_ids = source_ids.into_iter().collect::<Vec<_>>();
+                let supporting_instances = source_pattern_ids
+                    .iter()
+                    .filter_map(|pattern_id| instances_by_pattern.get(pattern_id))
+                    .copied()
+                    .sum();
+                let encoded = serde_json::to_vec(&capabilities)
+                    .expect("proof concept schema signature must serialize");
+                Some(CapabilityChainProofConceptSchema {
+                    concept_id: format!("{:x}", Sha256::digest(encoded)),
+                    capabilities,
+                    source_pattern_ids,
+                    supporting_instances,
+                })
+            })
+            .collect();
+        CapabilityChainProofConceptDiscoveryReceipt {
+            minimum_pattern_support: required_support,
+            schemas,
+            diagnostic_only: true,
+        }
     }
 
     /// Turn a sufficiently recurring structural pattern into an advisory
@@ -6802,6 +6878,60 @@ mod tests {
             ))
         );
         assert!(!index.is_empty());
+    }
+
+    #[test]
+    fn proof_concept_discovery_proposes_reusable_subsequences_only() {
+        let make_trace = |execution_id: &str, prefix: &str, suffix: &str| {
+            let capabilities = vec![
+                prefix.to_string(),
+                "shared_normalize".to_string(),
+                "shared_classify".to_string(),
+                suffix.to_string(),
+            ];
+            CapabilityChainProofTrace {
+                execution_id: execution_id.into(),
+                plan: CapabilityChainPlan {
+                    goal: CapabilityIoType::ExactValue,
+                    steps: capabilities.clone(),
+                },
+                steps: capabilities
+                    .iter()
+                    .enumerate()
+                    .map(|(step_index, capability_id)| CapabilityChainProofStep {
+                        step_index,
+                        capability_id: capability_id.clone(),
+                        input_artifacts: vec![format!("input-{step_index}")],
+                        output_artifacts: vec![format!("output-{step_index}")],
+                        verification_receipt: format!("{capability_id} replay"),
+                    })
+                    .collect(),
+                retrieved_facts: Vec::new(),
+                final_artifacts: vec!["result".into()],
+                replay_verified: true,
+            }
+        };
+        let mut index = CapabilityChainProofIndex::default();
+        index
+            .insert(make_trace("concept-run-a", "prefix_a", "suffix_a"))
+            .unwrap();
+        index
+            .insert(make_trace("concept-run-b", "prefix_b", "suffix_b"))
+            .unwrap();
+        let receipt = index.discover_proof_concept_schemas(2);
+        assert!(receipt.diagnostic_only);
+        assert_eq!(receipt.minimum_pattern_support, 2);
+        let shared = receipt
+            .schemas
+            .iter()
+            .find(|schema| {
+                schema.capabilities
+                    == vec!["shared_normalize".to_string(), "shared_classify".to_string()]
+            })
+            .unwrap();
+        assert_eq!(shared.source_pattern_ids.len(), 2);
+        assert_eq!(shared.supporting_instances, 2);
+        assert!(!shared.concept_id.is_empty());
     }
 
     #[test]

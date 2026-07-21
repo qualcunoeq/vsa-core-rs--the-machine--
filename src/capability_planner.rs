@@ -1022,6 +1022,7 @@ pub enum CapabilityChainProofFailure {
     IncompleteSteps { expected: usize, recorded: usize },
     MissingVerificationReceipt(usize),
     MissingFactRetrievalReceipt(String),
+    DuplicateFactRetrieval { capability: String, fact_id: String },
 }
 
 /// Compose independently recorded step receipts into one proof artifact.
@@ -1058,6 +1059,7 @@ pub fn compose_capability_chain_proof_with_retrieved_facts(
             ));
         }
     }
+    let mut seen_retrievals = BTreeSet::new();
     for fact in retrieved_facts {
         if fact
             .retrieval_receipt
@@ -1069,6 +1071,13 @@ pub fn compose_capability_chain_proof_with_retrieved_facts(
             return Err(CapabilityChainProofFailure::MissingFactRetrievalReceipt(
                 fact.fact_id.clone(),
             ));
+        }
+        let retrieval_key = (fact.capability.clone(), fact.fact_id.clone());
+        if !seen_retrievals.insert(retrieval_key) {
+            return Err(CapabilityChainProofFailure::DuplicateFactRetrieval {
+                capability: fact.capability.clone(),
+                fact_id: fact.fact_id.clone(),
+            });
         }
     }
     let steps = execution
@@ -1086,11 +1095,18 @@ pub fn compose_capability_chain_proof_with_retrieved_facts(
         .last()
         .map(|step| step.output_artifacts.clone())
         .unwrap_or_default();
+    let mut retrieved_facts = retrieved_facts.to_vec();
+    retrieved_facts.sort_by(|left, right| {
+        left.fact_id
+            .cmp(&right.fact_id)
+            .then_with(|| left.capability.cmp(&right.capability))
+            .then_with(|| left.retrieval_receipt.cmp(&right.retrieval_receipt))
+    });
     Ok(CapabilityChainProofTrace {
         execution_id: execution.execution_id.clone(),
         plan: execution.plan.clone(),
         steps,
-        retrieved_facts: retrieved_facts.to_vec(),
+        retrieved_facts,
         final_artifacts,
         replay_verified: true,
     })
@@ -3484,7 +3500,32 @@ mod tests {
             &[retrieved.clone()],
         )
         .unwrap();
-        assert_eq!(proof_with_retrieval.retrieved_facts, vec![retrieved]);
+        assert_eq!(proof_with_retrieval.retrieved_facts, vec![retrieved.clone()]);
+        let retrieved_second = DerivedFactProof {
+            capability: "expression_simplification".into(),
+            fact_id: "indexed-aaa".into(),
+            parent_lineage: vec!["source-expression-2".into()],
+            retrieval_receipt: Some("fact_index_retrieval:expression:indexed-aaa".into()),
+        };
+        let ordered = compose_capability_chain_proof_with_retrieved_facts(
+            &completed,
+            &[retrieved.clone(), retrieved_second.clone()],
+        )
+        .unwrap();
+        assert_eq!(
+            ordered.retrieved_facts,
+            vec![retrieved_second.clone(), retrieved.clone()]
+        );
+        assert_eq!(
+            compose_capability_chain_proof_with_retrieved_facts(
+                &completed,
+                &[retrieved.clone(), retrieved],
+            ),
+            Err(CapabilityChainProofFailure::DuplicateFactRetrieval {
+                capability: "evaluate_simplified_expression".into(),
+                fact_id: "indexed-expression".into(),
+            })
+        );
         let missing_receipt = DerivedFactProof {
             retrieval_receipt: None,
             ..proof_with_retrieval.retrieved_facts[0].clone()

@@ -747,6 +747,44 @@ pub struct CapabilityChainProofTrace {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct VerifiedArtifact<T> {
+    pub artifact: T,
+    pub proof_trace: CapabilityChainProofTrace,
+    pub final_verification_receipt: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum VerifiedArtifactFailure {
+    UnverifiedProof,
+    MissingFinalVerificationReceipt,
+}
+
+impl<T> VerifiedArtifact<T> {
+    /// Bind an arbitrary typed artifact to a completed proof-carrying chain.
+    /// The wrapper does not execute the chain or infer that the artifact is
+    /// equal to an output; callers must provide the artifact from that chain.
+    pub fn from_chain(
+        artifact: T,
+        proof_trace: CapabilityChainProofTrace,
+    ) -> Result<Self, VerifiedArtifactFailure> {
+        if !proof_trace.replay_verified {
+            return Err(VerifiedArtifactFailure::UnverifiedProof);
+        }
+        let Some(final_step) = proof_trace.steps.last() else {
+            return Err(VerifiedArtifactFailure::MissingFinalVerificationReceipt);
+        };
+        if final_step.verification_receipt.trim().is_empty() {
+            return Err(VerifiedArtifactFailure::MissingFinalVerificationReceipt);
+        }
+        Ok(Self {
+            artifact,
+            final_verification_receipt: final_step.verification_receipt.clone(),
+            proof_trace,
+        })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofFailure {
     ExecutionNotSuccessful(CapabilityChainExecutionStatus),
     IncompleteSteps { expected: usize, recorded: usize },
@@ -3007,6 +3045,9 @@ mod tests {
         assert!(proof.replay_verified);
         assert_eq!(proof.steps.len(), 2);
         assert_eq!(proof.final_artifacts, vec!["value"]);
+        let verified = VerifiedArtifact::from_chain("value", proof.clone()).unwrap();
+        assert_eq!(verified.artifact, "value");
+        assert_eq!(verified.final_verification_receipt, "evaluation replay");
         assert!(matches!(
             ledger.complete_failure("chain-execution-1", 1, "late failure"),
             Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(_))

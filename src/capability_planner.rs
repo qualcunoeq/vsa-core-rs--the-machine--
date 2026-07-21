@@ -927,6 +927,34 @@ pub struct CapabilityChainProofAbstractionExperimentReceipt {
     pub passed: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionExperimentRiskSummary {
+    pub risk: ImprovementRisk,
+    pub attempts: usize,
+    pub passed: usize,
+    pub safety_failures: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionMetaLearningProfile {
+    pub total_experiments: usize,
+    pub total_passed: usize,
+    pub risk_summaries: Vec<CapabilityChainProofAbstractionExperimentRiskSummary>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionExperimentLedgerRejection {
+    DuplicateExperiment(String),
+}
+
+/// Durable record of abstraction experiments.  The profile derived from this
+/// ledger is descriptive evidence for future planning, not an automatic
+/// change to risk weights or authorization policy.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainProofAbstractionExperimentLedger {
+    receipts: BTreeMap<String, CapabilityChainProofAbstractionExperimentReceipt>,
+}
+
 /// Evidence that an abstraction hypothesis transferred beyond the instances
 /// from which it was discovered.  This is a validation receipt, not a proof
 /// of universal generality.
@@ -2364,6 +2392,70 @@ impl CapabilityChainProofAbstractionDeploymentReceipt {
             final_artifacts: proposal.final_artifacts.clone(),
             verification_receipt,
         })
+    }
+}
+
+impl CapabilityChainProofAbstractionExperimentLedger {
+    pub fn record(
+        &mut self,
+        experiment_id: impl Into<String>,
+        receipt: CapabilityChainProofAbstractionExperimentReceipt,
+    ) -> Result<CapabilityChainProofAbstractionExperimentReceipt, CapabilityChainProofAbstractionExperimentLedgerRejection>
+    {
+        let experiment_id = experiment_id.into();
+        if self.receipts.contains_key(&experiment_id) {
+            return Err(
+                CapabilityChainProofAbstractionExperimentLedgerRejection::DuplicateExperiment(
+                    experiment_id,
+                ),
+            );
+        }
+        self.receipts.insert(experiment_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn receipt(
+        &self,
+        experiment_id: &str,
+    ) -> Option<&CapabilityChainProofAbstractionExperimentReceipt> {
+        self.receipts.get(experiment_id)
+    }
+
+    pub fn receipts(
+        &self,
+    ) -> impl Iterator<Item = &CapabilityChainProofAbstractionExperimentReceipt> {
+        self.receipts.values()
+    }
+
+    /// Summarize observed outcomes by declared risk class.  Counts are kept
+    /// as integers so consumers can choose their own statistical policy.
+    pub fn meta_learning_profile(&self) -> CapabilityChainProofAbstractionMetaLearningProfile {
+        let mut summaries = BTreeMap::<u8, CapabilityChainProofAbstractionExperimentRiskSummary>::new();
+        for receipt in self.receipts.values() {
+            let risk = receipt.proposal.risk;
+            let key = match risk {
+                ImprovementRisk::Low => 0,
+                ImprovementRisk::Medium => 1,
+                ImprovementRisk::High => 2,
+            };
+            let summary = summaries.entry(key).or_insert_with(|| {
+                CapabilityChainProofAbstractionExperimentRiskSummary {
+                    risk,
+                    attempts: 0,
+                    passed: 0,
+                    safety_failures: 0,
+                }
+            });
+            summary.attempts += 1;
+            summary.passed += usize::from(receipt.passed);
+            summary.safety_failures += usize::from(!receipt.safety_preserved);
+        }
+        let risk_summaries = summaries.into_values().collect::<Vec<_>>();
+        CapabilityChainProofAbstractionMetaLearningProfile {
+            total_experiments: self.receipts.len(),
+            total_passed: self.receipts.values().filter(|receipt| receipt.passed).count(),
+            risk_summaries,
+        }
     }
 }
 
@@ -6129,6 +6221,26 @@ mod tests {
             unsafe_experiment.recommendation().action,
             ImprovementRecommendationAction::Reject
         );
+        let mut abstraction_experiments =
+            CapabilityChainProofAbstractionExperimentLedger::default();
+        abstraction_experiments
+            .record("abstraction-experiment-1", experiment.clone())
+            .unwrap();
+        abstraction_experiments
+            .record("abstraction-experiment-unsafe", unsafe_experiment.clone())
+            .unwrap();
+        let profile = abstraction_experiments.meta_learning_profile();
+        assert_eq!(profile.total_experiments, 2);
+        assert_eq!(profile.total_passed, 1);
+        assert_eq!(profile.risk_summaries.len(), 1);
+        assert_eq!(profile.risk_summaries[0].risk, ImprovementRisk::Medium);
+        assert_eq!(profile.risk_summaries[0].attempts, 2);
+        assert_eq!(profile.risk_summaries[0].passed, 1);
+        assert_eq!(profile.risk_summaries[0].safety_failures, 1);
+        assert!(matches!(
+            abstraction_experiments.record("abstraction-experiment-1", experiment),
+            Err(CapabilityChainProofAbstractionExperimentLedgerRejection::DuplicateExperiment(_))
+        ));
         assert!(matches!(
             abstraction_approvals.record(
                 "abstraction-approval-unsafe",

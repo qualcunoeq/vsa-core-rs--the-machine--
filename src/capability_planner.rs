@@ -943,6 +943,16 @@ pub struct CapabilityChainProofAbstractionMetaLearningProfile {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionAdvisoryPrior {
+    pub risk: ImprovementRisk,
+    pub attempts: usize,
+    pub passed: usize,
+    pub safety_failures: usize,
+    pub empirical_pass_rate_basis_points: usize,
+    pub empirical_safety_rate_basis_points: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofAbstractionExperimentLedgerRejection {
     DuplicateExperiment(String),
 }
@@ -1023,6 +1033,7 @@ pub struct CapabilityChainProofAbstractionPriorityScore {
     pub recurrence_signal: usize,
     pub value_signal: usize,
     pub risk_signal: usize,
+    pub historical_success_signal: usize,
     pub complexity_penalty: usize,
     pub expected_gain: usize,
     pub validation_cost: usize,
@@ -1952,6 +1963,25 @@ pub fn rank_proof_abstraction_priorities(
     inputs: Vec<CapabilityChainProofAbstractionPriorityInput>,
 ) -> Result<CapabilityChainProofAbstractionPriorityReceipt, CapabilityChainProofAbstractionPriorityFailure>
 {
+    rank_proof_abstraction_priorities_internal(inputs, None)
+}
+
+/// Rank with empirical, risk-class priors supplied explicitly by a completed
+/// experiment ledger. Historical success is only a bounded advisory signal;
+/// all existing validation and authorization gates remain unchanged.
+pub fn rank_proof_abstraction_priorities_with_meta_learning(
+    inputs: Vec<CapabilityChainProofAbstractionPriorityInput>,
+    profile: &CapabilityChainProofAbstractionMetaLearningProfile,
+) -> Result<CapabilityChainProofAbstractionPriorityReceipt, CapabilityChainProofAbstractionPriorityFailure>
+{
+    rank_proof_abstraction_priorities_internal(inputs, Some(profile))
+}
+
+fn rank_proof_abstraction_priorities_internal(
+    inputs: Vec<CapabilityChainProofAbstractionPriorityInput>,
+    profile: Option<&CapabilityChainProofAbstractionMetaLearningProfile>,
+) -> Result<CapabilityChainProofAbstractionPriorityReceipt, CapabilityChainProofAbstractionPriorityFailure>
+{
     let mut seen = BTreeSet::new();
     let mut candidates = Vec::with_capacity(inputs.len());
     for input in inputs {
@@ -1978,10 +2008,27 @@ pub fn rank_proof_abstraction_priorities(
             ImprovementRisk::High => 0,
         };
         let recurrence_signal = input.proposal.pattern.instances.saturating_mul(10);
+        let historical_success_signal = profile
+            .and_then(|profile| {
+                profile
+                    .advisory_priors()
+                    .into_iter()
+                    .find(|prior| prior.risk == input.proposal.risk)
+            })
+            .map(|prior| {
+                prior
+                    .empirical_pass_rate_basis_points
+                    .saturating_mul(prior.empirical_safety_rate_basis_points)
+                    / 1_000_000
+            })
+            .unwrap_or(0);
         let complexity_penalty = input.value.candidate_score.proof_steps
             + input.value.candidate_score.dependency_count
             + input.value.candidate_score.contract_burden;
-        let expected_gain = recurrence_signal + value_signal + risk_signal;
+        let expected_gain = recurrence_signal
+            .saturating_add(value_signal)
+            .saturating_add(risk_signal)
+            .saturating_add(historical_success_signal);
         let validation_cost = 1 + complexity_penalty;
         let total = expected_gain as isize - complexity_penalty as isize;
         candidates.push(CapabilityChainProofAbstractionPriorityCandidate {
@@ -1990,6 +2037,7 @@ pub fn rank_proof_abstraction_priorities(
                 recurrence_signal,
                 value_signal,
                 risk_signal,
+                historical_success_signal,
                 complexity_penalty,
                 expected_gain,
                 validation_cost,
@@ -2456,6 +2504,32 @@ impl CapabilityChainProofAbstractionExperimentLedger {
             total_passed: self.receipts.values().filter(|receipt| receipt.passed).count(),
             risk_summaries,
         }
+    }
+}
+
+impl CapabilityChainProofAbstractionMetaLearningProfile {
+    /// Convert historical counts into bounded, integer advisory priors.
+    /// These rates describe the ledger and do not relax any validation gate.
+    pub fn advisory_priors(&self) -> Vec<CapabilityChainProofAbstractionAdvisoryPrior> {
+        self.risk_summaries
+            .iter()
+            .map(|summary| {
+                let denominator = summary.attempts.max(1);
+                CapabilityChainProofAbstractionAdvisoryPrior {
+                    risk: summary.risk,
+                    attempts: summary.attempts,
+                    passed: summary.passed,
+                    safety_failures: summary.safety_failures,
+                    empirical_pass_rate_basis_points:
+                        summary.passed.saturating_mul(10_000) / denominator,
+                    empirical_safety_rate_basis_points: summary
+                        .attempts
+                        .saturating_sub(summary.safety_failures)
+                        .saturating_mul(10_000)
+                        / denominator,
+                }
+            })
+            .collect()
     }
 }
 
@@ -6097,6 +6171,7 @@ mod tests {
                         recurrence_signal: 1,
                         value_signal: 9,
                         risk_signal: 0,
+                        historical_success_signal: 0,
                         complexity_penalty: 0,
                         expected_gain: 10,
                         validation_cost: 1,
@@ -6111,6 +6186,7 @@ mod tests {
                         recurrence_signal: 1,
                         value_signal: 9,
                         risk_signal: 0,
+                        historical_success_signal: 0,
                         complexity_penalty: 0,
                         expected_gain: 10,
                         validation_cost: 1,
@@ -6237,6 +6313,25 @@ mod tests {
         assert_eq!(profile.risk_summaries[0].attempts, 2);
         assert_eq!(profile.risk_summaries[0].passed, 1);
         assert_eq!(profile.risk_summaries[0].safety_failures, 1);
+        let priors = profile.advisory_priors();
+        assert_eq!(priors.len(), 1);
+        assert_eq!(priors[0].risk, ImprovementRisk::Medium);
+        assert_eq!(priors[0].empirical_pass_rate_basis_points, 5_000);
+        assert_eq!(priors[0].empirical_safety_rate_basis_points, 5_000);
+        let meta_priority = rank_proof_abstraction_priorities_with_meta_learning(
+            vec![CapabilityChainProofAbstractionPriorityInput {
+                proposal: proposal.clone(),
+                value: value.clone(),
+            }],
+            &profile,
+        )
+        .unwrap();
+        assert_eq!(
+            meta_priority.candidates[0]
+                .score
+                .historical_success_signal,
+            25
+        );
         assert!(matches!(
             abstraction_experiments.record("abstraction-experiment-1", experiment),
             Err(CapabilityChainProofAbstractionExperimentLedgerRejection::DuplicateExperiment(_))

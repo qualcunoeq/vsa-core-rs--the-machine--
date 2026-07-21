@@ -950,6 +950,9 @@ pub struct CapabilityChainProofAbstractionAdvisoryPrior {
     pub safety_failures: usize,
     pub empirical_pass_rate_basis_points: usize,
     pub empirical_safety_rate_basis_points: usize,
+    pub posterior_pass_rate_basis_points: usize,
+    pub posterior_safety_rate_basis_points: usize,
+    pub evidence_strength_basis_points: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -2017,8 +2020,8 @@ fn rank_proof_abstraction_priorities_internal(
             })
             .map(|prior| {
                 prior
-                    .empirical_pass_rate_basis_points
-                    .saturating_mul(prior.empirical_safety_rate_basis_points)
+                    .posterior_pass_rate_basis_points
+                    .saturating_mul(prior.posterior_safety_rate_basis_points)
                     / 1_000_000
             })
             .unwrap_or(0);
@@ -2511,10 +2514,12 @@ impl CapabilityChainProofAbstractionMetaLearningProfile {
     /// Convert historical counts into bounded, integer advisory priors.
     /// These rates describe the ledger and do not relax any validation gate.
     pub fn advisory_priors(&self) -> Vec<CapabilityChainProofAbstractionAdvisoryPrior> {
+        const PRIOR_WEIGHT: usize = 10;
         self.risk_summaries
             .iter()
             .map(|summary| {
                 let denominator = summary.attempts.max(1);
+                let posterior_denominator = summary.attempts + PRIOR_WEIGHT;
                 CapabilityChainProofAbstractionAdvisoryPrior {
                     risk: summary.risk,
                     attempts: summary.attempts,
@@ -2527,6 +2532,21 @@ impl CapabilityChainProofAbstractionMetaLearningProfile {
                         .saturating_sub(summary.safety_failures)
                         .saturating_mul(10_000)
                         / denominator,
+                    posterior_pass_rate_basis_points: summary
+                        .passed
+                        .saturating_mul(10_000)
+                        .saturating_add(5_000 * PRIOR_WEIGHT)
+                        / posterior_denominator,
+                    posterior_safety_rate_basis_points: summary
+                        .attempts
+                        .saturating_sub(summary.safety_failures)
+                        .saturating_mul(10_000)
+                        .saturating_add(5_000 * PRIOR_WEIGHT)
+                        / posterior_denominator,
+                    evidence_strength_basis_points: summary
+                        .attempts
+                        .saturating_mul(10_000)
+                        / posterior_denominator,
                 }
             })
             .collect()
@@ -6318,6 +6338,9 @@ mod tests {
         assert_eq!(priors[0].risk, ImprovementRisk::Medium);
         assert_eq!(priors[0].empirical_pass_rate_basis_points, 5_000);
         assert_eq!(priors[0].empirical_safety_rate_basis_points, 5_000);
+        assert_eq!(priors[0].posterior_pass_rate_basis_points, 5_000);
+        assert_eq!(priors[0].posterior_safety_rate_basis_points, 5_000);
+        assert_eq!(priors[0].evidence_strength_basis_points, 1_666);
         let meta_priority = rank_proof_abstraction_priorities_with_meta_learning(
             vec![CapabilityChainProofAbstractionPriorityInput {
                 proposal: proposal.clone(),

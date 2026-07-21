@@ -17,7 +17,7 @@ use crate::equation_normalization::{
 };
 use crate::evidence::{
     DerivedFact, DerivedFactIndex, FactConflict, FactDerivationRejection, FactIndexInsert,
-    FactIndexRejection, FactPolicy, FactPolicyRejection, FactStatus,
+    FactIndexQueryFailure, FactIndexRejection, FactPolicy, FactPolicyRejection, FactStatus,
 };
 use crate::formalization::{AnswerForm, FormalizedTarget, OperationKind, SubjectObjectType};
 use serde::Serialize;
@@ -39,6 +39,7 @@ pub enum CapabilityPlanningFailure {
         capability: String,
         rejections: Vec<DerivedFactRejection>,
     },
+    FactIndex(FactIndexQueryFailure),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -1291,6 +1292,29 @@ impl ReasoningContext {
             available_inputs,
             derived_facts,
         }
+    }
+
+    /// Build a planning context from the active, internally consistent facts
+    /// in the ledger. Inactive facts are omitted; conflicts are surfaced so a
+    /// planner cannot silently choose one side of a contradiction.
+    pub fn try_from_fact_index(
+        available_inputs: BTreeSet<CapabilityIoType>,
+        index: &DerivedFactIndex,
+    ) -> Result<Self, FactIndexQueryFailure> {
+        let mut derived_facts = Vec::new();
+        for key in index.keys() {
+            match index.usable(key) {
+                Ok(facts) => derived_facts.extend(facts.iter().cloned()),
+                Err(FactIndexQueryFailure::Conflict(conflict)) => {
+                    return Err(FactIndexQueryFailure::Conflict(conflict));
+                }
+                Err(FactIndexQueryFailure::Unavailable { .. }) => {}
+            }
+        }
+        Ok(Self {
+            available_inputs,
+            derived_facts,
+        })
     }
 }
 
@@ -2972,6 +2996,20 @@ pub fn plan_for_goal(
     )
 }
 
+/// Reuse active, conflict-free facts from the governed ledger when planning
+/// a goal. The selected capability's own FactPolicy remains the consumer-side
+/// trust gate for each retrieved fact.
+pub fn plan_for_goal_with_fact_index(
+    goal: CapabilityIoType,
+    available_inputs: BTreeSet<CapabilityIoType>,
+    index: &DerivedFactIndex,
+    registry: &CapabilityRegistry,
+) -> Result<GoalCapabilityPlan, CapabilityPlanningFailure> {
+    let context = ReasoningContext::try_from_fact_index(available_inputs, index)
+        .map_err(CapabilityPlanningFailure::FactIndex)?;
+    plan_for_goal_with_context(goal, &context, registry)
+}
+
 /// Goal-directed planning with a unified artifact context.  Raw model
 /// evidence is intentionally absent here; derived facts enter only through a
 /// capability that explicitly consumes `DerivedFact` and declares a
@@ -4234,6 +4272,80 @@ mod tests {
             ),
             Err(CapabilityPlanningFailure::InvalidDerivedFacts { capability, .. })
                 if capability == "derived_fact_consumer"
+        ));
+    }
+
+    #[test]
+    fn fact_index_planner_reuses_active_derived_knowledge() {
+        let fact = DerivedFact {
+            id: "indexed-derived".into(),
+            content: "distance = 12".into(),
+            parent_lineage: vec!["velocity-input".into()],
+            provenance: "verified publication".into(),
+            proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+            precision: crate::evidence::FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: Some("algebra".into()),
+        };
+        let mut index = DerivedFactIndex::default();
+        assert_eq!(
+            index.insert(
+                "distance",
+                fact,
+                &FactPolicy::verified_transformation(),
+            ),
+            Ok(FactIndexInsert::Added)
+        );
+        let plan = plan_for_goal_with_fact_index(
+            CapabilityIoType::ExactValue,
+            BTreeSet::new(),
+            &index,
+            &derived_fact_registry(),
+        )
+        .unwrap();
+        assert_eq!(plan.selected_capability, "derived_fact_consumer");
+        assert_eq!(plan.derived_fact_proofs[0].fact_id, "indexed-derived");
+    }
+
+    #[test]
+    fn fact_index_planner_rejects_conflicted_knowledge() {
+        let make_fact = |id: &str, content: &str| DerivedFact {
+            id: id.into(),
+            content: content.into(),
+            parent_lineage: vec!["input".into()],
+            provenance: "verified publication".into(),
+            proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+            precision: crate::evidence::FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: None,
+        };
+        let mut index = DerivedFactIndex::default();
+        assert_eq!(
+            index.insert(
+                "distance",
+                make_fact("distance-a", "distance = 12"),
+                &FactPolicy::verified_transformation(),
+            ),
+            Ok(FactIndexInsert::Added)
+        );
+        assert!(matches!(
+            index.insert(
+                "distance",
+                make_fact("distance-b", "distance = 14"),
+                &FactPolicy::verified_transformation(),
+            ),
+            Ok(FactIndexInsert::Conflict(_))
+        ));
+        assert!(matches!(
+            plan_for_goal_with_fact_index(
+                CapabilityIoType::ExactValue,
+                BTreeSet::new(),
+                &index,
+                &derived_fact_registry(),
+            ),
+            Err(CapabilityPlanningFailure::FactIndex(
+                FactIndexQueryFailure::Conflict(_)
+            ))
         ));
     }
 

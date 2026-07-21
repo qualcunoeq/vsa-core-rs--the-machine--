@@ -1017,6 +1017,16 @@ pub struct CapabilityChainProofAbstractionPriorityReceipt {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionPortfolioReceipt {
+    pub budget: usize,
+    pub selected_pattern_ids: Vec<String>,
+    pub selected_expected_gain: usize,
+    pub selected_validation_cost: usize,
+    pub tied_portfolios: Vec<Vec<String>>,
+    pub ambiguous: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofAbstractionPriorityFailure {
     PatternMismatch(String),
     DuplicatePattern(String),
@@ -1995,6 +2005,108 @@ pub fn rank_proof_abstraction_priorities(
         preferred_pattern_ids,
         candidates,
     })
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct AbstractionPortfolioState {
+    expected_gain: usize,
+    validation_cost: usize,
+    pattern_ids: Vec<String>,
+    tied_portfolios: Vec<Vec<String>>,
+}
+
+fn merge_portfolio_solutions(
+    mut solutions: Vec<Vec<String>>,
+    mut additions: Vec<Vec<String>>,
+) -> Vec<Vec<String>> {
+    solutions.append(&mut additions);
+    for ids in &mut solutions {
+        ids.sort();
+        ids.dedup();
+    }
+    solutions.sort();
+    solutions.dedup();
+    solutions.truncate(2);
+    solutions
+}
+
+/// Select a bounded portfolio of experiments maximizing total expected gain
+/// under a validation budget. This is a planning diagnostic: it schedules no
+/// experiment and preserves tied portfolios rather than inventing a choice.
+pub fn select_abstraction_experiment_portfolio(
+    priorities: &CapabilityChainProofAbstractionPriorityReceipt,
+    budget: usize,
+) -> CapabilityChainProofAbstractionPortfolioReceipt {
+    let mut states = vec![None; budget.saturating_add(1)];
+    states[0] = Some(AbstractionPortfolioState {
+        expected_gain: 0,
+        validation_cost: 0,
+        pattern_ids: Vec::new(),
+        tied_portfolios: vec![Vec::new()],
+    });
+    for candidate in &priorities.candidates {
+        let cost = candidate.score.validation_cost;
+        if cost == 0 || cost > budget {
+            continue;
+        }
+        for capacity in (cost..=budget).rev() {
+            let Some(previous) = states[capacity - cost].clone() else {
+                continue;
+            };
+            let mut pattern_ids = previous.pattern_ids.clone();
+            pattern_ids.push(candidate.pattern_id.clone());
+            pattern_ids.sort();
+            let combined = AbstractionPortfolioState {
+                expected_gain: previous
+                    .expected_gain
+                    .saturating_add(candidate.score.expected_gain),
+                validation_cost: previous.validation_cost.saturating_add(cost),
+                pattern_ids,
+                tied_portfolios: previous
+                    .tied_portfolios
+                    .into_iter()
+                    .map(|mut ids| {
+                        ids.push(candidate.pattern_id.clone());
+                        ids
+                    })
+                    .collect(),
+            };
+            let replace = match &states[capacity] {
+                None => true,
+                Some(existing) => {
+                    combined.expected_gain > existing.expected_gain
+                        || (combined.expected_gain == existing.expected_gain
+                            && combined.validation_cost < existing.validation_cost)
+                }
+            };
+            if replace {
+                states[capacity] = Some(combined);
+            } else if let Some(existing) = states[capacity].as_mut() {
+                if combined.expected_gain == existing.expected_gain
+                    && combined.validation_cost == existing.validation_cost
+                {
+                    existing.tied_portfolios = merge_portfolio_solutions(
+                        existing.tied_portfolios.clone(),
+                        combined.tied_portfolios,
+                    );
+                }
+            }
+        }
+    }
+    let selected = states[budget].clone().unwrap_or(AbstractionPortfolioState {
+        expected_gain: 0,
+        validation_cost: 0,
+        pattern_ids: Vec::new(),
+        tied_portfolios: vec![Vec::new()],
+    });
+    CapabilityChainProofAbstractionPortfolioReceipt {
+        budget,
+        selected_pattern_ids: selected.pattern_ids,
+        selected_expected_gain: selected.expected_gain,
+        selected_validation_cost: selected.validation_cost,
+        ambiguous: selected.tied_portfolios.len() > 1,
+        tied_portfolios: selected.tied_portfolios,
+    }
 }
 
 impl CapabilityChainProofAbstractionExperimentReceipt {
@@ -5873,6 +5985,55 @@ mod tests {
             priority_score.efficiency_denominator,
             priority_score.validation_cost
         );
+        let portfolio = select_abstraction_experiment_portfolio(
+            &priority,
+            priority_score.validation_cost,
+        );
+        assert_eq!(portfolio.selected_expected_gain, priority_score.expected_gain);
+        assert_eq!(
+            portfolio.selected_pattern_ids,
+            vec![simplification_shape.pattern_id.clone()]
+        );
+        assert!(!portfolio.ambiguous);
+        let empty_portfolio = select_abstraction_experiment_portfolio(&priority, 0);
+        assert!(empty_portfolio.selected_pattern_ids.is_empty());
+        let tied_priority = CapabilityChainProofAbstractionPriorityReceipt {
+            candidates: vec![
+                CapabilityChainProofAbstractionPriorityCandidate {
+                    pattern_id: "portfolio-a".into(),
+                    score: CapabilityChainProofAbstractionPriorityScore {
+                        recurrence_signal: 1,
+                        value_signal: 9,
+                        risk_signal: 0,
+                        complexity_penalty: 0,
+                        expected_gain: 10,
+                        validation_cost: 1,
+                        efficiency_numerator: 10,
+                        efficiency_denominator: 1,
+                        total: 10,
+                    },
+                },
+                CapabilityChainProofAbstractionPriorityCandidate {
+                    pattern_id: "portfolio-b".into(),
+                    score: CapabilityChainProofAbstractionPriorityScore {
+                        recurrence_signal: 1,
+                        value_signal: 9,
+                        risk_signal: 0,
+                        complexity_penalty: 0,
+                        expected_gain: 10,
+                        validation_cost: 1,
+                        efficiency_numerator: 10,
+                        efficiency_denominator: 1,
+                        total: 10,
+                    },
+                },
+            ],
+            preferred_pattern_ids: vec!["portfolio-a".into(), "portfolio-b".into()],
+            ambiguous: true,
+        };
+        let tied_portfolio = select_abstraction_experiment_portfolio(&tied_priority, 1);
+        assert!(tied_portfolio.ambiguous);
+        assert_eq!(tied_portfolio.tied_portfolios.len(), 2);
         assert!(matches!(
             rank_proof_abstraction_priorities(vec![
                 CapabilityChainProofAbstractionPriorityInput {

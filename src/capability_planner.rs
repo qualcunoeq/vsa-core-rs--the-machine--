@@ -1140,6 +1140,32 @@ pub struct CapabilityChainProofConceptStrategyRetrievalReceipt {
     pub diagnostic_only: bool,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainStrategicRouteSource {
+    StoredStrategy,
+    FreshCapabilityPlan,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainStrategicRouteCandidate {
+    pub candidate_id: String,
+    pub source: CapabilityChainStrategicRouteSource,
+    pub plan: CapabilityChainPlan,
+    pub cost: PlanCost,
+    pub diagnostics: CapabilityChainDiagnostics,
+    pub supporting_instances: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainStrategicRouteComparisonReceipt {
+    pub goal_artifact: CapabilityIoType,
+    pub candidates: Vec<CapabilityChainStrategicRouteCandidate>,
+    pub frontier_candidate_ids: Vec<String>,
+    pub dominated_candidate_ids: Vec<String>,
+    pub rejected_strategy_ids: Vec<String>,
+    pub diagnostic_only: bool,
+}
+
 impl CapabilityChainProofConceptStrategyContract {
     pub fn from_proposal(
         proposal: &CapabilityChainProofConceptPlanningProposal,
@@ -1269,6 +1295,95 @@ impl CapabilityChainProofConceptStrategyIndex {
 
     pub fn is_empty(&self) -> bool {
         self.strategies.is_empty()
+    }
+
+    /// Compare stored validated strategies with an optional fresh capability
+    /// plan. The result preserves tradeoffs among execution cost, contract
+    /// quality, and empirical support instead of selecting by one scalar.
+    pub fn compare_with_fresh_plan(
+        &self,
+        available_inputs: &[CapabilityIoType],
+        goal_artifact: CapabilityIoType,
+        fresh_plan: Option<&CapabilityChainPlan>,
+        registry: &CapabilityRegistry,
+    ) -> CapabilityChainStrategicRouteComparisonReceipt {
+        let available = available_inputs.iter().copied().collect::<BTreeSet<_>>();
+        let mut candidates = Vec::new();
+        let mut rejected_strategy_ids = Vec::new();
+        for strategy in self.strategies.values() {
+            if !strategy.output_artifacts.contains(&goal_artifact)
+                || !strategy
+                    .input_artifacts
+                    .iter()
+                    .all(|input| available.contains(input))
+            {
+                continue;
+            }
+            let Ok(cost) = strategy.plan.cost(registry) else {
+                rejected_strategy_ids.push(strategy.strategy_id.clone());
+                continue;
+            };
+            let Ok(diagnostics) = strategy.plan.diagnostics(registry) else {
+                rejected_strategy_ids.push(strategy.strategy_id.clone());
+                continue;
+            };
+            candidates.push(CapabilityChainStrategicRouteCandidate {
+                candidate_id: strategy.strategy_id.clone(),
+                source: CapabilityChainStrategicRouteSource::StoredStrategy,
+                plan: strategy.plan.clone(),
+                cost,
+                diagnostics,
+                supporting_instances: strategy.supporting_instances,
+            });
+        }
+        if let Some(plan) = fresh_plan.filter(|plan| plan.goal == goal_artifact) {
+            if let (Ok(cost), Ok(diagnostics)) = (plan.cost(registry), plan.diagnostics(registry))
+            {
+                candidates.push(CapabilityChainStrategicRouteCandidate {
+                    candidate_id: "fresh-capability-plan".into(),
+                    source: CapabilityChainStrategicRouteSource::FreshCapabilityPlan,
+                    plan: plan.clone(),
+                    cost,
+                    diagnostics,
+                    supporting_instances: 0,
+                });
+            }
+        }
+        candidates.sort_by(|left, right| left.candidate_id.cmp(&right.candidate_id));
+        let dominates = |left: &CapabilityChainStrategicRouteCandidate,
+                         right: &CapabilityChainStrategicRouteCandidate| {
+            let no_worse = left.cost.steps <= right.cost.steps
+                && left.cost.dependency_edges <= right.cost.dependency_edges
+                && left.diagnostics.contract_burden <= right.diagnostics.contract_burden
+                && left.diagnostics.quality_failures <= right.diagnostics.quality_failures
+                && left.supporting_instances >= right.supporting_instances;
+            let strictly_better = left.cost.steps < right.cost.steps
+                || left.cost.dependency_edges < right.cost.dependency_edges
+                || left.diagnostics.contract_burden < right.diagnostics.contract_burden
+                || left.diagnostics.quality_failures < right.diagnostics.quality_failures
+                || left.supporting_instances > right.supporting_instances;
+            no_worse && strictly_better
+        };
+        let mut frontier_candidate_ids = Vec::new();
+        let mut dominated_candidate_ids = Vec::new();
+        for candidate in &candidates {
+            if candidates
+                .iter()
+                .any(|other| other.candidate_id != candidate.candidate_id && dominates(other, candidate))
+            {
+                dominated_candidate_ids.push(candidate.candidate_id.clone());
+            } else {
+                frontier_candidate_ids.push(candidate.candidate_id.clone());
+            }
+        }
+        CapabilityChainStrategicRouteComparisonReceipt {
+            goal_artifact,
+            candidates,
+            frontier_candidate_ids,
+            dominated_candidate_ids,
+            rejected_strategy_ids,
+            diagnostic_only: true,
+        }
     }
 }
 
@@ -8397,6 +8512,25 @@ mod tests {
             strategy_index.insert(strategy, &strategy_validation),
             Err(CapabilityChainProofConceptStrategyIndexFailure::DuplicateStrategy(_))
         ));
+        let fresh_plan = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["classification_to_value".into()],
+        };
+        let route_comparison = strategy_index.compare_with_fresh_plan(
+            &[CapabilityIoType::Equation],
+            CapabilityIoType::ExactValue,
+            Some(&fresh_plan),
+            &production,
+        );
+        assert!(route_comparison.diagnostic_only);
+        assert!(route_comparison.rejected_strategy_ids.is_empty());
+        assert_eq!(route_comparison.frontier_candidate_ids.len(), 2);
+        assert!(route_comparison
+            .frontier_candidate_ids
+            .contains(&"fresh-capability-plan".into()));
+        assert!(route_comparison
+            .frontier_candidate_ids
+            .contains(&strategy_id));
     }
 
     #[test]

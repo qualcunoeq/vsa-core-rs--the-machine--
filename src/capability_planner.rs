@@ -821,6 +821,25 @@ pub struct CapabilityChainProofPolicyPreferenceReceipt {
     pub rejected: Vec<CapabilityChainProofPolicyRejection>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofSynthesisSource {
+    ReusedProof(CapabilityChainProofTrace),
+    CapabilityPlanPending(CapabilityChainPlan),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofSynthesisReceipt {
+    pub goal_artifact: String,
+    pub policy: VerifiedArtifactPolicy,
+    pub source: CapabilityChainProofSynthesisSource,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofSynthesisFailure {
+    NoProofOrCapabilityPlan,
+    CapabilityPlanInsufficientProofSteps { required: usize, available: usize },
+}
+
 /// Explicit cache of proof-bearing reasoning traces. Insertion is deliberate:
 /// the index never executes, authorizes, or silently replaces a proof. A
 /// caller can retrieve an existing trace by its canonical reasoning identity.
@@ -1024,6 +1043,47 @@ impl CapabilityChainProofIndex {
             max_depth,
             Some(policy),
         )
+    }
+
+    /// Prefer an existing policy-admissible proof; otherwise expose an
+    /// explicit, not-yet-executed capability plan as the synthesis fallback.
+    /// This method never executes or wraps the pending plan as trusted.
+    pub fn synthesize_or_plan(
+        &self,
+        available_inputs: &BTreeSet<String>,
+        goal_artifact: &str,
+        max_depth: usize,
+        policy: &VerifiedArtifactPolicy,
+        fallback_plan: Option<CapabilityChainPlan>,
+    ) -> Result<CapabilityChainProofSynthesisReceipt, CapabilityChainProofSynthesisFailure> {
+        if let Some(proof) = self.search_composed_proof_with_policy(
+            available_inputs,
+            goal_artifact,
+            max_depth,
+            policy,
+        ) {
+            return Ok(CapabilityChainProofSynthesisReceipt {
+                goal_artifact: goal_artifact.into(),
+                policy: policy.clone(),
+                source: CapabilityChainProofSynthesisSource::ReusedProof(proof),
+            });
+        }
+        let Some(plan) = fallback_plan else {
+            return Err(CapabilityChainProofSynthesisFailure::NoProofOrCapabilityPlan);
+        };
+        if plan.steps.len() < policy.minimum_proof_steps {
+            return Err(
+                CapabilityChainProofSynthesisFailure::CapabilityPlanInsufficientProofSteps {
+                    required: policy.minimum_proof_steps,
+                    available: plan.steps.len(),
+                },
+            );
+        }
+        Ok(CapabilityChainProofSynthesisReceipt {
+            goal_artifact: goal_artifact.into(),
+            policy: policy.clone(),
+            source: CapabilityChainProofSynthesisSource::CapabilityPlanPending(plan),
+        })
     }
 
     fn search_composed_proof_internal(
@@ -4161,6 +4221,36 @@ mod tests {
             )
             .unwrap();
         assert_eq!(policy_reused.steps.len(), 2);
+        let synthesis = policy_graph
+            .synthesize_or_plan(
+                &BTreeSet::from(["raw-expression".to_string()]),
+                "value",
+                2,
+                &strict_policy,
+                None,
+            )
+            .unwrap();
+        assert!(matches!(
+            synthesis.source,
+            CapabilityChainProofSynthesisSource::ReusedProof(_)
+        ));
+        let pending_plan = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["new_capability".into(), "verification".into()],
+        };
+        let pending = CapabilityChainProofIndex::default()
+            .synthesize_or_plan(
+                &BTreeSet::new(),
+                "new-value",
+                1,
+                &strict_policy,
+                Some(pending_plan.clone()),
+            )
+            .unwrap();
+        assert_eq!(
+            pending.source,
+            CapabilityChainProofSynthesisSource::CapabilityPlanPending(pending_plan)
+        );
 
         let mut alternate = second.clone();
         alternate.execution_id = "proof-compose-alternate".into();

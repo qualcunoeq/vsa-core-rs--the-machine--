@@ -1141,6 +1141,12 @@ pub enum CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection {
     RateOutOfRange,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure {
+    Calibration(CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection),
+    Planning(CapabilityChainProofAbstractionTrajectoryPlanningFailure),
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
 pub struct CapabilityChainProofAbstractionUnlockCalibrationLedger {
     observations:
@@ -2825,6 +2831,25 @@ pub fn plan_research_trajectory_frontier(
     })
 }
 
+/// Plan a research trajectory after explicitly calibrating unlock estimates.
+/// Calibration is an input transformation, not an automatic policy update;
+/// the returned frontier remains a diagnostic decision set.
+pub fn plan_calibrated_research_trajectory_frontier(
+    ledger: &CapabilityChainProofAbstractionUnlockCalibrationLedger,
+    candidates: Vec<CapabilityChainProofAbstractionTrajectoryCandidate>,
+    fallback_probability_basis_points: usize,
+    budget: usize,
+) -> Result<CapabilityChainProofAbstractionTrajectoryReceipt,
+    CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure> {
+    let calibrated = ledger
+        .calibrate_trajectory_candidates(candidates, fallback_probability_basis_points)
+        .map_err(
+            CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure::Calibration,
+        )?;
+    plan_research_trajectory_frontier(calibrated, budget)
+        .map_err(CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure::Planning)
+}
+
 impl CapabilityChainProofAbstractionExperimentReceipt {
     /// Convert validation evidence into an advisory governance recommendation.
     /// Passing evidence permits review; it never installs or authorizes the
@@ -3490,6 +3515,52 @@ impl CapabilityChainProofAbstractionUnlockCalibrationLedger {
                 }
             })
             .collect()
+    }
+
+    /// Apply an explicit, evidence-weighted calibration adjustment to future
+    /// unlock values. Sparse family history is blended toward the caller's
+    /// fallback probability; no family is silently treated as fully trusted.
+    pub fn calibrate_trajectory_candidates(
+        &self,
+        candidates: Vec<CapabilityChainProofAbstractionTrajectoryCandidate>,
+        fallback_probability_basis_points: usize,
+    ) -> Result<Vec<CapabilityChainProofAbstractionTrajectoryCandidate>,
+        CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection> {
+        if fallback_probability_basis_points > 10_000 {
+            return Err(
+                CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection::RateOutOfRange,
+            );
+        }
+        let priors = self.advisory_priors();
+        Ok(candidates
+            .into_iter()
+            .map(|mut candidate| {
+                for unlock in &mut candidate.unlocks {
+                    let (posterior, evidence) = priors
+                        .iter()
+                        .find(|prior| prior.family_id == unlock.family_id)
+                        .map(|prior| {
+                            (
+                                prior.posterior_unlock_rate_basis_points,
+                                prior.evidence_strength_basis_points,
+                            )
+                        })
+                        .unwrap_or((fallback_probability_basis_points, 0));
+                    let effective_probability = posterior
+                        .saturating_mul(evidence)
+                        .saturating_add(
+                            fallback_probability_basis_points
+                                .saturating_mul(10_000usize.saturating_sub(evidence)),
+                        )
+                        / 10_000;
+                    unlock.expected_future_value = unlock
+                        .expected_future_value
+                        .saturating_mul(effective_probability)
+                        / 10_000;
+                }
+                candidate
+            })
+            .collect())
     }
 }
 
@@ -7597,6 +7668,50 @@ mod tests {
         assert_eq!(unlock_priors[0].family_id, "family-a");
         assert_eq!(unlock_priors[0].posterior_unlock_rate_basis_points, 5_454);
         assert_eq!(unlock_priors[0].evidence_strength_basis_points, 909);
+        let raw_trajectory_candidates = vec![
+                    CapabilityChainProofAbstractionTrajectoryCandidate {
+                        experiment_id: "calibrated-a".into(),
+                        risk: ImprovementRisk::Low,
+                        expected_capability_gain: 1,
+                        expected_uncertainty_reduction: 1,
+                        unlocks: vec![CapabilityChainProofAbstractionUnlockOpportunity {
+                            family_id: "family-a".into(),
+                            expected_future_value: 100,
+                        }],
+                        validation_cost: 1,
+                    },
+                    CapabilityChainProofAbstractionTrajectoryCandidate {
+                        experiment_id: "calibrated-b".into(),
+                        risk: ImprovementRisk::Low,
+                        expected_capability_gain: 1,
+                        expected_uncertainty_reduction: 1,
+                        unlocks: vec![CapabilityChainProofAbstractionUnlockOpportunity {
+                            family_id: "unseen-family".into(),
+                            expected_future_value: 100,
+                        }],
+                        validation_cost: 1,
+                    },
+                ];
+        let calibrated_candidates = unlock_calibration
+            .calibrate_trajectory_candidates(raw_trajectory_candidates.clone(), 4_000)
+            .unwrap();
+        assert!(calibrated_candidates[0].unlocks[0].expected_future_value < 100);
+        assert_eq!(
+            calibrated_candidates[1].unlocks[0].expected_future_value,
+            40
+        );
+        let calibrated_frontier = plan_calibrated_research_trajectory_frontier(
+            &unlock_calibration,
+            raw_trajectory_candidates,
+            4_000,
+            1,
+        )
+        .unwrap();
+        assert_eq!(calibrated_frontier.frontier.len(), 1);
+        assert_eq!(
+            calibrated_frontier.frontier[0].experiment_ids,
+            vec!["calibrated-a"]
+        );
         assert!(matches!(
             unlock_calibration.record(
                 CapabilityChainProofAbstractionUnlockCalibrationObservation {
@@ -7622,6 +7737,19 @@ mod tests {
                 }
             ),
             Err(CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection::RateOutOfRange)
+        ));
+        assert!(matches!(
+            plan_calibrated_research_trajectory_frontier(
+                &unlock_calibration,
+                Vec::new(),
+                10_001,
+                1,
+            ),
+            Err(
+                CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure::Calibration(
+                    CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection::RateOutOfRange
+                )
+            )
         ));
         assert!(matches!(
             abstraction_experiments.record("abstraction-experiment-1", experiment),

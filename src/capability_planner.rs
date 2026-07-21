@@ -16,8 +16,8 @@ use crate::equation_normalization::{
     execute_equation_normalization, EquationNormalizationFailure,
 };
 use crate::evidence::{
-    DerivedFact, DerivedFactIndex, FactConflict, FactIndexInsert, FactIndexRejection, FactPolicy,
-    FactPolicyRejection, FactStatus,
+    DerivedFact, DerivedFactIndex, FactConflict, FactDerivationRejection, FactIndexInsert,
+    FactIndexRejection, FactPolicy, FactPolicyRejection, FactStatus,
 };
 use crate::formalization::{AnswerForm, FormalizedTarget, OperationKind, SubjectObjectType};
 use serde::Serialize;
@@ -832,6 +832,61 @@ pub struct VerifiedArtifactPolicyReceipt {
     pub proof_steps: usize,
     pub replay_verified: bool,
     pub final_verification_receipt: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct VerifiedArtifactFactBridgeReceipt {
+    pub fact_id: String,
+    pub execution_id: String,
+    pub parent_lineage: Vec<String>,
+    pub policy: VerifiedArtifactPolicyReceipt,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum VerifiedArtifactFactBridgeFailure {
+    TrustPolicy(VerifiedArtifactPolicyFailure),
+    Derivation(FactDerivationRejection),
+}
+
+/// Convert a policy-admitted verified artifact into a lineage-bearing fact.
+/// The bridge requires parents and records the chain receipt in provenance;
+/// it does not insert into a fact index or bypass its separate FactPolicy.
+pub fn derive_fact_from_verified_artifact<T>(
+    artifact: &VerifiedArtifact<T>,
+    trust_policy: &VerifiedArtifactPolicy,
+    id: impl Into<String>,
+    content: impl Into<String>,
+    parents: &[&DerivedFact],
+    provenance: impl Into<String>,
+    assumptions: &[String],
+    domain: Option<String>,
+) -> Result<(DerivedFact, VerifiedArtifactFactBridgeReceipt), VerifiedArtifactFactBridgeFailure> {
+    let policy = trust_policy
+        .evaluate(artifact)
+        .map_err(VerifiedArtifactFactBridgeFailure::TrustPolicy)?;
+    let id = id.into();
+    let provenance = format!(
+        "{}; verified_execution={}; final_verification_receipt={}",
+        provenance.into(),
+        policy.execution_id,
+        policy.final_verification_receipt
+    );
+    let fact = DerivedFact::derive_from(
+        id.clone(),
+        content,
+        parents,
+        provenance,
+        assumptions,
+        domain,
+    )
+    .map_err(VerifiedArtifactFactBridgeFailure::Derivation)?;
+    let receipt = VerifiedArtifactFactBridgeReceipt {
+        fact_id: fact.id.clone(),
+        execution_id: policy.execution_id.clone(),
+        parent_lineage: fact.parent_lineage.clone(),
+        policy,
+    };
+    Ok((fact, receipt))
 }
 
 impl VerifiedArtifactPolicy {
@@ -3353,6 +3408,77 @@ mod tests {
                 required: 1,
                 actual: 0,
             })
+        );
+    }
+
+    #[test]
+    fn verified_artifact_bridge_preserves_lineage_and_receipt_provenance() {
+        let mut ledger = CapabilityChainExecutionLedger::default();
+        let plan = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["evaluate_expression".into()],
+        };
+        ledger.start("bridge-proof-1", plan).unwrap();
+        ledger
+            .record_step(
+                "bridge-proof-1",
+                CapabilityChainStepReceipt {
+                    step_index: 0,
+                    capability_id: "evaluate_expression".into(),
+                    input_artifacts: vec!["expression".into()],
+                    output_artifacts: vec!["value".into()],
+                    verification_receipt: "evaluation replay".into(),
+                },
+            )
+            .unwrap();
+        let execution = ledger.complete_success("bridge-proof-1").unwrap();
+        let artifact = VerifiedArtifact::from_chain(
+            "value",
+            compose_capability_chain_proof(&execution).unwrap(),
+        )
+        .unwrap();
+        let parent = DerivedFact {
+            id: "input-fact".into(),
+            content: "input = 2".into(),
+            parent_lineage: Vec::new(),
+            provenance: "input receipt".into(),
+            proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+            precision: crate::evidence::FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: Some("algebra".into()),
+        };
+
+        let (fact, receipt) = derive_fact_from_verified_artifact(
+            &artifact,
+            &VerifiedArtifactPolicy::default(),
+            "derived-value",
+            "value = 4",
+            &[&parent],
+            "expression result",
+            &[],
+            Some("algebra".into()),
+        )
+        .unwrap();
+        assert_eq!(fact.parent_lineage, vec!["input-fact"]);
+        assert!(fact.provenance.contains("bridge-proof-1"));
+        assert!(fact.provenance.contains("evaluation replay"));
+        assert_eq!(receipt.fact_id, "derived-value");
+        assert_eq!(receipt.parent_lineage, vec!["input-fact"]);
+
+        assert_eq!(
+            derive_fact_from_verified_artifact(
+                &artifact,
+                &VerifiedArtifactPolicy::default(),
+                "parentless",
+                "value = 4",
+                &[],
+                "invalid result",
+                &[],
+                Some("algebra".into()),
+            ),
+            Err(VerifiedArtifactFactBridgeFailure::Derivation(
+                FactDerivationRejection::NoParents
+            ))
         );
     }
 

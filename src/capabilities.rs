@@ -21,6 +21,7 @@ pub enum InputRequirement {
     SingleTargetVariable,
     LinearRelation,
     QuadraticRelation,
+    TwoByTwoLinearSystem,
     ExplicitSubstitutionBindings,
     NoFreeVariables,
     VerifiedDerivedFact,
@@ -36,12 +37,15 @@ pub enum CapabilityIoType {
     FunctionDefinition,
     Expression,
     Equation,
+    EquationSystem,
     BindingSet,
     TargetVariable,
+    VariableSet,
     DerivedFact,
     ExactValue,
     SimplifiedExpression,
     SolutionSet,
+    SystemSolution,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize)]
@@ -340,6 +344,39 @@ impl CapabilitySpec {
             },
         }
     }
+
+    pub fn linear_system_solve_v1() -> Self {
+        Self {
+            id: "linear_system_solve".into(),
+            version: 1,
+            kind: CapabilityKind::Transformation,
+            dependencies: Vec::new(),
+            consumes: vec![CapabilityIoType::EquationSystem, CapabilityIoType::VariableSet],
+            produces: vec![CapabilityIoType::SystemSolution],
+            supported_object_types: vec![SubjectObjectType::EquationSystem],
+            supported_operations: vec![OperationKind::Solve],
+            supported_answer_forms: vec![AnswerForm::SolutionSet],
+            input_requirements: vec![
+                InputRequirement::TwoByTwoLinearSystem,
+                InputRequirement::ReplayVerifier,
+            ],
+            fact_policy: None,
+            executor: "linear_system::execute_linear_system".into(),
+            verifier: "linear_system::replay_linear_system".into(),
+            regression_cases: vec![
+                "linear_system::unique_two_by_two_system_executes_and_replays".into(),
+                "linear_system::degenerate_system_is_rejected".into(),
+                "linear_system::nonlinear_system_is_rejected".into(),
+            ],
+            quality_gate: CapabilityQualityGate {
+                positive_cases: 1,
+                negative_cases: 2,
+                adversarial_cases: 1,
+                false_authorizations: 0,
+                replay_failures: 0,
+            },
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
@@ -355,6 +392,7 @@ impl CapabilityRegistry {
         registry.register(CapabilitySpec::expression_simplification_v1());
         registry.register(CapabilitySpec::linear_equation_solve_v1());
         registry.register(CapabilitySpec::quadratic_equation_solve_v1());
+        registry.register(CapabilitySpec::linear_system_solve_v1());
         registry.register(CapabilitySpec::substitution_v1());
         registry
     }
@@ -541,6 +579,10 @@ impl CapabilityRegistry {
                             false
                         }
                     }
+                    // System formalization is not yet produced by the raw
+                    // target assessor; the governed system capability is
+                    // admitted through its typed execution boundary.
+                    InputRequirement::TwoByTwoLinearSystem => false,
                     InputRequirement::ExplicitSubstitutionBindings => {
                         target.operation == OperationKind::Substitute
                             && !target.arguments.is_empty()
@@ -599,6 +641,7 @@ mod tests {
                 "expression_simplification".to_string(),
                 "function_application".to_string(),
                 "linear_equation_solve".to_string(),
+                "linear_system_solve".to_string(),
                 "quadratic_equation_solve".to_string(),
                 "substitution".to_string(),
             ]

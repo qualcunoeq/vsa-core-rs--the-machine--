@@ -777,6 +777,7 @@ pub enum SubjectObjectType {
     Expression,
     Relation,
     Equation,
+    EquationSystem,
     Function,
     Sequence,
     Set,

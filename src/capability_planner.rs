@@ -995,6 +995,33 @@ pub struct CapabilityChainProofAbstractionUncertaintyPriority {
     pub uncertainty_score: usize,
 }
 
+/// A proposed calibration experiment scored by the amount of uncertainty it
+/// is expected to remove. This is an advisory input to active evidence
+/// collection; it does not authorize or schedule the experiment.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionInformationGainCandidate {
+    pub experiment_id: String,
+    pub risk: ImprovementRisk,
+    pub expected_uncertainty_reduction: usize,
+    pub validation_cost: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionInformationGainPortfolioReceipt {
+    pub budget: usize,
+    pub selected_experiment_ids: Vec<String>,
+    pub selected_uncertainty_reduction: usize,
+    pub selected_validation_cost: usize,
+    pub tied_portfolios: Vec<Vec<String>>,
+    pub ambiguous: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionInformationGainFailure {
+    DuplicateExperiment(String),
+    ZeroValidationCost(String),
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofAbstractionCalibrationLedgerRejection {
     DuplicateObservation(String),
@@ -2237,6 +2264,129 @@ pub fn select_abstraction_experiment_portfolio(
         ambiguous: selected.tied_portfolios.len() > 1,
         tied_portfolios: selected.tied_portfolios,
     }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct InformationGainPortfolioState {
+    uncertainty_reduction: usize,
+    validation_cost: usize,
+    experiment_ids: Vec<String>,
+    tied_portfolios: Vec<Vec<String>>,
+}
+
+/// Select a bounded portfolio of calibration experiments that maximizes
+/// expected uncertainty reduction. This is deliberately diagnostic-only: it
+/// allocates no resources, changes no priors, and does not relax any trust
+/// policy. Equal optima remain explicit ties.
+pub fn select_calibration_experiment_portfolio(
+    candidates: Vec<CapabilityChainProofAbstractionInformationGainCandidate>,
+    budget: usize,
+) -> Result<CapabilityChainProofAbstractionInformationGainPortfolioReceipt,
+    CapabilityChainProofAbstractionInformationGainFailure> {
+    let mut seen = BTreeSet::new();
+    for candidate in &candidates {
+        if candidate.validation_cost == 0 {
+            return Err(
+                CapabilityChainProofAbstractionInformationGainFailure::ZeroValidationCost(
+                    candidate.experiment_id.clone(),
+                ),
+            );
+        }
+        if !seen.insert(candidate.experiment_id.clone()) {
+            return Err(
+                CapabilityChainProofAbstractionInformationGainFailure::DuplicateExperiment(
+                    candidate.experiment_id.clone(),
+                ),
+            );
+        }
+    }
+    let mut candidates = candidates;
+    candidates.sort_by(|left, right| left.experiment_id.cmp(&right.experiment_id));
+    let mut states = vec![None; budget.saturating_add(1)];
+    states[0] = Some(InformationGainPortfolioState {
+        uncertainty_reduction: 0,
+        validation_cost: 0,
+        experiment_ids: Vec::new(),
+        tied_portfolios: vec![Vec::new()],
+    });
+    for candidate in candidates {
+        let cost = candidate.validation_cost;
+        if cost > budget {
+            continue;
+        }
+        for capacity in (cost..=budget).rev() {
+            let Some(previous) = states[capacity - cost].clone() else {
+                continue;
+            };
+            let mut experiment_ids = previous.experiment_ids.clone();
+            experiment_ids.push(candidate.experiment_id.clone());
+            experiment_ids.sort();
+            let combined = InformationGainPortfolioState {
+                uncertainty_reduction: previous
+                    .uncertainty_reduction
+                    .saturating_add(candidate.expected_uncertainty_reduction),
+                validation_cost: previous.validation_cost.saturating_add(cost),
+                experiment_ids,
+                tied_portfolios: previous
+                    .tied_portfolios
+                    .into_iter()
+                    .map(|mut ids| {
+                        ids.push(candidate.experiment_id.clone());
+                        ids
+                    })
+                    .collect(),
+            };
+            let replace = match &states[capacity] {
+                None => true,
+                Some(existing) => {
+                    combined.uncertainty_reduction > existing.uncertainty_reduction
+                        || (combined.uncertainty_reduction == existing.uncertainty_reduction
+                            && combined.validation_cost < existing.validation_cost)
+                }
+            };
+            if replace {
+                states[capacity] = Some(combined);
+            } else if let Some(existing) = states[capacity].as_mut() {
+                if combined.uncertainty_reduction == existing.uncertainty_reduction
+                    && combined.validation_cost == existing.validation_cost
+                {
+                    existing.tied_portfolios = merge_portfolio_solutions(
+                        existing.tied_portfolios.clone(),
+                        combined.tied_portfolios,
+                    );
+                }
+            }
+        }
+    }
+    let mut selected = InformationGainPortfolioState {
+        uncertainty_reduction: 0,
+        validation_cost: 0,
+        experiment_ids: Vec::new(),
+        tied_portfolios: vec![Vec::new()],
+    };
+    for state in states.into_iter().flatten() {
+        if state.uncertainty_reduction > selected.uncertainty_reduction
+            || (state.uncertainty_reduction == selected.uncertainty_reduction
+                && state.validation_cost < selected.validation_cost)
+        {
+            selected = state;
+        } else if state.uncertainty_reduction == selected.uncertainty_reduction
+            && state.validation_cost == selected.validation_cost
+        {
+            selected.tied_portfolios = merge_portfolio_solutions(
+                selected.tied_portfolios,
+                state.tied_portfolios,
+            );
+        }
+    }
+    Ok(CapabilityChainProofAbstractionInformationGainPortfolioReceipt {
+        budget,
+        selected_experiment_ids: selected.experiment_ids,
+        selected_uncertainty_reduction: selected.uncertainty_reduction,
+        selected_validation_cost: selected.validation_cost,
+        ambiguous: selected.tied_portfolios.len() > 1,
+        tied_portfolios: selected.tied_portfolios,
+    })
 }
 
 impl CapabilityChainProofAbstractionExperimentReceipt {
@@ -6636,6 +6786,76 @@ mod tests {
         assert_eq!(uncertainty[0].risk, ImprovementRisk::Medium);
         assert_eq!(uncertainty[0].observed_calibration_cases, 2);
         assert!(uncertainty[0].uncertainty_score > 0);
+        let information_portfolio = select_calibration_experiment_portfolio(
+            vec![
+                CapabilityChainProofAbstractionInformationGainCandidate {
+                    experiment_id: "calibration-a".into(),
+                    risk: ImprovementRisk::Medium,
+                    expected_uncertainty_reduction: 8,
+                    validation_cost: 4,
+                },
+                CapabilityChainProofAbstractionInformationGainCandidate {
+                    experiment_id: "calibration-b".into(),
+                    risk: ImprovementRisk::Medium,
+                    expected_uncertainty_reduction: 5,
+                    validation_cost: 2,
+                },
+                CapabilityChainProofAbstractionInformationGainCandidate {
+                    experiment_id: "calibration-c".into(),
+                    risk: ImprovementRisk::High,
+                    expected_uncertainty_reduction: 4,
+                    validation_cost: 2,
+                },
+                CapabilityChainProofAbstractionInformationGainCandidate {
+                    experiment_id: "calibration-d".into(),
+                    risk: ImprovementRisk::Low,
+                    expected_uncertainty_reduction: 4,
+                    validation_cost: 2,
+                },
+            ],
+            5,
+        )
+        .unwrap();
+        assert_eq!(
+            information_portfolio.selected_uncertainty_reduction,
+            9
+        );
+        assert_eq!(information_portfolio.selected_validation_cost, 4);
+        assert!(information_portfolio.ambiguous);
+        assert_eq!(information_portfolio.tied_portfolios.len(), 2);
+        assert!(matches!(
+            select_calibration_experiment_portfolio(
+                vec![CapabilityChainProofAbstractionInformationGainCandidate {
+                    experiment_id: "duplicate".into(),
+                    risk: ImprovementRisk::Low,
+                    expected_uncertainty_reduction: 1,
+                    validation_cost: 1,
+                }, CapabilityChainProofAbstractionInformationGainCandidate {
+                    experiment_id: "duplicate".into(),
+                    risk: ImprovementRisk::Low,
+                    expected_uncertainty_reduction: 1,
+                    validation_cost: 1,
+                }],
+                1,
+            ),
+            Err(
+                CapabilityChainProofAbstractionInformationGainFailure::DuplicateExperiment(_)
+            )
+        ));
+        assert!(matches!(
+            select_calibration_experiment_portfolio(
+                vec![CapabilityChainProofAbstractionInformationGainCandidate {
+                    experiment_id: "zero-cost".into(),
+                    risk: ImprovementRisk::Low,
+                    expected_uncertainty_reduction: 1,
+                    validation_cost: 0,
+                }],
+                1,
+            ),
+            Err(
+                CapabilityChainProofAbstractionInformationGainFailure::ZeroValidationCost(_)
+            )
+        ));
         assert!(matches!(
             abstraction_experiments.record("abstraction-experiment-1", experiment),
             Err(CapabilityChainProofAbstractionExperimentLedgerRejection::DuplicateExperiment(_))

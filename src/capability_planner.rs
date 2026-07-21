@@ -929,6 +929,51 @@ pub struct CapabilityChainProofAbstractionExperimentReceipt {
     pub passed: bool,
 }
 
+/// A diagnostic recommendation for a recurring proof abstraction.  This is
+/// deliberately separate from the proposal and experiment: recurrence and
+/// safety evidence may justify review, but do not install a new capability.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionRecommendation {
+    pub pattern_id: String,
+    pub proposal: CapabilityChainProofAbstractionProposal,
+    pub experiment_passed: bool,
+    pub action: ImprovementRecommendationAction,
+    pub rationale: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionApprovalDecision {
+    Approved,
+    Deferred,
+    Rejected,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionApprovalReceipt {
+    pub approval_id: String,
+    pub pattern_id: String,
+    pub recommendation: CapabilityChainProofAbstractionRecommendation,
+    pub decision: CapabilityChainProofAbstractionApprovalDecision,
+    pub rationale: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionApprovalRejection {
+    DuplicateApproval(String),
+    RecommendationNotReviewable {
+        pattern_id: String,
+        action: ImprovementRecommendationAction,
+    },
+}
+
+/// Records an explicit promotion decision without mutating the capability
+/// registry, planner, or proof index.  A later deployment step can consume
+/// this receipt, but approval alone never makes an abstraction executable.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainProofAbstractionApprovalLedger {
+    approvals: BTreeMap<String, CapabilityChainProofAbstractionApprovalReceipt>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofAbstractionProposalFailure {
     UnknownPattern(String),
@@ -1502,6 +1547,90 @@ impl CapabilityChainProofAbstractionProposal {
             safety_preserved,
             passed: pattern_recurred && safety_preserved,
         }
+    }
+}
+
+impl CapabilityChainProofAbstractionExperimentReceipt {
+    /// Convert validation evidence into an advisory governance recommendation.
+    /// Passing evidence permits review; it never installs or authorizes the
+    /// proposed abstraction by itself.
+    pub fn recommendation(&self) -> CapabilityChainProofAbstractionRecommendation {
+        let (action, rationale) = if !self.safety_preserved {
+            (
+                ImprovementRecommendationAction::Reject,
+                "validation introduced a new false authorization or failed the safety invariant"
+                    .into(),
+            )
+        } else if self.passed {
+            (
+                ImprovementRecommendationAction::ReviewForApproval,
+                "recurrence and validation evidence support explicit review of the abstraction"
+                    .into(),
+            )
+        } else {
+            (
+                ImprovementRecommendationAction::GatherMoreEvidence,
+                "validation preserved safety but did not yet establish sufficient recurrence"
+                    .into(),
+            )
+        };
+        CapabilityChainProofAbstractionRecommendation {
+            pattern_id: self.proposal.pattern.pattern_id.clone(),
+            proposal: self.proposal.clone(),
+            experiment_passed: self.passed,
+            action,
+            rationale,
+        }
+    }
+}
+
+impl CapabilityChainProofAbstractionApprovalLedger {
+    pub fn record(
+        &mut self,
+        approval_id: impl Into<String>,
+        experiment: &CapabilityChainProofAbstractionExperimentReceipt,
+        decision: CapabilityChainProofAbstractionApprovalDecision,
+        rationale: impl Into<String>,
+    ) -> Result<CapabilityChainProofAbstractionApprovalReceipt, CapabilityChainProofAbstractionApprovalRejection>
+    {
+        let approval_id = approval_id.into();
+        if self.approvals.contains_key(&approval_id) {
+            return Err(
+                CapabilityChainProofAbstractionApprovalRejection::DuplicateApproval(
+                    approval_id,
+                ),
+            );
+        }
+        let recommendation = experiment.recommendation();
+        if decision == CapabilityChainProofAbstractionApprovalDecision::Approved
+            && recommendation.action != ImprovementRecommendationAction::ReviewForApproval
+        {
+            return Err(
+                CapabilityChainProofAbstractionApprovalRejection::RecommendationNotReviewable {
+                    pattern_id: recommendation.pattern_id.clone(),
+                    action: recommendation.action,
+                },
+            );
+        }
+        let receipt = CapabilityChainProofAbstractionApprovalReceipt {
+            approval_id: approval_id.clone(),
+            pattern_id: recommendation.pattern_id.clone(),
+            recommendation,
+            decision,
+            rationale: rationale.into(),
+        };
+        self.approvals.insert(approval_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn receipt(&self, approval_id: &str) -> Option<&CapabilityChainProofAbstractionApprovalReceipt> {
+        self.approvals.get(approval_id)
+    }
+
+    pub fn receipts(
+        &self,
+    ) -> impl Iterator<Item = &CapabilityChainProofAbstractionApprovalReceipt> {
+        self.approvals.values()
     }
 }
 
@@ -4825,6 +4954,53 @@ mod tests {
         assert!(experiment.pattern_recurred);
         assert!(experiment.safety_preserved);
         assert!(experiment.passed);
+        let recommendation = experiment.recommendation();
+        assert_eq!(
+            recommendation.action,
+            ImprovementRecommendationAction::ReviewForApproval
+        );
+        assert_eq!(recommendation.pattern_id, simplification_shape.pattern_id);
+        let mut abstraction_approvals = CapabilityChainProofAbstractionApprovalLedger::default();
+        let approval = abstraction_approvals
+            .record(
+                "abstraction-approval-1",
+                &experiment,
+                CapabilityChainProofAbstractionApprovalDecision::Approved,
+                "reviewed held-out replay evidence",
+            )
+            .unwrap();
+        assert_eq!(
+            approval.decision,
+            CapabilityChainProofAbstractionApprovalDecision::Approved
+        );
+        assert_eq!(abstraction_approvals.receipts().count(), 1);
+        assert!(matches!(
+            abstraction_approvals.record(
+                "abstraction-approval-1",
+                &experiment,
+                CapabilityChainProofAbstractionApprovalDecision::Approved,
+                "duplicate",
+            ),
+            Err(CapabilityChainProofAbstractionApprovalRejection::DuplicateApproval(_))
+        ));
+        let unsafe_experiment = proposal.assess(3, 0, 1);
+        assert_eq!(
+            unsafe_experiment.recommendation().action,
+            ImprovementRecommendationAction::Reject
+        );
+        assert!(matches!(
+            abstraction_approvals.record(
+                "abstraction-approval-unsafe",
+                &unsafe_experiment,
+                CapabilityChainProofAbstractionApprovalDecision::Approved,
+                "must not cross the promotion boundary",
+            ),
+            Err(
+                CapabilityChainProofAbstractionApprovalRejection::RecommendationNotReviewable {
+                    ..
+                }
+            )
+        ));
         assert_eq!(
             graph.propose_proof_abstraction(&simplification_shape.pattern_id, 3),
             Err(

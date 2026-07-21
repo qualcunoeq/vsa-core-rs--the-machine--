@@ -91,6 +91,7 @@ pub enum CapabilityChainPlanningFailure {
     },
     DependencyCycle(String),
     UnknownCapability(String),
+    TrustPolicy(VerifiedArtifactPlanningFailure),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -2646,6 +2647,69 @@ pub fn plan_capability_chain(
     Ok(CapabilityChainPlan { goal, steps })
 }
 
+fn validate_verified_artifact_plan_policy(
+    steps: &[String],
+    registry: &CapabilityRegistry,
+    policy: &VerifiedArtifactPolicy,
+) -> Result<(), VerifiedArtifactPlanningFailure> {
+    let proof_steps = steps
+        .iter()
+        .filter(|step| step.as_str() != "verified_artifact_wrap")
+        .collect::<Vec<_>>();
+    if proof_steps.len() < policy.minimum_proof_steps {
+        return Err(VerifiedArtifactPlanningFailure::InsufficientProofSteps {
+            required: policy.minimum_proof_steps,
+            available: proof_steps.len(),
+        });
+    }
+    if policy.require_replay_verified {
+        for step in &proof_steps {
+            let Some(capability) = registry.get(step) else {
+                return Err(VerifiedArtifactPlanningFailure::MissingStepVerifier(
+                    (*step).clone(),
+                ));
+            };
+            if capability.verifier.trim().is_empty() {
+                return Err(VerifiedArtifactPlanningFailure::MissingStepVerifier(
+                    (*step).clone(),
+                ));
+            }
+        }
+    }
+    if policy.require_final_verification_receipt {
+        let has_final_verifier = proof_steps
+            .last()
+            .and_then(|step| registry.get(step))
+            .map(|capability| !capability.verifier.trim().is_empty())
+            .unwrap_or(false);
+        if !has_final_verifier {
+            return Err(VerifiedArtifactPlanningFailure::MissingFinalVerificationStep);
+        }
+    }
+    Ok(())
+}
+
+/// Plan a generic typed artifact goal with a proof-bearing wrapper.  The
+/// underlying artifact is planned through the ordinary dataflow graph; the
+/// wrapper is a virtual trust-materialization step and is never treated as a
+/// substitute for execution or verification.
+pub fn plan_verified_artifact_goal(
+    artifact_goal: CapabilityIoType,
+    available_inputs: &BTreeSet<CapabilityIoType>,
+    registry: &CapabilityRegistry,
+    policy: &VerifiedArtifactPolicy,
+) -> Result<CapabilityChainPlan, CapabilityChainPlanningFailure> {
+    if artifact_goal == CapabilityIoType::VerifiedArtifact {
+        return Err(CapabilityChainPlanningFailure::NoProducer(artifact_goal));
+    }
+    let mut plan = plan_capability_chain(artifact_goal, available_inputs, registry)?;
+    plan.steps.push("verified_artifact_wrap".into());
+    plan.goal = CapabilityIoType::VerifiedArtifact;
+    validate_verified_artifact_plan_policy(&plan.steps, registry, policy)
+        .map_err(CapabilityChainPlanningFailure::TrustPolicy)?;
+    Ok(plan)
+}
+
 /// Build the normalization → classification → solver chain for one grounded
 /// equation. The verified classifier resolves the otherwise ambiguous linear
 /// and quadratic producers before a solver step is selected.
@@ -2747,45 +2811,8 @@ pub fn plan_equation_chain_with_policy(
     }
     if goal == CapabilityIoType::VerifiedArtifact {
         steps.push("verified_artifact_wrap".into());
-
-        let proof_steps = steps
-            .iter()
-            .filter(|step| step.as_str() != "verified_artifact_wrap")
-            .collect::<Vec<_>>();
-        if proof_steps.len() < policy.minimum_proof_steps {
-            return Err(EquationChainPlanningFailure::TrustPolicy(
-                VerifiedArtifactPlanningFailure::InsufficientProofSteps {
-                    required: policy.minimum_proof_steps,
-                    available: proof_steps.len(),
-                },
-            ));
-        }
-        if policy.require_replay_verified {
-            for step in &proof_steps {
-                let Some(capability) = registry.get(*step) else {
-                    return Err(EquationChainPlanningFailure::CapabilityUnavailable(
-                        (*step).clone(),
-                    ));
-                };
-                if capability.verifier.trim().is_empty() {
-                    return Err(EquationChainPlanningFailure::TrustPolicy(
-                        VerifiedArtifactPlanningFailure::MissingStepVerifier((*step).clone()),
-                    ));
-                }
-            }
-        }
-        if policy.require_final_verification_receipt {
-            let final_step = proof_steps.last().copied();
-            let has_final_verifier = final_step
-                .and_then(|step| registry.get(step))
-                .map(|capability| !capability.verifier.trim().is_empty())
-                .unwrap_or(false);
-            if !has_final_verifier {
-                return Err(EquationChainPlanningFailure::TrustPolicy(
-                    VerifiedArtifactPlanningFailure::MissingFinalVerificationStep,
-                ));
-            }
-        }
+        validate_verified_artifact_plan_policy(&steps, registry, policy)
+            .map_err(EquationChainPlanningFailure::TrustPolicy)?;
     }
     Ok(EquationChainPlan {
         source: source.trim().into(),
@@ -3571,6 +3598,45 @@ mod tests {
         .unwrap();
 
         assert!(plan.steps.is_empty());
+    }
+
+    #[test]
+    fn generic_verified_artifact_goal_wraps_typed_dataflow_chain() {
+        let plan = plan_verified_artifact_goal(
+            CapabilityIoType::NormalizedEquation,
+            &BTreeSet::from([CapabilityIoType::Equation]),
+            &CapabilityRegistry::production(),
+            &VerifiedArtifactPolicy::default(),
+        )
+        .unwrap();
+
+        assert_eq!(plan.goal, CapabilityIoType::VerifiedArtifact);
+        assert_eq!(
+            plan.steps,
+            vec!["equation_normalization", "verified_artifact_wrap"]
+        );
+    }
+
+    #[test]
+    fn generic_verified_artifact_goal_applies_policy_before_returning_plan() {
+        let policy = VerifiedArtifactPolicy {
+            minimum_proof_steps: 2,
+            ..VerifiedArtifactPolicy::default()
+        };
+        assert_eq!(
+            plan_verified_artifact_goal(
+                CapabilityIoType::NormalizedEquation,
+                &BTreeSet::from([CapabilityIoType::Equation]),
+                &CapabilityRegistry::production(),
+                &policy,
+            ),
+            Err(CapabilityChainPlanningFailure::TrustPolicy(
+                VerifiedArtifactPlanningFailure::InsufficientProofSteps {
+                    required: 2,
+                    available: 1,
+                }
+            ))
+        );
     }
 
     #[test]

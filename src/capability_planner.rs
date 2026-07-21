@@ -958,6 +958,29 @@ pub struct CapabilityChainProofConceptValidationReceipt {
     pub rationale: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofConceptCompositionFailure {
+    ValidationNotPassed(String),
+    IncompatibleHandoff {
+        left_concept_id: String,
+        right_concept_id: String,
+    },
+    DuplicateConcept(String),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptCompositionReceipt {
+    pub concept_id: String,
+    pub component_concept_ids: Vec<String>,
+    pub capabilities: Vec<String>,
+    pub input_artifacts: Vec<CapabilityIoType>,
+    pub output_artifacts: Vec<CapabilityIoType>,
+    pub source_pattern_ids: Vec<String>,
+    pub supporting_instances: usize,
+    pub parameterized_signature: String,
+    pub diagnostic_only: bool,
+}
+
 impl CapabilityChainProofConceptDiscoveryReceipt {
     /// Extract an observed contract boundary for each concept using the
     /// registry's declared first-step inputs and last-step outputs. This is a
@@ -1061,6 +1084,88 @@ impl CapabilityChainProofConceptContract {
             rationale,
         }
     }
+}
+
+/// Compose two already-validated concept contracts into a higher-level
+/// concept. This performs typed handoff checking and provenance merging only;
+/// it does not make the composite executable or register it as a capability.
+pub fn compose_validated_proof_concepts(
+    left: &CapabilityChainProofConceptContract,
+    left_validation: &CapabilityChainProofConceptValidationReceipt,
+    right: &CapabilityChainProofConceptContract,
+    right_validation: &CapabilityChainProofConceptValidationReceipt,
+) -> Result<CapabilityChainProofConceptCompositionReceipt,
+    CapabilityChainProofConceptCompositionFailure> {
+    if !left_validation.passed || left_validation.concept_id != left.concept_id {
+        return Err(
+            CapabilityChainProofConceptCompositionFailure::ValidationNotPassed(
+                left.concept_id.clone(),
+            ),
+        );
+    }
+    if !right_validation.passed || right_validation.concept_id != right.concept_id {
+        return Err(
+            CapabilityChainProofConceptCompositionFailure::ValidationNotPassed(
+                right.concept_id.clone(),
+            ),
+        );
+    }
+    if left.concept_id == right.concept_id {
+        return Err(CapabilityChainProofConceptCompositionFailure::DuplicateConcept(
+            left.concept_id.clone(),
+        ));
+    }
+    if !left
+        .output_artifacts
+        .iter()
+        .any(|output| right.input_artifacts.contains(output))
+    {
+        return Err(
+            CapabilityChainProofConceptCompositionFailure::IncompatibleHandoff {
+                left_concept_id: left.concept_id.clone(),
+                right_concept_id: right.concept_id.clone(),
+            },
+        );
+    }
+    let mut source_pattern_ids = left
+        .source_pattern_ids
+        .iter()
+        .chain(right.source_pattern_ids.iter())
+        .cloned()
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .collect::<Vec<_>>();
+    source_pattern_ids.sort();
+    let capabilities = left
+        .capabilities
+        .iter()
+        .chain(right.capabilities.iter())
+        .cloned()
+        .collect::<Vec<_>>();
+    let signature = serde_json::to_vec(&(
+        &left.input_artifacts,
+        &capabilities,
+        &right.output_artifacts,
+    ))
+    .expect("composed concept signature must serialize");
+    let concept_id = format!("{:x}", Sha256::digest(signature));
+    let parameterized_signature = serde_json::to_string(&(
+        &left.input_artifacts,
+        &capabilities,
+        &right.output_artifacts,
+    ))
+    .expect("composed concept signature must serialize");
+    Ok(CapabilityChainProofConceptCompositionReceipt {
+        concept_id,
+        component_concept_ids: vec![left.concept_id.clone(), right.concept_id.clone()],
+        capabilities,
+        input_artifacts: left.input_artifacts.clone(),
+        output_artifacts: right.output_artifacts.clone(),
+        source_pattern_ids,
+        supporting_instances: left.supporting_instances.min(right.supporting_instances),
+        parameterized_signature,
+        diagnostic_only: true,
+    })
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -7128,6 +7233,64 @@ mod tests {
             safety_failure.rationale,
             "held-out replay or safety evidence failed"
         );
+        let left_concept = CapabilityChainProofConceptContract {
+            concept_id: "concept-left".into(),
+            capabilities: vec!["normalize".into()],
+            input_artifacts: vec![CapabilityIoType::Equation],
+            output_artifacts: vec![CapabilityIoType::NormalizedEquation],
+            source_pattern_ids: vec!["left-a".into(), "left-b".into()],
+            supporting_instances: 2,
+            parameterized_signature: "equation -> normalized_equation".into(),
+            diagnostic_only: true,
+        };
+        let right_concept = CapabilityChainProofConceptContract {
+            concept_id: "concept-right".into(),
+            capabilities: vec!["classify".into()],
+            input_artifacts: vec![CapabilityIoType::NormalizedEquation],
+            output_artifacts: vec![CapabilityIoType::EquationClassification],
+            source_pattern_ids: vec!["right-a".into(), "right-b".into()],
+            supporting_instances: 3,
+            parameterized_signature: "normalized_equation -> classification".into(),
+            diagnostic_only: true,
+        };
+        let left_validation = left_concept.validate(2, 2, 0, 0);
+        let right_validation = right_concept.validate(2, 2, 0, 0);
+        let composed_concept = compose_validated_proof_concepts(
+            &left_concept,
+            &left_validation,
+            &right_concept,
+            &right_validation,
+        )
+        .unwrap();
+        assert_eq!(
+            composed_concept.capabilities,
+            vec!["normalize", "classify"]
+        );
+        assert_eq!(
+            composed_concept.input_artifacts,
+            vec![CapabilityIoType::Equation]
+        );
+        assert_eq!(
+            composed_concept.output_artifacts,
+            vec![CapabilityIoType::EquationClassification]
+        );
+        assert_eq!(composed_concept.supporting_instances, 2);
+        assert!(composed_concept.diagnostic_only);
+        let incompatible = CapabilityChainProofConceptContract {
+            input_artifacts: vec![CapabilityIoType::Expression],
+            ..right_concept.clone()
+        };
+        assert!(matches!(
+            compose_validated_proof_concepts(
+                &left_concept,
+                &left_validation,
+                &incompatible,
+                &right_validation,
+            ),
+            Err(
+                CapabilityChainProofConceptCompositionFailure::IncompatibleHandoff { .. }
+            )
+        ));
     }
 
     #[test]

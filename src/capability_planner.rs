@@ -1517,6 +1517,111 @@ impl CapabilityChainProofConceptIndex {
             diagnostic_only: true,
         }
     }
+
+    /// Compose pairs of indexed validated concepts into advisory planning
+    /// routes. The temporary composite is never inserted into concept memory;
+    /// it is checked by the same registry/handoff validation as a direct
+    /// proposal and remains a diagnostic planning hint.
+    pub fn propose_composed_planning_assistance(
+        &self,
+        available_inputs: &[CapabilityIoType],
+        goal_artifact: CapabilityIoType,
+        registry: &CapabilityRegistry,
+    ) -> CapabilityChainProofConceptPlanningReceipt {
+        let available = available_inputs.iter().copied().collect::<BTreeSet<_>>();
+        let contracts = self.concepts.values().collect::<Vec<_>>();
+        let mut proposals = Vec::new();
+        let mut rejections = Vec::new();
+        let mut seen = BTreeSet::new();
+        for left in &contracts {
+            if !left
+                .input_artifacts
+                .iter()
+                .all(|input| available.contains(input))
+            {
+                continue;
+            }
+            for right in &contracts {
+                if left.concept_id == right.concept_id
+                    || !right.output_artifacts.contains(&goal_artifact)
+                    || !left
+                        .output_artifacts
+                        .iter()
+                        .any(|output| right.input_artifacts.contains(output))
+                {
+                    continue;
+                }
+                let capabilities = left
+                    .capabilities
+                    .iter()
+                    .chain(right.capabilities.iter())
+                    .cloned()
+                    .collect::<Vec<_>>();
+                let signature = serde_json::to_vec(&(
+                    &left.input_artifacts,
+                    &capabilities,
+                    &right.output_artifacts,
+                ))
+                .expect("composed concept signature must serialize");
+                let concept_id = format!("composed:{:x}", Sha256::digest(signature));
+                if !seen.insert(concept_id.clone()) {
+                    continue;
+                }
+                let composite = CapabilityChainProofConceptContract {
+                    concept_id: concept_id.clone(),
+                    capabilities,
+                    input_artifacts: left.input_artifacts.clone(),
+                    output_artifacts: right.output_artifacts.clone(),
+                    source_pattern_ids: left
+                        .source_pattern_ids
+                        .iter()
+                        .chain(right.source_pattern_ids.iter())
+                        .cloned()
+                        .collect::<BTreeSet<_>>()
+                        .into_iter()
+                        .collect(),
+                    supporting_instances: left.supporting_instances.min(right.supporting_instances),
+                    parameterized_signature: serde_json::to_string(&(
+                        &left.input_artifacts,
+                        &left
+                            .capabilities
+                            .iter()
+                            .chain(right.capabilities.iter())
+                            .cloned()
+                            .collect::<Vec<_>>(),
+                        &right.output_artifacts,
+                    ))
+                    .expect("composed concept signature must serialize"),
+                    diagnostic_only: true,
+                };
+                let mut temporary = self.clone();
+                temporary
+                    .concepts
+                    .insert(composite.concept_id.clone(), composite);
+                let receipt = temporary.propose_planning_assistance(
+                    available_inputs,
+                    goal_artifact,
+                    registry,
+                );
+                rejections.extend(receipt.rejections);
+                if let Some(proposal) = receipt
+                    .proposals
+                    .into_iter()
+                    .find(|proposal| proposal.concept_id == concept_id)
+                {
+                    proposals.push(proposal);
+                }
+            }
+        }
+        proposals.sort_by(|left, right| left.concept_id.cmp(&right.concept_id));
+        CapabilityChainProofConceptPlanningReceipt {
+            available_inputs: available_inputs.iter().copied().collect::<BTreeSet<_>>().into_iter().collect(),
+            goal_artifact,
+            proposals,
+            rejections,
+            diagnostic_only: true,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -7774,6 +7879,50 @@ mod tests {
             ambiguous.preference,
             CapabilityChainProofConceptPlanningPreference::Ambiguous(_)
         ));
+
+        let make_concept = |concept_id: &str,
+                            capability: &str,
+                            input: CapabilityIoType,
+                            output: CapabilityIoType| {
+            CapabilityChainProofConceptContract {
+                concept_id: concept_id.into(),
+                capabilities: vec![capability.into()],
+                input_artifacts: vec![input],
+                output_artifacts: vec![output],
+                source_pattern_ids: vec![format!("{concept_id}-a"), format!("{concept_id}-b")],
+                supporting_instances: 4,
+                parameterized_signature: format!("{input:?}->{output:?}"),
+                diagnostic_only: true,
+            }
+        };
+        let left = make_concept(
+            "normalize-concept",
+            "equation_normalization",
+            CapabilityIoType::Equation,
+            CapabilityIoType::NormalizedEquation,
+        );
+        let right = make_concept(
+            "classify-concept",
+            "equation_classification",
+            CapabilityIoType::NormalizedEquation,
+            CapabilityIoType::EquationClassification,
+        );
+        let left_validation = left.validate(2, 2, 0, 0);
+        let right_validation = right.validate(2, 2, 0, 0);
+        let mut composition_index = CapabilityChainProofConceptIndex::default();
+        composition_index.insert(left, &left_validation).unwrap();
+        composition_index.insert(right, &right_validation).unwrap();
+        let composed_planning = composition_index.propose_composed_planning_assistance(
+            &[CapabilityIoType::Equation],
+            CapabilityIoType::EquationClassification,
+            &production,
+        );
+        assert!(composed_planning.rejections.is_empty());
+        assert_eq!(composed_planning.proposals.len(), 1);
+        assert_eq!(composed_planning.proposals[0].plan.steps.len(), 2);
+        assert!(composed_planning.proposals[0]
+            .concept_id
+            .starts_with("composed:"));
     }
 
     #[test]

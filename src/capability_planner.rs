@@ -823,6 +823,7 @@ pub enum VerifiedArtifactPolicyFailure {
     ReplayNotVerified,
     InsufficientProofSteps { required: usize, actual: usize },
     MissingStepVerificationReceipt(usize),
+    MissingFactRetrievalReceipt(String),
     MissingFinalVerificationReceipt,
     FinalVerificationReceiptMismatch,
     IncompleteProofTrace { expected: usize, actual: usize },
@@ -832,6 +833,7 @@ pub enum VerifiedArtifactPolicyFailure {
 pub struct VerifiedArtifactPolicyReceipt {
     pub execution_id: String,
     pub proof_steps: usize,
+    pub retrieved_facts: usize,
     pub replay_verified: bool,
     pub final_verification_receipt: String,
 }
@@ -978,6 +980,19 @@ impl VerifiedArtifactPolicy {
                 ));
             }
         }
+        for fact in &proof.retrieved_facts {
+            if fact
+                .retrieval_receipt
+                .as_deref()
+                .unwrap_or_default()
+                .trim()
+                .is_empty()
+            {
+                return Err(VerifiedArtifactPolicyFailure::MissingFactRetrievalReceipt(
+                    fact.fact_id.clone(),
+                ));
+            }
+        }
         if self.require_final_verification_receipt {
             if artifact.final_verification_receipt.trim().is_empty() {
                 return Err(VerifiedArtifactPolicyFailure::MissingFinalVerificationReceipt);
@@ -994,6 +1009,7 @@ impl VerifiedArtifactPolicy {
         Ok(VerifiedArtifactPolicyReceipt {
             execution_id: proof.execution_id.clone(),
             proof_steps: actual_steps,
+            retrieved_facts: proof.retrieved_facts.len(),
             replay_verified: proof.replay_verified,
             final_verification_receipt: artifact.final_verification_receipt.clone(),
         })
@@ -3518,6 +3534,7 @@ mod tests {
         let receipt = VerifiedArtifactPolicy::default().evaluate(&verified).unwrap();
         assert_eq!(receipt.execution_id, "policy-proof-1");
         assert_eq!(receipt.proof_steps, 1);
+        assert_eq!(receipt.retrieved_facts, 0);
         assert!(receipt.replay_verified);
     }
 
@@ -3573,6 +3590,44 @@ mod tests {
                 required: 1,
                 actual: 0,
             })
+        );
+    }
+
+    #[test]
+    fn verified_artifact_policy_rejects_unproven_retrieved_fact_inputs() {
+        let mut ledger = CapabilityChainExecutionLedger::default();
+        let plan = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["evaluate_expression".into()],
+        };
+        ledger.start("policy-retrieval-1", plan).unwrap();
+        ledger
+            .record_step(
+                "policy-retrieval-1",
+                CapabilityChainStepReceipt {
+                    step_index: 0,
+                    capability_id: "evaluate_expression".into(),
+                    input_artifacts: vec!["expression".into()],
+                    output_artifacts: vec!["value".into()],
+                    verification_receipt: "evaluation replay".into(),
+                },
+            )
+            .unwrap();
+        let execution = ledger.complete_success("policy-retrieval-1").unwrap();
+        let mut proof = compose_capability_chain_proof(&execution).unwrap();
+        proof.retrieved_facts.push(DerivedFactProof {
+            capability: "evaluate_expression".into(),
+            fact_id: "fact-without-retrieval-receipt".into(),
+            parent_lineage: vec!["parent".into()],
+            retrieval_receipt: None,
+        });
+        let artifact = VerifiedArtifact::from_chain("value", proof).unwrap();
+
+        assert_eq!(
+            VerifiedArtifactPolicy::default().evaluate(&artifact),
+            Err(VerifiedArtifactPolicyFailure::MissingFactRetrievalReceipt(
+                "fact-without-retrieval-receipt".into(),
+            ))
         );
     }
 

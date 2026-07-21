@@ -956,6 +956,38 @@ pub struct CapabilityChainProofAbstractionAdvisoryPrior {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionCalibrationObservation {
+    pub observation_id: String,
+    pub risk: ImprovementRisk,
+    pub predicted_pass_rate_basis_points: usize,
+    pub predicted_safety_rate_basis_points: usize,
+    pub actual_passed: bool,
+    pub actual_safety_preserved: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionCalibrationReport {
+    pub observations: usize,
+    pub mean_absolute_pass_error_basis_points: usize,
+    pub mean_absolute_safety_error_basis_points: usize,
+    pub pass_overconfidence_count: usize,
+    pub safety_overconfidence_count: usize,
+    pub tolerance_basis_points: usize,
+    pub calibrated: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionCalibrationLedgerRejection {
+    DuplicateObservation(String),
+    RateOutOfRange,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainProofAbstractionCalibrationLedger {
+    observations: BTreeMap<String, CapabilityChainProofAbstractionCalibrationObservation>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofAbstractionExperimentLedgerRejection {
     DuplicateExperiment(String),
 }
@@ -2550,6 +2582,91 @@ impl CapabilityChainProofAbstractionMetaLearningProfile {
                 }
             })
             .collect()
+    }
+}
+
+impl CapabilityChainProofAbstractionCalibrationLedger {
+    pub fn record(
+        &mut self,
+        observation: CapabilityChainProofAbstractionCalibrationObservation,
+    ) -> Result<CapabilityChainProofAbstractionCalibrationObservation, CapabilityChainProofAbstractionCalibrationLedgerRejection>
+    {
+        if self.observations.contains_key(&observation.observation_id) {
+            return Err(
+                CapabilityChainProofAbstractionCalibrationLedgerRejection::DuplicateObservation(
+                    observation.observation_id,
+                ),
+            );
+        }
+        if observation.predicted_pass_rate_basis_points > 10_000
+            || observation.predicted_safety_rate_basis_points > 10_000
+        {
+            return Err(
+                CapabilityChainProofAbstractionCalibrationLedgerRejection::RateOutOfRange,
+            );
+        }
+        self.observations
+            .insert(observation.observation_id.clone(), observation.clone());
+        Ok(observation)
+    }
+
+    pub fn observations(
+        &self,
+    ) -> impl Iterator<Item = &CapabilityChainProofAbstractionCalibrationObservation> {
+        self.observations.values()
+    }
+
+    /// Compare forecast probabilities with realized outcomes. A caller sets
+    /// the tolerance appropriate to its review policy; this method never
+    /// rewrites priors or changes future authorization behavior.
+    pub fn assess(
+        &self,
+        tolerance_basis_points: usize,
+    ) -> CapabilityChainProofAbstractionCalibrationReport {
+        let observations = self.observations.len();
+        if observations == 0 {
+            return CapabilityChainProofAbstractionCalibrationReport {
+                observations: 0,
+                mean_absolute_pass_error_basis_points: 0,
+                mean_absolute_safety_error_basis_points: 0,
+                pass_overconfidence_count: 0,
+                safety_overconfidence_count: 0,
+                tolerance_basis_points,
+                calibrated: false,
+            };
+        }
+        let mut pass_error = 0usize;
+        let mut safety_error = 0usize;
+        let mut pass_overconfidence = 0usize;
+        let mut safety_overconfidence = 0usize;
+        for observation in self.observations.values() {
+            let actual_pass = usize::from(observation.actual_passed) * 10_000;
+            let actual_safety = usize::from(observation.actual_safety_preserved) * 10_000;
+            pass_error += observation
+                .predicted_pass_rate_basis_points
+                .abs_diff(actual_pass);
+            safety_error += observation
+                .predicted_safety_rate_basis_points
+                .abs_diff(actual_safety);
+            pass_overconfidence += usize::from(
+                observation.predicted_pass_rate_basis_points > actual_pass,
+            );
+            safety_overconfidence += usize::from(
+                observation.predicted_safety_rate_basis_points > actual_safety,
+            );
+        }
+        let mean_pass_error = pass_error / observations;
+        let mean_safety_error = safety_error / observations;
+        CapabilityChainProofAbstractionCalibrationReport {
+            observations,
+            mean_absolute_pass_error_basis_points: mean_pass_error,
+            mean_absolute_safety_error_basis_points: mean_safety_error,
+            pass_overconfidence_count: pass_overconfidence,
+            safety_overconfidence_count: safety_overconfidence,
+            tolerance_basis_points,
+            calibrated: mean_pass_error <= tolerance_basis_points
+                && mean_safety_error <= tolerance_basis_points,
+        }
     }
 }
 
@@ -6341,6 +6458,60 @@ mod tests {
         assert_eq!(priors[0].posterior_pass_rate_basis_points, 5_000);
         assert_eq!(priors[0].posterior_safety_rate_basis_points, 5_000);
         assert_eq!(priors[0].evidence_strength_basis_points, 1_666);
+        let mut calibration = CapabilityChainProofAbstractionCalibrationLedger::default();
+        calibration
+            .record(CapabilityChainProofAbstractionCalibrationObservation {
+                observation_id: "calibration-1".into(),
+                risk: ImprovementRisk::Medium,
+                predicted_pass_rate_basis_points: 5_000,
+                predicted_safety_rate_basis_points: 5_000,
+                actual_passed: true,
+                actual_safety_preserved: true,
+            })
+            .unwrap();
+        calibration
+            .record(CapabilityChainProofAbstractionCalibrationObservation {
+                observation_id: "calibration-2".into(),
+                risk: ImprovementRisk::Medium,
+                predicted_pass_rate_basis_points: 5_000,
+                predicted_safety_rate_basis_points: 5_000,
+                actual_passed: false,
+                actual_safety_preserved: false,
+            })
+            .unwrap();
+        let calibration_report = calibration.assess(5_000);
+        assert_eq!(calibration_report.observations, 2);
+        assert_eq!(calibration_report.mean_absolute_pass_error_basis_points, 5_000);
+        assert_eq!(calibration_report.mean_absolute_safety_error_basis_points, 5_000);
+        assert_eq!(calibration_report.pass_overconfidence_count, 1);
+        assert_eq!(calibration_report.safety_overconfidence_count, 1);
+        assert!(calibration_report.calibrated);
+        assert!(matches!(
+            calibration.record(CapabilityChainProofAbstractionCalibrationObservation {
+                observation_id: "calibration-1".into(),
+                risk: ImprovementRisk::Medium,
+                predicted_pass_rate_basis_points: 5_000,
+                predicted_safety_rate_basis_points: 5_000,
+                actual_passed: true,
+                actual_safety_preserved: true,
+            }),
+            Err(
+                CapabilityChainProofAbstractionCalibrationLedgerRejection::DuplicateObservation(
+                    _
+                )
+            )
+        ));
+        assert!(matches!(
+            calibration.record(CapabilityChainProofAbstractionCalibrationObservation {
+                observation_id: "calibration-invalid".into(),
+                risk: ImprovementRisk::Medium,
+                predicted_pass_rate_basis_points: 10_001,
+                predicted_safety_rate_basis_points: 5_000,
+                actual_passed: true,
+                actual_safety_preserved: true,
+            }),
+            Err(CapabilityChainProofAbstractionCalibrationLedgerRejection::RateOutOfRange)
+        ));
         let meta_priority = rank_proof_abstraction_priorities_with_meta_learning(
             vec![CapabilityChainProofAbstractionPriorityInput {
                 proposal: proposal.clone(),

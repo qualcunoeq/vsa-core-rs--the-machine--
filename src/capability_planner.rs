@@ -21,6 +21,7 @@ use crate::evidence::{
 };
 use crate::formalization::{AnswerForm, FormalizedTarget, OperationKind, SubjectObjectType};
 use serde::Serialize;
+use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -755,6 +756,119 @@ pub struct CapabilityChainProofTrace {
     pub retrieved_facts: Vec<DerivedFactProof>,
     pub final_artifacts: Vec<String>,
     pub replay_verified: bool,
+}
+
+impl CapabilityChainProofTrace {
+    /// Return a deterministic identity for the reasoning content of this
+    /// trace. Execution IDs identify runs, not the reasoning itself, so they
+    /// are excluded from the fingerprint used for comparison and reuse.
+    pub fn reasoning_fingerprint(&self) -> String {
+        let mut canonical = self.clone();
+        canonical.execution_id.clear();
+        let encoded = serde_json::to_vec(&canonical)
+            .expect("capability-chain proof traces must be serializable");
+        format!("{:x}", Sha256::digest(encoded))
+    }
+
+    /// Compare two traces by canonical reasoning content while ignoring the
+    /// execution-run identifier.
+    pub fn same_reasoning(&self, other: &Self) -> bool {
+        self.reasoning_fingerprint() == other.reasoning_fingerprint()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofIndexFailure {
+    UnverifiedProof,
+    IncompleteSteps { expected: usize, actual: usize },
+    MissingVerificationReceipt(usize),
+    MissingFactRetrievalReceipt(String),
+    DuplicateFactRetrieval { capability: String, fact_id: String },
+    DuplicateFingerprint(String),
+}
+
+/// Explicit cache of proof-bearing reasoning traces. Insertion is deliberate:
+/// the index never executes, authorizes, or silently replaces a proof. A
+/// caller can retrieve an existing trace by its canonical reasoning identity.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainProofIndex {
+    proofs: BTreeMap<String, CapabilityChainProofTrace>,
+}
+
+impl CapabilityChainProofIndex {
+    pub fn insert(
+        &mut self,
+        proof: CapabilityChainProofTrace,
+    ) -> Result<String, CapabilityChainProofIndexFailure> {
+        if !proof.replay_verified {
+            return Err(CapabilityChainProofIndexFailure::UnverifiedProof);
+        }
+        if proof.steps.len() != proof.plan.steps.len() {
+            return Err(CapabilityChainProofIndexFailure::IncompleteSteps {
+                expected: proof.plan.steps.len(),
+                actual: proof.steps.len(),
+            });
+        }
+        for step in &proof.steps {
+            if step.verification_receipt.trim().is_empty() {
+                return Err(CapabilityChainProofIndexFailure::MissingVerificationReceipt(
+                    step.step_index,
+                ));
+            }
+        }
+        let mut seen_retrievals = BTreeSet::new();
+        for fact in &proof.retrieved_facts {
+            if fact
+                .retrieval_receipt
+                .as_deref()
+                .unwrap_or_default()
+                .trim()
+                .is_empty()
+            {
+                return Err(
+                    CapabilityChainProofIndexFailure::MissingFactRetrievalReceipt(
+                        fact.fact_id.clone(),
+                    ),
+                );
+            }
+            let key = (fact.capability.clone(), fact.fact_id.clone());
+            if !seen_retrievals.insert(key) {
+                return Err(
+                    CapabilityChainProofIndexFailure::DuplicateFactRetrieval {
+                        capability: fact.capability.clone(),
+                        fact_id: fact.fact_id.clone(),
+                    },
+                );
+            }
+        }
+        let fingerprint = proof.reasoning_fingerprint();
+        if self.proofs.contains_key(&fingerprint) {
+            return Err(CapabilityChainProofIndexFailure::DuplicateFingerprint(
+                fingerprint,
+            ));
+        }
+        self.proofs.insert(fingerprint.clone(), proof);
+        Ok(fingerprint)
+    }
+
+    pub fn get(&self, fingerprint: &str) -> Option<&CapabilityChainProofTrace> {
+        self.proofs.get(fingerprint)
+    }
+
+    pub fn find_equivalent(
+        &self,
+        proof: &CapabilityChainProofTrace,
+    ) -> Option<&CapabilityChainProofTrace> {
+        self.get(&proof.reasoning_fingerprint())
+    }
+
+    pub fn len(&self) -> usize {
+        self.proofs.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.proofs.is_empty()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -3546,6 +3660,50 @@ mod tests {
             ledger.complete_failure("chain-execution-1", 1, "late failure"),
             Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(_))
         ));
+    }
+
+    #[test]
+    fn proof_index_reuses_equivalent_reasoning_across_execution_runs() {
+        let mut ledger = CapabilityChainExecutionLedger::default();
+        let plan = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["evaluate_expression".into()],
+        };
+        ledger.start("proof-index-run-1", plan.clone()).unwrap();
+        ledger
+            .record_step(
+                "proof-index-run-1",
+                CapabilityChainStepReceipt {
+                    step_index: 0,
+                    capability_id: "evaluate_expression".into(),
+                    input_artifacts: vec!["expression".into()],
+                    output_artifacts: vec!["value".into()],
+                    verification_receipt: "evaluation replay".into(),
+                },
+            )
+            .unwrap();
+        let first = compose_capability_chain_proof(
+            &ledger.complete_success("proof-index-run-1").unwrap(),
+        )
+        .unwrap();
+        let mut second = first.clone();
+        second.execution_id = "proof-index-run-2".into();
+
+        assert!(first.same_reasoning(&second));
+        assert_eq!(first.reasoning_fingerprint(), second.reasoning_fingerprint());
+
+        let mut index = CapabilityChainProofIndex::default();
+        let fingerprint = index.insert(first.clone()).unwrap();
+        assert_eq!(index.len(), 1);
+        assert_eq!(index.get(&fingerprint), Some(&first));
+        assert_eq!(index.find_equivalent(&second), Some(&first));
+        assert_eq!(
+            index.insert(second),
+            Err(CapabilityChainProofIndexFailure::DuplicateFingerprint(
+                fingerprint,
+            ))
+        );
+        assert!(!index.is_empty());
     }
 
     #[test]

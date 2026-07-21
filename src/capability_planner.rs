@@ -2689,6 +2689,22 @@ fn validate_verified_artifact_plan_policy(
     Ok(())
 }
 
+/// Add the virtual trust-materialization step to an already planned artifact
+/// chain and validate the requested consumer policy.  Domain planners can use
+/// this helper after constructing domain-specific, proof-producing steps.
+pub fn materialize_verified_artifact_chain(
+    mut plan: CapabilityChainPlan,
+    registry: &CapabilityRegistry,
+    policy: &VerifiedArtifactPolicy,
+) -> Result<CapabilityChainPlan, VerifiedArtifactPlanningFailure> {
+    if plan.goal != CapabilityIoType::VerifiedArtifact {
+        plan.steps.push("verified_artifact_wrap".into());
+        plan.goal = CapabilityIoType::VerifiedArtifact;
+    }
+    validate_verified_artifact_plan_policy(&plan.steps, registry, policy)?;
+    Ok(plan)
+}
+
 /// Plan a generic typed artifact goal with a proof-bearing wrapper.  The
 /// underlying artifact is planned through the ordinary dataflow graph; the
 /// wrapper is a virtual trust-materialization step and is never treated as a
@@ -2702,12 +2718,12 @@ pub fn plan_verified_artifact_goal(
     if artifact_goal == CapabilityIoType::VerifiedArtifact {
         return Err(CapabilityChainPlanningFailure::NoProducer(artifact_goal));
     }
-    let mut plan = plan_capability_chain(artifact_goal, available_inputs, registry)?;
-    plan.steps.push("verified_artifact_wrap".into());
-    plan.goal = CapabilityIoType::VerifiedArtifact;
-    validate_verified_artifact_plan_policy(&plan.steps, registry, policy)
-        .map_err(CapabilityChainPlanningFailure::TrustPolicy)?;
-    Ok(plan)
+    materialize_verified_artifact_chain(
+        plan_capability_chain(artifact_goal, available_inputs, registry)?,
+        registry,
+        policy,
+    )
+    .map_err(CapabilityChainPlanningFailure::TrustPolicy)
 }
 
 /// Build the normalization → classification → solver chain for one grounded
@@ -2809,9 +2825,16 @@ pub fn plan_equation_chain_with_policy(
     {
         steps.push("solution_set_verification".into());
     }
+    let mut chain_goal = goal;
     if goal == CapabilityIoType::VerifiedArtifact {
-        steps.push("verified_artifact_wrap".into());
-        validate_verified_artifact_plan_policy(&steps, registry, policy)
+        chain_goal = CapabilityIoType::SolutionSet;
+    }
+    let mut chain = CapabilityChainPlan {
+        goal: chain_goal,
+        steps,
+    };
+    if goal == CapabilityIoType::VerifiedArtifact {
+        chain = materialize_verified_artifact_chain(chain, registry, policy)
             .map_err(EquationChainPlanningFailure::TrustPolicy)?;
     }
     Ok(EquationChainPlan {
@@ -2820,10 +2843,7 @@ pub fn plan_equation_chain_with_policy(
         normalized_equation: normalized.normalized_equation,
         classification,
         selected_solver: selected_solver.clone(),
-        chain: CapabilityChainPlan {
-            goal,
-            steps,
-        },
+        chain,
     })
 }
 

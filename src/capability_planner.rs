@@ -729,6 +729,79 @@ pub struct CapabilityChainExecutionReceipt {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofStep {
+    pub step_index: usize,
+    pub capability_id: String,
+    pub input_artifacts: Vec<String>,
+    pub output_artifacts: Vec<String>,
+    pub verification_receipt: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofTrace {
+    pub execution_id: String,
+    pub plan: CapabilityChainPlan,
+    pub steps: Vec<CapabilityChainProofStep>,
+    pub final_artifacts: Vec<String>,
+    pub replay_verified: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofFailure {
+    ExecutionNotSuccessful(CapabilityChainExecutionStatus),
+    IncompleteSteps { expected: usize, recorded: usize },
+    MissingVerificationReceipt(usize),
+}
+
+/// Compose independently recorded step receipts into one proof artifact.
+/// This does not execute or authorize the chain; it only preserves the
+/// already-recorded verification lineage at chain scope.
+pub fn compose_capability_chain_proof(
+    execution: &CapabilityChainExecutionReceipt,
+) -> Result<CapabilityChainProofTrace, CapabilityChainProofFailure> {
+    if execution.status != CapabilityChainExecutionStatus::Succeeded {
+        return Err(CapabilityChainProofFailure::ExecutionNotSuccessful(
+            execution.status,
+        ));
+    }
+    if execution.steps.len() != execution.plan.steps.len() {
+        return Err(CapabilityChainProofFailure::IncompleteSteps {
+            expected: execution.plan.steps.len(),
+            recorded: execution.steps.len(),
+        });
+    }
+    for step in &execution.steps {
+        if step.verification_receipt.trim().is_empty() {
+            return Err(CapabilityChainProofFailure::MissingVerificationReceipt(
+                step.step_index,
+            ));
+        }
+    }
+    let steps = execution
+        .steps
+        .iter()
+        .map(|step| CapabilityChainProofStep {
+            step_index: step.step_index,
+            capability_id: step.capability_id.clone(),
+            input_artifacts: step.input_artifacts.clone(),
+            output_artifacts: step.output_artifacts.clone(),
+            verification_receipt: step.verification_receipt.clone(),
+        })
+        .collect::<Vec<_>>();
+    let final_artifacts = steps
+        .last()
+        .map(|step| step.output_artifacts.clone())
+        .unwrap_or_default();
+    Ok(CapabilityChainProofTrace {
+        execution_id: execution.execution_id.clone(),
+        plan: execution.plan.clone(),
+        steps,
+        final_artifacts,
+        replay_verified: true,
+    })
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainExecutionRejection {
     DuplicateExecution(String),
     UnknownExecution(String),
@@ -2907,6 +2980,10 @@ mod tests {
         let completed = ledger.complete_success("chain-execution-1").unwrap();
         assert_eq!(completed.status, CapabilityChainExecutionStatus::Succeeded);
         assert_eq!(completed.steps.len(), 2);
+        let proof = compose_capability_chain_proof(&completed).unwrap();
+        assert!(proof.replay_verified);
+        assert_eq!(proof.steps.len(), 2);
+        assert_eq!(proof.final_artifacts, vec!["value"]);
         assert!(matches!(
             ledger.complete_failure("chain-execution-1", 1, "late failure"),
             Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(_))

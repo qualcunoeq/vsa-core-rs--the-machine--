@@ -807,6 +807,20 @@ pub struct CapabilityChainProofPreferenceReceipt {
     pub ambiguous: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofPolicyRejection {
+    pub fingerprint: String,
+    pub reason: VerifiedArtifactPolicyFailure,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofPolicyPreferenceReceipt {
+    pub goal_artifact: String,
+    pub policy: VerifiedArtifactPolicy,
+    pub accepted: CapabilityChainProofPreferenceReceipt,
+    pub rejected: Vec<CapabilityChainProofPolicyRejection>,
+}
+
 /// Explicit cache of proof-bearing reasoning traces. Insertion is deliberate:
 /// the index never executes, authorizes, or silently replaces a proof. A
 /// caller can retrieve an existing trace by its canonical reasoning identity.
@@ -932,6 +946,52 @@ impl CapabilityChainProofIndex {
             preferred_fingerprint: (tied == 1).then(|| candidates[0].fingerprint.clone()),
             ambiguous: tied > 1,
             candidates,
+        }
+    }
+
+    /// Apply a consumer trust policy before ranking proof candidates. Policy
+    /// rejection is reported separately from preference, so a cheap proof
+    /// that fails the contract cannot compete with admissible proofs.
+    pub fn rank_goal_proofs_with_policy(
+        &self,
+        goal_artifact: &str,
+        policy: &VerifiedArtifactPolicy,
+    ) -> CapabilityChainProofPolicyPreferenceReceipt {
+        let mut accepted = CapabilityChainProofIndex::default();
+        let mut rejected = Vec::new();
+        for (fingerprint, proof) in &self.proofs {
+            if !proof
+                .final_artifacts
+                .iter()
+                .any(|artifact| artifact == goal_artifact)
+            {
+                continue;
+            }
+            let final_receipt = proof
+                .steps
+                .last()
+                .map(|step| step.verification_receipt.clone())
+                .unwrap_or_default();
+            let candidate = VerifiedArtifact {
+                artifact: (),
+                proof_trace: proof.clone(),
+                final_verification_receipt: final_receipt,
+            };
+            match policy.evaluate(&candidate) {
+                Ok(_) => {
+                    accepted.proofs.insert(fingerprint.clone(), proof.clone());
+                }
+                Err(reason) => rejected.push(CapabilityChainProofPolicyRejection {
+                    fingerprint: fingerprint.clone(),
+                    reason,
+                }),
+            }
+        }
+        CapabilityChainProofPolicyPreferenceReceipt {
+            goal_artifact: goal_artifact.into(),
+            policy: policy.clone(),
+            accepted: accepted.rank_goal_proofs(goal_artifact),
+            rejected,
         }
     }
 
@@ -4046,6 +4106,17 @@ mod tests {
         assert_eq!(preference.candidates.len(), 2);
         assert!(preference.ambiguous);
         assert_eq!(preference.preferred_fingerprint, None);
+        let strict_policy = VerifiedArtifactPolicy {
+            minimum_proof_steps: 2,
+            ..VerifiedArtifactPolicy::default()
+        };
+        let constrained = graph.rank_goal_proofs_with_policy("value", &strict_policy);
+        assert!(constrained.accepted.candidates.is_empty());
+        assert_eq!(constrained.rejected.len(), 2);
+        assert!(constrained.rejected.iter().all(|rejection| matches!(
+            rejection.reason,
+            VerifiedArtifactPolicyFailure::InsufficientProofSteps { .. }
+        )));
 
         let mut incompatible = second.clone();
         incompatible.steps[0].input_artifacts = vec!["other-expression".into()];

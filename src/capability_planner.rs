@@ -868,6 +868,19 @@ pub struct CapabilityChainProofSynthesisValidationReceipt<T> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofSynthesisPublicationReceipt {
+    pub proof_fingerprint: String,
+    pub fact_publication: VerifiedArtifactFactPublicationReceipt,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofSynthesisPublicationFailure {
+    ProofIndex(CapabilityChainProofIndexFailure),
+    FactBridge(VerifiedArtifactFactBridgeFailure),
+    FactIndex(FactIndexRejection),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityChainProofSynthesisCandidate {
     pub candidate_id: String,
     pub prefix_fingerprint: String,
@@ -1876,6 +1889,58 @@ pub fn validate_mixed_synthesis_execution<T>(
         execution_id: execution.execution_id.clone(),
         handoff_artifacts: handoff_artifacts.clone(),
         policy: policy_receipt,
+    })
+}
+
+/// Publish a validated mixed synthesis result into both proof and fact
+/// memory atomically. Staging on cloned indexes prevents one store from
+/// observing a new entry when the other store rejects it.
+pub fn publish_validated_mixed_synthesis<T>(
+    validation: &CapabilityChainProofSynthesisValidationReceipt<T>,
+    trust_policy: &VerifiedArtifactPolicy,
+    fact_id: impl Into<String>,
+    content: impl Into<String>,
+    parents: &[&DerivedFact],
+    provenance: impl Into<String>,
+    assumptions: &[String],
+    domain: Option<String>,
+    fact_key: impl Into<String>,
+    proof_index: &mut CapabilityChainProofIndex,
+    fact_index: &mut DerivedFactIndex,
+    fact_policy: &FactPolicy,
+) -> Result<CapabilityChainProofSynthesisPublicationReceipt, CapabilityChainProofSynthesisPublicationFailure>
+{
+    let (fact, bridge) = derive_fact_from_verified_artifact(
+        &validation.artifact,
+        trust_policy,
+        fact_id,
+        content,
+        parents,
+        provenance,
+        assumptions,
+        domain,
+    )
+    .map_err(CapabilityChainProofSynthesisPublicationFailure::FactBridge)?;
+    let fact_key = fact_key.into();
+    let mut staged_proofs = proof_index.clone();
+    let proof_fingerprint = staged_proofs
+        .insert(validation.artifact.proof_trace.clone())
+        .map_err(CapabilityChainProofSynthesisPublicationFailure::ProofIndex)?;
+    let mut staged_facts = fact_index.clone();
+    let fact_id = fact.id.clone();
+    let index_result = staged_facts
+        .insert(fact_key.clone(), fact, fact_policy)
+        .map_err(CapabilityChainProofSynthesisPublicationFailure::FactIndex)?;
+    *proof_index = staged_proofs;
+    *fact_index = staged_facts;
+    Ok(CapabilityChainProofSynthesisPublicationReceipt {
+        proof_fingerprint,
+        fact_publication: VerifiedArtifactFactPublicationReceipt {
+            key: fact_key,
+            fact_id,
+            bridge,
+            index_result,
+        },
     })
 }
 
@@ -4532,6 +4597,38 @@ mod tests {
         assert_eq!(validated.artifact.artifact, "new-value");
         assert_eq!(validated.artifact.proof_trace.steps.len(), 3);
         assert!(validated.artifact.proof_trace.replay_verified);
+        let parent = DerivedFact {
+            id: "mixed-parent".into(),
+            content: "simplified expression exists".into(),
+            parent_lineage: Vec::new(),
+            provenance: "mixed parent receipt".into(),
+            proof_kind: crate::evidence::DerivedProofKind::ExactTransformation,
+            precision: crate::evidence::FactPrecision::Exact,
+            assumptions: Vec::new(),
+            domain: Some("algebra".into()),
+        };
+        let mut publication_facts = DerivedFactIndex::default();
+        let publication = publish_validated_mixed_synthesis(
+            &validated,
+            &strict_policy,
+            "mixed-derived-value",
+            "new-value = verified",
+            &[&parent],
+            "mixed synthesis result",
+            &[],
+            Some("algebra".into()),
+            "mixed-value",
+            &mut policy_graph,
+            &mut publication_facts,
+            &FactPolicy::verified_transformation(),
+        )
+        .unwrap();
+        assert!(policy_graph.get(&publication.proof_fingerprint).is_some());
+        assert_eq!(
+            publication.fact_publication.index_result,
+            FactIndexInsert::Added
+        );
+        assert!(publication_facts.fact("mixed-derived-value").is_some());
         let short_continuation = CapabilityChainPlan {
             goal: CapabilityIoType::ExactValue,
             steps: vec!["new_capability".into()],

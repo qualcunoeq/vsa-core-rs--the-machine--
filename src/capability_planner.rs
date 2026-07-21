@@ -940,6 +940,16 @@ pub struct CapabilityChainProofAbstractionGeneralizationReceipt {
     pub passed: bool,
 }
 
+/// Evidence that a proposed abstraction contributes a distinct capability
+/// contract rather than merely renaming an existing registry entry.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionNoveltyReceipt {
+    pub pattern_id: String,
+    pub candidate_id: String,
+    pub equivalent_existing_capabilities: Vec<String>,
+    pub passed: bool,
+}
+
 /// A diagnostic recommendation for a recurring proof abstraction.  This is
 /// deliberately separate from the proposal and experiment: recurrence and
 /// safety evidence may justify review, but do not install a new capability.
@@ -1074,6 +1084,8 @@ pub enum CapabilityRegistryEvolutionRejection {
     MissingVerificationReceipt,
     GeneralizationPatternMismatch,
     GeneralizationNotValidated,
+    NoveltyPatternMismatch,
+    NoveltyNotEstablished(Vec<String>),
     RollbackRequiresApplied,
     RegistryStateMismatch,
 }
@@ -1649,6 +1661,42 @@ impl CapabilityChainProofIndex {
 }
 
 impl CapabilityChainProofAbstractionProposal {
+    /// Compare the proposed executable contract with active registry entries.
+    /// A new identifier alone is not novelty if the complete contract is
+    /// already present under another identifier.
+    pub fn assess_novelty(
+        &self,
+        candidate: &CapabilitySpec,
+        registry: &CapabilityRegistry,
+    ) -> CapabilityChainProofAbstractionNoveltyReceipt {
+        let mut equivalent_existing_capabilities = registry
+            .capabilities
+            .values()
+            .filter(|existing| {
+                existing.version == candidate.version
+                    && existing.kind == candidate.kind
+                    && existing.dependencies == candidate.dependencies
+                    && existing.consumes == candidate.consumes
+                    && existing.produces == candidate.produces
+                    && existing.supported_object_types == candidate.supported_object_types
+                    && existing.supported_operations == candidate.supported_operations
+                    && existing.supported_answer_forms == candidate.supported_answer_forms
+                    && existing.input_requirements == candidate.input_requirements
+                    && existing.fact_policy == candidate.fact_policy
+                    && existing.executor == candidate.executor
+                    && existing.verifier == candidate.verifier
+            })
+            .map(|existing| existing.id.clone())
+            .collect::<Vec<_>>();
+        equivalent_existing_capabilities.sort();
+        CapabilityChainProofAbstractionNoveltyReceipt {
+            pattern_id: self.pattern.pattern_id.clone(),
+            candidate_id: candidate.id.clone(),
+            passed: equivalent_existing_capabilities.is_empty(),
+            equivalent_existing_capabilities,
+        }
+    }
+
     /// Assess held-out replay evidence separately from recurrence.  A passing
     /// result supports controlled promotion, but does not claim universal
     /// generality or mutate any runtime component.
@@ -1954,6 +2002,36 @@ impl CapabilityChainProofAbstractionDeploymentReceipt {
 }
 
 impl CapabilityRegistryEvolutionLedger {
+    /// Stage an abstraction only when both held-out generalization and
+    /// contract-novelty evidence pass.
+    pub fn prepare_with_generalization_and_novelty(
+        &mut self,
+        evolution_id: impl Into<String>,
+        descriptor: &CapabilityChainProofAbstractionCapability,
+        candidate: CapabilitySpec,
+        registry: &CapabilityRegistry,
+        generalization: &CapabilityChainProofAbstractionGeneralizationReceipt,
+        novelty: &CapabilityChainProofAbstractionNoveltyReceipt,
+    ) -> Result<CapabilityRegistryEvolutionReceipt, CapabilityRegistryEvolutionRejection> {
+        if generalization.pattern_id != descriptor.pattern_id {
+            return Err(CapabilityRegistryEvolutionRejection::GeneralizationPatternMismatch);
+        }
+        if !generalization.passed {
+            return Err(CapabilityRegistryEvolutionRejection::GeneralizationNotValidated);
+        }
+        if novelty.pattern_id != descriptor.pattern_id
+            || novelty.candidate_id != candidate.id
+        {
+            return Err(CapabilityRegistryEvolutionRejection::NoveltyPatternMismatch);
+        }
+        if !novelty.passed {
+            return Err(CapabilityRegistryEvolutionRejection::NoveltyNotEstablished(
+                novelty.equivalent_existing_capabilities.clone(),
+            ));
+        }
+        self.prepare(evolution_id, descriptor, candidate, registry)
+    }
+
     /// Stage an executable candidate only after held-out generalization
     /// evidence has passed.  This is stricter than `prepare`, which remains
     /// available for callers migrating older governance records.
@@ -5497,14 +5575,27 @@ mod tests {
         let mut evolution_registry = registry.clone();
         let mut candidate = CapabilitySpec::expression_evaluation_v1();
         candidate.id = materialized.capability_id.clone();
+        candidate.dependencies = vec!["expression_simplification".into()];
+        let novelty = proposal.assess_novelty(&candidate, &evolution_registry);
+        assert!(novelty.passed);
+        let duplicate_novelty = proposal.assess_novelty(
+            &CapabilitySpec::expression_evaluation_v1(),
+            &evolution_registry,
+        );
+        assert!(!duplicate_novelty.passed);
+        assert_eq!(
+            duplicate_novelty.equivalent_existing_capabilities,
+            vec!["expression_evaluation"]
+        );
         let mut evolution_ledger = CapabilityRegistryEvolutionLedger::default();
         let prepared_evolution = evolution_ledger
-            .prepare_with_generalization(
+            .prepare_with_generalization_and_novelty(
                 "abstraction-evolution-1",
                 &materialized,
                 candidate.clone(),
                 &evolution_registry,
                 &generalization,
+                &novelty,
             )
             .unwrap();
         assert_eq!(

@@ -48,6 +48,7 @@ pub enum CapabilityIoType {
     CandidateSolutionSet,
     VerifiedSolution,
     VerifiedSolutionSet,
+    VerifiedArtifact,
     BindingSet,
     TargetVariable,
     VariableSet,

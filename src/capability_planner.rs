@@ -2552,7 +2552,10 @@ pub fn plan_equation_chain(
     goal: CapabilityIoType,
     registry: &CapabilityRegistry,
 ) -> Result<EquationChainPlan, EquationChainPlanningFailure> {
-    if goal != CapabilityIoType::SolutionSet && goal != CapabilityIoType::VerifiedSolutionSet {
+    if goal != CapabilityIoType::SolutionSet
+        && goal != CapabilityIoType::VerifiedSolutionSet
+        && goal != CapabilityIoType::VerifiedArtifact
+    {
         return Err(EquationChainPlanningFailure::UnsupportedGoal(goal));
     }
     if target_variable.trim().is_empty() {
@@ -2589,7 +2592,9 @@ pub fn plan_equation_chain(
             solver.id.clone(),
         ));
     }
-    if goal == CapabilityIoType::VerifiedSolutionSet {
+    if goal == CapabilityIoType::VerifiedSolutionSet
+        || goal == CapabilityIoType::VerifiedArtifact
+    {
         let Some(verifier) = registry.get("solution_set_verification") else {
             return Err(EquationChainPlanningFailure::CapabilityUnavailable(
                 "solution_set_verification".into(),
@@ -2613,8 +2618,13 @@ pub fn plan_equation_chain(
         "equation_classification".into(),
         selected_solver.clone(),
     ];
-    if goal == CapabilityIoType::VerifiedSolutionSet {
+    if goal == CapabilityIoType::VerifiedSolutionSet
+        || goal == CapabilityIoType::VerifiedArtifact
+    {
         steps.push("solution_set_verification".into());
+    }
+    if goal == CapabilityIoType::VerifiedArtifact {
+        steps.push("verified_artifact_wrap".into());
     }
     Ok(EquationChainPlan {
         source: source.trim().into(),
@@ -3440,6 +3450,27 @@ mod tests {
                 "solution_set_verification"
             ]
         );
+    }
+
+    #[test]
+    fn equation_planner_can_target_generic_verified_artifact() {
+        let plan = plan_equation_chain(
+            "x^2 - 4 = 0",
+            "x",
+            CapabilityIoType::VerifiedArtifact,
+            &CapabilityRegistry::production(),
+        )
+        .unwrap();
+
+        assert_eq!(plan.chain.goal, CapabilityIoType::VerifiedArtifact);
+        assert_eq!(
+            plan.chain.steps.last().map(String::as_str),
+            Some("verified_artifact_wrap")
+        );
+        assert!(plan
+            .chain
+            .steps
+            .contains(&"solution_set_verification".into()));
     }
 
     #[test]

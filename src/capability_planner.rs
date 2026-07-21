@@ -927,6 +927,19 @@ pub struct CapabilityChainProofAbstractionExperimentReceipt {
     pub passed: bool,
 }
 
+/// Evidence that an abstraction hypothesis transferred beyond the instances
+/// from which it was discovered.  This is a validation receipt, not a proof
+/// of universal generality.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionGeneralizationReceipt {
+    pub pattern_id: String,
+    pub held_out_cases: usize,
+    pub required_held_out_cases: usize,
+    pub held_out_replay_failures: usize,
+    pub held_out_false_authorizations: usize,
+    pub passed: bool,
+}
+
 /// A diagnostic recommendation for a recurring proof abstraction.  This is
 /// deliberately separate from the proposal and experiment: recurrence and
 /// safety evidence may justify review, but do not install a new capability.
@@ -1059,6 +1072,8 @@ pub enum CapabilityRegistryEvolutionRejection {
     CandidateMismatch,
     EvolutionAlreadyTerminal(CapabilityRegistryEvolutionStatus),
     MissingVerificationReceipt,
+    GeneralizationPatternMismatch,
+    GeneralizationNotValidated,
     RollbackRequiresApplied,
     RegistryStateMismatch,
 }
@@ -1634,6 +1649,30 @@ impl CapabilityChainProofIndex {
 }
 
 impl CapabilityChainProofAbstractionProposal {
+    /// Assess held-out replay evidence separately from recurrence.  A passing
+    /// result supports controlled promotion, but does not claim universal
+    /// generality or mutate any runtime component.
+    pub fn assess_generalization(
+        &self,
+        held_out_cases: usize,
+        required_held_out_cases: usize,
+        held_out_replay_failures: usize,
+        held_out_false_authorizations: usize,
+    ) -> CapabilityChainProofAbstractionGeneralizationReceipt {
+        let passed = required_held_out_cases > 0
+            && held_out_cases >= required_held_out_cases
+            && held_out_replay_failures == 0
+            && held_out_false_authorizations == 0;
+        CapabilityChainProofAbstractionGeneralizationReceipt {
+            pattern_id: self.pattern.pattern_id.clone(),
+            held_out_cases,
+            required_held_out_cases,
+            held_out_replay_failures,
+            held_out_false_authorizations,
+            passed,
+        }
+    }
+
     /// Assess a validation run without applying the proposed abstraction.
     pub fn assess(
         &self,
@@ -1915,6 +1954,26 @@ impl CapabilityChainProofAbstractionDeploymentReceipt {
 }
 
 impl CapabilityRegistryEvolutionLedger {
+    /// Stage an executable candidate only after held-out generalization
+    /// evidence has passed.  This is stricter than `prepare`, which remains
+    /// available for callers migrating older governance records.
+    pub fn prepare_with_generalization(
+        &mut self,
+        evolution_id: impl Into<String>,
+        descriptor: &CapabilityChainProofAbstractionCapability,
+        candidate: CapabilitySpec,
+        registry: &CapabilityRegistry,
+        generalization: &CapabilityChainProofAbstractionGeneralizationReceipt,
+    ) -> Result<CapabilityRegistryEvolutionReceipt, CapabilityRegistryEvolutionRejection> {
+        if generalization.pattern_id != descriptor.pattern_id {
+            return Err(CapabilityRegistryEvolutionRejection::GeneralizationPatternMismatch);
+        }
+        if !generalization.passed {
+            return Err(CapabilityRegistryEvolutionRejection::GeneralizationNotValidated);
+        }
+        self.prepare(evolution_id, descriptor, candidate, registry)
+    }
+
     pub fn prepare(
         &mut self,
         evolution_id: impl Into<String>,
@@ -5372,6 +5431,12 @@ mod tests {
             ImprovementRecommendationAction::ReviewForApproval
         );
         assert_eq!(recommendation.pattern_id, simplification_shape.pattern_id);
+        let generalization = proposal.assess_generalization(3, 2, 0, 0);
+        assert!(generalization.passed);
+        let insufficient_generalization = proposal.assess_generalization(1, 2, 0, 0);
+        assert!(!insufficient_generalization.passed);
+        let unsafe_generalization = proposal.assess_generalization(3, 2, 0, 1);
+        assert!(!unsafe_generalization.passed);
         let mut abstraction_approvals = CapabilityChainProofAbstractionApprovalLedger::default();
         let approval = abstraction_approvals
             .record(
@@ -5434,11 +5499,12 @@ mod tests {
         candidate.id = materialized.capability_id.clone();
         let mut evolution_ledger = CapabilityRegistryEvolutionLedger::default();
         let prepared_evolution = evolution_ledger
-            .prepare(
+            .prepare_with_generalization(
                 "abstraction-evolution-1",
                 &materialized,
                 candidate.clone(),
                 &evolution_registry,
+                &generalization,
             )
             .unwrap();
         assert_eq!(

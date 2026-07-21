@@ -848,6 +848,24 @@ pub enum CapabilityChainProofSynthesisFailure {
     IncompatibleHandoff { produced: Vec<String>, handoff: Vec<String> },
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofSynthesisCandidate {
+    pub candidate_id: String,
+    pub prefix_fingerprint: String,
+    pub handoff_artifacts: Vec<String>,
+    pub pending_plan: CapabilityChainPlan,
+    pub cost: CapabilityChainProofCost,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofSynthesisPreferenceReceipt {
+    pub goal_artifact: String,
+    pub policy: VerifiedArtifactPolicy,
+    pub candidates: Vec<CapabilityChainProofSynthesisCandidate>,
+    pub preferred_candidate_id: Option<String>,
+    pub ambiguous: bool,
+}
+
 /// Explicit cache of proof-bearing reasoning traces. Insertion is deliberate:
 /// the index never executes, authorizes, or silently replaces a proof. A
 /// caller can retrieve an existing trace by its canonical reasoning identity.
@@ -1143,6 +1161,80 @@ impl CapabilityChainProofIndex {
                 plan: pending_plan,
             },
         })
+    }
+
+    /// Compare feasible mixed proof/capability continuations. This is a
+    /// preference diagnostic only: the selected path remains pending until
+    /// its capability plan executes and produces verification receipts.
+    pub fn rank_mixed_synthesis(
+        &self,
+        goal_artifact: &str,
+        continuations: &[(Vec<String>, CapabilityChainPlan)],
+        policy: &VerifiedArtifactPolicy,
+    ) -> CapabilityChainProofSynthesisPreferenceReceipt {
+        let mut candidates = Vec::new();
+        for prefix in self.proofs.values() {
+            let prefix_fingerprint = prefix.reasoning_fingerprint();
+            for (handoff_artifacts, pending_plan) in continuations {
+                if handoff_artifacts.is_empty()
+                    || !handoff_artifacts
+                        .iter()
+                        .any(|artifact| prefix.final_artifacts.contains(artifact))
+                {
+                    continue;
+                }
+                let total_steps = prefix.steps.len() + pending_plan.steps.len();
+                if total_steps < policy.minimum_proof_steps {
+                    continue;
+                }
+                let identity = (
+                    goal_artifact,
+                    &prefix_fingerprint,
+                    handoff_artifacts,
+                    &pending_plan.steps,
+                );
+                let encoded = serde_json::to_vec(&identity)
+                    .expect("proof synthesis candidate identity must serialize");
+                let candidate_id = format!("{:x}", Sha256::digest(encoded));
+                candidates.push(CapabilityChainProofSynthesisCandidate {
+                    candidate_id,
+                    prefix_fingerprint: prefix_fingerprint.clone(),
+                    handoff_artifacts: handoff_artifacts.clone(),
+                    pending_plan: pending_plan.clone(),
+                    cost: CapabilityChainProofCost {
+                        proof_steps: total_steps,
+                        retrieved_facts: prefix.retrieved_facts.len(),
+                    },
+                });
+            }
+        }
+        candidates.sort_by(|left, right| {
+            left.cost
+                .proof_steps
+                .cmp(&right.cost.proof_steps)
+                .then_with(|| {
+                    left.cost
+                        .retrieved_facts
+                        .cmp(&right.cost.retrieved_facts)
+                })
+                .then_with(|| left.candidate_id.cmp(&right.candidate_id))
+        });
+        let minimum = candidates.first().map(|candidate| &candidate.cost);
+        let tied = minimum
+            .map(|cost| {
+                candidates
+                    .iter()
+                    .filter(|candidate| &candidate.cost == cost)
+                    .count()
+            })
+            .unwrap_or(0);
+        CapabilityChainProofSynthesisPreferenceReceipt {
+            goal_artifact: goal_artifact.into(),
+            policy: policy.clone(),
+            preferred_candidate_id: (tied == 1).then(|| candidates[0].candidate_id.clone()),
+            ambiguous: tied > 1,
+            candidates,
+        }
     }
 
     fn search_composed_proof_internal(
@@ -4327,6 +4419,38 @@ mod tests {
             mixed.source,
             CapabilityChainProofSynthesisSource::MixedPrefixPlanPending { .. }
         ));
+        let short_continuation = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["new_capability".into()],
+        };
+        let long_continuation = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["new_capability".into(), "verification".into()],
+        };
+        let synthesis_preference = policy_graph.rank_mixed_synthesis(
+            "new-value",
+            &[
+                (
+                    vec!["simplified-expression".into()],
+                    short_continuation,
+                ),
+                (
+                    vec!["simplified-expression".into()],
+                    long_continuation,
+                ),
+            ],
+            &strict_policy,
+        );
+        assert_eq!(synthesis_preference.candidates.len(), 2);
+        assert!(!synthesis_preference.ambiguous);
+        assert_eq!(
+            synthesis_preference
+                .candidates
+                .first()
+                .map(|candidate| candidate.cost.proof_steps),
+            Some(2)
+        );
+        assert!(synthesis_preference.preferred_candidate_id.is_some());
 
         let mut alternate = second.clone();
         alternate.execution_id = "proof-compose-alternate".into();

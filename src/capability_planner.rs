@@ -1001,6 +1001,30 @@ pub struct CapabilityChainProofConceptNoveltyReceipt {
     pub passed: bool,
 }
 
+/// A typed concept candidate returned by advisory retrieval. Retrieval only
+/// narrows the validated concept memory; it does not authorize execution or
+/// select a capability chain.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptRetrievalCandidate {
+    pub concept_id: String,
+    pub input_artifacts: Vec<CapabilityIoType>,
+    pub output_artifacts: Vec<CapabilityIoType>,
+    pub matched_input_artifacts: Vec<CapabilityIoType>,
+    pub capability_steps: usize,
+    pub supporting_instances: usize,
+}
+
+/// Deterministic, diagnostic-only lookup of concepts relevant to a typed
+/// planning context. Candidates are returned in a stable preference order,
+/// but callers must still perform normal capability planning and trust checks.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptRetrievalReceipt {
+    pub available_inputs: Vec<CapabilityIoType>,
+    pub goal_artifact: CapabilityIoType,
+    pub candidates: Vec<CapabilityChainProofConceptRetrievalCandidate>,
+    pub diagnostic_only: bool,
+}
+
 impl CapabilityChainProofConceptDiscoveryReceipt {
     /// Extract an observed contract boundary for each concept using the
     /// registry's declared first-step inputs and last-step outputs. This is a
@@ -1242,6 +1266,55 @@ impl CapabilityChainProofConceptIndex {
             candidate_id: candidate.concept_id.clone(),
             passed: equivalent_concept_ids.is_empty(),
             equivalent_concept_ids,
+        }
+    }
+
+    /// Retrieve validated concepts whose typed input boundary is satisfied by
+    /// the currently available artifacts and whose output boundary reaches the
+    /// requested goal. This is intentionally advisory: it returns all
+    /// compatible concepts and never mutates the index or authorizes a plan.
+    pub fn retrieve_relevant(
+        &self,
+        available_inputs: &[CapabilityIoType],
+        goal_artifact: CapabilityIoType,
+    ) -> CapabilityChainProofConceptRetrievalReceipt {
+        let available = available_inputs.iter().copied().collect::<BTreeSet<_>>();
+        let canonical_inputs = available.iter().copied().collect::<Vec<_>>();
+        let mut candidates = self
+            .concepts
+            .values()
+            .filter(|concept| {
+                concept
+                    .output_artifacts
+                    .contains(&goal_artifact)
+                    && concept
+                        .input_artifacts
+                        .iter()
+                        .all(|input| available.contains(input))
+            })
+            .map(|concept| CapabilityChainProofConceptRetrievalCandidate {
+                concept_id: concept.concept_id.clone(),
+                input_artifacts: concept.input_artifacts.clone(),
+                output_artifacts: concept.output_artifacts.clone(),
+                matched_input_artifacts: concept.input_artifacts.clone(),
+                capability_steps: concept.capabilities.len(),
+                supporting_instances: concept.supporting_instances,
+            })
+            .collect::<Vec<_>>();
+        // Prefer smaller validated reasoning fragments, then stronger support;
+        // retain the concept ID as a deterministic final discriminator. This
+        // ordering is a diagnostic convenience, not an authorization rule.
+        candidates.sort_by(|left, right| {
+            left.capability_steps
+                .cmp(&right.capability_steps)
+                .then_with(|| right.supporting_instances.cmp(&left.supporting_instances))
+                .then_with(|| left.concept_id.cmp(&right.concept_id))
+        });
+        CapabilityChainProofConceptRetrievalReceipt {
+            available_inputs: canonical_inputs,
+            goal_artifact,
+            candidates,
+            diagnostic_only: true,
         }
     }
 }
@@ -7413,6 +7486,38 @@ mod tests {
             ),
             Err(CapabilityChainProofConceptIndexFailure::ValidationNotPassed(_))
         ));
+
+        let equation_context = concept_index.retrieve_relevant(
+            &[CapabilityIoType::Equation],
+            CapabilityIoType::NormalizedEquation,
+        );
+        assert!(equation_context.diagnostic_only);
+        assert_eq!(equation_context.candidates.len(), 1);
+        assert_eq!(equation_context.candidates[0].concept_id, "concept-left");
+        assert_eq!(
+            equation_context.candidates[0].matched_input_artifacts,
+            vec![CapabilityIoType::Equation]
+        );
+        let reordered_context = concept_index.retrieve_relevant(
+            &[CapabilityIoType::Expression, CapabilityIoType::Equation],
+            CapabilityIoType::NormalizedEquation,
+        );
+        let canonical_context = concept_index.retrieve_relevant(
+            &[CapabilityIoType::Equation, CapabilityIoType::Expression],
+            CapabilityIoType::NormalizedEquation,
+        );
+        assert_eq!(canonical_context, reordered_context);
+        let normalized_context = concept_index.retrieve_relevant(
+            &[CapabilityIoType::NormalizedEquation],
+            CapabilityIoType::EquationClassification,
+        );
+        assert_eq!(normalized_context.candidates.len(), 1);
+        assert_eq!(normalized_context.candidates[0].concept_id, "concept-right");
+        let wrong_context = concept_index.retrieve_relevant(
+            &[CapabilityIoType::Expression],
+            CapabilityIoType::EquationClassification,
+        );
+        assert!(wrong_context.candidates.is_empty());
     }
 
     #[test]

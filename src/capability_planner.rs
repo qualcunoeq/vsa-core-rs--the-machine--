@@ -975,12 +975,47 @@ pub enum CapabilityChainProofAbstractionValueDecision {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityChainProofAbstractionValueReceipt {
+    pub pattern_id: String,
     pub candidate_id: String,
     pub goal: CapabilityIoType,
     pub candidate_score: CapabilityChainProofAbstractionValueScore,
     pub alternatives: Vec<CapabilityChainProofAbstractionValueAlternative>,
     pub decision: CapabilityChainProofAbstractionValueDecision,
     pub rationale: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionPriorityInput {
+    pub proposal: CapabilityChainProofAbstractionProposal,
+    pub value: CapabilityChainProofAbstractionValueReceipt,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionPriorityScore {
+    pub recurrence_signal: usize,
+    pub value_signal: usize,
+    pub risk_signal: usize,
+    pub complexity_penalty: usize,
+    pub total: isize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionPriorityCandidate {
+    pub pattern_id: String,
+    pub score: CapabilityChainProofAbstractionPriorityScore,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionPriorityReceipt {
+    pub candidates: Vec<CapabilityChainProofAbstractionPriorityCandidate>,
+    pub preferred_pattern_ids: Vec<String>,
+    pub ambiguous: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionPriorityFailure {
+    PatternMismatch(String),
+    DuplicatePattern(String),
 }
 
 /// A diagnostic recommendation for a recurring proof abstraction.  This is
@@ -1764,6 +1799,7 @@ impl CapabilityChainProofAbstractionProposal {
             }
         };
         CapabilityChainProofAbstractionValueReceipt {
+            pattern_id: self.pattern.pattern_id.clone(),
             candidate_id: candidate.id.clone(),
             goal: self.pattern.goal,
             candidate_score,
@@ -1865,6 +1901,79 @@ impl CapabilityChainProofAbstractionValueScore {
             self.false_authorizations,
         )
     }
+}
+
+/// Rank abstraction experiments by expected value for limited validation
+/// resources.  The score is a diagnostic priority signal, never an approval
+/// or authorization decision; equal maxima remain explicitly ambiguous.
+pub fn rank_proof_abstraction_priorities(
+    inputs: Vec<CapabilityChainProofAbstractionPriorityInput>,
+) -> Result<CapabilityChainProofAbstractionPriorityReceipt, CapabilityChainProofAbstractionPriorityFailure>
+{
+    let mut seen = BTreeSet::new();
+    let mut candidates = Vec::with_capacity(inputs.len());
+    for input in inputs {
+        let pattern_id = input.proposal.pattern.pattern_id.clone();
+        if input.value.pattern_id != pattern_id {
+            return Err(CapabilityChainProofAbstractionPriorityFailure::PatternMismatch(
+                pattern_id,
+            ));
+        }
+        if !seen.insert(pattern_id.clone()) {
+            return Err(CapabilityChainProofAbstractionPriorityFailure::DuplicatePattern(
+                pattern_id,
+            ));
+        }
+        let value_signal = match input.value.decision {
+            CapabilityChainProofAbstractionValueDecision::Preferred => 100,
+            CapabilityChainProofAbstractionValueDecision::Ambiguous => 50,
+            CapabilityChainProofAbstractionValueDecision::NoBaseline => 10,
+            CapabilityChainProofAbstractionValueDecision::NotPreferred => 0,
+        };
+        let risk_signal = match input.proposal.risk {
+            ImprovementRisk::Low => 30,
+            ImprovementRisk::Medium => 15,
+            ImprovementRisk::High => 0,
+        };
+        let recurrence_signal = input.proposal.pattern.instances.saturating_mul(10);
+        let complexity_penalty = input.value.candidate_score.proof_steps
+            + input.value.candidate_score.dependency_count
+            + input.value.candidate_score.contract_burden;
+        let total = recurrence_signal as isize + value_signal as isize + risk_signal as isize
+            - complexity_penalty as isize;
+        candidates.push(CapabilityChainProofAbstractionPriorityCandidate {
+            pattern_id,
+            score: CapabilityChainProofAbstractionPriorityScore {
+                recurrence_signal,
+                value_signal,
+                risk_signal,
+                complexity_penalty,
+                total,
+            },
+        });
+    }
+    candidates.sort_by(|left, right| {
+        right
+            .score
+            .total
+            .cmp(&left.score.total)
+            .then_with(|| left.pattern_id.cmp(&right.pattern_id))
+    });
+    let top_score = candidates.first().map(|candidate| candidate.score.total);
+    let preferred_pattern_ids = top_score
+        .map(|score| {
+            candidates
+                .iter()
+                .filter(|candidate| candidate.score.total == score)
+                .map(|candidate| candidate.pattern_id.clone())
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    Ok(CapabilityChainProofAbstractionPriorityReceipt {
+        ambiguous: preferred_pattern_ids.len() > 1,
+        preferred_pattern_ids,
+        candidates,
+    })
 }
 
 impl CapabilityChainProofAbstractionExperimentReceipt {
@@ -5720,6 +5829,31 @@ mod tests {
             .alternatives
             .iter()
             .any(|alternative| alternative.capability_id == "expression_evaluation"));
+        let priority = rank_proof_abstraction_priorities(vec![
+            CapabilityChainProofAbstractionPriorityInput {
+                proposal: proposal.clone(),
+                value: value.clone(),
+            },
+        ])
+        .unwrap();
+        assert_eq!(
+            priority.preferred_pattern_ids,
+            vec![simplification_shape.pattern_id.clone()]
+        );
+        assert!(!priority.ambiguous);
+        assert!(matches!(
+            rank_proof_abstraction_priorities(vec![
+                CapabilityChainProofAbstractionPriorityInput {
+                    proposal: proposal.clone(),
+                    value: value.clone(),
+                },
+                CapabilityChainProofAbstractionPriorityInput {
+                    proposal: proposal.clone(),
+                    value: value.clone(),
+                },
+            ]),
+            Err(CapabilityChainProofAbstractionPriorityFailure::DuplicatePattern(_))
+        ));
         let mut evolution_ledger = CapabilityRegistryEvolutionLedger::default();
         let prepared_evolution = evolution_ledger
             .prepare_with_generalization_and_novelty(

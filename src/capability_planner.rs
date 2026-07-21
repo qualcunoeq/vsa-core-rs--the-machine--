@@ -2514,7 +2514,7 @@ pub fn plan_equation_chain(
     goal: CapabilityIoType,
     registry: &CapabilityRegistry,
 ) -> Result<EquationChainPlan, EquationChainPlanningFailure> {
-    if goal != CapabilityIoType::SolutionSet {
+    if goal != CapabilityIoType::SolutionSet && goal != CapabilityIoType::VerifiedSolutionSet {
         return Err(EquationChainPlanningFailure::UnsupportedGoal(goal));
     }
     if target_variable.trim().is_empty() {
@@ -2551,6 +2551,33 @@ pub fn plan_equation_chain(
             solver.id.clone(),
         ));
     }
+    if goal == CapabilityIoType::VerifiedSolutionSet {
+        let Some(verifier) = registry.get("solution_set_verification") else {
+            return Err(EquationChainPlanningFailure::CapabilityUnavailable(
+                "solution_set_verification".into(),
+            ));
+        };
+        if !verifier.quality_gate.enabled()
+            || !verifier
+                .consumes
+                .contains(&CapabilityIoType::CandidateSolutionSet)
+            || !verifier
+                .produces
+                .contains(&CapabilityIoType::VerifiedSolutionSet)
+        {
+            return Err(EquationChainPlanningFailure::CapabilityUnavailable(
+                "solution_set_verification".into(),
+            ));
+        }
+    }
+    let mut steps = vec![
+        "equation_normalization".into(),
+        "equation_classification".into(),
+        selected_solver.clone(),
+    ];
+    if goal == CapabilityIoType::VerifiedSolutionSet {
+        steps.push("solution_set_verification".into());
+    }
     Ok(EquationChainPlan {
         source: source.trim().into(),
         target_variable: target_variable.trim().into(),
@@ -2559,11 +2586,7 @@ pub fn plan_equation_chain(
         selected_solver: selected_solver.clone(),
         chain: CapabilityChainPlan {
             goal,
-            steps: vec![
-                "equation_normalization".into(),
-                "equation_classification".into(),
-                selected_solver,
-            ],
+            steps,
         },
     })
 }
@@ -3354,6 +3377,28 @@ mod tests {
 
         assert_eq!(plan.selected_solver, "quadratic_equation_solve");
         assert!(!plan.chain.steps.contains(&"linear_equation_solve".into()));
+    }
+
+    #[test]
+    fn equation_planner_adds_solution_set_proof_when_requested() {
+        let plan = plan_equation_chain(
+            "x^2 - 4 = 0",
+            "x",
+            CapabilityIoType::VerifiedSolutionSet,
+            &CapabilityRegistry::production(),
+        )
+        .unwrap();
+
+        assert_eq!(plan.selected_solver, "quadratic_equation_solve");
+        assert_eq!(
+            plan.chain.steps,
+            vec![
+                "equation_normalization",
+                "equation_classification",
+                "quadratic_equation_solve",
+                "solution_set_verification"
+            ]
+        );
     }
 
     #[test]

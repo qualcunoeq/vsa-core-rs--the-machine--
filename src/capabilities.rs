@@ -251,7 +251,7 @@ impl CapabilitySpec {
             kind: CapabilityKind::Transformation,
             dependencies: Vec::new(),
             consumes: vec![CapabilityIoType::NormalizedEquation, CapabilityIoType::TargetVariable],
-            produces: vec![CapabilityIoType::SolutionSet],
+            produces: vec![CapabilityIoType::SolutionSet, CapabilityIoType::CandidateSolutionSet],
             supported_object_types: vec![SubjectObjectType::Equation],
             supported_operations: vec![OperationKind::Solve],
             supported_answer_forms: vec![
@@ -291,7 +291,7 @@ impl CapabilitySpec {
             kind: CapabilityKind::Transformation,
             dependencies: Vec::new(),
             consumes: vec![CapabilityIoType::NormalizedEquation, CapabilityIoType::TargetVariable],
-            produces: vec![CapabilityIoType::SolutionSet],
+            produces: vec![CapabilityIoType::SolutionSet, CapabilityIoType::CandidateSolutionSet],
             supported_object_types: vec![SubjectObjectType::Equation],
             supported_operations: vec![OperationKind::Solve],
             supported_answer_forms: vec![AnswerForm::SolutionSet, AnswerForm::ExactValue],

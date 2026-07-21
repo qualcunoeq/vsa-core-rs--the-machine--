@@ -784,6 +784,101 @@ impl<T> VerifiedArtifact<T> {
     }
 }
 
+/// Consumer-side requirements for accepting a proof-bearing artifact.
+///
+/// `VerifiedArtifact<T>` records that a chain produced verification evidence;
+/// this policy decides whether that evidence is sufficient for a particular
+/// consumer.  Keeping the decision on the consumer side prevents the wrapper
+/// from being treated as universally trusted merely because it exists.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct VerifiedArtifactPolicy {
+    pub require_replay_verified: bool,
+    pub minimum_proof_steps: usize,
+    pub require_final_verification_receipt: bool,
+}
+
+impl Default for VerifiedArtifactPolicy {
+    fn default() -> Self {
+        Self {
+            require_replay_verified: true,
+            minimum_proof_steps: 1,
+            require_final_verification_receipt: true,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum VerifiedArtifactPolicyFailure {
+    ReplayNotVerified,
+    InsufficientProofSteps { required: usize, actual: usize },
+    MissingStepVerificationReceipt(usize),
+    MissingFinalVerificationReceipt,
+    FinalVerificationReceiptMismatch,
+    IncompleteProofTrace { expected: usize, actual: usize },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct VerifiedArtifactPolicyReceipt {
+    pub execution_id: String,
+    pub proof_steps: usize,
+    pub replay_verified: bool,
+    pub final_verification_receipt: String,
+}
+
+impl VerifiedArtifactPolicy {
+    /// Evaluate whether an artifact's proof satisfies this consumer's policy.
+    /// No execution or mutation occurs; the returned receipt records the
+    /// evidence inspected by the policy decision.
+    pub fn evaluate<T>(
+        &self,
+        artifact: &VerifiedArtifact<T>,
+    ) -> Result<VerifiedArtifactPolicyReceipt, VerifiedArtifactPolicyFailure> {
+        let proof = &artifact.proof_trace;
+        if self.require_replay_verified && !proof.replay_verified {
+            return Err(VerifiedArtifactPolicyFailure::ReplayNotVerified);
+        }
+        let actual_steps = proof.steps.len();
+        if actual_steps < self.minimum_proof_steps {
+            return Err(VerifiedArtifactPolicyFailure::InsufficientProofSteps {
+                required: self.minimum_proof_steps,
+                actual: actual_steps,
+            });
+        }
+        if actual_steps != proof.plan.steps.len() {
+            return Err(VerifiedArtifactPolicyFailure::IncompleteProofTrace {
+                expected: proof.plan.steps.len(),
+                actual: actual_steps,
+            });
+        }
+        for step in &proof.steps {
+            if step.verification_receipt.trim().is_empty() {
+                return Err(VerifiedArtifactPolicyFailure::MissingStepVerificationReceipt(
+                    step.step_index,
+                ));
+            }
+        }
+        if self.require_final_verification_receipt {
+            if artifact.final_verification_receipt.trim().is_empty() {
+                return Err(VerifiedArtifactPolicyFailure::MissingFinalVerificationReceipt);
+            }
+            if proof
+                .steps
+                .last()
+                .map(|step| step.verification_receipt.as_str())
+                != Some(artifact.final_verification_receipt.as_str())
+            {
+                return Err(VerifiedArtifactPolicyFailure::FinalVerificationReceiptMismatch);
+            }
+        }
+        Ok(VerifiedArtifactPolicyReceipt {
+            execution_id: proof.execution_id.clone(),
+            proof_steps: actual_steps,
+            replay_verified: proof.replay_verified,
+            final_verification_receipt: artifact.final_verification_receipt.clone(),
+        })
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofFailure {
     ExecutionNotSuccessful(CapabilityChainExecutionStatus),
@@ -3062,6 +3157,90 @@ mod tests {
             ledger.complete_failure("chain-execution-1", 1, "late failure"),
             Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(_))
         ));
+    }
+
+    #[test]
+    fn verified_artifact_policy_accepts_complete_replayed_proof() {
+        let mut ledger = CapabilityChainExecutionLedger::default();
+        let plan = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["evaluate_expression".into()],
+        };
+        ledger.start("policy-proof-1", plan).unwrap();
+        ledger
+            .record_step(
+                "policy-proof-1",
+                CapabilityChainStepReceipt {
+                    step_index: 0,
+                    capability_id: "evaluate_expression".into(),
+                    input_artifacts: vec!["expression".into()],
+                    output_artifacts: vec!["value".into()],
+                    verification_receipt: "evaluation replay".into(),
+                },
+            )
+            .unwrap();
+        let execution = ledger.complete_success("policy-proof-1").unwrap();
+        let proof = compose_capability_chain_proof(&execution).unwrap();
+        let verified = VerifiedArtifact::from_chain("value", proof).unwrap();
+
+        let receipt = VerifiedArtifactPolicy::default().evaluate(&verified).unwrap();
+        assert_eq!(receipt.execution_id, "policy-proof-1");
+        assert_eq!(receipt.proof_steps, 1);
+        assert!(receipt.replay_verified);
+    }
+
+    #[test]
+    fn verified_artifact_policy_rejects_unverified_or_incomplete_evidence() {
+        let mut ledger = CapabilityChainExecutionLedger::default();
+        let plan = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["evaluate_expression".into()],
+        };
+        ledger.start("policy-proof-2", plan.clone()).unwrap();
+        ledger
+            .record_step(
+                "policy-proof-2",
+                CapabilityChainStepReceipt {
+                    step_index: 0,
+                    capability_id: "evaluate_expression".into(),
+                    input_artifacts: vec!["expression".into()],
+                    output_artifacts: vec!["value".into()],
+                    verification_receipt: "evaluation replay".into(),
+                },
+            )
+            .unwrap();
+        let execution = ledger.complete_success("policy-proof-2").unwrap();
+        let mut proof = compose_capability_chain_proof(&execution).unwrap();
+        proof.replay_verified = false;
+        let unverified = VerifiedArtifact {
+            artifact: "value",
+            final_verification_receipt: "evaluation replay".into(),
+            proof_trace: proof,
+        };
+        assert_eq!(
+            VerifiedArtifactPolicy::default().evaluate(&unverified),
+            Err(VerifiedArtifactPolicyFailure::ReplayNotVerified)
+        );
+
+        let proof = CapabilityChainProofTrace {
+            execution_id: "policy-proof-3".into(),
+            plan,
+            steps: Vec::new(),
+            final_artifacts: Vec::new(),
+            replay_verified: true,
+        };
+        let incomplete = VerifiedArtifact {
+            artifact: "value",
+            proof_trace: proof,
+            final_verification_receipt: "evaluation replay".into(),
+        };
+        assert_eq!(
+            VerifiedArtifactPolicy::default().evaluate(&incomplete),
+            Err(VerifiedArtifactPolicyFailure::InsufficientProofSteps {
+                required: 1,
+                actual: 0,
+            })
+        );
     }
 
     #[test]

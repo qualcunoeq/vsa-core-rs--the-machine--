@@ -1082,7 +1082,33 @@ pub struct CapabilityChainProofConceptPlanningPreferenceReceipt {
     pub diagnostic_only: bool,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptPlanningCost {
+    pub capability_steps: usize,
+    pub input_artifacts: usize,
+    pub supporting_instances: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptPlanningParetoReceipt {
+    pub goal_artifact: CapabilityIoType,
+    pub candidates: Vec<CapabilityChainProofConceptPlanningProposal>,
+    pub frontier_concept_ids: Vec<String>,
+    pub dominated_concept_ids: Vec<String>,
+    pub diagnostic_only: bool,
+}
+
 impl CapabilityChainProofConceptPlanningReceipt {
+    pub fn cost_of(
+        proposal: &CapabilityChainProofConceptPlanningProposal,
+    ) -> CapabilityChainProofConceptPlanningCost {
+        CapabilityChainProofConceptPlanningCost {
+            capability_steps: proposal.plan.steps.len(),
+            input_artifacts: proposal.input_artifacts.len(),
+            supporting_instances: proposal.supporting_instances,
+        }
+    }
+
     /// Rank already-validated proposals by shorter capability route first and
     /// stronger observed support second. Equal evidence remains ambiguous.
     pub fn rank_preference(&self) -> CapabilityChainProofConceptPlanningPreferenceReceipt {
@@ -1121,6 +1147,44 @@ impl CapabilityChainProofConceptPlanningReceipt {
             goal_artifact: self.goal_artifact,
             proposals,
             preference,
+            diagnostic_only: true,
+        }
+    }
+
+    /// Preserve non-dominated concept routes across simplicity, contract
+    /// burden, and observed support. This is a preference diagnostic rather
+    /// than an authorization or execution decision.
+    pub fn pareto_frontier(&self) -> CapabilityChainProofConceptPlanningParetoReceipt {
+        let mut candidates = self.proposals.clone();
+        candidates.sort_by(|left, right| left.concept_id.cmp(&right.concept_id));
+        let mut frontier = Vec::new();
+        let mut dominated = Vec::new();
+        for candidate in &candidates {
+            let candidate_cost = Self::cost_of(candidate);
+            let is_dominated = candidates.iter().any(|other| {
+                if other.concept_id == candidate.concept_id {
+                    return false;
+                }
+                let other_cost = Self::cost_of(other);
+                let no_worse = other_cost.capability_steps <= candidate_cost.capability_steps
+                    && other_cost.input_artifacts <= candidate_cost.input_artifacts
+                    && other_cost.supporting_instances >= candidate_cost.supporting_instances;
+                let strictly_better = other_cost.capability_steps < candidate_cost.capability_steps
+                    || other_cost.input_artifacts < candidate_cost.input_artifacts
+                    || other_cost.supporting_instances > candidate_cost.supporting_instances;
+                no_worse && strictly_better
+            });
+            if is_dominated {
+                dominated.push(candidate.concept_id.clone());
+            } else {
+                frontier.push(candidate.concept_id.clone());
+            }
+        }
+        CapabilityChainProofConceptPlanningParetoReceipt {
+            goal_artifact: self.goal_artifact,
+            candidates,
+            frontier_concept_ids: frontier,
+            dominated_concept_ids: dominated,
             diagnostic_only: true,
         }
     }
@@ -8042,6 +8106,33 @@ mod tests {
             ambiguous.preference,
             CapabilityChainProofConceptPlanningPreference::Ambiguous(_)
         ));
+        let mut dominated_proposal = planning.proposals[0].clone();
+        dominated_proposal.concept_id = "dominated-route".into();
+        dominated_proposal.plan.steps.push("extra_step".into());
+        dominated_proposal.supporting_instances = 2;
+        let mut tradeoff_proposal = planning.proposals[0].clone();
+        tradeoff_proposal.concept_id = "tradeoff-route".into();
+        tradeoff_proposal.plan.steps.truncate(1);
+        tradeoff_proposal.supporting_instances = 1;
+        let pareto = CapabilityChainProofConceptPlanningReceipt {
+            available_inputs: planning.available_inputs.clone(),
+            goal_artifact: planning.goal_artifact,
+            proposals: vec![
+                planning.proposals[0].clone(),
+                dominated_proposal,
+                tradeoff_proposal,
+            ],
+            rejections: Vec::new(),
+            diagnostic_only: true,
+        }
+        .pareto_frontier();
+        assert!(pareto
+            .frontier_concept_ids
+            .contains(&"equation-analysis-concept".into()));
+        assert!(pareto
+            .frontier_concept_ids
+            .contains(&"tradeoff-route".into()));
+        assert_eq!(pareto.dominated_concept_ids, vec!["dominated-route"]);
 
         let make_concept = |concept_id: &str,
                             capability: &str,

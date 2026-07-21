@@ -974,6 +974,46 @@ pub struct CapabilityChainProofAbstractionApprovalLedger {
     approvals: BTreeMap<String, CapabilityChainProofAbstractionApprovalReceipt>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionDeploymentStatus {
+    Prepared,
+    Applied,
+    Failed,
+    RolledBack,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionDeploymentReceipt {
+    pub deployment_id: String,
+    pub approval_id: String,
+    pub pattern_id: String,
+    pub previous_revision: String,
+    pub proposed_revision: String,
+    pub status: CapabilityChainProofAbstractionDeploymentStatus,
+    pub verification_receipt: Option<String>,
+    pub failure_reason: Option<String>,
+    pub rollback_reason: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionDeploymentRejection {
+    DuplicateDeployment(String),
+    ApprovalNotGranted(String),
+    UnknownDeployment(String),
+    DeploymentAlreadyTerminal(CapabilityChainProofAbstractionDeploymentStatus),
+    MissingVerificationReceipt,
+    RollbackRequiresApplied,
+}
+
+/// Records the lifecycle of an explicitly approved abstraction deployment.
+/// This ledger is intentionally observational: it does not modify the
+/// capability registry or planner, so applying a receipt still requires a
+/// separate implementation-controlled deployment mechanism.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainProofAbstractionDeploymentLedger {
+    deployments: BTreeMap<String, CapabilityChainProofAbstractionDeploymentReceipt>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofAbstractionProposalFailure {
     UnknownPattern(String),
@@ -1631,6 +1671,132 @@ impl CapabilityChainProofAbstractionApprovalLedger {
         &self,
     ) -> impl Iterator<Item = &CapabilityChainProofAbstractionApprovalReceipt> {
         self.approvals.values()
+    }
+}
+
+impl CapabilityChainProofAbstractionDeploymentLedger {
+    pub fn prepare(
+        &mut self,
+        deployment_id: impl Into<String>,
+        approval: &CapabilityChainProofAbstractionApprovalReceipt,
+        previous_revision: impl Into<String>,
+        proposed_revision: impl Into<String>,
+    ) -> Result<CapabilityChainProofAbstractionDeploymentReceipt, CapabilityChainProofAbstractionDeploymentRejection>
+    {
+        let deployment_id = deployment_id.into();
+        if self.deployments.contains_key(&deployment_id) {
+            return Err(
+                CapabilityChainProofAbstractionDeploymentRejection::DuplicateDeployment(
+                    deployment_id,
+                ),
+            );
+        }
+        if approval.decision != CapabilityChainProofAbstractionApprovalDecision::Approved {
+            return Err(
+                CapabilityChainProofAbstractionDeploymentRejection::ApprovalNotGranted(
+                    approval.approval_id.clone(),
+                ),
+            );
+        }
+        let receipt = CapabilityChainProofAbstractionDeploymentReceipt {
+            deployment_id: deployment_id.clone(),
+            approval_id: approval.approval_id.clone(),
+            pattern_id: approval.pattern_id.clone(),
+            previous_revision: previous_revision.into(),
+            proposed_revision: proposed_revision.into(),
+            status: CapabilityChainProofAbstractionDeploymentStatus::Prepared,
+            verification_receipt: None,
+            failure_reason: None,
+            rollback_reason: None,
+        };
+        self.deployments.insert(deployment_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn mark_applied(
+        &mut self,
+        deployment_id: &str,
+        verification_receipt: impl Into<String>,
+    ) -> Result<CapabilityChainProofAbstractionDeploymentReceipt, CapabilityChainProofAbstractionDeploymentRejection>
+    {
+        let receipt = self.deployments.get_mut(deployment_id).ok_or_else(|| {
+            CapabilityChainProofAbstractionDeploymentRejection::UnknownDeployment(
+                deployment_id.into(),
+            )
+        })?;
+        if receipt.status != CapabilityChainProofAbstractionDeploymentStatus::Prepared {
+            return Err(
+                CapabilityChainProofAbstractionDeploymentRejection::DeploymentAlreadyTerminal(
+                    receipt.status,
+                ),
+            );
+        }
+        let verification_receipt = verification_receipt.into();
+        if verification_receipt.trim().is_empty() {
+            return Err(
+                CapabilityChainProofAbstractionDeploymentRejection::MissingVerificationReceipt,
+            );
+        }
+        receipt.status = CapabilityChainProofAbstractionDeploymentStatus::Applied;
+        receipt.verification_receipt = Some(verification_receipt);
+        Ok(receipt.clone())
+    }
+
+    pub fn mark_failed(
+        &mut self,
+        deployment_id: &str,
+        reason: impl Into<String>,
+    ) -> Result<CapabilityChainProofAbstractionDeploymentReceipt, CapabilityChainProofAbstractionDeploymentRejection>
+    {
+        let receipt = self.deployments.get_mut(deployment_id).ok_or_else(|| {
+            CapabilityChainProofAbstractionDeploymentRejection::UnknownDeployment(
+                deployment_id.into(),
+            )
+        })?;
+        if receipt.status != CapabilityChainProofAbstractionDeploymentStatus::Prepared {
+            return Err(
+                CapabilityChainProofAbstractionDeploymentRejection::DeploymentAlreadyTerminal(
+                    receipt.status,
+                ),
+            );
+        }
+        receipt.status = CapabilityChainProofAbstractionDeploymentStatus::Failed;
+        receipt.failure_reason = Some(reason.into());
+        Ok(receipt.clone())
+    }
+
+    pub fn rollback(
+        &mut self,
+        deployment_id: &str,
+        reason: impl Into<String>,
+    ) -> Result<CapabilityChainProofAbstractionDeploymentReceipt, CapabilityChainProofAbstractionDeploymentRejection>
+    {
+        let receipt = self.deployments.get_mut(deployment_id).ok_or_else(|| {
+            CapabilityChainProofAbstractionDeploymentRejection::UnknownDeployment(
+                deployment_id.into(),
+            )
+        })?;
+        if receipt.status != CapabilityChainProofAbstractionDeploymentStatus::Applied {
+            return Err(
+                CapabilityChainProofAbstractionDeploymentRejection::RollbackRequiresApplied,
+            );
+        }
+        receipt.status = CapabilityChainProofAbstractionDeploymentStatus::RolledBack;
+        receipt.rollback_reason = Some(reason.into());
+        Ok(receipt.clone())
+    }
+
+    pub fn receipt(
+        &self,
+        deployment_id: &str,
+    ) -> Option<&CapabilityChainProofAbstractionDeploymentReceipt> {
+        self.deployments.get(deployment_id)
+    }
+
+    pub fn receipts(
+        &self,
+    ) -> impl Iterator<Item = &CapabilityChainProofAbstractionDeploymentReceipt> {
+        self.deployments.values()
     }
 }
 
@@ -4974,6 +5140,50 @@ mod tests {
             CapabilityChainProofAbstractionApprovalDecision::Approved
         );
         assert_eq!(abstraction_approvals.receipts().count(), 1);
+        let mut abstraction_deployments =
+            CapabilityChainProofAbstractionDeploymentLedger::default();
+        let prepared = abstraction_deployments
+            .prepare(
+                "abstraction-deployment-1",
+                &approval,
+                "abstraction-v0",
+                "abstraction-v1",
+            )
+            .unwrap();
+        assert_eq!(
+            prepared.status,
+            CapabilityChainProofAbstractionDeploymentStatus::Prepared
+        );
+        assert!(matches!(
+            abstraction_deployments.mark_applied("abstraction-deployment-1", ""),
+            Err(CapabilityChainProofAbstractionDeploymentRejection::MissingVerificationReceipt)
+        ));
+        let applied = abstraction_deployments
+            .mark_applied(
+                "abstraction-deployment-1",
+                "held-out abstraction replay receipt",
+            )
+            .unwrap();
+        assert_eq!(
+            applied.status,
+            CapabilityChainProofAbstractionDeploymentStatus::Applied
+        );
+        let rolled_back = abstraction_deployments
+            .rollback("abstraction-deployment-1", "regression detected")
+            .unwrap();
+        assert_eq!(
+            rolled_back.status,
+            CapabilityChainProofAbstractionDeploymentStatus::RolledBack
+        );
+        assert_eq!(abstraction_deployments.receipts().count(), 1);
+        assert!(matches!(
+            abstraction_deployments.mark_applied("abstraction-deployment-1", "late retry"),
+            Err(
+                CapabilityChainProofAbstractionDeploymentRejection::DeploymentAlreadyTerminal(
+                    CapabilityChainProofAbstractionDeploymentStatus::RolledBack
+                )
+            )
+        ));
         assert!(matches!(
             abstraction_approvals.record(
                 "abstraction-approval-1",

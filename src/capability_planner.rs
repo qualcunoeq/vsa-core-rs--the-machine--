@@ -950,6 +950,39 @@ pub struct CapabilityChainProofAbstractionNoveltyReceipt {
     pub passed: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionValueScore {
+    pub proof_steps: usize,
+    pub dependency_count: usize,
+    pub contract_burden: usize,
+    pub replay_failures: usize,
+    pub false_authorizations: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionValueAlternative {
+    pub capability_id: String,
+    pub score: CapabilityChainProofAbstractionValueScore,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionValueDecision {
+    Preferred,
+    Ambiguous,
+    NotPreferred,
+    NoBaseline,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionValueReceipt {
+    pub candidate_id: String,
+    pub goal: CapabilityIoType,
+    pub candidate_score: CapabilityChainProofAbstractionValueScore,
+    pub alternatives: Vec<CapabilityChainProofAbstractionValueAlternative>,
+    pub decision: CapabilityChainProofAbstractionValueDecision,
+    pub rationale: String,
+}
+
 /// A diagnostic recommendation for a recurring proof abstraction.  This is
 /// deliberately separate from the proposal and experiment: recurrence and
 /// safety evidence may justify review, but do not install a new capability.
@@ -1661,6 +1694,85 @@ impl CapabilityChainProofIndex {
 }
 
 impl CapabilityChainProofAbstractionProposal {
+    /// Compare a novel abstraction with active producers of the same goal.
+    /// This is an informational value signal only; it never makes an
+    /// otherwise inadmissible candidate executable.
+    pub fn assess_value(
+        &self,
+        candidate: &CapabilitySpec,
+        registry: &CapabilityRegistry,
+    ) -> CapabilityChainProofAbstractionValueReceipt {
+        let candidate_score = CapabilityChainProofAbstractionValueScore {
+            proof_steps: self.pattern.capabilities.len(),
+            dependency_count: candidate.dependencies.len(),
+            contract_burden: candidate.input_requirements.len(),
+            replay_failures: candidate.quality_gate.replay_failures,
+            false_authorizations: candidate.quality_gate.false_authorizations,
+        };
+        let mut alternatives = registry
+            .capabilities
+            .values()
+            .filter(|capability| {
+                capability.id != candidate.id && capability.produces.contains(&self.pattern.goal)
+            })
+            .map(|capability| CapabilityChainProofAbstractionValueAlternative {
+                capability_id: capability.id.clone(),
+                score: CapabilityChainProofAbstractionValueScore {
+                    proof_steps: 1,
+                    dependency_count: capability.dependencies.len(),
+                    contract_burden: capability.input_requirements.len(),
+                    replay_failures: capability.quality_gate.replay_failures,
+                    false_authorizations: capability.quality_gate.false_authorizations,
+                },
+            })
+            .collect::<Vec<_>>();
+        alternatives.sort_by(|left, right| left.capability_id.cmp(&right.capability_id));
+        let decision = if alternatives.is_empty() {
+            CapabilityChainProofAbstractionValueDecision::NoBaseline
+        } else if candidate_score.replay_failures > 0
+            || candidate_score.false_authorizations > 0
+        {
+            CapabilityChainProofAbstractionValueDecision::NotPreferred
+        } else {
+            let candidate_key = candidate_score.ordering_key();
+            let equal = alternatives
+                .iter()
+                .any(|alternative| alternative.score.ordering_key() == candidate_key);
+            let lower = alternatives
+                .iter()
+                .all(|alternative| candidate_key < alternative.score.ordering_key());
+            if equal {
+                CapabilityChainProofAbstractionValueDecision::Ambiguous
+            } else if lower {
+                CapabilityChainProofAbstractionValueDecision::Preferred
+            } else {
+                CapabilityChainProofAbstractionValueDecision::NotPreferred
+            }
+        };
+        let rationale = match decision {
+            CapabilityChainProofAbstractionValueDecision::Preferred => {
+                "candidate has a lower diagnostic cost than every active producer".into()
+            }
+            CapabilityChainProofAbstractionValueDecision::Ambiguous => {
+                "candidate and an active producer have equal diagnostic cost".into()
+            }
+            CapabilityChainProofAbstractionValueDecision::NotPreferred => {
+                "candidate is novel but does not dominate the active producer set".into()
+            }
+            CapabilityChainProofAbstractionValueDecision::NoBaseline => {
+                "no active producer exists for a comparative value baseline".into()
+            }
+        };
+        CapabilityChainProofAbstractionValueReceipt {
+            candidate_id: candidate.id.clone(),
+            goal: self.pattern.goal,
+            candidate_score,
+            alternatives,
+            decision,
+            rationale,
+        }
+    }
+
     /// Compare the proposed executable contract with active registry entries.
     /// A new identifier alone is not novelty if the complete contract is
     /// already present under another identifier.
@@ -1740,6 +1852,18 @@ impl CapabilityChainProofAbstractionProposal {
             safety_preserved,
             passed: pattern_recurred && safety_preserved,
         }
+    }
+}
+
+impl CapabilityChainProofAbstractionValueScore {
+    fn ordering_key(&self) -> (usize, usize, usize, usize, usize) {
+        (
+            self.proof_steps,
+            self.dependency_count,
+            self.contract_burden,
+            self.replay_failures,
+            self.false_authorizations,
+        )
     }
 }
 
@@ -5587,6 +5711,15 @@ mod tests {
             duplicate_novelty.equivalent_existing_capabilities,
             vec!["expression_evaluation"]
         );
+        let value = proposal.assess_value(&candidate, &evolution_registry);
+        assert_eq!(
+            value.decision,
+            CapabilityChainProofAbstractionValueDecision::NotPreferred
+        );
+        assert!(value
+            .alternatives
+            .iter()
+            .any(|alternative| alternative.capability_id == "expression_evaluation"));
         let mut evolution_ledger = CapabilityRegistryEvolutionLedger::default();
         let prepared_evolution = evolution_ledger
             .prepare_with_generalization_and_novelty(

@@ -1005,6 +1005,29 @@ pub enum CapabilityChainProofAbstractionDeploymentRejection {
     RollbackRequiresApplied,
 }
 
+/// A deployed abstraction's governed descriptor.  This is a first-class
+/// capability candidate, but not a registry entry: callers must explicitly
+/// adapt and register it with an executor before it can affect planning.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionCapability {
+    pub capability_id: String,
+    pub version: u32,
+    pub deployment_id: String,
+    pub pattern_id: String,
+    pub goal: CapabilityIoType,
+    pub capabilities: Vec<String>,
+    pub final_artifacts: Vec<String>,
+    pub verification_receipt: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionMaterializationRejection {
+    DeploymentNotApplied(CapabilityChainProofAbstractionDeploymentStatus),
+    ApprovalMismatch,
+    ApprovalNotGranted,
+    MissingVerificationReceipt,
+}
+
 /// Records the lifecycle of an explicitly approved abstraction deployment.
 /// This ledger is intentionally observational: it does not modify the
 /// capability registry or planner, so applying a receipt still requires a
@@ -1797,6 +1820,54 @@ impl CapabilityChainProofAbstractionDeploymentLedger {
         &self,
     ) -> impl Iterator<Item = &CapabilityChainProofAbstractionDeploymentReceipt> {
         self.deployments.values()
+    }
+}
+
+impl CapabilityChainProofAbstractionDeploymentReceipt {
+    /// Materialize an applied deployment into a governed capability
+    /// descriptor.  This intentionally stops before registry insertion or
+    /// executor wiring; both remain explicit control-plane operations.
+    pub fn materialize_capability(
+        &self,
+        approval: &CapabilityChainProofAbstractionApprovalReceipt,
+    ) -> Result<CapabilityChainProofAbstractionCapability, CapabilityChainProofAbstractionMaterializationRejection>
+    {
+        if self.status != CapabilityChainProofAbstractionDeploymentStatus::Applied {
+            return Err(
+                CapabilityChainProofAbstractionMaterializationRejection::DeploymentNotApplied(
+                    self.status,
+                ),
+            );
+        }
+        if approval.approval_id != self.approval_id
+            || approval.pattern_id != self.pattern_id
+        {
+            return Err(
+                CapabilityChainProofAbstractionMaterializationRejection::ApprovalMismatch,
+            );
+        }
+        if approval.decision != CapabilityChainProofAbstractionApprovalDecision::Approved {
+            return Err(
+                CapabilityChainProofAbstractionMaterializationRejection::ApprovalNotGranted,
+            );
+        }
+        let verification_receipt = self
+            .verification_receipt
+            .clone()
+            .ok_or(
+                CapabilityChainProofAbstractionMaterializationRejection::MissingVerificationReceipt,
+            )?;
+        let proposal = &approval.recommendation.proposal.pattern;
+        Ok(CapabilityChainProofAbstractionCapability {
+            capability_id: self.proposed_revision.clone(),
+            version: 1,
+            deployment_id: self.deployment_id.clone(),
+            pattern_id: self.pattern_id.clone(),
+            goal: proposal.goal,
+            capabilities: proposal.capabilities.clone(),
+            final_artifacts: proposal.final_artifacts.clone(),
+            verification_receipt,
+        })
     }
 }
 
@@ -5168,6 +5239,21 @@ mod tests {
             applied.status,
             CapabilityChainProofAbstractionDeploymentStatus::Applied
         );
+        let materialized = applied
+            .materialize_capability(&approval)
+            .unwrap();
+        assert_eq!(
+            materialized.capability_id,
+            "abstraction-v1"
+        );
+        assert_eq!(materialized.pattern_id, simplification_shape.pattern_id);
+        assert_eq!(materialized.capabilities, vec!["expression_simplification"]);
+        assert_eq!(
+            materialized.verification_receipt,
+            "held-out abstraction replay receipt"
+        );
+        let registry = CapabilityRegistry::production();
+        assert!(registry.get(&materialized.capability_id).is_none());
         let rolled_back = abstraction_deployments
             .rollback("abstraction-deployment-1", "regression detected")
             .unwrap();

@@ -1314,6 +1314,56 @@ pub fn compose_validated_proof_concepts(
 }
 
 impl CapabilityChainProofConceptIndex {
+    fn compose_indexed_contracts(
+        left: &CapabilityChainProofConceptContract,
+        right: &CapabilityChainProofConceptContract,
+    ) -> Option<CapabilityChainProofConceptContract> {
+        if left.concept_id == right.concept_id
+            || !left
+                .output_artifacts
+                .iter()
+                .any(|output| right.input_artifacts.contains(output))
+        {
+            return None;
+        }
+        let capabilities = left
+            .capabilities
+            .iter()
+            .chain(right.capabilities.iter())
+            .cloned()
+            .collect::<Vec<_>>();
+        let signature = serde_json::to_vec(&(
+            &left.input_artifacts,
+            &capabilities,
+            &right.output_artifacts,
+        ))
+        .expect("composed concept signature must serialize");
+        let concept_id = format!("composed:{:x}", Sha256::digest(signature));
+        let parameterized_signature = serde_json::to_string(&(
+            &left.input_artifacts,
+            &capabilities,
+            &right.output_artifacts,
+        ))
+        .expect("composed concept signature must serialize");
+        Some(CapabilityChainProofConceptContract {
+            concept_id,
+            capabilities,
+            input_artifacts: left.input_artifacts.clone(),
+            output_artifacts: right.output_artifacts.clone(),
+            source_pattern_ids: left
+                .source_pattern_ids
+                .iter()
+                .chain(right.source_pattern_ids.iter())
+                .cloned()
+                .collect::<BTreeSet<_>>()
+                .into_iter()
+                .collect(),
+            supporting_instances: left.supporting_instances.min(right.supporting_instances),
+            parameterized_signature,
+            diagnostic_only: true,
+        })
+    }
+
     pub fn insert(
         &mut self,
         contract: CapabilityChainProofConceptContract,
@@ -1616,6 +1666,119 @@ impl CapabilityChainProofConceptIndex {
         proposals.sort_by(|left, right| left.concept_id.cmp(&right.concept_id));
         CapabilityChainProofConceptPlanningReceipt {
             available_inputs: available_inputs.iter().copied().collect::<BTreeSet<_>>().into_iter().collect(),
+            goal_artifact,
+            proposals,
+            rejections,
+            diagnostic_only: true,
+        }
+    }
+
+    /// Search bounded multi-concept routes. The depth bound is the number of
+    /// concept fragments in a route (minimum two); deterministic DFS and
+    /// concept-ID deduplication keep the search finite and auditable.
+    pub fn propose_composed_planning_assistance_with_depth(
+        &self,
+        available_inputs: &[CapabilityIoType],
+        goal_artifact: CapabilityIoType,
+        registry: &CapabilityRegistry,
+        max_concepts: usize,
+    ) -> CapabilityChainProofConceptPlanningReceipt {
+        fn visit(
+            index: &CapabilityChainProofConceptIndex,
+            current: CapabilityChainProofConceptContract,
+            used: Vec<String>,
+            available_inputs: &[CapabilityIoType],
+            goal_artifact: CapabilityIoType,
+            registry: &CapabilityRegistry,
+            max_concepts: usize,
+            seen: &mut BTreeSet<String>,
+            proposals: &mut Vec<CapabilityChainProofConceptPlanningProposal>,
+            rejections: &mut Vec<CapabilityChainProofConceptPlanningRejection>,
+        ) {
+            if used.len() >= 2 && current.output_artifacts.contains(&goal_artifact) {
+                if seen.insert(current.concept_id.clone()) {
+                    let mut temporary = index.clone();
+                    temporary
+                        .concepts
+                        .insert(current.concept_id.clone(), current.clone());
+                    let receipt = temporary.propose_planning_assistance(
+                        available_inputs,
+                        goal_artifact,
+                        registry,
+                    );
+                    rejections.extend(receipt.rejections);
+                    if let Some(proposal) = receipt
+                        .proposals
+                        .into_iter()
+                        .find(|proposal| proposal.concept_id == current.concept_id)
+                    {
+                        proposals.push(proposal);
+                    }
+                }
+            }
+            if used.len() >= max_concepts {
+                return;
+            }
+            for next in index.concepts.values() {
+                if used.iter().any(|used_id| used_id == &next.concept_id)
+                    || !current
+                        .output_artifacts
+                        .iter()
+                        .any(|output| next.input_artifacts.contains(output))
+                {
+                    continue;
+                }
+                let Some(composite) =
+                    CapabilityChainProofConceptIndex::compose_indexed_contracts(&current, next)
+                else {
+                    continue;
+                };
+                let mut next_used = used.clone();
+                next_used.push(next.concept_id.clone());
+                visit(
+                    index,
+                    composite,
+                    next_used,
+                    available_inputs,
+                    goal_artifact,
+                    registry,
+                    max_concepts,
+                    seen,
+                    proposals,
+                    rejections,
+                );
+            }
+        }
+
+        let max_concepts = max_concepts.max(2);
+        let available = available_inputs.iter().copied().collect::<BTreeSet<_>>();
+        let mut proposals = Vec::new();
+        let mut rejections = Vec::new();
+        let mut seen = BTreeSet::new();
+        for concept in self.concepts.values() {
+            if concept
+                .input_artifacts
+                .iter()
+                .all(|input| available.contains(input))
+            {
+                visit(
+                    self,
+                    concept.clone(),
+                    vec![concept.concept_id.clone()],
+                    available_inputs,
+                    goal_artifact,
+                    registry,
+                    max_concepts,
+                    &mut seen,
+                    &mut proposals,
+                    &mut rejections,
+                );
+            }
+        }
+        proposals.sort_by(|left, right| left.concept_id.cmp(&right.concept_id));
+        rejections.sort_by_key(|rejection| format!("{rejection:?}"));
+        CapabilityChainProofConceptPlanningReceipt {
+            available_inputs: available.into_iter().collect(),
             goal_artifact,
             proposals,
             rejections,
@@ -7824,7 +7987,7 @@ mod tests {
         );
         assert!(wrong_context.candidates.is_empty());
 
-        let production = CapabilityRegistry::production();
+        let mut production = CapabilityRegistry::production();
         let reusable_analysis = CapabilityChainProofConceptContract {
             concept_id: "equation-analysis-concept".into(),
             capabilities: vec![
@@ -7923,6 +8086,29 @@ mod tests {
         assert!(composed_planning.proposals[0]
             .concept_id
             .starts_with("composed:"));
+
+        let mut classification_to_value = CapabilitySpec::equation_classification_v1();
+        classification_to_value.id = "classification_to_value".into();
+        classification_to_value.consumes = vec![CapabilityIoType::EquationClassification];
+        classification_to_value.produces = vec![CapabilityIoType::ExactValue];
+        production.register(classification_to_value);
+        let third = make_concept(
+            "classification-value-concept",
+            "classification_to_value",
+            CapabilityIoType::EquationClassification,
+            CapabilityIoType::ExactValue,
+        );
+        let third_validation = third.validate(2, 2, 0, 0);
+        composition_index.insert(third, &third_validation).unwrap();
+        let depth_three = composition_index.propose_composed_planning_assistance_with_depth(
+            &[CapabilityIoType::Equation],
+            CapabilityIoType::ExactValue,
+            &production,
+            3,
+        );
+        assert!(depth_three.rejections.is_empty());
+        assert_eq!(depth_three.proposals.len(), 1);
+        assert_eq!(depth_three.proposals[0].plan.steps.len(), 3);
     }
 
     #[test]

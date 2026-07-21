@@ -925,6 +925,85 @@ pub struct CapabilityChainProofConceptDiscoveryReceipt {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptContract {
+    pub concept_id: String,
+    pub capabilities: Vec<String>,
+    pub input_artifacts: Vec<CapabilityIoType>,
+    pub output_artifacts: Vec<CapabilityIoType>,
+    pub source_pattern_ids: Vec<String>,
+    pub supporting_instances: usize,
+    pub parameterized_signature: String,
+    pub diagnostic_only: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofConceptContractFailure {
+    EmptyConcept(String),
+    UnknownCapability {
+        concept_id: String,
+        capability_id: String,
+    },
+}
+
+impl CapabilityChainProofConceptDiscoveryReceipt {
+    /// Extract an observed contract boundary for each concept using the
+    /// registry's declared first-step inputs and last-step outputs. This is a
+    /// parameterized proposal backed by registry contracts, not a new
+    /// executable capability.
+    pub fn extract_contracts(
+        &self,
+        registry: &CapabilityRegistry,
+    ) -> Result<Vec<CapabilityChainProofConceptContract>,
+        CapabilityChainProofConceptContractFailure> {
+        self.schemas
+            .iter()
+            .map(|schema| {
+                let first = schema
+                    .capabilities
+                    .first()
+                    .ok_or_else(|| {
+                        CapabilityChainProofConceptContractFailure::EmptyConcept(
+                            schema.concept_id.clone(),
+                        )
+                    })?;
+                let last = schema
+                    .capabilities
+                    .last()
+                    .expect("non-empty capabilities have a last element");
+                let first_spec = registry.get(first).ok_or_else(|| {
+                    CapabilityChainProofConceptContractFailure::UnknownCapability {
+                        concept_id: schema.concept_id.clone(),
+                        capability_id: first.clone(),
+                    }
+                })?;
+                let last_spec = registry.get(last).ok_or_else(|| {
+                    CapabilityChainProofConceptContractFailure::UnknownCapability {
+                        concept_id: schema.concept_id.clone(),
+                        capability_id: last.clone(),
+                    }
+                })?;
+                let signature = serde_json::to_string(&(
+                    &first_spec.consumes,
+                    &schema.capabilities,
+                    &last_spec.produces,
+                ))
+                .expect("concept contract signature must serialize");
+                Ok(CapabilityChainProofConceptContract {
+                    concept_id: schema.concept_id.clone(),
+                    capabilities: schema.capabilities.clone(),
+                    input_artifacts: first_spec.consumes.clone(),
+                    output_artifacts: last_spec.produces.clone(),
+                    source_pattern_ids: schema.source_pattern_ids.clone(),
+                    supporting_instances: schema.supporting_instances,
+                    parameterized_signature: signature,
+                    diagnostic_only: true,
+                })
+            })
+            .collect()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityChainProofAbstractionProposal {
     pub pattern: CapabilityChainProofAbstraction,
     pub minimum_instances: usize,
@@ -6932,6 +7011,47 @@ mod tests {
         assert_eq!(shared.source_pattern_ids.len(), 2);
         assert_eq!(shared.supporting_instances, 2);
         assert!(!shared.concept_id.is_empty());
+        let contract_receipt = CapabilityChainProofConceptDiscoveryReceipt {
+            minimum_pattern_support: 2,
+            schemas: vec![CapabilityChainProofConceptSchema {
+                concept_id: "concept-contract".into(),
+                capabilities: vec![
+                    "expression_simplification".into(),
+                    "expression_evaluation".into(),
+                ],
+                source_pattern_ids: vec!["pattern-a".into(), "pattern-b".into()],
+                supporting_instances: 4,
+            }],
+            diagnostic_only: true,
+        };
+        let contracts = contract_receipt
+            .extract_contracts(&CapabilityRegistry::production())
+            .unwrap();
+        assert_eq!(contracts.len(), 1);
+        assert_eq!(
+            contracts[0].input_artifacts,
+            vec![CapabilityIoType::Expression]
+        );
+        assert_eq!(
+            contracts[0].output_artifacts,
+            vec![CapabilityIoType::ExactValue]
+        );
+        assert!(contracts[0].parameterized_signature.contains("expression_simplification"));
+        assert!(contracts[0].diagnostic_only);
+        let unknown_contract = CapabilityChainProofConceptDiscoveryReceipt {
+            minimum_pattern_support: 2,
+            schemas: vec![CapabilityChainProofConceptSchema {
+                concept_id: "unknown-contract".into(),
+                capabilities: vec!["unknown_capability".into()],
+                source_pattern_ids: vec!["pattern-a".into(), "pattern-b".into()],
+                supporting_instances: 2,
+            }],
+            diagnostic_only: true,
+        };
+        assert!(matches!(
+            unknown_contract.extract_contracts(&CapabilityRegistry::production()),
+            Err(CapabilityChainProofConceptContractFailure::UnknownCapability { .. })
+        ));
     }
 
     #[test]

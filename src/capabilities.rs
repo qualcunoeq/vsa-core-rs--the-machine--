@@ -16,6 +16,7 @@ pub enum InputRequirement {
     ExactlyOneArgumentBinding,
     ExplicitExpressionBody,
     ParseableExpressionSubject,
+    ParseableEquation,
     AllExpressionVariablesBound,
     SingleEquationSubject,
     SingleTargetVariable,
@@ -38,6 +39,7 @@ pub enum CapabilityIoType {
     Expression,
     Equation,
     EquationSystem,
+    NormalizedEquation,
     BindingSet,
     TargetVariable,
     VariableSet,
@@ -377,6 +379,39 @@ impl CapabilitySpec {
             },
         }
     }
+
+    pub fn equation_normalization_v1() -> Self {
+        Self {
+            id: "equation_normalization".into(),
+            version: 1,
+            kind: CapabilityKind::Transformation,
+            dependencies: Vec::new(),
+            consumes: vec![CapabilityIoType::Equation],
+            produces: vec![CapabilityIoType::NormalizedEquation],
+            supported_object_types: vec![SubjectObjectType::Equation],
+            supported_operations: vec![OperationKind::Simplify],
+            supported_answer_forms: vec![AnswerForm::SimplifiedExpression],
+            input_requirements: vec![
+                InputRequirement::ParseableEquation,
+                InputRequirement::ReplayVerifier,
+            ],
+            fact_policy: None,
+            executor: "equation_normalization::execute_equation_normalization".into(),
+            verifier: "equation_normalization::replay_equation_normalization".into(),
+            regression_cases: vec![
+                "equation_normalization::equation_normalizes_to_zero_form_and_replays".into(),
+                "equation_normalization::expression_without_equality_is_rejected".into(),
+                "equation_normalization::malformed_equation_is_rejected".into(),
+            ],
+            quality_gate: CapabilityQualityGate {
+                positive_cases: 1,
+                negative_cases: 2,
+                adversarial_cases: 1,
+                false_authorizations: 0,
+                replay_failures: 0,
+            },
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
@@ -390,6 +425,7 @@ impl CapabilityRegistry {
         registry.register(CapabilitySpec::function_application_v1());
         registry.register(CapabilitySpec::expression_evaluation_v1());
         registry.register(CapabilitySpec::expression_simplification_v1());
+        registry.register(CapabilitySpec::equation_normalization_v1());
         registry.register(CapabilitySpec::linear_equation_solve_v1());
         registry.register(CapabilitySpec::quadratic_equation_solve_v1());
         registry.register(CapabilitySpec::linear_system_solve_v1());
@@ -527,6 +563,11 @@ impl CapabilityRegistry {
                         subject.object.parse::<f64>().is_ok()
                             || crate::algebra::parse(subject.object.trim()).is_ok()
                     }
+                    InputRequirement::ParseableEquation => {
+                        subject.object_type == SubjectObjectType::Equation
+                            && subject.object.contains('=')
+                            && crate::algebra::parse_equation(subject.object.trim()).is_ok()
+                    }
                     InputRequirement::AllExpressionVariablesBound => {
                         if subject.object_type != SubjectObjectType::Expression {
                             true
@@ -637,6 +678,7 @@ mod tests {
         assert_eq!(
             registry.dependency_order().unwrap(),
             vec![
+                "equation_normalization".to_string(),
                 "expression_evaluation".to_string(),
                 "expression_simplification".to_string(),
                 "function_application".to_string(),

@@ -908,6 +908,33 @@ pub struct CapabilityChainProofAbstraction {
     pub representative_fingerprint: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionProposal {
+    pub pattern: CapabilityChainProofAbstraction,
+    pub minimum_instances: usize,
+    pub expected_effect: String,
+    pub risk: ImprovementRisk,
+    pub validation_requirements: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstractionExperimentReceipt {
+    pub proposal: CapabilityChainProofAbstractionProposal,
+    pub baseline_instances: usize,
+    pub post_instances: usize,
+    pub baseline_false_authorizations: usize,
+    pub post_false_authorizations: usize,
+    pub pattern_recurred: bool,
+    pub safety_preserved: bool,
+    pub passed: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofAbstractionProposalFailure {
+    UnknownPattern(String),
+    InsufficientInstances { required: usize, actual: usize },
+}
+
 /// Explicit cache of proof-bearing reasoning traces. Insertion is deliberate:
 /// the index never executes, authorizes, or silently replaces a proof. A
 /// caller can retrieve an existing trace by its canonical reasoning identity.
@@ -1119,6 +1146,46 @@ impl CapabilityChainProofIndex {
                 });
         }
         grouped.into_values().collect()
+    }
+
+    /// Turn a sufficiently recurring structural pattern into an advisory
+    /// abstraction hypothesis. The proposal does not alter the registry or
+    /// make the pattern executable.
+    pub fn propose_proof_abstraction(
+        &self,
+        pattern_id: &str,
+        minimum_instances: usize,
+    ) -> Result<CapabilityChainProofAbstractionProposal, CapabilityChainProofAbstractionProposalFailure>
+    {
+        let pattern = self
+            .abstract_proof_shapes()
+            .into_iter()
+            .find(|pattern| pattern.pattern_id == pattern_id)
+            .ok_or_else(|| {
+                CapabilityChainProofAbstractionProposalFailure::UnknownPattern(
+                    pattern_id.into(),
+                )
+            })?;
+        if pattern.instances < minimum_instances {
+            return Err(
+                CapabilityChainProofAbstractionProposalFailure::InsufficientInstances {
+                    required: minimum_instances,
+                    actual: pattern.instances,
+                },
+            );
+        }
+        Ok(CapabilityChainProofAbstractionProposal {
+            pattern,
+            minimum_instances,
+            expected_effect:
+                "repeatedly observed proof shape may support a reusable abstraction".into(),
+            risk: ImprovementRisk::Medium,
+            validation_requirements: vec![
+                "reproduce the proof shape on held-out inputs".into(),
+                "require replay verification for every generated instance".into(),
+                "introduce no new false authorizations".into(),
+            ],
+        })
     }
 
     /// Search indexed proof fragments for a compatible composed proof. The
@@ -1412,6 +1479,29 @@ impl CapabilityChainProofIndex {
 
     pub fn is_empty(&self) -> bool {
         self.proofs.is_empty()
+    }
+}
+
+impl CapabilityChainProofAbstractionProposal {
+    /// Assess a validation run without applying the proposed abstraction.
+    pub fn assess(
+        &self,
+        post_instances: usize,
+        baseline_false_authorizations: usize,
+        post_false_authorizations: usize,
+    ) -> CapabilityChainProofAbstractionExperimentReceipt {
+        let pattern_recurred = post_instances >= self.minimum_instances;
+        let safety_preserved = post_false_authorizations <= baseline_false_authorizations;
+        CapabilityChainProofAbstractionExperimentReceipt {
+            proposal: self.clone(),
+            baseline_instances: self.pattern.instances,
+            post_instances,
+            baseline_false_authorizations,
+            post_false_authorizations,
+            pattern_recurred,
+            safety_preserved,
+            passed: pattern_recurred && safety_preserved,
+        }
     }
 }
 
@@ -4727,6 +4817,23 @@ mod tests {
             })
             .unwrap();
         assert_eq!(simplification_shape.instances, 2);
+        let proposal = graph
+            .propose_proof_abstraction(&simplification_shape.pattern_id, 2)
+            .unwrap();
+        assert_eq!(proposal.pattern.instances, 2);
+        let experiment = proposal.assess(3, 0, 0);
+        assert!(experiment.pattern_recurred);
+        assert!(experiment.safety_preserved);
+        assert!(experiment.passed);
+        assert_eq!(
+            graph.propose_proof_abstraction(&simplification_shape.pattern_id, 3),
+            Err(
+                CapabilityChainProofAbstractionProposalFailure::InsufficientInstances {
+                    required: 3,
+                    actual: 2,
+                }
+            )
+        );
         let preference = graph.rank_goal_proofs("value");
         assert_eq!(preference.candidates.len(), 2);
         assert!(preference.ambiguous);

@@ -1098,6 +1098,180 @@ pub struct CapabilityChainProofConceptPlanningParetoReceipt {
     pub diagnostic_only: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptStrategyContract {
+    pub strategy_id: String,
+    pub concept_ids: Vec<String>,
+    pub plan: CapabilityChainPlan,
+    pub input_artifacts: Vec<CapabilityIoType>,
+    pub output_artifacts: Vec<CapabilityIoType>,
+    pub supporting_instances: usize,
+    pub diagnostic_only: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptStrategyValidationReceipt {
+    pub strategy_id: String,
+    pub required_concept_count: usize,
+    pub observed_concept_count: usize,
+    pub held_out_cases: usize,
+    pub held_out_replay_failures: usize,
+    pub held_out_false_authorizations: usize,
+    pub passed: bool,
+    pub rationale: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainProofConceptStrategyIndexFailure {
+    ValidationNotPassed(String),
+    DuplicateStrategy(String),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainProofConceptStrategyIndex {
+    strategies: BTreeMap<String, CapabilityChainProofConceptStrategyContract>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptStrategyRetrievalReceipt {
+    pub available_inputs: Vec<CapabilityIoType>,
+    pub goal_artifact: CapabilityIoType,
+    pub strategies: Vec<CapabilityChainProofConceptStrategyContract>,
+    pub diagnostic_only: bool,
+}
+
+impl CapabilityChainProofConceptStrategyContract {
+    pub fn from_proposal(
+        proposal: &CapabilityChainProofConceptPlanningProposal,
+        concept_ids: Vec<String>,
+    ) -> Self {
+        let encoded = serde_json::to_vec(&(
+            &concept_ids,
+            &proposal.plan,
+            &proposal.input_artifacts,
+            &proposal.output_artifacts,
+        ))
+        .expect("concept strategy signature must serialize");
+        Self {
+            strategy_id: format!("strategy:{:x}", Sha256::digest(encoded)),
+            concept_ids,
+            plan: proposal.plan.clone(),
+            input_artifacts: proposal.input_artifacts.clone(),
+            output_artifacts: proposal.output_artifacts.clone(),
+            supporting_instances: proposal.supporting_instances,
+            diagnostic_only: true,
+        }
+    }
+
+    pub fn validate(
+        &self,
+        required_concept_count: usize,
+        held_out_cases: usize,
+        held_out_replay_failures: usize,
+        held_out_false_authorizations: usize,
+    ) -> CapabilityChainProofConceptStrategyValidationReceipt {
+        let distinct_concepts = self.concept_ids.len() >= required_concept_count
+            && self.concept_ids.iter().collect::<BTreeSet<_>>().len() == self.concept_ids.len();
+        let complete = !self.plan.steps.is_empty()
+            && !self.input_artifacts.is_empty()
+            && !self.output_artifacts.is_empty();
+        let passed = distinct_concepts
+            && complete
+            && held_out_cases > 0
+            && held_out_replay_failures == 0
+            && held_out_false_authorizations == 0;
+        let rationale = if !distinct_concepts {
+            "strategy has insufficient distinct concept support".into()
+        } else if !complete {
+            "strategy boundary or plan is incomplete".into()
+        } else if held_out_cases == 0 {
+            "held-out strategy evidence is missing".into()
+        } else if held_out_replay_failures > 0 || held_out_false_authorizations > 0 {
+            "held-out replay or safety evidence failed".into()
+        } else {
+            "composed strategy passed held-out replay and safety evidence".into()
+        };
+        CapabilityChainProofConceptStrategyValidationReceipt {
+            strategy_id: self.strategy_id.clone(),
+            required_concept_count,
+            observed_concept_count: self.concept_ids.len(),
+            held_out_cases,
+            held_out_replay_failures,
+            held_out_false_authorizations,
+            passed,
+            rationale,
+        }
+    }
+}
+
+impl CapabilityChainProofConceptStrategyIndex {
+    pub fn insert(
+        &mut self,
+        strategy: CapabilityChainProofConceptStrategyContract,
+        validation: &CapabilityChainProofConceptStrategyValidationReceipt,
+    ) -> Result<String, CapabilityChainProofConceptStrategyIndexFailure> {
+        if validation.strategy_id != strategy.strategy_id || !validation.passed {
+            return Err(
+                CapabilityChainProofConceptStrategyIndexFailure::ValidationNotPassed(
+                    strategy.strategy_id,
+                ),
+            );
+        }
+        if self.strategies.contains_key(&strategy.strategy_id) {
+            return Err(
+                CapabilityChainProofConceptStrategyIndexFailure::DuplicateStrategy(
+                    strategy.strategy_id,
+                ),
+            );
+        }
+        let strategy_id = strategy.strategy_id.clone();
+        self.strategies.insert(strategy_id.clone(), strategy);
+        Ok(strategy_id)
+    }
+
+    pub fn retrieve_relevant(
+        &self,
+        available_inputs: &[CapabilityIoType],
+        goal_artifact: CapabilityIoType,
+    ) -> CapabilityChainProofConceptStrategyRetrievalReceipt {
+        let available = available_inputs.iter().copied().collect::<BTreeSet<_>>();
+        let mut strategies = self
+            .strategies
+            .values()
+            .filter(|strategy| {
+                strategy.output_artifacts.contains(&goal_artifact)
+                    && strategy
+                        .input_artifacts
+                        .iter()
+                        .all(|input| available.contains(input))
+            })
+            .cloned()
+            .collect::<Vec<_>>();
+        strategies.sort_by(|left, right| {
+            left.plan
+                .steps
+                .len()
+                .cmp(&right.plan.steps.len())
+                .then_with(|| right.supporting_instances.cmp(&left.supporting_instances))
+                .then_with(|| left.strategy_id.cmp(&right.strategy_id))
+        });
+        CapabilityChainProofConceptStrategyRetrievalReceipt {
+            available_inputs: available.into_iter().collect(),
+            goal_artifact,
+            strategies,
+            diagnostic_only: true,
+        }
+    }
+
+    pub fn len(&self) -> usize {
+        self.strategies.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.strategies.is_empty()
+    }
+}
+
 impl CapabilityChainProofConceptPlanningReceipt {
     pub fn cost_of(
         proposal: &CapabilityChainProofConceptPlanningProposal,
@@ -8200,6 +8374,29 @@ mod tests {
         assert!(depth_three.rejections.is_empty());
         assert_eq!(depth_three.proposals.len(), 1);
         assert_eq!(depth_three.proposals[0].plan.steps.len(), 3);
+        let strategy = CapabilityChainProofConceptStrategyContract::from_proposal(
+            &depth_three.proposals[0],
+            vec![
+                "normalize-concept".into(),
+                "classify-concept".into(),
+                "classification-value-concept".into(),
+            ],
+        );
+        let strategy_validation = strategy.validate(3, 2, 0, 0);
+        assert!(strategy_validation.passed);
+        let mut strategy_index = CapabilityChainProofConceptStrategyIndex::default();
+        let strategy_id = strategy_index
+            .insert(strategy.clone(), &strategy_validation)
+            .unwrap();
+        assert_eq!(strategy_index.len(), 1);
+        assert_eq!(strategy_index.retrieve_relevant(
+            &[CapabilityIoType::Equation],
+            CapabilityIoType::ExactValue,
+        ).strategies[0].strategy_id, strategy_id);
+        assert!(matches!(
+            strategy_index.insert(strategy, &strategy_validation),
+            Err(CapabilityChainProofConceptStrategyIndexFailure::DuplicateStrategy(_))
+        ));
     }
 
     #[test]

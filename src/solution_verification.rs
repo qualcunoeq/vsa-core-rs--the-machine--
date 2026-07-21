@@ -22,6 +22,7 @@ pub struct SolutionVerificationReceipt {
     pub value: f64,
     pub residual_ratio: f64,
     pub verified_solution: String,
+    pub proof_trace: Vec<String>,
     pub replay_verified: bool,
 }
 
@@ -41,6 +42,7 @@ pub struct SolutionSetVerificationReceipt {
     pub target_variable: String,
     pub candidates: Vec<String>,
     pub verified_solution_set: Vec<String>,
+    pub proof_trace: Vec<String>,
     pub replay_verified: bool,
 }
 
@@ -71,6 +73,11 @@ pub fn execute_solution_verification(
         value,
         residual_ratio,
         verified_solution: format!("{} = {}", variable, value),
+        proof_trace: vec![
+            format!("candidate: {} = {}", variable, value),
+            format!("equation residual ratio: {residual_ratio}"),
+            "equation satisfied within tolerance 1e-9".into(),
+        ],
         replay_verified: false,
     };
     if !replay_solution_verification(&receipt) {
@@ -101,9 +108,10 @@ pub fn replay_solution_verification(receipt: &SolutionVerificationReceipt) -> bo
         return false;
     };
     variable == receipt.variable
-        && (value - receipt.value).abs() <= 1e-12
-        && (residual_ratio - 1.0).abs() <= 1e-9
+                && (value - receipt.value).abs() <= 1e-12
+                && (residual_ratio - 1.0).abs() <= 1e-9
         && receipt.verified_solution == format!("{} = {}", variable, value)
+        && receipt.proof_trace.len() == 3
 }
 
 /// Verify that a submitted finite root set exactly matches the bounded
@@ -164,6 +172,11 @@ pub fn execute_solution_set_verification(
         target_variable: target_variable.trim().into(),
         candidates: candidates.iter().map(|candidate| candidate.trim().into()).collect(),
         verified_solution_set,
+        proof_trace: vec![
+            format!("candidate set: {{{}}}", candidates.join(", ")),
+            format!("complete solver set: {{{}}}", expected.join(", ")),
+            "candidate set matches complete finite real solution set".into(),
+        ],
         replay_verified: false,
     };
     if !replay_solution_set_verification(&receipt) {
@@ -195,7 +208,7 @@ pub fn replay_solution_set_verification(receipt: &SolutionSetVerificationReceipt
     expected.sort_by(f64::total_cmp);
     expected.dedup_by(|a, b| (*a - *b).abs() <= 1e-12);
     let verified = expected.iter().map(|value| value.to_string()).collect::<Vec<_>>();
-    verified == receipt.verified_solution_set
+    verified == receipt.verified_solution_set && receipt.proof_trace.len() == 3
 }
 
 #[cfg(test)]
@@ -207,6 +220,7 @@ mod tests {
         let receipt = execute_solution_verification("2*x + 1 = 7", "x = 3").unwrap();
         assert!(receipt.replay_verified);
         assert_eq!(receipt.verified_solution, "x = 3");
+        assert_eq!(receipt.proof_trace.len(), 3);
     }
 
     #[test]
@@ -231,6 +245,7 @@ mod tests {
             .unwrap();
         assert!(receipt.replay_verified);
         assert_eq!(receipt.verified_solution_set.len(), 2);
+        assert_eq!(receipt.proof_trace.len(), 3);
     }
 
     #[test]

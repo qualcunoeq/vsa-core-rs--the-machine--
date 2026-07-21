@@ -5,6 +5,7 @@
 //! refusing unsupported syntax or multiple variables.
 
 use crate::algebra::{self, SymExpr};
+use crate::capabilities::CapabilityRegistry;
 use serde::Serialize;
 use std::collections::BTreeSet;
 
@@ -31,6 +32,37 @@ pub struct EquationClassificationReceipt {
     pub variable: Option<String>,
     pub class: EquationClass,
     pub replay_verified: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum EquationRoutingFailure {
+    UnverifiedClassification,
+    UnsupportedClass,
+    SolverUnavailable(String),
+}
+
+/// Route a verified classification to the unique solver contract for that
+/// equation family.  This is a selection diagnostic; execution remains a
+/// separate capability authorization step.
+pub fn route_classified_equation(
+    receipt: &EquationClassificationReceipt,
+    registry: &CapabilityRegistry,
+) -> Result<String, EquationRoutingFailure> {
+    if !receipt.replay_verified || !replay_equation_classification(receipt) {
+        return Err(EquationRoutingFailure::UnverifiedClassification);
+    }
+    let capability_id = match receipt.class {
+        EquationClass::Linear => "linear_equation_solve",
+        EquationClass::Quadratic => "quadratic_equation_solve",
+        EquationClass::Unsupported => return Err(EquationRoutingFailure::UnsupportedClass),
+    };
+    let Some(capability) = registry.get(capability_id) else {
+        return Err(EquationRoutingFailure::SolverUnavailable(capability_id.into()));
+    };
+    if !capability.quality_gate.enabled() {
+        return Err(EquationRoutingFailure::SolverUnavailable(capability_id.into()));
+    }
+    Ok(capability_id.into())
 }
 
 pub fn execute_equation_classification(
@@ -219,5 +251,32 @@ mod tests {
     fn classifies_higher_degree_as_unsupported() {
         let receipt = execute_equation_classification("x^3 = 1").unwrap();
         assert_eq!(receipt.class, EquationClass::Unsupported);
+    }
+
+    #[test]
+    fn verified_classification_routes_to_linear_solver() {
+        let receipt = execute_equation_classification("2*x + 3 = 7").unwrap();
+        assert_eq!(
+            route_classified_equation(&receipt, &CapabilityRegistry::production()),
+            Ok("linear_equation_solve".into())
+        );
+    }
+
+    #[test]
+    fn verified_classification_routes_to_quadratic_solver() {
+        let receipt = execute_equation_classification("x^2 - 4 = 0").unwrap();
+        assert_eq!(
+            route_classified_equation(&receipt, &CapabilityRegistry::production()),
+            Ok("quadratic_equation_solve".into())
+        );
+    }
+
+    #[test]
+    fn unsupported_class_has_no_solver_route() {
+        let receipt = execute_equation_classification("x^3 = 1").unwrap();
+        assert_eq!(
+            route_classified_equation(&receipt, &CapabilityRegistry::production()),
+            Err(EquationRoutingFailure::UnsupportedClass)
+        );
     }
 }

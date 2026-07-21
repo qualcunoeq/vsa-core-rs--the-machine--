@@ -945,6 +945,19 @@ pub enum CapabilityChainProofConceptContractFailure {
     },
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptValidationReceipt {
+    pub concept_id: String,
+    pub required_pattern_support: usize,
+    pub observed_pattern_support: usize,
+    pub held_out_cases: usize,
+    pub held_out_replay_failures: usize,
+    pub held_out_false_authorizations: usize,
+    pub contract_complete: bool,
+    pub passed: bool,
+    pub rationale: String,
+}
+
 impl CapabilityChainProofConceptDiscoveryReceipt {
     /// Extract an observed contract boundary for each concept using the
     /// registry's declared first-step inputs and last-step outputs. This is a
@@ -1000,6 +1013,53 @@ impl CapabilityChainProofConceptDiscoveryReceipt {
                 })
             })
             .collect()
+    }
+}
+
+impl CapabilityChainProofConceptContract {
+    /// Validate a concept proposal against explicit support and held-out
+    /// evidence. This receipt is analogous to abstraction generalization
+    /// evidence, but it never promotes the concept into the live registry.
+    pub fn validate(
+        &self,
+        required_pattern_support: usize,
+        held_out_cases: usize,
+        held_out_replay_failures: usize,
+        held_out_false_authorizations: usize,
+    ) -> CapabilityChainProofConceptValidationReceipt {
+        let contract_complete = !self.capabilities.is_empty()
+            && !self.input_artifacts.is_empty()
+            && !self.output_artifacts.is_empty()
+            && !self.parameterized_signature.trim().is_empty();
+        let support_sufficient = self.source_pattern_ids.len() >= required_pattern_support
+            && self.supporting_instances >= required_pattern_support;
+        let passed = contract_complete
+            && support_sufficient
+            && held_out_cases > 0
+            && held_out_replay_failures == 0
+            && held_out_false_authorizations == 0;
+        let rationale = if !contract_complete {
+            "concept boundary is incomplete".into()
+        } else if !support_sufficient {
+            "concept has insufficient distinct verified pattern support".into()
+        } else if held_out_cases == 0 {
+            "held-out evidence is missing".into()
+        } else if held_out_replay_failures > 0 || held_out_false_authorizations > 0 {
+            "held-out replay or safety evidence failed".into()
+        } else {
+            "typed boundary and held-out replay/safety evidence passed".into()
+        };
+        CapabilityChainProofConceptValidationReceipt {
+            concept_id: self.concept_id.clone(),
+            required_pattern_support,
+            observed_pattern_support: self.source_pattern_ids.len(),
+            held_out_cases,
+            held_out_replay_failures,
+            held_out_false_authorizations,
+            contract_complete,
+            passed,
+            rationale,
+        }
     }
 }
 
@@ -7052,6 +7112,22 @@ mod tests {
             unknown_contract.extract_contracts(&CapabilityRegistry::production()),
             Err(CapabilityChainProofConceptContractFailure::UnknownCapability { .. })
         ));
+        let validation = contracts[0].validate(2, 3, 0, 0);
+        assert!(validation.contract_complete);
+        assert!(validation.passed);
+        assert_eq!(validation.observed_pattern_support, 2);
+        let failed_validation = contracts[0].validate(3, 3, 1, 0);
+        assert!(!failed_validation.passed);
+        assert_eq!(
+            failed_validation.rationale,
+            "concept has insufficient distinct verified pattern support"
+        );
+        let safety_failure = contracts[0].validate(2, 3, 0, 1);
+        assert!(!safety_failure.passed);
+        assert_eq!(
+            safety_failure.rationale,
+            "held-out replay or safety evidence failed"
+        );
     }
 
     #[test]

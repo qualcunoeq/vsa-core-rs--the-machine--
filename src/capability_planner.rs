@@ -843,6 +843,20 @@ pub struct VerifiedArtifactFactBridgeReceipt {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct VerifiedArtifactFactPublicationReceipt {
+    pub key: String,
+    pub fact_id: String,
+    pub bridge: VerifiedArtifactFactBridgeReceipt,
+    pub index_result: FactIndexInsert,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum VerifiedArtifactFactPublicationFailure {
+    Bridge(VerifiedArtifactFactBridgeFailure),
+    Index(FactIndexRejection),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum VerifiedArtifactFactBridgeFailure {
     TrustPolicy(VerifiedArtifactPolicyFailure),
     Derivation(FactDerivationRejection),
@@ -887,6 +901,47 @@ pub fn derive_fact_from_verified_artifact<T>(
         policy,
     };
     Ok((fact, receipt))
+}
+
+/// Explicitly publish a verified artifact as governed knowledge.  This is a
+/// convenience boundary, not an implicit memory side effect: callers choose
+/// the ledger key and FactPolicy, and conflicts are returned as an indexed
+/// outcome in the publication receipt.
+pub fn publish_verified_artifact_fact<T>(
+    artifact: &VerifiedArtifact<T>,
+    trust_policy: &VerifiedArtifactPolicy,
+    id: impl Into<String>,
+    content: impl Into<String>,
+    parents: &[&DerivedFact],
+    provenance: impl Into<String>,
+    assumptions: &[String],
+    domain: Option<String>,
+    key: impl Into<String>,
+    index: &mut DerivedFactIndex,
+    fact_policy: &FactPolicy,
+) -> Result<VerifiedArtifactFactPublicationReceipt, VerifiedArtifactFactPublicationFailure> {
+    let (fact, bridge) = derive_fact_from_verified_artifact(
+        artifact,
+        trust_policy,
+        id,
+        content,
+        parents,
+        provenance,
+        assumptions,
+        domain,
+    )
+    .map_err(VerifiedArtifactFactPublicationFailure::Bridge)?;
+    let key = key.into();
+    let fact_id = fact.id.clone();
+    let index_result = index
+        .insert(key.clone(), fact, fact_policy)
+        .map_err(VerifiedArtifactFactPublicationFailure::Index)?;
+    Ok(VerifiedArtifactFactPublicationReceipt {
+        key,
+        fact_id,
+        bridge,
+        index_result,
+    })
 }
 
 impl VerifiedArtifactPolicy {
@@ -3464,6 +3519,26 @@ mod tests {
         assert!(fact.provenance.contains("evaluation replay"));
         assert_eq!(receipt.fact_id, "derived-value");
         assert_eq!(receipt.parent_lineage, vec!["input-fact"]);
+
+        let mut index = DerivedFactIndex::default();
+        let publication = publish_verified_artifact_fact(
+            &artifact,
+            &VerifiedArtifactPolicy::default(),
+            "published-value",
+            "value = 4",
+            &[&parent],
+            "expression result",
+            &[],
+            Some("algebra".into()),
+            "value",
+            &mut index,
+            &FactPolicy::verified_transformation(),
+        )
+        .unwrap();
+        assert_eq!(publication.key, "value");
+        assert_eq!(publication.fact_id, "published-value");
+        assert_eq!(publication.index_result, FactIndexInsert::Added);
+        assert_eq!(index.fact("published-value").unwrap().content, "value = 4");
 
         assert_eq!(
             derive_fact_from_verified_artifact(

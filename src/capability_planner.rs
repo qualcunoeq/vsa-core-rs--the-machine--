@@ -752,6 +752,7 @@ pub struct CapabilityChainProofTrace {
     pub execution_id: String,
     pub plan: CapabilityChainPlan,
     pub steps: Vec<CapabilityChainProofStep>,
+    pub retrieved_facts: Vec<DerivedFactProof>,
     pub final_artifacts: Vec<String>,
     pub replay_verified: bool,
 }
@@ -1004,6 +1005,7 @@ pub enum CapabilityChainProofFailure {
     ExecutionNotSuccessful(CapabilityChainExecutionStatus),
     IncompleteSteps { expected: usize, recorded: usize },
     MissingVerificationReceipt(usize),
+    MissingFactRetrievalReceipt(String),
 }
 
 /// Compose independently recorded step receipts into one proof artifact.
@@ -1011,6 +1013,16 @@ pub enum CapabilityChainProofFailure {
 /// already-recorded verification lineage at chain scope.
 pub fn compose_capability_chain_proof(
     execution: &CapabilityChainExecutionReceipt,
+) -> Result<CapabilityChainProofTrace, CapabilityChainProofFailure> {
+    compose_capability_chain_proof_with_retrieved_facts(execution, &[])
+}
+
+/// Compose execution receipts together with facts retrieved from the
+/// governed index. Retrieved facts are proof inputs, not execution steps, and
+/// must carry their own retrieval receipts.
+pub fn compose_capability_chain_proof_with_retrieved_facts(
+    execution: &CapabilityChainExecutionReceipt,
+    retrieved_facts: &[DerivedFactProof],
 ) -> Result<CapabilityChainProofTrace, CapabilityChainProofFailure> {
     if execution.status != CapabilityChainExecutionStatus::Succeeded {
         return Err(CapabilityChainProofFailure::ExecutionNotSuccessful(
@@ -1027,6 +1039,19 @@ pub fn compose_capability_chain_proof(
         if step.verification_receipt.trim().is_empty() {
             return Err(CapabilityChainProofFailure::MissingVerificationReceipt(
                 step.step_index,
+            ));
+        }
+    }
+    for fact in retrieved_facts {
+        if fact
+            .retrieval_receipt
+            .as_deref()
+            .unwrap_or_default()
+            .trim()
+            .is_empty()
+        {
+            return Err(CapabilityChainProofFailure::MissingFactRetrievalReceipt(
+                fact.fact_id.clone(),
             ));
         }
     }
@@ -1049,6 +1074,7 @@ pub fn compose_capability_chain_proof(
         execution_id: execution.execution_id.clone(),
         plan: execution.plan.clone(),
         steps,
+        retrieved_facts: retrieved_facts.to_vec(),
         final_artifacts,
         replay_verified: true,
     })
@@ -3430,6 +3456,32 @@ mod tests {
         assert!(proof.replay_verified);
         assert_eq!(proof.steps.len(), 2);
         assert_eq!(proof.final_artifacts, vec!["value"]);
+        assert!(proof.retrieved_facts.is_empty());
+        let retrieved = DerivedFactProof {
+            capability: "evaluate_simplified_expression".into(),
+            fact_id: "indexed-expression".into(),
+            parent_lineage: vec!["source-expression".into()],
+            retrieval_receipt: Some("fact_index_retrieval:expression:indexed-expression".into()),
+        };
+        let proof_with_retrieval = compose_capability_chain_proof_with_retrieved_facts(
+            &completed,
+            &[retrieved.clone()],
+        )
+        .unwrap();
+        assert_eq!(proof_with_retrieval.retrieved_facts, vec![retrieved]);
+        let missing_receipt = DerivedFactProof {
+            retrieval_receipt: None,
+            ..proof_with_retrieval.retrieved_facts[0].clone()
+        };
+        assert_eq!(
+            compose_capability_chain_proof_with_retrieved_facts(
+                &completed,
+                &[missing_receipt],
+            ),
+            Err(CapabilityChainProofFailure::MissingFactRetrievalReceipt(
+                "indexed-expression".into()
+            ))
+        );
         let verified = VerifiedArtifact::from_chain("value", proof.clone()).unwrap();
         assert_eq!(verified.artifact, "value");
         assert_eq!(verified.final_verification_receipt, "evaluation replay");
@@ -3506,6 +3558,7 @@ mod tests {
             execution_id: "policy-proof-3".into(),
             plan,
             steps: Vec::new(),
+            retrieved_facts: Vec::new(),
             final_artifacts: Vec::new(),
             replay_verified: true,
         };

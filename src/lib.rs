@@ -34,6 +34,7 @@ pub mod expression_evaluation;
 pub mod expression_simplification;
 pub mod equation_normalization;
 pub mod equation_classification;
+pub mod solution_verification;
 pub mod experiment;
 pub mod forager;
 pub mod formalization;

@@ -55,6 +55,14 @@ pub enum EquationChainPlanningFailure {
     Classification(EquationClassificationFailure),
     Routing(EquationRoutingFailure),
     CapabilityUnavailable(String),
+    TrustPolicy(VerifiedArtifactPlanningFailure),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum VerifiedArtifactPlanningFailure {
+    InsufficientProofSteps { required: usize, available: usize },
+    MissingStepVerifier(String),
+    MissingFinalVerificationStep,
 }
 
 /// A source-grounded equation plan. Classification is performed and verified
@@ -2647,6 +2655,25 @@ pub fn plan_equation_chain(
     goal: CapabilityIoType,
     registry: &CapabilityRegistry,
 ) -> Result<EquationChainPlan, EquationChainPlanningFailure> {
+    plan_equation_chain_with_policy(
+        source,
+        target_variable,
+        goal,
+        registry,
+        &VerifiedArtifactPolicy::default(),
+    )
+}
+
+/// Plan an equation chain while making the consumer's proof requirements
+/// part of planning.  This rejects chains that cannot satisfy the requested
+/// verified-artifact contract before any execution is attempted.
+pub fn plan_equation_chain_with_policy(
+    source: &str,
+    target_variable: &str,
+    goal: CapabilityIoType,
+    registry: &CapabilityRegistry,
+    policy: &VerifiedArtifactPolicy,
+) -> Result<EquationChainPlan, EquationChainPlanningFailure> {
     if goal != CapabilityIoType::SolutionSet
         && goal != CapabilityIoType::VerifiedSolutionSet
         && goal != CapabilityIoType::VerifiedArtifact
@@ -2720,6 +2747,45 @@ pub fn plan_equation_chain(
     }
     if goal == CapabilityIoType::VerifiedArtifact {
         steps.push("verified_artifact_wrap".into());
+
+        let proof_steps = steps
+            .iter()
+            .filter(|step| step.as_str() != "verified_artifact_wrap")
+            .collect::<Vec<_>>();
+        if proof_steps.len() < policy.minimum_proof_steps {
+            return Err(EquationChainPlanningFailure::TrustPolicy(
+                VerifiedArtifactPlanningFailure::InsufficientProofSteps {
+                    required: policy.minimum_proof_steps,
+                    available: proof_steps.len(),
+                },
+            ));
+        }
+        if policy.require_replay_verified {
+            for step in &proof_steps {
+                let Some(capability) = registry.get(*step) else {
+                    return Err(EquationChainPlanningFailure::CapabilityUnavailable(
+                        (*step).clone(),
+                    ));
+                };
+                if capability.verifier.trim().is_empty() {
+                    return Err(EquationChainPlanningFailure::TrustPolicy(
+                        VerifiedArtifactPlanningFailure::MissingStepVerifier((*step).clone()),
+                    ));
+                }
+            }
+        }
+        if policy.require_final_verification_receipt {
+            let final_step = proof_steps.last().copied();
+            let has_final_verifier = final_step
+                .and_then(|step| registry.get(step))
+                .map(|capability| !capability.verifier.trim().is_empty())
+                .unwrap_or(false);
+            if !has_final_verifier {
+                return Err(EquationChainPlanningFailure::TrustPolicy(
+                    VerifiedArtifactPlanningFailure::MissingFinalVerificationStep,
+                ));
+            }
+        }
     }
     Ok(EquationChainPlan {
         source: source.trim().into(),
@@ -3650,6 +3716,56 @@ mod tests {
             .chain
             .steps
             .contains(&"solution_set_verification".into()));
+    }
+
+    #[test]
+    fn policy_aware_equation_planner_rejects_insufficient_proof_depth() {
+        let policy = VerifiedArtifactPolicy {
+            minimum_proof_steps: 5,
+            ..VerifiedArtifactPolicy::default()
+        };
+        assert_eq!(
+            plan_equation_chain_with_policy(
+                "x^2 - 4 = 0",
+                "x",
+                CapabilityIoType::VerifiedArtifact,
+                &CapabilityRegistry::production(),
+                &policy,
+            ),
+            Err(EquationChainPlanningFailure::TrustPolicy(
+                VerifiedArtifactPlanningFailure::InsufficientProofSteps {
+                    required: 5,
+                    available: 4,
+                }
+            ))
+        );
+    }
+
+    #[test]
+    fn policy_aware_equation_planner_accepts_replay_and_receipt_requirements() {
+        let policy = VerifiedArtifactPolicy {
+            require_replay_verified: true,
+            minimum_proof_steps: 4,
+            require_final_verification_receipt: true,
+        };
+        let plan = plan_equation_chain_with_policy(
+            "x^2 - 4 = 0",
+            "x",
+            CapabilityIoType::VerifiedArtifact,
+            &CapabilityRegistry::production(),
+            &policy,
+        )
+        .unwrap();
+        assert_eq!(
+            plan.chain.steps,
+            vec![
+                "equation_normalization",
+                "equation_classification",
+                "quadratic_equation_solve",
+                "solution_set_verification",
+                "verified_artifact_wrap"
+            ]
+        );
     }
 
     #[test]

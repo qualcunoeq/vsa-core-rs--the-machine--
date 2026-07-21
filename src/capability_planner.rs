@@ -787,6 +787,26 @@ pub enum CapabilityChainProofIndexFailure {
     DuplicateFingerprint(String),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofCost {
+    pub proof_steps: usize,
+    pub retrieved_facts: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofPreferenceCandidate {
+    pub fingerprint: String,
+    pub cost: CapabilityChainProofCost,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofPreferenceReceipt {
+    pub goal_artifact: String,
+    pub candidates: Vec<CapabilityChainProofPreferenceCandidate>,
+    pub preferred_fingerprint: Option<String>,
+    pub ambiguous: bool,
+}
+
 /// Explicit cache of proof-bearing reasoning traces. Insertion is deliberate:
 /// the index never executes, authorizes, or silently replaces a proof. A
 /// caller can retrieve an existing trace by its canonical reasoning identity.
@@ -860,6 +880,59 @@ impl CapabilityChainProofIndex {
         proof: &CapabilityChainProofTrace,
     ) -> Option<&CapabilityChainProofTrace> {
         self.get(&proof.reasoning_fingerprint())
+    }
+
+    /// Rank indexed proofs as a diagnostic only. Authorization and proof
+    /// validity remain governed by the existing verification policies. A tie
+    /// at the minimum cost is reported as ambiguous rather than resolved by
+    /// map or insertion order.
+    pub fn rank_goal_proofs(
+        &self,
+        goal_artifact: &str,
+    ) -> CapabilityChainProofPreferenceReceipt {
+        let mut candidates = self
+            .proofs
+            .iter()
+            .filter(|(_, proof)| {
+                proof
+                    .final_artifacts
+                    .iter()
+                    .any(|artifact| artifact == goal_artifact)
+            })
+            .map(|(fingerprint, proof)| CapabilityChainProofPreferenceCandidate {
+                fingerprint: fingerprint.clone(),
+                cost: CapabilityChainProofCost {
+                    proof_steps: proof.steps.len(),
+                    retrieved_facts: proof.retrieved_facts.len(),
+                },
+            })
+            .collect::<Vec<_>>();
+        candidates.sort_by(|left, right| {
+            left.cost
+                .proof_steps
+                .cmp(&right.cost.proof_steps)
+                .then_with(|| {
+                    left.cost
+                        .retrieved_facts
+                        .cmp(&right.cost.retrieved_facts)
+                })
+                .then_with(|| left.fingerprint.cmp(&right.fingerprint))
+        });
+        let minimum = candidates.first().map(|candidate| &candidate.cost);
+        let tied = minimum
+            .map(|cost| {
+                candidates
+                    .iter()
+                    .filter(|candidate| &candidate.cost == cost)
+                    .count()
+            })
+            .unwrap_or(0);
+        CapabilityChainProofPreferenceReceipt {
+            goal_artifact: goal_artifact.into(),
+            preferred_fingerprint: (tied == 1).then(|| candidates[0].fingerprint.clone()),
+            ambiguous: tied > 1,
+            candidates,
+        }
     }
 
     /// Search indexed proof fragments for a compatible composed proof. The
@@ -3963,6 +4036,16 @@ mod tests {
             .unwrap();
         assert_eq!(reused.final_artifacts, vec!["value"]);
         assert_eq!(reused.steps.len(), 2);
+
+        let mut alternate = second.clone();
+        alternate.execution_id = "proof-compose-alternate".into();
+        alternate.plan.steps = vec!["alternate_evaluation".into()];
+        alternate.steps[0].capability_id = "alternate_evaluation".into();
+        graph.insert(alternate).unwrap();
+        let preference = graph.rank_goal_proofs("value");
+        assert_eq!(preference.candidates.len(), 2);
+        assert!(preference.ambiguous);
+        assert_eq!(preference.preferred_fingerprint, None);
 
         let mut incompatible = second.clone();
         incompatible.steps[0].input_artifacts = vec!["other-expression".into()];

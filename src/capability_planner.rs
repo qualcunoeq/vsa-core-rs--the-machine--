@@ -365,6 +365,203 @@ pub fn validate_capability_chain_repair(
     })
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainRepairApprovalDecision {
+    Approved,
+    Deferred,
+    Rejected,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainRepairApprovalReceipt {
+    pub approval_id: String,
+    pub execution_id: String,
+    pub proposed_plan: CapabilityChainPlan,
+    pub validation: CapabilityChainRepairValidationReceipt,
+    pub decision: CapabilityChainRepairApprovalDecision,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainRepairApprovalFailure {
+    DuplicateApproval(String),
+    ValidationMismatch,
+    UnknownApproval(String),
+    ApprovalNotGranted(CapabilityChainRepairApprovalDecision),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainRepairApprovalLedger {
+    approvals: BTreeMap<String, CapabilityChainRepairApprovalReceipt>,
+}
+
+impl CapabilityChainRepairApprovalLedger {
+    pub fn record(
+        &mut self,
+        approval_id: impl Into<String>,
+        candidate: &CapabilityChainRepairCandidate,
+        validation: CapabilityChainRepairValidationReceipt,
+        decision: CapabilityChainRepairApprovalDecision,
+    ) -> Result<CapabilityChainRepairApprovalReceipt, CapabilityChainRepairApprovalFailure> {
+        let approval_id = approval_id.into();
+        if self.approvals.contains_key(&approval_id) {
+            return Err(CapabilityChainRepairApprovalFailure::DuplicateApproval(
+                approval_id,
+            ));
+        }
+        if validation.source_execution_id != candidate.execution_id
+            || validation.failed_step != candidate.failed_step
+            || validation.repaired_execution_id.is_empty()
+        {
+            return Err(CapabilityChainRepairApprovalFailure::ValidationMismatch);
+        }
+        let receipt = CapabilityChainRepairApprovalReceipt {
+            approval_id: approval_id.clone(),
+            execution_id: candidate.execution_id.clone(),
+            proposed_plan: candidate.proposed_plan.clone(),
+            validation,
+            decision,
+        };
+        self.approvals.insert(approval_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn receipt(&self, approval_id: &str) -> Option<&CapabilityChainRepairApprovalReceipt> {
+        self.approvals.get(approval_id)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainRepairInstallationStatus {
+    Prepared,
+    Applied,
+    Failed,
+    RolledBack,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainRepairInstallationReceipt {
+    pub installation_id: String,
+    pub approval_id: String,
+    pub plan: CapabilityChainPlan,
+    pub status: CapabilityChainRepairInstallationStatus,
+    pub verification_receipt: Option<String>,
+    pub failure_reason: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum CapabilityChainRepairInstallationFailure {
+    DuplicateInstallation(String),
+    ApprovalNotGranted(CapabilityChainRepairApprovalDecision),
+    PlanMismatch,
+    UnknownInstallation(String),
+    InvalidTransition(CapabilityChainRepairInstallationStatus),
+    MissingVerificationReceipt,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
+pub struct CapabilityChainRepairInstallationLedger {
+    installations: BTreeMap<String, CapabilityChainRepairInstallationReceipt>,
+}
+
+impl CapabilityChainRepairInstallationLedger {
+    pub fn prepare(
+        &mut self,
+        installation_id: impl Into<String>,
+        approval: &CapabilityChainRepairApprovalReceipt,
+        plan: CapabilityChainPlan,
+    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure> {
+        let installation_id = installation_id.into();
+        if self.installations.contains_key(&installation_id) {
+            return Err(CapabilityChainRepairInstallationFailure::DuplicateInstallation(
+                installation_id,
+            ));
+        }
+        if approval.decision != CapabilityChainRepairApprovalDecision::Approved {
+            return Err(CapabilityChainRepairInstallationFailure::ApprovalNotGranted(
+                approval.decision,
+            ));
+        }
+        if plan != approval.proposed_plan {
+            return Err(CapabilityChainRepairInstallationFailure::PlanMismatch);
+        }
+        let receipt = CapabilityChainRepairInstallationReceipt {
+            installation_id: installation_id.clone(),
+            approval_id: approval.approval_id.clone(),
+            plan,
+            status: CapabilityChainRepairInstallationStatus::Prepared,
+            verification_receipt: None,
+            failure_reason: None,
+        };
+        self.installations.insert(installation_id, receipt.clone());
+        Ok(receipt)
+    }
+
+    pub fn mark_applied(
+        &mut self,
+        installation_id: &str,
+        verification_receipt: impl Into<String>,
+    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure> {
+        let receipt = self
+            .installations
+            .get_mut(installation_id)
+            .ok_or_else(|| CapabilityChainRepairInstallationFailure::UnknownInstallation(
+                installation_id.into(),
+            ))?;
+        if receipt.status != CapabilityChainRepairInstallationStatus::Prepared {
+            return Err(CapabilityChainRepairInstallationFailure::InvalidTransition(
+                receipt.status,
+            ));
+        }
+        let verification_receipt = verification_receipt.into();
+        if verification_receipt.trim().is_empty() {
+            return Err(CapabilityChainRepairInstallationFailure::MissingVerificationReceipt);
+        }
+        receipt.status = CapabilityChainRepairInstallationStatus::Applied;
+        receipt.verification_receipt = Some(verification_receipt);
+        Ok(receipt.clone())
+    }
+
+    pub fn mark_failed(
+        &mut self,
+        installation_id: &str,
+        reason: impl Into<String>,
+    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure> {
+        let receipt = self
+            .installations
+            .get_mut(installation_id)
+            .ok_or_else(|| CapabilityChainRepairInstallationFailure::UnknownInstallation(
+                installation_id.into(),
+            ))?;
+        if receipt.status != CapabilityChainRepairInstallationStatus::Prepared {
+            return Err(CapabilityChainRepairInstallationFailure::InvalidTransition(
+                receipt.status,
+            ));
+        }
+        receipt.status = CapabilityChainRepairInstallationStatus::Failed;
+        receipt.failure_reason = Some(reason.into());
+        Ok(receipt.clone())
+    }
+
+    pub fn rollback(
+        &mut self,
+        installation_id: &str,
+    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure> {
+        let receipt = self
+            .installations
+            .get_mut(installation_id)
+            .ok_or_else(|| CapabilityChainRepairInstallationFailure::UnknownInstallation(
+                installation_id.into(),
+            ))?;
+        if receipt.status != CapabilityChainRepairInstallationStatus::Applied {
+            return Err(CapabilityChainRepairInstallationFailure::InvalidTransition(
+                receipt.status,
+            ));
+        }
+        receipt.status = CapabilityChainRepairInstallationStatus::RolledBack;
+        Ok(receipt.clone())
+    }
+}
+
 impl CapabilityChainPlan {
     /// Compute deterministic chain cost for diagnostics and preference
     /// reporting. Cost never authorizes a plan or resolves an ambiguity.
@@ -2674,6 +2871,38 @@ mod tests {
         assert_eq!(validation.source_execution_id, "chain-repair-1");
         assert_eq!(validation.repaired_execution_id, "chain-repair-execution-1");
         assert_eq!(validation.verified_steps, 1);
+        let mut approvals = CapabilityChainRepairApprovalLedger::default();
+        let approval = approvals
+            .record(
+                "repair-approval-1",
+                &proposals[0],
+                validation,
+                CapabilityChainRepairApprovalDecision::Approved,
+            )
+            .unwrap();
+        let mut installations = CapabilityChainRepairInstallationLedger::default();
+        let prepared = installations
+            .prepare(
+                "repair-installation-1",
+                &approval,
+                proposals[0].proposed_plan.clone(),
+            )
+            .unwrap();
+        assert_eq!(
+            prepared.status,
+            CapabilityChainRepairInstallationStatus::Prepared
+        );
+        let applied = installations
+            .mark_applied("repair-installation-1", "installation verified")
+            .unwrap();
+        assert_eq!(
+            applied.status,
+            CapabilityChainRepairInstallationStatus::Applied
+        );
+        assert_eq!(
+            installations.rollback("repair-installation-1").unwrap().status,
+            CapabilityChainRepairInstallationStatus::RolledBack
+        );
     }
 
     #[test]

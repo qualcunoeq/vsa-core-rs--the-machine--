@@ -19,6 +19,7 @@ pub enum InputRequirement {
     ParseableEquation,
     ClassifiableEquation,
     CandidateSolution,
+    CandidateSolutionSet,
     AllExpressionVariablesBound,
     SingleEquationSubject,
     SingleTargetVariable,
@@ -44,7 +45,9 @@ pub enum CapabilityIoType {
     NormalizedEquation,
     EquationClassification,
     CandidateSolution,
+    CandidateSolutionSet,
     VerifiedSolution,
+    VerifiedSolutionSet,
     BindingSet,
     TargetVariable,
     VariableSet,
@@ -483,6 +486,38 @@ impl CapabilitySpec {
             },
         }
     }
+
+    pub fn solution_set_verification_v1() -> Self {
+        Self {
+            id: "solution_set_verification".into(),
+            version: 1,
+            kind: CapabilityKind::Transformation,
+            dependencies: Vec::new(),
+            consumes: vec![
+                CapabilityIoType::NormalizedEquation,
+                CapabilityIoType::CandidateSolutionSet,
+            ],
+            produces: vec![CapabilityIoType::VerifiedSolutionSet],
+            supported_object_types: vec![SubjectObjectType::Equation],
+            supported_operations: vec![OperationKind::Verify],
+            supported_answer_forms: vec![AnswerForm::SolutionSet, AnswerForm::Proof],
+            input_requirements: vec![InputRequirement::ReplayVerifier],
+            fact_policy: None,
+            executor: "solution_verification::execute_solution_set_verification".into(),
+            verifier: "solution_verification::replay_solution_set_verification".into(),
+            regression_cases: vec![
+                "solution_verification::verifies_complete_quadratic_solution_set".into(),
+                "solution_verification::rejects_incomplete_solution_set".into(),
+            ],
+            quality_gate: CapabilityQualityGate {
+                positive_cases: 1,
+                negative_cases: 1,
+                adversarial_cases: 1,
+                false_authorizations: 0,
+                replay_failures: 0,
+            },
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
@@ -499,6 +534,7 @@ impl CapabilityRegistry {
         registry.register(CapabilitySpec::equation_normalization_v1());
         registry.register(CapabilitySpec::equation_classification_v1());
         registry.register(CapabilitySpec::solution_verification_v1());
+        registry.register(CapabilitySpec::solution_set_verification_v1());
         registry.register(CapabilitySpec::linear_equation_solve_v1());
         registry.register(CapabilitySpec::quadratic_equation_solve_v1());
         registry.register(CapabilitySpec::linear_system_solve_v1());
@@ -647,6 +683,7 @@ impl CapabilityRegistry {
                             && crate::algebra::parse_equation(subject.object.trim()).is_ok()
                     }
                     InputRequirement::CandidateSolution => true,
+                    InputRequirement::CandidateSolutionSet => true,
                     InputRequirement::AllExpressionVariablesBound => {
                         if subject.object_type != SubjectObjectType::Expression {
                             true
@@ -765,6 +802,7 @@ mod tests {
                 "linear_equation_solve".to_string(),
                 "linear_system_solve".to_string(),
                 "quadratic_equation_solve".to_string(),
+                "solution_set_verification".to_string(),
                 "solution_verification".to_string(),
                 "substitution".to_string(),
             ]

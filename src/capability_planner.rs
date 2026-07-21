@@ -996,6 +996,10 @@ pub struct CapabilityChainProofAbstractionPriorityScore {
     pub value_signal: usize,
     pub risk_signal: usize,
     pub complexity_penalty: usize,
+    pub expected_gain: usize,
+    pub validation_cost: usize,
+    pub efficiency_numerator: usize,
+    pub efficiency_denominator: usize,
     pub total: isize,
 }
 
@@ -1939,8 +1943,9 @@ pub fn rank_proof_abstraction_priorities(
         let complexity_penalty = input.value.candidate_score.proof_steps
             + input.value.candidate_score.dependency_count
             + input.value.candidate_score.contract_burden;
-        let total = recurrence_signal as isize + value_signal as isize + risk_signal as isize
-            - complexity_penalty as isize;
+        let expected_gain = recurrence_signal + value_signal + risk_signal;
+        let validation_cost = 1 + complexity_penalty;
+        let total = expected_gain as isize - complexity_penalty as isize;
         candidates.push(CapabilityChainProofAbstractionPriorityCandidate {
             pattern_id,
             score: CapabilityChainProofAbstractionPriorityScore {
@@ -1948,23 +1953,39 @@ pub fn rank_proof_abstraction_priorities(
                 value_signal,
                 risk_signal,
                 complexity_penalty,
+                expected_gain,
+                validation_cost,
+                efficiency_numerator: expected_gain,
+                efficiency_denominator: validation_cost,
                 total,
             },
         });
     }
     candidates.sort_by(|left, right| {
-        right
-            .score
-            .total
-            .cmp(&left.score.total)
+        let right_efficiency = (right.score.efficiency_numerator as u128)
+            * (left.score.efficiency_denominator as u128);
+        let left_efficiency = (left.score.efficiency_numerator as u128)
+            * (right.score.efficiency_denominator as u128);
+        right_efficiency
+            .cmp(&left_efficiency)
+            .then_with(|| right.score.total.cmp(&left.score.total))
             .then_with(|| left.pattern_id.cmp(&right.pattern_id))
     });
-    let top_score = candidates.first().map(|candidate| candidate.score.total);
-    let preferred_pattern_ids = top_score
-        .map(|score| {
+    let top_efficiency = candidates.first().map(|candidate| {
+        (
+            candidate.score.efficiency_numerator,
+            candidate.score.efficiency_denominator,
+        )
+    });
+    let preferred_pattern_ids = top_efficiency
+        .map(|(numerator, denominator)| {
             candidates
                 .iter()
-                .filter(|candidate| candidate.score.total == score)
+                .filter(|candidate| {
+                    (candidate.score.efficiency_numerator as u128) * (denominator as u128)
+                        == (numerator as u128)
+                            * (candidate.score.efficiency_denominator as u128)
+                })
                 .map(|candidate| candidate.pattern_id.clone())
                 .collect::<Vec<_>>()
         })
@@ -5841,6 +5862,17 @@ mod tests {
             vec![simplification_shape.pattern_id.clone()]
         );
         assert!(!priority.ambiguous);
+        let priority_score = &priority.candidates[0].score;
+        assert!(priority_score.expected_gain > 0);
+        assert!(priority_score.validation_cost > 0);
+        assert_eq!(
+            priority_score.efficiency_numerator,
+            priority_score.expected_gain
+        );
+        assert_eq!(
+            priority_score.efficiency_denominator,
+            priority_score.validation_cost
+        );
         assert!(matches!(
             rank_proof_abstraction_priorities(vec![
                 CapabilityChainProofAbstractionPriorityInput {

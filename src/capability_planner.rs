@@ -898,6 +898,16 @@ pub struct CapabilityChainProofSynthesisPreferenceReceipt {
     pub ambiguous: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofAbstraction {
+    pub pattern_id: String,
+    pub goal: CapabilityIoType,
+    pub capabilities: Vec<String>,
+    pub final_artifacts: Vec<String>,
+    pub instances: usize,
+    pub representative_fingerprint: String,
+}
+
 /// Explicit cache of proof-bearing reasoning traces. Insertion is deliberate:
 /// the index never executes, authorizes, or silently replaces a proof. A
 /// caller can retrieve an existing trace by its canonical reasoning identity.
@@ -1070,6 +1080,45 @@ impl CapabilityChainProofIndex {
             accepted: accepted.rank_goal_proofs(goal_artifact),
             rejected,
         }
+    }
+
+    /// Summarize recurring proof structure without generalizing its
+    /// provenance. These are diagnostic patterns, not executable proofs or
+    /// authorization rules; every instance remains individually indexed.
+    pub fn abstract_proof_shapes(&self) -> Vec<CapabilityChainProofAbstraction> {
+        let mut grouped: BTreeMap<String, CapabilityChainProofAbstraction> = BTreeMap::new();
+        for (fingerprint, proof) in &self.proofs {
+            let capabilities = proof
+                .steps
+                .iter()
+                .map(|step| step.capability_id.clone())
+                .collect::<Vec<_>>();
+            let signature = (
+                proof.plan.goal,
+                capabilities.clone(),
+                proof.final_artifacts.clone(),
+            );
+            let encoded = serde_json::to_vec(&signature)
+                .expect("proof abstraction signature must serialize");
+            let pattern_id = format!("{:x}", Sha256::digest(encoded));
+            grouped
+                .entry(pattern_id.clone())
+                .and_modify(|abstraction| {
+                    abstraction.instances += 1;
+                    if fingerprint < &abstraction.representative_fingerprint {
+                        abstraction.representative_fingerprint = fingerprint.clone();
+                    }
+                })
+                .or_insert_with(|| CapabilityChainProofAbstraction {
+                    pattern_id,
+                    goal: proof.plan.goal,
+                    capabilities,
+                    final_artifacts: proof.final_artifacts.clone(),
+                    instances: 1,
+                    representative_fingerprint: fingerprint.clone(),
+                });
+        }
+        grouped.into_values().collect()
     }
 
     /// Search indexed proof fragments for a compatible composed proof. The
@@ -4667,6 +4716,17 @@ mod tests {
         alternate.plan.steps = vec!["alternate_evaluation".into()];
         alternate.steps[0].capability_id = "alternate_evaluation".into();
         graph.insert(alternate).unwrap();
+        let mut first_variant = first.clone();
+        first_variant.steps[0].verification_receipt = "alternate simplification replay".into();
+        graph.insert(first_variant).unwrap();
+        let abstractions = graph.abstract_proof_shapes();
+        let simplification_shape = abstractions
+            .iter()
+            .find(|abstraction| {
+                abstraction.capabilities == vec!["expression_simplification".to_string()]
+            })
+            .unwrap();
+        assert_eq!(simplification_shape.instances, 2);
         let preference = graph.rank_goal_proofs("value");
         assert_eq!(preference.candidates.len(), 2);
         assert!(preference.ambiguous);

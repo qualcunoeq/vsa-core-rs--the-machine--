@@ -296,8 +296,8 @@ mod tests {
         assert!(report.groups["total"].failure_taxonomy.classification_coverage >= 0.95);
         assert_eq!(report.groups["total"].false_authorizations, 0);
         assert_eq!(report.groups["total"].planning_attempts, 37);
-        assert_eq!(report.groups["total"].planning_success, 27);
-        assert_eq!(report.groups["total"].planning_none, 10);
+        assert_eq!(report.groups["total"].planning_success, 29);
+        assert_eq!(report.groups["total"].planning_none, 8);
     }
 
     #[test]

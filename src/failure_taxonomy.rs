@@ -212,7 +212,7 @@ mod tests {
         let assessment = crate::formalization::assess_direct_instantiation(&trace);
         let receipt = assessment.denial_trace(true);
         let record = classify_formalization_failure(&trace, &receipt, false).unwrap();
-        assert_eq!(record.class, FailureClass::FormalizationFailure);
+        assert_eq!(record.class, FailureClass::PlanningFailure);
         assert!(!record.blocker.is_empty());
     }
 

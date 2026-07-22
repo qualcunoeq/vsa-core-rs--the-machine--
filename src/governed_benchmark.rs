@@ -114,6 +114,7 @@ fn proposition_tier(name: &str, metrics: &PropositionMetrics) -> TierMetrics {
 fn strategic_tier(
     metrics: &StrategicRouteModeMetrics,
     shadow: &StrategicReceiptShadowMetrics,
+    failure_taxonomy: &BTreeMap<String, usize>,
 ) -> TierMetrics {
     TierMetrics {
         tier: "tier3_method_selection".into(),
@@ -133,7 +134,7 @@ fn strategic_tier(
         // same authority denominator as replay_rate.
         positive_replay_rate: shadow.replay_success as f64
             / shadow.executions_under_existing_authority.max(1) as f64,
-        failure_taxonomy: BTreeMap::new(),
+        failure_taxonomy: failure_taxonomy.clone(),
     }
 }
 
@@ -186,7 +187,11 @@ pub fn evaluate(
     );
     tiers.insert(
         "tier3_method_selection".into(),
-        strategic_tier(&strategic.modes["full"], &strategic.receipt_shadow),
+        strategic_tier(
+            &strategic.modes["full"],
+            &strategic.receipt_shadow,
+            &strategic.failure_taxonomy,
+        ),
     );
     tiers.insert(
         "tier4_adversarial".into(),

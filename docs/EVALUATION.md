@@ -66,7 +66,7 @@ Expected contents:
 | Noise-stable memory | raw HV stream | NHD to source, retained signal, memory growth | `src/lib.rs`, `src/reason.rs` | structured long-run memory benchmark |
 | Concept formation | similarity-only grouping | prediction gain, compression gain, concept churn | `src/abstractor.rs`, `src/cognition.rs` | `test_abstraction_ablation_benchmark` (ignored) emits `ExperimentResult` JSON |
 | Temporal prediction | last-state or frequency baseline | top-k accuracy, calibration error | `src/temporal.rs`, `src/predictive.rs` | seedable transition benchmark |
-| QA recall | direct lookup | answer accuracy, provenance completeness | `src/qa.rs`, `src/cognition.rs` | persist `CognitiveEpisode` records for QA runs |
+| QA recall | direct lookup | answer accuracy, provenance completeness | `src/qa.rs`, `src/cognition.rs` | persist `CognitiveEpisode` records, including rule-level chain traces |
 | Analogical transfer | non-VSA parser/classifier | held-out transfer accuracy | `src/analogy.rs` | keep negative A21 result until mechanism changes |
 | Diagnostics | static keyword map | held-out diagnosis accuracy, category drift | `src/diagnostic.rs`, `src/abstraction_learner.rs` | persistent learner promotion audit |
 | Feedback learning | no post-answer update | outcome score, reversible update rate, regression rate | `src/cognition.rs` | append-only feedback store |
@@ -127,6 +127,8 @@ The suite measures:
 - abstention on unknown questions;
 - improvement after feedback insertion;
 - term-trace coverage for explanation/provenance.
+- rule-level chain-trace coverage, replay distance, and explicit chain termination
+  for multi-hop causal answers.
 
 The primary summary metric is `aggregate_score`, with component metrics emitted
 alongside it in the standard `ExperimentResult` JSONL schema.

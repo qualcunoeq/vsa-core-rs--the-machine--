@@ -108,6 +108,9 @@ Implemented surface:
 - `verify_fact_episode()` wraps `verify_fact()` with term-level traces.
 - `answer_combined_episode()` and `answer_chain_episode()` (existing) cover combined
   and chain paths.
+- `reason_chain_trace()` now records each matched rule, match energy, typed SVO
+  handoff, replay distance, and termination; `CognitiveEpisode.chain_trace`
+  persists that rule-level provenance with the answer episode.
 - Socket `ASK` and `CHAIN` commands now use episode wrappers, recording every
   admin-socket query in the episode store.
 - Episode store automatically persisted every 50 ticks in `main.rs`.
@@ -115,8 +118,6 @@ Implemented surface:
 
 Near-term work:
 
-- Wire multi-hop chain provenance: `reason_chain()` should return rule-level traces
-  alongside text results.
 - Add forward-chain / abduce episode wrappers for completeness.
 - Wire `ConfidenceCalibration::record_store()` into the main agent loop every 50 ticks
   to track calibration over time.
@@ -266,7 +267,7 @@ Current anchors:
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `61d7b58`):
+Current evidence (commit `405fbfd`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task

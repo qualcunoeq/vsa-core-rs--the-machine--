@@ -329,7 +329,7 @@ tiers and records which ablations are actually implemented:
 
 ```bash
 cargo run --release --bin governed_bench -- \
-  500 500 42 results/governed_bench/large.jsonl 22a240e
+  500 500 42 results/governed_bench/large.jsonl 406ce80
 ```
 
 The seed-42 run reports seven tiers. Tier 0 direct algebra execution is 27/27

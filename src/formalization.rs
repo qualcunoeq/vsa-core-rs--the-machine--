@@ -2148,7 +2148,7 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
             );
         }
     }
-    if lower.contains("does work W") {
+    if lower.contains("does work w") {
         push(&mut facts, "W=Fd".into(), "does work W");
     }
     if let Some(capture) = Regex::new(
@@ -3475,6 +3475,16 @@ mod tests {
         assert!(system.facts.iter().any(|fact| fact.statement == "x-y=2"));
         assert!(system.target_completion.complete);
         assert!(!assess_direct_instantiation(&system).authorization_safe());
+
+        let work = assess_prompt(
+            "prose-work",
+            "A constant 6 N force parallel to a 4 m displacement does work W. Find W.",
+            "Math",
+            false,
+        );
+        assert!(work.facts.iter().any(|fact| fact.statement == "W=Fd"));
+        assert!(work.target_completion.complete);
+        assert!(!assess_direct_instantiation(&work).authorization_safe());
 
         let quantifier = assess_prompt(
             "prose-quantifier",

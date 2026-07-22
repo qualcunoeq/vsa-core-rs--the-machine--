@@ -213,3 +213,14 @@ executors, then replays each successful receipt.  The JSONL report separates
 formalization, method selection, execution, replay, exact-result accuracy,
 route length, false authorization, and false denial.  Adversarial cases are
 expected to abstain; they are not scored as failed solves.
+
+To add deterministic parameterized cases without changing the versioned seed:
+
+```bash
+cargo run --release --bin algebra_bench -- \
+  data/algebra_seed_v1.json results/algebra_bench/generated.jsonl \
+  HEAD 200 42
+```
+
+The generated gold answers come from integer witnesses and are independent of
+the executor; every fifth generated case is held out.

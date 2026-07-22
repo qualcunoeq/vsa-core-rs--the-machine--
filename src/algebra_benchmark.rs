@@ -57,6 +57,101 @@ impl AlgebraCorpus {
         }
         errors
     }
+
+    /// Extend a hand-authored corpus with deterministic parameterized cases.
+    /// Gold answers are constructed from integer witnesses, independently of
+    /// the algebra executor, so this is useful for scale and holdout tests.
+    pub fn with_generated_cases(&self, count: usize, seed: u64) -> Self {
+        let mut expanded = self.clone();
+        for index in 0..count {
+            let n = splitmix64(seed.wrapping_add(index as u64));
+            let holdout = index % 5 == 0;
+            let id = if holdout {
+                format!("gen-{index:04}-h")
+            } else {
+                format!("gen-{index:04}")
+            };
+            let case = match index % 3 {
+                0 => {
+                    let a = (n % 9 + 1) as i64;
+                    let b = ((n >> 8) % 17) as i64 - 8;
+                    let x = ((n >> 16) % 21) as i64 - 10;
+                    let c = a * x + b;
+                    AlgebraCase {
+                        id,
+                        tier: "generated".into(),
+                        method: AlgebraMethod::LinearEquation,
+                        prompt: format!("Solve for x: {}*x{}= {}.", a, signed_term(b), c),
+                        expected_result: Some(x.to_string()),
+                        should_authorize: true,
+                    }
+                }
+                1 => {
+                    let r1 = ((n >> 8) % 10) as i64 - 4;
+                    let r2 = ((n >> 16) % 10) as i64 - 4;
+                    let sum = r1 + r2;
+                    let product = r1 * r2;
+                    let mut root_strings = vec![r1.to_string(), r2.to_string()];
+                    root_strings.sort();
+                    let roots = format!("[{}, {}]", root_strings[0], root_strings[1]);
+                    AlgebraCase {
+                        id,
+                        tier: "generated".into(),
+                        method: AlgebraMethod::QuadraticEquation,
+                        prompt: format!(
+                            "Solve for x: x^2{}*x{}=0.",
+                            signed_term(-sum),
+                            signed_term(product)
+                        ),
+                        expected_result: Some(if r1 == r2 { r1.to_string() } else { roots }),
+                        should_authorize: true,
+                    }
+                }
+                _ => {
+                    let a = (n % 4 + 1) as i64;
+                    let b = ((n >> 8) % 3 + 1) as i64;
+                    let mut c = ((n >> 16) % 4 + 1) as i64;
+                    let d = ((n >> 24) % 3 + 1) as i64;
+                    if a * d == b * c {
+                        c += 1;
+                    }
+                    let x = ((n >> 32) % 9) as i64 - 4;
+                    let y = ((n >> 40) % 9) as i64 - 4;
+                    let rhs1 = a * x + b * y;
+                    let rhs2 = c * x + d * y;
+                    AlgebraCase {
+                        id,
+                        tier: "generated".into(),
+                        method: AlgebraMethod::LinearSystem,
+                        prompt: format!(
+                            "Solve system: {}*x+{}*y={}; {}*x+{}*y={} for x,y",
+                            a, b, rhs1, c, d, rhs2
+                        ),
+                        expected_result: Some(format!("{{\"x\": \"{x}\", \"y\": \"{y}\"}}")),
+                        should_authorize: true,
+                    }
+                }
+            };
+            expanded.cases.push(case);
+        }
+        expanded
+    }
+}
+
+fn splitmix64(mut value: u64) -> u64 {
+    value = value.wrapping_add(0x9e3779b97f4a7c15);
+    let mut z = value;
+    z = (z ^ (z >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
+    z = (z ^ (z >> 27)).wrapping_mul(0x94d049bb133111eb);
+    z ^ (z >> 31)
+}
+
+fn signed_term(value: i64) -> String {
+    if value < 0 {
+        format!("- {}", value.unsigned_abs())
+    } else {
+        format!("+ {}", value)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -418,5 +513,18 @@ mod tests {
         assert_eq!(report.groups["total"].method_selection_success_rate, 1.0);
         assert_eq!(report.groups["total"].execution_success_rate, 1.0);
         assert_eq!(report.groups["total"].replay_success_rate, 1.0);
+    }
+
+    #[test]
+    fn generated_cases_are_independent_and_replay_cleanly() {
+        let expanded = corpus().with_generated_cases(200, 42);
+        assert_eq!(expanded.cases.len(), 260);
+        assert!(expanded.validation_errors().is_empty());
+        let report = evaluate(&expanded);
+        assert_eq!(report.groups["total"].solution_accuracy, 1.0);
+        assert_eq!(report.groups["total"].execution_success_rate, 1.0);
+        assert_eq!(report.groups["total"].replay_success_rate, 1.0);
+        assert_eq!(report.groups["total"].false_authorizations, 0);
+        assert_eq!(report.groups["holdout"].cases, 59);
     }
 }

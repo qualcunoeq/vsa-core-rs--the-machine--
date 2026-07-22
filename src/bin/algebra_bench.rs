@@ -7,16 +7,27 @@ use the_machine::algebra_benchmark::{evaluate, experiment_results, AlgebraCorpus
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = std::env::args().skip(1).collect::<Vec<_>>();
-    let corpus_path = args
-        .first()
-        .cloned()
-        .ok_or("usage: algebra_bench <corpus.json> [out.jsonl] [commit]")?;
+    let corpus_path = args.first().cloned().ok_or(
+        "usage: algebra_bench <corpus.json> [out.jsonl] [commit] [generated_count] [seed]",
+    )?;
     let out = args
         .get(1)
         .cloned()
         .unwrap_or_else(|| "/tmp/algebra_bench.jsonl".into());
     let commit = args.get(2).cloned().unwrap_or_else(|| "unknown".into());
-    let corpus: AlgebraCorpus = serde_json::from_str(&std::fs::read_to_string(&corpus_path)?)?;
+    let mut corpus: AlgebraCorpus = serde_json::from_str(&std::fs::read_to_string(&corpus_path)?)?;
+    if let Some(count) = args
+        .get(3)
+        .map(|value| value.parse::<usize>())
+        .transpose()?
+    {
+        let seed = args
+            .get(4)
+            .map(|value| value.parse::<u64>())
+            .transpose()?
+            .unwrap_or(42);
+        corpus = corpus.with_generated_cases(count, seed);
+    }
     let errors = corpus.validation_errors();
     if !errors.is_empty() {
         return Err(format!("algebra corpus validation failed: {errors:?}").into());

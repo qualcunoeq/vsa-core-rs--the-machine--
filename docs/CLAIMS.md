@@ -430,8 +430,34 @@ Failure condition: a stale or drifted strategy bypasses independent
 revalidation, changes positive execution/replay results, or produces a false
 authorization/denial; contextual support inherits mismatched evidence.
 
-Next check: promote the receipt shadow from focused tests into a versioned
-benchmark report, then add a resource-bounded concept-composition benchmark.
+Next check: extend the versioned receipt report with negative/stale route cases
+and verify that all such candidates are rejected before execution.
+
+### C-017: Concept Composition Is Bounded And Deterministic
+
+Status: `supported`
+
+Statement: Composition over validated concept contracts can be explored with
+an explicit depth bound, deterministic traversal, and route deduplication
+without executing or registering temporary composites.
+
+Owner modules: `src/concept_composition_benchmark.rs`,
+`src/capability_planner.rs`.
+
+Evidence: the six-concept branching fixture reports zero routes at depth two,
+eight three-fragment routes at depth three, and the same eight routes at depths
+four and five because no longer typed route exists. Repeated evaluation is
+byte-equivalent and all reported routes have zero planning rejections.
+
+Baseline: unbounded composition search or treating temporary composites as
+executable capabilities.
+
+Failure condition: candidate growth exceeds the explicit depth/budget bound,
+repeated traversal produces nondeterministic route sets, or a composed route
+crosses the execution boundary without normal capability authorization.
+
+Next check: add candidate-budget pruning measurements on a larger branching
+fixture and verify that pruning preserves deterministic frontier membership.
 
 ## Retired Or Negative Claims
 

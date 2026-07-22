@@ -269,6 +269,20 @@ and replay rates. Any claimed benefit is therefore confined to counterfactual
 route cost, preventing a strategy from claiming an accuracy gain when it only
 repackages the same governed executor.
 
+The concept-composition resource probe measures bounded DFS growth without
+executing or registering any composed route:
+
+```bash
+cargo run --release --bin concept_composition_bench -- \
+  5 results/concept_composition.json
+```
+
+The six-concept branching fixture produced 0 candidates at depth 2 and 8
+three-fragment candidates at depth 3; depths 4 and 5 remained at 8 because no
+longer compatible route exists. The report records proposal/rejection counts,
+route-length histograms, a theoretical path bound, and deterministic replay of
+the measurement itself.
+
 Latest larger-tier smoke runs (commit `654cfe2`) used 500 generated cases in
 addition to the 60-case seed (560 total) and the 20-case prose slice. The
 generated run retained 1.000 solution, execution, and replay rates with zero

@@ -246,6 +246,8 @@ Current anchors:
 
 - `src/strategic_route_benchmark.rs`: deterministic direct, concept-guided,
   stored-strategy, and full planning modes with a 12-bucket failure taxonomy.
+- `src/concept_composition_benchmark.rs`: bounded DFS resource probe over a
+  branching validated-concept graph; diagnostic-only and deterministic.
 - `src/algebra_benchmark.rs`: versioned linear, quadratic, and 2×2-system
   corpora with generated holdouts, prose prompts, adversarial abstentions, and
   strategy-shadow execution metrics.
@@ -261,6 +263,9 @@ Current evidence (commit `654cfe2`):
   replay rates are 1.000 with zero false authorizations and denials.
 - Strategy shadow: 553/553 recommendations independently revalidated, 742
   counterfactual steps saved, and positive execution/replay remain 1.000.
+- Concept composition: a six-concept branching fixture produces eight valid
+  three-fragment routes at depth three; deeper bounds do not add routes, and
+  all measurements are deterministic with zero planning rejections.
 
 Known limits:
 
@@ -273,11 +278,9 @@ Known limits:
 
 Next vertical slice:
 
-1. Promote the expression-evaluation/substitution and `controls` receipt
-   shadows from focused tests into a versioned benchmark report.
-2. Add a resource-bounded benchmark for concept-route composition and record
-   depth, candidate count, and pruning behavior.
-3. Only then consider governed method acquisition for a demonstrated missing
+1. Add pruning/candidate-budget metrics to the concept-composition probe as
+   the graph grows beyond the six-concept fixture.
+2. Only then consider governed method acquisition for a demonstrated missing
    capability; absence of `method_not_found` evidence is not authorization to
    add one.
 

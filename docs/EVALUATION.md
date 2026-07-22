@@ -200,6 +200,16 @@ coverage, and the original blocker evidence. Correct abstentions are not
 counted as failures; false authorization is always classified as a safety
 failure.
 
+The current typed direct-instantiation audit also uses complete fact
+provenance when deciding readiness. Explicit equation solves, arithmetic
+expression requests, and supported function applications are admitted only
+when their typed subject and bindings are complete; derived-property requests,
+unmodeled domain restrictions, and model-dependent applications remain denied.
+On `data/formalization_seed_v1.json` (60 cases), the audit now reports
+`authorization_correct=60`, `false_authorizations=0`, `false_denials=0`, and
+full failure-taxonomy coverage. This is a safety-gated audit result, not a
+claim that every target is structurally complete (`target_complete=37/60`).
+
 For machine-readable tier/holdout metrics, use the standard JSONL runner:
 
 ```bash

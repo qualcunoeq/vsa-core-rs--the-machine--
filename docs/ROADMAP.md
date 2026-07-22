@@ -254,7 +254,7 @@ Current anchors:
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `98c0c11`):
+Current evidence (commit `62be9ac`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task
@@ -272,6 +272,11 @@ Current evidence (commit `98c0c11`):
 - Mixed contextual evidence: global support 500 versus contextual support 1,
   with a cheaper fresh route, correctly diagnoses `ExploreFresh`; global-only
   support remains `Ambiguous`.
+- Formalization audit: complete fact provenance now gates typed direct
+  instantiation; the 60-case seed reports authorization correctness 60/60,
+  zero false authorizations, zero false denials, and complete failure-taxonomy
+  coverage, while correctly leaving 23 structurally incomplete targets
+  incomplete.
 
 Known limits:
 

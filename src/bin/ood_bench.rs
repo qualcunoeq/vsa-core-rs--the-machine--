@@ -34,13 +34,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         metrics.false_denials,
     );
     eprintln!(
-        "invariance: pairs={} decision_stable={} result_stable={} regressions={}",
+        "invariance: pairs={} decision_stable={} canonical_stable={} result_stable={} regressions={}",
         report.invariance.pairs,
         report.invariance.decision_stable,
+        report.invariance.canonical_stable,
         report.invariance.result_stable,
         report.invariance.rewrite_regressions,
     );
     eprintln!("refusal_taxonomy={:?}", metrics.refusal_taxonomy);
+    eprintln!("divergence_stages={:?}", report.divergence_stages);
     eprintln!("wrote {output}");
     Ok(())
 }

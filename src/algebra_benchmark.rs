@@ -386,6 +386,9 @@ pub struct AlgebraCaseEvaluation {
     pub replayed: bool,
     pub result: Option<String>,
     pub abstention_reason: Option<String>,
+    pub divergence_stage: String,
+    pub canonical_signature: String,
+    pub authorization_blockers: Vec<String>,
 }
 
 pub fn evaluate_case_independently(case: &AlgebraCase) -> AlgebraCaseEvaluation {
@@ -405,6 +408,17 @@ pub fn evaluate_case_independently(case: &AlgebraCase) -> AlgebraCaseEvaluation 
     } else {
         Some(assessment.denial_trace(case.should_authorize).first_blocker)
     };
+    let divergence_stage = if !trace.target_completion.complete {
+        "formalization"
+    } else if !authorized {
+        "authorization"
+    } else if !outcome.success {
+        "execution"
+    } else if !outcome.replayed {
+        "verification"
+    } else {
+        "none"
+    };
     // Touch the registry through the same discovery path as the aggregate
     // benchmark so independent reports cannot accidentally bypass typing.
     if trace.target_completion.complete {
@@ -419,6 +433,9 @@ pub fn evaluate_case_independently(case: &AlgebraCase) -> AlgebraCaseEvaluation 
         replayed: outcome.replayed,
         result: outcome.result,
         abstention_reason,
+        divergence_stage: divergence_stage.into(),
+        canonical_signature: crate::formalization::canonical_formalization_signature(&trace),
+        authorization_blockers: assessment.authorization_blockers,
     }
 }
 

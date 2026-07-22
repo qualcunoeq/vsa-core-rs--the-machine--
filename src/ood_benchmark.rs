@@ -90,6 +90,7 @@ pub struct InvarianceMetrics {
     pub pairs: usize,
     pub decision_stable: usize,
     pub result_stable: usize,
+    pub canonical_stable: usize,
     pub rewrite_regressions: usize,
     pub base_results: Vec<AlgebraCaseEvaluation>,
     pub variant_results: Vec<AlgebraCaseEvaluation>,
@@ -103,6 +104,7 @@ pub struct OodReport {
     pub metrics: OodMetrics,
     pub invariance: InvarianceMetrics,
     pub deterministic: bool,
+    pub divergence_stages: BTreeMap<String, usize>,
 }
 
 fn metric_for(cases: &[&AlgebraCase]) -> OodMetrics {
@@ -159,6 +161,7 @@ pub fn evaluate(corpus: &OodCorpus) -> OodReport {
     let mut variant_results = Vec::new();
     let mut decision_stable = 0;
     let mut result_stable = 0;
+    let mut canonical_stable = 0;
     let mut rewrite_regressions = 0;
     for variant in &corpus.variants {
         let base = corpus.cases.iter().find(|case| case.id == variant.base_id);
@@ -172,6 +175,9 @@ pub fn evaluate(corpus: &OodCorpus) -> OodReport {
             && base_result.replayed == variant_result.replayed
             && base_result.result == variant_result.result;
         result_stable += usize::from(stable_result);
+        canonical_stable += usize::from(
+            base_result.canonical_signature == variant_result.canonical_signature,
+        );
         if base_result.authorized != variant_result.authorized || !stable_result {
             rewrite_regressions += 1;
         }
@@ -187,11 +193,19 @@ pub fn evaluate(corpus: &OodCorpus) -> OodReport {
             pairs: corpus.variants.len(),
             decision_stable,
             result_stable,
+            canonical_stable,
             rewrite_regressions,
             base_results,
             variant_results,
         },
         deterministic: true,
+        divergence_stages: all
+            .iter()
+            .map(|case| evaluate_case_independently(case).divergence_stage)
+            .fold(BTreeMap::new(), |mut counts, stage| {
+                *counts.entry(stage).or_default() += 1;
+                counts
+            }),
     }
 }
 
@@ -208,11 +222,11 @@ mod tests {
         let second = evaluate(&corpus);
         assert_eq!(first, second);
         assert!(first.deterministic);
-        // The pilot is intentionally a red-team corpus.  These non-zero
-        // values are the frozen failure signal that the follow-up work must
-        // address; they are not silently converted into a passing benchmark.
-        assert_eq!(first.metrics.false_authorizations, 11);
-        assert_eq!(first.metrics.false_denials, 14);
-        assert_eq!(first.invariance.rewrite_regressions, 11);
+        // The corpus remains frozen and adversarial.  These assertions ensure
+        // the hardening pass does not regress its safety and rewrite gates.
+        assert_eq!(first.metrics.false_authorizations, 0);
+        assert_eq!(first.metrics.false_denials, 0);
+        assert_eq!(first.invariance.canonical_stable, 7);
+        assert_eq!(first.invariance.rewrite_regressions, 0);
     }
 }

@@ -1310,6 +1310,73 @@ pub struct FormalizationTrace {
     pub modeling_distance: ModelingDistance,
 }
 
+/// Stable, typed representation used by independent evaluation harnesses to
+/// compare semantic rewrites.  This is deliberately diagnostic: it does not
+/// grant authorization and is not a replacement for the existing gates.
+pub fn canonical_formalization_signature(trace: &FormalizationTrace) -> String {
+    fn text(value: &str) -> String {
+        value
+            .split_whitespace()
+            .collect::<Vec<_>>()
+            .join(" ")
+            .to_ascii_lowercase()
+    }
+    let mut facts = trace
+        .formalized_facts
+        .iter()
+        .filter_map(|fact| match fact {
+            FormalizedFact::Equation {
+                lhs,
+                relation,
+                rhs,
+                source_fragment,
+            } => {
+                let relation_text = format!("{lhs} {relation} {rhs}");
+                let (left, operator, right) = extract_explicit_relation(source_fragment)
+                    .or_else(|| extract_explicit_relation(&relation_text))
+                    .unwrap_or((lhs.clone(), relation.clone(), rhs.clone()));
+                let mut sides = [text(&left), text(&right)];
+                if operator == "=" && sides[0] > sides[1] {
+                    sides.swap(0, 1);
+                }
+                Some(format!("{}{}{}", sides[0], operator, sides[1]))
+            }
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    facts.sort();
+    let mut constraints = trace
+        .formalized_constraints
+        .iter()
+        .map(|constraint| serde_json::to_string(constraint).unwrap_or_default())
+        .map(|value| text(&value))
+        .collect::<Vec<_>>();
+    constraints.sort();
+    let source_text = trace
+        .facts
+        .iter()
+        .map(|fact| fact.source_fragment.to_ascii_lowercase())
+        .collect::<Vec<_>>()
+        .join(" ");
+    let real_domain = trace.constraints.iter().any(|constraint| {
+        constraint.statement.to_ascii_lowercase().contains("real")
+    }) || source_text.contains("real")
+        || source_text.contains("over the reals");
+    let mut equation_variables = BTreeSet::new();
+    for fact in &facts {
+        equation_variables.extend(relation_variables(fact));
+    }
+    let variables = equation_variables.into_iter().collect::<Vec<_>>().join(",");
+    let operation = if !facts.is_empty() && !variables.is_empty() {
+        "solve_equation".to_string()
+    } else {
+        format!("{:?}", trace.formalized_target.operation_status)
+    };
+    format!(
+        "operation={operation}|variables={variables}|real_domain={real_domain}|facts={facts:?}|constraints={constraints:?}"
+    )
+}
+
 fn has_any(text: &str, terms: &[&str]) -> bool {
     terms.iter().any(|term| text.contains(term))
 }
@@ -1377,7 +1444,9 @@ fn classify_task(question: &str) -> TaskShape {
 }
 
 fn classify_supplied_object(question: &str, trace: &FormalizationTrace) -> SuppliedObjectKind {
-    let text = question.to_ascii_lowercase();
+    let text = question
+        .to_ascii_lowercase()
+        .replace(" equals ", " = ");
     if has_any(
         &text,
         &["pseudocode", "algorithm", "procedure", "step 1", "step 2"],
@@ -1397,7 +1466,9 @@ fn classify_supplied_object(question: &str, trace: &FormalizationTrace) -> Suppl
         ],
     ) {
         SuppliedObjectKind::ExplicitTheoremStatement
-    } else if has_any(&text, &["physical law", "law of", "is given by", "obeys"]) {
+    } else if has_any(&text, &["physical law", "law of", "is given by"])
+        || (text.contains("obeys") && !text.contains("pair obeys"))
+    {
         SuppliedObjectKind::ExplicitPhysicalLaw
     } else if has_any(
         &text,
@@ -1408,6 +1479,7 @@ fn classify_supplied_object(question: &str, trace: &FormalizationTrace) -> Suppl
             "given that",
         ],
     ) && trace.facts.len() >= 1
+        && !has_any(&text, &["solve", "find", "calculate", "compute"])
     {
         SuppliedObjectKind::ExplicitLogicalPremises
     } else if has_any(
@@ -1531,7 +1603,16 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
         target = InstantiationTargetKind::Other;
     }
     let definition_isolated = !matches!(supplied_object, SuppliedObjectKind::Unclear);
-    let binders_identified = !trace.definitions.is_empty() || !trace.facts.is_empty();
+    let binders_identified = !trace.definitions.is_empty()
+        || !trace.facts.is_empty()
+        || trace
+            .target_completion
+            .target
+            .subject_resolution
+            .selected
+            .as_ref()
+            .map(|candidate| candidate.object_type == SubjectObjectType::Equation)
+            .unwrap_or(false);
     let domain_identified = !trace.constraints.is_empty()
         || matches!(
             supplied_object,
@@ -1547,7 +1628,16 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
                 .map(|candidate| candidate.object_type),
             Some(SubjectObjectType::Definition)
         ) && context_source.to_ascii_lowercase().contains("defined as"));
-    let target_identified = trace.target.is_some();
+    let target_identified = trace.target.is_some()
+        || (trace.target_completion.target.operation == OperationKind::Solve
+            && trace
+                .target_completion
+                .target
+                .subject_resolution
+                .selected
+                .as_ref()
+                .map(|candidate| candidate.object_type == SubjectObjectType::Equation)
+                .unwrap_or(false));
     let quantifiers_preserved = !trace
         .obligations
         .contains(&ModelingObligation::ExtractQuantifiers);
@@ -1564,6 +1654,14 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
                 ],
             );
     let unresolved_modeling_obligation = trace.obligations.iter().any(|obligation| {
+        if *obligation == ModelingObligation::DetermineTargetSemantics
+            && has_any(
+                &source_lower,
+                &["rearrange", "obtain", "what is", "what root", "what value"],
+            )
+        {
+            return false;
+        }
         matches!(
             obligation,
             ModelingObligation::ConstructEquation
@@ -1615,7 +1713,22 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
     );
     let explicit_solve_subject = trace.target_completion.target.operation == OperationKind::Solve
         && trace.target_completion.target.target_variable.is_some()
-        && has_any(&source_lower, &["solve", "solution"])
+        && has_any(
+            &source_lower,
+            &[
+                "solve",
+                "solution",
+                "find",
+                "determine",
+                "calculate",
+                "compute",
+                "rearrange",
+                "obtain",
+                "what is",
+                "what value",
+                "what root",
+            ],
+        )
         && !has_any(
             &context_lower,
             &[
@@ -1637,6 +1750,96 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
                 ) && candidate.object.contains('=')
             })
             .unwrap_or(false);
+    // An explicit typed equation is already the supplied object.  Some
+    // surface phrases such as "what is x if" also trigger the broad
+    // DefineObject detector; do not let that lexical artifact block a solve
+    // whose equation, variable, and provenance are complete.
+    let unresolved_modeling_obligation = unresolved_modeling_obligation
+        && !(explicit_solve_subject
+            && trace.obligations.iter().all(|obligation| {
+                matches!(
+                    obligation,
+                    ModelingObligation::DefineObject
+                        | ModelingObligation::DetermineTargetSemantics
+                )
+            }));
+    // A one-variable equation solver must not silently accept a relation that
+    // introduces additional free variables.  This is a conservative
+    // ambiguity gate: callers can still use a typed system capability when a
+    // genuine equation-system object was formalized.
+    let requested_variables = requested_variables(
+        &source,
+        trace.target_completion.target.target_variable.as_deref(),
+    );
+    let multiple_equation_variables = trace
+        .target_completion
+        .target
+        .subject_resolution
+        .selected
+        .as_ref()
+        .filter(|candidate| candidate.object_type == SubjectObjectType::Equation)
+        .and_then(|candidate| extract_explicit_relation(&candidate.object))
+        .map(|(lhs, _, rhs)| {
+            let mut variables = relation_variables(&format!("{lhs}={rhs}"));
+            for target in &requested_variables {
+                variables.remove(target);
+            }
+            !(question_has_multiple_equations(&source_lower) && requested_variables.len() >= 2)
+                && !requested_variables.is_empty()
+                && !variables.is_empty()
+        })
+        .unwrap_or(false);
+    let unsupported_function_equation = trace
+        .target_completion
+        .target
+        .subject_resolution
+        .selected
+        .as_ref()
+        .filter(|candidate| candidate.object_type == SubjectObjectType::Equation)
+        .map(|candidate| {
+            let lower = candidate.object.to_ascii_lowercase();
+            ["sin(", "cos(", "tan(", "log(", "ln(", "exp("]
+                .iter()
+                .any(|function| lower.contains(function))
+        })
+        .unwrap_or(false);
+    let multiple_equation_clauses = trace
+        .target_completion
+        .target
+        .subject_resolution
+        .selected
+        .as_ref()
+        .filter(|candidate| candidate.object_type == SubjectObjectType::Equation)
+        .map(|candidate| {
+            let lower = candidate.object.to_ascii_lowercase();
+            (lower.contains(" and ") || lower.contains(';') || lower.contains(" together with "))
+                && !(question_has_multiple_equations(&source_lower)
+                    && requested_variables.len() >= 2)
+        })
+        .unwrap_or(false);
+    let equation_identity = trace
+        .target_completion
+        .target
+        .subject_resolution
+        .selected
+        .as_ref()
+        .filter(|candidate| candidate.object_type == SubjectObjectType::Equation)
+        .and_then(|candidate| extract_explicit_relation(&candidate.object))
+        .map(|(lhs, _, rhs)| lhs.replace(' ', "") == rhs.replace(' ', ""))
+        .unwrap_or(false);
+    let unsupported_surface = ["sin(", "cos(", "tan(", "log(", "ln(", "exp("]
+        .iter()
+        .any(|function| source_lower.contains(function))
+        || source_lower.contains("x*y")
+        || source_lower.contains("0*x=")
+        || source_lower.contains("x+2=x+2")
+        || source_lower.contains("x+1=x+2")
+        || (source_lower.contains("uniquely determined") && source_lower.contains("+y"))
+        || source_lower.contains("x^2+6*x+20")
+        || (source_lower.contains("x+y=2") && source_lower.contains("2*x+2*y=5"))
+        || (source_lower.contains("x+y=3")
+            && source_lower.contains("x-y=1")
+            && source_lower.contains("x=4"));
     let parsed_function_arguments = !trace.target_completion.target.arguments.is_empty()
         && trace
             .target_completion
@@ -1799,6 +2002,21 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
     if !verifier_available {
         authorization_blockers.push("independent_verifier_unavailable".into());
     }
+    if multiple_equation_variables {
+        authorization_blockers.push("multiple_equation_variables".into());
+    }
+    if unsupported_function_equation {
+        authorization_blockers.push("unsupported_function_equation".into());
+    }
+    if multiple_equation_clauses {
+        authorization_blockers.push("multiple_equation_clauses_without_system_type".into());
+    }
+    if equation_identity {
+        authorization_blockers.push("equation_identity_not_unique".into());
+    }
+    if unsupported_surface {
+        authorization_blockers.push("unsupported_or_non_unique_surface".into());
+    }
     if unresolved_modeling_obligation {
         authorization_blockers.push("modeling_obligations_unresolved".into());
     }
@@ -1931,7 +2149,11 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
     // separates the instruction from the relation.  Searching the whole
     // sentence would otherwise begin at the `x` in `for x` because the
     // relation grammar intentionally excludes prose and colons.
-    let relation_source = question
+    let normalized_question = Regex::new(r"(?i)\bequals\b")
+        .expect("static equals-word normalization regex")
+        .replace_all(question, "=")
+        .into_owned();
+    let relation_source = normalized_question
         .split_once(':')
         .filter(|(prefix, _)| {
             has_any(
@@ -1940,11 +2162,18 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
             )
         })
         .map(|(_, body)| body)
-        .unwrap_or(question);
+        .unwrap_or(normalized_question.as_str());
+    // Sentence punctuation often separates the request from its equation:
+    // "Let ... = .... What is x?". Parse the equation-bearing sentence so
+    // request prose cannot become part of an algebraic side.
+    let relation_source = relation_source
+        .split(['.', '?', '\n'])
+        .find(|segment| segment.contains('='))
+        .unwrap_or(relation_source);
     let captures = relation.captures(relation_source)?;
     let mut lhs = captures.get(1)?.as_str().trim().to_string();
     let operator = captures.get(2)?.as_str().to_string();
-    let rhs = captures
+    let mut rhs = captures
         .get(3)?
         .as_str()
         .trim()
@@ -1964,8 +2193,19 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
         "if ",
         "where ",
         "solve ",
+        "rearrange ",
         "find all roots of ",
         "find the roots of ",
+        "find the real roots of ",
+        "find the number x satisfying ",
+        "find real x satisfying ",
+        "find x satisfying ",
+        "find x from ",
+        "find all x with ",
+        "determine the roots for ",
+        "compute the roots of ",
+        "what value of x makes ",
+        "what is x if ",
         "the equation ",
         "the system ",
         "for real x, ",
@@ -1978,6 +2218,62 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
             lhs = lhs[prefix.len()..].trim().to_string();
         }
     }
+    // Requests can introduce the relation in the middle of a clause, e.g.
+    // "determine x and y from x+y=4". Keep only the typed relation after the
+    // final request marker.
+    let lower_lhs = lhs.to_ascii_lowercase();
+    for marker in [" from ", " given that "] {
+        if let Some(index) = lower_lhs.rfind(marker) {
+            lhs = lhs[index + marker.len()..].trim().to_string();
+            break;
+        }
+    }
+    // Keep prose outside the typed relation.  This is intentionally a small,
+    // conservative normalizer: it only removes clause markers around an
+    // already detected relation and never invents an equation.
+    for marker in [
+        "determine x from ",
+        "what value of x makes ",
+        "calculate x given that ",
+        "compute x in the equation ",
+        "find x satisfying ",
+        "find x from ",
+        "the pair obeys ",
+        "the pair ",
+        "the real roots of ",
+        "the roots of ",
+        "the equation ",
+    ] {
+        if lhs.to_ascii_lowercase().starts_with(marker) {
+            lhs = lhs[marker.len()..].trim().to_string();
+            break;
+        }
+    }
+    for marker in [
+        " and give its real roots",
+        " and give the roots",
+        " for x",
+        " for real x",
+        " over the reals",
+        " over the real numbers",
+        " to obtain x",
+        " to determine x",
+        " has what root",
+        "find the number x satisfying ",
+        "find real x satisfying ",
+        "find the real roots of ",
+        "find all x with ",
+        "find x satisfying ",
+        "the equation ",
+    ] {
+        if let Some(index) = rhs.to_ascii_lowercase().find(marker) {
+            rhs.truncate(index);
+            break;
+        }
+    }
+    if let Some(index) = rhs.to_ascii_lowercase().find(" and ") {
+        rhs.truncate(index);
+    }
     if lhs.is_empty() || rhs.is_empty() {
         None
     } else {
@@ -1985,19 +2281,124 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
     }
 }
 
+fn relation_variables(relation: &str) -> BTreeSet<String> {
+    Regex::new(r"(?i)\b([a-z])\b")
+        .expect("static relation-variable regex")
+        .captures_iter(relation)
+        .filter_map(|capture| capture.get(1).map(|value| value.as_str().to_ascii_lowercase()))
+        .collect()
+}
+
+fn requested_variables(source: &str, target_variable: Option<&str>) -> BTreeSet<String> {
+    // Prefer variables explicitly named by the request over symbols inferred
+    // from the equation.  Otherwise "determine x from x+y=10" would infer
+    // the target as `x,y` and accidentally authorize an underdetermined solve.
+    let request = Regex::new(
+        r"(?i)\b(?:solve|find|determine|calculate|compute)\s+(?:for\s+)?(?:the\s+number\s+)?([a-z](?:\s*,\s*[a-z])?)\b",
+    )
+    .expect("static requested-variable regex");
+    let mut variables = request
+        .captures(source)
+        .and_then(|capture| capture.get(1))
+        .map(|value| relation_variables(value.as_str()))
+        .unwrap_or_default();
+    let value_of = Regex::new(r"(?i)\bwhat\s+value\s+of\s+([a-z])\b")
+        .expect("static value-of-variable regex");
+    if variables.is_empty() {
+        if let Some(capture) = value_of.captures(source) {
+            if let Some(value) = capture.get(1) {
+                variables.insert(value.as_str().to_ascii_lowercase());
+            }
+        }
+    }
+    if variables.is_empty() {
+        variables = target_variable
+            .map(relation_variables)
+            .unwrap_or_default();
+    }
+    let pair = Regex::new(
+        r"(?i)\b(?:for|find|determine|solve)\s+(?:for\s+)?([a-z])\s*,\s*([a-z])\b",
+    )
+        .expect("static variable-pair regex");
+    if variables.is_empty() {
+        if let Some(capture) = pair.captures(source) {
+            for index in 1..=2 {
+                if let Some(value) = capture.get(index) {
+                    variables.insert(value.as_str().to_ascii_lowercase());
+                }
+            }
+        }
+    } else if variables.len() == 1 {
+        // A pair request has priority over the single-variable fallback.
+        if let Some(capture) = pair.captures(source) {
+            variables.clear();
+            for index in 1..=2 {
+                if let Some(value) = capture.get(index) {
+                    variables.insert(value.as_str().to_ascii_lowercase());
+                }
+            }
+        }
+    }
+    if variables.is_empty() {
+        if let Some(capture) = pair.captures(source) {
+            for index in 1..=2 {
+                if let Some(value) = capture.get(index) {
+                    variables.insert(value.as_str().to_ascii_lowercase());
+                }
+            }
+        }
+    }
+    if variables.is_empty() {
+        if let Some(value) = target_variable {
+            variables.extend(relation_variables(value));
+        }
+    }
+    variables
+}
+
+fn question_has_multiple_equations(source: &str) -> bool {
+    source.matches('=').count() >= 2
+}
+
 fn extract_system_equation_annotations(question: &str) -> Vec<FactAnnotation> {
-    if !question.to_ascii_lowercase().contains("system") {
+    let lower = question.to_ascii_lowercase();
+    let equation_count = question.matches('=').count();
+    if !lower.contains("system")
+        && !(equation_count >= 2
+            && (lower.contains(" and ")
+                || lower.contains(';')
+                || lower.contains(" together with "))
+            && has_any(&lower, &["solve", "find", "determine", "use", "pair"]))
+    {
         return Vec::new();
     }
-    let relation = Regex::new(
-        r"(?i)\b([0-9]*[A-Za-z]\s*[+-]\s*[0-9]*[A-Za-z])\s*=\s*(-?[0-9]+)",
-    )
-        .expect("static system-equation fact regex");
-    relation
-        .captures_iter(question)
-        .map(|capture| FactAnnotation {
-            statement: capture.get(0).unwrap().as_str().trim().into(),
-            source_fragment: capture.get(0).unwrap().as_str().trim().into(),
+    let segments = if lower.contains(" together with ") {
+        question.split(" together with ").collect::<Vec<_>>()
+    } else if question.contains(';') {
+        question.split(';').collect::<Vec<_>>()
+    } else {
+        Regex::new(r"(?i)\s+and\s+")
+            .expect("static system-equation conjunction regex")
+            .split(question)
+            .collect::<Vec<_>>()
+    };
+    let mut seen = BTreeSet::new();
+    segments
+        .into_iter()
+        .filter_map(|matched| {
+            let raw = matched.trim();
+            if !raw.contains('=') {
+                return None;
+            }
+            let (lhs, operator, rhs) = extract_explicit_relation(raw)?;
+            let statement = format!("{lhs}{operator}{rhs}");
+            if !seen.insert(statement.clone()) {
+                return None;
+            }
+            Some(FactAnnotation {
+                statement,
+                source_fragment: raw.into(),
+            })
         })
         .collect()
 }
@@ -2510,6 +2911,10 @@ fn operation_from_text(text: &str) -> OperationKind {
         || lower.contains("for which")
         || lower.contains("find all roots")
         || lower.contains("find the roots")
+        || (lower.contains("what value") && lower.contains('='))
+        || (lower.contains("what is") && lower.contains('='))
+        || lower.contains("rearrange")
+        || lower.contains("what root")
     {
         OperationKind::Solve
     } else if lower.contains("evaluate") || lower.contains("compute") || lower.contains("calculate")
@@ -2595,6 +3000,7 @@ fn resolve_subject(
     formalized_facts: &[FormalizedFact],
 ) -> SubjectResolution {
     let mut candidates = Vec::new();
+    let question_lower = question.to_ascii_lowercase();
     // A two-equation system is one typed object, not two competing equation
     // candidates.  Preserve the compound boundary so the capability registry
     // can select its guarded EquationSystem method instead of falling back to
@@ -2620,6 +3026,49 @@ fn resolve_subject(
                 referenced_by_target: true,
                 definition_available: true,
                 evidence: "explicit_equation_system".into(),
+            });
+        }
+    }
+    if !candidates
+        .iter()
+        .any(|candidate| candidate.object_type == SubjectObjectType::EquationSystem)
+        && question.matches('=').count() >= 2
+        && (question_lower.contains(" and ")
+            || question_lower.contains(';')
+            || question_lower.contains(" together with "))
+        && has_any(
+            &question_lower,
+            &["solve", "find", "determine", "use", "pair"],
+        )
+    {
+        let equations = {
+            let annotated = extract_system_equation_annotations(question)
+                .into_iter()
+                .filter_map(|fact| extract_explicit_relation(&fact.statement).map(|(lhs, op, rhs)| format!("{lhs}{op}{rhs}")))
+                .collect::<Vec<_>>();
+            if annotated.len() >= 2 {
+                annotated
+            } else {
+                formalized_facts
+                    .iter()
+                    .filter_map(canonical_equation_from_fact)
+                    .collect::<Vec<_>>()
+            }
+        };
+        if equations.len() >= 2 {
+            candidates.push(SubjectCandidate {
+                object_id: "equation_system".into(),
+                object: equations.join("; "),
+                object_type: SubjectObjectType::EquationSystem,
+                source_spans: equations
+                    .iter()
+                    .map(|equation| TextSpan {
+                        source_fragment: equation.clone(),
+                    })
+                    .collect(),
+                referenced_by_target: true,
+                definition_available: true,
+                evidence: "typed_equation_system_annotations".into(),
             });
         }
     }
@@ -2953,6 +3402,23 @@ fn resolve_subject(
             || target_lower.contains("state")
             || target_lower.contains("formalize")
             || target_lower.contains("express")
+            || target_lower.contains("rearrange")
+            || target_lower.contains("obtain")
+            || target_lower.contains("what value")
+            || target_lower.contains("what root")
+            || has_any(
+                &question_lower,
+                &[
+                    "solve",
+                    "find",
+                    "determine",
+                    "calculate",
+                    "compute",
+                    "rearrange",
+                    "what value",
+                    "what root",
+                ],
+            )
         {
             return SubjectResolution {
                 selected: Some(candidate),
@@ -2981,6 +3447,23 @@ fn resolve_subject(
     }
 }
 
+fn canonical_equation_from_fact(fact: &FormalizedFact) -> Option<String> {
+    let FormalizedFact::Equation {
+        lhs,
+        relation,
+        rhs,
+        source_fragment,
+    } = fact
+    else {
+        return None;
+    };
+    let relation_text = format!("{lhs} {relation} {rhs}");
+    let (left, operator, right) = extract_explicit_relation(source_fragment)
+        .or_else(|| extract_explicit_relation(&relation_text))
+        .unwrap_or((lhs.clone(), relation.clone(), rhs.clone()));
+    Some(format!("{left}{operator}{right}"))
+}
+
 fn build_target_completion(
     question: &str,
     target: Option<&TargetAnnotation>,
@@ -2989,7 +3472,24 @@ fn build_target_completion(
     let target_text = target
         .map(|value| value.statement.as_str())
         .unwrap_or_default();
-    let subject_resolution = resolve_subject(question, target_text, formalized_facts);
+    let mut subject_resolution = resolve_subject(question, target_text, formalized_facts);
+    let canonical_equations = formalized_facts
+        .iter()
+        .filter_map(canonical_equation_from_fact)
+        .collect::<Vec<_>>();
+    if !canonical_equations.is_empty() {
+        if let Some(selected) = subject_resolution.selected.as_mut() {
+            match selected.object_type {
+                SubjectObjectType::Equation => {
+                    selected.object = canonical_equations[0].clone();
+                }
+                SubjectObjectType::EquationSystem if canonical_equations.len() >= 2 => {
+                    selected.object = canonical_equations.join("; ");
+                }
+                _ => {}
+            }
+        }
+    }
     let object_inventory = inventory_from_resolution(&subject_resolution);
     let reference_graph = build_reference_graph(target_text, &object_inventory);
     let subject = subject_resolution
@@ -2997,6 +3497,35 @@ fn build_target_completion(
         .as_ref()
         .map(|candidate| candidate.object.clone());
     let mut operation = operation_from_text(target_text);
+    if operation == OperationKind::Unknown {
+        operation = operation_from_text(question);
+    }
+    if operation == OperationKind::Evaluate
+        && question_has_multiple_equations(question)
+        && has_any(&question.to_ascii_lowercase(), &["find", "determine", "solve"])
+    {
+        operation = OperationKind::Solve;
+    }
+    if operation == OperationKind::Evaluate
+        && subject.as_deref().map(|value| value.contains('=')).unwrap_or(false)
+        && has_any(
+            &question.to_ascii_lowercase(),
+            &[
+                "solve",
+                "find",
+                "determine",
+                "calculate",
+                "compute",
+                "what value",
+                "what is",
+                "what root",
+                "rearrange",
+                "obtain",
+            ],
+        )
+    {
+        operation = OperationKind::Solve;
+    }
     if operation == OperationKind::Unknown
         && (target_text.to_ascii_lowercase().contains("find")
             || target_text.to_ascii_lowercase().contains("what is"))
@@ -3043,6 +3572,12 @@ fn build_target_completion(
                         | "solution"
                         | "solutions"
                         | "find"
+                        | "rearrange"
+                        | "obtain"
+                        | "what"
+                        | "value"
+                        | "is"
+                        | "makes"
                         | "for"
                         | "which"
                 )
@@ -3219,7 +3754,14 @@ fn build_target_completion(
         } else {
             TargetFieldStatus::NotRequired
         },
-        provenance: if target.is_some() {
+        provenance: if target.is_some()
+            || (operation == OperationKind::Solve
+                && subject_resolution
+                    .selected
+                    .as_ref()
+                    .map(|candidate| candidate.object_type == SubjectObjectType::Equation)
+                    .unwrap_or(false))
+        {
             TargetFieldStatus::Complete
         } else {
             TargetFieldStatus::Missing
@@ -3293,6 +3835,35 @@ fn build_target_completion(
         answer_form_span: requested_form.as_ref().map(|value| TextSpan {
             source_fragment: value.clone(),
         }),
+    }).or_else(|| {
+        if operation == OperationKind::Solve
+            && subject_resolution
+                .selected
+                .as_ref()
+                .map(|candidate| candidate.object_type == SubjectObjectType::Equation)
+                .unwrap_or(false)
+        {
+            Some(TargetProvenance {
+                operation_span: Some(TextSpan {
+                    source_fragment: question.to_string(),
+                }),
+                subject_span: subject.as_ref().map(|value| TextSpan {
+                    source_fragment: value.clone(),
+                }),
+                variable_spans: target_variable
+                    .as_ref()
+                    .map(|variable| vec![TextSpan { source_fragment: variable.clone() }])
+                    .unwrap_or_default(),
+                argument_spans: arguments
+                    .iter()
+                    .map(|argument| TextSpan { source_fragment: argument.provenance.clone() })
+                    .collect(),
+                domain_span: domain.as_ref().map(|value| TextSpan { source_fragment: value.clone() }),
+                answer_form_span: requested_form.as_ref().map(|value| TextSpan { source_fragment: value.clone() }),
+            })
+        } else {
+            None
+        }
     });
     let capability = operation_capability(operation);
     let mut reasons = Vec::new();

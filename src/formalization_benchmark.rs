@@ -5,6 +5,7 @@
 //! `ExperimentResult` records for development, holdout, and curriculum tiers.
 
 use crate::cognition::ExperimentResult;
+use crate::capabilities::{CapabilityRegistry, CapabilitySelection};
 use crate::failure_taxonomy::FailureTaxonomyReport;
 use crate::formalization::{
     assess_direct_instantiation, assess_prompt, score_formalization, FormalizationCorpus,
@@ -22,6 +23,11 @@ pub struct FormalizationGroupMetrics {
     pub authorization_accuracy: f64,
     pub false_authorizations: usize,
     pub false_denials: usize,
+    pub method_selection_attempts: usize,
+    pub method_selection_unique: usize,
+    pub method_selection_ambiguous: usize,
+    pub method_selection_none: usize,
+    pub method_selection_success_rate: f64,
     pub failure_taxonomy: FailureTaxonomyReport,
 }
 
@@ -40,6 +46,10 @@ struct GroupAccumulator {
     authorization_correct: usize,
     false_authorizations: usize,
     false_denials: usize,
+    method_selection_attempts: usize,
+    method_selection_unique: usize,
+    method_selection_ambiguous: usize,
+    method_selection_none: usize,
     taxonomy: FailureTaxonomyReport,
 }
 
@@ -51,6 +61,7 @@ impl GroupAccumulator {
         authorized: bool,
         trace: &crate::formalization::FormalizationTrace,
         denial: &crate::formalization::AuthorizationDenialTrace,
+        registry: &CapabilityRegistry,
     ) {
         self.cases += 1;
         self.structural_targets += usize::from(score.target_structural);
@@ -58,6 +69,14 @@ impl GroupAccumulator {
         self.authorization_correct += usize::from(score.authorization_correct);
         self.false_authorizations += usize::from(authorized && !case.authorization_expected);
         self.false_denials += usize::from(!authorized && case.authorization_expected);
+        if trace.target_completion.complete {
+            self.method_selection_attempts += 1;
+            match registry.discover(&trace.target_completion.target).selection {
+                CapabilitySelection::Unique(_) => self.method_selection_unique += 1,
+                CapabilitySelection::Ambiguous(_) => self.method_selection_ambiguous += 1,
+                CapabilitySelection::None => self.method_selection_none += 1,
+            }
+        }
         self.taxonomy.observe(trace, denial, authorized);
     }
 
@@ -72,6 +91,15 @@ impl GroupAccumulator {
             authorization_accuracy: self.authorization_correct as f64 / denominator,
             false_authorizations: self.false_authorizations,
             false_denials: self.false_denials,
+            method_selection_attempts: self.method_selection_attempts,
+            method_selection_unique: self.method_selection_unique,
+            method_selection_ambiguous: self.method_selection_ambiguous,
+            method_selection_none: self.method_selection_none,
+            method_selection_success_rate: if self.method_selection_attempts == 0 {
+                1.0
+            } else {
+                self.method_selection_unique as f64 / self.method_selection_attempts as f64
+            },
             failure_taxonomy: self.taxonomy,
         }
     }
@@ -103,12 +131,13 @@ fn evaluate_case(
 
 pub fn evaluate(corpus: &FormalizationCorpus) -> FormalizationBenchmarkReport {
     let mut groups = BTreeMap::<String, GroupAccumulator>::new();
+    let registry = CapabilityRegistry::production();
     for case in &corpus.cases {
         let (trace, score, authorized, denial) = evaluate_case(case);
         groups
             .entry("total".into())
             .or_default()
-            .add(case, &score, authorized, &trace, &denial);
+            .add(case, &score, authorized, &trace, &denial, &registry);
         groups
             .entry(if holdout(&case.id) {
                 "holdout".into()
@@ -116,11 +145,11 @@ pub fn evaluate(corpus: &FormalizationCorpus) -> FormalizationBenchmarkReport {
                 "development".into()
             })
             .or_default()
-            .add(case, &score, authorized, &trace, &denial);
+            .add(case, &score, authorized, &trace, &denial, &registry);
         groups
             .entry(format!("tier:{}", case.tier.label()))
             .or_default()
-            .add(case, &score, authorized, &trace, &denial);
+            .add(case, &score, authorized, &trace, &denial, &registry);
     }
     let groups = groups
         .into_iter()
@@ -151,6 +180,18 @@ pub fn experiment_results(
             );
             metrics.insert("target_complete_rate".into(), group.target_complete_rate);
             metrics.insert("authorization_accuracy".into(), group.authorization_accuracy);
+            metrics.insert(
+                "method_selection_success_rate".into(),
+                group.method_selection_success_rate,
+            );
+            metrics.insert(
+                "method_selection_attempts".into(),
+                group.method_selection_attempts as f64,
+            );
+            metrics.insert(
+                "method_selection_unique".into(),
+                group.method_selection_unique as f64,
+            );
             metrics.insert(
                 "false_authorization_rate".into(),
                 group.false_authorizations as f64 / group.cases.max(1) as f64,
@@ -210,6 +251,9 @@ mod tests {
         let report = evaluate(&corpus);
         let results = experiment_results(&report, "data/formalization_seed_v1.json", "test");
         assert_eq!(results.len(), 6);
-        assert!(results.iter().all(|result| result.metric("failure_classification_coverage").is_some()));
+        assert!(results.iter().all(|result| {
+            result.metric("failure_classification_coverage").is_some()
+                && result.metric("method_selection_success_rate").is_some()
+        }));
     }
 }

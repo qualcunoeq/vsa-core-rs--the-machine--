@@ -4,8 +4,9 @@
 //! execution. It uses the versioned gold corpus and emits standard
 //! `ExperimentResult` records for development, holdout, and curriculum tiers.
 
-use crate::cognition::ExperimentResult;
 use crate::capabilities::{CapabilityRegistry, CapabilitySelection};
+use crate::capability_planner::{plan_target, CapabilityPlanningFailure};
+use crate::cognition::ExperimentResult;
 use crate::failure_taxonomy::FailureTaxonomyReport;
 use crate::formalization::{
     assess_direct_instantiation, assess_prompt, score_formalization, FormalizationCorpus,
@@ -28,6 +29,15 @@ pub struct FormalizationGroupMetrics {
     pub method_selection_ambiguous: usize,
     pub method_selection_none: usize,
     pub method_selection_success_rate: f64,
+    /// Diagnostic planning bridge for complete typed targets.  This does not
+    /// authorize execution; it measures whether the governed planner can
+    /// expand the selected method into a dependency-first plan.
+    pub planning_attempts: usize,
+    pub planning_success: usize,
+    pub planning_ambiguous: usize,
+    pub planning_none: usize,
+    pub planning_dependency_failure: usize,
+    pub planning_success_rate: f64,
     pub failure_taxonomy: FailureTaxonomyReport,
 }
 
@@ -50,6 +60,11 @@ struct GroupAccumulator {
     method_selection_unique: usize,
     method_selection_ambiguous: usize,
     method_selection_none: usize,
+    planning_attempts: usize,
+    planning_success: usize,
+    planning_ambiguous: usize,
+    planning_none: usize,
+    planning_dependency_failure: usize,
     taxonomy: FailureTaxonomyReport,
 }
 
@@ -76,6 +91,19 @@ impl GroupAccumulator {
                 CapabilitySelection::Ambiguous(_) => self.method_selection_ambiguous += 1,
                 CapabilitySelection::None => self.method_selection_none += 1,
             }
+            self.planning_attempts += 1;
+            match plan_target(&trace.target_completion.target, registry) {
+                Ok(_) => self.planning_success += 1,
+                Err(CapabilityPlanningFailure::AmbiguousCapabilities(_)) => {
+                    self.planning_ambiguous += 1
+                }
+                Err(CapabilityPlanningFailure::NoEligibleCapability) => self.planning_none += 1,
+                Err(
+                    CapabilityPlanningFailure::DependencyUnavailable(_)
+                    | CapabilityPlanningFailure::DependencyCycle(_),
+                ) => self.planning_dependency_failure += 1,
+                Err(_) => self.planning_none += 1,
+            }
         }
         self.taxonomy.observe(trace, denial, authorized);
     }
@@ -99,6 +127,16 @@ impl GroupAccumulator {
                 1.0
             } else {
                 self.method_selection_unique as f64 / self.method_selection_attempts as f64
+            },
+            planning_attempts: self.planning_attempts,
+            planning_success: self.planning_success,
+            planning_ambiguous: self.planning_ambiguous,
+            planning_none: self.planning_none,
+            planning_dependency_failure: self.planning_dependency_failure,
+            planning_success_rate: if self.planning_attempts == 0 {
+                1.0
+            } else {
+                self.planning_success as f64 / self.planning_attempts as f64
             },
             failure_taxonomy: self.taxonomy,
         }
@@ -193,6 +231,23 @@ pub fn experiment_results(
                 group.method_selection_unique as f64,
             );
             metrics.insert(
+                "method_selection_ambiguous".into(),
+                group.method_selection_ambiguous as f64,
+            );
+            metrics.insert(
+                "method_selection_none".into(),
+                group.method_selection_none as f64,
+            );
+            metrics.insert("planning_attempts".into(), group.planning_attempts as f64);
+            metrics.insert("planning_success".into(), group.planning_success as f64);
+            metrics.insert("planning_ambiguous".into(), group.planning_ambiguous as f64);
+            metrics.insert("planning_none".into(), group.planning_none as f64);
+            metrics.insert(
+                "planning_dependency_failure".into(),
+                group.planning_dependency_failure as f64,
+            );
+            metrics.insert("planning_success_rate".into(), group.planning_success_rate);
+            metrics.insert(
                 "false_authorization_rate".into(),
                 group.false_authorizations as f64 / group.cases.max(1) as f64,
             );
@@ -240,6 +295,9 @@ mod tests {
         assert_eq!(report.groups["holdout"].cases, 18);
         assert!(report.groups["total"].failure_taxonomy.classification_coverage >= 0.95);
         assert_eq!(report.groups["total"].false_authorizations, 0);
+        assert_eq!(report.groups["total"].planning_attempts, 37);
+        assert_eq!(report.groups["total"].planning_success, 27);
+        assert_eq!(report.groups["total"].planning_none, 10);
     }
 
     #[test]
@@ -254,6 +312,7 @@ mod tests {
         assert!(results.iter().all(|result| {
             result.metric("failure_classification_coverage").is_some()
                 && result.metric("method_selection_success_rate").is_some()
+                && result.metric("planning_success_rate").is_some()
         }));
     }
 }

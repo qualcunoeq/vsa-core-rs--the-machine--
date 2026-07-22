@@ -193,3 +193,10 @@ For machine-readable tier/holdout metrics, use the standard JSONL runner:
 cargo run --release --bin formalization_bench -- \
   data/formalization_seed_v1.json results/formalization_bench/seed.jsonl
 ```
+
+In addition to structural and authorization metrics, this runner reports a
+diagnostic planning bridge for every complete typed target:
+`planning_success_rate`, `planning_none`, `planning_ambiguous`, and
+`planning_dependency_failure`.  A successful bridge means that the governed
+capability planner can expand a selected method into a dependency-first plan;
+it does not authorize execution or change the conservative direct-audit gate.

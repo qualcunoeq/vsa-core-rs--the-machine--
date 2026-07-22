@@ -264,7 +264,7 @@ Current anchors:
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `677d5a4`):
+Current evidence (commit `2858282`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task
@@ -299,6 +299,10 @@ Current evidence (commit `677d5a4`):
   Strategy-memory and contextual-support ablations are evaluated; concept,
   proof, fact, and verification-off ablations remain explicitly
   `not_evaluated` because no isolated end-to-end controls exist.
+- Operational baseline: the release unified runner records a
+  `governed_suite_runtime` receipt; the seed-42 500/500 run measured about
+  1,038 ms on the development host. Runtime is measured as evidence, with no
+  unvalidated performance target inferred from one machine.
 - Formalization audit: complete fact provenance now gates typed direct
   instantiation; the constrained prose grammar now covers bounded equations,
   rates, inequalities, systems, quantifiers, units, and entity relations. The

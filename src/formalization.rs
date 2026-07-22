@@ -2297,6 +2297,13 @@ fn operation_from_text(text: &str) -> OperationKind {
         } else {
             OperationKind::Evaluate
         }
+    } else if (lower.contains(" is ")
+        && (lower.contains(" true")
+            || lower.contains(" in ")
+            || lower.contains(" divisible ")))
+        || lower.trim_start().starts_with("is ")
+    {
+        OperationKind::Verify
     } else if lower.contains("determine") {
         OperationKind::Evaluate
     } else if lower.contains("compare") || lower.contains("equivalent") || lower.contains("same as")
@@ -2312,6 +2319,7 @@ fn operation_from_text(text: &str) -> OperationKind {
     } else if lower.contains("verify")
         || lower.contains("check whether")
         || lower.contains("check if")
+        || lower.trim_start().starts_with("check ")
     {
         OperationKind::Verify
     } else {
@@ -2418,6 +2426,59 @@ fn resolve_subject(
             });
         }
     }
+    // Relations and predicates are typed definitions too. Keep them as
+    // non-executable definition subjects so verification intent can be
+    // represented without silently authorizing a new evaluator.
+    let relation_definition = Regex::new(
+        r"(?i)\b([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)\s*(?:means|is\s+defined\s+as|:)\s*([^.;?]+)",
+    )
+    .expect("static relation-definition regex");
+    for capture in relation_definition.captures_iter(question) {
+        let Some(name) = capture.get(1) else { continue };
+        let Some(body) = capture.get(3) else { continue };
+        let name = name.as_str().trim();
+        let body = body.as_str().trim();
+        if name.is_empty() || body.is_empty() {
+            continue;
+        }
+        candidates.push(SubjectCandidate {
+            object_id: name.into(),
+            object: format!("{name} := {body}"),
+            object_type: SubjectObjectType::Definition,
+            source_spans: vec![TextSpan {
+                source_fragment: capture.get(0).unwrap().as_str().into(),
+            }],
+            referenced_by_target: target_text
+                .to_ascii_lowercase()
+                .contains(&format!("{}(", name.to_ascii_lowercase())),
+            definition_available: true,
+            evidence: "explicit_relation_definition".into(),
+        });
+    }
+    let set_definition = Regex::new(r"(?i)\b([A-Za-z_][A-Za-z0-9_]*)\s*=\s*\{([^}]*)\}")
+        .expect("static set-definition regex");
+    for capture in set_definition.captures_iter(question) {
+        let Some(name) = capture.get(1) else { continue };
+        let Some(body) = capture.get(2) else { continue };
+        let name = name.as_str().trim();
+        let body = body.as_str().trim();
+        if name.is_empty() || body.is_empty() {
+            continue;
+        }
+        candidates.push(SubjectCandidate {
+            object_id: name.into(),
+            object: format!("{name} := {{{body}}}"),
+            object_type: SubjectObjectType::Definition,
+            source_spans: vec![TextSpan {
+                source_fragment: capture.get(0).unwrap().as_str().into(),
+            }],
+            referenced_by_target: target_text
+                .to_ascii_lowercase()
+                .contains(&name.to_ascii_lowercase()),
+            definition_available: true,
+            evidence: "explicit_set_definition".into(),
+        });
+    }
     let function_definition =
         Regex::new(r"(?i)\b([A-Za-z_][A-Za-z0-9_]*)\s*\([^)]*\)\s*=\s*([^.;?]+)")
             .expect("static function-definition regex");
@@ -2431,9 +2492,13 @@ fn resolve_subject(
             source_spans: vec![TextSpan {
                 source_fragment: body.as_str().to_string(),
             }],
-            referenced_by_target: target_text
-                .to_ascii_lowercase()
-                .contains(&format!("{}(", name.as_str().to_ascii_lowercase())),
+            referenced_by_target: {
+                let target_lower = target_text.to_ascii_lowercase();
+                let name_lower = name.as_str().to_ascii_lowercase();
+                target_lower.contains(&format!("{}(", name_lower))
+                    || target_lower.contains(&format!("into {name_lower}"))
+                    || target_lower.contains(&format!("of {name_lower}"))
+            },
             definition_available: true,
             evidence: "explicit_function_definition".into(),
         });
@@ -2459,9 +2524,10 @@ fn resolve_subject(
         {
             continue;
         }
-        let referenced = target_text
-            .split_whitespace()
-            .any(|token| object.contains(token.trim_matches(|c: char| !c.is_alphanumeric())));
+        let referenced = !object.starts_with("explicit relation or equation signal")
+            && target_text
+                .split_whitespace()
+                .any(|token| object.contains(token.trim_matches(|c: char| !c.is_alphanumeric())));
         candidates.push(SubjectCandidate {
             object_id: format!("fact_{index}"),
             object: object.clone(),
@@ -3148,6 +3214,11 @@ pub fn assess_prompt(
     if definitions.contains(&DefinitionKind::Sequence) && facts.is_empty() {
         obligations.push(ModelingObligation::ConstructEquation);
     }
+    let verification_request = (lower.contains(" is ")
+        && (lower.contains(" true")
+            || lower.contains(" in ")
+            || lower.contains(" divisible ")))
+        || lower.trim_start().starts_with("is ");
     let target = if has_any(
         &lower,
         &[
@@ -3177,7 +3248,7 @@ pub fn assess_prompt(
             "formalize",
             "express",
         ],
-    ) {
+    ) || verification_request {
         let request_clause = question
             .split(['?', '\n'])
             .rev()
@@ -3433,6 +3504,47 @@ mod tests {
             false,
         );
         assert!(!assess_direct_instantiation(&unsupported_context).authorization_safe());
+    }
+
+    #[test]
+    fn relation_and_set_verification_is_typed_but_not_authorized() {
+        for (id, prompt, expected_subject) in [
+            (
+                "relation",
+                "The relation R(a,b) means a divides b. Is R(3,12) true?",
+                "R := a divides b",
+            ),
+            (
+                "set",
+                "Let S={x in Z: x is even}. Is 4 in S?",
+                "S := {x in Z: x is even}",
+            ),
+            (
+                "predicate",
+                "Define the predicate P(n): n is divisible by 4. Check P(20).",
+                "P := n is divisible by 4",
+            ),
+        ] {
+            let trace = assess_prompt(id, prompt, "Math", false);
+            let target = &trace.formalized_target;
+            assert_eq!(target.operation, OperationKind::Verify, "{id}");
+            assert_eq!(target.subject.as_deref(), Some(expected_subject), "{id}");
+            assert_eq!(
+                target.completeness.operation_kind,
+                TargetFieldStatus::Complete,
+                "{id}"
+            );
+            assert_eq!(
+                target.completeness.subject,
+                TargetFieldStatus::Complete,
+                "{id}"
+            );
+            assert!(matches!(
+                trace.target_completion.build_trace.final_status,
+                TargetStatus::Complete
+            ));
+            assert!(!assess_direct_instantiation(&trace).authorization_safe(), "{id}");
+        }
     }
 
     #[test]

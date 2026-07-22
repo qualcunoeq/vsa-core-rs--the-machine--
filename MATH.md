@@ -143,7 +143,7 @@ A5 (Feedback Reliability) ─┬── A22 (Identifiability)
 | A4 | Cleanup Oracle | **EMPIRICALLY CONSISTENT** | $> 0.56$ threshold verified across 44 QA tests; max false-positive rate $< 10^{-4}$ |
 | A5 | Feedback Reliability | **EMPIRICALLY CONSISTENT** | `test_a5_adversarial_reward_noise`: p=0.7 centroid similarity > p=0.3 centroid similarity (634 tests) |
 | A6 | Piecewise-Stationary World | **DOMAIN-SPECIFIC** | Bond market regime changes on monthly/daily scale; $T_{\min} \approx 10^4$ ticks |
-| A7 | Burst-Limited Adversary | **EMPIRICALLY CONSISTENT** | `test_a7_burst_adversarial_inputs`: 25 adversarial inputs in a burst, L_F ≤ 1.0, centroid recovers (634 tests) |
+| A7 | Burst-Limited Adversary | **EMPIRICALLY CONSISTENT** | `test_a7_burst_adversarial_inputs`: 25 adversarial inputs in a burst, $L_F \leq 1.0$, centroid recovers (634 tests) |
 | A21 | Abstraction Preservation | **CONDITIONALLY CONSISTENT** | Structural SVO centroids classify **3/3** zero-overlap texts; the historical trigram representation scored 0/3 |
 | A30 | Structural Analogy Soundness | **CONDITIONALLY CONSISTENT** | Structural parser and SVO centroid path agree on 3/3 intervention cases; this does not establish universal semantic transfer |
 | A31 | Trace Faithfulness | **IMPLEMENTED** | `resolve_term_trace` returns `ResolveTrace`; `test_resolve_term_*` verifies exact, raw, and association paths |
@@ -151,7 +151,7 @@ A5 (Feedback Reliability) ─┬── A22 (Identifiability)
 ### 0.5 Critical Finding: A21 (Abstraction Preservation) — RESOLVED v3.2
 
 **v3.1 finding (trigram centroids):** A21 was **empirically false** — the hand-coded
-abstraction tables (ACTIONS, RESOURCES, ERROR_CLASSES) were the **sole mechanism**
+abstraction tables (`ACTIONS`, `RESOURCES`, `ERROR_CLASSES`) were the **sole mechanism**
 bridging the zero-overlap analogy gap.  With trigram centroids and tables disabled:
 
 - **0/3** zero-overlap texts correctly classified
@@ -162,8 +162,9 @@ The VSA architecture contributed **nothing** to zero-overlap structural analogy 
 trigram-encoded orthogonal texts stayed orthogonal regardless of structural similarity.
 
 **v3.2 resolution (structural SVO centroids):** A21 is **conditionally true** under
-structural centroid encoding.  With `encode_svo(action_abstract, "accesses",
-resource_abstract)` as the centroid representation instead of `encode_text_ngram(error_text, 3)`:
+structural centroid encoding. With the structural SVO constructor
+`encode_svo(action_abstract, "accesses", resource_abstract)` as the centroid representation
+instead of `encode_text_ngram(error_text, 3)`:
 
 - **3/3** zero-overlap texts correctly classified
 - **0/3** wrong
@@ -285,11 +286,13 @@ $$
 
 Let $M$ be the number of LSH sectors ($M = 1024$ for the 10-bit hash). The number of clusters $K$ satisfies:
 
-$$K \leq M \cdot (1 + \text{MAX_SUB_SECTORS})$$
+$$
+K \leq M \cdot (1 + \texttt{MAX\_SUB\_SECTORS})
+$$
 
-where $\text{MAX_SUB_SECTORS} = 4$ is the cap on bifurcations per sector.
+where $\texttt{MAX\_SUB\_SECTORS} = 4$ is the cap on bifurcations per sector.
 
-**Proof.** Each cluster has a Locked Anchor $a \in \mathcal{H}$. The LSH sector function $\ell: \mathcal{H} \to \{0,\ldots,M-1\}$ assigns each cluster to exactly one sector. The novelty gate creates a new cluster only when $\delta(\tau, c) \geq 0.70$ for all existing centroids $c$ — which implies $\tau$ maps to a different LSH sector than any existing cluster, or to a negligibly populated corner of an existing sector. Therefore each LSH sector can contain at most $1 + \text{MAX_SUB_SECTORS}$ clusters. $\square$
+**Proof.** Each cluster has a Locked Anchor $a \in \mathcal{H}$. The LSH sector function $\ell: \mathcal{H} \to \{0,\ldots,M-1\}$ assigns each cluster to exactly one sector. The novelty gate creates a new cluster only when $\delta(\tau, c) \geq 0.70$ for all existing centroids $c$ — which implies $\tau$ maps to a different LSH sector than any existing cluster, or to a negligibly populated corner of an existing sector. Therefore each LSH sector can contain at most $1 + \texttt{MAX\_SUB\_SECTORS}$ clusters. $\square$
 
 ### Theorem II.2 (Entry Count Per Cluster is Bounded)
 
@@ -314,7 +317,7 @@ There exists a constant $B$ depending only on $D$, $M$, and system constants suc
 | 3 | Composition frequency map | $\leq 100$ | LFU eviction cap |
 | 4 | Long-term cluster entries | $\leq 2M(1 + S)$ | Theorem II.1 + Theorem II.2 |
 
-where $M = 1024$ is the number of LSH sectors and $S = \text{MAX_SUB_SECTORS} = 4$.
+where $M = 1024$ is the number of LSH sectors and $S = \texttt{MAX\_SUB\_SECTORS} = 4$.
 
 The binary centroid occupies $160 \times 8 = 1280$ bytes. The accumulator (when hot) occupies $10240 \times 4 = 40960$ bytes. The number of hot accumulators is capped by `max_hot` (default $100$), giving a maximum memory footprint of:
 
@@ -657,15 +660,15 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XII.1 | Promotion boundedness | **EMPIRICALLY CONSISTENT** | `test_xii1_adversarial_promotion_frequency`: 10 to matching + 4 bad labels + 50 adversarial variants, 0 new clusters (634 tests) |
 | XIII.1 | Lazy reconstruction correctness | **PROVEN** | `ensure_accumulator` is deterministic fixed point |
 | XVI.1 | Fast-slow stability (anchored composition contractivity) | **PROVEN** | `test_anchored_chain_contractivity` — ε(3) ≈ 0.03 |
-| XVII.1 | Net Wasserstein contraction | **PROVEN/LEGACY MEASURED** | Historical hard/old-sweep coupling estimate: κ ≈ 0.925 per 50-tick cycle; current runtime uses κ_joint telemetry |
+| XVII.1 | Net Wasserstein contraction | **PROVEN/LEGACY MEASURED** | Historical hard/old-sweep coupling estimate: $κ ≈ 0.925$ per 50-tick cycle; current runtime uses $κ_{\mathrm{joint}}$ telemetry |
 | XVIII.1 | Expected contraction mapping | **PROVEN** | Follows from XVII.1 (Banach fixed point) |
 | XIX | Four open questions | **ANSWERED** | `answer_open_questions.py` — W*, self-interference, coupling ratio, capacity |
-| XX.1 | Joint contraction condition | **SUPERSEDED** | Replaced by XXV.4. The product α(1-κ_P) > β·κ_F·L_F uses pre-correction κ_F (see v3.0 audit note). Joint stability is now proven via λ₂(P)·κ_F instead. |
+| XX.1 | Joint contraction condition | **SUPERSEDED** | Replaced by XXV.4. The product $\alpha(1-\kappa_P) > \beta\cdot\kappa_F\cdot L_F$ uses pre-correction $\kappa_F$ (see v3.0 audit note). Joint stability is now proven via $\lambda_2(P)\cdot\kappa_F$ instead. |
 | XXI.1 | Unique invariant measure | **PROVEN** | Banach fixed point + Wasserstein contraction (XVII.1) |
-| XXII.1 | Adversarial L_F bound (corrected) | **CORRECTED** | L_F ≤ 1.0 (was 0.5 — proof error fixed), joint contraction holds at margin 0.010 |
-| XXIII.1 | System-level tracking error bounded | **PROVEN** | `test_tracking_error_bounded` — error never exceeds θ_novel = 0.70 |
+| XXII.1 | Adversarial $L_F$ bound (corrected) | **CORRECTED** | $L_F \leq 1.0$ (was 0.5 — proof error fixed), joint contraction holds at margin 0.010 |
+| XXIII.1 | System-level tracking error bounded | **PROVEN** | `test_tracking_error_bounded` — error never exceeds $\theta_{\text{novel}} = 0.70$ |
 | XXIII.2 | Protection gap (corrected) | **CORRECTED** | Unit error fixed: 0.05→0.35. Novelty gate suppressed under gradual drift. |
-| XXIII.3 | Cluster count under drift (corrected) | **PROVEN** (fission-driven) | `test_monotonic_drift_bounded_clusters` — K bounded, growth rate ≤ K_active·r/0.40 |
+| XXIII.3 | Cluster count under drift (corrected) | **PROVEN** (fission-driven) | `test_monotonic_drift_bounded_clusters` — $K$ bounded, growth rate $\leq K_{\text{active}}\cdot r/0.40$ |
 | XXIV | Metastable oscillation window | **EMPIRICALLY CONSISTENT** | `test_metastable_oscillation` — oscillation is measure-zero |
 | XXV.1 | Singularity of invariant measure | **PROVEN** | `test_invariant_measure_singularity` — volume fraction ≈ 2^{-8200} |
 | XXV.2 | Discrete attractor collapse | **PROVEN** | Corollary of XXV.1 — state confined to K Hamming balls |
@@ -674,8 +677,8 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XXV.5a | No deterministic decorrelation from exact $\rho$-admissibility | **PROVEN** | `test_rho_admissible_does_not_imply_decorrelation` constructs an admissible near-period-4 centroid with $\delta(c,\rho^{52}(c))=2/D \ll 0.5$ |
 | Sub-Lemma S (Thm XXV.5) | $g = \text{nearest}\circ P_\tau$ surjects from $\rho^{26}(W_i)$ | **PROVEN** for runtime-admissible manifolds | Constructive witness works for A3-Q-admitted manifolds; `enforce_a3q_manifold()` is the admission gate; empirical generic test: 90/90 pairs, min $w_j/w_i=5.39$ |
 | XXVI.2 | Spectral gap (exponential mixing) | **PROVEN** | λ₂(P) ≤ κ < 1, mixing in ~77 cycles |
-| XXVII | Soft projection frontier | **CALIBRATED** | τ = 0.10 optimal (v3.1 corrected): κ_P ≈ 0.916, C_eff = 2554 (11.3 bits, 128× gain). Previous τ=0.030 was a buggy artifact (see v3.1 fix notes). |
-| XXVII.2 | Optimal τ sensitivity | **MEASURED** | τ ∈ [0.06, 0.12] is the usable window. Below 0.06 is near-hard; above 0.12 is increasingly mushy. Optimum τ = 0.10 balances κ_P ≈ 0.916 with C_eff = 2554 (11.3 bits, 128× gain). |
+| XXVII | Soft projection frontier | **CALIBRATED** | $\tau = 0.10$ optimal (v3.1 corrected): $\kappa_P \approx 0.916$, $C_{\mathrm{eff}} = 2554$ (11.3 bits, 128× gain). Previous $\tau=0.030$ was a buggy artifact (see v3.1 fix notes). |
+| XXVII.2 | Optimal τ sensitivity | **MEASURED** | $\tau \in [0.06, 0.12]$ is the usable window. Below 0.06 is near-hard; above 0.12 is increasingly mushy. Optimum $\tau = 0.10$ balances $\kappa_P \approx 0.916$ with $C_{\mathrm{eff}} = 2554$ (11.3 bits, 128× gain). |
 | XXVIII.1 | Single accumulator cannot track persistent drift | **PROVEN** | Negative result: tracking error $e_t \to \infty$ as $W \to \infty$ under persistent drift |
 | XXVIII.2 | Hard projection destroys $\log_2(K)$ bits | **PROVEN** | Data processing inequality: $I(x; P(x)) \leq \log_2(K)$ |
 | XXVIII.3 | XOR chain depth limited without cleanup | **PROVEN** | Error $\varepsilon(n) \to 0.5$ exponentially without anchored chaining |
@@ -746,7 +749,7 @@ Since the original document was written, the following claims have been resolved
 ### Section XV-A: Intervention Test — Abstraction Table Dependency
 
 **v3.1 Finding (trigram centroids).** The structural error parser's zero-overlap classification
-depended entirely on hand-coded keyword tables (ACTIONS, RESOURCES, ERROR_CLASSES).  The VSA
+depended entirely on hand-coded keyword tables (`ACTIONS`, `RESOURCES`, `ERROR_CLASSES`).  The VSA
 architecture contributed nothing to this capability with trigram encoding.
 
 **v3.2 Resolution (structural SVO centroids).** With the fix applied (see `src/diagnostic.rs`):
@@ -764,9 +767,9 @@ architecture contributed nothing to this capability with trigram encoding.
 
 | Text | Training | Expected | Shared SVO | Result | Confidence |
 |------|----------|----------|-----------|--------|-----------|
-| "KMS keyserver unreachable: timeout" | "Connection refused" | connection_refused | $\text{encode_svo}(process, accesses, network\_service)$ | **CORRECT** | 1.0000 |
-| "disk quota exceeded" | "storage volume full" | disk_full | $\text{encode_svo}(storage, has\_state, capacity\_exhausted)$ | **CORRECT** | 0.7519 |
-| "certificate key expired" | "authentication token invalid" | credential_invalid | $\text{encode_svo}(credential, has\_state, credential\_invalid)$ | **CORRECT** | 0.7540 |
+| "KMS keyserver unreachable: timeout" | "Connection refused" | `connection_refused` | $\text{encode\_svo}(process, accesses, network\_service)$ | **CORRECT** | 1.0000 |
+| "disk quota exceeded" | "storage volume full" | `disk_full` | $\text{encode\_svo}(storage, has\_state, capacity\_exhausted)$ | **CORRECT** | 0.7519 |
+| "certificate key expired" | "authentication token invalid" | `credential_invalid` | $\text{encode\_svo}(credential, has\_state, credential\_invalid)$ | **CORRECT** | 0.7540 |
 
 **Comparison: v3.1 (trigram) vs v3.2 (structural SVO):**
 
@@ -857,7 +860,7 @@ Let the slow dynamics $F$ consist of:
 2. **Novelty gating:** creating new clusters when $\delta(v, \mathcal{M}) \geq 0.70$
 3. **Compaction:** merging clusters with $\delta(c_i, c_j) \leq 0.30$, fissioning when internal dispersion exceeds $0.70$
 
-**Claim XVI.2.1.** If the input stream $\{v_t\}$ has bounded support $\text{supp}(v_t) \subset B(c^*, r)$ for some centroid $c^*$ and radius $r < 0.35$, then $\mathcal{M}_t$ converges to a fixed set $\mathcal{M}^*$ with $d_{\max}(\mathcal{M}^*) \leq 0.30$.
+**Claim XVI.2.1.** If the input stream $\{v_t\}$ has bounded support $\text{supp}(v_t) \subset B(c^*, r)$ for some centroid $c^*$ and radius $r < 0.35$, then $\mathcal{M}_t$ converges to a fixed set $\mathcal{M}^{*}$ with $d_{\max}(\mathcal{M}^{*}) \leq 0.30$.
 
 **Proof sketch.** The novelty gate creates new clusters only for inputs with $\delta(v, \mathcal{M}) \geq 0.70$. Since all inputs lie within radius $r < 0.35$ of $c^*$, no input can be $0.70$ from all existing centroids once $c^*$ is in $\mathcal{M}$. Therefore the cluster count $K_t$ stabilizes. The compactor ensures $0.30 < \delta(c_i, c_j) < 0.70$ for all pairs at equilibrium (Corollary X.1). $\square$
 
@@ -869,9 +872,9 @@ $$x_{t+1} = P_{\mathcal{M}_t}(A(x_t)), \quad \mathcal{M}_{t+1} = F(\mathcal{M}_t
 
 with $\Delta t_{\text{fast}} \ll \Delta t_{\text{slow}}$ (the fast dynamics equilibrate between cluster updates):
 
-**Claim XVI.3.1.** The trajectory $\{x_t\}$ converges to a subset of $\mathcal{M}^*$, the fixed point of the slow dynamics.
+**Claim XVI.3.1.** The trajectory $\{x_t\}$ converges to a subset of $\mathcal{M}^{*}$, the fixed point of the slow dynamics.
 
-**Proof.** By Theorem XVI.1.1, the fast dynamics contract toward $\mathcal{M}_t$ on a timescale faster than $\mathcal{M}_t$ changes. Between cluster updates, $x_t$ reaches an $\varepsilon$-neighborhood of $\mathcal{M}_t$. When $\mathcal{M}_t$ updates, the projection target shifts, but by Theorem XVI.2.1 the shift is bounded, and the next fast cycle re-anchors. The composed dynamics therefore track the evolving manifold, converging to $\mathcal{M}^*$ as $t \to \infty$. $\square$
+**Proof.** By Theorem XVI.1.1, the fast dynamics contract toward $\mathcal{M}_t$ on a timescale faster than $\mathcal{M}_t$ changes. Between cluster updates, $x_t$ reaches an $\varepsilon$-neighborhood of $\mathcal{M}_t$. When $\mathcal{M}_t$ updates, the projection target shifts, but by Theorem XVI.2.1 the shift is bounded, and the next fast cycle re-anchors. The composed dynamics therefore track the evolving manifold, converging to $\mathcal{M}^{*}$ as $t \to \infty$. $\square$
 
 ### Empirical Verification of Two-Timescale Stability
 
@@ -978,15 +981,15 @@ Under the conditions of Theorem XVII.1, the cluster distribution $\mu_t$ converg
 | Compaction merge | $\geq -0.30/W_{\text{total}}$, strongly contractive | **Structural** | Threshold $< 0.30$ |
 | Compaction fission | $\leq +0.35/W_{\text{total}}$, mildly expansive | **Structural** | Bounded by half threshold |
 | Novelty gate | $\leq +1.0/W_{\text{total}}$, expansive but rare | **Structural** | Requires $\delta > 0.70$ |
-| **Net** | **Contractive for $W_{\text{total}} > W^*$** | **Conjecture** | Needs empirical verification |
+| **Net** | **Contractive for $W_{\text{total}} > W^{*}$** | **Conjecture** | Needs empirical verification |
 
 ---
 
 ## XIX. Answers to the Four Open Questions
 
-### Question 1: Wasserstein Critical Threshold $W^*$
+### Question 1: Wasserstein Critical Threshold $W^{*}$
 
-**Answer:** $W^* \approx 5\text{–}10 \times N_{\text{modes}}$, where $N_{\text{modes}}$ is the number of distinct input modes.
+**Answer:** $W^{*} \approx 5\text{–}10 \times N_{\text{modes}}$, where $N_{\text{modes}}$ is the number of distinct input modes.
 
 **Derivation.** The net Wasserstein-1 change per absorption step decomposes as:
 
@@ -1000,9 +1003,12 @@ $$\mathbb{E}[\Delta W_1] \approx \frac{0.1 - 3.0 \cdot 0.03 + 1.0 \cdot 0.01}{W_
 
 The system is weakly expansive at low $W_{\text{total}}$. As $W_{\text{total}}$ grows, absorption perturbations decay as $O(1/W_{\text{total}})$ while merge contractions grow with cluster weights. The critical threshold is:
 
-$$W^* = \frac{0.1 - 0.01}{\max(0, 3.0 \cdot p_{\text{merge}} - 0.02)} \approx \frac{0.09}{0.07} \approx 1.3 \text{ per mode}$$
+$$
+W^{*} = \frac{0.1 - 0.01}{\max(0, 3.0 \cdot p_{\text{merge}} - 0.02)}
+\approx \frac{0.09}{0.07} \approx 1.3 \text{ per mode}
+$$
 
-In the simulation (3 modes, 500 steps): $W^* \approx 518$ total weight, or $\approx 170$ per mode. For most configurations, $W^*$ is reached within a few dozen absorption steps — the system is contractive for almost all practical operating conditions. The contraction is guaranteed when $W_{\text{total}} > 10 \cdot N_{\text{modes}}$.
+In the simulation (3 modes, 500 steps): $W^{*} \approx 518$ total weight, or $\approx 170$ per mode. For most configurations, $W^{*}$ is reached within a few dozen absorption steps — the system is contractive for almost all practical operating conditions. The contraction is guaranteed when $W_{\text{total}} > 10 \cdot N_{\text{modes}}$.
 
 ### Question 2: Manifold Self-Interference
 
@@ -1145,9 +1151,9 @@ Under the two-timescale condition $\Delta t_{\text{fast}} \cdot L_F \ll 1$, the 
 
 $$\limsup_{t \to \infty} \mathbb{E}[d_{\text{joint}}(\Psi^t(x_0, \mathcal{M}_0), \Psi^t(x_0', \mathcal{M}_0'))] \leq \frac{\alpha \cdot d_{\max}^*}{1 - \kappa_F}$$
 
-where $d_{\max}^*$ is the equilibrium covering radius of $\mathcal{M}^*$.
+where $d_{\max}^*$ is the equilibrium covering radius of $\mathcal{M}^{*}$.
 
-**Proof.** After fast equilibration, $\delta(x_t, \mathcal{M}_t) \leq d_{\max}(\mathcal{M}_t)$. The slow dynamics then evolve $\mathcal{M}_t$ toward $\mathcal{M}^*$ at rate $\kappa_F$. The joint error is bounded by the product of the fast contraction radius and the slow manifold convergence rate. $\square$
+**Proof.** After fast equilibration, $\delta(x_t, \mathcal{M}_t) \leq d_{\max}(\mathcal{M}_t)$. The slow dynamics then evolve $\mathcal{M}_t$ toward $\mathcal{M}^{*}$ at rate $\kappa_F$. The joint error is bounded by the product of the fast contraction radius and the slow manifold convergence rate. $\square$
 
 ### Empirical Status
 
@@ -1183,17 +1189,17 @@ admits a **unique invariant measure** $\mu^*$ on $\mathcal{H} \times \mathcal{P}
 
 **Proof sketch.** The proof proceeds in three steps:
 
-**Step 1: Manifold convergence.** By Theorem XVII.1 (Wasserstein contraction), the manifold distribution $\mu_t^{\mathcal{M}}$ converges weakly to a unique fixed distribution $\mu^{\mathcal{M}^*}$ as $t \to \infty$, provided $\mathbb{E}[\Delta W_1] < 0$. This holds for all $W_{\text{total}} > W^*$ (Section XIX, Question 1).
+**Step 1: Manifold convergence.** By Theorem XVII.1 (Wasserstein contraction), the manifold distribution $\mu_t^{\mathcal{M}}$ converges weakly to a unique fixed distribution $\mu^{\mathcal{M}^{*}}$ as $t \to \infty$, provided $\mathbb{E}[\Delta W_1] < 0$. This holds for all $W_{\text{total}} > W^{*}$ (Section XIX, Question 1).
 
-**Step 2: State convergence given fixed manifold.** By Theorem XXV.4 (uniform spectral gap), for a fixed manifold $\mathcal{M}^*$, the centroid chain $i_{t+1} \sim P(i_t)$ induced by $x_{t+1} = P_{\mathcal{M}^*}(A(x_t))$ has $\lambda_2(P) < 1$ (conditional on Assumption $\rho$). The chain therefore converges exponentially to its unique stationary distribution $\pi$ on $\{1,\ldots,K\}$, giving a unique invariant measure $\mu^{x|\mathcal{M}^*} = \sum_k \pi_k \cdot \delta_{c_k}$ supported on the $K$ centroids.
+**Step 2: State convergence given fixed manifold.** By Theorem XXV.4 (uniform spectral gap), for a fixed manifold $\mathcal{M}^{*}$, the centroid chain $i_{t+1} \sim P(i_t)$ induced by $x_{t+1} = P_{\mathcal{M}^{*}}(A(x_t))$ has $\lambda_2(P) < 1$ (conditional on Assumption $\rho$). The chain therefore converges exponentially to its unique stationary distribution $\pi$ on $\{1,\ldots,K\}$, giving a unique invariant measure $\mu^{x|\mathcal{M}^{*}} = \sum_k \pi_k \cdot \delta_{c_k}$ supported on the $K$ centroids.
 
-**Step 3: Joint convergence.** By the two-timescale separation (Theorem XVI.3), the joint dynamics converge to the product measure $\mu^* = \mu^{x|\mathcal{M}^*} \times \mu^{\mathcal{M}^*}$ as $t \to \infty$. The convergence is in total variation distance, with rate dominated by the slow manifold convergence $\kappa_F^t$. $\square$
+**Step 3: Joint convergence.** By the two-timescale separation (Theorem XVI.3), the joint dynamics converge to the product measure $\mu^{*} = \mu^{x|\mathcal{M}^{*}} \times \mu^{\mathcal{M}^{*}}$ as $t \to \infty$. The convergence is in total variation distance, with rate dominated by the slow manifold convergence $\kappa_F^t$. $\square$
 
 ### Corollary XXI.1 (Uniqueness)
 
 The invariant measure $\mu^*$ is unique and independent of the initial condition $(x_0, \mathcal{M}_0)$, depending only on the input distribution $\nu$.
 
-**Proof.** The Wasserstein contraction (Theorem XVII.1) guarantees that the manifold converges to $\mathcal{M}^*$ from any initial $\mathcal{M}_0$. Given $\mathcal{M}^*$, the fast dynamics converge to $\mu^{x|\mathcal{M}^*}$ from any initial $x_0$. The joint measure is the product of these two unique limits. $\square$
+**Proof.** The Wasserstein contraction (Theorem XVII.1) guarantees that the manifold converges to $\mathcal{M}^{*}$ from any initial $\mathcal{M}_0$. Given $\mathcal{M}^{*}$, the fast dynamics converge to $\mu^{x|\mathcal{M}^{*}}$ from any initial $x_0$. The joint measure is the product of these two unique limits. $\square$
 
 ### Metastability Analysis
 
@@ -1203,7 +1209,9 @@ The system exhibits **metastable behavior** (apparent multiple basins on finite 
 
 When $\nu_t$ changes over time (regime shifts, concept drift), the invariant measure $\mu_t^*$ becomes time-dependent. The system tracks the evolving measure with lag:
 
-$$\tau_{\text{track}} = \frac{1}{1 - \kappa_F} \cdot \frac{W_{\text{total}}}{W^*}$$
+$$
+\tau_{\text{track}} = \frac{1}{1 - \kappa_F} \cdot \frac{W_{\text{total}}}{W^{*}}
+$$
 
 For $\kappa_F \approx 0.95$ and $W_{\text{total}} \approx 100$: $\tau_{\text{track}} \approx 20 \cdot 20 = 400$ steps. On horizons shorter than $\tau_{\text{track}}$, the system appears to have multiple basins (the old regime's clusters persist while new ones form).
 
@@ -1248,7 +1256,7 @@ Can an adversary craft an input sequence $\{v_t\}$ that forces the manifold Lips
 
 $$\alpha(1 - \kappa_P) > \beta \cdot \kappa_F \cdot L_F$$
 
-### Theorem XXII.1-R (Corrected L_F Bound)
+### Theorem XXII.1-R (Corrected $L_F$ Bound)
 
 **The original proof (pre-v2.5) claimed $L_F \leq 0.5$. This was WRONG.** The correction was discovered empirically during the joint contraction audit. The correct bound is $L_F \leq 1.0$, and it is tight.
 
@@ -1317,7 +1325,7 @@ Because the joint contraction margin is only 0.010, the system includes `Contrac
 
 ### Problem Statement
 
-When the input distribution $\nu_t$ drifts over time, the manifold $\mathcal{M}_t$ lags behind the optimal manifold $\mathcal{M}^*_t$ for the current distribution. Does this tracking error grow without bound under persistent drift?
+When the input distribution $\nu_t$ drifts over time, the manifold $\mathcal{M}_t$ lags behind the optimal manifold $\mathcal{M}^{*}_t$ for the current distribution. Does this tracking error grow without bound under persistent drift?
 
 ### Negative Result: Individual Clusters Exhibit Unbounded Tracking Error
 
@@ -1357,7 +1365,7 @@ This correction fundamentally changes the mechanism of cluster growth under drif
 
 ### Theorem XXIII.2 (Protection Gap — Corrected)
 
-The novelty gate fires when $\min_c \delta(v_t, c) \geq \theta_{\text{novel}} = 0.70$. The absorption gate (THETA_MAIN_BASELINE = 0.35 NHD) provides a first line of defense: observations within 0.35 NHD of an existing centroid are unconditionally absorbed. The protection gap between the absorption threshold and the novelty threshold is:
+The novelty gate fires when $\min_c \delta(v_t, c) \geq \theta_{\text{novel}} = 0.70$. The absorption gate (`THETA_MAIN_BASELINE = 0.35` NHD) provides a first line of defense: observations within 0.35 NHD of an existing centroid are unconditionally absorbed. The protection gap between the absorption threshold and the novelty threshold is:
 
 $$\Delta_{\text{protect}} = \theta_{\text{novel}} - \theta_{\text{cluster}}(\text{NHD}) = 0.70 - 0.35 = 0.35$$
 
@@ -1649,13 +1657,13 @@ The invariant measure $\mu^*$ on $\mathcal{H} \times \mathcal{P}(\mathcal{H})$ i
 
 **Proof.** The proof proceeds by characterizing the support of $\mu^*$:
 
-**Step 1: State marginal support.** The fast dynamics $x_{t+1} = P_{\mathcal{M}_t}(A(x_t))$ project onto the finite centroid set $\mathcal{M}_t$. At equilibrium (Theorem XXI.1), $\mathcal{M}_t \to \mathcal{M}^*$ with $K^* = |\mathcal{M}^*|$ centroids. The projection $P_{\mathcal{M}^*}$ maps any input to its nearest centroid, so:
+**Step 1: State marginal support.** The fast dynamics $x_{t+1} = P_{\mathcal{M}_t}(A(x_t))$ project onto the finite centroid set $\mathcal{M}_t$. At equilibrium (Theorem XXI.1), $\mathcal{M}_t \to \mathcal{M}^{*}$ with $K^* = |\mathcal{M}^{*}|$ centroids. The projection $P_{\mathcal{M}^{*}}$ maps any input to its nearest centroid, so:
 
-$$x_t \in \bigcup_{c \in \mathcal{M}^*} B_{d_{\max}}(c)$$
+$$x_t \in \bigcup_{c \in \mathcal{M}^{*}} B_{d_{\max}}(c)$$
 
 where $B_{d_{\max}}(c) = \{y \in \mathcal{H} : \delta(y, c) \leq d_{\max}\}$ is a Hamming ball of radius $d_{\max} \approx 0.03$ around centroid $c$.
 
-Thus $\text{supp}(\mu^*_x) \subseteq S = \bigcup_{c \in \mathcal{M}^*} B_{d_{\max}}(c)$.
+Thus $\text{supp}(\mu^*_x) \subseteq S = \bigcup_{c \in \mathcal{M}^{*}} B_{d_{\max}}(c)$.
 
 **Step 2: Volume fraction.** The volume of a single Hamming ball of radius $r = d_{\max} = 0.03$ in $\mathcal{H} = \{0,1\}^D$ is:
 
@@ -1794,7 +1802,7 @@ where $\epsilon_{\text{corr}} < r_i - 0.10$ for the constructed witness $v_{ij}$
 
 #### Layer 1: $\kappa_F$ is Uniformly Bounded (PROVEN)
 
-From Theorem I.2-R and the weight cap (MAX_CLUSTER_WEIGHT = 500):
+From Theorem I.2-R and the weight cap (`MAX_CLUSTER_WEIGHT = 500`):
 
 $$\kappa_F(t) \leq 1 - \frac{1}{W_{\text{cap}}} = 1 - \frac{1}{500} = 0.998 \quad \forall t, \forall \mathcal{M}_t$$
 
@@ -1986,10 +1994,10 @@ The resolution of XXV.4 retroactively closes several other open problems in the 
 1. **XX.1 (Joint contraction condition):** The joint contraction condition $\alpha(1-\kappa_P) > \beta \cdot \kappa_F \cdot L_F$ is SUPERSEDED. The uniform bound is now proven via $\lambda_2(P) \cdot \kappa_F$ instead, bypassing the $\kappa_P$ non-expansiveness issue entirely. The joint analysis in Section XX should be read as a heuristic derivation, not a proof.
 
 2. **XXI.1 (Unique invariant measure):** The uniqueness proof now has a clean two-step structure:
-   - Step 1: Manifold converges to $\mathcal{M}^*$ by $\kappa_F$ contraction (Theorem XVII.1)
-   - Step 2: On the fixed manifold $\mathcal{M}^*$, the centroid chain is ergodic ($\lambda_2(P) < 1$ by XXV.4)
+   - Step 1: Manifold converges to $\mathcal{M}^{*}$ by $\kappa_F$ contraction (Theorem XVII.1)
+   - Step 2: On the fixed manifold $\mathcal{M}^{*}$, the centroid chain is ergodic ($\lambda_2(P) < 1$ by XXV.4)
    
-   The invariant measure $\mu^* = \pi \times \delta_{\mathcal{M}^*}$ (stationary distribution of centroid chain $\times$ Dirac on limiting manifold) exists and is unique.
+   The invariant measure $\mu^* = \pi \times \delta_{\mathcal{M}^{*}}$ (stationary distribution of centroid chain $\times$ Dirac on limiting manifold) exists and is unique.
 
 3. **XXVI.2 (Spectral gap):** The spectral gap of the centroid chain is now $\lambda_2(P) \leq 1 - c/K$, tightening the previous empirical bound of $\lambda_2 \approx 0.97$.
 
@@ -2018,10 +2026,10 @@ The resolution of XXV.4 retroactively closes several other open problems in the 
 1. **XX.1 (Joint contraction condition):** The joint contraction condition $\alpha(1-\kappa_P) > \beta \cdot \kappa_F \cdot L_F$ is SUPERSEDED. The uniform bound is now proven via $\lambda_2(P) \cdot \kappa_F$ instead, bypassing the $\kappa_P$ non-expansiveness issue entirely. The joint analysis in Section XX should be read as a heuristic derivation, not a proof.
 
 2. **XXI.1 (Unique invariant measure):** The uniqueness proof now has a clean two-step structure:
-   - Step 1: Manifold converges to $\mathcal{M}^*$ by $\kappa_F$ contraction (Theorem XVII.1)
-   - Step 2: On the fixed manifold $\mathcal{M}^*$, the centroid chain is ergodic ($\lambda_2(P) < 1$ by XXV.4)
+   - Step 1: Manifold converges to $\mathcal{M}^{*}$ by $\kappa_F$ contraction (Theorem XVII.1)
+   - Step 2: On the fixed manifold $\mathcal{M}^{*}$, the centroid chain is ergodic ($\lambda_2(P) < 1$ by XXV.4)
    
-   The invariant measure $\mu^* = \pi \times \delta_{\mathcal{M}^*}$ (stationary distribution of centroid chain $\times$ Dirac on limiting manifold) exists and is unique.
+   The invariant measure $\mu^* = \pi \times \delta_{\mathcal{M}^{*}}$ (stationary distribution of centroid chain $\times$ Dirac on limiting manifold) exists and is unique.
 
 3. **XXVI.2 (Spectral gap):** The spectral gap of the centroid chain is now $\lambda_2(P) \leq 1 - c/K$, tightening the previous empirical bound of $\lambda_2 \approx 0.97$.
 
@@ -2073,7 +2081,7 @@ $$i_{t+1} \sim P(i_t), \quad x_t \sim \mathcal{N}(c_{i_t}, \sigma^2)$$
 
 where $i_t \in \{1, \ldots, K\}$ is the centroid index, $P \in [0,1]^{K \times K}$ is the transition matrix induced by $\Phi = P_{\mathcal{M}} \circ A$, and $x_t$ is a noisy observation of centroid $c_{i_t}$ with noise level $\sigma \leq d_{\max}$.
 
-**Proof.** From Theorem XXV.1, $x_t$ is confined to $\bigcup_{c \in \mathcal{M}^*} B_{d_{\max}}(c)$. Since $d_{\max} \ll 0.5$, the Hamming balls are disjoint (the inter-centroid distance is $\gg 2d_{\max}$ for well-separated centroids). Therefore, each $x_t$ belongs to exactly one ball, uniquely identifying its centroid index $i_t$. The transition $i_t \to i_{t+1}$ is determined by $\Phi$, which depends only on the current centroid (not the exact position within the ball), since $A$ is an isometry and $P_{\mathcal{M}}$ returns the nearest centroid. $\square$
+**Proof.** From Theorem XXV.1, $x_t$ is confined to $\bigcup_{c \in \mathcal{M}^{*}} B_{d_{\max}}(c)$. Since $d_{\max} \ll 0.5$, the Hamming balls are disjoint (the inter-centroid distance is $\gg 2d_{\max}$ for well-separated centroids). Therefore, each $x_t$ belongs to exactly one ball, uniquely identifying its centroid index $i_t$. The transition $i_t \to i_{t+1}$ is determined by $\Phi$, which depends only on the current centroid (not the exact position within the ball), since $A$ is an isometry and $P_{\mathcal{M}}$ returns the nearest centroid. $\square$
 
 ### Corollary XXVI.1 (Entropy Collapse)
 

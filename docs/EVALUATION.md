@@ -186,3 +186,10 @@ The report records one primary class per incorrect outcome, classification
 coverage, and the original blocker evidence. Correct abstentions are not
 counted as failures; false authorization is always classified as a safety
 failure.
+
+For machine-readable tier/holdout metrics, use the standard JSONL runner:
+
+```bash
+cargo run --release --bin formalization_bench -- \
+  data/formalization_seed_v1.json results/formalization_bench/seed.jsonl
+```

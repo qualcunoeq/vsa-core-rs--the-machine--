@@ -55,6 +55,10 @@ path = "src/bin/cognition_bench.rs"
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 
+[[bin]]
+name = "formalization_bench"
+path = "src/bin/formalization_bench.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

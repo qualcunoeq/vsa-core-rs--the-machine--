@@ -1421,7 +1421,10 @@ fn classify_instantiation_target(question: &str, task: TaskShape) -> Instantiati
             "value of f(",
             "compute f(",
         ],
-    ) {
+    ) || Regex::new(r"(?i)\b(?:evaluate|compute|calculate)\s+[A-Za-z_][A-Za-z0-9_]*\s*\(")
+        .expect("static function-evaluation target regex")
+        .is_match(&text)
+    {
         InstantiationTargetKind::EvaluateAtArguments
     } else if has_any(
         &text,
@@ -1468,7 +1471,17 @@ fn classify_instantiation_target(question: &str, task: TaskShape) -> Instantiati
 /// no method is authorized by this heuristic and no executor is called.
 pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstantiationAssessment {
     let source = trace.target_source();
+    // Fact provenance retains the complete prompt for explicit relations and
+    // definitions.  Use it for safety-sensitive context checks (domain
+    // restrictions, quantified requests, model labels) while keeping
+    // `source` as the target classifier's operation span.
+    let context_source = trace
+        .facts
+        .first()
+        .map(|fact| fact.source_fragment.as_str())
+        .unwrap_or(source.as_str());
     let source_lower = source.to_ascii_lowercase();
+    let context_lower = context_source.to_ascii_lowercase();
     let supplied_object = classify_supplied_object(&source, trace);
     let mut target = classify_instantiation_target(&source, trace.task_shape);
     if target == InstantiationTargetKind::ApplyOnce
@@ -1489,25 +1502,37 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
         || matches!(
             supplied_object,
             SuppliedObjectKind::ExplicitDefinition | SuppliedObjectKind::ExplicitEquation
-        );
+        )
+        || (matches!(
+            trace
+                .target_completion
+                .target
+                .subject_resolution
+                .selected
+                .as_ref()
+                .map(|candidate| candidate.object_type),
+            Some(SubjectObjectType::Definition)
+        ) && context_source.to_ascii_lowercase().contains("defined as"));
     let target_identified = trace.target.is_some();
     let quantifiers_preserved = !trace
         .obligations
         .contains(&ModelingObligation::ExtractQuantifiers);
+    let textual_domain_restriction = Regex::new(
+        r"(?i)\b(?:for|with)\s+[a-z_][a-z0-9_]*\s*(?:<=|>=|!=|=|<|>)",
+    )
+    .expect("static textual-domain regex")
+    .is_match(&context_lower)
+        || has_any(
+            &context_lower,
+            &["positive solution", "negative solution", "product of the roots"],
+        );
     let side_conditions_identified = !trace
         .obligations
         .contains(&ModelingObligation::IdentifyDomain)
         && !trace
             .obligations
-            .contains(&ModelingObligation::ResolveEntityReference);
-    let direct_target = matches!(
-        target,
-        InstantiationTargetKind::EvaluateAtArguments
-            | InstantiationTargetKind::SubstituteValues
-            | InstantiationTargetKind::ApplyOnce
-            | InstantiationTargetKind::VerifyInstance
-            | InstantiationTargetKind::DetermineWhetherConditionHolds
-    );
+            .contains(&ModelingObligation::ResolveEntityReference)
+        && !textual_domain_restriction;
     // These phrases commonly co-occur with a supplied equation/definition,
     // but their answers require specialist mathematics rather than one-step
     // binding.  Keeping them out of the ready bucket prevents false low-
@@ -1537,6 +1562,91 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
             "growth rate",
         ],
     );
+    let explicit_solve_subject = trace.target_completion.target.operation == OperationKind::Solve
+        && trace.target_completion.target.target_variable.is_some()
+        && has_any(&source_lower, &["solve", "solution"])
+        && !has_any(
+            &context_lower,
+            &["product of the roots", "positive solution", "negative solution"],
+        )
+        && trace
+            .target_completion
+            .target
+            .subject_resolution
+            .selected
+            .as_ref()
+            .map(|candidate| {
+                matches!(
+                    candidate.object_type,
+                    SubjectObjectType::Equation | SubjectObjectType::EquationSystem
+                ) && candidate.object.contains('=')
+            })
+            .unwrap_or(false);
+    let parsed_function_arguments = !trace.target_completion.target.arguments.is_empty()
+        && trace.target_completion.target.arguments.iter().all(|argument| {
+            argument.status == TargetFieldStatus::Complete
+        });
+    let function_call_with_arguments = trace
+        .target_completion
+        .target
+        .subject_resolution
+        .selected
+        .as_ref()
+        .map(|candidate| candidate.object_type == SubjectObjectType::Function)
+        .unwrap_or(false)
+        && parsed_function_arguments
+        && !context_lower.contains("supplied model")
+        && (trace.target_completion.target.arguments.len() == 1
+            || has_any(&source_lower, &["evaluate", "compute", "calculate"]))
+        && (has_any(&source_lower, &["evaluate", "compute", "calculate"])
+            || trace
+                .target_completion
+                .target
+                .arguments
+                .iter()
+                .all(|argument| !argument.value.contains(',')));
+    let explicit_numeric_target = matches!(
+        trace.target_completion.target.operation,
+        OperationKind::Evaluate | OperationKind::Simplify | OperationKind::Compare
+    ) && matches!(
+        trace
+            .target_completion
+            .target
+            .subject_resolution
+            .selected
+            .as_ref()
+            .map(|candidate| candidate.object_type),
+        Some(SubjectObjectType::Expression) | Some(SubjectObjectType::Equation)
+    ) && !has_any(
+        &context_lower,
+        &["there exists", "for every", "for all", "product of the roots"],
+    )
+        && !textual_domain_restriction;
+    let explicit_definition_application = trace
+        .target_completion
+        .target
+        .subject_resolution
+        .selected
+        .as_ref()
+        .map(|candidate| candidate.object_type == SubjectObjectType::Definition)
+        .unwrap_or(false)
+        && context_lower.contains("defined as")
+        && source_lower.chars().any(|c| c.is_ascii_digit())
+        && source_lower.contains('*')
+        && !textual_domain_restriction;
+    let direct_function_target = function_call_with_arguments;
+    let classifier_direct_target = matches!(
+        target,
+        InstantiationTargetKind::SubstituteValues
+            | InstantiationTargetKind::ApplyOnce
+            | InstantiationTargetKind::VerifyInstance
+            | InstantiationTargetKind::DetermineWhetherConditionHolds
+    ) || (target == InstantiationTargetKind::EvaluateAtArguments && function_call_with_arguments);
+    let direct_target = classifier_direct_target
+        || explicit_solve_subject
+        || explicit_numeric_target
+        || explicit_definition_application
+        || direct_function_target;
     let concrete_binding = has_any(
         &source_lower,
         &[
@@ -1551,12 +1661,16 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
             "given x =",
             "given n =",
         ],
-    );
+    ) || explicit_solve_subject
+        || explicit_numeric_target
+        || explicit_definition_application
+        || direct_function_target;
     let one_step_representable = definition_isolated
         && target_identified
         && direct_target
         && concrete_binding
         && !specialist_surface
+        && !context_lower.contains("cost function")
         && !matches!(
             supplied_object,
             SuppliedObjectKind::ExplicitTheoremStatement
@@ -1572,7 +1686,12 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
                 | InstantiationTargetKind::ApplyOnce
                 | InstantiationTargetKind::VerifyInstance
                 | InstantiationTargetKind::DetermineWhetherConditionHolds
-        );
+        )
+        || (one_step_representable
+            && (explicit_solve_subject
+                || explicit_numeric_target
+                || explicit_definition_application
+                || direct_function_target));
     let mut missing_representation = Vec::new();
     if !definition_isolated {
         missing_representation.push("supplied_object".into());
@@ -2941,6 +3060,54 @@ mod tests {
         );
         assert!(trace.target.is_some());
         assert!(trace.obligations.is_empty());
+    }
+
+    #[test]
+    fn typed_equation_subject_allows_only_explicit_solve_requests() {
+        let solve = assess_prompt("solve", "Given x + 4 = 9, solve for x.", "Math", false);
+        assert!(assess_direct_instantiation(&solve).authorization_safe());
+
+        let derived_property = assess_prompt(
+            "roots",
+            "Find the product of the roots of x^2 - 3x + 2 = 0.",
+            "Math",
+            false,
+        );
+        assert!(!assess_direct_instantiation(&derived_property).authorization_safe());
+    }
+
+    #[test]
+    fn function_application_requires_supported_context_and_arguments() {
+        let direct = assess_prompt("function", "Let f(x)=2x+1. Evaluate f(4).", "Math", false);
+        assert!(assess_direct_instantiation(&direct).authorization_safe());
+
+        let restricted = assess_prompt(
+            "restricted",
+            "For x>0, let q(x)=sqrt(x). Evaluate q(9).",
+            "Math",
+            false,
+        );
+        assert!(!assess_direct_instantiation(&restricted).authorization_safe());
+
+        let unsupported_context = assess_prompt(
+            "model",
+            "Let V(t)=5t. Find V(2) in the supplied model.",
+            "Math",
+            false,
+        );
+        assert!(!assess_direct_instantiation(&unsupported_context).authorization_safe());
+    }
+
+    #[test]
+    fn explicit_numeric_expression_requests_are_auditable() {
+        for (id, prompt) in [
+            ("evaluate", "Evaluate 3(7) - 2."),
+            ("simplify", "Simplify 2x + 3x - x."),
+            ("compare", "Compare 4/5 and 3/4."),
+        ] {
+            let trace = assess_prompt(id, prompt, "Math", false);
+            assert!(assess_direct_instantiation(&trace).authorization_safe(), "{id}");
+        }
     }
 
     #[test]

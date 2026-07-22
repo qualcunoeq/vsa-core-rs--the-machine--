@@ -237,6 +237,51 @@ Wired into:
 Remaining work:
 - Add `decision_journal.save()` to periodic persistence in main.rs (every 50 ticks).
 
+## Layer 6: Governed Reasoning Evaluation
+
+Purpose: evaluate planning, execution, strategy reuse, and contextual evidence
+as one auditable vertical slice before broadening the architecture.
+
+Current anchors:
+
+- `src/strategic_route_benchmark.rs`: deterministic direct, concept-guided,
+  stored-strategy, and full planning modes with a 12-bucket failure taxonomy.
+- `src/algebra_benchmark.rs`: versioned linear, quadratic, and 2×2-system
+  corpora with generated holdouts, prose prompts, adversarial abstentions, and
+  strategy-shadow execution metrics.
+- `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
+  and recorded large-tier results.
+
+Current evidence (commit `654cfe2`):
+
+- 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
+  context-aware/global-only ablation is correct on every context-sensitive task
+  versus 332 global-only wrong decisions.
+- 560 algebra cases (60 seed + 500 generated): exact solution, execution, and
+  replay rates are 1.000 with zero false authorizations and denials.
+- Strategy shadow: 553/553 recommendations independently revalidated, 742
+  counterfactual steps saved, and positive execution/replay remain 1.000.
+
+Known limits:
+
+- The strategy shadow is a governed ablation, not direct execution of a stored
+  strategy; the existing method-specific executor remains the authority.
+- Algebra cases are deterministic and narrow.  Generated holdouts test scale
+  and parsing variation, not broad mathematical generalization.
+- Context support currently requires exact domain, contract, policy, and recent
+  epoch matches.  This is safe but may be sparse for transfer.
+
+Next vertical slice:
+
+1. Repeat the strategy-shadow boundary for expression-evaluation and
+   substitution receipts.
+2. Add a second-domain fixture with the same route/provenance contract.
+3. Add a resource-bounded benchmark for concept-route composition and record
+   depth, candidate count, and pruning behavior.
+4. Only then consider governed method acquisition for a demonstrated missing
+   capability; absence of `method_not_found` evidence is not authorization to
+   add one.
+
 ## Research Hygiene
 
 Use these conventions as the project grows:

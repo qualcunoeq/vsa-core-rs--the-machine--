@@ -224,3 +224,16 @@ cargo run --release --bin algebra_bench -- \
 
 The generated gold answers come from integer witnesses and are independent of
 the executor; every fifth generated case is held out.
+
+For a small language-shift slice, run the prose corpus separately:
+
+```bash
+cargo run --release --bin algebra_bench -- \
+  data/algebra_prose_v1.json results/algebra_bench/prose.jsonl
+```
+
+This corpus contains 20 natural-language linear, quadratic, and system
+requests, including four held-out prompts and adversarial abstention cases.
+The current slice executes every authorized case with exact results and replay
+verification, while recording zero false authorizations and zero false
+denials.

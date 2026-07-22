@@ -1726,8 +1726,8 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
     // than the relation being evaluated.  Let expression extraction preserve
     // the expression subject and let target construction parse the binding.
     if Regex::new(r"(?i)\b(?:evaluate|compute|calculate)\b.*\b(?:at|when)\s+[A-Za-z_][A-Za-z0-9_]*\s*=")
-        .expect("static evaluation-binding regex")
-        .is_match(question)
+    .expect("static evaluation-binding regex")
+    .is_match(question)
     {
         return None;
     }
@@ -1776,6 +1776,8 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
         "if ",
         "where ",
         "solve ",
+        "find all roots of ",
+        "find the roots of ",
         "the equation ",
         "the system ",
         "for real x, ",
@@ -1971,7 +1973,7 @@ fn resolve_subject(
     // can select its guarded EquationSystem method instead of falling back to
     // an ungoverned raw-string executor.
     let system_definition = Regex::new(
-        r"(?i)\bsolve\s+(?:the\s+)?system\b(?P<body>.+?)(?:\s+for\s+[A-Za-z_][A-Za-z0-9_]*\s*,\s*[A-Za-z_][A-Za-z0-9_]*)?\s*[.?]?$",
+        r"(?i)\bsolve\s+(?:the\s+)?(?:consistent\s+|inconsistent\s+)?system\b(?P<body>.+?)(?:\s+for\s+[A-Za-z_][A-Za-z0-9_]*\s*,\s*[A-Za-z_][A-Za-z0-9_]*)?\s*[.?]?$",
     )
     .expect("static equation-system regex");
     if let Some(capture) = system_definition.captures(question.trim()) {
@@ -2369,13 +2371,13 @@ fn build_target_completion(
             function_application
                 || (subject_is_function
                     && subject
-                    .as_deref()
-                    .map(|value| {
-                        Regex::new(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
-                            .expect("static free-variable regex")
-                            .is_match(value)
-                    })
-                    .unwrap_or(false))
+                        .as_deref()
+                        .map(|value| {
+                            Regex::new(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
+                                .expect("static free-variable regex")
+                                .is_match(value)
+                        })
+                        .unwrap_or(false))
         }
         _ => false,
     };
@@ -3142,6 +3144,22 @@ mod tests {
         assert_eq!(
             system.target_completion.target.answer_form,
             Some(AnswerForm::SolutionSet)
+        );
+        let prose_system = assess_prompt(
+            "prose-system",
+            "Solve the consistent system x + y = 5 and x - y = 1.",
+            "Math",
+            false,
+        );
+        assert_eq!(
+            prose_system
+                .target_completion
+                .target
+                .subject_resolution
+                .selected
+                .as_ref()
+                .map(|subject| subject.object_type),
+            Some(SubjectObjectType::EquationSystem)
         );
 
         let numeric = assess_prompt("numeric", "Evaluate 3(7) - 2.", "Math", false);

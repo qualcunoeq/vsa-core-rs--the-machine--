@@ -516,6 +516,22 @@ pub fn parse_problem(question: &str) -> Option<AlgebraProblem> {
         return supported_problem(problem);
     }
 
+    // Root-finding prose is normalized into the guarded single-variable
+    // solver after checking that the relation names exactly one variable.
+    for prefix in ["find all roots of ", "find the roots of "] {
+        if let Some(body) = lower.strip_prefix(prefix) {
+            let (lhs, rhs) = parse_equation(body)?;
+            let mut variables = BTreeSet::new();
+            collect_system_variables(&lhs, &mut variables);
+            collect_system_variables(&rhs, &mut variables);
+            let variable = variables.into_iter().collect::<Vec<_>>();
+            if variable.len() != 1 {
+                return None;
+            }
+            return parse_problem(&format!("Solve for {}: {body}", variable[0]));
+        }
+    }
+
     // A deliberately explicit 2×2 system grammar.  We accept either
     // `Solve system: e1; e2 for x,y` or `Solve e1 and e2 for x,y`; neither
     // form is allowed to fall through to the one-equation solver.
@@ -563,21 +579,38 @@ pub fn parse_problem(question: &str) -> Option<AlgebraProblem> {
 
     // Same system grammar without the optional `system:` label.
     if let Some(rest) = lower.strip_prefix("solve ") {
-        if rest.contains(" and ") && rest.matches("=").count() == 2 {
-            let (equations_text, variables_text) = rest.rsplit_once(" for ")?;
+        let system_rest = rest
+            .strip_prefix("the system ")
+            .or_else(|| rest.strip_prefix("the consistent system "))
+            .or_else(|| rest.strip_prefix("the inconsistent system "))
+            .unwrap_or(rest);
+        if system_rest.contains(" and ") && system_rest.matches("=").count() == 2 {
+            let (equations_text, variables_text) = system_rest
+                .rsplit_once(" for ")
+                .map(|(equations, variables)| (equations, Some(variables)))
+                .unwrap_or((system_rest, None));
             let equation_parts: Vec<&str> = equations_text.split(" and ").map(str::trim).collect();
             if equation_parts.len() == 2 {
-                let variables: Vec<String> = variables_text
-                    .split(',')
-                    .map(str::trim)
-                    .filter(|v| v.len() == 1 && v.chars().all(|c| c.is_ascii_alphabetic()))
-                    .map(str::to_string)
-                    .collect();
+                let equations: Vec<(SymExpr, SymExpr)> = equation_parts
+                    .iter()
+                    .map(|part| parse_equation(part))
+                    .collect::<Option<_>>()?;
+                let variables: Vec<String> = if let Some(variables_text) = variables_text {
+                    variables_text
+                        .split(',')
+                        .map(str::trim)
+                        .filter(|v| v.len() == 1 && v.chars().all(|c| c.is_ascii_alphabetic()))
+                        .map(str::to_string)
+                        .collect()
+                } else {
+                    let mut inferred = BTreeSet::new();
+                    for (lhs, rhs) in &equations {
+                        collect_system_variables(lhs, &mut inferred);
+                        collect_system_variables(rhs, &mut inferred);
+                    }
+                    inferred.into_iter().collect()
+                };
                 if variables.len() == 2 && variables[0] != variables[1] {
-                    let equations: Vec<(SymExpr, SymExpr)> = equation_parts
-                        .iter()
-                        .map(|part| parse_equation(part))
-                        .collect::<Option<_>>()?;
                     let mut problem = base(AlgebraOperation::SolveSmallLinearSystem, text);
                     problem.contract = AlgebraContract {
                         operation: AlgebraOperation::SolveSmallLinearSystem,
@@ -693,6 +726,61 @@ pub fn parse_problem(question: &str) -> Option<AlgebraProblem> {
         _ => return None,
     }
     supported_problem(problem)
+}
+
+fn collect_system_variables(expr: &SymExpr, variables: &mut BTreeSet<String>) {
+    match expr {
+        SymExpr::Var(variable) => {
+            variables.insert(variable.display.to_string());
+        }
+        SymExpr::Add(a, b)
+        | SymExpr::Sub(a, b)
+        | SymExpr::Mul(a, b)
+        | SymExpr::Div(a, b)
+        | SymExpr::Pow(a, b) => {
+            collect_system_variables(a, variables);
+            collect_system_variables(b, variables);
+        }
+        SymExpr::Neg(a)
+        | SymExpr::Sin(a)
+        | SymExpr::Cos(a)
+        | SymExpr::Tan(a)
+        | SymExpr::Sqrt(a)
+        | SymExpr::Exp(a)
+        | SymExpr::Ln(a)
+        | SymExpr::Abs(a)
+        | SymExpr::Sinh(a)
+        | SymExpr::Cosh(a)
+        | SymExpr::Tanh(a)
+        | SymExpr::Asin(a)
+        | SymExpr::Acos(a)
+        | SymExpr::Atan(a) => collect_system_variables(a, variables),
+        SymExpr::Num(_) => {}
+        SymExpr::Limit {
+            variable,
+            approach,
+            body,
+        } => {
+            variables.insert(variable.display.to_string());
+            collect_system_variables(approach, variables);
+            collect_system_variables(body, variables);
+        }
+        SymExpr::Integral {
+            variable,
+            lower,
+            upper,
+            body,
+        } => {
+            variables.insert(variable.display.to_string());
+            if let Some(lower) = lower {
+                collect_system_variables(lower, variables);
+            }
+            if let Some(upper) = upper {
+                collect_system_variables(upper, variables);
+            }
+            collect_system_variables(body, variables);
+        }
+    }
 }
 
 fn base(operation: AlgebraOperation, source: &str) -> AlgebraProblem {
@@ -1470,6 +1558,15 @@ mod tests {
     fn solves_quadratic_real_roots() {
         let a = try_answer("Solve x^2 - 5*x + 6 = 0 for x").unwrap();
         assert_eq!(a.answer, "[2, 3]");
+        assert_eq!(
+            try_answer("Find all roots of x^2 - 1 = 0").unwrap().answer,
+            "[-1, 1]"
+        );
+    }
+    #[test]
+    fn solves_prose_two_by_two_systems_with_inferred_variables() {
+        let answer = try_answer("Solve the consistent system x + y = 5 and x - y = 1").unwrap();
+        assert_eq!(answer.answer, r#"{"x": "3", "y": "2"}"#);
     }
     #[test]
     fn rejects_complex_and_unsupported_nodes() {

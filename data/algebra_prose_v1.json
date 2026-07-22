@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {"id":"prose-01","tier":"development","method":"linear_equation","prompt":"Given x + 4 = 9, solve for x.","expected_result":"5","should_authorize":true},
+    {"id":"prose-02","tier":"development","method":"quadratic_equation","prompt":"For real x, solve x^2 - 5*x + 6 = 0.","expected_result":"[2, 3]","should_authorize":true},
+    {"id":"prose-03","tier":"development","method":"linear_equation","prompt":"Solve 2*x - 7 = 1.","expected_result":"4","should_authorize":true},
+    {"id":"prose-04","tier":"development","method":"linear_system","prompt":"Solve the system x + y = 5 and x - y = 1.","expected_result":"{\"x\": \"3\", \"y\": \"2\"}","should_authorize":true},
+    {"id":"prose-05","tier":"development","method":"linear_system","prompt":"Solve the consistent system 2*x + y = 7 and x - y = 2.","expected_result":"{\"x\": \"3\", \"y\": \"1\"}","should_authorize":true},
+    {"id":"prose-06","tier":"development","method":"quadratic_equation","prompt":"Find all roots of x^2 - 1 = 0.","expected_result":"[-1, 1]","should_authorize":true},
+    {"id":"prose-07","tier":"development","method":"linear_equation","prompt":"Solve the equation 7*x = 0.","expected_result":"0","should_authorize":true},
+    {"id":"prose-08","tier":"development","method":"linear_equation","prompt":"Given 4*x + 8 = 2*x + 18, solve for x.","expected_result":"5","should_authorize":true},
+    {"id":"prose-09-h","tier":"holdout","method":"linear_system","prompt":"Solve the system x + 2*y = 8 and 3*x - y = 3.","expected_result":"{\"x\": \"2\", \"y\": \"3\"}","should_authorize":true},
+    {"id":"prose-10-h","tier":"holdout","method":"quadratic_equation","prompt":"For real x, solve x^2 + 4*x + 4 = 0.","expected_result":"-2","should_authorize":true},
+    {"id":"prose-11","tier":"development","method":"linear_equation","prompt":"Solve x + y = 4 for x.","expected_result":null,"should_authorize":false},
+    {"id":"prose-12","tier":"development","method":"quadratic_equation","prompt":"Solve x^2 + 1 = 0 over the real numbers.","expected_result":null,"should_authorize":false},
+    {"id":"prose-13","tier":"development","method":"linear_system","prompt":"Solve the system x + y = 2 and 2*x + 2*y = 4.","expected_result":null,"should_authorize":false},
+    {"id":"prose-14","tier":"development","method":"linear_system","prompt":"Solve the system x*y = 2 and x + y = 3.","expected_result":null,"should_authorize":false},
+    {"id":"prose-15","tier":"development","method":"linear_equation","prompt":"Solve for x: sin(x) = 0.","expected_result":null,"should_authorize":false},
+    {"id":"prose-16","tier":"development","method":"linear_equation","prompt":"Find x if x^2 + = 4.","expected_result":null,"should_authorize":false},
+    {"id":"prose-17","tier":"development","method":"linear_equation","prompt":"Solve for x greater than 2.","expected_result":null,"should_authorize":false},
+    {"id":"prose-18","tier":"development","method":"linear_system","prompt":"Solve the inconsistent system x + y = 2 and x + y = 3.","expected_result":null,"should_authorize":false},
+    {"id":"prose-19-h","tier":"holdout","method":"linear_equation","prompt":"Solve for x: x + 1 = x + 2.","expected_result":null,"should_authorize":false},
+    {"id":"prose-20-h","tier":"holdout","method":"linear_equation","prompt":"Given x + y + z = 4, solve for x.","expected_result":null,"should_authorize":false}
+  ]
+}

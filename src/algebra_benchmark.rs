@@ -527,4 +527,20 @@ mod tests {
         assert_eq!(report.groups["total"].false_authorizations, 0);
         assert_eq!(report.groups["holdout"].cases, 59);
     }
+
+    #[test]
+    fn prose_corpus_executes_authorized_language_and_abstains_safely() {
+        let corpus: AlgebraCorpus =
+            serde_json::from_str(include_str!("../data/algebra_prose_v1.json")).unwrap();
+        assert!(corpus.validation_errors().is_empty());
+        assert_eq!(corpus.cases.len(), 20);
+        let report = evaluate(&corpus);
+        let total = &report.groups["total"];
+        assert_eq!(total.solution_accuracy, 1.0);
+        assert_eq!(total.execution_success_rate, 1.0);
+        assert_eq!(total.replay_success_rate, 1.0);
+        assert_eq!(total.false_authorizations, 0);
+        assert_eq!(total.false_denials, 0);
+        assert_eq!(report.groups["holdout"].cases, 4);
+    }
 }

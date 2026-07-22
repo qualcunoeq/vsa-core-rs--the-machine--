@@ -745,9 +745,14 @@ impl CapabilityRegistry {
                                 .target_variable
                                 .as_deref()
                                 .map(|variables| {
+                                    let system_source = if subject.object.trim_start().starts_with(':') {
+                                        subject.object.clone()
+                                    } else {
+                                        format!(": {}", subject.object)
+                                    };
                                     crate::algebra_island::parse_problem(&format!(
                                         "Solve system{} for {variables}",
-                                        subject.object
+                                        system_source
                                     ))
                                     .map(|problem| {
                                         problem.operation

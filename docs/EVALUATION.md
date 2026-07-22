@@ -329,7 +329,7 @@ tiers and records which ablations are actually implemented:
 
 ```bash
 cargo run --release --bin governed_bench -- \
-  500 500 42 results/governed_bench/large.jsonl 406ce80
+  500 500 42 results/governed_bench/large.jsonl b0011d2
 ```
 
 The seed-42 run reports seven tiers. Tier 0 direct algebra execution is 27/27
@@ -343,11 +343,11 @@ and 1.000 replay. The report now emits both aggregate rates and explicit
 positive-case success/replay rates; `expected_positive` remains explicit so
 abstention-heavy tiers are not mistaken for positive-case accuracy.
 
-The suite evaluates only concrete controls: strategy-memory and
-contextual-support ablations are measured, while concept-memory, proof-reuse,
-fact-reuse, and verification-off ablations are explicitly reported as
-`not_evaluated`. No unsafe executor is introduced merely to manufacture an
-ablation result.
+The suite evaluates only concrete controls: strategy-memory,
+concept-memory, and contextual-support ablations are measured, while
+proof-reuse, fact-reuse, and verification-off ablations are explicitly
+reported as `not_evaluated`. No unsafe executor is introduced merely to
+manufacture an ablation result.
 
 The runner appends a `governed_suite_runtime` result rather than hiding
 performance in console output. The release 500/500 run measured about 1.04 s

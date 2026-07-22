@@ -264,7 +264,7 @@ Current anchors:
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `406ce80`):
+Current evidence (commit `b0011d2`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task
@@ -296,8 +296,8 @@ Current evidence (commit `406ce80`):
   500/500 correct with receipt-shadow replay rate 1.000; recurrence is
   251/500 authorized/replayed with 50/100 positive holdout execution/replay;
   and the 21-case adversarial tier has zero false authorizations or denials.
-  Strategy-memory and contextual-support ablations are evaluated; concept,
-  proof, fact, and verification-off ablations remain explicitly
+  Strategy-memory, concept-memory, and contextual-support ablations are
+  evaluated; proof, fact, and verification-off ablations remain explicitly
   `not_evaluated` because no isolated end-to-end controls exist.
 - Operational baseline: the release unified runner records a
   `governed_suite_runtime` receipt; the seed-42 500/500 run measured about

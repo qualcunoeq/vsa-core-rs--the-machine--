@@ -329,7 +329,7 @@ tiers and records which ablations are actually implemented:
 
 ```bash
 cargo run --release --bin governed_bench -- \
-  500 500 42 results/governed_bench/large.jsonl 2858282
+  500 500 42 results/governed_bench/large.jsonl 656b5ea
 ```
 
 The seed-42 run reports seven tiers. Tier 0 direct algebra execution is 27/27
@@ -339,9 +339,9 @@ accepted and 1.000 replayed; tier 3 strategic method selection is 500/500
 correct with receipt-shadow replay rate 1.000; and the 21-case adversarial
 algebra tier has zero false authorizations and denials. The recurrence total is
 251/500 authorized and replayed, with the 100-case holdout at 0.500 acceptance
-and 1.000 replay. Rates are reported over each tier's full case count;
-`expected_positive` remains explicit so abstention-heavy tiers are not
-mistaken for positive-case accuracy.
+and 1.000 replay. The report now emits both aggregate rates and explicit
+positive-case success/replay rates; `expected_positive` remains explicit so
+abstention-heavy tiers are not mistaken for positive-case accuracy.
 
 The suite evaluates only concrete controls: strategy-memory and
 contextual-support ablations are measured, while concept-memory, proof-reuse,

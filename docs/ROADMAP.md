@@ -268,13 +268,14 @@ Current anchors:
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (post-`efa01e8` formalization slice):
+Current evidence (current formalization and governed benchmark slices):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task
   versus 332 global-only wrong decisions.
-- 560 algebra cases (60 seed + 500 generated): exact solution, execution, and
-  replay rates are 1.000 with zero false authorizations and denials.
+- 560 algebra cases (60 seed + 500 generated): exact solution, formalization,
+  execution, and replay rates are 1.000 with zero false authorizations and
+  denials.
 - Strategy shadow: 553/553 recommendations independently revalidated, 742
   counterfactual steps saved, and positive execution/replay remain 1.000.
 - Concept composition: a six-concept branching fixture produces eight valid
@@ -306,8 +307,8 @@ Current evidence (post-`efa01e8` formalization slice):
   retrieval hits with receipts. Only verification-off remains explicitly
   `not_evaluated`, because no safe isolated end-to-end control exists.
 - Operational baseline: the release unified runner records a
-  `governed_suite_runtime` receipt; seed-42 500/500 runs measured about
-  1.0–1.1 s on the development host. Runtime is measured as evidence, with no
+  `governed_suite_runtime` receipt; the current seed-42 500/500 run measured
+  about 1.52 s on the development host. Runtime is measured as evidence, with no
   unvalidated performance target inferred from one machine.
 - Formalization audit: complete fact provenance now gates typed direct
   instantiation; the constrained prose grammar now covers bounded equations,
@@ -319,9 +320,7 @@ Current evidence (post-`efa01e8` formalization slice):
   60/60 (executable target completeness 47/60), definitions 21/21, facts
   69/69, entities 21/21, assumptions 3/3, constraints 9/9, and obligations
   35/35. Recurrence targets remain non-executable through the generic
-  direct-audit path.
-  Recurrence targets remain non-executable through the generic direct-audit
-  path. Structural completeness is reported separately from executor/verifier
+  direct-audit path. Structural completeness is reported separately from executor/verifier
   availability.
 
 Known limits:

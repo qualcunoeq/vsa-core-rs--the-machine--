@@ -505,6 +505,15 @@ pub fn parse_problem(question: &str) -> Option<AlgebraProblem> {
     }
     let lower = text.to_ascii_lowercase();
 
+    // OOD system prompts often describe the same typed two-equation object
+    // with prose rather than the development grammar.  Normalize those
+    // forms into the exact same bounded 2x2 contract before considering any
+    // one-equation fallback.  This remains deliberately narrow: exactly two
+    // equations, two variables, and an explicit solve/determine intent.
+    if let Some(problem) = parse_prose_linear_system(text, &lower) {
+        return supported_problem(problem);
+    }
+
     // Explicit comparison has a deterministic boolean result and no CAS.
     if let Some(body) = lower.strip_prefix("compare ") {
         let (left, right) = body.split_once('=')?;
@@ -726,6 +735,144 @@ pub fn parse_problem(question: &str) -> Option<AlgebraProblem> {
         _ => return None,
     }
     supported_problem(problem)
+}
+
+fn parse_prose_linear_system(source: &str, lower: &str) -> Option<AlgebraProblem> {
+    if lower.matches('=').count() != 2
+        || !(lower.contains(" and ") || lower.contains(" together with ") || lower.contains(';'))
+        || !(lower.contains("solve")
+            || lower.contains("determine")
+            || lower.contains("find ")
+            || lower.starts_with("use "))
+    {
+        return None;
+    }
+
+    let mut equations_text = lower.trim().trim_end_matches(['?', '.']).trim();
+    let mut requested_variables: Option<String> = None;
+
+    // Pull the variable list out of the common OOD request forms.  The
+    // equation-bearing region is intentionally kept separate from the prose.
+    if let Some((equations, vars)) = equations_text.split_once(" to determine ") {
+        equations_text = equations.trim();
+        requested_variables = Some(vars.trim().to_string());
+    } else if let Some((equations, vars)) = equations_text.rsplit_once(" solve for ") {
+        equations_text = equations.trim();
+        requested_variables = Some(vars.trim().to_string());
+    } else if let Some((equations, vars)) = equations_text.rsplit_once(" for ") {
+        equations_text = equations.trim().trim_end_matches(',').trim();
+        requested_variables = Some(vars.trim().to_string());
+    } else if let Some((vars, equations)) = equations_text.split_once(" from ") {
+        let vars = vars
+            .trim()
+            .trim_start_matches("find ")
+            .trim_start_matches("determine ")
+            .trim();
+        equations_text = equations.trim();
+        requested_variables = Some(vars.to_string());
+    }
+
+    // Remove the leading request prose left by forms such as
+    // `Use ...`, `Solve simultaneously: ...`, and `The pair obeys ...`.
+    for marker in [
+        "for x,y, solve the simultaneous equations ",
+        "solve simultaneously:",
+        "solve simultaneously ",
+        "solve the simultaneous equations ",
+        "the pair obeys ",
+        "solve the pair ",
+        "the pair ",
+        "the equations are ",
+        "given ",
+        "use ",
+    ] {
+        if let Some(rest) = equations_text.strip_prefix(marker) {
+            equations_text = rest.trim();
+            break;
+        }
+    }
+
+    if let Some((equations, vars)) = equations_text
+        .rsplit_once(" find the ordered pair ")
+        .or_else(|| equations_text.rsplit_once(", find the ordered pair "))
+    {
+        equations_text = equations.trim();
+        requested_variables = Some(vars.trim().to_string());
+    }
+
+    let delimiter = if equations_text.contains(" together with ") {
+        " together with "
+    } else if equations_text.contains(" and ") {
+        " and "
+    } else {
+        ";"
+    };
+    let parts = equations_text
+        .split(delimiter)
+        .map(str::trim)
+        .filter(|part| !part.is_empty())
+        .collect::<Vec<_>>();
+    if parts.len() != 2 {
+        return None;
+    }
+
+    let equations = parts
+        .iter()
+        .map(|part| parse_equation_fragment(part))
+        .collect::<Option<Vec<_>>>()?;
+
+    let variables = requested_variables
+        .as_deref()
+        .map(parse_variable_list)
+        .filter(|vars| vars.len() == 2 && vars[0] != vars[1])
+        .or_else(|| {
+            let mut inferred = BTreeSet::new();
+            for (lhs, rhs) in &equations {
+                collect_system_variables(lhs, &mut inferred);
+                collect_system_variables(rhs, &mut inferred);
+            }
+            let inferred = inferred.into_iter().collect::<Vec<_>>();
+            (inferred.len() == 2).then_some(inferred)
+        })?;
+
+    let mut problem = base(AlgebraOperation::SolveSmallLinearSystem, source);
+    problem.contract = AlgebraContract {
+        operation: AlgebraOperation::SolveSmallLinearSystem,
+        max_variables: 2,
+        max_degree: Some(1),
+        coefficient_domain: CoefficientDomain::ExactRational,
+        supports_parameters: false,
+        supports_inequalities: false,
+    };
+    problem.equations = equations;
+    problem.target = AlgebraTarget::SolveSystem(variables);
+    Some(problem)
+}
+
+fn parse_variable_list(text: &str) -> Vec<String> {
+    text.trim()
+        .trim_end_matches(['?', '.'])
+        .replace(" and ", ",")
+        .split(',')
+        .map(str::trim)
+        .filter(|v| v.len() == 1 && v.chars().all(|c| c.is_ascii_alphabetic()))
+        .map(str::to_string)
+        .collect()
+}
+
+fn parse_equation_fragment(fragment: &str) -> Option<(SymExpr, SymExpr)> {
+    let fragment = fragment.trim().trim_end_matches([',', '.', '?']).trim();
+    // Find the first parseable equation boundary so leading words such as
+    // `Use` or `Given` cannot become part of the expression AST.
+    for (offset, ch) in fragment.char_indices() {
+        if !(ch.is_ascii_alphanumeric() || ch == '(') {
+            continue;
+        }
+        if let Some(equation) = parse_equation(&fragment[offset..]) {
+            return Some(equation);
+        }
+    }
+    None
 }
 
 fn collect_system_variables(expr: &SymExpr, variables: &mut BTreeSet<String>) {
@@ -1567,6 +1714,10 @@ mod tests {
     fn solves_prose_two_by_two_systems_with_inferred_variables() {
         let answer = try_answer("Solve the consistent system x + y = 5 and x - y = 1").unwrap();
         assert_eq!(answer.answer, r#"{"x": "3", "y": "2"}"#);
+    }
+    #[test]
+    fn system_parser_requires_explicit_solve_intent() {
+        assert!(parse_problem("x=1 and y=2").is_none());
     }
     #[test]
     fn rejects_complex_and_unsupported_nodes() {

@@ -107,6 +107,55 @@ pub struct OodReport {
     pub divergence_stages: BTreeMap<String, usize>,
 }
 
+/// Compare benchmark results semantically. The executor preserves exact
+/// rationals (for example `20/7`), while independently authored corpora may
+/// record the same value as a decimal (`2.857142857...`). Structured system
+/// results are therefore compared by numeric value, never by formatting.
+fn results_match(actual: Option<&str>, expected: Option<&str>) -> bool {
+    if actual == expected {
+        return true;
+    }
+    let (Some(actual), Some(expected)) = (actual, expected) else {
+        return false;
+    };
+    let (Ok(actual), Ok(expected)) = (
+        serde_json::from_str::<serde_json::Value>(actual),
+        serde_json::from_str::<serde_json::Value>(expected),
+    ) else {
+        return false;
+    };
+    let (Some(actual), Some(expected)) = (actual.as_object(), expected.as_object()) else {
+        return false;
+    };
+    actual.len() == expected.len()
+        && actual.iter().all(|(key, value)| {
+            let Some(expected_value) = expected.get(key) else {
+                return false;
+            };
+            let Some(actual_text) = value.as_str() else {
+                return false;
+            };
+            let Some(expected_text) = expected_value.as_str() else {
+                return false;
+            };
+            match (
+                parse_exact_or_decimal(actual_text),
+                parse_exact_or_decimal(expected_text),
+            ) {
+                (Some(actual), Some(expected)) => (actual - expected).abs() <= 1e-12,
+                _ => actual_text == expected_text,
+            }
+        })
+}
+
+fn parse_exact_or_decimal(value: &str) -> Option<f64> {
+    if let Ok(number) = value.parse::<f64>() {
+        return Some(number);
+    }
+    let (numerator, denominator) = value.split_once('/')?;
+    Some(numerator.parse::<f64>().ok()? / denominator.parse::<f64>().ok()?)
+}
+
 fn metric_for(cases: &[&AlgebraCase]) -> OodMetrics {
     let mut metrics = OodMetrics {
         cases: cases.len(),
@@ -133,7 +182,7 @@ fn metric_for(cases: &[&AlgebraCase]) -> OodMetrics {
         let result_correct = if case.should_authorize {
             result.execution_success
                 && result.replayed
-                && result.result.as_deref() == case.expected_result.as_deref()
+                && results_match(result.result.as_deref(), case.expected_result.as_deref())
         } else {
             !result.authorized && !result.execution_success
         };
@@ -175,9 +224,8 @@ pub fn evaluate(corpus: &OodCorpus) -> OodReport {
             && base_result.replayed == variant_result.replayed
             && base_result.result == variant_result.result;
         result_stable += usize::from(stable_result);
-        canonical_stable += usize::from(
-            base_result.canonical_signature == variant_result.canonical_signature,
-        );
+        canonical_stable +=
+            usize::from(base_result.canonical_signature == variant_result.canonical_signature);
         if base_result.authorized != variant_result.authorized || !stable_result {
             rewrite_regressions += 1;
         }
@@ -228,5 +276,17 @@ mod tests {
         assert_eq!(first.metrics.false_denials, 0);
         assert_eq!(first.invariance.canonical_stable, 7);
         assert_eq!(first.invariance.rewrite_regressions, 0);
+    }
+
+    #[test]
+    fn structured_results_accept_exact_and_decimal_encodings() {
+        assert!(results_match(
+            Some(r#"{"x":"20/7","y":"19/7"}"#),
+            Some(r#"{"x":"2.857142857142857","y":"2.7142857142857144"}"#),
+        ));
+        assert!(!results_match(
+            Some(r#"{"x":"20/7","y":"19/7"}"#),
+            Some(r#"{"x":"4","y":"7/3"}"#),
+        ));
     }
 }

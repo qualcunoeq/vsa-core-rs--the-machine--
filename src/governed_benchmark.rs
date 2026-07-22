@@ -258,14 +258,16 @@ pub fn evaluate(
             .expect("versioned algebra seed must be valid");
     let generated = seed_corpus.with_generated_cases(generated_count, seed);
     let direct = filtered_algebra(&generated, |case| case.tier == "development");
+    let generated_algebra = filtered_algebra(&generated, |case| case.tier == "generated");
     let adversarial = filtered_algebra(&generated, |case| !case.should_authorize);
     let prose: AlgebraCorpus = serde_json::from_str(include_str!("../data/algebra_prose_v1.json"))
         .expect("versioned prose seed must be valid");
     let algebra_direct = evaluate_algebra(&direct).groups["total"].clone();
+    let algebra_generated = evaluate_algebra(&generated_algebra).groups["total"].clone();
     let algebra_prose = evaluate_algebra(&prose).groups["total"].clone();
     let algebra_adversarial = evaluate_algebra(&adversarial).groups["total"].clone();
-    let proposition = evaluate_proposition(500, seed);
-    let recurrence = evaluate_recurrence(500, seed);
+    let proposition = evaluate_proposition(generated_count, seed);
+    let recurrence = evaluate_recurrence(generated_count, seed);
     let reuse = evaluate_reuse(100, seed);
     let verification_ablation = evaluate_verification_ablation(32);
     let strategic = evaluate_strategic(seed, strategic_count);
@@ -273,6 +275,14 @@ pub fn evaluate(
     tiers.insert(
         "tier0_direct_execution".into(),
         algebra_tier("tier0_direct_execution", "algebra", &algebra_direct),
+    );
+    tiers.insert(
+        "tier0_generated_execution".into(),
+        algebra_tier(
+            "tier0_generated_execution",
+            "algebra_generated",
+            &algebra_generated,
+        ),
     );
     tiers.insert(
         "tier1_light_formalization".into(),
@@ -477,7 +487,7 @@ mod tests {
     fn suite_has_explicit_tiers_and_evaluated_verification_control() {
         let report = evaluate(42, 200, 200);
         assert!(report.deterministic);
-        assert_eq!(report.tiers.len(), 7);
+        assert_eq!(report.tiers.len(), 8);
         assert_eq!(
             report.tiers["tier2_multi_step_proof"].false_authorizations,
             0

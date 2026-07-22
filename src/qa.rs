@@ -6279,6 +6279,16 @@ mod tests {
     }
 
     #[test]
+    fn reason_chain_trace_round_trips_through_json() {
+        let engine = test_chain_engine();
+        let trace = engine.reason_chain_trace("the_fed", "raise", "rates", 5);
+        let encoded = serde_json::to_string(&trace).expect("chain trace should serialize");
+        let decoded: ChainReasoningTrace =
+            serde_json::from_str(&encoded).expect("chain trace should deserialize");
+        assert_eq!(decoded, trace);
+    }
+
+    #[test]
     fn test_reason_chain_no_match() {
         let engine = test_chain_engine();
         let chain = engine.reason_chain("alice", "feed", "the cat", 3);

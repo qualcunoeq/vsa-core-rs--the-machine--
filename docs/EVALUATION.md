@@ -158,7 +158,8 @@ A mechanism should stay experimental when:
 ## Strategic Route Evaluation
 
 The first vertical-slice harness for the concept/strategy layer is deliberately
-planning-only. It evaluates four independently reported modes over deterministic
+planning-only. It evaluates four independently reported modes plus a receipt
+shadow over deterministic
 typed tasks: direct capability planning, concept-guided proposals, stored
 strategy reuse, and full contextual exploration/exploitation diagnostics.
 
@@ -182,6 +183,9 @@ strategy with 500 global successes but only one matching recent contextual
 success yields `ExploreFresh` at a support threshold of two; the global-only
 comparison remains `Ambiguous` rather than silently treating global volume as
 local precedent.
+The `strategic_receipt_shadow` record covers expression evaluation,
+substitution, and the `controls` system fixture; each route must be
+independently revalidated before the existing executor/replay verifier runs.
 
 The formalization baseline now emits the same dominant-failure taxonomy in its
 report. Run it against a versioned corpus with:

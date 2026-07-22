@@ -190,6 +190,7 @@ pub struct StrategicRouteBenchmarkReport {
     pub task_count: usize,
     pub modes: BTreeMap<String, StrategicRouteModeMetrics>,
     pub contextual_ablation: ContextualSupportAblationMetrics,
+    pub receipt_shadow: StrategicReceiptShadowMetrics,
     pub failure_taxonomy: BTreeMap<String, usize>,
     pub deterministic: bool,
 }
@@ -202,6 +203,19 @@ pub struct ContextualSupportAblationMetrics {
     pub global_only_correct: usize,
     pub global_only_wrong_decisions: usize,
     pub global_only_misleading_exploitations: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct StrategicReceiptShadowMetrics {
+    pub cases: usize,
+    pub eligible_cases: usize,
+    pub recommendations: usize,
+    pub independent_revalidations: usize,
+    pub executions_under_existing_authority: usize,
+    pub successful_executions: usize,
+    pub replay_success: usize,
+    pub false_authorizations: usize,
+    pub false_denials: usize,
 }
 
 fn registry() -> CapabilityRegistry {
@@ -418,6 +432,177 @@ fn make_mode_metrics(
     }
 }
 
+fn run_receipt_shadow_case<F>(
+    registry: &CapabilityRegistry,
+    strategy_id: &str,
+    input_artifacts: Vec<CapabilityIoType>,
+    goal_artifact: CapabilityIoType,
+    capability_id: &str,
+    context: CapabilityChainStrategicRouteContext,
+    execute: F,
+    metrics: &mut StrategicReceiptShadowMetrics,
+) where
+    F: FnOnce() -> (bool, bool),
+{
+    let strategy = CapabilityChainProofConceptStrategyContract {
+        strategy_id: strategy_id.into(),
+        concept_ids: vec![format!("validated:{strategy_id}")],
+        plan: CapabilityChainPlan {
+            goal: goal_artifact,
+            steps: vec![capability_id.into()],
+        },
+        input_artifacts: input_artifacts.clone(),
+        output_artifacts: vec![goal_artifact],
+        supporting_instances: 8,
+        diagnostic_only: true,
+    };
+    let validation = strategy.validate(1, 4, 0, 0);
+    if !validation.passed {
+        return;
+    }
+    metrics.eligible_cases += 1;
+    let mut index = CapabilityChainProofConceptStrategyIndex::default();
+    if index.insert(strategy, &validation).is_err()
+        || index
+            .record_context_evidence(
+                strategy_id,
+                CapabilityChainStrategicRouteContextEvidence {
+                    domain: context.domain.clone(),
+                    contract_signature: context.contract_signature.clone(),
+                    policy_class: context.policy_class.clone(),
+                    epoch: context.current_epoch,
+                    successful_executions: 2,
+                    safety_failures: 0,
+                },
+            )
+            .is_err()
+    {
+        return;
+    }
+    let comparison = index.compare_with_fresh_plan_in_context(
+        &input_artifacts,
+        goal_artifact,
+        None,
+        &context,
+        registry,
+    );
+    let decision = comparison.diagnose_exploration(2).decision;
+    if !matches!(
+        decision,
+        CapabilityChainStrategicRouteDecision::ExploitStored(ref ids)
+            if ids.iter().any(|id| id == strategy_id)
+    ) {
+        return;
+    }
+    metrics.recommendations += 1;
+    let Some(candidate) = comparison
+        .candidates
+        .iter()
+        .find(|candidate| candidate.candidate_id == strategy_id)
+    else {
+        return;
+    };
+    let revalidated = candidate.plan.steps.len() == 1
+        && candidate.plan.steps[0] == capability_id
+        && candidate
+            .plan
+            .steps
+            .iter()
+            .all(|step| registry.get(step).is_some());
+    if !revalidated {
+        return;
+    }
+    metrics.independent_revalidations += 1;
+    metrics.executions_under_existing_authority += 1;
+    let (success, replay) = execute();
+    metrics.successful_executions += usize::from(success);
+    metrics.replay_success += usize::from(replay);
+    metrics.false_authorizations += usize::from(!success);
+    metrics.false_denials += usize::from(success && !replay);
+}
+
+fn evaluate_receipt_shadows() -> StrategicReceiptShadowMetrics {
+    let registry = CapabilityRegistry::production();
+    let mut metrics = StrategicReceiptShadowMetrics {
+        cases: 3,
+        eligible_cases: 0,
+        recommendations: 0,
+        independent_revalidations: 0,
+        executions_under_existing_authority: 0,
+        successful_executions: 0,
+        replay_success: 0,
+        false_authorizations: 0,
+        false_denials: 0,
+    };
+    let context = |domain: &str, signature: &str| CapabilityChainStrategicRouteContext {
+        domain: domain.into(),
+        contract_signature: signature.into(),
+        policy_class: "strict-replay".into(),
+        current_epoch: 10,
+        recent_window: 2,
+    };
+
+    let expression = crate::formalization::assess_prompt(
+        "receipt-shadow-expression",
+        "Evaluate 2*x+3 at x=4.",
+        "Algebra",
+        false,
+    );
+    let expression_target = expression.target_completion.target.clone();
+    run_receipt_shadow_case(
+        &registry,
+        "receipt-expression-evaluation",
+        vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+        CapabilityIoType::ExactValue,
+        "expression_evaluation",
+        context("calculus", "expression+bindings->exact_value"),
+        move || {
+            execute_expression_evaluation(&expression_target)
+                .map(|receipt| (true, replay_expression_evaluation(&receipt)))
+                .unwrap_or((false, false))
+        },
+        &mut metrics,
+    );
+
+    let substitution = crate::formalization::assess_prompt(
+        "receipt-shadow-substitution",
+        "Substitute x=4 into x^2-1.",
+        "Algebra",
+        false,
+    );
+    let substitution_target = substitution.target_completion.target.clone();
+    run_receipt_shadow_case(
+        &registry,
+        "receipt-substitution",
+        vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+        CapabilityIoType::Expression,
+        "substitution",
+        context("algebra", "expression+bindings->expression"),
+        move || {
+            execute_substitution(&substitution_target)
+                .map(|receipt| (true, replay_substitution(&receipt)))
+                .unwrap_or((false, false))
+        },
+        &mut metrics,
+    );
+
+    run_receipt_shadow_case(
+        &registry,
+        "receipt-controls-system",
+        vec![CapabilityIoType::EquationSystem, CapabilityIoType::VariableSet],
+        CapabilityIoType::SystemSolution,
+        "linear_system_solve",
+        context("controls", "system->system_solution"),
+        || {
+            execute_linear_system("Solve system: 2*x+1*y=5; 1*x+1*y=3 for x,y")
+                .map(|receipt| (true, replay_linear_system(&receipt)))
+                .unwrap_or((false, false))
+        },
+        &mut metrics,
+    );
+    metrics
+}
+
 pub fn evaluate(seed: u64, count: usize) -> StrategicRouteBenchmarkReport {
     let task_list = tasks(count, seed);
     let registry = registry();
@@ -591,6 +776,7 @@ pub fn evaluate(seed: u64, count: usize) -> StrategicRouteBenchmarkReport {
         task_count: count,
         modes: mode_rows,
         contextual_ablation,
+        receipt_shadow: evaluate_receipt_shadows(),
         failure_taxonomy,
         deterministic: tasks(count, seed) == task_list,
     }
@@ -601,7 +787,7 @@ pub fn experiment_results(
     commit: impl Into<String>,
 ) -> Vec<ExperimentResult> {
     let commit = commit.into();
-    report
+    let mut results = report
         .modes
         .values()
         .map(|mode| {
@@ -650,7 +836,68 @@ pub fn experiment_results(
                 notes: format!("tasks={}, failure_taxonomy={:?}", report.task_count, report.failure_taxonomy),
             }
         })
-        .collect()
+        .collect::<Vec<_>>();
+    let shadow = &report.receipt_shadow;
+    let mut shadow_metrics = HashMap::new();
+    shadow_metrics.insert(
+        "eligible_case_rate".into(),
+        shadow.eligible_cases as f64 / shadow.cases.max(1) as f64,
+    );
+    shadow_metrics.insert(
+        "recommendation_rate".into(),
+        shadow.recommendations as f64 / shadow.eligible_cases.max(1) as f64,
+    );
+    shadow_metrics.insert(
+        "independent_revalidation_rate".into(),
+        shadow.independent_revalidations as f64 / shadow.recommendations.max(1) as f64,
+    );
+    shadow_metrics.insert(
+        "execution_rate".into(),
+        shadow.executions_under_existing_authority as f64
+            / shadow.independent_revalidations.max(1) as f64,
+    );
+    shadow_metrics.insert(
+        "successful_execution_rate".into(),
+        shadow.successful_executions as f64
+            / shadow.executions_under_existing_authority.max(1) as f64,
+    );
+    shadow_metrics.insert(
+        "replay_rate".into(),
+        shadow.replay_success as f64 / shadow.successful_executions.max(1) as f64,
+    );
+    shadow_metrics.insert(
+        "false_authorization_rate".into(),
+        shadow.false_authorizations as f64 / shadow.cases.max(1) as f64,
+    );
+    shadow_metrics.insert(
+        "false_denial_rate".into(),
+        shadow.false_denials as f64 / shadow.cases.max(1) as f64,
+    );
+    results.push(ExperimentResult {
+        experiment: "strategic_receipt_shadow".into(),
+        claim: "stored strategy guidance cannot bypass receipt execution and replay authority".into(),
+        commit,
+        seed: report.seed,
+        dataset: Some("fixed:expression-substitution-controls-receipts".into()),
+        baseline: "existing method-specific executor and replay verifier".into(),
+        metrics: shadow_metrics,
+        passed: shadow.eligible_cases == shadow.cases
+            && shadow.recommendations == shadow.cases
+            && shadow.independent_revalidations == shadow.cases
+            && shadow.executions_under_existing_authority == shadow.cases
+            && shadow.successful_executions == shadow.cases
+            && shadow.replay_success == shadow.cases
+            && shadow.false_authorizations == 0
+            && shadow.false_denials == 0,
+        notes: format!(
+            "cases={}, revalidated={}, executions={}, replay={}",
+            shadow.cases,
+            shadow.independent_revalidations,
+            shadow.executions_under_existing_authority,
+            shadow.replay_success
+        ),
+    });
+    results
 }
 
 #[cfg(test)]
@@ -675,13 +922,18 @@ mod tests {
         assert_eq!(full.false_authorizations, 0);
         assert_eq!(report.contextual_ablation.contextual_correct, 198);
         assert!(report.contextual_ablation.global_only_wrong_decisions > 0);
+        assert_eq!(report.receipt_shadow.cases, 3);
+        assert_eq!(report.receipt_shadow.independent_revalidations, 3);
+        assert_eq!(report.receipt_shadow.replay_success, 3);
+        assert_eq!(report.receipt_shadow.false_authorizations, 0);
+        assert_eq!(report.receipt_shadow.false_denials, 0);
     }
 
     #[test]
     fn benchmark_emits_structured_results_with_zero_false_authorization() {
         let report = evaluate(7, 32);
         let results = experiment_results(&report, "test-commit");
-        assert_eq!(results.len(), 4);
+        assert_eq!(results.len(), 5);
         assert!(results.iter().all(|result| result.passed));
         assert!(results
             .iter()
@@ -689,6 +941,11 @@ mod tests {
         assert!(serde_json::to_string(&results[0])
             .unwrap()
             .contains("planning_accuracy"));
+        let receipt = results
+            .iter()
+            .find(|result| result.experiment == "strategic_receipt_shadow")
+            .expect("receipt shadow result");
+        assert_eq!(receipt.metric("replay_rate"), Some(1.0));
     }
 
     #[test]

@@ -251,6 +251,9 @@ Current anchors:
 - `src/algebra_benchmark.rs`: versioned linear, quadratic, and 2×2-system
   corpora with generated holdouts, prose prompts, adversarial abstentions, and
   strategy-shadow execution metrics.
+- `src/recurrence_benchmark.rs`: deterministic bounded first-order affine
+  recurrence vertical slice with development/holdout execution and replay,
+  adversarial refusal cases, and stable failure taxonomy.
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
@@ -272,6 +275,10 @@ Current evidence (commit `6b07a3b`):
 - Mixed contextual evidence: global support 500 versus contextual support 1,
   with a cheaper fresh route, correctly diagnoses `ExploreFresh`; global-only
   support remains `Ambiguous`.
+- Recurrence vertical: the 500-case seed-42 run authorizes and replays 251/251
+  expected-positive cases, rejects all 249 expected abstentions, and reports
+  zero false authorizations and zero false denials. The 100-case holdout has
+  50/50 positive execution/replay and represents all six refusal classes.
 - Formalization audit: complete fact provenance now gates typed direct
   instantiation; the constrained prose grammar now covers bounded equations,
   rates, inequalities, systems, quantifiers, units, and entity relations. The
@@ -290,14 +297,19 @@ Known limits:
   and parsing variation, not broad mathematical generalization.
 - Context support currently requires exact domain, contract, policy, and recent
   epoch matches.  This is safe but may be sparse for transfer.
+- The recurrence vertical is intentionally narrow: it evaluates supplied
+  first-order explicit-affine definitions and does not infer closed forms,
+  nonlinear dynamics, or missing methods.
 
-Next vertical slice:
+Next evaluation gate:
 
-1. Treat the five-stage, 4-way sweep as the current resource baseline; only
-   pursue still larger graphs if a concrete evaluation question requires them.
-2. Only then consider governed method acquisition for a demonstrated missing
-   capability; absence of `method_not_found` evidence is not authorization to
-   add one.
+1. Treat the five-stage, 4-way concept sweep and the 500-case recurrence run as
+   current resource and execution baselines; pursue larger tests only when a
+   concrete evaluation question requires them.
+2. Consider governed method acquisition only after a benchmark records a
+   demonstrated `method_not_found` capability gap. The current algebra,
+   formalization, strategic, and recurrence slices provide no such evidence;
+   absence of that evidence is not authorization to add a method.
 
 ## Research Hygiene
 

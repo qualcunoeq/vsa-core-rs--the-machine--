@@ -284,6 +284,25 @@ and replay rates. Any claimed benefit is therefore confined to counterfactual
 route cost, preventing a strategy from claiming an accuracy gain when it only
 repackages the same governed executor.
 
+The next execution-level vertical slice is the bounded recurrence benchmark:
+
+```bash
+cargo run --release --bin recurrence_bench -- \
+  500 42 results/recurrence_bench/large.jsonl HEAD
+```
+
+This runner generates deterministic first-order explicit-affine recurrence
+cases and evaluates the existing typed executor directly. It reports total,
+development, and every-fifth holdout slices separately, with authorization,
+execution, replay, false-authorization, false-denial, and refusal-taxonomy
+metrics. The negative cases cover missing and conflicting initial conditions,
+unroll limits, domain and base-index violations, and checked arithmetic
+overflow; none may cross the execution boundary. On the 500-case seed-42 run,
+251/251 expected-authorized cases executed and replayed, all 249 expected
+abstentions were rejected, and the holdout slice retained 50/50 positive
+execution/replay with all six refusal classes represented. There were zero
+false authorizations and zero false denials.
+
 The concept-composition resource probe measures bounded DFS growth without
 executing or registering any composed route:
 

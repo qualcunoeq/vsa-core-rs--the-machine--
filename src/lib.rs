@@ -75,6 +75,7 @@ pub mod proposition;
 pub mod qa;
 pub mod reason;
 pub mod recurrence;
+pub mod recurrence_benchmark;
 pub mod resonator;
 pub mod retrieval;
 pub mod router;

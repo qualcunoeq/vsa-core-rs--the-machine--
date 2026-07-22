@@ -38,6 +38,7 @@ pub mod solution_verification;
 pub mod experiment;
 pub mod forager;
 pub mod formalization;
+pub mod failure_taxonomy;
 pub mod function_application;
 pub mod hierarchy;
 pub mod hnsw;

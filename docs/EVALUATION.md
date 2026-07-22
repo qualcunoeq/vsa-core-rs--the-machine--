@@ -173,3 +173,16 @@ concept-retrieval, stored-strategy usefulness, contextual-retrieval, and
 false-authorization metrics. Failure taxonomy counts are emitted as stable
 `failure_<class>` metrics. These are route-oracle tasks, not solved-answer
 claims; execution and verification remain outside the benchmark.
+
+The formalization baseline now emits the same dominant-failure taxonomy in its
+report. Run it against a versioned corpus with:
+
+```bash
+cargo run --release --bin formalization_baseline -- \
+  data/formalization_seed_v1.json results/formalization_seed_report.json
+```
+
+The report records one primary class per incorrect outcome, classification
+coverage, and the original blocker evidence. Correct abstentions are not
+counted as failures; false authorization is always classified as a safety
+failure.

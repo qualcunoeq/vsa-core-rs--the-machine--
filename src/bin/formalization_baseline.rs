@@ -13,6 +13,7 @@ use the_machine::formalization::{
     FormalizationScore, OperationKind, OperationStatus, TargetCompletion, TargetFieldStatus,
     TargetStatus,
 };
+use the_machine::failure_taxonomy::FailureTaxonomyReport;
 use the_machine::function_application::execute_function_application;
 use the_machine::expression_evaluation::execute_expression_evaluation;
 use the_machine::linear_equation::execute_linear_equation;
@@ -594,6 +595,7 @@ struct BaselineReport {
     holdout: Aggregate,
     by_tier: BTreeMap<String, Aggregate>,
     by_transformation: BTreeMap<String, Aggregate>,
+    failure_taxonomy: FailureTaxonomyReport,
 }
 
 fn holdout(id: &str) -> bool {
@@ -673,6 +675,7 @@ fn expected_answer_form(
 fn evaluate_case(
     case: &FormalizationGoldCase,
 ) -> (
+    the_machine::formalization::FormalizationTrace,
     FormalizationScore,
     bool,
     AuthorizationDenialTrace,
@@ -681,11 +684,15 @@ fn evaluate_case(
     let trace = assess_prompt(&case.id, &case.prompt, "Math", false);
     let assessment = assess_direct_instantiation(&trace);
     let authorized = assessment.authorization_safe();
+    let score = score_formalization(case, &trace, authorized);
+    let denial = assessment.denial_trace(case.authorization_expected);
+    let target_completion = trace.target_completion.clone();
     (
-        score_formalization(case, &trace, authorized),
+        trace,
+        score,
         authorized,
-        assessment.denial_trace(case.authorization_expected),
-        trace.target_completion.clone(),
+        denial,
+        target_completion,
     )
 }
 
@@ -708,9 +715,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         holdout: Aggregate::new(),
         by_tier: BTreeMap::new(),
         by_transformation: BTreeMap::new(),
+        failure_taxonomy: FailureTaxonomyReport::default(),
     };
     for case in &corpus.cases {
-        let (score, authorized, denial, target_completion) = evaluate_case(case);
+        let (trace, score, authorized, denial, target_completion) = evaluate_case(case);
+        report.failure_taxonomy.observe(&trace, &denial, authorized);
         let expected_operation = gold_operation(&case.target.statement);
         report.total.add(
             &case.id,
@@ -762,6 +771,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 expected_operation,
             );
     }
+    report.failure_taxonomy.finalize();
     let output = serde_json::to_string_pretty(&report)?;
     println!("{output}");
     if let Some(report_path) = env::args().nth(2) {

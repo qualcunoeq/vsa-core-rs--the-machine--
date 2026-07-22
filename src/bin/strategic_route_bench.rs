@@ -51,7 +51,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     let mut file = OpenOptions::new().create(true).append(true).open(&out)?;
-    for result in experiment_results(&report, commit) {
+    let results = experiment_results(&report, commit);
+    for result in &results {
         writeln!(file, "{}", serde_json::to_string(&result)?)?;
     }
     for mode in report.modes.values() {
@@ -61,8 +62,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
     }
     eprintln!(
-        "wrote {} mode results for {} tasks to {}",
-        report.modes.len(), report.task_count, out
+        "wrote {} results ({} modes + receipt shadow) for {} tasks to {}",
+        results.len(),
+        report.modes.len(),
+        report.task_count,
+        out
     );
     Ok(())
 }

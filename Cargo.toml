@@ -75,6 +75,10 @@ path = "src/bin/proposition_bench.rs"
 name = "governed_bench"
 path = "src/bin/governed_bench.rs"
 
+[[bin]]
+name = "ood_bench"
+path = "src/bin/ood_bench.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

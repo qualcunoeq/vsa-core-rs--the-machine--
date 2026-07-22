@@ -373,6 +373,55 @@ struct ExecutionOutcome {
     result: Option<String>,
 }
 
+/// Per-case result exposed for independent evaluation corpora.  This is an
+/// observation surface only: execution still goes through the same
+/// method-specific capability and replay functions used by the benchmark.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct AlgebraCaseEvaluation {
+    pub case_id: String,
+    pub formalized: bool,
+    pub authorized: bool,
+    pub execution_attempted: bool,
+    pub execution_success: bool,
+    pub replayed: bool,
+    pub result: Option<String>,
+    pub abstention_reason: Option<String>,
+}
+
+pub fn evaluate_case_independently(case: &AlgebraCase) -> AlgebraCaseEvaluation {
+    let registry = CapabilityRegistry::production();
+    let trace = assess_prompt(&case.id, &case.prompt, "Algebra", false);
+    let assessment = crate::formalization::assess_direct_instantiation(&trace);
+    let authorized = assessment.authorization_safe();
+    // The independent audit respects the normal authorization boundary: an
+    // unapproved target is observed as a refusal and never reaches execution.
+    let outcome = if authorized {
+        execute_case(case, &trace.target_completion.target)
+    } else {
+        ExecutionOutcome::default()
+    };
+    let abstention_reason = if authorized {
+        None
+    } else {
+        Some(assessment.denial_trace(case.should_authorize).first_blocker)
+    };
+    // Touch the registry through the same discovery path as the aggregate
+    // benchmark so independent reports cannot accidentally bypass typing.
+    if trace.target_completion.complete {
+        let _ = registry.discover(&trace.target_completion.target);
+    }
+    AlgebraCaseEvaluation {
+        case_id: case.id.clone(),
+        formalized: trace.target_completion.complete,
+        authorized,
+        execution_attempted: outcome.attempted,
+        execution_success: outcome.success,
+        replayed: outcome.replayed,
+        result: outcome.result,
+        abstention_reason,
+    }
+}
+
 fn execute_case(case: &AlgebraCase, target: &FormalizedTarget) -> ExecutionOutcome {
     match case.method {
         AlgebraMethod::LinearEquation => execute_linear_equation(target)

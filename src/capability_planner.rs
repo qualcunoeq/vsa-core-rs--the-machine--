@@ -1110,6 +1110,25 @@ pub struct CapabilityChainProofConceptStrategyContract {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainStrategicRouteContext {
+    pub domain: String,
+    pub contract_signature: String,
+    pub policy_class: String,
+    pub current_epoch: u64,
+    pub recent_window: u64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainStrategicRouteContextEvidence {
+    pub domain: String,
+    pub contract_signature: String,
+    pub policy_class: String,
+    pub epoch: u64,
+    pub successful_executions: usize,
+    pub safety_failures: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityChainProofConceptStrategyValidationReceipt {
     pub strategy_id: String,
     pub required_concept_count: usize,
@@ -1125,11 +1144,14 @@ pub struct CapabilityChainProofConceptStrategyValidationReceipt {
 pub enum CapabilityChainProofConceptStrategyIndexFailure {
     ValidationNotPassed(String),
     DuplicateStrategy(String),
+    UnknownStrategy(String),
+    DuplicateContextEvidence(String),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
 pub struct CapabilityChainProofConceptStrategyIndex {
     strategies: BTreeMap<String, CapabilityChainProofConceptStrategyContract>,
+    context_evidence: BTreeMap<String, Vec<CapabilityChainStrategicRouteContextEvidence>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -1154,11 +1176,14 @@ pub struct CapabilityChainStrategicRouteCandidate {
     pub cost: PlanCost,
     pub diagnostics: CapabilityChainDiagnostics,
     pub supporting_instances: usize,
+    pub global_supporting_instances: usize,
+    pub contextual_supporting_instances: Option<usize>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CapabilityChainStrategicRouteComparisonReceipt {
     pub goal_artifact: CapabilityIoType,
+    pub context: Option<CapabilityChainStrategicRouteContext>,
     pub candidates: Vec<CapabilityChainStrategicRouteCandidate>,
     pub frontier_candidate_ids: Vec<String>,
     pub dominated_candidate_ids: Vec<String>,
@@ -1369,6 +1394,65 @@ impl CapabilityChainProofConceptStrategyIndex {
         self.strategies.is_empty()
     }
 
+    /// Record contextual evidence separately from the strategy's global
+    /// support. Duplicate context/epoch records are rejected so support cannot
+    /// be inflated by replaying the same observation.
+    pub fn record_context_evidence(
+        &mut self,
+        strategy_id: &str,
+        evidence: CapabilityChainStrategicRouteContextEvidence,
+    ) -> Result<(), CapabilityChainProofConceptStrategyIndexFailure> {
+        if !self.strategies.contains_key(strategy_id) {
+            return Err(
+                CapabilityChainProofConceptStrategyIndexFailure::UnknownStrategy(
+                    strategy_id.into(),
+                ),
+            );
+        }
+        let entries = self
+            .context_evidence
+            .entry(strategy_id.into())
+            .or_default();
+        let duplicate = entries.iter().any(|existing| {
+            existing.domain == evidence.domain
+                && existing.contract_signature == evidence.contract_signature
+                && existing.policy_class == evidence.policy_class
+                && existing.epoch == evidence.epoch
+        });
+        if duplicate {
+            return Err(
+                CapabilityChainProofConceptStrategyIndexFailure::DuplicateContextEvidence(
+                    strategy_id.into(),
+                ),
+            );
+        }
+        entries.push(evidence);
+        entries.sort_by_key(|entry| (entry.epoch, entry.domain.clone()));
+        Ok(())
+    }
+
+    fn contextual_support(
+        &self,
+        strategy_id: &str,
+        context: &CapabilityChainStrategicRouteContext,
+    ) -> usize {
+        let earliest = context.current_epoch.saturating_sub(context.recent_window);
+        self.context_evidence
+            .get(strategy_id)
+            .into_iter()
+            .flatten()
+            .filter(|evidence| {
+                evidence.domain == context.domain
+                    && evidence.contract_signature == context.contract_signature
+                    && evidence.policy_class == context.policy_class
+                    && evidence.epoch >= earliest
+                    && evidence.epoch <= context.current_epoch
+                    && evidence.safety_failures == 0
+            })
+            .map(|evidence| evidence.successful_executions)
+            .sum()
+    }
+
     /// Compare stored validated strategies with an optional fresh capability
     /// plan. The result preserves tradeoffs among execution cost, contract
     /// quality, and empirical support instead of selecting by one scalar.
@@ -1377,6 +1461,43 @@ impl CapabilityChainProofConceptStrategyIndex {
         available_inputs: &[CapabilityIoType],
         goal_artifact: CapabilityIoType,
         fresh_plan: Option<&CapabilityChainPlan>,
+        registry: &CapabilityRegistry,
+    ) -> CapabilityChainStrategicRouteComparisonReceipt {
+        self.compare_with_fresh_plan_internal(
+            available_inputs,
+            goal_artifact,
+            fresh_plan,
+            None,
+            registry,
+        )
+    }
+
+    /// Context-aware variant: only matching, recent evidence contributes to
+    /// stored-strategy support. Missing contextual evidence therefore remains
+    /// uncertainty rather than inheriting global support silently.
+    pub fn compare_with_fresh_plan_in_context(
+        &self,
+        available_inputs: &[CapabilityIoType],
+        goal_artifact: CapabilityIoType,
+        fresh_plan: Option<&CapabilityChainPlan>,
+        context: &CapabilityChainStrategicRouteContext,
+        registry: &CapabilityRegistry,
+    ) -> CapabilityChainStrategicRouteComparisonReceipt {
+        self.compare_with_fresh_plan_internal(
+            available_inputs,
+            goal_artifact,
+            fresh_plan,
+            Some(context),
+            registry,
+        )
+    }
+
+    fn compare_with_fresh_plan_internal(
+        &self,
+        available_inputs: &[CapabilityIoType],
+        goal_artifact: CapabilityIoType,
+        fresh_plan: Option<&CapabilityChainPlan>,
+        context: Option<&CapabilityChainStrategicRouteContext>,
         registry: &CapabilityRegistry,
     ) -> CapabilityChainStrategicRouteComparisonReceipt {
         let available = available_inputs.iter().copied().collect::<BTreeSet<_>>();
@@ -1399,13 +1520,20 @@ impl CapabilityChainProofConceptStrategyIndex {
                 rejected_strategy_ids.push(strategy.strategy_id.clone());
                 continue;
             };
+            let global_supporting_instances = strategy.supporting_instances;
+            let contextual_supporting_instances =
+                context.map(|context| self.contextual_support(&strategy.strategy_id, context));
+            let supporting_instances = contextual_supporting_instances
+                .unwrap_or(global_supporting_instances);
             candidates.push(CapabilityChainStrategicRouteCandidate {
                 candidate_id: strategy.strategy_id.clone(),
                 source: CapabilityChainStrategicRouteSource::StoredStrategy,
                 plan: strategy.plan.clone(),
                 cost,
                 diagnostics,
-                supporting_instances: strategy.supporting_instances,
+                supporting_instances,
+                global_supporting_instances,
+                contextual_supporting_instances,
             });
         }
         if let Some(plan) = fresh_plan.filter(|plan| plan.goal == goal_artifact) {
@@ -1418,6 +1546,8 @@ impl CapabilityChainProofConceptStrategyIndex {
                     cost,
                     diagnostics,
                     supporting_instances: 0,
+                    global_supporting_instances: 0,
+                    contextual_supporting_instances: context.map(|_| 0),
                 });
             }
         }
@@ -1450,6 +1580,7 @@ impl CapabilityChainProofConceptStrategyIndex {
         }
         CapabilityChainStrategicRouteComparisonReceipt {
             goal_artifact,
+            context: context.cloned(),
             candidates,
             frontier_candidate_ids,
             dominated_candidate_ids,
@@ -8580,6 +8711,26 @@ mod tests {
             &[CapabilityIoType::Equation],
             CapabilityIoType::ExactValue,
         ).strategies[0].strategy_id, strategy_id);
+        let context = CapabilityChainStrategicRouteContext {
+            domain: "equation".into(),
+            contract_signature: "equation->exact_value".into(),
+            policy_class: "default".into(),
+            current_epoch: 10,
+            recent_window: 5,
+        };
+        strategy_index
+            .record_context_evidence(
+                &strategy_id,
+                CapabilityChainStrategicRouteContextEvidence {
+                    domain: "equation".into(),
+                    contract_signature: "equation->exact_value".into(),
+                    policy_class: "default".into(),
+                    epoch: 10,
+                    successful_executions: 2,
+                    safety_failures: 0,
+                },
+            )
+            .unwrap();
         assert!(matches!(
             strategy_index.insert(strategy, &strategy_validation),
             Err(CapabilityChainProofConceptStrategyIndexFailure::DuplicateStrategy(_))
@@ -8603,6 +8754,21 @@ mod tests {
         assert!(route_comparison
             .frontier_candidate_ids
             .contains(&strategy_id));
+        let contextual_comparison = strategy_index.compare_with_fresh_plan_in_context(
+            &[CapabilityIoType::Equation],
+            CapabilityIoType::ExactValue,
+            Some(&fresh_plan),
+            &context,
+            &production,
+        );
+        let contextual_strategy = contextual_comparison
+            .candidates
+            .iter()
+            .find(|candidate| candidate.candidate_id == strategy_id)
+            .unwrap();
+        assert_eq!(contextual_strategy.global_supporting_instances, 4);
+        assert_eq!(contextual_strategy.contextual_supporting_instances, Some(2));
+        assert_eq!(contextual_strategy.supporting_instances, 2);
         let mixed_decision = route_comparison.diagnose_exploration(3);
         assert!(matches!(
             mixed_decision.decision,

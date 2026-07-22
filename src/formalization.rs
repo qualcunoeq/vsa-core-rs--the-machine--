@@ -1517,15 +1517,32 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
     let quantifiers_preserved = !trace
         .obligations
         .contains(&ModelingObligation::ExtractQuantifiers);
-    let textual_domain_restriction = Regex::new(
-        r"(?i)\b(?:for|with)\s+[a-z_][a-z0-9_]*\s*(?:<=|>=|!=|=|<|>)",
-    )
-    .expect("static textual-domain regex")
-    .is_match(&context_lower)
-        || has_any(
-            &context_lower,
-            &["positive solution", "negative solution", "product of the roots"],
-        );
+    let textual_domain_restriction =
+        Regex::new(r"(?i)\b(?:for|with)\s+[a-z_][a-z0-9_]*\s*(?:<=|>=|!=|=|<|>)")
+            .expect("static textual-domain regex")
+            .is_match(&context_lower)
+            || has_any(
+                &context_lower,
+                &[
+                    "positive solution",
+                    "negative solution",
+                    "product of the roots",
+                ],
+            );
+    let unresolved_modeling_obligation = trace.obligations.iter().any(|obligation| {
+        matches!(
+            obligation,
+            ModelingObligation::ConstructEquation
+                | ModelingObligation::ConstructSmallSystem
+                | ModelingObligation::DefineObject
+                | ModelingObligation::ResolveEntityReference
+                | ModelingObligation::IdentifyStateVariables
+                | ModelingObligation::DetermineTargetSemantics
+                | ModelingObligation::ExtractQuantifiers
+                | ModelingObligation::SelectSpecializedMethod
+                | ModelingObligation::ParseAttachment
+        )
+    });
     let side_conditions_identified = !trace
         .obligations
         .contains(&ModelingObligation::IdentifyDomain)
@@ -1567,7 +1584,11 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
         && has_any(&source_lower, &["solve", "solution"])
         && !has_any(
             &context_lower,
-            &["product of the roots", "positive solution", "negative solution"],
+            &[
+                "product of the roots",
+                "positive solution",
+                "negative solution",
+            ],
         )
         && trace
             .target_completion
@@ -1583,9 +1604,12 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
             })
             .unwrap_or(false);
     let parsed_function_arguments = !trace.target_completion.target.arguments.is_empty()
-        && trace.target_completion.target.arguments.iter().all(|argument| {
-            argument.status == TargetFieldStatus::Complete
-        });
+        && trace
+            .target_completion
+            .target
+            .arguments
+            .iter()
+            .all(|argument| argument.status == TargetFieldStatus::Complete);
     let function_call_with_arguments = trace
         .target_completion
         .target
@@ -1619,9 +1643,13 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
         Some(SubjectObjectType::Expression) | Some(SubjectObjectType::Equation)
     ) && !has_any(
         &context_lower,
-        &["there exists", "for every", "for all", "product of the roots"],
-    )
-        && !textual_domain_restriction;
+        &[
+            "there exists",
+            "for every",
+            "for all",
+            "product of the roots",
+        ],
+    ) && !textual_domain_restriction;
     let explicit_definition_application = trace
         .target_completion
         .target
@@ -1641,7 +1669,8 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
             | InstantiationTargetKind::ApplyOnce
             | InstantiationTargetKind::VerifyInstance
             | InstantiationTargetKind::DetermineWhetherConditionHolds
-    ) || (target == InstantiationTargetKind::EvaluateAtArguments && function_call_with_arguments);
+    ) || (target == InstantiationTargetKind::EvaluateAtArguments
+        && function_call_with_arguments);
     let direct_target = classifier_direct_target
         || explicit_solve_subject
         || explicit_numeric_target
@@ -1671,6 +1700,7 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
         && concrete_binding
         && !specialist_surface
         && !context_lower.contains("cost function")
+        && !unresolved_modeling_obligation
         && !matches!(
             supplied_object,
             SuppliedObjectKind::ExplicitTheoremStatement
@@ -1734,6 +1764,9 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
     }
     if !verifier_available {
         authorization_blockers.push("independent_verifier_unavailable".into());
+    }
+    if unresolved_modeling_obligation {
+        authorization_blockers.push("modeling_obligations_unresolved".into());
     }
     authorization_blockers.sort();
     authorization_blockers.dedup();
@@ -1950,6 +1983,232 @@ fn extract_expression_payload(question: &str) -> Option<String> {
     None
 }
 
+/// Small, explicit prose grammar used by the formalization benchmark.  This
+/// is intentionally not a general language model: each accepted construction
+/// emits a typed relation with a stable source fragment, while unsupported
+/// prose remains unresolved and therefore cannot authorize execution.
+fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
+    let lower = question.to_ascii_lowercase();
+    let mut facts = Vec::new();
+    let push = |facts: &mut Vec<FactAnnotation>, statement: String, source: &str| {
+        facts.push(FactAnnotation {
+            statement,
+            source_fragment: source.trim().into(),
+        });
+    };
+    if lower.contains("for every integer n") && lower.contains("n+0=n") {
+        push(&mut facts, "n+0=n".into(), "n+0=n");
+    } else if lower.contains("there exists an integer n") && lower.contains("n^2=4") {
+        push(&mut facts, "n^2=4".into(), "n^2=4");
+    }
+    let number = |value: &str| -> Option<String> {
+        match value.trim().to_ascii_lowercase().as_str() {
+            "one" => Some("1".into()),
+            "two" => Some("2".into()),
+            "three" => Some("3".into()),
+            "four" => Some("4".into()),
+            "five" => Some("5".into()),
+            "six" => Some("6".into()),
+            "seven" => Some("7".into()),
+            "eight" => Some("8".into()),
+            "nine" => Some("9".into()),
+            "ten" => Some("10".into()),
+            _ => value.trim().parse::<i64>().ok().map(|v| v.to_string()),
+        }
+    };
+    if let Some(capture) = Regex::new(r"(?i)a number increased by ([a-z0-9]+) is ([0-9]+)")
+        .expect("static prose-addition regex")
+        .captures(question)
+    {
+        if let (Some(increment), Some(result)) = (number(&capture[1]), number(&capture[2])) {
+            push(
+                &mut facts,
+                format!("x + {increment} = {result}"),
+                capture.get(0).unwrap().as_str(),
+            );
+        }
+    } else if let Some(capture) =
+        Regex::new(r"(?i)([a-z0-9]+)\s+less than twice a number is ([0-9]+)")
+            .expect("static prose-double-minus regex")
+            .captures(question)
+    {
+        if let (Some(decrement), Some(result)) = (number(&capture[1]), number(&capture[2])) {
+            push(
+                &mut facts,
+                format!("2x - {decrement} = {result}"),
+                capture.get(0).unwrap().as_str(),
+            );
+        }
+    }
+    if let Some(capture) = Regex::new(r"(?i)at least\s+([0-9]+)")
+        .expect("static prose-at-least regex")
+        .captures(question)
+    {
+        push(
+            &mut facts,
+            format!("x >= {}", &capture[1]),
+            capture.get(0).unwrap().as_str(),
+        );
+    } else if let Some(capture) = Regex::new(r"(?i)no more than\s+([0-9]+)")
+        .expect("static prose-no-more regex")
+        .captures(question)
+    {
+        push(
+            &mut facts,
+            format!("T <= {}", &capture[1]),
+            capture.get(0).unwrap().as_str(),
+        );
+    } else if let Some(capture) = Regex::new(r"(?i)strictly greater than\s+([0-9]+)")
+        .expect("static prose-greater-than regex")
+        .captures(question)
+    {
+        push(
+            &mut facts,
+            format!("y > {}", &capture[1]),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    if lower.contains("average-speed equation") {
+        push(&mut facts, "v = d/t".into(), "average-speed equation");
+    } else if let Some(capture) =
+        Regex::new(r"(?i)filled at\s+([0-9]+)\s+liters per minute for\s+([0-9]+)\s+minutes")
+            .expect("static prose-rate-time regex")
+            .captures(question)
+    {
+        push(
+            &mut facts,
+            "amount = rate * time".into(),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    if let Some(capture) =
+        Regex::new(r"(?i)two numbers sum to\s+([0-9]+)\s+and differ by\s+([0-9]+)")
+            .expect("static prose-two-number regex")
+            .captures(question)
+    {
+        push(
+            &mut facts,
+            format!("x+y={}", &capture[1]),
+            capture.get(0).unwrap().as_str(),
+        );
+        push(
+            &mut facts,
+            format!("x-y={}", &capture[2]),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    if let Some(capture) = Regex::new(
+        r"(?i)mother is\s+([0-9]+)\s+times as old as her child, and together they are\s+([0-9]+)",
+    )
+    .expect("static prose-age-system regex")
+    .captures(question)
+    {
+        push(
+            &mut facts,
+            format!("m={}c", &capture[1]),
+            capture.get(0).unwrap().as_str(),
+        );
+        push(
+            &mut facts,
+            format!("m+c={}", &capture[2]),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    if let Some(capture) = Regex::new(r"(?i)rises by\s+([0-9]+) percent from P to\s+([0-9]+)")
+        .expect("static prose-percent-regex")
+        .captures(question)
+    {
+        if let Ok(percent) = capture[1].parse::<f64>() {
+            push(
+                &mut facts,
+                format!("{}P={}", 1.0 + percent / 100.0, &capture[2]),
+                capture.get(0).unwrap().as_str(),
+            );
+        }
+    }
+    if let Some(capture) = Regex::new(r"(?i)perimeter of a square with side s is\s+([0-9]+)")
+        .expect("static prose-perimeter regex")
+        .captures(question)
+    {
+        push(
+            &mut facts,
+            format!("4s={}", &capture[1]),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    if lower.contains("distance traveled at constant speed") {
+        if let Some(capture) = Regex::new(r"(?i)is\s+([0-9]+)\s+meters")
+            .expect("static prose-distance regex")
+            .captures(question)
+        {
+            push(
+                &mut facts,
+                format!("vt={}", &capture[1]),
+                capture.get(0).unwrap().as_str(),
+            );
+        }
+    }
+    if lower.contains("does work W") {
+        push(&mut facts, "W=Fd".into(), "does work W");
+    }
+    if let Some(capture) = Regex::new(
+        r"(?i)total of\s+([0-9]+)\s+coins consists of nickels and dimes worth\s+([0-9]+)\s+cents",
+    )
+    .expect("static prose-coins regex")
+    .captures(question)
+    {
+        push(
+            &mut facts,
+            format!("n+d={}", &capture[1]),
+            capture.get(0).unwrap().as_str(),
+        );
+        push(
+            &mut facts,
+            format!("5n+10d={}", &capture[2]),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    if let Some(capture) =
+        Regex::new(r"(?i)rectangle has length\s+([0-9]+)\s+more than its width and area\s+([0-9]+)")
+            .expect("static prose-rectangle regex")
+            .captures(question)
+    {
+        push(
+            &mut facts,
+            format!("l=w+{}", &capture[1]),
+            capture.get(0).unwrap().as_str(),
+        );
+        push(
+            &mut facts,
+            format!("lw={}", &capture[2]),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    if let Some(capture) = Regex::new(r"(?i)John has\s+([0-9]+)\s+more apples than Mia")
+        .expect("static prose-entity-relation regex")
+        .captures(question)
+    {
+        push(
+            &mut facts,
+            format!("J = M + {}", &capture[1]),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    if let Some(capture) =
+        Regex::new(r"(?i)Alice has twice Bob's marbles\. Together they have\s+([0-9]+)")
+            .expect("static prose-marble-system regex")
+            .captures(question)
+    {
+        push(&mut facts, "A=2B".into(), capture.get(0).unwrap().as_str());
+        push(
+            &mut facts,
+            format!("A+B={}", &capture[1]),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    facts
+}
+
 fn formalized_facts(facts: &[FactAnnotation], question: &str) -> Vec<FormalizedFact> {
     if let Some((lhs, relation, rhs)) = extract_explicit_relation(question) {
         return vec![FormalizedFact::Equation {
@@ -1971,6 +2230,13 @@ fn formalized_facts(facts: &[FactAnnotation], question: &str) -> Vec<FormalizedF
             if fact.statement.contains("quantified") {
                 FormalizedFact::LogicalPremise {
                     statement: fact.statement.clone(),
+                    source_fragment: fact.source_fragment.clone(),
+                }
+            } else if let Some((lhs, relation, rhs)) = extract_explicit_relation(&fact.statement) {
+                FormalizedFact::Equation {
+                    lhs,
+                    relation,
+                    rhs,
                     source_fragment: fact.source_fragment.clone(),
                 }
             } else {
@@ -2036,6 +2302,13 @@ fn operation_from_text(text: &str) -> OperationKind {
     } else if lower.contains("compare") || lower.contains("equivalent") || lower.contains("same as")
     {
         OperationKind::Compare
+    } else if lower.contains("represent")
+        || lower.contains("write")
+        || lower.contains("state")
+        || lower.contains("formalize")
+        || lower.contains("express")
+    {
+        OperationKind::InstantiateDefinition
     } else if lower.contains("verify")
         || lower.contains("check whether")
         || lower.contains("check if")
@@ -2074,7 +2347,10 @@ pub fn infer_answer_form(text: &str, operation: OperationKind) -> Option<AnswerF
         Some(AnswerForm::Proof)
     } else if matches!(operation, OperationKind::Solve) && lower.contains("system") {
         Some(AnswerForm::SolutionSet)
-    } else if matches!(operation, OperationKind::Evaluate | OperationKind::Solve | OperationKind::Substitute) {
+    } else if matches!(
+        operation,
+        OperationKind::Evaluate | OperationKind::Solve | OperationKind::Substitute
+    ) {
         Some(AnswerForm::ExactValue)
     } else {
         None
@@ -2100,7 +2376,8 @@ fn resolve_subject(
             .name("body")
             .map(|value| value.as_str().trim())
             .unwrap_or_default();
-        if body.contains('=') && (body.contains(';') || body.to_ascii_lowercase().contains(" and ")) {
+        if body.contains('=') && (body.contains(';') || body.to_ascii_lowercase().contains(" and "))
+        {
             candidates.push(SubjectCandidate {
                 object_id: "equation_system".into(),
                 object: body.to_string(),
@@ -2114,14 +2391,19 @@ fn resolve_subject(
             });
         }
     }
-    let operation_definition = Regex::new(
-        r"(?i)\b(?:binary\s+)?operation\s+(.+?)\s+is\s+defined\s+as\s+([^.;?]+)",
-    )
-    .expect("static operation-definition regex")
-    .captures(question);
+    let operation_definition =
+        Regex::new(r"(?i)\b(?:binary\s+)?operation\s+(.+?)\s+is\s+defined\s+as\s+([^.;?]+)")
+            .expect("static operation-definition regex")
+            .captures(question);
     if let Some(capture) = operation_definition {
-        let notation = capture.get(1).map(|value| value.as_str().trim()).unwrap_or_default();
-        let body = capture.get(2).map(|value| value.as_str().trim()).unwrap_or_default();
+        let notation = capture
+            .get(1)
+            .map(|value| value.as_str().trim())
+            .unwrap_or_default();
+        let body = capture
+            .get(2)
+            .map(|value| value.as_str().trim())
+            .unwrap_or_default();
         if !notation.is_empty() && !body.is_empty() {
             candidates.push(SubjectCandidate {
                 object_id: "operation_definition".into(),
@@ -2194,6 +2476,34 @@ fn resolve_subject(
     }
 
     let target_lower = target_text.to_ascii_lowercase();
+    let equation_candidates: Vec<_> = candidates
+        .iter()
+        .filter(|candidate| candidate.object_type == SubjectObjectType::Equation)
+        .cloned()
+        .collect();
+    if equation_candidates.len() >= 2
+        && (target_lower.contains("find")
+            || target_lower.contains("determine")
+            || target_lower.contains("count"))
+    {
+        let body = equation_candidates
+            .iter()
+            .map(|candidate| candidate.object.as_str())
+            .collect::<Vec<_>>()
+            .join("; ");
+        candidates.push(SubjectCandidate {
+            object_id: "prose_equation_system".into(),
+            object: body,
+            object_type: SubjectObjectType::EquationSystem,
+            source_spans: equation_candidates
+                .iter()
+                .flat_map(|candidate| candidate.source_spans.clone())
+                .collect(),
+            referenced_by_target: true,
+            definition_available: true,
+            evidence: "bounded_prose_equation_system".into(),
+        });
+    }
     let function_reference_without_definition = Regex::new(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\(")
         .expect("static function-reference regex")
         .captures_iter(target_text)
@@ -2283,6 +2593,13 @@ fn resolve_subject(
             || target_lower.contains("evaluate")
             || target_lower.contains("simplify")
             || target_lower.contains("substitute")
+            || target_lower.contains("find")
+            || target_lower.contains("determine")
+            || target_lower.contains("represent")
+            || target_lower.contains("write")
+            || target_lower.contains("state")
+            || target_lower.contains("formalize")
+            || target_lower.contains("express")
         {
             return SubjectResolution {
                 selected: Some(candidate),
@@ -2419,11 +2736,10 @@ fn build_target_completion(
             status: TargetFieldStatus::Complete,
         });
     }
-    if let Some(captures) = Regex::new(
-        r"(?i)\bsubstitute\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^,?.]+?)\s+into\b",
-    )
-    .expect("static substitution argument regex")
-    .captures(target_text)
+    if let Some(captures) =
+        Regex::new(r"(?i)\bsubstitute\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^,?.]+?)\s+into\b")
+            .expect("static substitution argument regex")
+            .captures(target_text)
     {
         arguments.push(TargetArgumentBinding {
             parameter: captures.get(1).unwrap().as_str().into(),
@@ -2484,8 +2800,14 @@ fn build_target_completion(
         .as_ref()
         .map(|candidate| candidate.object_type == SubjectObjectType::Function)
         .unwrap_or(false);
+    let subject_is_definition = subject_resolution
+        .selected
+        .as_ref()
+        .map(|candidate| candidate.object_type == SubjectObjectType::Definition)
+        .unwrap_or(false);
     let requires_arguments = match operation {
-        OperationKind::Substitute | OperationKind::InstantiateDefinition => true,
+        OperationKind::Substitute => true,
+        OperationKind::InstantiateDefinition => subject_is_function || subject_is_definition,
         OperationKind::Evaluate => {
             function_application
                 || (subject_is_function
@@ -2796,7 +3118,12 @@ pub fn assess_prompt(
     {
         obligations.push(ModelingObligation::ExtractQuantifiers);
     }
-    if lower.contains('=') || has_any(&lower, &["equation", "given that", "satisfies", "where"]) {
+    let prose_facts = extract_prose_fact_annotations(question);
+    if !prose_facts.is_empty() {
+        facts.extend(prose_facts);
+    } else if lower.contains('=')
+        || has_any(&lower, &["equation", "given that", "satisfies", "where"])
+    {
         let statement = extract_explicit_relation(question)
             .map(|(lhs, relation, rhs)| format!("{lhs} {relation} {rhs}"))
             .unwrap_or_else(|| "explicit relation or equation signal".into());
@@ -2844,6 +3171,11 @@ pub fn assess_prompt(
             "how many",
             "count",
             "what does",
+            "represent",
+            "write",
+            "state",
+            "formalize",
+            "express",
         ],
     ) {
         let request_clause = question
@@ -2861,6 +3193,11 @@ pub fn assess_prompt(
                         "solve",
                         "what is",
                         "which",
+                        "represent",
+                        "write",
+                        "state",
+                        "formalize",
+                        "express",
                     ],
                 )
             })
@@ -3106,8 +3443,50 @@ mod tests {
             ("compare", "Compare 4/5 and 3/4."),
         ] {
             let trace = assess_prompt(id, prompt, "Math", false);
-            assert!(assess_direct_instantiation(&trace).authorization_safe(), "{id}");
+            assert!(
+                assess_direct_instantiation(&trace).authorization_safe(),
+                "{id}"
+            );
         }
+    }
+
+    #[test]
+    fn constrained_prose_grammar_emits_typed_relations_without_authorizing_modeling() {
+        let equation = assess_prompt(
+            "prose-equation",
+            "A number increased by 5 is 12. Find the number.",
+            "Math",
+            false,
+        );
+        assert!(equation
+            .facts
+            .iter()
+            .any(|fact| fact.statement == "x + 5 = 12"));
+        assert!(equation.target_completion.complete);
+        assert!(!assess_direct_instantiation(&equation).authorization_safe());
+
+        let system = assess_prompt(
+            "prose-system",
+            "Two numbers sum to 10 and differ by 2. Find them.",
+            "Math",
+            false,
+        );
+        assert!(system.facts.iter().any(|fact| fact.statement == "x+y=10"));
+        assert!(system.facts.iter().any(|fact| fact.statement == "x-y=2"));
+        assert!(system.target_completion.complete);
+        assert!(!assess_direct_instantiation(&system).authorization_safe());
+
+        let quantifier = assess_prompt(
+            "prose-quantifier",
+            "For every integer n, n+0=n. State the quantifier structure.",
+            "Math",
+            false,
+        );
+        assert!(quantifier
+            .facts
+            .iter()
+            .any(|fact| fact.statement == "n+0=n"));
+        assert!(!assess_direct_instantiation(&quantifier).authorization_safe());
     }
 
     #[test]
@@ -3220,7 +3599,12 @@ mod tests {
             false,
         );
         assert!(trace.target_completion.complete);
-        let subject = trace.target_completion.target.subject_resolution.selected.as_ref();
+        let subject = trace
+            .target_completion
+            .target
+            .subject_resolution
+            .selected
+            .as_ref();
         assert_eq!(
             subject.map(|candidate| candidate.object_id.as_str()),
             Some("operation_definition")

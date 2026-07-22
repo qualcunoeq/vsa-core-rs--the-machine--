@@ -61,11 +61,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     )?;
     for tier in report.tiers.values() {
         eprintln!(
-            "{}: cases={} success={:.3} replay={:.3} false_auth={} false_denials={}",
+            "{}: cases={} success={:.3} positive_success={:.3} replay={:.3} positive_replay={:.3} false_auth={} false_denials={}",
             tier.tier,
             tier.cases,
             tier.success_rate,
+            tier.positive_success_rate,
             tier.replay_rate,
+            tier.positive_replay_rate,
             tier.false_authorizations,
             tier.false_denials,
         );

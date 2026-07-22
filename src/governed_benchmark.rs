@@ -26,7 +26,9 @@ pub struct TierMetrics {
     pub false_authorizations: usize,
     pub false_denials: usize,
     pub success_rate: f64,
+    pub positive_success_rate: f64,
     pub replay_rate: f64,
+    pub positive_replay_rate: f64,
     pub failure_taxonomy: BTreeMap<String, usize>,
 }
 
@@ -62,7 +64,10 @@ fn algebra_tier(name: &str, domain: &str, metrics: &AlgebraGroupMetrics) -> Tier
         false_authorizations: metrics.false_authorizations,
         false_denials: metrics.false_denials,
         success_rate: metrics.execution_success as f64 / metrics.cases.max(1) as f64,
+        positive_success_rate: metrics.execution_success as f64
+            / metrics.positive_cases.max(1) as f64,
         replay_rate: metrics.replay_success as f64 / metrics.execution_success.max(1) as f64,
+        positive_replay_rate: metrics.replay_success as f64 / metrics.positive_cases.max(1) as f64,
         failure_taxonomy: metrics.failures.clone(),
     }
 }
@@ -78,7 +83,11 @@ fn recurrence_tier(name: &str, metrics: &RecurrenceMetrics) -> TierMetrics {
         false_authorizations: metrics.false_authorizations,
         false_denials: metrics.false_denials,
         success_rate: metrics.authorized as f64 / metrics.cases.max(1) as f64,
+        positive_success_rate: metrics.authorized as f64
+            / metrics.expected_authorized.max(1) as f64,
         replay_rate: metrics.replay_verified as f64 / metrics.authorized.max(1) as f64,
+        positive_replay_rate: metrics.replay_verified as f64
+            / metrics.expected_authorized.max(1) as f64,
         failure_taxonomy: metrics.failure_taxonomy.clone(),
     }
 }
@@ -94,7 +103,10 @@ fn proposition_tier(name: &str, metrics: &PropositionMetrics) -> TierMetrics {
         false_authorizations: metrics.false_acceptances,
         false_denials: metrics.false_rejections,
         success_rate: metrics.accepted as f64 / metrics.cases.max(1) as f64,
+        positive_success_rate: metrics.accepted as f64 / metrics.expected_accepts.max(1) as f64,
         replay_rate: metrics.replay_verified as f64 / metrics.accepted.max(1) as f64,
+        positive_replay_rate: metrics.replay_verified as f64
+            / metrics.expected_accepts.max(1) as f64,
         failure_taxonomy: metrics.failure_taxonomy.clone(),
     }
 }
@@ -113,8 +125,10 @@ fn strategic_tier(
         false_authorizations: metrics.false_authorizations,
         false_denials: metrics.unnecessary_abstentions,
         success_rate: metrics.accuracy,
+        positive_success_rate: metrics.accuracy,
         replay_rate: shadow.replay_success as f64
             / shadow.executions_under_existing_authority.max(1) as f64,
+        positive_replay_rate: shadow.replay_success as f64 / metrics.tasks.max(1) as f64,
         failure_taxonomy: BTreeMap::new(),
     }
 }
@@ -244,7 +258,9 @@ pub fn experiment_results(
         metrics.insert("cases".into(), tier.cases as f64);
         metrics.insert("expected_positive".into(), tier.expected_positive as f64);
         metrics.insert("success_rate".into(), tier.success_rate);
+        metrics.insert("positive_success_rate".into(), tier.positive_success_rate);
         metrics.insert("replay_rate".into(), tier.replay_rate);
+        metrics.insert("positive_replay_rate".into(), tier.positive_replay_rate);
         metrics.insert(
             "false_authorization_rate".into(),
             tier.false_authorizations as f64 / tier.cases.max(1) as f64,

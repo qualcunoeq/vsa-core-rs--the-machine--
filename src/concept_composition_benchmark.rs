@@ -34,6 +34,28 @@ pub struct ConceptCompositionBenchmarkReport {
     pub diagnostic_only: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ConceptCompositionBudgetMetrics {
+    pub budget: usize,
+    pub full_proposals: usize,
+    pub budgeted_proposals: usize,
+    pub nodes_visited: usize,
+    pub candidates_pruned: usize,
+    pub frontier_subset: bool,
+    pub nested_with_previous: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ConceptCompositionBudgetSweepReport {
+    pub branches_per_stage: usize,
+    pub graph_concepts: usize,
+    pub max_concepts: usize,
+    pub full_proposals: usize,
+    pub budgets: Vec<ConceptCompositionBudgetMetrics>,
+    pub deterministic: bool,
+    pub diagnostic_only: bool,
+}
+
 fn alternate_spec(
     mut spec: CapabilitySpec,
     id: &str,
@@ -46,89 +68,66 @@ fn alternate_spec(
     spec
 }
 
-fn fixture() -> (CapabilityRegistry, CapabilityChainProofConceptIndex) {
+fn branching_fixture(
+    branches_per_stage: usize,
+) -> (CapabilityRegistry, CapabilityChainProofConceptIndex) {
+    let branches_per_stage = branches_per_stage.max(1);
     let mut registry = CapabilityRegistry::production();
-    let normalization_alt = alternate_spec(
-        CapabilitySpec::equation_normalization_v1(),
-        "equation_normalization_alt",
-        CapabilityIoType::Equation,
-        CapabilityIoType::NormalizedEquation,
-    );
-    let classification_alt = alternate_spec(
-        CapabilitySpec::equation_classification_v1(),
-        "equation_classification_alt",
-        CapabilityIoType::NormalizedEquation,
-        CapabilityIoType::EquationClassification,
-    );
-    let mut value = alternate_spec(
-        CapabilitySpec::equation_classification_v1(),
-        "classification_to_value",
-        CapabilityIoType::EquationClassification,
-        CapabilityIoType::ExactValue,
-    );
-    value.input_requirements.clear();
-    let mut value_alt = value.clone();
-    value_alt.id = "classification_to_value_alt".into();
-    registry.register(normalization_alt);
-    registry.register(classification_alt);
-    registry.register(value);
-    registry.register(value_alt);
-
-    let concepts = [
+    let mut index = CapabilityChainProofConceptIndex::default();
+    let stages = [
         (
-            "normalize-base",
+            "normalize",
             "equation_normalization",
             CapabilityIoType::Equation,
             CapabilityIoType::NormalizedEquation,
+            CapabilitySpec::equation_normalization_v1(),
         ),
         (
-            "normalize-alt",
-            "equation_normalization_alt",
-            CapabilityIoType::Equation,
-            CapabilityIoType::NormalizedEquation,
-        ),
-        (
-            "classify-base",
+            "classify",
             "equation_classification",
             CapabilityIoType::NormalizedEquation,
             CapabilityIoType::EquationClassification,
+            CapabilitySpec::equation_classification_v1(),
         ),
         (
-            "classify-alt",
-            "equation_classification_alt",
-            CapabilityIoType::NormalizedEquation,
-            CapabilityIoType::EquationClassification,
-        ),
-        (
-            "value-base",
+            "value",
             "classification_to_value",
             CapabilityIoType::EquationClassification,
             CapabilityIoType::ExactValue,
-        ),
-        (
-            "value-alt",
-            "classification_to_value_alt",
-            CapabilityIoType::EquationClassification,
-            CapabilityIoType::ExactValue,
+            CapabilitySpec::equation_classification_v1(),
         ),
     ];
-    let mut index = CapabilityChainProofConceptIndex::default();
-    for (concept_id, capability, input, output) in concepts {
-        let concept = CapabilityChainProofConceptContract {
-            concept_id: concept_id.into(),
-            capabilities: vec![capability.into()],
-            input_artifacts: vec![input],
-            output_artifacts: vec![output],
-            source_pattern_ids: vec![format!("{concept_id}-pattern-a"), format!("{concept_id}-pattern-b")],
-            supporting_instances: 12,
-            parameterized_signature: format!("{input:?}->{output:?}"),
-            diagnostic_only: true,
-        };
-        let validation = concept.validate(2, 2, 0, 0);
-        assert!(validation.passed, "fixture concept must validate: {concept_id}");
-        index.insert(concept, &validation).unwrap();
+    for (stage, (stage_name, capability_base, input, output, spec)) in stages.iter().enumerate() {
+        for branch in 0..branches_per_stage {
+            let capability_id = format!("{capability_base}_{stage}_{branch}");
+            let capability = alternate_spec(spec.clone(), &capability_id, *input, *output);
+            let mut capability = capability;
+            capability.input_requirements.clear();
+            registry.register(capability);
+            let concept_id = format!("{stage_name}-{branch}");
+            let concept = CapabilityChainProofConceptContract {
+                concept_id: concept_id.clone(),
+                capabilities: vec![capability_id],
+                input_artifacts: vec![*input],
+                output_artifacts: vec![*output],
+                source_pattern_ids: vec![
+                    format!("{concept_id}-pattern-a"),
+                    format!("{concept_id}-pattern-b"),
+                ],
+                supporting_instances: 12,
+                parameterized_signature: format!("{input:?}->{output:?}"),
+                diagnostic_only: true,
+            };
+            let validation = concept.validate(2, 2, 0, 0);
+            assert!(validation.passed, "fixture concept must validate: {concept_id}");
+            index.insert(concept, &validation).unwrap();
+        }
     }
     (registry, index)
+}
+
+fn fixture() -> (CapabilityRegistry, CapabilityChainProofConceptIndex) {
+    branching_fixture(2)
 }
 
 fn path_bound(concepts: usize, depth: usize) -> usize {
@@ -205,6 +204,72 @@ pub fn evaluate(max_depth: usize) -> ConceptCompositionBenchmarkReport {
     }
 }
 
+fn proposal_ids(
+    items: &[crate::capability_planner::CapabilityChainProofConceptPlanningProposal],
+) -> std::collections::BTreeSet<String> {
+    items.iter().map(|proposal| proposal.concept_id.clone()).collect()
+}
+
+fn evaluate_budget_sweep_once(
+    branches_per_stage: usize,
+    max_concepts: usize,
+    budgets: &[usize],
+) -> ConceptCompositionBudgetSweepReport {
+    let (registry, index) = branching_fixture(branches_per_stage);
+    let full = index.propose_composed_planning_assistance_with_limits(
+        &[CapabilityIoType::Equation],
+        CapabilityIoType::ExactValue,
+        &registry,
+        max_concepts,
+        usize::MAX,
+    );
+    let full_ids = proposal_ids(&full.planning.proposals);
+    let mut previous_ids = std::collections::BTreeSet::new();
+    let mut metrics = Vec::new();
+    for &budget in budgets {
+        let bounded = index.propose_composed_planning_assistance_with_limits(
+            &[CapabilityIoType::Equation],
+            CapabilityIoType::ExactValue,
+            &registry,
+            max_concepts,
+            budget,
+        );
+        let ids = proposal_ids(&bounded.planning.proposals);
+        metrics.push(ConceptCompositionBudgetMetrics {
+            budget,
+            full_proposals: full_ids.len(),
+            budgeted_proposals: ids.len(),
+            nodes_visited: bounded.nodes_visited,
+            candidates_pruned: bounded.candidates_pruned,
+            frontier_subset: ids.is_subset(&full_ids),
+            nested_with_previous: previous_ids.is_subset(&ids),
+        });
+        previous_ids = ids;
+    }
+    ConceptCompositionBudgetSweepReport {
+        branches_per_stage: branches_per_stage.max(1),
+        graph_concepts: index.len(),
+        max_concepts,
+        full_proposals: full_ids.len(),
+        budgets: metrics,
+        deterministic: true,
+        diagnostic_only: true,
+    }
+}
+
+pub fn evaluate_budget_sweep(
+    branches_per_stage: usize,
+    max_concepts: usize,
+    budgets: &[usize],
+) -> ConceptCompositionBudgetSweepReport {
+    let first = evaluate_budget_sweep_once(branches_per_stage, max_concepts, budgets);
+    let second = evaluate_budget_sweep_once(branches_per_stage, max_concepts, budgets);
+    ConceptCompositionBudgetSweepReport {
+        deterministic: first == second,
+        ..first
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -243,5 +308,26 @@ mod tests {
             .depths
             .iter()
             .all(|depth| depth.theoretical_path_bound > 0));
+    }
+
+    #[test]
+    fn larger_branching_budget_sweep_preserves_frontier_membership() {
+        let report = evaluate_budget_sweep(3, 3, &[1, 4, 16, 27]);
+        assert!(report.diagnostic_only);
+        assert!(report.deterministic);
+        assert_eq!(report.branches_per_stage, 3);
+        assert_eq!(report.graph_concepts, 9);
+        assert_eq!(report.full_proposals, 27);
+        assert!(report.budgets.iter().all(|metric| metric.frontier_subset));
+        assert!(report
+            .budgets
+            .iter()
+            .all(|metric| metric.nested_with_previous));
+        assert_eq!(report.budgets.last().unwrap().budgeted_proposals, 27);
+        assert!(report
+            .budgets
+            .iter()
+            .filter(|metric| metric.budget < report.full_proposals)
+            .all(|metric| metric.candidates_pruned > 0));
     }
 }

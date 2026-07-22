@@ -278,9 +278,9 @@ Known limits:
 
 Next vertical slice:
 
-1. Repeat the candidate-budget probe on a larger branching fixture and test
-   deterministic frontier behavior across several budgets, including a
-   budget smaller than the full frontier.
+1. Extend the larger-branching budget sweep beyond the current 3×3×3 fixture
+   and measure pruning cost as route depth grows, while retaining deterministic
+   frontier-subset and nested-budget checks.
 2. Only then consider governed method acquisition for a demonstrated missing
    capability; absence of `method_not_found` evidence is not authorization to
    add one.

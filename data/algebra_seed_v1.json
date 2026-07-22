@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {"id":"lin-01","tier":"development","method":"linear_equation","prompt":"Solve for x: 3*x+2=11.","expected_result":"3","should_authorize":true},
+    {"id":"lin-02","tier":"development","method":"linear_equation","prompt":"Solve for x: 2*x=1.","expected_result":"0.5","should_authorize":true},
+    {"id":"lin-03","tier":"development","method":"linear_equation","prompt":"Solve for x: 5*x-10=0.","expected_result":"2","should_authorize":true},
+    {"id":"lin-04","tier":"development","method":"linear_equation","prompt":"Solve for x: x/4=3.","expected_result":"12","should_authorize":true},
+    {"id":"lin-05","tier":"development","method":"linear_equation","prompt":"Solve for x: 7*x=0.","expected_result":"0","should_authorize":true},
+    {"id":"lin-06","tier":"development","method":"linear_equation","prompt":"Solve for x: 4*x+8=2*x+18.","expected_result":"5","should_authorize":true},
+    {"id":"lin-07-h","tier":"holdout","method":"linear_equation","prompt":"Solve for x: 9-2*x=1.","expected_result":"4","should_authorize":true},
+    {"id":"lin-08-h","tier":"holdout","method":"linear_equation","prompt":"Solve for x: 6*x-3=21.","expected_result":"4","should_authorize":true},
+    {"id":"lin-09-h","tier":"holdout","method":"linear_equation","prompt":"Solve for x: 3*x+1=2*x-5.","expected_result":"-6","should_authorize":true},
+    {"id":"lin-10-h","tier":"holdout","method":"linear_equation","prompt":"Solve for x: 11*x-7=15.","expected_result":"2","should_authorize":true},
+
+    {"id":"quad-01","tier":"development","method":"quadratic_equation","prompt":"Solve for x: x^2-5*x+6=0.","expected_result":"[2, 3]","should_authorize":true},
+    {"id":"quad-02","tier":"development","method":"quadratic_equation","prompt":"Solve for x: x^2-4*x+4=0.","expected_result":"2","should_authorize":true},
+    {"id":"quad-03","tier":"development","method":"quadratic_equation","prompt":"Solve for x: x^2-1=0.","expected_result":"[-1, 1]","should_authorize":true},
+    {"id":"quad-04","tier":"development","method":"quadratic_equation","prompt":"Solve for x: x^2+2*x-8=0.","expected_result":"[-4, 2]","should_authorize":true},
+    {"id":"quad-05","tier":"development","method":"quadratic_equation","prompt":"Solve for x: 2*x^2-8=0.","expected_result":"[-2, 2]","should_authorize":true},
+    {"id":"quad-06-h","tier":"holdout","method":"quadratic_equation","prompt":"Solve for x: x^2+6*x+9=0.","expected_result":"-3","should_authorize":true},
+    {"id":"quad-07-h","tier":"holdout","method":"quadratic_equation","prompt":"Solve for x: x^2-9=0.","expected_result":"[-3, 3]","should_authorize":true},
+    {"id":"quad-08-h","tier":"holdout","method":"quadratic_equation","prompt":"Solve for x: x^2-7*x+10=0.","expected_result":"[2, 5]","should_authorize":true},
+
+    {"id":"sys-01","tier":"development","method":"linear_system","prompt":"Solve system: x+y=5; x-y=1 for x,y","expected_result":"{\"x\": \"3\", \"y\": \"2\"}","should_authorize":true},
+    {"id":"sys-02","tier":"development","method":"linear_system","prompt":"Solve system: 2*x+y=7; x-y=2 for x,y","expected_result":"{\"x\": \"3\", \"y\": \"1\"}","should_authorize":true},
+    {"id":"sys-03","tier":"development","method":"linear_system","prompt":"Solve system: x+y=7; 2*x-y=5 for x,y","expected_result":"{\"x\": \"4\", \"y\": \"3\"}","should_authorize":true},
+    {"id":"sys-04","tier":"development","method":"linear_system","prompt":"Solve system: 3*x+y=10; x-y=2 for x,y","expected_result":"{\"x\": \"3\", \"y\": \"1\"}","should_authorize":true},
+    {"id":"sys-05-h","tier":"holdout","method":"linear_system","prompt":"Solve system: x+2*y=8; 3*x-y=3 for x,y","expected_result":"{\"x\": \"2\", \"y\": \"3\"}","should_authorize":true},
+    {"id":"sys-06-h","tier":"holdout","method":"linear_system","prompt":"Solve system: 2*x+3*y=13; x-y=1 for x,y","expected_result":"{\"x\": \"3.2\", \"y\": \"2.2\"}","should_authorize":true},
+
+    {"id":"adv-01","tier":"adversarial","method":"linear_equation","prompt":"Solve for x: x+y=4.","expected_result":null,"should_authorize":false},
+    {"id":"adv-02","tier":"adversarial","method":"quadratic_equation","prompt":"Solve for x: x^2+1=0.","expected_result":null,"should_authorize":false},
+    {"id":"adv-03","tier":"adversarial","method":"linear_system","prompt":"Solve system: x+y=2; 2*x+2*y=4 for x,y","expected_result":null,"should_authorize":false},
+    {"id":"adv-04","tier":"adversarial","method":"linear_system","prompt":"Solve system: x*y=2; x+y=3 for x,y","expected_result":null,"should_authorize":false},
+    {"id":"adv-05","tier":"adversarial","method":"linear_equation","prompt":"Solve for x: sin(x)=0.","expected_result":null,"should_authorize":false},
+    {"id":"adv-06-h","tier":"holdout","method":"quadratic_equation","prompt":"Solve for x: x^2+2*x+5=0.","expected_result":null,"should_authorize":false}
+  ]
+}

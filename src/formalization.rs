@@ -1951,6 +1951,8 @@ pub fn infer_answer_form(text: &str, operation: OperationKind) -> Option<AnswerF
         Some(AnswerForm::Classification)
     } else if matches!(operation, OperationKind::Prove) {
         Some(AnswerForm::Proof)
+    } else if matches!(operation, OperationKind::Solve) && lower.contains("system") {
+        Some(AnswerForm::SolutionSet)
     } else if matches!(operation, OperationKind::Evaluate | OperationKind::Solve | OperationKind::Substitute) {
         Some(AnswerForm::ExactValue)
     } else {
@@ -1964,6 +1966,33 @@ fn resolve_subject(
     formalized_facts: &[FormalizedFact],
 ) -> SubjectResolution {
     let mut candidates = Vec::new();
+    // A two-equation system is one typed object, not two competing equation
+    // candidates.  Preserve the compound boundary so the capability registry
+    // can select its guarded EquationSystem method instead of falling back to
+    // an ungoverned raw-string executor.
+    let system_definition = Regex::new(
+        r"(?i)\bsolve\s+(?:the\s+)?system\b(?P<body>.+?)(?:\s+for\s+[A-Za-z_][A-Za-z0-9_]*\s*,\s*[A-Za-z_][A-Za-z0-9_]*)?\s*[.?]?$",
+    )
+    .expect("static equation-system regex");
+    if let Some(capture) = system_definition.captures(question.trim()) {
+        let body = capture
+            .name("body")
+            .map(|value| value.as_str().trim())
+            .unwrap_or_default();
+        if body.contains('=') && (body.contains(';') || body.to_ascii_lowercase().contains(" and ")) {
+            candidates.push(SubjectCandidate {
+                object_id: "equation_system".into(),
+                object: body.to_string(),
+                object_type: SubjectObjectType::EquationSystem,
+                source_spans: vec![TextSpan {
+                    source_fragment: body.to_string(),
+                }],
+                referenced_by_target: true,
+                definition_available: true,
+                evidence: "explicit_equation_system".into(),
+            });
+        }
+    }
     let operation_definition = Regex::new(
         r"(?i)\b(?:binary\s+)?operation\s+(.+?)\s+is\s+defined\s+as\s+([^.;?]+)",
     )
@@ -2087,6 +2116,22 @@ fn resolve_subject(
     if referenced_functions.len() == 1 {
         return SubjectResolution {
             selected: referenced_functions.into_iter().next(),
+            alternatives: candidates,
+            blockers: Vec::new(),
+        };
+    }
+
+    let referenced_systems: Vec<_> = candidates
+        .iter()
+        .filter(|candidate| {
+            candidate.object_type == SubjectObjectType::EquationSystem
+                && candidate.referenced_by_target
+        })
+        .cloned()
+        .collect();
+    if referenced_systems.len() == 1 {
+        return SubjectResolution {
+            selected: referenced_systems.into_iter().next(),
             alternatives: candidates,
             blockers: Vec::new(),
         };
@@ -3083,6 +3128,20 @@ mod tests {
         assert_eq!(
             system.target_completion.target.target_variable.as_deref(),
             Some("x,y")
+        );
+        assert_eq!(
+            system
+                .target_completion
+                .target
+                .subject_resolution
+                .selected
+                .as_ref()
+                .map(|subject| subject.object_type),
+            Some(SubjectObjectType::EquationSystem)
+        );
+        assert_eq!(
+            system.target_completion.target.answer_form,
+            Some(AnswerForm::SolutionSet)
         );
 
         let numeric = assess_prompt("numeric", "Evaluate 3(7) - 2.", "Math", false);

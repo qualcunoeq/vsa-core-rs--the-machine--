@@ -737,10 +737,27 @@ impl CapabilityRegistry {
                             false
                         }
                     }
-                    // System formalization is not yet produced by the raw
-                    // target assessor; the governed system capability is
-                    // admitted through its typed execution boundary.
-                    InputRequirement::TwoByTwoLinearSystem => false,
+                    InputRequirement::TwoByTwoLinearSystem => {
+                        if subject.object_type != SubjectObjectType::EquationSystem {
+                            false
+                        } else {
+                            target
+                                .target_variable
+                                .as_deref()
+                                .map(|variables| {
+                                    crate::algebra_island::parse_problem(&format!(
+                                        "Solve system{} for {variables}",
+                                        subject.object
+                                    ))
+                                    .map(|problem| {
+                                        problem.operation
+                                            == crate::algebra_island::AlgebraOperation::SolveSmallLinearSystem
+                                    })
+                                    .unwrap_or(false)
+                                })
+                                .unwrap_or(false)
+                        }
+                    }
                     InputRequirement::ExplicitSubstitutionBindings => {
                         target.operation == OperationKind::Substitute
                             && !target.arguments.is_empty()

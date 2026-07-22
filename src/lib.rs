@@ -10,6 +10,7 @@ pub mod action;
 pub mod actuator;
 pub mod algebra;
 pub mod algebra_island;
+pub mod algebra_benchmark;
 pub mod analogy;
 pub mod autonomy;
 pub mod bond_feeder;

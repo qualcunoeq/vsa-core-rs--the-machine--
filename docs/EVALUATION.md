@@ -200,3 +200,16 @@ diagnostic planning bridge for every complete typed target:
 `planning_dependency_failure`.  A successful bridge means that the governed
 capability planner can expand a selected method into a dependency-first plan;
 it does not authorize execution or change the conservative direct-audit gate.
+
+The first execution-level vertical slice is the bounded algebra benchmark:
+
+```bash
+cargo run --release --bin algebra_bench -- \
+  data/algebra_seed_v1.json results/algebra_bench/seed.jsonl
+```
+
+It runs the real linear-equation, quadratic-equation, and 2×2 linear-system
+executors, then replays each successful receipt.  The JSONL report separates
+formalization, method selection, execution, replay, exact-result accuracy,
+route length, false authorization, and false denial.  Adversarial cases are
+expected to abstain; they are not scored as failed solves.

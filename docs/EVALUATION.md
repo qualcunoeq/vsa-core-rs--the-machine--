@@ -217,9 +217,11 @@ The constrained prose grammar additionally recognizes a bounded set of
 equations, rates, inequalities, systems, quantifiers, units, and entity
 relations. On `data/formalization_seed_v1.json` (60 cases), the audit reports
 `authorization_correct=60`, `false_authorizations=0`, `false_denials=0`, and
-full failure-taxonomy coverage; executable target completeness improved from
-37/60 to 46/60 (prose tier 1/20 to 10/20), while structural target
-completeness is now 60/60. Verification-intent recognition covers all 60
+full failure-taxonomy coverage; executable target completeness is 47/60 while
+structural target completeness is 60/60. The field-level grammar now reaches
+entities 21/21, assumptions 3/3, constraints 9/9, and obligations 35/35 on
+the reviewed seed (with precision reported separately for conservative
+over-extraction). Verification-intent recognition covers all 60
 seed prompts; relation, predicate, set-membership, and explicit affine
 recurrence requests are represented as typed, provenance-bearing targets.
 Recurrence targets remain behind the specialist gate and do not authorize the

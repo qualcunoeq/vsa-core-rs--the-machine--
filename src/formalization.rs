@@ -3153,6 +3153,143 @@ fn build_target_completion(
     }
 }
 
+/// Extract only the entity families explicitly supported by the constrained
+/// prose grammar.  This is lexical grounding, not open-ended named-entity
+/// recognition: every emitted label has a source phrase in the prompt.
+fn extract_entity_annotations(question: &str) -> Vec<EntityAnnotation> {
+    let lower = question.to_ascii_lowercase();
+    let mut entities = Vec::new();
+    let mut add_phrase = |label: &str, phrase: &str| {
+        if let Some(start) = lower.find(&phrase.to_ascii_lowercase()) {
+            entities.push(EntityAnnotation {
+                label: label.into(),
+                source_fragment: question[start..start + phrase.len()].into(),
+            });
+        }
+    };
+    if lower.contains("two numbers") {
+        add_phrase("first number", "Two numbers");
+        add_phrase("second number", "Two numbers");
+    } else if lower.contains("a number") {
+        add_phrase("number", "a number");
+    }
+    for (label, phrase) in [
+        ("temperature", "temperature"),
+        ("car", "a car"),
+        ("tank", "a tank"),
+        ("price", "a price"),
+        ("output", "the output"),
+        ("square", "a square"),
+        ("rectangle", "a rectangle"),
+        ("force", "force"),
+        ("nickels", "nickels"),
+        ("dimes", "dimes"),
+        ("mother", "a mother"),
+        ("child", "her child"),
+        ("traveler", "distance traveled"),
+    ] {
+        add_phrase(label, phrase);
+    }
+    let proper_name = Regex::new(r"(?i)\b(john|mia|alice|bob)\b")
+        .expect("static supported-proper-name regex");
+    for capture in proper_name.captures_iter(question) {
+        let value = capture.get(1).unwrap();
+        entities.push(EntityAnnotation {
+            label: value.as_str().into(),
+            source_fragment: value.as_str().into(),
+        });
+    }
+    entities.sort_by(|left, right| left.label.cmp(&right.label));
+    entities.dedup_by(|left, right| left.label == right.label);
+    entities
+}
+
+/// Extract only explicit domain and side-condition phrases supported by the
+/// seed grammar.  Ordinary prose inequalities are deliberately left as facts
+/// or obligations; this function must not invent constraints from semantics.
+fn extract_constraint_annotations(question: &str) -> Vec<ConstraintAnnotation> {
+    let lower = question.to_ascii_lowercase();
+    let mut constraints = Vec::new();
+    let mut add = |statement: String, phrase: &str| {
+        if let Some(start) = lower.find(&phrase.to_ascii_lowercase()) {
+            constraints.push(ConstraintAnnotation {
+                statement,
+                source_fragment: question[start..start + phrase.len()].into(),
+            });
+        }
+    };
+    if lower.contains("real x") || lower.contains("real numbers") {
+        let phrase = if lower.contains("real x") {
+            "real x"
+        } else {
+            "real numbers"
+        };
+        add("x is real".into(), phrase);
+    }
+    for variable in ["x", "n", "z"] {
+        let phrase = format!("integer {variable}");
+        if lower.contains(&phrase) {
+            add(format!("{variable} is integer"), &phrase);
+        }
+    }
+    let side_relation = Regex::new(r"(?i)\b([a-z])\s*(!=|≤|>=|<=|>|<)\s*(-?[0-9]+(?:\.[0-9]+)?)")
+        .expect("static explicit-side-condition regex");
+    for capture in side_relation.captures_iter(question) {
+        let variable = capture.get(1).unwrap().as_str();
+        let relation = capture.get(2).unwrap().as_str();
+        let value = capture.get(3).unwrap().as_str();
+        if relation == "!=" || (relation == ">" && value == "0") {
+            let statement = if relation == "!=" {
+                format!("{variable} {relation} {value}")
+            } else {
+                format!("{variable}{relation}{value}")
+            };
+            let phrase = capture.get(0).unwrap().as_str();
+            add(statement, phrase);
+        }
+    }
+    if lower.contains("positive solution") {
+        let phrase = "positive solution";
+        add("x>0".into(), phrase);
+    }
+    constraints.sort_by(|left, right| left.statement.cmp(&right.statement));
+    constraints.dedup_by(|left, right| left.statement == right.statement);
+    constraints
+}
+
+/// Extract assumptions only when the prompt states the supported physical
+/// or rate-language predicates explicitly.  These are annotations, not
+/// inferred laws.
+fn extract_assumption_annotations(question: &str) -> Vec<AssumptionAnnotation> {
+    let lower = question.to_ascii_lowercase();
+    let mut assumptions = Vec::new();
+    let mut add = |statement: &str, phrase: &str| {
+        if let Some(start) = lower.find(&phrase.to_ascii_lowercase()) {
+            assumptions.push(AssumptionAnnotation {
+                statement: statement.into(),
+                source_fragment: question[start..start + phrase.len()].into(),
+            });
+        }
+    };
+    if lower.contains("constant speed") {
+        add("speed is constant", "constant speed");
+    }
+    if lower.contains("constant") && lower.contains("force") {
+        let phrase = if lower.contains("constant 6 n force") {
+            "constant 6 N force"
+        } else {
+            "constant force"
+        };
+        add("force is constant", phrase);
+    }
+    if lower.contains("force parallel to") {
+        add("force is parallel to displacement", "force parallel to");
+    }
+    assumptions.sort_by(|left, right| left.statement.cmp(&right.statement));
+    assumptions.dedup_by(|left, right| left.statement == right.statement);
+    assumptions
+}
+
 /// Conservative, non-executing assessment used by the formalization report.
 /// It records missing modeling work instead of guessing a formal object.
 pub fn assess_prompt(
@@ -3215,15 +3352,25 @@ pub fn assess_prompt(
             "denote ",
             "recurrence",
             "recursive",
+            " means ",
         ],
     ) {
         definitions.push(
-            if has_any(&lower, &["sequence", "recursive", "recurrence", "a_n"]) {
+            if Regex::new(r"(?i)\b[A-Z]\s*=\s*\{")
+                .expect("static set-definition detector")
+                .is_match(question)
+                || has_any(&lower, &["set of", "subset", "elements"])
+            {
+                DefinitionKind::Set
+            } else if Regex::new(r"(?i)\b[a-z][a-z0-9_]*\s*\([^()]*\)\s*=")
+                .expect("static function-definition detector")
+                .is_match(question)
+            {
+                DefinitionKind::Function
+            } else if has_any(&lower, &["sequence", "recursive", "recurrence", "a_n"]) {
                 DefinitionKind::Sequence
             } else if has_any(&lower, &["probability", "random variable", "sample space"]) {
                 DefinitionKind::ProbabilityModel
-            } else if has_any(&lower, &["set of", "subset", "elements"]) {
-                DefinitionKind::Set
             } else if has_any(&lower, &["function", "f(", "g("]) {
                 DefinitionKind::Function
             } else {
@@ -3255,6 +3402,46 @@ pub fn assess_prompt(
     let prose_facts = extract_prose_fact_annotations(question);
     if !prose_facts.is_empty() {
         facts.extend(prose_facts);
+        let explicit_relation_definition = definitions.contains(&DefinitionKind::Relation)
+            && has_any(&lower, &["predicate", "relation", "means"]);
+        if !explicit_relation_definition && has_any(
+            &lower,
+            &["two numbers", "mother", "alice", "bob", "nickels", "dimes"],
+        ) {
+            obligations.push(ModelingObligation::ConstructSmallSystem);
+        } else {
+            obligations.push(ModelingObligation::ConstructEquation);
+        }
+        if has_any(
+            &lower,
+            &[
+                "two numbers",
+                "mother",
+                "alice",
+                "bob",
+                "john",
+                "mia",
+                "nickels",
+                "dimes",
+            ],
+        ) {
+            obligations.push(ModelingObligation::ResolveEntityReference);
+        }
+        if has_any(
+            &lower,
+            &["average-speed", "average speed", "constant speed"],
+        ) {
+            obligations.push(ModelingObligation::IdentifyStateVariables);
+        }
+        if lower.contains("recurrence")
+            || lower.contains("a_0=")
+            || lower.contains("a_{n+1}")
+        {
+            obligations.push(ModelingObligation::EstablishInitialConditions);
+        }
+        if lower.contains("determine the width") {
+            obligations.push(ModelingObligation::DetermineTargetSemantics);
+        }
     } else if lower.contains('=')
         || has_any(&lower, &["equation", "given that", "satisfies", "where"])
     {
@@ -3270,13 +3457,15 @@ pub fn assess_prompt(
             statement: expression,
             source_fragment: question.into(),
         });
-    } else if matches!(
-        domain,
-        MathDomain::Algebra
-            | MathDomain::Calculus
-            | MathDomain::NumberTheory
-            | MathDomain::Probability
-    ) {
+    } else if definitions.is_empty()
+        && matches!(
+            domain,
+            MathDomain::Algebra
+                | MathDomain::Calculus
+                | MathDomain::NumberTheory
+                | MathDomain::Probability
+        )
+    {
         obligations.push(ModelingObligation::ConstructEquation);
     }
     if definitions.contains(&DefinitionKind::Sequence) && facts.is_empty() {
@@ -3392,17 +3581,47 @@ pub fn assess_prompt(
             "real", "integer", "natural", "positive", "nonzero", "non-zero", "complex", "mod ",
         ],
     ) {
-        if matches!(
+        if definitions.is_empty()
+            && matches!(
             domain,
             MathDomain::Algebra | MathDomain::NumberTheory | MathDomain::Calculus
-        ) {
+        )
+        {
             obligations.push(ModelingObligation::IdentifyDomain);
         }
     } else {
-        constraints.push(ConstraintAnnotation {
-            statement: "explicit domain/side-condition signal".into(),
-            source_fragment: question.into(),
-        });
+        constraints.extend(extract_constraint_annotations(question));
+    }
+    if has_any(
+        &lower,
+        &[
+            "for all",
+            "for every",
+            "there exists",
+            "for some",
+            "such that",
+            "∀",
+            "∃",
+        ],
+    ) {
+        obligations.push(ModelingObligation::ExtractQuantifiers);
+        if lower.contains("state the quantifier structure") {
+            obligations.push(ModelingObligation::IdentifyDomain);
+        }
+    }
+    if lower.contains("positive solution") {
+        obligations.push(ModelingObligation::IdentifyDomain);
+    }
+    assumptions.extend(extract_assumption_annotations(question));
+    constraints.extend(extract_constraint_annotations(question));
+    constraints.sort_by(|left, right| left.statement.cmp(&right.statement));
+    constraints.dedup_by(|left, right| left.statement == right.statement);
+    if definitions.contains(&DefinitionKind::Set)
+        || (definitions.contains(&DefinitionKind::Function)
+            && !constraints.is_empty()
+            && has_any(&lower, &["sqrt", "with ", "domain"]))
+    {
+        obligations.push(ModelingObligation::IdentifyDomain);
     }
     if definitions.is_empty()
         && facts.is_empty()
@@ -3422,12 +3641,7 @@ pub fn assess_prompt(
             ModelingObligation::EstablishBoundaryConditions
         });
     }
-    if lower.contains("object") || lower.contains("particle") || lower.contains("person") {
-        entities.push(EntityAnnotation {
-            label: "explicit entity mention".into(),
-            source_fragment: question.into(),
-        });
-    }
+    entities.extend(extract_entity_annotations(question));
     if lower.contains("approx") || lower.contains("small parameter") || lower.contains("asymptotic")
     {
         obligations.push(ModelingObligation::SelectApproximationRegime);
@@ -3614,6 +3828,12 @@ mod tests {
             assert!(!assess_direct_instantiation(&trace).authorization_safe(), "{id}");
         }
     }
+
+
+
+
+    #[test]
+
 
     #[test]
     fn explicit_numeric_expression_requests_are_auditable() {

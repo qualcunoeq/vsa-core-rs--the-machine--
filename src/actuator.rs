@@ -1101,26 +1101,20 @@ pub fn record_tool_event<'a>(
     side_effect: SideEffectClass,
     confidence: f64,
 ) -> &'a ToolEvent {
-    let event = ToolEvent {
-        id: String::new(), // auto-generated
-        intent: intent.to_string(),
-        request: request.clone(),
-        result: Some(result.clone()),
-        side_effect,
-        confidence,
-        memory_updates: Vec::new(),
-    };
-    // Infer side-effect class from action type if not specified
-    let side_effect = match request.action_type {
-        ActionType::ScanPort
-        | ActionType::ScanHost
-        | ActionType::CheckService
-        | ActionType::ProbeHttp => SideEffectClass::Network,
-        ActionType::BruteForce => SideEffectClass::Network,
-        ActionType::CheckProcess => SideEffectClass::ReadOnly,
-        ActionType::ListenPort => SideEffectClass::ExternalWrite,
-        ActionType::ExecuteCommand => SideEffectClass::ExternalWrite,
-        ActionType::FetchDocumentation => SideEffectClass::ReadOnly,
+    // A caller-provided classification is authoritative. `Unknown` requests
+    // the conservative action-type inference for legacy callers.
+    let side_effect = if matches!(side_effect, SideEffectClass::Unknown) {
+        match request.action_type {
+            ActionType::ScanPort
+            | ActionType::ScanHost
+            | ActionType::CheckService
+            | ActionType::ProbeHttp
+            | ActionType::BruteForce => SideEffectClass::Network,
+            ActionType::CheckProcess | ActionType::FetchDocumentation => SideEffectClass::ReadOnly,
+            ActionType::ListenPort | ActionType::ExecuteCommand => SideEffectClass::ExternalWrite,
+        }
+    } else {
+        side_effect
     };
     let mut event = ToolEvent {
         id: String::new(),

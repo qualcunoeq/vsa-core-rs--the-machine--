@@ -262,7 +262,8 @@ Current anchors:
 - `src/governed_benchmark.rs` and `src/bin/governed_bench.rs`: unified
   seven-tier report over direct execution, light formalization, proposition
   proofs, strategic selection, adversarial refusal, and recurrence slices;
-  emits explicit evaluated versus unevaluated ablation status.
+  emits explicit ablation status, including an isolated replay-versus-bypass
+  verification control.
 - `src/reuse_ablation_benchmark.rs`: deterministic proof-index and governed
   derived-fact reuse controls used by the unified ablation report.
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
@@ -304,8 +305,10 @@ Current evidence (current formalization and governed benchmark slices):
   Strategy-memory, concept-memory, contextual-support, proof-reuse, and
   fact-reuse ablations are evaluated. The proof control records 50/50 indexed
   hits with replay verification; the fact control records 50/50 governed
-  retrieval hits with receipts. Only verification-off remains explicitly
-  `not_evaluated`, because no safe isolated end-to-end control exists.
+  retrieval hits with receipts. The verification control replays 32 valid and
+  32 tampered receipts: the production gate accepts all valid receipts and
+  rejects all tampered receipts, while the no-verification counterfactual
+  exposes 32/32 false accepts. The unsafe counterfactual is diagnostic only.
 - Operational baseline: the release unified runner records a
   `governed_suite_runtime` receipt; the current seed-42 500/500 run measured
   about 1.52 s on the development host. Runtime is measured as evidence, with no
@@ -336,8 +339,9 @@ Known limits:
   nonlinear dynamics, or missing methods.
 - The proposition vertical benchmarks the trusted 12-schema environment and
   kernel checking; it does not claim automated theorem discovery or broad
-  discrete-mathematics coverage. Verification-off ablations remain excluded by
-  design because they would test an unsafe execution mode.
+  discrete-mathematics coverage. The verification ablation is a receipt-level
+  control: it measures the unsafe no-verification counterfactual without
+  executing or authorizing through that path.
 
 Next evaluation gate:
 

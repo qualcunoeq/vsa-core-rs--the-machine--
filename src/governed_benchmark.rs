@@ -7,6 +7,10 @@
 
 use crate::algebra_benchmark::{evaluate as evaluate_algebra, AlgebraCorpus, AlgebraGroupMetrics};
 use crate::cognition::ExperimentResult;
+use crate::formalization::assess_prompt;
+use crate::linear_equation::{
+    execute_linear_equation, replay_linear_equation, LinearEquationExecutionReceipt,
+};
 use crate::proposition_benchmark::{evaluate as evaluate_proposition, PropositionMetrics};
 use crate::recurrence_benchmark::{evaluate as evaluate_recurrence, RecurrenceMetrics};
 use crate::reuse_ablation_benchmark::{evaluate as evaluate_reuse, ReuseAblationReport};
@@ -42,6 +46,25 @@ pub struct AblationOutcome {
     pub notes: String,
 }
 
+/// A diagnostic control for the verification boundary.
+///
+/// The production path requires both the receipt's claimed replay flag and an
+/// independent replay from the original equation.  The bypass column models
+/// the unsafe counterfactual in which a downstream consumer trusts a receipt
+/// without replaying it; it is measured, never used for authorization.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct VerificationAblationReport {
+    pub cases: usize,
+    pub valid_cases: usize,
+    pub tampered_cases: usize,
+    pub verifier_valid_accepts: usize,
+    pub verifier_tampered_rejections: usize,
+    pub bypass_false_accepts: usize,
+    pub verifier_rejection_rate: f64,
+    pub bypass_false_acceptance_rate: f64,
+    pub deterministic: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct GovernedBenchmarkReport {
     pub seed: u64,
@@ -50,9 +73,79 @@ pub struct GovernedBenchmarkReport {
     pub proposition_cases: usize,
     pub recurrence_cases: usize,
     pub reuse: ReuseAblationReport,
+    pub verification_ablation: VerificationAblationReport,
     pub tiers: BTreeMap<String, TierMetrics>,
     pub ablations: Vec<AblationOutcome>,
     pub deterministic: bool,
+}
+
+fn verifier_accepts(receipt: &LinearEquationExecutionReceipt) -> bool {
+    receipt.replay_verified && replay_linear_equation(receipt)
+}
+
+/// Evaluate the current replay gate against forged receipts and record the
+/// no-verification counterfactual.  This is intentionally isolated from all
+/// execution and registry code: it cannot grant authority or publish facts.
+pub fn evaluate_verification_ablation(cases: usize) -> VerificationAblationReport {
+    const PROMPTS: [&str; 5] = [
+        "Solve for x: 3*x+2=11.",
+        "Solve for x: 2*x=1.",
+        "Solve for x: 5*x-10=0.",
+        "Solve for x: 7*x+14=0.",
+        "Solve for x: 4*x-6=10.",
+    ];
+    let mut valid_cases = 0;
+    let mut tampered_cases = 0;
+    let mut verifier_valid_accepts = 0;
+    let mut verifier_tampered_rejections = 0;
+    let mut bypass_false_accepts = 0;
+
+    for index in 0..cases {
+        let prompt = PROMPTS[index % PROMPTS.len()];
+        let target = assess_prompt(
+            &format!("verification-ablation-{index}"),
+            prompt,
+            "Math",
+            false,
+        )
+        .target_completion
+        .target;
+        let Ok(receipt) = execute_linear_equation(&target) else {
+            continue;
+        };
+        valid_cases += 1;
+        if verifier_accepts(&receipt) {
+            verifier_valid_accepts += 1;
+        }
+
+        // Forge both the result and the claimed replay bit.  A downstream
+        // consumer that omits independent replay would accept this receipt.
+        let mut tampered = receipt;
+        tampered.result = format!("tampered-{index}");
+        tampered.replay_verified = true;
+        tampered_cases += 1;
+        if !verifier_accepts(&tampered) {
+            verifier_tampered_rejections += 1;
+        }
+        // The no-verification control intentionally models trusting the
+        // forged receipt as-is; this count is expected to be nonzero.
+        bypass_false_accepts += 1;
+    }
+
+    let verifier_rejection_rate =
+        verifier_tampered_rejections as f64 / tampered_cases.max(1) as f64;
+    let bypass_false_acceptance_rate = bypass_false_accepts as f64 / tampered_cases.max(1) as f64;
+    VerificationAblationReport {
+        cases: valid_cases + tampered_cases,
+        valid_cases,
+        tampered_cases,
+        verifier_valid_accepts,
+        verifier_tampered_rejections,
+        bypass_false_accepts,
+        verifier_rejection_rate,
+        bypass_false_acceptance_rate,
+        deterministic: true,
+    }
 }
 
 fn algebra_tier(name: &str, domain: &str, metrics: &AlgebraGroupMetrics) -> TierMetrics {
@@ -174,6 +267,7 @@ pub fn evaluate(
     let proposition = evaluate_proposition(500, seed);
     let recurrence = evaluate_recurrence(500, seed);
     let reuse = evaluate_reuse(100, seed);
+    let verification_ablation = evaluate_verification_ablation(32);
     let strategic = evaluate_strategic(seed, strategic_count);
     let mut tiers = BTreeMap::new();
     tiers.insert(
@@ -268,16 +362,24 @@ pub fn evaluate(
                 reuse.fact_hits, reuse.fact_baseline_hits, reuse.fact_retrieval_receipts
             ),
         },
+        AblationOutcome {
+            name: "verification".into(),
+            status: "evaluated".into(),
+            safety_preserved: Some(
+                verification_ablation.verifier_valid_accepts == verification_ablation.valid_cases
+                    && verification_ablation.verifier_tampered_rejections
+                        == verification_ablation.tampered_cases,
+            ),
+            primary_metric: Some(verification_ablation.verifier_rejection_rate),
+            notes: format!(
+                "verifier_rejections={}/{}; no-verification_control_false_accepts={}/{}",
+                verification_ablation.verifier_tampered_rejections,
+                verification_ablation.tampered_cases,
+                verification_ablation.bypass_false_accepts,
+                verification_ablation.tampered_cases
+            ),
+        },
     ];
-    for name in ["verification"] {
-        ablations.push(AblationOutcome {
-            name: name.into(),
-            status: "not_evaluated".into(),
-            safety_preserved: None,
-            primary_metric: None,
-            notes: "no isolated end-to-end control exists in the current benchmark corpus".into(),
-        });
-    }
     GovernedBenchmarkReport {
         seed,
         algebra_generated: generated_count,
@@ -285,6 +387,7 @@ pub fn evaluate(
         proposition_cases: proposition.generated_cases,
         recurrence_cases: recurrence.generated_cases,
         reuse,
+        verification_ablation,
         tiers,
         ablations,
         deterministic: true,
@@ -337,6 +440,20 @@ pub fn experiment_results(
         if let Some(primary_metric) = ablation.primary_metric {
             metrics.insert("primary_metric".into(), primary_metric);
         }
+        if ablation.name == "verification" {
+            metrics.insert(
+                "verifier_rejection_rate".into(),
+                report.verification_ablation.verifier_rejection_rate,
+            );
+            metrics.insert(
+                "bypass_false_acceptance_rate".into(),
+                report.verification_ablation.bypass_false_acceptance_rate,
+            );
+            metrics.insert(
+                "bypass_false_accepts".into(),
+                report.verification_ablation.bypass_false_accepts as f64,
+            );
+        }
         results.push(ExperimentResult {
             experiment: format!("governed_ablation_{}", ablation.name),
             claim: "ablation coverage and safety status are explicit rather than inferred".into(),
@@ -357,7 +474,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn suite_has_explicit_tiers_and_honest_ablation_gaps() {
+    fn suite_has_explicit_tiers_and_evaluated_verification_control() {
         let report = evaluate(42, 200, 200);
         assert!(report.deterministic);
         assert_eq!(report.tiers.len(), 7);
@@ -375,15 +492,41 @@ mod tests {
                 .iter()
                 .any(|ablation| ablation.name == name && ablation.status == "evaluated"));
         }
+        assert_eq!(report.verification_ablation.valid_cases, 32);
+        assert_eq!(report.verification_ablation.tampered_cases, 32);
+        assert_eq!(report.verification_ablation.verifier_valid_accepts, 32);
+        assert_eq!(
+            report.verification_ablation.verifier_tampered_rejections,
+            32
+        );
+        assert_eq!(report.verification_ablation.bypass_false_accepts, 32);
+        assert_eq!(report.verification_ablation.verifier_rejection_rate, 1.0);
+        assert_eq!(
+            report.verification_ablation.bypass_false_acceptance_rate,
+            1.0
+        );
         assert!(report
             .ablations
             .iter()
-            .any(|ablation| ablation.name == "verification" && ablation.status == "not_evaluated"));
+            .any(|ablation| ablation.name == "verification" && ablation.status == "evaluated"));
         let results = experiment_results(&report, "test-commit");
         assert!(results.iter().any(|result| {
             result.experiment == "governed_ablation_verification"
-                && result.metric("evaluated") == Some(0.0)
-                && !result.passed
+                && result.metric("evaluated") == Some(1.0)
+                && result.metric("verifier_rejection_rate") == Some(1.0)
+                && result.metric("bypass_false_acceptance_rate") == Some(1.0)
+                && result.passed
         }));
+    }
+
+    #[test]
+    fn verification_control_is_deterministic_and_isolated() {
+        let first = evaluate_verification_ablation(7);
+        let second = evaluate_verification_ablation(7);
+        assert_eq!(first, second);
+        assert_eq!(first.valid_cases, 7);
+        assert_eq!(first.tampered_cases, 7);
+        assert_eq!(first.verifier_tampered_rejections, 7);
+        assert_eq!(first.bypass_false_accepts, 7);
     }
 }

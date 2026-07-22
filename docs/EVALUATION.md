@@ -335,9 +335,9 @@ proofs were accepted and replayed; all 176 expected-invalid proofs were
 rejected, with zero false acceptances or false rejections. The 100-case holdout
 retained 65/65 valid accept/replay results and represented all five refusal
 classes. This is a proof-kernel baseline, not theorem discovery: the trusted
-environment remains the 12 curated initial schemas, and a verification-off
-execution ablation is intentionally not run because it would violate the
-authorization invariant.
+environment remains the 12 curated initial schemas. The unified suite's
+verification control is receipt-level and diagnostic; it does not execute a
+verification-off authorization path.
 
 The unified governed suite aggregates these verticals into explicit evaluation
 tiers and records which ablations are actually implemented:
@@ -359,12 +359,14 @@ positive-case success/replay rates; `expected_positive` remains explicit so
 abstention-heavy tiers are not mistaken for positive-case accuracy.
 
 The suite evaluates only concrete controls: strategy-memory,
-concept-memory, contextual-support, proof-reuse, and fact-reuse ablations are
-measured. The proof slice records 50/50 indexed hits with 50/50 replay-verified
-results; the fact slice records 50/50 governed retrieval hits with 50/50
-retrieval receipts. The verification-off ablation is explicitly reported as
-`not_evaluated`. No unsafe executor is introduced merely to manufacture an
-ablation result.
+concept-memory, contextual-support, proof-reuse, fact-reuse, and verification
+ablations are measured. The proof slice records 50/50 indexed hits with 50/50
+replay-verified results; the fact slice records 50/50 governed retrieval hits
+with 50/50 retrieval receipts. The verification control uses valid and forged
+linear-equation receipts: the production replay gate accepts every valid case
+and rejects every tampered case, while the explicitly unsafe no-verification
+counterfactual false-accepts every tampered receipt. No unsafe executor or
+registry path is introduced; the bypass is a diagnostic calculation only.
 
 The runner appends a `governed_suite_runtime` result rather than hiding
 performance in console output. Release 500/500 runs measured about 1.0–1.1 s

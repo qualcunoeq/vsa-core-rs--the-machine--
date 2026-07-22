@@ -9,6 +9,7 @@ use crate::algebra_benchmark::{evaluate as evaluate_algebra, AlgebraCorpus, Alge
 use crate::cognition::ExperimentResult;
 use crate::proposition_benchmark::{evaluate as evaluate_proposition, PropositionMetrics};
 use crate::recurrence_benchmark::{evaluate as evaluate_recurrence, RecurrenceMetrics};
+use crate::reuse_ablation_benchmark::{evaluate as evaluate_reuse, ReuseAblationReport};
 use crate::strategic_route_benchmark::{
     evaluate as evaluate_strategic, StrategicReceiptShadowMetrics, StrategicRouteModeMetrics,
 };
@@ -48,6 +49,7 @@ pub struct GovernedBenchmarkReport {
     pub strategic_cases: usize,
     pub proposition_cases: usize,
     pub recurrence_cases: usize,
+    pub reuse: ReuseAblationReport,
     pub tiers: BTreeMap<String, TierMetrics>,
     pub ablations: Vec<AblationOutcome>,
     pub deterministic: bool,
@@ -171,6 +173,7 @@ pub fn evaluate(
     let algebra_adversarial = evaluate_algebra(&adversarial).groups["total"].clone();
     let proposition = evaluate_proposition(500, seed);
     let recurrence = evaluate_recurrence(500, seed);
+    let reuse = evaluate_reuse(100, seed);
     let strategic = evaluate_strategic(seed, strategic_count);
     let mut tiers = BTreeMap::new();
     tiers.insert(
@@ -237,8 +240,36 @@ pub fn evaluate(
             primary_metric: Some(concept_mode.accuracy - direct_mode.accuracy),
             notes: "concept-guided planning accuracy delta versus direct capability mode".into(),
         },
+        AblationOutcome {
+            name: "proof_reuse".into(),
+            status: "evaluated".into(),
+            safety_preserved: Some(
+                reuse.proof_false_hits == 0 && reuse.proof_replay_verified == reuse.proof_hits,
+            ),
+            primary_metric: Some(
+                (reuse.proof_hits.saturating_sub(reuse.proof_baseline_hits)) as f64
+                    / reuse.cases.max(1) as f64,
+            ),
+            notes: format!(
+                "proof_hits={} baseline_hits={} replay_verified={}",
+                reuse.proof_hits, reuse.proof_baseline_hits, reuse.proof_replay_verified
+            ),
+        },
+        AblationOutcome {
+            name: "fact_reuse".into(),
+            status: "evaluated".into(),
+            safety_preserved: Some(reuse.fact_false_hits == 0),
+            primary_metric: Some(
+                (reuse.fact_hits.saturating_sub(reuse.fact_baseline_hits)) as f64
+                    / reuse.cases.max(1) as f64,
+            ),
+            notes: format!(
+                "fact_hits={} baseline_hits={} retrieval_receipts={}",
+                reuse.fact_hits, reuse.fact_baseline_hits, reuse.fact_retrieval_receipts
+            ),
+        },
     ];
-    for name in ["proof_reuse", "fact_reuse", "verification"] {
+    for name in ["verification"] {
         ablations.push(AblationOutcome {
             name: name.into(),
             status: "not_evaluated".into(),
@@ -253,6 +284,7 @@ pub fn evaluate(
         strategic_cases: strategic_count,
         proposition_cases: proposition.generated_cases,
         recurrence_cases: recurrence.generated_cases,
+        reuse,
         tiers,
         ablations,
         deterministic: true,
@@ -296,6 +328,27 @@ pub fn experiment_results(
             notes: format!("failure_taxonomy={:?}", tier.failure_taxonomy),
         });
     }
+    for ablation in &report.ablations {
+        let evaluated = (ablation.status == "evaluated") as u8 as f64;
+        let safety_preserved = ablation.safety_preserved.unwrap_or(false) as u8 as f64;
+        let mut metrics = BTreeMap::new();
+        metrics.insert("evaluated".into(), evaluated);
+        metrics.insert("safety_preserved".into(), safety_preserved);
+        if let Some(primary_metric) = ablation.primary_metric {
+            metrics.insert("primary_metric".into(), primary_metric);
+        }
+        results.push(ExperimentResult {
+            experiment: format!("governed_ablation_{}", ablation.name),
+            claim: "ablation coverage and safety status are explicit rather than inferred".into(),
+            commit: commit.clone(),
+            seed: report.seed,
+            dataset: Some("unified_governed_suite".into()),
+            baseline: "existing governed controls".into(),
+            metrics: metrics.into_iter().collect(),
+            passed: evaluated == 1.0 && safety_preserved == 1.0,
+            notes: format!("status={}; {}", ablation.status, ablation.notes),
+        });
+    }
     results
 }
 
@@ -315,10 +368,22 @@ mod tests {
         assert!(report
             .ablations
             .iter()
-            .any(|ablation| ablation.name == "proof_reuse" && ablation.status == "not_evaluated"));
+            .any(|ablation| ablation.name == "concept_memory" && ablation.status == "evaluated"));
+        for name in ["concept_memory", "proof_reuse", "fact_reuse"] {
+            assert!(report
+                .ablations
+                .iter()
+                .any(|ablation| ablation.name == name && ablation.status == "evaluated"));
+        }
         assert!(report
             .ablations
             .iter()
-            .any(|ablation| ablation.name == "concept_memory" && ablation.status == "evaluated"));
+            .any(|ablation| ablation.name == "verification" && ablation.status == "not_evaluated"));
+        let results = experiment_results(&report, "test-commit");
+        assert!(results.iter().any(|result| {
+            result.experiment == "governed_ablation_verification"
+                && result.metric("evaluated") == Some(0.0)
+                && !result.passed
+        }));
     }
 }

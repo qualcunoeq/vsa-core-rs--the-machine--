@@ -275,3 +275,9 @@ denials (formalization was 0.950 because one adversarial prompt correctly
 abstained). The large 500-task strategic run retained 1.000 accuracy in all
 four modes; contextual guidance was correct on every context-sensitive task,
 while the global-only ablation was wrong on 332 of them.
+On the current workstation, the release binaries completed the 500-task
+strategic run in below the shell timer's 0.01s resolution (about 2.6MB peak
+RSS) and the 560-case algebra run in 4.45s (about 5.9MB peak RSS). The
+adversarial algebra tier intentionally reports zero execution/replay attempts;
+its exact-solution accuracy remains 1.000 because safe abstention is scored as
+the correct outcome.

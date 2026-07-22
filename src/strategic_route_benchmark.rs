@@ -688,4 +688,56 @@ mod tests {
             .unwrap()
             .contains("planning_accuracy"));
     }
+
+    #[test]
+    fn mixed_contextual_support_does_not_inherit_global_precedent() {
+        let registry = registry();
+        let concepts = concept_index();
+        let strategies = strategy_index(&registry, &concepts);
+        let fresh = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["direct_expression_evaluation".into()],
+        };
+        let context = CapabilityChainStrategicRouteContext {
+            domain: "calculus".into(),
+            contract_signature: "expression->exact_value".into(),
+            policy_class: "strict-replay".into(),
+            current_epoch: 100,
+            recent_window: 5,
+        };
+
+        let contextual = strategies.compare_with_fresh_plan_in_context(
+            &[CapabilityIoType::Expression],
+            CapabilityIoType::ExactValue,
+            Some(&fresh),
+            &context,
+            &registry,
+        );
+        let stored = contextual
+            .candidates
+            .iter()
+            .find(|candidate| candidate.candidate_id == STRATEGY_ID)
+            .expect("stored strategy candidate");
+        assert_eq!(stored.global_supporting_instances, 500);
+        assert_eq!(stored.contextual_supporting_instances, Some(1));
+        assert_eq!(stored.supporting_instances, 1);
+        assert_eq!(
+            contextual.diagnose_exploration(2).decision,
+            CapabilityChainStrategicRouteDecision::ExploreFresh(FRESH_ID.into())
+        );
+
+        let global_only = strategies.compare_with_fresh_plan(
+            &[CapabilityIoType::Expression],
+            CapabilityIoType::ExactValue,
+            Some(&fresh),
+            &registry,
+        );
+        assert_eq!(
+            global_only.diagnose_exploration(2).decision,
+            CapabilityChainStrategicRouteDecision::Ambiguous(vec![
+                FRESH_ID.into(),
+                STRATEGY_ID.into(),
+            ])
+        );
+    }
 }

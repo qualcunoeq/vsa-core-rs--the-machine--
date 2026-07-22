@@ -177,6 +177,11 @@ The report also includes a contextual-support ablation: the same frontier is
 evaluated with matching contextual evidence and with global support only. On
 the medium seed, contextual guidance is correct on all 198 context-sensitive
 tasks, while global-only support produces wrong decisions on a nonzero subset.
+The benchmark suite also has an explicit mixed-evidence regression: a stored
+strategy with 500 global successes but only one matching recent contextual
+success yields `ExploreFresh` at a support threshold of two; the global-only
+comparison remains `Ambiguous` rather than silently treating global volume as
+local precedent.
 
 The formalization baseline now emits the same dominant-failure taxonomy in its
 report. Run it against a versioned corpus with:

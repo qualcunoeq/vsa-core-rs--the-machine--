@@ -977,9 +977,17 @@ mod tests {
             .iter()
             .find(|candidate| candidate.candidate_id == STRATEGY_ID)
             .expect("stored strategy candidate");
+        let fresh_candidate = contextual
+            .candidates
+            .iter()
+            .find(|candidate| candidate.candidate_id == FRESH_ID)
+            .expect("fresh route candidate");
         assert_eq!(stored.global_supporting_instances, 500);
         assert_eq!(stored.contextual_supporting_instances, Some(1));
         assert_eq!(stored.supporting_instances, 1);
+        assert_eq!(stored.plan.steps.len(), 2);
+        assert_eq!(fresh_candidate.plan.steps.len(), 1);
+        assert!(fresh_candidate.cost < stored.cost);
         assert_eq!(
             contextual.diagnose_exploration(2).decision,
             CapabilityChainStrategicRouteDecision::ExploreFresh(FRESH_ID.into())

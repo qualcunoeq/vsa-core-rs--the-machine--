@@ -254,7 +254,7 @@ Current anchors:
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `654cfe2`):
+Current evidence (commit `98c0c11`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task
@@ -269,6 +269,9 @@ Current evidence (commit `654cfe2`):
 - Resource stress: a five-stage, 4-way fixture (20 concepts, 1,024 routes)
   retained deterministic nested frontier subsets at budgets 1/16/64/256/1024;
   the release probe completed in about 0.04s at roughly 4MB RSS.
+- Mixed contextual evidence: global support 500 versus contextual support 1,
+  with a cheaper fresh route, correctly diagnoses `ExploreFresh`; global-only
+  support remains `Ambiguous`.
 
 Known limits:
 

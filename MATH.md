@@ -753,7 +753,7 @@ depended entirely on hand-coded keyword tables (`ACTIONS`, `RESOURCES`, `ERROR_C
 architecture contributed nothing to this capability with trigram encoding.
 
 **v3.2 Resolution (structural SVO centroids).** With the fix applied (see `src/diagnostic.rs`):
-- `absorb_diagnosis` stores structural SVO centroids: $\text{encode_svo}(action\_abstract, accesses, resource\_abstract)$
+- `absorb_diagnosis` stores structural SVO centroids: `encode_svo(action_abstract, accesses, resource_abstract)`
 - `query_diagnostic_category` queries using structural SVO and disambiguates by concept centroid labels
 - State triples are stored even when action keywords are missing
 
@@ -767,9 +767,9 @@ architecture contributed nothing to this capability with trigram encoding.
 
 | Text | Training | Expected | Shared SVO | Result | Confidence |
 |------|----------|----------|-----------|--------|-----------|
-| "KMS keyserver unreachable: timeout" | "Connection refused" | `connection_refused` | $\text{encode\_svo}(process, accesses, network\_service)$ | **CORRECT** | 1.0000 |
-| "disk quota exceeded" | "storage volume full" | `disk_full` | $\text{encode\_svo}(storage, has\_state, capacity\_exhausted)$ | **CORRECT** | 0.7519 |
-| "certificate key expired" | "authentication token invalid" | `credential_invalid` | $\text{encode\_svo}(credential, has\_state, credential\_invalid)$ | **CORRECT** | 0.7540 |
+| "KMS keyserver unreachable: timeout" | "Connection refused" | `connection_refused` | `encode_svo(process, accesses, network_service)` | **CORRECT** | 1.0000 |
+| "disk quota exceeded" | "storage volume full" | `disk_full` | `encode_svo(storage, has_state, capacity_exhausted)` | **CORRECT** | 0.7519 |
+| "certificate key expired" | "authentication token invalid" | `credential_invalid` | `encode_svo(credential, has_state, credential_invalid)` | **CORRECT** | 0.7540 |
 
 **Comparison: v3.1 (trigram) vs v3.2 (structural SVO):**
 
@@ -2518,18 +2518,18 @@ A chess position is encoded as a bundled hypervector representing piece position
 
 $$H(f) = \text{bundle}\left(\{E(p_i) : p_i \in \mathcal{P}(f)\} \cup \{E_{mat}, E_{phase}, E_{stm}, E_{castle}\}\right)$$
 
-where $E(p_i) = \text{trigram}(c_i \text{\_} \text{square}(r_i, f_i))$ and each auxiliary term is a trigram-encoded label (e.g., `"mat_+2"`, `"phase_middlegame"`).
+where $E(p_i) = \text{trigram}(c_i \_ \text{square}(r_i, f_i))$ and each auxiliary term is a trigram-encoded label (e.g., `"mat_+2"`, `"phase_middlegame"`).
 
 **Definition C.2 (Tracked SVO Decomposition).** Position vectors are factored into five perceptual tracks, each bundling related SVO triples:
 
 $$H(f) = \text{bundle}(T_1, T_2, T_3, T_4, T_5)$$
 
 where:
-- $T_1$ = material track: $\{\text{encode\_svo(piece, "has", square)}\}$
-- $T_2$ = tactics track: $\{\text{encode\_svo(square, "attacks", square')}\}$
-- $T_3$ = king safety track: $\{\text{encode\_svo(king, "exposed", file)}\}$
-- $T_4$ = activity track: $\{\text{encode\_svo(piece, "controls", square)}\}$
-- $T_5$ = structure track: $\{\text{encode\_svo(pawn, "doubled", file)}\}$
+- $T_1$ = material track: $\{\mathtt{encode\_svo(piece, "has", square)}\}$
+- $T_2$ = tactics track: $\{\mathtt{encode\_svo(square, "attacks", square')}\}$
+- $T_3$ = king safety track: $\{\mathtt{encode\_svo(king, "exposed", file)}\}$
+- $T_4$ = activity track: $\{\mathtt{encode\_svo(piece, "controls", square)}\}$
+- $T_5$ = structure track: $\{\mathtt{encode\_svo(pawn, "doubled", file)}\}$
 
 Each SVO triple is bound as $\rho_{13}(S) \oplus \rho_{26}(V) \oplus \rho_{39}(O)$ (same resonator encoding as the QA engine). This decomposition prevents drowning: a minority feature (e.g., king safety) in a dense bundle is not suppressed by majority features (e.g., material).
 
@@ -2583,7 +2583,7 @@ $$\varepsilon_i(Q) = 1 - \delta(R_i \oplus Q, A_i)$$
 Rule $i$ matches if $\varepsilon_i(Q) \geq \tau_{chain} = 0.75$.
 
 **Definition C.8 (Backward Chain).** For goal $G$, the planner finds a sequence $\{A_1, \ldots, A_m\}$ such that:
-1. $A_m$ is an action rule ($\text{is\_action} = \text{true}$)
+1. $A_m$ is an action rule ($\mathtt{is\_action} = \mathtt{true}$)
 2. For each $i$, $\varepsilon_i(G_i) \geq \tau_{chain}$ where $G_1 = G$ and $G_{i+1} = A_i$
 3. Depth $m \leq 5$ (hard cap prevents infinite loops)
 
@@ -2625,10 +2625,10 @@ This produces outcome-stratified abstract concepts: group 0 contains the worst p
    - $\frac{w_{ab}}{s_{ab}} \geq \tau_{conf} = 0.60$ (positive) or $\leq 0.40$ (negative)
 
 Valid transitions are stored as causal rules of the form:
-$$(\text{l2c}\_a, \text{leads\_to}, \text{l2c}\_b) \rightarrow (\text{chess\_position}, \text{correlated\_with}, (\text{positive}|\text{negative})\_\text{outcome})$$
+$$(\mathtt{l2c}\_a, \mathtt{leads\_to}, \mathtt{l2c}\_b) \rightarrow (\mathtt{chess\_position}, \mathtt{correlated\_with}, (\mathtt{positive}|\mathtt{negative})\_\mathtt{outcome})$$
 
 with bridge rules connecting to the planning goal:
-$$(\text{chess\_position}, \text{correlated\_with}, \text{positive\_outcome}) \rightarrow (\text{white}, \text{has}, \text{advantage})$$
+$$(\mathtt{chess\_position}, \mathtt{correlated\_with}, \mathtt{positive\_outcome}) \rightarrow (\mathtt{white}, \mathtt{has}, \mathtt{advantage})$$
 
 ### C.6 Plan-Move Coupling (Action Selection)
 
@@ -2663,9 +2663,9 @@ The opponent strength follows a smooth hybrid-to-Stockfish progression.
 **Definition C.15 (Hybrid Opponent).** At each move, the opponent plays Stockfish d1 with probability $p$ and a random legal move with probability $1-p$:
 
 $$
-\text{opponent}(f) = \begin{cases}
-\text{stockfish\_d1}(f) & \text{with prob } p \\
-\text{random\_legal}(f) & \text{with prob } 1-p
+\mathtt{opponent}(f) = \begin{cases}
+\mathtt{stockfish\_d1}(f) & \text{with prob } p \\
+\mathtt{random\_legal}(f) & \text{with prob } 1-p
 \end{cases}
 $$
 
@@ -2693,7 +2693,7 @@ $$
 
 $$
 N_{min} = \begin{cases}
-2 & \text{games\_per\_level} \leq 100 \\
+2 & \mathtt{games\_per\_level} \leq 100 \\
 5 & \text{otherwise}
 \end{cases}
 $$
@@ -2726,11 +2726,11 @@ $$
 
 Store as causal rule if $s_b \geq 5$ and $|w_b - 0.50| \geq 0.10$:
 
-$$(\text{stockfish\_d1}, \text{responds\_with}, \text{behavior}(b)) \rightarrow (\text{opponent\_response}, \text{correlates\_with}, (w_b > 0.5 ? \text{positive} : \text{negative})\_\text{outcome})$$
+$$(\mathtt{stockfish\_d1}, \mathtt{responds\_with}, \mathtt{behavior}(b)) \rightarrow (\mathtt{opponent\_response}, \mathtt{correlates\_with}, (w_b > 0.5 ? \mathtt{positive} : \mathtt{negative})\_\mathtt{outcome})$$
 
 Bridge rule connects to planning:
 
-$$(\text{opponent\_response}, \text{correlates\_with}, \text{positive\_outcome}) \rightarrow (\text{white}, \text{has}, \text{advantage})$$
+$$(\mathtt{opponent\_response}, \mathtt{correlates\_with}, \mathtt{positive\_outcome}) \rightarrow (\mathtt{white}, \mathtt{has}, \mathtt{advantage})$$
 
 ### C.9 Empirical Convergence Results
 
@@ -2798,7 +2798,7 @@ must be understood as claims about this codebook, not about the full hypervector
 Let $\{R_1, \ldots, R_n\}$ be causal rules with bridge similarity $\sigma_i$ between
 successive rules.  Without cleanup between hops, the chain output after $n$ hops is:
 
-$$\varepsilon(n) = \delta(\text{output}, \text{ground\_truth}) \approx \frac{1}{2}\left(1 - \prod_{i=1}^{n-1} \sigma_i\right)$$
+$$\varepsilon(n) = \delta(\mathtt{output}, \mathtt{ground\_truth}) \approx \frac{1}{2}\left(1 - \prod_{i=1}^{n-1} \sigma_i\right)$$
 
 For random bridges ($\sigma_i \approx 0.50$), $\varepsilon(n) \to 0.50$ exponentially
 in $n$, reaching the noise floor at $n \approx 3$.
@@ -3163,7 +3163,7 @@ insufficient.
 texts classified without tables.  The tables are the ONLY bridge, not a backup.
 
 **Recovery.** Learn abstraction from data.  Build structural SVO centroids:
-$\text{encode\_svo}(process, accesses, network\_service)$ as a hypervector centroid
+`encode_svo(process, accesses, network_service)` as a hypervector centroid
 that ALL network-access errors reinforce, regardless of surface form.
 
 ### XXXI.7 Self-Confirming Memory Loops

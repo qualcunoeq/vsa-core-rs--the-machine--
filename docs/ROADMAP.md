@@ -254,10 +254,13 @@ Current anchors:
 - `src/recurrence_benchmark.rs`: deterministic bounded first-order affine
   recurrence vertical slice with development/holdout execution and replay,
   adversarial refusal cases, and stable failure taxonomy.
+- `src/proposition_benchmark.rs`: deterministic trusted proposition-kernel
+  vertical with theorem instantiation, premise certificates, replay, and
+  malformed-proof refusal taxonomy.
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `f311a23`):
+Current evidence (commit `00508f1`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task
@@ -279,6 +282,10 @@ Current evidence (commit `f311a23`):
   expected-positive cases, rejects all 249 expected abstentions, and reports
   zero false authorizations and zero false denials. The 100-case holdout has
   50/50 positive execution/replay and represents all six refusal classes.
+- Proposition-kernel vertical: the 500-case seed-42 run accepts and replays
+  324/324 valid proof objects, rejects all 176 malformed proofs, and reports
+  zero false acceptances and zero false rejections. The 100-case holdout has
+  65/65 valid accept/replay results and covers all five refusal classes.
 - Formalization audit: complete fact provenance now gates typed direct
   instantiation; the constrained prose grammar now covers bounded equations,
   rates, inequalities, systems, quantifiers, units, and entity relations. The
@@ -300,12 +307,16 @@ Known limits:
 - The recurrence vertical is intentionally narrow: it evaluates supplied
   first-order explicit-affine definitions and does not infer closed forms,
   nonlinear dynamics, or missing methods.
+- The proposition vertical benchmarks the trusted 12-schema environment and
+  kernel checking; it does not claim automated theorem discovery or broad
+  discrete-mathematics coverage. Verification-off ablations remain excluded by
+  design because they would test an unsafe execution mode.
 
 Next evaluation gate:
 
-1. Treat the five-stage, 4-way concept sweep and the 500-case recurrence run as
-   current resource and execution baselines; pursue larger tests only when a
-   concrete evaluation question requires them.
+1. Treat the five-stage, 4-way concept sweep, 500-case recurrence run, and
+   500-case proposition-kernel run as current resource and execution baselines;
+   pursue larger tests only when a concrete evaluation question requires them.
 2. Consider governed method acquisition only after a benchmark records a
    demonstrated `method_not_found` capability gap. The current algebra,
    formalization, strategic, and recurrence slices provide no such evidence;

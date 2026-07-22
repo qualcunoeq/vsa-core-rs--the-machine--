@@ -303,6 +303,27 @@ abstentions were rejected, and the holdout slice retained 50/50 positive
 execution/replay with all six refusal classes represented. There were zero
 false authorizations and zero false denials.
 
+The elementary discrete/proof vertical uses the trusted proposition kernel
+directly:
+
+```bash
+cargo run --release --bin proposition_bench -- \
+  500 42 results/proposition_bench/large.jsonl HEAD
+```
+
+It generates theorem instantiations, premise-bearing symmetry/transitivity,
+universal introduction, and certified arithmetic proofs, then adds malformed
+proof objects for missing binders, invalid certificates, missing premises,
+unknown theorem IDs, and wrong conclusions. Every accepted proof is checked a
+second time for replay. On the 500-case seed-42 run, 324/324 expected-valid
+proofs were accepted and replayed; all 176 expected-invalid proofs were
+rejected, with zero false acceptances or false rejections. The 100-case holdout
+retained 65/65 valid accept/replay results and represented all five refusal
+classes. This is a proof-kernel baseline, not theorem discovery: the trusted
+environment remains the 12 curated initial schemas, and a verification-off
+execution ablation is intentionally not run because it would violate the
+authorization invariant.
+
 The concept-composition resource probe measures bounded DFS growth without
 executing or registering any composed route:
 

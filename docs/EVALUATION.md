@@ -324,6 +324,31 @@ environment remains the 12 curated initial schemas, and a verification-off
 execution ablation is intentionally not run because it would violate the
 authorization invariant.
 
+The unified governed suite aggregates these verticals into explicit evaluation
+tiers and records which ablations are actually implemented:
+
+```bash
+cargo run --release --bin governed_bench -- \
+  500 500 42 results/governed_bench/large.jsonl 677d5a4
+```
+
+The seed-42 run reports seven tiers. Tier 0 direct algebra execution is 27/27
+accepted and replayed; tier 1 prose formalization is 0.500 accepted over its
+20-case corpus with replay rate 1.000; tier 2 proposition proofs are 324/500
+accepted and 1.000 replayed; tier 3 strategic method selection is 500/500
+correct with receipt-shadow replay rate 1.000; and the 21-case adversarial
+algebra tier has zero false authorizations and denials. The recurrence total is
+251/500 authorized and replayed, with the 100-case holdout at 0.500 acceptance
+and 1.000 replay. Rates are reported over each tier's full case count;
+`expected_positive` remains explicit so abstention-heavy tiers are not
+mistaken for positive-case accuracy.
+
+The suite evaluates only concrete controls: strategy-memory and
+contextual-support ablations are measured, while concept-memory, proof-reuse,
+fact-reuse, and verification-off ablations are explicitly reported as
+`not_evaluated`. No unsafe executor is introduced merely to manufacture an
+ablation result.
+
 The concept-composition resource probe measures bounded DFS growth without
 executing or registering any composed route:
 

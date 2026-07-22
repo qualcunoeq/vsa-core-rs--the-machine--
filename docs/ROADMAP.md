@@ -257,10 +257,14 @@ Current anchors:
 - `src/proposition_benchmark.rs`: deterministic trusted proposition-kernel
   vertical with theorem instantiation, premise certificates, replay, and
   malformed-proof refusal taxonomy.
+- `src/governed_benchmark.rs` and `src/bin/governed_bench.rs`: unified
+  seven-tier report over direct execution, light formalization, proposition
+  proofs, strategic selection, adversarial refusal, and recurrence slices;
+  emits explicit evaluated versus unevaluated ablation status.
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `00508f1`):
+Current evidence (commit `677d5a4`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task
@@ -286,6 +290,15 @@ Current evidence (commit `00508f1`):
   324/324 valid proof objects, rejects all 176 malformed proofs, and reports
   zero false acceptances and zero false rejections. The 100-case holdout has
   65/65 valid accept/replay results and covers all five refusal classes.
+- Unified governed suite: the seed-42, 500/500 run reports seven explicit
+  tiers. Direct algebra is 27/27 accepted/replayed; proposition proofs are
+  324/500 accepted with replay rate 1.000; strategic method selection is
+  500/500 correct with receipt-shadow replay rate 1.000; recurrence is
+  251/500 authorized/replayed with 50/100 positive holdout execution/replay;
+  and the 21-case adversarial tier has zero false authorizations or denials.
+  Strategy-memory and contextual-support ablations are evaluated; concept,
+  proof, fact, and verification-off ablations remain explicitly
+  `not_evaluated` because no isolated end-to-end controls exist.
 - Formalization audit: complete fact provenance now gates typed direct
   instantiation; the constrained prose grammar now covers bounded equations,
   rates, inequalities, systems, quantifiers, units, and entity relations. The
@@ -314,9 +327,10 @@ Known limits:
 
 Next evaluation gate:
 
-1. Treat the five-stage, 4-way concept sweep, 500-case recurrence run, and
-   500-case proposition-kernel run as current resource and execution baselines;
-   pursue larger tests only when a concrete evaluation question requires them.
+1. Treat the unified seven-tier suite, including the five-stage concept sweep,
+   500-case recurrence run, and 500-case proposition-kernel run, as the current
+   resource and execution baseline; pursue larger tests only when a concrete
+   evaluation question requires them.
 2. Consider governed method acquisition only after a benchmark records a
    demonstrated `method_not_found` capability gap. The current algebra,
    formalization, strategic, and recurrence slices provide no such evidence;

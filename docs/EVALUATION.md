@@ -205,10 +205,13 @@ provenance when deciding readiness. Explicit equation solves, arithmetic
 expression requests, and supported function applications are admitted only
 when their typed subject and bindings are complete; derived-property requests,
 unmodeled domain restrictions, and model-dependent applications remain denied.
-On `data/formalization_seed_v1.json` (60 cases), the audit now reports
+The constrained prose grammar additionally recognizes a bounded set of
+equations, rates, inequalities, systems, quantifiers, units, and entity
+relations. On `data/formalization_seed_v1.json` (60 cases), the audit reports
 `authorization_correct=60`, `false_authorizations=0`, `false_denials=0`, and
-full failure-taxonomy coverage. This is a safety-gated audit result, not a
-claim that every target is structurally complete (`target_complete=37/60`).
+full failure-taxonomy coverage; typed target completeness improved from 37/60
+to 45/60 (prose tier 1/20 to 9/20). This is a safety-gated audit result, not
+a claim that every target is executable.
 
 For machine-readable tier/holdout metrics, use the standard JSONL runner:
 

@@ -411,7 +411,7 @@ mod tests {
         let corpus = corpus();
         assert!(corpus.validation_errors().is_empty());
         let report = evaluate(&corpus);
-        assert_eq!(report.corpus_cases, 30);
+        assert_eq!(report.corpus_cases, 60);
         assert!(report.deterministic);
         assert_eq!(report.groups["total"].false_authorizations, 0);
         assert_eq!(report.groups["total"].solution_accuracy, 1.0);

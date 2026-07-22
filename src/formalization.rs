@@ -1738,7 +1738,7 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
         return None;
     }
     let relation = Regex::new(
-        r"(?i)([A-Za-z0-9_(][A-Za-z0-9_()^*/+\-. ]*?)\s*(<=|>=|=|<|>)\s*([A-Za-z0-9_()^*/+\-. ]+)",
+        r"(?i)([-A-Za-z0-9_(][A-Za-z0-9_()^*/+\-. ]*?)\s*(<=|>=|=|<|>)\s*([A-Za-z0-9_()^*/+\-. ]+)",
     )
     .expect("static relation regex");
     // In anchored requests such as `Solve for x: 3*x+2=11`, the colon

@@ -350,7 +350,7 @@ fact-reuse, and verification-off ablations are explicitly reported as
 ablation result.
 
 The runner appends a `governed_suite_runtime` result rather than hiding
-performance in console output. The release 500/500 run measured about 1,038 ms
+performance in console output. The release 500/500 run measured about 1,033 ms
 on the development host (seed 42, seven tiers); this is a recorded baseline,
 not an asserted universal SLO.
 

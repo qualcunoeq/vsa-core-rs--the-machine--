@@ -209,9 +209,11 @@ The constrained prose grammar additionally recognizes a bounded set of
 equations, rates, inequalities, systems, quantifiers, units, and entity
 relations. On `data/formalization_seed_v1.json` (60 cases), the audit reports
 `authorization_correct=60`, `false_authorizations=0`, `false_denials=0`, and
-full failure-taxonomy coverage; typed target completeness improved from 37/60
-to 46/60 (prose tier 1/20 to 10/20). This is a safety-gated audit result, not
-a claim that every target is executable.
+full failure-taxonomy coverage; executable target completeness improved from
+37/60 to 46/60 (prose tier 1/20 to 10/20), while structural target
+completeness is 56/60. Structural completeness is reported separately from
+executor/verifier availability, so a fully typed unsupported operation does
+not become an authorization.
 
 For machine-readable tier/holdout metrics, use the standard JSONL runner:
 

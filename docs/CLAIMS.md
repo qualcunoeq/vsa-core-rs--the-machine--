@@ -420,6 +420,8 @@ evidence case (500 global successes versus one matching recent success), which
 produces `ExploreFresh` at a support threshold of two.  The same boundary is
 now exercised by expression-evaluation and substitution receipt tests; both
 must pass their existing replay verifiers.
+A separate `controls` fixture exercises the 2×2 system receipt and replay path
+under the same route/revalidation contract.
 
 Baseline: a stored strategy could be treated as an executable route, or global
 support could be mistaken for local precedent.
@@ -428,9 +430,8 @@ Failure condition: a stale or drifted strategy bypasses independent
 revalidation, changes positive execution/replay results, or produces a false
 authorization/denial; contextual support inherits mismatched evidence.
 
-Next check: add a second-domain strategy fixture so the result is not confined
-to the algebra executor family, then promote the receipt shadow from focused
-tests into a versioned benchmark report.
+Next check: promote the receipt shadow from focused tests into a versioned
+benchmark report, then add a resource-bounded concept-composition benchmark.
 
 ## Retired Or Negative Claims
 

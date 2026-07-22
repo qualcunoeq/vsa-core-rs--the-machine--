@@ -273,12 +273,11 @@ Known limits:
 
 Next vertical slice:
 
-1. Add a second-domain fixture with the same route/provenance contract.
-2. Promote the expression-evaluation/substitution receipt shadow from focused
-   tests into a versioned benchmark report.
-3. Add a resource-bounded benchmark for concept-route composition and record
+1. Promote the expression-evaluation/substitution and `controls` receipt
+   shadows from focused tests into a versioned benchmark report.
+2. Add a resource-bounded benchmark for concept-route composition and record
    depth, candidate count, and pruning behavior.
-4. Only then consider governed method acquisition for a demonstrated missing
+3. Only then consider governed method acquisition for a demonstrated missing
    capability; absence of `method_not_found` evidence is not authorization to
    add one.
 

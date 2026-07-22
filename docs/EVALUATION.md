@@ -264,3 +264,14 @@ ordinary algebra baseline: both modes must retain identical positive execution
 and replay rates. Any claimed benefit is therefore confined to counterfactual
 route cost, preventing a strategy from claiming an accuracy gain when it only
 repackages the same governed executor.
+
+Latest larger-tier smoke runs (commit `654cfe2`) used 500 generated cases in
+addition to the 60-case seed (560 total) and the 20-case prose slice. The
+generated run retained 1.000 solution, execution, and replay rates with zero
+false authorizations/denials; its shadow revalidated 553/553 recommendations,
+saved 742 counterfactual steps, and kept positive execution/replay at 1.000.
+The prose run retained 1.000 execution/replay and zero false authorizations or
+denials (formalization was 0.950 because one adversarial prompt correctly
+abstained). The large 500-task strategic run retained 1.000 accuracy in all
+four modes; contextual guidance was correct on every context-sensitive task,
+while the global-only ablation was wrong on 332 of them.

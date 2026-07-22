@@ -417,7 +417,9 @@ kept positive execution/replay at 1.000 with zero false authorizations or
 denials.  The route-drift regression rejects a mutated stored route before
 execution.  Contextual and global-only comparisons include an explicit mixed
 evidence case (500 global successes versus one matching recent success), which
-produces `ExploreFresh` at a support threshold of two.
+produces `ExploreFresh` at a support threshold of two.  The same boundary is
+now exercised by expression-evaluation and substitution receipt tests; both
+must pass their existing replay verifiers.
 
 Baseline: a stored strategy could be treated as an executable route, or global
 support could be mistaken for local precedent.
@@ -426,9 +428,9 @@ Failure condition: a stale or drifted strategy bypasses independent
 revalidation, changes positive execution/replay results, or produces a false
 authorization/denial; contextual support inherits mismatched evidence.
 
-Next check: repeat the shadow boundary for expression-evaluation and
-substitution routes, then add a second-domain strategy fixture so the result is
-not confined to the algebra executor family.
+Next check: add a second-domain strategy fixture so the result is not confined
+to the algebra executor family, then promote the receipt shadow from focused
+tests into a versioned benchmark report.
 
 ## Retired Or Negative Claims
 

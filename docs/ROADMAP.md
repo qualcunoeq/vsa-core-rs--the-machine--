@@ -273,9 +273,9 @@ Known limits:
 
 Next vertical slice:
 
-1. Repeat the strategy-shadow boundary for expression-evaluation and
-   substitution receipts.
-2. Add a second-domain fixture with the same route/provenance contract.
+1. Add a second-domain fixture with the same route/provenance contract.
+2. Promote the expression-evaluation/substitution receipt shadow from focused
+   tests into a versioned benchmark report.
 3. Add a resource-bounded benchmark for concept-route composition and record
    depth, candidate count, and pruning behavior.
 4. Only then consider governed method acquisition for a demonstrated missing

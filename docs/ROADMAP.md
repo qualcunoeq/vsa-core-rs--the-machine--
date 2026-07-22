@@ -266,6 +266,9 @@ Current evidence (commit `654cfe2`):
 - Concept composition: a six-concept branching fixture produces eight valid
   three-fragment routes at depth three; deeper bounds do not add routes, and
   all measurements are deterministic with zero planning rejections.
+- Resource stress: a five-stage, 4-way fixture (20 concepts, 1,024 routes)
+  retained deterministic nested frontier subsets at budgets 1/16/64/256/1024;
+  the release probe completed in about 0.04s at roughly 4MB RSS.
 
 Known limits:
 
@@ -278,9 +281,8 @@ Known limits:
 
 Next vertical slice:
 
-1. Extend the larger-branching budget sweep beyond the current 3×3×3 fixture
-   and measure pruning cost as route depth grows, while retaining deterministic
-   frontier-subset and nested-budget checks.
+1. Treat the five-stage, 4-way sweep as the current resource baseline; only
+   pursue still larger graphs if a concrete evaluation question requires them.
 2. Only then consider governed method acquisition for a demonstrated missing
    capability; absence of `method_not_found` evidence is not authorization to
    add one.

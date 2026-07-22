@@ -1,7 +1,9 @@
 //! Run the bounded validated-concept composition benchmark.
 
 use std::io::Write;
-use the_machine::concept_composition_benchmark::{evaluate, evaluate_budget_sweep};
+use the_machine::concept_composition_benchmark::{
+    evaluate, evaluate_budget_sweep_with_stages,
+};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = std::env::args().skip(1).collect::<Vec<_>>();
@@ -44,7 +46,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         report.diagnostic_only,
         output
     );
-    let budget_report = evaluate_budget_sweep(3, 3, &[1, 4, 16, 27]);
+    let budget_report = evaluate_budget_sweep_with_stages(4, 5, 5, &[1, 16, 64, 256, 1024]);
     let mut budget_file = std::fs::File::create(&budget_output)?;
     writeln!(
         budget_file,
@@ -53,8 +55,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     )?;
     for budget in &budget_report.budgets {
         eprintln!(
-            "larger branches={}: budget={} proposals={}/{} nodes={} pruned={} subset={} nested={}",
+            "larger branches={} stages={}: budget={} proposals={}/{} nodes={} pruned={} subset={} nested={}",
             budget_report.branches_per_stage,
+            budget_report.stage_count,
             budget.budget,
             budget.budgeted_proposals,
             budget.full_proposals,
@@ -65,8 +68,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
     }
     eprintln!(
-        "larger concepts={} max_concepts={} full_proposals={} deterministic={} diagnostic_only={} output={}",
+        "larger concepts={} stages={} max_concepts={} full_proposals={} deterministic={} diagnostic_only={} output={}",
         budget_report.graph_concepts,
+        budget_report.stage_count,
         budget_report.max_concepts,
         budget_report.full_proposals,
         budget_report.deterministic,

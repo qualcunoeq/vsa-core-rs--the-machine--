@@ -279,10 +279,11 @@ cargo run --release --bin concept_composition_bench -- \
 
 The command also writes a larger branching budget sweep beside the requested
 report (by default, `results/concept_composition.json.budget.json`). The
-3×3×3 fixture contains nine validated concepts and 27 full routes; budgets
-1, 4, 16, and 27 retained 1, 4, 16, and 27 proposals respectively. Every
-partial result was a deterministic subset of the full frontier, nested as the
-budget increased, and remained diagnostic-only.
+default sweep uses five typed stages with four alternatives per stage: 20
+validated concepts and 1,024 full routes. Budgets 1, 16, 64, 256, and 1,024
+retained exactly that many proposals; every partial result was a deterministic
+subset of the full frontier, nested as the budget increased, and remained
+diagnostic-only. A smaller 3×3×3 sweep remains covered by the library tests.
 
 The six-concept branching fixture produced 0 candidates at depth 2 and 8
 three-fragment candidates at depth 3; depths 4 and 5 remained at 8 because no

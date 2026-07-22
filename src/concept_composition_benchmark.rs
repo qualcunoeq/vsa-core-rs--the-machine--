@@ -48,6 +48,7 @@ pub struct ConceptCompositionBudgetMetrics {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct ConceptCompositionBudgetSweepReport {
     pub branches_per_stage: usize,
+    pub stage_count: usize,
     pub graph_concepts: usize,
     pub max_concepts: usize,
     pub full_proposals: usize,
@@ -68,39 +69,35 @@ fn alternate_spec(
     spec
 }
 
-fn branching_fixture(
+fn layered_fixture(
     branches_per_stage: usize,
+    stage_count: usize,
 ) -> (CapabilityRegistry, CapabilityChainProofConceptIndex) {
     let branches_per_stage = branches_per_stage.max(1);
+    let stage_count = stage_count.clamp(1, 5);
     let mut registry = CapabilityRegistry::production();
     let mut index = CapabilityChainProofConceptIndex::default();
-    let stages = [
-        (
-            "normalize",
-            "equation_normalization",
-            CapabilityIoType::Equation,
-            CapabilityIoType::NormalizedEquation,
-            CapabilitySpec::equation_normalization_v1(),
-        ),
-        (
-            "classify",
-            "equation_classification",
-            CapabilityIoType::NormalizedEquation,
-            CapabilityIoType::EquationClassification,
-            CapabilitySpec::equation_classification_v1(),
-        ),
-        (
-            "value",
-            "classification_to_value",
-            CapabilityIoType::EquationClassification,
-            CapabilityIoType::ExactValue,
-            CapabilitySpec::equation_classification_v1(),
-        ),
+    let artifacts = [
+        CapabilityIoType::Equation,
+        CapabilityIoType::NormalizedEquation,
+        CapabilityIoType::EquationClassification,
+        CapabilityIoType::ExactValue,
+        CapabilityIoType::DerivedFact,
+        CapabilityIoType::VerifiedArtifact,
     ];
-    for (stage, (stage_name, capability_base, input, output, spec)) in stages.iter().enumerate() {
+    let stage_names = ["normalize", "classify", "evaluate", "derive", "verify"];
+    for stage in 0..stage_count {
+        let stage_name = stage_names[stage];
+        let input = artifacts[stage];
+        let output = artifacts[stage + 1];
+        let spec = if stage == 0 {
+            CapabilitySpec::equation_normalization_v1()
+        } else {
+            CapabilitySpec::equation_classification_v1()
+        };
         for branch in 0..branches_per_stage {
-            let capability_id = format!("{capability_base}_{stage}_{branch}");
-            let capability = alternate_spec(spec.clone(), &capability_id, *input, *output);
+            let capability_id = format!("{stage_name}_capability_{branch}");
+            let capability = alternate_spec(spec.clone(), &capability_id, input, output);
             let mut capability = capability;
             capability.input_requirements.clear();
             registry.register(capability);
@@ -108,8 +105,8 @@ fn branching_fixture(
             let concept = CapabilityChainProofConceptContract {
                 concept_id: concept_id.clone(),
                 capabilities: vec![capability_id],
-                input_artifacts: vec![*input],
-                output_artifacts: vec![*output],
+                input_artifacts: vec![input],
+                output_artifacts: vec![output],
                 source_pattern_ids: vec![
                     format!("{concept_id}-pattern-a"),
                     format!("{concept_id}-pattern-b"),
@@ -124,6 +121,12 @@ fn branching_fixture(
         }
     }
     (registry, index)
+}
+
+fn branching_fixture(
+    branches_per_stage: usize,
+) -> (CapabilityRegistry, CapabilityChainProofConceptIndex) {
+    layered_fixture(branches_per_stage, 3)
 }
 
 fn fixture() -> (CapabilityRegistry, CapabilityChainProofConceptIndex) {
@@ -212,13 +215,23 @@ fn proposal_ids(
 
 fn evaluate_budget_sweep_once(
     branches_per_stage: usize,
+    stage_count: usize,
     max_concepts: usize,
     budgets: &[usize],
 ) -> ConceptCompositionBudgetSweepReport {
-    let (registry, index) = branching_fixture(branches_per_stage);
+    let stage_count = stage_count.clamp(1, 5);
+    let (registry, index) = layered_fixture(branches_per_stage, stage_count);
+    let goal_artifact = [
+        CapabilityIoType::Equation,
+        CapabilityIoType::NormalizedEquation,
+        CapabilityIoType::EquationClassification,
+        CapabilityIoType::ExactValue,
+        CapabilityIoType::DerivedFact,
+        CapabilityIoType::VerifiedArtifact,
+    ][stage_count];
     let full = index.propose_composed_planning_assistance_with_limits(
         &[CapabilityIoType::Equation],
-        CapabilityIoType::ExactValue,
+        goal_artifact,
         &registry,
         max_concepts,
         usize::MAX,
@@ -229,7 +242,7 @@ fn evaluate_budget_sweep_once(
     for &budget in budgets {
         let bounded = index.propose_composed_planning_assistance_with_limits(
             &[CapabilityIoType::Equation],
-            CapabilityIoType::ExactValue,
+            goal_artifact,
             &registry,
             max_concepts,
             budget,
@@ -248,6 +261,7 @@ fn evaluate_budget_sweep_once(
     }
     ConceptCompositionBudgetSweepReport {
         branches_per_stage: branches_per_stage.max(1),
+        stage_count,
         graph_concepts: index.len(),
         max_concepts,
         full_proposals: full_ids.len(),
@@ -262,8 +276,17 @@ pub fn evaluate_budget_sweep(
     max_concepts: usize,
     budgets: &[usize],
 ) -> ConceptCompositionBudgetSweepReport {
-    let first = evaluate_budget_sweep_once(branches_per_stage, max_concepts, budgets);
-    let second = evaluate_budget_sweep_once(branches_per_stage, max_concepts, budgets);
+    evaluate_budget_sweep_with_stages(branches_per_stage, 3, max_concepts, budgets)
+}
+
+pub fn evaluate_budget_sweep_with_stages(
+    branches_per_stage: usize,
+    stage_count: usize,
+    max_concepts: usize,
+    budgets: &[usize],
+) -> ConceptCompositionBudgetSweepReport {
+    let first = evaluate_budget_sweep_once(branches_per_stage, stage_count, max_concepts, budgets);
+    let second = evaluate_budget_sweep_once(branches_per_stage, stage_count, max_concepts, budgets);
     ConceptCompositionBudgetSweepReport {
         deterministic: first == second,
         ..first
@@ -329,5 +352,22 @@ mod tests {
             .iter()
             .filter(|metric| metric.budget < report.full_proposals)
             .all(|metric| metric.candidates_pruned > 0));
+    }
+
+    #[test]
+    fn deeper_branching_budget_sweep_scales_without_authorization() {
+        let report = evaluate_budget_sweep_with_stages(3, 4, 4, &[1, 9, 27, 81]);
+        assert!(report.diagnostic_only);
+        assert!(report.deterministic);
+        assert_eq!(report.branches_per_stage, 3);
+        assert_eq!(report.stage_count, 4);
+        assert_eq!(report.graph_concepts, 12);
+        assert_eq!(report.full_proposals, 81);
+        assert!(report.budgets.iter().all(|metric| metric.frontier_subset));
+        assert!(report
+            .budgets
+            .iter()
+            .all(|metric| metric.nested_with_previous));
+        assert_eq!(report.budgets.last().unwrap().budgeted_proposals, 81);
     }
 }

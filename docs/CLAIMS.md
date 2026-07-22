@@ -447,7 +447,10 @@ Owner modules: `src/concept_composition_benchmark.rs`,
 Evidence: the six-concept branching fixture reports zero routes at depth two,
 eight three-fragment routes at depth three, and the same eight routes at depths
 four and five because no longer typed route exists. Repeated evaluation is
-byte-equivalent and all reported routes have zero planning rejections.
+byte-equivalent and all reported routes have zero planning rejections. A
+five-stage, 4-way stress fixture (20 concepts, 1,024 routes) retained nested
+deterministic frontier subsets across budgets 1/16/64/256/1024, with no
+execution or registry mutation.
 
 Baseline: unbounded composition search or treating temporary composites as
 executable capabilities.
@@ -456,10 +459,10 @@ Failure condition: candidate growth exceeds the explicit depth/budget bound,
 repeated traversal produces nondeterministic route sets, or a composed route
 crosses the execution boundary without normal capability authorization.
 
-Next check: extend the current 3×3×3 budget sweep to deeper and wider graphs
-and measure pruning cost as route depth grows. The six-concept and 3×3×3
-probes already record visited nodes, pruned candidates, deterministic frontier
-membership, and nested-budget behavior.
+Next check: only extend beyond the five-stage, 4-way baseline if a concrete
+evaluation question requires larger graphs; the six-concept, 3×3×3, and
+4-way five-stage probes already record visited nodes, pruned candidates,
+deterministic frontier membership, and nested-budget behavior.
 
 ## Retired Or Negative Claims
 

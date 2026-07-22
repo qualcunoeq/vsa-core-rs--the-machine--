@@ -301,7 +301,7 @@ Current evidence (commit `406ce80`):
   `not_evaluated` because no isolated end-to-end controls exist.
 - Operational baseline: the release unified runner records a
   `governed_suite_runtime` receipt; the seed-42 500/500 run measured about
-  1,033 ms on the development host. Runtime is measured as evidence, with no
+  1.04 s (roughly 1,043 ms) on the development host. Runtime is measured as evidence, with no
   unvalidated performance target inferred from one machine.
 - Formalization audit: complete fact provenance now gates typed direct
   instantiation; the constrained prose grammar now covers bounded equations,

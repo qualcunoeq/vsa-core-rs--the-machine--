@@ -154,3 +154,22 @@ A mechanism should stay experimental when:
 - Add structured output to ignored benchmark tests.
 - Reduce warning noise in core modules so new warnings are visible.
 - Record negative results in `docs/CLAIMS.md` before removing failed mechanisms.
+
+## Strategic Route Evaluation
+
+The first vertical-slice harness for the concept/strategy layer is deliberately
+planning-only. It evaluates four independently reported modes over deterministic
+typed tasks: direct capability planning, concept-guided proposals, stored
+strategy reuse, and full contextual exploration/exploitation diagnostics.
+
+```bash
+cargo run --release --bin strategic_route_bench -- \
+  --scale medium --seed 42 --out results/strategic_route_bench/run.jsonl
+```
+
+Scales are `small` (32), `medium` (256), and `large` (500) tasks. Each JSONL
+record is an `ExperimentResult` with planning accuracy, abstention,
+concept-retrieval, stored-strategy usefulness, contextual-retrieval, and
+false-authorization metrics. Failure taxonomy counts are emitted as stable
+`failure_<class>` metrics. These are route-oracle tasks, not solved-answer
+claims; execution and verification remain outside the benchmark.

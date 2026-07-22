@@ -55,6 +55,7 @@ pub mod math_ingest;
 pub mod math_method_mining;
 pub mod math_methods;
 pub mod model_planning_benchmark;
+pub mod strategic_route_benchmark;
 pub mod meta_reasoning;
 pub mod methods;
 pub mod monitor;

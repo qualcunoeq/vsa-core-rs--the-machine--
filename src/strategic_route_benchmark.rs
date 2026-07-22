@@ -6,13 +6,14 @@
 
 use crate::capabilities::{CapabilityIoType, CapabilityRegistry, CapabilitySpec};
 use crate::capability_planner::{
-    CapabilityChainPlan, CapabilityChainProofConceptContract,
-    CapabilityChainProofConceptIndex,
+    CapabilityChainPlan, CapabilityChainProofConceptContract, CapabilityChainProofConceptIndex,
     CapabilityChainProofConceptStrategyContract, CapabilityChainProofConceptStrategyIndex,
     CapabilityChainStrategicRouteContext, CapabilityChainStrategicRouteContextEvidence,
     CapabilityChainStrategicRouteDecision, CapabilityChainStrategicRouteSource,
 };
 use crate::cognition::ExperimentResult;
+use crate::expression_evaluation::{execute_expression_evaluation, replay_expression_evaluation};
+use crate::substitution::{execute_substitution, replay_substitution};
 use serde::Serialize;
 use std::collections::{BTreeMap, HashMap};
 
@@ -739,5 +740,96 @@ mod tests {
                 STRATEGY_ID.into(),
             ])
         );
+    }
+
+    #[test]
+    fn expression_strategy_shadow_keeps_executor_and_replay_authoritative() {
+        let registry = CapabilityRegistry::production();
+        let trace = crate::formalization::assess_prompt(
+            "strategy-expression-shadow",
+            "Evaluate 2*x+3 at x=4.",
+            "Algebra",
+            false,
+        );
+        assert!(trace.target_completion.complete);
+        let strategy = CapabilityChainProofConceptStrategyContract {
+            strategy_id: "expression-direct-shadow".into(),
+            concept_ids: vec!["validated-expression-concept".into()],
+            plan: CapabilityChainPlan {
+                goal: CapabilityIoType::ExactValue,
+                steps: vec!["expression_evaluation".into()],
+            },
+            input_artifacts: vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+            output_artifacts: vec![CapabilityIoType::ExactValue],
+            supporting_instances: 8,
+            diagnostic_only: true,
+        };
+        let validation = strategy.validate(1, 4, 0, 0);
+        assert!(validation.passed);
+        let mut index = CapabilityChainProofConceptStrategyIndex::default();
+        let strategy_id = index.insert(strategy, &validation).unwrap();
+        let comparison = index.compare_with_fresh_plan(
+            &[CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+            CapabilityIoType::ExactValue,
+            None,
+            &registry,
+        );
+        let decision = comparison.diagnose_exploration(2);
+        assert_eq!(
+            decision.decision,
+            CapabilityChainStrategicRouteDecision::ExploitStored(vec![strategy_id.clone()])
+        );
+        let candidate = comparison
+            .candidates
+            .iter()
+            .find(|candidate| candidate.candidate_id == strategy_id)
+            .unwrap();
+        assert_eq!(candidate.plan.steps, vec!["expression_evaluation"]);
+        assert!(registry.get(&candidate.plan.steps[0]).is_some());
+
+        let receipt = execute_expression_evaluation(&trace.target_completion.target).unwrap();
+        assert!(receipt.replay_verified);
+        assert!(replay_expression_evaluation(&receipt));
+    }
+
+    #[test]
+    fn substitution_strategy_shadow_keeps_executor_and_replay_authoritative() {
+        let registry = CapabilityRegistry::production();
+        let trace = crate::formalization::assess_prompt(
+            "strategy-substitution-shadow",
+            "Substitute x=4 into x^2-1.",
+            "Algebra",
+            false,
+        );
+        assert!(trace.target_completion.complete);
+        let strategy = CapabilityChainProofConceptStrategyContract {
+            strategy_id: "substitution-direct-shadow".into(),
+            concept_ids: vec!["validated-substitution-concept".into()],
+            plan: CapabilityChainPlan {
+                goal: CapabilityIoType::Expression,
+                steps: vec!["substitution".into()],
+            },
+            input_artifacts: vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+            output_artifacts: vec![CapabilityIoType::Expression],
+            supporting_instances: 8,
+            diagnostic_only: true,
+        };
+        let validation = strategy.validate(1, 4, 0, 0);
+        assert!(validation.passed);
+        let mut index = CapabilityChainProofConceptStrategyIndex::default();
+        let strategy_id = index.insert(strategy, &validation).unwrap();
+        let comparison = index.compare_with_fresh_plan(
+            &[CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+            CapabilityIoType::Expression,
+            None,
+            &registry,
+        );
+        assert_eq!(
+            comparison.diagnose_exploration(2).decision,
+            CapabilityChainStrategicRouteDecision::ExploitStored(vec![strategy_id])
+        );
+        let receipt = execute_substitution(&trace.target_completion.target).unwrap();
+        assert!(receipt.replay_verified);
+        assert!(replay_substitution(&receipt));
     }
 }

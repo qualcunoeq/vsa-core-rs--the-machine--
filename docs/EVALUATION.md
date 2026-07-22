@@ -184,7 +184,13 @@ The benchmark suite also has an explicit mixed-evidence regression: a stored
 strategy with 500 global successes but only one matching recent contextual
 success yields `ExploreFresh` at a support threshold of two; the global-only
 comparison remains `Ambiguous` rather than silently treating global volume as
-local precedent.
+local precedent. The medium run at seed 42 reports contextual accuracy 1.000
+versus 0.146 for the global-only ablation (169 wrong global-only decisions),
+with zero false authorizations. The focused capability-planner suite exposes
+the five adversarial context dimensions as independent tests: domain,
+contract-signature, policy-class, stale epoch, and safety-only evidence. Each
+keeps global support high while reducing contextual support to zero and
+diagnosing `ExploreFresh`.
 The `strategic_receipt_shadow` record covers expression evaluation,
 substitution, and the `controls` system fixture; each route must be
 independently revalidated before the existing executor/replay verifier runs.

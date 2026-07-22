@@ -9095,6 +9095,156 @@ mod tests {
         );
     }
 
+    fn contextual_support_adversarial_fixture() -> (
+        CapabilityChainProofConceptStrategyIndex,
+        String,
+        CapabilityChainStrategicRouteContext,
+        CapabilityChainPlan,
+        CapabilityRegistry,
+    ) {
+        let mut registry = CapabilityRegistry::default();
+        registry.register(CapabilitySpec::expression_simplification_v1());
+        registry.register(CapabilitySpec::expression_evaluation_v1());
+        let mut direct = CapabilitySpec::expression_evaluation_v1();
+        direct.id = "direct_expression_evaluation".into();
+        direct.consumes = vec![CapabilityIoType::Expression];
+        registry.register(direct);
+
+        let strategy = CapabilityChainProofConceptStrategyContract {
+            strategy_id: "adversarial-context-strategy".into(),
+            concept_ids: vec!["simplify-concept".into(), "evaluate-concept".into()],
+            plan: CapabilityChainPlan {
+                goal: CapabilityIoType::ExactValue,
+                steps: vec![
+                    "expression_simplification".into(),
+                    "expression_evaluation".into(),
+                ],
+            },
+            input_artifacts: vec![CapabilityIoType::Expression],
+            output_artifacts: vec![CapabilityIoType::ExactValue],
+            supporting_instances: 500,
+            diagnostic_only: true,
+        };
+        let validation = strategy.validate(2, 4, 0, 0);
+        assert!(validation.passed);
+        let mut index = CapabilityChainProofConceptStrategyIndex::default();
+        let strategy_id = index.insert(strategy, &validation).unwrap();
+        let context = CapabilityChainStrategicRouteContext {
+            domain: "expression".into(),
+            contract_signature: "expression->exact_value".into(),
+            policy_class: "strict-replay".into(),
+            current_epoch: 20,
+            recent_window: 5,
+        };
+        index
+            .record_context_evidence(
+                &strategy_id,
+                CapabilityChainStrategicRouteContextEvidence {
+                    domain: "expression".into(),
+                    contract_signature: "expression->exact_value".into(),
+                    policy_class: "strict-replay".into(),
+                    epoch: 20,
+                    successful_executions: 1,
+                    safety_failures: 0,
+                },
+            )
+            .unwrap();
+        index
+            .record_context_evidence(
+                &strategy_id,
+                CapabilityChainStrategicRouteContextEvidence {
+                    domain: "expression".into(),
+                    contract_signature: "expression->exact_value".into(),
+                    policy_class: "strict-replay".into(),
+                    epoch: 21,
+                    successful_executions: 100,
+                    safety_failures: 1,
+                },
+            )
+            .unwrap();
+        let fresh = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["direct_expression_evaluation".into()],
+        };
+        (index, strategy_id, context, fresh, registry)
+    }
+
+    fn assert_contextual_mismatch_explores_fresh(
+        context: CapabilityChainStrategicRouteContext,
+    ) {
+        let (index, strategy_id, base_context, fresh, registry) =
+            contextual_support_adversarial_fixture();
+        let comparison = index.compare_with_fresh_plan_in_context(
+            &[CapabilityIoType::Expression],
+            CapabilityIoType::ExactValue,
+            Some(&fresh),
+            &context,
+            &registry,
+        );
+        let stored = comparison
+            .candidates
+            .iter()
+            .find(|candidate| candidate.candidate_id == strategy_id)
+            .expect("stored strategy candidate");
+        assert_eq!(stored.global_supporting_instances, 500);
+        assert_eq!(stored.contextual_supporting_instances, Some(0));
+        assert_eq!(stored.supporting_instances, 0);
+        assert_eq!(
+            comparison.diagnose_exploration(1).decision,
+            CapabilityChainStrategicRouteDecision::ExploreFresh(
+                "fresh-capability-plan".into()
+            )
+        );
+        assert_eq!(base_context.current_epoch, 20);
+    }
+
+    #[test]
+    fn contextual_support_rejects_domain_mismatch_independently() {
+        let (_, _, context, _, _) = contextual_support_adversarial_fixture();
+        assert_contextual_mismatch_explores_fresh(CapabilityChainStrategicRouteContext {
+            domain: "geometry".into(),
+            ..context
+        });
+    }
+
+    #[test]
+    fn contextual_support_rejects_contract_mismatch_independently() {
+        let (_, _, context, _, _) = contextual_support_adversarial_fixture();
+        assert_contextual_mismatch_explores_fresh(CapabilityChainStrategicRouteContext {
+            contract_signature: "expression->solution_set".into(),
+            ..context
+        });
+    }
+
+    #[test]
+    fn contextual_support_rejects_policy_mismatch_independently() {
+        let (_, _, context, _, _) = contextual_support_adversarial_fixture();
+        assert_contextual_mismatch_explores_fresh(CapabilityChainStrategicRouteContext {
+            policy_class: "permissive".into(),
+            ..context
+        });
+    }
+
+    #[test]
+    fn contextual_support_rejects_stale_epoch_independently() {
+        let (_, _, context, _, _) = contextual_support_adversarial_fixture();
+        assert_contextual_mismatch_explores_fresh(CapabilityChainStrategicRouteContext {
+            current_epoch: 30,
+            recent_window: 5,
+            ..context
+        });
+    }
+
+    #[test]
+    fn contextual_support_rejects_safety_only_evidence_independently() {
+        let (_, _, context, _, _) = contextual_support_adversarial_fixture();
+        assert_contextual_mismatch_explores_fresh(CapabilityChainStrategicRouteContext {
+            current_epoch: 21,
+            recent_window: 0,
+            ..context
+        });
+    }
+
     #[test]
     fn sufficient_contextual_support_exploits_dominant_stored_strategy() {
         let mut registry = CapabilityRegistry::default();

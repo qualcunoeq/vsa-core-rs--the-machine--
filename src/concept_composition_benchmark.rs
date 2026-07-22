@@ -18,6 +18,11 @@ pub struct ConceptCompositionDepthMetrics {
     pub rejections: usize,
     pub route_lengths: BTreeMap<usize, usize>,
     pub theoretical_path_bound: usize,
+    pub candidate_budget: usize,
+    pub budgeted_proposals: usize,
+    pub budgeted_nodes_visited: usize,
+    pub budgeted_candidates_pruned: usize,
+    pub full_budget_frontier_preserved: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -147,12 +152,39 @@ fn evaluate_once(max_depth: usize) -> ConceptCompositionBenchmarkReport {
         for proposal in &receipt.proposals {
             *route_lengths.entry(proposal.plan.steps.len()).or_default() += 1;
         }
+        let candidate_budget = 4;
+        let budgeted = index.propose_composed_planning_assistance_with_limits(
+            &[CapabilityIoType::Equation],
+            CapabilityIoType::ExactValue,
+            &registry,
+            depth,
+            candidate_budget,
+        );
+        let full_budget = index.propose_composed_planning_assistance_with_limits(
+            &[CapabilityIoType::Equation],
+            CapabilityIoType::ExactValue,
+            &registry,
+            depth,
+            receipt.proposals.len(),
+        );
+        let proposal_ids = |items: &[crate::capability_planner::CapabilityChainProofConceptPlanningProposal]| {
+            items
+                .iter()
+                .map(|proposal| proposal.concept_id.clone())
+                .collect::<Vec<_>>()
+        };
         depths.push(ConceptCompositionDepthMetrics {
             max_concepts: depth,
             proposals: receipt.proposals.len(),
             rejections: receipt.rejections.len(),
             route_lengths,
             theoretical_path_bound: path_bound(index.len(), depth),
+            candidate_budget,
+            budgeted_proposals: budgeted.planning.proposals.len(),
+            budgeted_nodes_visited: budgeted.nodes_visited,
+            budgeted_candidates_pruned: budgeted.candidates_pruned,
+            full_budget_frontier_preserved: proposal_ids(&receipt.proposals)
+                == proposal_ids(&full_budget.planning.proposals),
         });
     }
     ConceptCompositionBenchmarkReport {
@@ -187,6 +219,14 @@ mod tests {
         assert_eq!(report.depths[0].proposals, 0);
         assert_eq!(report.depths[1].proposals, 8);
         assert_eq!(report.depths[1].route_lengths.get(&3), Some(&8));
+        assert_eq!(report.depths[1].candidate_budget, 4);
+        assert_eq!(report.depths[1].budgeted_proposals, 4);
+        assert!(report.depths[1].budgeted_candidates_pruned > 0);
+        assert!(report.depths[1].budgeted_nodes_visited < report.depths[1].theoretical_path_bound);
+        assert!(report
+            .depths
+            .iter()
+            .all(|depth| depth.full_budget_frontier_preserved));
         assert_eq!(report.depths[2].proposals, 8);
         assert!(report
             .depths

@@ -1065,6 +1065,21 @@ pub struct CapabilityChainProofConceptPlanningReceipt {
     pub diagnostic_only: bool,
 }
 
+/// Resource telemetry for bounded concept-composition search.  The nested
+/// planning receipt remains the same diagnostic-only proposal surface; these
+/// counters make search truncation explicit instead of silently returning a
+/// partial route set.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CapabilityChainProofConceptPlanningResourceReceipt {
+    pub planning: CapabilityChainProofConceptPlanningReceipt,
+    pub max_concepts: usize,
+    pub max_candidates: usize,
+    pub nodes_visited: usize,
+    pub candidates_pruned: usize,
+    pub search_exhausted: bool,
+    pub diagnostic_only: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofConceptPlanningPreference {
     NoCandidates,
@@ -2338,6 +2353,159 @@ impl CapabilityChainProofConceptIndex {
             goal_artifact,
             proposals,
             rejections,
+            diagnostic_only: true,
+        }
+    }
+
+    /// Search concept compositions with an explicit proposal budget.  The
+    /// traversal order is the same deterministic DFS as the depth-only API;
+    /// once the budget is reached, remaining candidates are counted as pruned
+    /// and the receipt marks the search as exhausted.
+    pub fn propose_composed_planning_assistance_with_limits(
+        &self,
+        available_inputs: &[CapabilityIoType],
+        goal_artifact: CapabilityIoType,
+        registry: &CapabilityRegistry,
+        max_concepts: usize,
+        max_candidates: usize,
+    ) -> CapabilityChainProofConceptPlanningResourceReceipt {
+        struct SearchState {
+            seen: BTreeSet<String>,
+            proposals: Vec<CapabilityChainProofConceptPlanningProposal>,
+            rejections: Vec<CapabilityChainProofConceptPlanningRejection>,
+            nodes_visited: usize,
+            candidates_pruned: usize,
+            search_exhausted: bool,
+        }
+
+        fn visit(
+            index: &CapabilityChainProofConceptIndex,
+            current: CapabilityChainProofConceptContract,
+            used: Vec<String>,
+            available_inputs: &[CapabilityIoType],
+            goal_artifact: CapabilityIoType,
+            registry: &CapabilityRegistry,
+            max_concepts: usize,
+            max_candidates: usize,
+            state: &mut SearchState,
+        ) {
+            if state.search_exhausted {
+                return;
+            }
+            state.nodes_visited += 1;
+            if used.len() >= 2 && current.output_artifacts.contains(&goal_artifact) {
+                if state.seen.insert(current.concept_id.clone()) {
+                    if state.proposals.len() >= max_candidates {
+                        state.candidates_pruned += 1;
+                        state.search_exhausted = true;
+                        return;
+                    }
+                    let mut temporary = index.clone();
+                    temporary
+                        .concepts
+                        .insert(current.concept_id.clone(), current.clone());
+                    let receipt = temporary.propose_planning_assistance(
+                        available_inputs,
+                        goal_artifact,
+                        registry,
+                    );
+                    state.rejections.extend(receipt.rejections);
+                    if let Some(proposal) = receipt
+                        .proposals
+                        .into_iter()
+                        .find(|proposal| proposal.concept_id == current.concept_id)
+                    {
+                        state.proposals.push(proposal);
+                    }
+                }
+            }
+            if used.len() >= max_concepts {
+                return;
+            }
+            for next in index.concepts.values() {
+                if state.search_exhausted {
+                    return;
+                }
+                if used.iter().any(|used_id| used_id == &next.concept_id)
+                    || !current
+                        .output_artifacts
+                        .iter()
+                        .any(|output| next.input_artifacts.contains(output))
+                {
+                    continue;
+                }
+                let Some(composite) =
+                    CapabilityChainProofConceptIndex::compose_indexed_contracts(&current, next)
+                else {
+                    continue;
+                };
+                let mut next_used = used.clone();
+                next_used.push(next.concept_id.clone());
+                visit(
+                    index,
+                    composite,
+                    next_used,
+                    available_inputs,
+                    goal_artifact,
+                    registry,
+                    max_concepts,
+                    max_candidates,
+                    state,
+                );
+            }
+        }
+
+        let max_concepts = max_concepts.max(2);
+        let available = available_inputs.iter().copied().collect::<BTreeSet<_>>();
+        let mut state = SearchState {
+            seen: BTreeSet::new(),
+            proposals: Vec::new(),
+            rejections: Vec::new(),
+            nodes_visited: 0,
+            candidates_pruned: 0,
+            search_exhausted: false,
+        };
+        for concept in self.concepts.values() {
+            if state.search_exhausted {
+                break;
+            }
+            if concept
+                .input_artifacts
+                .iter()
+                .all(|input| available.contains(input))
+            {
+                visit(
+                    self,
+                    concept.clone(),
+                    vec![concept.concept_id.clone()],
+                    available_inputs,
+                    goal_artifact,
+                    registry,
+                    max_concepts,
+                    max_candidates,
+                    &mut state,
+                );
+            }
+        }
+        state
+            .proposals
+            .sort_by(|left, right| left.concept_id.cmp(&right.concept_id));
+        state
+            .rejections
+            .sort_by_key(|rejection| format!("{rejection:?}"));
+        CapabilityChainProofConceptPlanningResourceReceipt {
+            planning: CapabilityChainProofConceptPlanningReceipt {
+                available_inputs: available.into_iter().collect(),
+                goal_artifact,
+                proposals: state.proposals,
+                rejections: state.rejections,
+                diagnostic_only: true,
+            },
+            max_concepts,
+            max_candidates,
+            nodes_visited: state.nodes_visited,
+            candidates_pruned: state.candidates_pruned,
+            search_exhausted: state.search_exhausted,
             diagnostic_only: true,
         }
     }

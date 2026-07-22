@@ -278,8 +278,9 @@ Known limits:
 
 Next vertical slice:
 
-1. Add pruning/candidate-budget metrics to the concept-composition probe as
-   the graph grows beyond the six-concept fixture.
+1. Repeat the candidate-budget probe on a larger branching fixture and test
+   deterministic frontier behavior across several budgets, including a
+   budget smaller than the full frontier.
 2. Only then consider governed method acquisition for a demonstrated missing
    capability; absence of `method_not_found` evidence is not authorization to
    add one.

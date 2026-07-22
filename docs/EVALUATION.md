@@ -280,8 +280,12 @@ cargo run --release --bin concept_composition_bench -- \
 The six-concept branching fixture produced 0 candidates at depth 2 and 8
 three-fragment candidates at depth 3; depths 4 and 5 remained at 8 because no
 longer compatible route exists. The report records proposal/rejection counts,
-route-length histograms, a theoretical path bound, and deterministic replay of
-the measurement itself.
+route-length histograms, a conservative theoretical path bound, and
+deterministic replay of the measurement itself. It also runs a diagnostic
+candidate budget of four and records proposals retained, search nodes visited,
+candidates pruned, and whether a budget equal to the full proposal count
+preserves the complete frontier. The budget only bounds diagnostics: it does
+not execute, authorize, or register a composed route.
 
 Latest larger-tier smoke runs (commit `654cfe2`) used 500 generated cases in
 addition to the 60-case seed (560 total) and the 20-case prose slice. The

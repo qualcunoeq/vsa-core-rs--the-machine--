@@ -456,8 +456,10 @@ Failure condition: candidate growth exceeds the explicit depth/budget bound,
 repeated traversal produces nondeterministic route sets, or a composed route
 crosses the execution boundary without normal capability authorization.
 
-Next check: add candidate-budget pruning measurements on a larger branching
-fixture and verify that pruning preserves deterministic frontier membership.
+Next check: repeat candidate-budget pruning on a larger branching fixture and
+verify deterministic frontier behavior across multiple budgets. The current
+six-concept probe already records visited nodes, pruned candidates, and
+full-budget frontier preservation.
 
 ## Retired Or Negative Claims
 

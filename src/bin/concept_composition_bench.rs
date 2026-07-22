@@ -19,12 +19,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     writeln!(file, "{}", serde_json::to_string_pretty(&report)?)?;
     for depth in &report.depths {
         eprintln!(
-            "depth={}: proposals={} rejections={} routes={:?} bound={}",
+            "depth={}: proposals={} rejections={} routes={:?} bound={} budget={} budgeted_proposals={} nodes={} pruned={} frontier_preserved={}",
             depth.max_concepts,
             depth.proposals,
             depth.rejections,
             depth.route_lengths,
-            depth.theoretical_path_bound
+            depth.theoretical_path_bound,
+            depth.candidate_budget,
+            depth.budgeted_proposals,
+            depth.budgeted_nodes_visited,
+            depth.budgeted_candidates_pruned,
+            depth.full_budget_frontier_preserved
         );
     }
     eprintln!(

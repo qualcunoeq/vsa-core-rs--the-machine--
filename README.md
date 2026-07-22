@@ -7,7 +7,7 @@ No neural networks. No gradients. No LLM inference. Just XOR, popcount, and a Ba
 **Version:** v3.4 (July 2026)
 **Private repository:** [github.com/qualcunoeq/the-machine](https://github.com/qualcunoeq/the-machine) (active development)
 **Public mirror:** [github.com/qualcunoeq/vsa-core-rs--the-machine--](https://github.com/qualcunoeq/vsa-core-rs--the-machine--) (releases)
-**Formal specification:** [`MATH.md`](./MATH.md) (3,353 lines, 35+ theorems)
+**Formal specification:** [`MATH.md`](./MATH.md) (3,420 lines, 35+ theorems)
 **Test suite:** ~1,980 `#[test]` items across 90 modules, 17 binary targets
 
 ---
@@ -64,7 +64,7 @@ $$\mathcal{M}_{t+1} = F(\mathcal{M}_t, \{x_\tau\})$$
 
 ### Soft Projection (v3.1 — corrected)
 
-The default projection is a **hard nearest-centroid snap** ($\tau = 0$). An optional **soft projection** replaces this with a temperature-weighted majority vote over ALL centroids, increasing effective capacity from 4.3 to **10.58 bits** (128$\times$ more distinct states, $C_{\text{eff}} = 2554$) while maintaining contraction ($\kappa_P = 0.916$).
+The default projection is a **hard nearest-centroid snap** ($\tau = 0$). An optional **soft projection** replaces this with a temperature-weighted majority vote over ALL centroids, increasing effective capacity from 4.3 to **11.3 bits** (128$\times$ more distinct states, $C_{\text{eff}} = 2554$) while maintaining contraction ($\kappa_P = 0.916$).
 
 > **v3.1 correction**: The original soft projection had a numerical stability bug:
 > `exp(-(d - min_d)²/τ)` instead of the correct `exp(-(d² - min_d²)/τ)`. The
@@ -95,10 +95,10 @@ Ten cognitive subsystems from the DRIFT project are integrated in `src/drift.rs`
 
 ## What Makes It Mathematically Verified?
 
-Every theorem in the formal specification (`MATH.md`, 3,353 lines) is either:
+Every theorem in the formal specification (`MATH.md`, 3,420 lines) is either:
 
 1. **Algebraic identity** — proven by symbolic manipulation (GF(2) algebra)
-2. **Banach fixed point** — proven via the coupling argument ($\kappa \approx 0.925$)
+2. **Banach fixed point** — supported by the legacy coupling measurement ($\kappa \approx 0.925$); current deployment uses factorized runtime telemetry ($\kappa_{\mathrm{joint}} \approx 0.870$ at $\tau=0.10$)
 3. **Empirically measured** — verified by Monte Carlo simulation or Rust stress test
 
 ### Assumptions as Contracts (A1–A31)
@@ -140,7 +140,7 @@ The margin between the proven bound ($\kappa = 0.950$ at worst case) and the tri
 
 ```
 ├── Cargo.toml              # 90 modules, 17 binary targets
-├── MATH.md                 # Formal mathematical specification (3,353 lines)
+├── MATH.md                 # Formal mathematical specification (3,420 lines)
 ├── GUIDE.md                # Developer guide with flowcharts and code examples
 ├── CURRENT_STATE.md        # Current project state and engineering priorities
 │
@@ -247,9 +247,9 @@ cargo run --release --bin governed_bench -- 500 500 42 results/governed_bench/la
 | τ | κ_P | C_eff | Bits | Gain |
 |---|-----|-------|------|------|
 | 0.00 | 0.970 | 20 | 4.32 | 1× (hard) |
-| 0.08 | 0.932 | 120× | 9.58 | Conservative |
-| **0.10** | **0.916** | **2554** | **10.58** | **Optimal** |
-| 0.12 | 0.898 | 128× | 11.32 | High capacity |
+| 0.08 | measured | **1,528 (76×)** | **10.6** | Conservative calibrated point |
+| **0.10** | **0.916** | **2,554 (128×)** | **11.3** | **Optimal** |
+| 0.12 | measured | above hard baseline | not reported | Upper edge of calibrated window |
 | 0.50 | < 0.19 | Mush | — | Degenerate |
 
 ---
@@ -278,7 +278,7 @@ The architecture is organized into **6 research layers** (see `docs/ROADMAP.md`)
            Using Hyperdimensional Computing},
   author = {qualcunoeq},
   year = {2026},
-  note = {Formal specification: MATH.md (3,353 lines, 35+ theorems).
+  note = {Formal specification: MATH.md (3,420 lines, 35+ theorems).
            Test suite: ~1,980 items across 90 modules.
            Version: v3.4 (July 2026)},
   doi = {10.5281/zenodo.XXXXXXX}

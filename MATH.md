@@ -1,5 +1,22 @@
 # The Machine: Formal Mathematical Specification
 
+> **Document status — 2026-07-22 (v3.4).** This specification covers the VSA
+> mathematics, assumptions, proof boundaries, and experimentally measured
+> operating envelope. The current implementation also includes structural SVO
+> diagnostics, memory compression, typed formalization, governed algebra and
+> proposition verticals, and receipt-level verification controls. Test counts
+> and benchmark numbers below are snapshots; executable benchmark evidence is
+> maintained in [`docs/EVALUATION.md`](docs/EVALUATION.md) and the roadmap in
+> [`docs/ROADMAP.md`](docs/ROADMAP.md).
+
+| Current implementation check | Snapshot |
+|---|---|
+| Full Rust test suite | **423 passing tests** (with one known pre-existing `thread_rng()`-based flaky test) |
+| Structural SVO zero-overlap diagnostic | **3/3 correct**; historical trigram path: 0/3 |
+| Governed evaluation | 27/27 direct algebra; 324/500 proposition cases accepted with 1.000 replay; 500/500 strategic selection |
+| Verification control | 32/32 valid receipts accepted; 32/32 tampered receipts rejected; bypass diagnostic false-accepts 32/32 |
+| Contextual strategy support | Six adversarial cases pass, including mixed global/contextual support |
+
 ## Preliminaries
 
 ### Hypervectors
@@ -127,8 +144,8 @@ A5 (Feedback Reliability) ─┬── A22 (Identifiability)
 | A5 | Feedback Reliability | **EMPIRICALLY CONSISTENT** | `test_a5_adversarial_reward_noise`: p=0.7 centroid similarity > p=0.3 centroid similarity (634 tests) |
 | A6 | Piecewise-Stationary World | **DOMAIN-SPECIFIC** | Bond market regime changes on monthly/daily scale; $T_{\min} \approx 10^4$ ticks |
 | A7 | Burst-Limited Adversary | **EMPIRICALLY CONSISTENT** | `test_a7_burst_adversarial_inputs`: 25 adversarial inputs in a burst, L_F ≤ 1.0, centroid recovers (634 tests) |
-| A21 | Abstraction Preservation | **FALSE for held-out structural variants** | Intervention test: **0/3** zero-overlap texts classified without hand-coded keyword tables |
-| A30 | Structural Analogy Soundness | **INCOMPLETE** | Structural parser found correct triples for 3/3 test cases, but pattern list was incomplete (1/3 correct category) |
+| A21 | Abstraction Preservation | **CONDITIONALLY CONSISTENT** | Structural SVO centroids classify **3/3** zero-overlap texts; the historical trigram representation scored 0/3 |
+| A30 | Structural Analogy Soundness | **CONDITIONALLY CONSISTENT** | Structural parser and SVO centroid path agree on 3/3 intervention cases; this does not establish universal semantic transfer |
 | A31 | Trace Faithfulness | **IMPLEMENTED** | `resolve_term_trace` returns `ResolveTrace`; `test_resolve_term_*` verifies exact, raw, and association paths |
 
 ### 0.5 Critical Finding: A21 (Abstraction Preservation) — RESOLVED v3.2
@@ -640,7 +657,7 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XII.1 | Promotion boundedness | **EMPIRICALLY CONSISTENT** | `test_xii1_adversarial_promotion_frequency`: 10 to matching + 4 bad labels + 50 adversarial variants, 0 new clusters (634 tests) |
 | XIII.1 | Lazy reconstruction correctness | **PROVEN** | `ensure_accumulator` is deterministic fixed point |
 | XVI.1 | Fast-slow stability (anchored composition contractivity) | **PROVEN** | `test_anchored_chain_contractivity` — ε(3) ≈ 0.03 |
-| XVII.1 | Net Wasserstein contraction | **PROVEN** | Coupling argument: κ ≈ 0.925 per 50-tick cycle |
+| XVII.1 | Net Wasserstein contraction | **PROVEN/LEGACY MEASURED** | Historical hard/old-sweep coupling estimate: κ ≈ 0.925 per 50-tick cycle; current runtime uses κ_joint telemetry |
 | XVIII.1 | Expected contraction mapping | **PROVEN** | Follows from XVII.1 (Banach fixed point) |
 | XIX | Four open questions | **ANSWERED** | `answer_open_questions.py` — W*, self-interference, coupling ratio, capacity |
 | XX.1 | Joint contraction condition | **SUPERSEDED** | Replaced by XXV.4. The product α(1-κ_P) > β·κ_F·L_F uses pre-correction κ_F (see v3.0 audit note). Joint stability is now proven via λ₂(P)·κ_F instead. |
@@ -657,12 +674,12 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XXV.5a | No deterministic decorrelation from exact $\rho$-admissibility | **PROVEN** | `test_rho_admissible_does_not_imply_decorrelation` constructs an admissible near-period-4 centroid with $\delta(c,\rho^{52}(c))=2/D \ll 0.5$ |
 | Sub-Lemma S (Thm XXV.5) | $g = \text{nearest}\circ P_\tau$ surjects from $\rho^{26}(W_i)$ | **PROVEN** for runtime-admissible manifolds | Constructive witness works for A3-Q-admitted manifolds; `enforce_a3q_manifold()` is the admission gate; empirical generic test: 90/90 pairs, min $w_j/w_i=5.39$ |
 | XXVI.2 | Spectral gap (exponential mixing) | **PROVEN** | λ₂(P) ≤ κ < 1, mixing in ~77 cycles |
-| XXVII | Soft projection frontier | **CALIBRATED** | τ = 0.10 optimal (v3.1 corrected): κ_P ≈ 0.916, C_eff = 2554 (10.58 bits, 128× gain). Previous τ=0.030 was a buggy artifact (see v3.1 fix notes). |
-| XXVII.2 | Optimal τ sensitivity | **MEASURED** | τ ∈ [0.06, 0.12] is the usable window. Below 0.06: C_eff < 300 (near-hard). Above 0.12: κ_P < 0.78 (mush). Optimum τ = 0.10 balances κ_P ≈ 0.916 with C_eff = 2554 (128× gain). |
+| XXVII | Soft projection frontier | **CALIBRATED** | τ = 0.10 optimal (v3.1 corrected): κ_P ≈ 0.916, C_eff = 2554 (11.3 bits, 128× gain). Previous τ=0.030 was a buggy artifact (see v3.1 fix notes). |
+| XXVII.2 | Optimal τ sensitivity | **MEASURED** | τ ∈ [0.06, 0.12] is the usable window. Below 0.06 is near-hard; above 0.12 is increasingly mushy. Optimum τ = 0.10 balances κ_P ≈ 0.916 with C_eff = 2554 (11.3 bits, 128× gain). |
 | XXVIII.1 | Single accumulator cannot track persistent drift | **PROVEN** | Negative result: tracking error $e_t \to \infty$ as $W \to \infty$ under persistent drift |
 | XXVIII.2 | Hard projection destroys $\log_2(K)$ bits | **PROVEN** | Data processing inequality: $I(x; P(x)) \leq \log_2(K)$ |
 | XXVIII.3 | XOR chain depth limited without cleanup | **PROVEN** | Error $\varepsilon(n) \to 0.5$ exponentially without anchored chaining |
-| XXVIII.4 | Hand-coded tables indistinguishable without intervention | **PROVEN** | Intervention test: **0/3** without tables, **1/3** with |
+| XXVIII.4 | Hand-coded tables indistinguishable without intervention | **PROVEN** | Historical baseline: **0/3** without structural SVO centroids; current structural-SVO path: **3/3** |
 | XXVIII.5 | Finite dimension forces aliasing | **PROVEN** | Pigeonhole principle: $|\mathcal{X}| > 2^D \implies \exists x \neq y : E(x) = E(y)$ |
 | XXIX.1–5 | Phase diagrams for all thresholds | **MAPPED** | Operating envelope for novelty gate, compaction, soft projection, association, decay |
 | XXX.1 | Unified tracking bound | **PROVEN** | Four lemmas: accumulator contraction + novelty bound + fission rate + memory cap. $\varepsilon \approx 0.155$ |
@@ -681,13 +698,14 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | LSH $\chi^2$ (10K samples, 16 sectors) | 22.61 (pass at $\alpha=0.05$) | `test_lsh_distribution` |
 | Bundling bias (n=3..11) | $\mu < 0.001$, $\sigma < 0.005$ | `verify_dynamics.py` |
 | Compaction $\Phi$ decrease | $-0.0078$ per cycle | `verify_dynamics.py` |
-| Soft projection frontier ($\tau=0.08$, K=20) | $\kappa_P \approx 0.932$, $C_{\text{eff}} = 120\times$ gain | `test_soft_projection_frontier_sweep` |
-| Soft projection frontier ($\tau=0.10$, K=20) | $\kappa_P \approx 0.916$, $C_{\text{eff}} = 2554$ (10.58 bits, $128\times$) | `test_soft_projection_frontier_sweep` |
-| Zero-overlap classification (WITHOUT abstraction tables) | **0/3 correct, 1/3 false positive, 2/3 stuck** | `src/bin/intervention_test.rs` |
+| Soft projection frontier ($\tau=0.08$, K=20) | Conservative sweet spot; 1,528 distinct outputs (10.6 bits, $76\times$) | `test_soft_projection_frontier_sweep` |
+| Soft projection frontier ($\tau=0.10$, K=20) | $\kappa_P \approx 0.916$, $C_{\text{eff}} = 2554$ (11.3 bits, $128\times$) | `test_soft_projection_frontier_sweep` |
+| Zero-overlap classification (historical trigram path) | **0/3 correct, 1/3 false positive, 2/3 stuck** | Historical v3.1 intervention baseline |
+| Zero-overlap classification (current structural SVO path) | **3/3 correct, 0/3 false positive, 0/3 stuck** | `src/diagnostic.rs`, v3.2 intervention |
 | Zero-overlap classification (WITH abstraction tables) | **1/3 correct, 2/3 wrong (pattern list incomplete)** | `src/bin/intervention_test.rs` |
 | Centroid proximity for "KMS keyserver unreachable" | Similarity $\approx 0.51$ (noise floor) | `src/bin/intervention_test.rs` |
 | Centroid proximity for "disk quota exceeded" | Similarity $\approx 0.51$ (noise floor) | `src/bin/intervention_test.rs` |
-| Centroid proximity for "SSL certificate validation failed" | Similarity $\approx 0.58$ (still below $\tau_{\text{clean}} = 0.56$ threshold but no concept label) | `src/bin/intervention_test.rs` |
+| Centroid proximity for "SSL certificate validation failed" | Similarity $\approx 0.58$ (above the $\tau_{\text{clean}} = 0.56$ cleanup threshold, but no concept label) | Historical intervention measurement |
 
 ### Critical Unverified Claims (v2.5 Status Update)
 
@@ -708,10 +726,10 @@ Since the original document was written, the following claims have been resolved
 - ~~**XXV.4 (Uniform spectral gap):**~~ **RESOLVED** — Closed for runtime-admissible manifolds. See Theorem XXV.4 and `enforce_a3q_manifold()`.
 - ~~**Assumption $\rho$ (original formulation):**~~ **DECOMPOSED** — Replaced by two precise sub-items (see below):
 
-**New Findings (v3.2):**
-- **Intervention test (zero-overlap analogy):** The hand-coded abstraction tables are the SOLE mechanism bridging the zero-overlap analogy gap. With tables disabled: **0/3** correct, **1/3** false positive, **2/3** stuck. With tables enabled: **1/3** correct, **2/3** wrong (pattern list incomplete). See Section XV-A.
-- **Assumption A21 (Abstraction Preservation):** **EMPRICALLY FALSE** — the abstraction map does NOT preserve task-relevant causal structure for held-out structural variants. The VSA architecture contributes nothing to this capability.
-- **Assumption A30 (Structural Analogy Soundness):** **INCOMPLETE** — structural parser finds correct triples but the pattern list is incomplete (no credential-specific mapping). Fixing the pattern list would make this assumption true, but it would still be hand-coded.
+**Updated Findings (v3.2/v3.4):**
+- **Intervention test (zero-overlap analogy):** The historical trigram path scored **0/3** correct, **1/3** false positive, and **2/3** stuck. The current structural-SVO path scores **3/3** correct, with **0/3** wrong and **0/3** stuck. See Section XV-A.
+- **Assumption A21 (Abstraction Preservation):** **CONDITIONALLY TRUE** under structural SVO encoding; this result is not a claim that arbitrary surface forms or domains generalize automatically.
+- **Assumption A30 (Structural Analogy Soundness):** **CONDITIONALLY CONSISTENT** for the measured intervention set; broader semantic transfer remains outside the demonstrated scope.
 - **New sections added:** Section 0 (Assumptions as contracts), Section XXVIII (Negative results), Section XXIX (Phase diagrams), Section XXX (Core tracking theorem), Section XXXI (Failure mode taxonomy), Section XXXII (Information-theoretic bounds).
 
 **Remaining open sub-problems:**
@@ -1092,6 +1110,11 @@ See `test_expected_contraction` in `reason.rs` for the empirical verification.
 
 ## XX. Joint Space Contraction (The Remaining Frontier)
 
+> **Historical derivation.** The product-metric condition in this section is
+> retained as an audit trail. It is superseded for deployment claims by
+> Theorem XXV.4 and the runtime-admissible factorized telemetry
+> $\kappa_{\mathrm{joint}}$.
+
 ### The Product Space
 
 The full system state is $(x, \mathcal{M}) \in \mathcal{H} \times \mathcal{P}(\mathcal{H})$, where $\mathcal{P}(\mathcal{H})$ is the space of finite subsets of $\mathcal{H}$ (cluster manifolds). The joint update is:
@@ -1259,7 +1282,12 @@ Hence $L_F = \sup_{v \neq v'} \delta(c_v, c_{v'}) / \delta(v, v') \leq 1.0$ alwa
 
 **Verification** (`test_adversarial_lf_boundary` in `reason.rs`): The structured construction hits $L_F = 1.000000$ exactly. The earlier random-vector test (`test_adversarial_lf`) only found $L_F \approx 0.502$ because random vectors rarely hit the exact boundary condition.
 
-### Corollary XXII.1-R (Joint Contraction Still Holds)
+### Corollary XXII.1-R (Historical Joint-Contraction Calculation — Superseded)
+
+> **Status.** This subsection records the corrected v2.5 calculation for the
+> original joint-metric parameterization. It is retained for audit history but
+> is not the current stability proof. Current stability is Theorem XXV.4 on
+> A3-Q runtime-admissible manifolds, with calibrated $\tau=0.10$ telemetry.
 
 With $L_F = 1.0$ (tight worst case), $\kappa_P \approx 0.68$, $\kappa_F \approx 0.95$:
 
@@ -1585,7 +1613,8 @@ See `test_metastable_oscillation` in `reason.rs`. The test:
 | $\beta$ | 1 | Manifold weight in joint metric |
 | $\kappa_P$ | $\approx 0.970$ (hard) / $\approx 0.916$ (soft, $\tau=0.10$, v3.1 calibrated) | Projection contraction factor |
 | $\kappa_F$ | $\approx 0.95$ | Manifold drift contraction factor |
-| $\kappa$ | $\approx 0.925$ | Joint Wasserstein contraction per 50-tick cycle |
+| $\kappa_{W_1}$ | $\approx 0.925$ (legacy coupling measurement) | Historical hard/old-sweep Wasserstein contraction per 50-tick cycle |
+| $\kappa_{\mathrm{joint}}$ | $\approx 0.870$ at $\tau=0.10$ | Current calibrated projection/manifold product; runtime tripwire is 0.995 |
 | $\Delta W_1$ margin | 0.010 | Joint contraction safety margin at $L_F = 1.0$ |
 | $w_{\min}$ | $\geq 1$ | Minimum cluster weight at absorption |
 | $\sigma$ | $\approx 0.05$–$0.10$ | Input noise level (std of NHD) |
@@ -1597,7 +1626,7 @@ See `test_metastable_oscillation` in `reason.rs`. The test:
 | $\text{supp}(\mu^*)$ | $K \cdot B_{d_{\max}}$ | Support of invariant measure (K Hamming balls radius $d_{\max}$) |
 | $\text{vol. fraction}$ | $\ll 2^{-D}$ | Volume fraction of $\text{supp}(\mu^*)$ in $\mathcal{H}$ |
 | $\text{AC}(\mu^*)$ | Singular | Absolute continuity w.r.t. product Hamming measure |
-| $C_{\text{eff}}$ | $\approx 10.58$ bits (soft, $\tau=0.10$, v3.1 calibrated) | Effective channel capacity (hard: $\log_2 K \approx 4.3$ at $K=20$). Empirically 2554 distinct outputs = 128$\times$ gain |
+| $C_{\text{eff}}$ | $\approx 11.3$ bits (soft, $\tau=0.10$, v3.1 calibrated) | Effective channel capacity (hard: $\log_2 K \approx 4.3$ at $K=20$). Empirically 2554 distinct outputs = 128$\times$ gain |
 | $\tau_{\text{opt}}$ | 0.10 (v3.1 corrected) | Empirically calibrated optimal soft projection temperature (old 0.030 was a buggy artifact) |
 | $\gamma$ | 0.975 | Accumulator decay factor (every 50 ticks) |
 | $W_{\max}$ | 500 | Maximum cluster weight (weight cap) |
@@ -1898,7 +1927,7 @@ Sub-Lemma S is **verified computationally** via two independent tests:
 
 **Results:** Both tests pass with 100% success rate. Surjectivity: all 10 cells hit all $K$ centroids. Constructive witness: 90/90 pairs, min $w_j/w_i = 5.39$, min $d_j - d_i = 0.21$.
 
-The frontier sweep independently confirms that $P_\tau$ at $\tau = 0.10$ produces $C_{\text{eff}} = 2554$ distinct outputs (128$\times$ the $K=20$ baseline), consistent with dense coverage. Runtime telemetry ($\kappa_P \cdot \kappa_F$) never triggers the tripwire.
+The frontier sweep independently confirms that $P_\tau$ at $\tau = 0.10$ produces $C_{\text{eff}} = 2554$ distinct outputs (11.3 bits, 128$\times$ the $K=20$ baseline), consistent with dense coverage. Runtime telemetry ($\kappa_P \cdot \kappa_F$) never triggers the tripwire.
 
 **Lemma XXV.4.1 ($\delta_{\min}$ Positivity).** Under Sub-Lemma S:
 
@@ -2142,8 +2171,8 @@ The soft projection $P^{\tau}_{\mathcal{M}}$ has three distinct regimes, discove
 | Regime | $\tau$ range | $\kappa_P^{\tau}$ | $C_{\text{eff}}$ | Behavior |
 |--------|-------------|-------------------|------------------|----------|
 | **Hard-like** | $< 0.01$ | $\approx 0.97$ | $= K$ | Softmax acts as argmax, no capacity gain |
-| **Sweet spot** | $0.01\!-\!0.03$ | $\approx 1.0$ | $1.5\!-\!9\times K$ | Near-neutral projection, real capacity gain |
-| **Mush** | $> 0.10$ | $< 0.85$ | $\gg K$ | Outputs converge to centroid average, over-contractile |
+| **Calibrated operating window** | approximately $0.06\!-\!0.12$ | measured, below 1 in the sweep | measured | Capacity/contraction trade-off is usable; exact values are benchmark-dependent |
+| **Mush** | high temperature (for example $\tau = 0.50$) | strongly contractive | unstable as a representation | Outputs converge toward a centroid average; avoid |
 
 **Empirical measurement** (K=20, 800 pair samples, 2000 queries, see `test_soft_projection_frontier_sweep`):
 
@@ -2155,12 +2184,10 @@ Hard projection baseline: $\kappa_P^{hard} = 0.970$, $C_{\text{eff}} = 20 = K$ (
 | 0.02 | 0.965 | 5.80 | 56 | 0.917 | Near-hard |
 | 0.04 | 0.958 | 7.12 | 87 | 0.910 | Sweet spot (edge) |
 | 0.06 | 0.947 | 8.41 | 109 | 0.900 | Sweet spot |
-| 0.08 | 0.932 | 9.58 | 120 | 0.885 | Sweet spot (conservative) |
-| **0.10** | **0.916** | **10.58** | **128** | **0.870** | **OPTIMUM (v3.1 calibrated)** |
-| 0.12 | 0.898 | 11.32 | 128 | 0.853 | High capacity (acceptable) |
-| 0.15 | 0.869 | 12.10 | 112 | 0.826 | Mush ($\kappa_P < 0.87$) |
-| 0.20 | 0.821 | 12.98 | 76 | 0.780 | Deep mush |
-| 0.30 | 0.732 | 14.00 | 35 | 0.695 | Unusable ($\kappa_P < 0.75$) |
+| 0.08 | measured | 10.6 | 76 | measured | Conservative calibrated point (1,528 outputs) |
+| **0.10** | **0.916** | **11.3** | **128** | **0.870** | **OPTIMUM (v3.1 calibrated)** |
+| 0.12 | measured | not reported | above hard baseline | measured | Upper edge of calibrated window |
+| 0.50 | $< 0.19$ | not reported | not meaningful | not reported | Mush; avoid |
 
 **v3.1 calibrated optimum: $\tau = 0.10$**
 
@@ -2168,7 +2195,7 @@ At this point:
 - $\kappa_P = 0.916$ (safe operating margin, 8.4% headroom to $\kappa_P < 1.0$)
 - $\kappa_{\text{joint}} = 0.870$ (13% headroom to 0.995 tripwire)
 - $C_{\text{eff}} = 2554$ distinct outputs (**128$\times$** multiplier vs hard baseline)
-- $C_{\text{eff}} = 10.58$ bits (vs 4.32 bits hard — 145% increase)
+- $C_{\text{eff}} = 11.3$ bits (vs 4.32 bits hard — 161% increase)
 - Cooling from the buggy formula shifted the optimal τ from 0.030 to 0.10
 
 > **v3.1 correction (June 2026)**: The original analysis used a buggy numerical stability
@@ -2185,7 +2212,7 @@ The correct trade-off is not "contraction vs capacity" but **"sharpness vs diver
 
 1. **Hard projection** ($\tau \to 0$): forces each input to a single centroid. Strong information destruction ($\kappa_P \approx 0.97$), minimal output diversity ($C_{\text{eff}} = \log_2 K$). The invariant measure is singular.
 
-2. **Sweet spot** ($\tau \approx 0.10$): allows inputs near Voronoi boundaries to hybridize between centroids. Information destruction is balanced ($\kappa_P \approx 0.93$), output diversity is substantial ($C_{\text{eff}} \approx 9.5$ bits). The invariant measure breaks singularity.
+2. **Calibrated operating point** ($\tau = 0.10$): allows inputs near Voronoi boundaries to hybridize between centroids. The measured projection contraction is $\kappa_P \approx 0.916$, with 2,554 distinct outputs ($C_{\text{eff}} \approx 11.3$ bits, $128\times$ the hard baseline). The invariant measure breaks singularity.
 
 3. **Mush** ($\tau \gg 0.50$): all outputs blend toward the centroid population mean. Information destruction increases again ($\kappa_P < 0.85$). The invariant measure becomes degenerate (concentrated near the mean).
 
@@ -2213,7 +2240,7 @@ P^τ_ℳ(x):
 
 **Parameter τ.** The temperature controls the softness:
 - $\tau = 0$: hard projection (singular, $C_{\text{eff}} = \log_2 K$)
-- $\tau = 0.10$: **optimal** (balanced, $C_{\text{eff}} \approx 10.58$ bits, $\kappa_P \approx 0.916$)
+- $\tau = 0.10$: **optimal** (balanced, $C_{\text{eff}} \approx 11.3$ bits, $\kappa_P \approx 0.916$)
 - $\tau > 0.50$: mush regime (all outputs converge to centroid mean)
 
 ### Summary of Extensions
@@ -2222,9 +2249,9 @@ P^τ_ℳ(x):
 |---|---|---|
 | Support cardinality | $K$ points | $\gg K$ (empirically 128$\times$ at K=20) |
 | Invariant measure | Singular | Absolutely continuous |
-| Capacity | $\log_2 K \approx 4.3$ bits (K=20) | $\approx 10.58$ bits (2554 distinct outputs) |
+| Capacity | $\log_2 K \approx 4.3$ bits (K=20) | $\approx 11.3$ bits (2554 distinct outputs) |
 | Contraction | $\kappa_P \approx 0.970$ | $\kappa_P \approx 0.916$ (safe, 8.4% headroom) |
-| Joint contraction | $\kappa \approx 0.922$ | $\kappa \approx 0.870$ (13% headroom to 0.995 tripwire) |
+| Joint contraction | $\kappa \approx 0.922$ (legacy hard calculation) | $\kappa_{\mathrm{joint}} \approx 0.870$ (13% headroom to 0.995 tripwire) |
 | Novelty gate | Still works | Still works |
 | LSH lookup | Exact match | All centroids vote (no top-M truncation) |
 
@@ -2301,7 +2328,7 @@ This is the central proof chain. It secures the system's long-term behavior.
 XVII.1 (Wasserstein contraction)
    │
    │  Coupling argument: run two systems in parallel with the same input stream.
-   │  Their Wasserstein distance contracts by κ ≈ 0.925 per 50-tick cycle.
+   │  Legacy hard/old-sweep measurement: κ ≈ 0.925 per 50-tick cycle.
    │  Key: decay cancels out of the threshold comparison (Lemma D1).
    │
    ├──→ XXI.1 (Unique invariant measure)
@@ -2313,17 +2340,17 @@ XVII.1 (Wasserstein contraction)
    │       d_TV(P_t, π) ≤ κ^t / Δ, where Δ = δ_min - 2d_max ≥ 0.24
    │       Mixing time: n_mix(0.01) ≤ 77 cycles = 3850 ticks
    │
-   └──→ XX.1 (Joint contraction condition)
-            Requires α(1-κ_P) > β·κ_F·L_F
-            Verified with margin 0.010 at L_F = 1.0 (worst case)
+   └──→ XXV.4 (Runtime-admissible contraction)
+            Current factorized telemetry uses κ_joint ≈ 0.870 at τ = 0.10
+            with a 0.995 tripwire; the older XX.1 calculation is historical.
        │
        └── Verified by: test_joint_space_contraction, test_expected_contraction
-            • κ ≈ 0.925 measured empirically
-            • Manifold distance converges below initial noise level
+            • Legacy hard/old-sweep coupling measurement: κ ≈ 0.925
+            • Current calibrated product: κ_joint ≈ 0.870 at τ = 0.10
 ```
 
 **The coupling argument (the linchpin):**
-> Run two copies of the manifold distribution $\mu_t$ and $\mu_t'$ receiving the **same input stream** $\{v_t\}$. Their Wasserstein distance $W_1(\mu_t, \mu_t')$ is **non-increasing** under absorption (same input → same centroid shifts) and **invariant** under decay (factor cancels). The only source of contraction is cluster merges (which collapse two centroids into one) and the projection operator. The net contraction per 50-tick cycle is $\kappa \approx 0.925$.
+> Run two copies of the manifold distribution $\mu_t$ and $\mu_t'$ receiving the **same input stream** $\{v_t\}$. Their Wasserstein distance $W_1(\mu_t, \mu_t')$ is **non-increasing** under absorption (same input → same centroid shifts) and **invariant** under decay (factor cancels). The only source of contraction is cluster merges (which collapse two centroids into one) and the projection operator. The legacy hard/old-sweep estimate was $\kappa \approx 0.925$ per 50-tick cycle; current deployment uses factorized telemetry with $\kappa_{\mathrm{joint}} \approx 0.870$ at $\tau=0.10$ and a 0.995 tripwire.
 
 ### Layer 4: Stability Bounds (Worst-Case Analysis + Stress Tests)
 
@@ -2381,10 +2408,10 @@ XXVII.1 (Soft projection breaks singularity)
          • K=10: hard = 10 outputs, soft = 21 outputs (τ=0.08, v3.1)
 
 XXVII.2-R (The real trade-off) — v3.1 corrected
-    │  Three empirically discovered regimes (with correct exp(-(d² - min_d²)/τ)):
-    │    τ < 0.03:  hard-like (κ_P ≈ 0.97, C_eff = K)
-    │    0.06-0.12: sweet spot (κ_P ≈ 0.78-0.97, C_eff = 10-128×)
-    │    τ > 0.50:  mush (κ_P < 0.85, outputs converge to mean)
+    │  Three empirically observed regimes (with correct exp(-(d² - min_d²)/τ)):
+    │    low τ: hard-like (κ_P ≈ 0.97, C_eff ≈ K)
+    │    0.06-0.12: calibrated operating window; exact values are sweep-dependent
+    │    high τ (for example 0.50): mush (outputs converge toward the mean)
     │
     │  NOTE: The original analysis used exp(-(d - min_d)²/τ) which introduced
     │  a systematic bias exp(2·min_d·(d - min_d)/τ), over-weighting distant
@@ -2392,7 +2419,7 @@ XXVII.2-R (The real trade-off) — v3.1 corrected
     │  τ=0.10. The bug was fixed in v3.1.
     │
     └── Verified by: test_soft_projection_frontier_sweep
-         • Optimal τ = 0.10 (v3.1 corrected): κ_P = 0.916, C_eff = 2554 (128×), κ_joint = 0.870
+         • Optimal τ = 0.10 (v3.1 corrected): κ_P = 0.916, C_eff = 2554 (11.3 bits, 128×), κ_joint = 0.870
          • E(τ) penalty function relaxed: κ_P ∈ [0.85, 1.04] safe (was [0.95, 1.02] overly conservative)
          • 12.5% headroom from κ_joint tripwire at 0.995
 ```
@@ -2419,7 +2446,7 @@ ContractionTelemetry (lib.rs)
    │     κ ≥ 1.001: CRITICAL (structural divergence detected)
    │     Logged to agent console every 50 ticks
    │
-   └── architected_before deployment
+   └── verified before deployment
 ```
 
 ### Visual Dependency Graph
@@ -2451,7 +2478,7 @@ Runtime Telemetry (Layer 6)
     └──→ κ_P · κ_F < 0.995 → system is safe
 ```
 
-### Summary: 35 Passing Tests, 6 Layers, Complete Coverage
+### Summary: 423 Passing Tests, 6 Mathematical Layers, Current Implementation Snapshot
 
 | Layer | Theorems | Method | Tests |
 |-------|----------|--------|-------|
@@ -2462,7 +2489,12 @@ Runtime Telemetry (Layer 6)
 | 5. Capacity | XXVII.1, XXVII.2-R | Empirical sweep | `test_soft_projection_frontier_sweep` |
 | 6. Runtime | All above | Live telemetry | `ContractionTelemetry` in agent loop |
 
-**Bottom line:** The system is the most rigorously verified VSA architecture in the literature. Every claimed bound is either an algebraic identity, a Banach fixed point, a runtime-admissible theorem with an executable admission gate, or an empirically measured quantity with explicit error bounds. The uniform spectral gap (Theorem XXV.4) holds for A3-Q runtime-admissible manifolds. The former deterministic decorrelation gap is closed two ways: exact $\rho$-admissibility alone is proven insufficient, and quantitative rotated-decorrelation is now an executable admission contract rather than an inferred theorem.
+**Scope note:** The specification separates algebraic identities, conditional theorems,
+runtime admission contracts, and empirical measurements. It does not claim a literature-wide
+ranking. The uniform spectral-gap claim (Theorem XXV.4) is limited to A3-Q
+runtime-admissible manifolds. Exact $\rho$-admissibility alone is insufficient; quantitative
+rotated decorrelation is an explicit executable admission contract rather than an inferred
+universal property.
 
 ---
 
@@ -2636,8 +2668,27 @@ where $p \in \{0.10, 0.30, 0.50, 0.70, 0.90, 1.00\}$ across the 6-stage curricul
 $$\text{WR} \geq \text{threshold}(p) \quad \land \quad N_{rules} \geq N_{min}$$
 
 where:
-- $\text{threshold}(p) = \begin{cases} 0.40 & p \leq 0.30 \\ 0.35 & p \leq 0.50 \\ 0.25 & p \leq 0.70 \\ 0.15 & p \leq 0.90 \\ 0.05 & p = 1.00 \end{cases}$
-- $N_{min} = \begin{cases} 2 & \text{games\_per\_level} \leq 100 \\ 5 & \text{otherwise} \end{cases}$
+
+- $\text{threshold}(p)$ is defined by:
+
+$$
+\text{threshold}(p) = \begin{cases}
+0.40 & p \leq 0.30 \\
+0.35 & p \leq 0.50 \\
+0.25 & p \leq 0.70 \\
+0.15 & p \leq 0.90 \\
+0.05 & p = 1.00
+\end{cases}
+$$
+
+- $N_{min}$ is defined by:
+
+$$
+N_{min} = \begin{cases}
+2 & \text{games\_per\_level} \leq 100 \\
+5 & \text{otherwise}
+\end{cases}
+$$
 
 ### C.8 Opponent Modeling (Behavioral Layer)
 
@@ -2767,11 +2818,13 @@ OUT-OF-DISTRIBUTION inputs — structural variants with zero textual overlap wit
 training example.  The intervention test (Section XV-A) is exactly this:
 the hand-coded tables succeed where learned centroids fail. $\square$
 
-**Corollary XXVIII.1 (Intervention Test Result).** The current VSA architecture
-(trigram centroids + association memory) produces **0/3** correct zero-overlap
-classifications without the hand-coded tables.  This is an empirical lower bound
-on the learning gap: structural SVO centroids must be stored in the L2 hierarchy
-before the learned system can match the hand-coded tables.
+**Corollary XXVIII.1 (Historical and Current Intervention Results).** The historical
+v3.1 VSA path (trigram centroids plus association memory) produced **0/3** correct
+zero-overlap classifications without hand-coded tables. The current v3.2 structural
+SVO centroid path produces **3/3** correct classifications with **0/3** false
+positives and **0/3** stuck cases. The negative result therefore remains a warning
+against surface-form encoding, not a claim that the current structural path cannot
+learn this measured abstraction.
 
 ### Theorem XXVIII.5 (Some Inputs Must Alias Under Any Finite Hypervector Dimension)
 
@@ -2868,21 +2921,17 @@ The compaction threshold $\theta_{\text{merge}} = 0.30$ determines when two clus
 The soft projection temperature controls the tradeoff between capacity ($C_{\text{eff}}$)
 and contraction ($\kappa_P$), mapped by the frontier sweep (Theorem XXVII):
 
-```
-τ         κ_P      C_eff (bits)   C_eff (×)   Regime
-─────────────────────────────────────────────────────────
-0.00      0.970    4.32           20×          HARD: baseline
-0.02      0.965    5.80           56×          NEAR-HARD
-0.04      0.958    7.12           87×          SWEET SPOT (edge)
-0.06      0.947    8.41           109×         SWEET SPOT
-0.08      0.932    9.58           120×         SWEET SPOT (conservative)
-0.10      0.916    10.58          128×         OPTIMUM (v3.1 calibrated)
-0.12      0.898    11.32          128×         HIGH CAPACITY (acceptable)
-0.15      0.869    12.10          112×         MUSH (κ_P < 0.87)
-0.20      0.821    12.98          76×          DEEP MUSH
-0.30      0.732    14.00          35×          UNUSABLE (κ_P < 0.75)
-0.50      0.608    15.32          11×          TOTALLY UNUSABLE
-```
+| $\tau$ | $\kappa_P$ | Distinct outputs | Capacity | Regime |
+|---:|---:|---:|---:|---|
+| 0.00 | 0.970 | 20 | 4.32 bits | Hard baseline |
+| 0.08 | measured conservative regime | 1,528 | 10.6 bits / 76× | Conservative sweet spot |
+| **0.10** | **0.916** | **2,554** | **11.3 bits / 128×** | **Calibrated optimum** |
+| 0.12 | measured high-capacity regime | above hard baseline | measured sweep range | Acceptable boundary |
+| 0.50 | mush regime | not used for production | — | Degenerate/avoid |
+
+The corrected frontier sweep uses 800 centroid pairs and 2,000 queries with a
+fixed RNG seed. Values not listed as exact above are intentionally described as
+regimes rather than presented as unsupported point estimates.
 
 **Three-regime structure:**
 1. **Hard/near-hard** ($\tau \leq 0.04$): $\kappa_P \approx 1.0$, $C_{\text{eff}} \approx K$.
@@ -3102,7 +3151,7 @@ input validation: reject inputs with $\delta(v, \text{expected}) > 3\sigma$.
 returns `None` (no structure found) for $> 10\%$ of novel inputs, the tables are
 insufficient.
 
-**Current status.** Confirmed by the intervention test (Section XV-A): **0/3** zero-overlap
+**Historical status.** Confirmed by the v3.1 intervention baseline (Section XV-A): **0/3** zero-overlap
 texts classified without tables.  The tables are the ONLY bridge, not a backup.
 
 **Recovery.** Learn abstraction from data.  Build structural SVO centroids:

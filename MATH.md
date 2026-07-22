@@ -22,11 +22,13 @@ $$c = \text{majority}(v_1, \ldots, v_n)$$
 
 where for each dimension $i$:
 
-$$c_i = \begin{cases}
+$$
+c_i = \begin{cases}
 1 & \text{if } \sum_{j=1}^n v_{j,i} > n/2 \\
 0 & \text{if } \sum_{j=1}^n v_{j,i} < n/2 \\
 t_i & \text{if } \sum_{j=1}^n v_{j,i} = n/2
-\end{cases}$$
+\end{cases}
+$$
 
 and $t_i$ is a tiebreaker bit. When $n$ is odd, no ties occur and $c$ is deterministic. When $n$ is even, ties are resolved by a **constitution vector** $K \in \mathcal{H}$:
 
@@ -253,12 +255,14 @@ where $m'$ is the margin after decay. The error comes from rounding ($\pm 0.5$ o
 
 For a cluster with centroid $c$ and incoming temporal centroid $\tau$ from an episode with desirability $d \in [0,1]$:
 
-$$\text{Gate}(\tau, d) = \begin{cases}
+$$
+\text{Gate}(\tau, d) = \begin{cases}
 \text{Discard} & \text{if } d \leq 0.6 \\
 \text{HebbianRefine} & \text{if } d > 0.6 \text{ and } \delta(\tau, c) < 0.15 \\
 \text{Absorbed} & \text{if } d > 0.6 \text{ and } 0.15 \leq \delta(\tau, c) < 0.70 \\
 \text{NewCluster} & \text{if } d > 0.6 \text{ and } \delta(\tau, c) \geq 0.70
-\end{cases}$$
+\end{cases}
+$$
 
 ### Theorem II.1 (Cluster Proliferation is Bounded by LSH Sectors)
 
@@ -564,10 +568,12 @@ where $H_{\text{max}}$ is the maximum number of hot clusters (default $100$).
 
 For any frozen cluster with centroid $c$ and total weight $W \geq 1$, the reconstruction:
 
-$$A_i = \begin{cases}
+$$
+A_i = \begin{cases}
 \lfloor W/2 \rfloor + 1 & \text{if } c_i = 1 \\
 \lfloor W/2 \rfloor & \text{if } c_i = 0
-\end{cases}$$
+\end{cases}
+$$
 
 produces a valid accumulator such that $\mathbf{1}_{A_i > W/2} = c_i$.
 
@@ -1229,8 +1235,10 @@ $$L_F \leq 1.0$$
 
 **Proof.** For a single cluster absorbing $v$ vs $v'$, consider a single bit $i$:
 
-$$c_v[i] = \mathbf{1}_{A_i + v_i > \lfloor (W+1)/2 \rfloor}, \quad
-c_{v'}[i] = \mathbf{1}_{A_i + v'_i > \lfloor (W+1)/2 \rfloor}$$
+$$
+c_v[i] = \mathbf{1}_{A_i + v_i > \lfloor (W+1)/2 \rfloor}, \quad
+c_{v'}[i] = \mathbf{1}_{A_i + v'_i > \lfloor (W+1)/2 \rfloor}
+$$
 
 $$\Delta_i = c_v[i] \oplus c_{v'}[i]$$
 
@@ -1420,8 +1428,10 @@ $$\Delta < 0.30 + \frac{3}{\sqrt{W_{\min}}}$$
 
 *Phase 2 (Split).* After merge, the single centroid $c_{12}$ lies at:
 
-$$\delta(c_{12}, \mu_1) \approx \frac{w_2}{w_1 + w_2} \cdot \Delta, \quad 
-\delta(c_{12}, \mu_2) \approx \frac{w_1}{w_1 + w_2} \cdot \Delta$$
+$$
+\delta(c_{12}, \mu_1) \approx \frac{w_2}{w_1 + w_2} \cdot \Delta, \quad 
+\delta(c_{12}, \mu_2) \approx \frac{w_1}{w_1 + w_2} \cdot \Delta
+$$
 
 where $w_1, w_2$ are the weights of the merged clusters at compression time.
 
@@ -2590,11 +2600,13 @@ $$E_{final}(f) = \beta \cdot \max_{s \in \mathcal{P}(f)} \text{conf}(s) + (1 - \
 
 where $\beta$ is the plan weight. Dynamically scheduled per curriculum stage:
 
-$$\beta(t) = \begin{cases}
+$$
+\beta(t) = \begin{cases}
 0.70 & t < 100 \\
 0.50 & 100 \leq t < 300 \\
 0.30 & t \geq 300
-\end{cases}$$
+\end{cases}
+$$
 
 where $t$ = games played at current curriculum level.
 
@@ -2610,10 +2622,12 @@ The opponent strength follows a smooth hybrid-to-Stockfish progression.
 
 **Definition C.15 (Hybrid Opponent).** At each move, the opponent plays Stockfish d1 with probability $p$ and a random legal move with probability $1-p$:
 
-$$\text{opponent}(f) = \begin{cases}
+$$
+\text{opponent}(f) = \begin{cases}
 \text{stockfish\_d1}(f) & \text{with prob } p \\
 \text{random\_legal}(f) & \text{with prob } 1-p
-\end{cases}$$
+\end{cases}
+$$
 
 where $p \in \{0.10, 0.30, 0.50, 0.70, 0.90, 1.00\}$ across the 6-stage curriculum.
 
@@ -2633,7 +2647,8 @@ Opponent responses are classified into behavior types and mined for predictive p
 
 Let $\mathcal{P}_{pre} = \text{parse}(f_{pre})$, $\mathcal{P}_{post} = \text{parse}(f_{post})$, and $dest(r)$ = destination square of $r$.
 
-$$\text{behavior}(r) = \begin{cases}
+$$
+\text{behavior}(r) = \begin{cases}
 \text{Captures} & \text{if } |\mathcal{P}_{post}| < |\mathcal{P}_{pre}| \\
 \text{KingsideCastle} & \text{if } r \in \{\text{e8g8}, \text{e1g1}\} \\
 \text{QueensideCastle} & \text{if } r \in \{\text{e8c8}, \text{e1c1}\} \\
@@ -2642,7 +2657,8 @@ $$\text{behavior}(r) = \begin{cases}
 \text{Retreats} & \text{if source square was attacked} \\
 \text{Defends} & \text{if destination now defends previously undefended piece} \\
 \text{Unclear} & \text{otherwise}
-\end{cases}$$
+\end{cases}
+$$
 
 **Definition C.18 (Behavioral Rule Mining).** Aggregate all responses by behavior type $b$. For each type, compute:
 
@@ -2964,8 +2980,10 @@ at rate $r$ per tick.  When width exceeds $\theta_{\text{novel}} = 0.70$, the co
 splits the cluster, creating two sub-clusters each with width $\theta_{\text{merge}} = 0.30$.
 The fission rate is:
 
-$$\frac{dK}{dt} \leq K_{\text{active}} \cdot \frac{r}{\theta_{\text{novel}} - \theta_{\text{merge}}} =
-K_{\text{active}} \cdot \frac{r}{0.40}$$
+$$
+\frac{dK}{dt} \leq K_{\text{active}} \cdot \frac{r}{\theta_{\text{novel}} - \theta_{\text{merge}}} =
+K_{\text{active}} \cdot \frac{r}{0.40}
+$$
 
 *Proof.* From Theorem XXIII.3 (corrected).  The protection gap is $0.40$, not $0.05$. $\square$
 

@@ -188,13 +188,14 @@ Implemented surface:
   stored on `VSABrain.tool_reliability`.  Updated alongside every tool event.
   Supports `success_rate()`, `reliability()` (EWMA), `overall_reliability()`.
   Case-insensitive action type lookup.
+- The main loop's legacy corrective-action path now emits the same `ToolEvent`
+  and reliability receipt as governed actuator execution; its `DecisionRecord`
+  links the generated event ID.
 
 Near-term work:
 
-- Wire `record_tool_event()` into the remaining execution paths (meta_reasoning,
-  autonomy_experiment, main.rs legacy action path).
-- Add a `tool_reliability` integration test that verifies EWMA updates across
-  multiple real-tool calls.
+- Extend receipt wiring to any future execution path introduced outside the
+  central actuator boundary.
 
 ## Layer 5: Bounded Autonomy And Resilience
 
@@ -235,8 +236,8 @@ Wired into:
 - `main.rs` corrective plan execution — budget check before `execute_action()`
   with full `DecisionRecord` creation, spending, and logging.
 
-Remaining work:
-- Add `decision_journal.save()` to periodic persistence in main.rs (every 50 ticks).
+Implemented persistence:
+- `decision_journal.save()` runs during the main loop's 50-tick persistence sweep.
 
 ## Layer 6: Governed Reasoning Evaluation
 
@@ -267,7 +268,7 @@ Current anchors:
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `c9b1ae8`):
+Current evidence (commit `f674476`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task

@@ -2040,6 +2040,37 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
             );
         }
     }
+    if let Some(capture) = Regex::new(
+        r"(?i)\b([A-Za-z_][A-Za-z0-9_]*)_0\s*=\s*(-?[0-9]+)\s+and\s+([A-Za-z_][A-Za-z0-9_]*)_\{?n\+1\}?\s*=\s*([A-Za-z_][A-Za-z0-9_]*)_\{?n\}?\s*([+-])\s*(-?[0-9]+)",
+    )
+    .expect("static explicit-affine-recurrence regex")
+    .captures(question)
+    {
+        let sequence = capture.get(1).unwrap().as_str();
+        let recurrence_sequence = capture.get(3).unwrap().as_str();
+        let previous_sequence = capture.get(4).unwrap().as_str();
+        if sequence.eq_ignore_ascii_case(recurrence_sequence)
+            && sequence.eq_ignore_ascii_case(previous_sequence)
+        {
+            let sign = capture.get(5).unwrap().as_str();
+            let offset = capture.get(6).unwrap().as_str();
+            let offset = if sign == "-" {
+                format!("-{offset}")
+            } else {
+                offset.to_string()
+            };
+            push(
+                &mut facts,
+                format!("{sequence}_0={}", capture.get(2).unwrap().as_str()),
+                capture.get(0).unwrap().as_str(),
+            );
+            push(
+                &mut facts,
+                format!("{sequence}_{{n+1}}={sequence}_n+{offset}"),
+                capture.get(0).unwrap().as_str(),
+            );
+        }
+    }
     if let Some(capture) = Regex::new(r"(?i)at least\s+([0-9]+)")
         .expect("static prose-at-least regex")
         .captures(question)
@@ -2477,6 +2508,43 @@ fn resolve_subject(
                 .contains(&name.to_ascii_lowercase()),
             definition_available: true,
             evidence: "explicit_set_definition".into(),
+        });
+    }
+    let recurrence_definition = Regex::new(
+        r"(?i)\b([A-Za-z_][A-Za-z0-9_]*)_0\s*=\s*(-?[0-9]+)\s+and\s+([A-Za-z_][A-Za-z0-9_]*)_\{?n\+1\}?\s*=\s*([A-Za-z_][A-Za-z0-9_]*)_\{?n\}?\s*([+-])\s*(-?[0-9]+)",
+    )
+    .expect("static recurrence-definition regex");
+    for capture in recurrence_definition.captures_iter(question) {
+        let sequence = capture.get(1).unwrap().as_str();
+        let recurrence_sequence = capture.get(3).unwrap().as_str();
+        let previous_sequence = capture.get(4).unwrap().as_str();
+        if !sequence.eq_ignore_ascii_case(recurrence_sequence)
+            || !sequence.eq_ignore_ascii_case(previous_sequence)
+        {
+            continue;
+        }
+        let sign = capture.get(5).unwrap().as_str();
+        let offset = capture.get(6).unwrap().as_str();
+        let offset = if sign == "-" {
+            format!("-{offset}")
+        } else {
+            offset.to_string()
+        };
+        candidates.push(SubjectCandidate {
+            object_id: sequence.into(),
+            object: format!(
+                "{sequence}_0={}; {sequence}_{{n+1}}={sequence}_n+{offset}",
+                capture.get(2).unwrap().as_str()
+            ),
+            object_type: SubjectObjectType::Sequence,
+            source_spans: vec![TextSpan {
+                source_fragment: capture.get(0).unwrap().as_str().into(),
+            }],
+            referenced_by_target: target_text
+                .to_ascii_lowercase()
+                .contains(&format!("{}_", sequence.to_ascii_lowercase())),
+            definition_available: true,
+            evidence: "explicit_affine_recurrence".into(),
         });
     }
     let function_definition =
@@ -3635,6 +3703,31 @@ mod tests {
             .obligations
             .contains(&ModelingObligation::ConstructEquation));
         assert!(trace.modeling_distance >= ModelingDistance::OneModelingStep);
+    }
+
+    #[test]
+    fn explicit_affine_recurrence_is_typed_without_bypassing_specialist_gate() {
+        let trace = assess_prompt(
+            "recurrence-value",
+            "A sequence is defined by a_0=2 and a_{n+1}=a_n+3. Compute a_1.",
+            "Math",
+            false,
+        );
+        assert!(trace.facts.iter().any(|fact| fact.statement == "a_0=2"));
+        assert!(trace
+            .facts
+            .iter()
+            .any(|fact| fact.statement == "a_{n+1}=a_n+3"));
+        assert_eq!(
+            trace.formalized_target.subject.as_deref(),
+            Some("a_0=2; a_{n+1}=a_n+3")
+        );
+        assert_eq!(
+            trace.formalized_target.subject_resolution.selected.as_ref().map(|c| c.object_type),
+            Some(SubjectObjectType::Sequence)
+        );
+        assert!(trace.target_completion.complete);
+        assert!(!assess_direct_instantiation(&trace).authorization_safe());
     }
 
     #[test]

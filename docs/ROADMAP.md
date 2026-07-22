@@ -268,7 +268,7 @@ Current anchors:
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `daee191`):
+Current evidence (commit `02c79e5`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task
@@ -311,13 +311,14 @@ Current evidence (commit `daee191`):
   unvalidated performance target inferred from one machine.
 - Formalization audit: complete fact provenance now gates typed direct
   instantiation; the constrained prose grammar now covers bounded equations,
-  rates, inequalities, systems, quantifiers, units, and entity relations. The
+  rates, inequalities, systems, quantifiers, units, entity relations, typed
+  verification targets, and explicit affine recurrence definitions. The
   60-case seed reports authorization correctness 60/60, zero false
   authorizations, zero false denials, complete failure-taxonomy coverage, and
-  executable target completeness 46/60 (up from 37/60), prose-tier
-  completeness improving from 1/20 to 10/20, and structural target
-  completeness 56/60. Structural completeness is reported separately from
-  executor/verifier availability.
+  structural target completeness 60/60 (executable target completeness 47/60).
+  Recurrence targets remain non-executable through the generic direct-audit
+  path. Structural completeness is reported separately from executor/verifier
+  availability.
 
 Known limits:
 

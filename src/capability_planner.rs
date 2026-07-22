@@ -8844,6 +8844,160 @@ mod tests {
     }
 
     #[test]
+    fn contextual_support_distinguishes_mixed_stored_and_fresh_routes() {
+        let mut registry = CapabilityRegistry::default();
+        registry.register(CapabilitySpec::expression_simplification_v1());
+        registry.register(CapabilitySpec::expression_evaluation_v1());
+        let mut direct = CapabilitySpec::expression_evaluation_v1();
+        direct.id = "direct_expression_evaluation".into();
+        direct.consumes = vec![CapabilityIoType::Expression];
+        registry.register(direct);
+
+        let strategy = CapabilityChainProofConceptStrategyContract {
+            strategy_id: "stored-composite-strategy".into(),
+            concept_ids: vec!["simplify-concept".into(), "evaluate-concept".into()],
+            plan: CapabilityChainPlan {
+                goal: CapabilityIoType::ExactValue,
+                steps: vec![
+                    "expression_simplification".into(),
+                    "expression_evaluation".into(),
+                ],
+            },
+            input_artifacts: vec![CapabilityIoType::Expression],
+            output_artifacts: vec![CapabilityIoType::ExactValue],
+            supporting_instances: 500,
+            diagnostic_only: true,
+        };
+        let validation = strategy.validate(2, 4, 0, 0);
+        assert!(validation.passed);
+        let mut index = CapabilityChainProofConceptStrategyIndex::default();
+        let strategy_id = index.insert(strategy, &validation).unwrap();
+        let context = CapabilityChainStrategicRouteContext {
+            domain: "expression".into(),
+            contract_signature: "expression->exact_value".into(),
+            policy_class: "strict-replay".into(),
+            current_epoch: 20,
+            recent_window: 5,
+        };
+        index
+            .record_context_evidence(
+                &strategy_id,
+                CapabilityChainStrategicRouteContextEvidence {
+                    domain: "expression".into(),
+                    contract_signature: "expression->exact_value".into(),
+                    policy_class: "strict-replay".into(),
+                    epoch: 20,
+                    successful_executions: 1,
+                    safety_failures: 0,
+                },
+            )
+            .unwrap();
+        let fresh = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec!["direct_expression_evaluation".into()],
+        };
+        let comparison = index.compare_with_fresh_plan_in_context(
+            &[CapabilityIoType::Expression],
+            CapabilityIoType::ExactValue,
+            Some(&fresh),
+            &context,
+            &registry,
+        );
+        let stored = comparison
+            .candidates
+            .iter()
+            .find(|candidate| candidate.candidate_id == strategy_id)
+            .unwrap();
+        assert_eq!(stored.global_supporting_instances, 500);
+        assert_eq!(stored.contextual_supporting_instances, Some(1));
+        assert_eq!(stored.supporting_instances, 1);
+        assert_eq!(comparison.frontier_candidate_ids.len(), 2);
+        assert_eq!(
+            comparison.diagnose_exploration(2).decision,
+            CapabilityChainStrategicRouteDecision::ExploreFresh(
+                "fresh-capability-plan".into()
+            )
+        );
+        assert_eq!(
+            comparison.diagnose_exploration(1).decision,
+            CapabilityChainStrategicRouteDecision::Ambiguous(vec![
+                "fresh-capability-plan".into(),
+                strategy_id,
+            ])
+        );
+    }
+
+    #[test]
+    fn sufficient_contextual_support_exploits_dominant_stored_strategy() {
+        let mut registry = CapabilityRegistry::default();
+        registry.register(CapabilitySpec::expression_simplification_v1());
+        registry.register(CapabilitySpec::expression_evaluation_v1());
+        let mut evaluate_simplified = CapabilitySpec::expression_evaluation_v1();
+        evaluate_simplified.id = "evaluate_simplified_expression".into();
+        evaluate_simplified.consumes = vec![
+            CapabilityIoType::SimplifiedExpression,
+            CapabilityIoType::BindingSet,
+        ];
+        registry.register(evaluate_simplified);
+
+        let strategy = CapabilityChainProofConceptStrategyContract {
+            strategy_id: "stored-direct-strategy".into(),
+            concept_ids: vec!["direct-evaluate-concept".into()],
+            plan: CapabilityChainPlan {
+                goal: CapabilityIoType::ExactValue,
+                steps: vec!["expression_evaluation".into()],
+            },
+            input_artifacts: vec![CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+            output_artifacts: vec![CapabilityIoType::ExactValue],
+            supporting_instances: 40,
+            diagnostic_only: true,
+        };
+        let validation = strategy.validate(1, 3, 0, 0);
+        assert!(validation.passed);
+        let mut index = CapabilityChainProofConceptStrategyIndex::default();
+        let strategy_id = index.insert(strategy, &validation).unwrap();
+        let context = CapabilityChainStrategicRouteContext {
+            domain: "expression".into(),
+            contract_signature: "expression+bindings->exact_value".into(),
+            policy_class: "strict-replay".into(),
+            current_epoch: 8,
+            recent_window: 3,
+        };
+        index
+            .record_context_evidence(
+                &strategy_id,
+                CapabilityChainStrategicRouteContextEvidence {
+                    domain: "expression".into(),
+                    contract_signature: "expression+bindings->exact_value".into(),
+                    policy_class: "strict-replay".into(),
+                    epoch: 8,
+                    successful_executions: 3,
+                    safety_failures: 0,
+                },
+            )
+            .unwrap();
+        let fresh = CapabilityChainPlan {
+            goal: CapabilityIoType::ExactValue,
+            steps: vec![
+                "expression_simplification".into(),
+                "evaluate_simplified_expression".into(),
+            ],
+        };
+        let comparison = index.compare_with_fresh_plan_in_context(
+            &[CapabilityIoType::Expression, CapabilityIoType::BindingSet],
+            CapabilityIoType::ExactValue,
+            Some(&fresh),
+            &context,
+            &registry,
+        );
+        assert_eq!(comparison.frontier_candidate_ids, vec![strategy_id.clone()]);
+        assert_eq!(
+            comparison.diagnose_exploration(3).decision,
+            CapabilityChainStrategicRouteDecision::ExploitStored(vec![strategy_id])
+        );
+    }
+
+    #[test]
     fn verified_proofs_compose_when_artifacts_are_compatible() {
         let first = CapabilityChainProofTrace {
             execution_id: "proof-compose-first".into(),

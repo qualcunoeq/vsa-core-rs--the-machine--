@@ -254,7 +254,7 @@ Current anchors:
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `2fb826f`):
+Current evidence (commit `b3d4dee`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task
@@ -277,8 +277,8 @@ Current evidence (commit `2fb826f`):
   rates, inequalities, systems, quantifiers, units, and entity relations. The
   60-case seed reports authorization correctness 60/60, zero false
   authorizations, zero false denials, complete failure-taxonomy coverage, and
-  target completeness 45/60 (up from 37/60), with prose-tier completeness
-  improving from 1/20 to 9/20.
+  target completeness 46/60 (up from 37/60), with prose-tier completeness
+  improving from 1/20 to 10/20.
 
 Known limits:
 

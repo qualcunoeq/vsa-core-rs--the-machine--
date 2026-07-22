@@ -210,7 +210,7 @@ equations, rates, inequalities, systems, quantifiers, units, and entity
 relations. On `data/formalization_seed_v1.json` (60 cases), the audit reports
 `authorization_correct=60`, `false_authorizations=0`, `false_denials=0`, and
 full failure-taxonomy coverage; typed target completeness improved from 37/60
-to 45/60 (prose tier 1/20 to 9/20). This is a safety-gated audit result, not
+to 46/60 (prose tier 1/20 to 10/20). This is a safety-gated audit result, not
 a claim that every target is executable.
 
 For machine-readable tier/holdout metrics, use the standard JSONL runner:

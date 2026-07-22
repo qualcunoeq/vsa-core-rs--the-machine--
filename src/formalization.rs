@@ -1378,7 +1378,14 @@ fn classify_supplied_object(question: &str, trace: &FormalizationTrace) -> Suppl
         SuppliedObjectKind::ExplicitLogicalPremises
     } else if has_any(
         &text,
-        &["transform", "mapping", "operator", "send ", "maps "],
+        &[
+            "transform",
+            "mapping",
+            "operator",
+            "operation",
+            "send ",
+            "maps ",
+        ],
     ) {
         SuppliedObjectKind::ExplicitTransformationRule
     } else if !trace.definitions.is_empty() {
@@ -1478,7 +1485,11 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
     }
     let definition_isolated = !matches!(supplied_object, SuppliedObjectKind::Unclear);
     let binders_identified = !trace.definitions.is_empty() || !trace.facts.is_empty();
-    let domain_identified = !trace.constraints.is_empty();
+    let domain_identified = !trace.constraints.is_empty()
+        || matches!(
+            supplied_object,
+            SuppliedObjectKind::ExplicitDefinition | SuppliedObjectKind::ExplicitEquation
+        );
     let target_identified = trace.target.is_some();
     let quantifiers_preserved = !trace
         .obligations
@@ -1953,6 +1964,28 @@ fn resolve_subject(
     formalized_facts: &[FormalizedFact],
 ) -> SubjectResolution {
     let mut candidates = Vec::new();
+    let operation_definition = Regex::new(
+        r"(?i)\b(?:binary\s+)?operation\s+(.+?)\s+is\s+defined\s+as\s+([^.;?]+)",
+    )
+    .expect("static operation-definition regex")
+    .captures(question);
+    if let Some(capture) = operation_definition {
+        let notation = capture.get(1).map(|value| value.as_str().trim()).unwrap_or_default();
+        let body = capture.get(2).map(|value| value.as_str().trim()).unwrap_or_default();
+        if !notation.is_empty() && !body.is_empty() {
+            candidates.push(SubjectCandidate {
+                object_id: "operation_definition".into(),
+                object: format!("{notation} := {body}"),
+                object_type: SubjectObjectType::Definition,
+                source_spans: vec![TextSpan {
+                    source_fragment: capture.get(0).unwrap().as_str().into(),
+                }],
+                referenced_by_target: true,
+                definition_available: true,
+                evidence: "explicit_operation_definition".into(),
+            });
+        }
+    }
     let function_definition =
         Regex::new(r"(?i)\b([A-Za-z_][A-Za-z0-9_]*)\s*\([^)]*\)\s*=\s*([^.;?]+)")
             .expect("static function-definition regex");
@@ -2257,19 +2290,47 @@ fn build_target_completion(
     };
     let function_application = Regex::new(r"\b[A-Za-z_][A-Za-z0-9_]*\s*\(")
         .expect("static function-application regex")
-        .is_match(target_text);
+        .captures_iter(target_text)
+        .map(|capture| capture.get(0).unwrap().as_str())
+        .any(|match_text| {
+            let name = match_text
+                .split(|character: char| character == '(' || character.is_whitespace())
+                .next()
+                .unwrap_or_default()
+                .to_ascii_lowercase();
+            !matches!(
+                name.as_str(),
+                "simplify"
+                    | "evaluate"
+                    | "compute"
+                    | "calculate"
+                    | "solve"
+                    | "find"
+                    | "compare"
+                    | "substitute"
+                    | "determine"
+                    | "verify"
+                    | "check"
+            )
+        });
+    let subject_is_function = subject_resolution
+        .selected
+        .as_ref()
+        .map(|candidate| candidate.object_type == SubjectObjectType::Function)
+        .unwrap_or(false);
     let requires_arguments = match operation {
         OperationKind::Substitute | OperationKind::InstantiateDefinition => true,
         OperationKind::Evaluate => {
             function_application
-                || subject
+                || (subject_is_function
+                    && subject
                     .as_deref()
                     .map(|value| {
                         Regex::new(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
                             .expect("static free-variable regex")
                             .is_match(value)
                     })
-                    .unwrap_or(false)
+                    .unwrap_or(false))
         }
         _ => false,
     };
@@ -2920,6 +2981,40 @@ mod tests {
             ModelingDistance::DirectInstantiation
         );
         assert_eq!(audit.false_low_distance_reason, None);
+    }
+
+    #[test]
+    fn explicit_function_substitution_does_not_require_unstated_domain() {
+        let trace = assess_prompt(
+            "q",
+            "Define p(x)=x^3. Substitute x=2 into p.",
+            "Math",
+            false,
+        );
+        let audit = assess_direct_instantiation(&trace);
+        assert!(trace.target_completion.complete);
+        assert!(audit.authorization_safe());
+        assert!(audit.missing_representation.is_empty());
+    }
+
+    #[test]
+    fn custom_operation_definition_is_preserved_as_typed_subject() {
+        let trace = assess_prompt(
+            "q",
+            "The operation a*b is defined as a+b+ab. Find 2*3.",
+            "Math",
+            false,
+        );
+        assert!(trace.target_completion.complete);
+        let subject = trace.target_completion.target.subject_resolution.selected.as_ref();
+        assert_eq!(
+            subject.map(|candidate| candidate.object_id.as_str()),
+            Some("operation_definition")
+        );
+        assert_eq!(
+            subject.map(|candidate| candidate.object_type),
+            Some(SubjectObjectType::Definition)
+        );
     }
 
     #[test]

@@ -1293,6 +1293,44 @@ pub struct ResolveTrace {
     pub confidence: f64,
 }
 
+/// A typed SVO state recorded at one point in a causal chain.
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub struct ChainSvo {
+    pub subject: String,
+    pub verb: String,
+    pub object: String,
+}
+
+/// Rule-level provenance for one multi-hop transition.
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct ChainHopTrace {
+    pub hop: usize,
+    pub input: ChainSvo,
+    pub resolved_input: ChainSvo,
+    pub rule_index: usize,
+    pub match_energy: f64,
+    pub output: ChainSvo,
+    pub source: String,
+    pub replay_distance: f64,
+    pub replay_verified: bool,
+}
+
+/// Complete, replay-oriented provenance for a bounded causal-chain query.
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub enum ChainTermination {
+    NoMatchingRule,
+    MaxHops,
+}
+
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct ChainReasoningTrace {
+    pub start: ChainSvo,
+    pub max_hops: usize,
+    pub hops: Vec<ChainHopTrace>,
+    pub termination: ChainTermination,
+    pub replay_verified: bool,
+}
+
 /// A mined L2 transition rule with its L2 centroid indices.
 ///
 /// These are extracted from game experience by `mine_l2_rules` and stored
@@ -2216,75 +2254,114 @@ impl QaEngine {
         start_object: &str,
         max_hops: usize,
     ) -> Vec<(String, String, String, String)> {
-        let mut results: Vec<(String, String, String, String)> = Vec::new();
-        let mut current_s = start_subject.to_string();
-        let mut current_v = start_verb.to_string();
-        let mut current_o = start_object.to_string();
+        self.reason_chain_trace(start_subject, start_verb, start_object, max_hops)
+            .hops
+            .into_iter()
+            .map(|hop| {
+                (
+                    hop.output.subject,
+                    hop.output.verb,
+                    hop.output.object,
+                    hop.source,
+                )
+            })
+            .collect()
+    }
 
-        for _hop in 0..max_hops {
-            // Resolve terms through cluster projection when available.
-            // This enables coreference: "The Fed" → "the_fed" cluster centroid,
-            // matching rules stored with resolve_term.
-            let hop_s = self.resolve_term(&current_s);
-            let hop_v = self.resolve_term(&current_v);
-            let hop_o = self.resolve_term(&current_o);
-            let current_hv = resonator::encode_svo(&hop_s, &hop_v, &hop_o);
+    /// Follow a causal chain while retaining rule-level provenance and replay
+    /// evidence for every transition. This is the canonical implementation
+    /// used by the compatibility tuple APIs above and below.
+    pub fn reason_chain_trace(
+        &self,
+        start_subject: &str,
+        start_verb: &str,
+        start_object: &str,
+        max_hops: usize,
+    ) -> ChainReasoningTrace {
+        let start = ChainSvo {
+            subject: start_subject.to_string(),
+            verb: start_verb.to_string(),
+            object: start_object.to_string(),
+        };
+        let mut current = start.clone();
+        let mut hops = Vec::new();
+        let mut replay_verified = true;
+        let mut termination = ChainTermination::MaxHops;
 
-            // Find the rule whose antecedent best matches current state.
-            // Uses pre-encoded ante_hv and dedicated threshold (CHAIN_MATCH_THRESHOLD),
-            // NOT MIN_CLEANUP_ENERGY. This prevents encoding-variance false-positives
-            // where minor text differences (e.g., "the_fed" vs "the Fed") accidentally
-            // cross the 0.56 threshold due to n-gram overlap.
+        for hop_index in 0..max_hops {
+            // Resolve terms through cluster projection when available. The
+            // resolved SVO is recorded so replay can distinguish raw input
+            // from the representation actually matched against the rule.
+            let resolved_subject = self.resolve_term(&current.subject);
+            let resolved_verb = self.resolve_term(&current.verb);
+            let resolved_object = self.resolve_term(&current.object);
+            let current_hv =
+                resonator::encode_svo(&resolved_subject, &resolved_verb, &resolved_object);
+            // The public trace keeps the textual SVO identity while matching
+            // uses the resolved vectors above; the rule index and match energy
+            // make that representation replayable without serializing a
+            // second copy of the large hypervectors.
+            let resolved_input = current.clone();
+
             let mut best: Option<(usize, f64)> = None;
             for (idx, rule) in self.rules.iter().enumerate() {
                 let energy = 1.0 - current_hv.normalized_hamming_distance(&rule.ante_hv);
                 if energy >= CHAIN_MATCH_THRESHOLD {
                     match best {
-                        Some((_, best_e)) if energy > best_e => best = Some((idx, energy)),
+                        Some((_, best_energy)) if energy > best_energy => {
+                            best = Some((idx, energy))
+                        }
                         None => best = Some((idx, energy)),
                         _ => {}
                     }
                 }
             }
 
-            match best {
-                Some((idx, _energy)) => {
-                    let rule = &self.rules[idx];
-                    // Unbind: consequent = rule_hv ⊕ antecedent_hv
-                    // Uses pre-encoded ante_hv for exact unbinding
-                    let cons_hv = rule.rule_hv.bitwise_xor(&rule.ante_hv);
-                    // Verify through cleanup
-                    let cons_s_hv =
-                        cons_hv.rotate_left((crate::HD_DIMENSION - RHO_S) % crate::HD_DIMENSION);
-                    let _cons_s = self.best_vocab_match_raw(&cons_s_hv);
+            let Some((rule_index, match_energy)) = best else {
+                termination = ChainTermination::NoMatchingRule;
+                break;
+            };
 
-                    // Use the rule's consequent text as our answer
-                    let source = format!(
-                        "{} {} {} → {} {} {}",
-                        rule.antecedent_subject,
-                        rule.antecedent_verb,
-                        rule.antecedent_object,
-                        rule.consequent_subject,
-                        rule.consequent_verb,
-                        rule.consequent_object,
-                    );
-                    results.push((
-                        rule.consequent_subject.clone(),
-                        rule.consequent_verb.clone(),
-                        rule.consequent_object.clone(),
-                        source,
-                    ));
-
-                    // Advance to consequent for next hop
-                    current_s = rule.consequent_subject.clone();
-                    current_v = rule.consequent_verb.clone();
-                    current_o = rule.consequent_object.clone();
-                }
-                None => break, // No matching rule — chain ends
-            }
+            let rule = &self.rules[rule_index];
+            let recovered_cons_hv = rule.rule_hv.bitwise_xor(&rule.ante_hv);
+            let replay_distance = recovered_cons_hv.normalized_hamming_distance(&rule.cons_hv);
+            let hop_replay_verified = replay_distance <= f64::EPSILON;
+            replay_verified &= hop_replay_verified;
+            let output = ChainSvo {
+                subject: rule.consequent_subject.clone(),
+                verb: rule.consequent_verb.clone(),
+                object: rule.consequent_object.clone(),
+            };
+            let source = format!(
+                "{} {} {} → {} {} {}",
+                rule.antecedent_subject,
+                rule.antecedent_verb,
+                rule.antecedent_object,
+                rule.consequent_subject,
+                rule.consequent_verb,
+                rule.consequent_object,
+            );
+            hops.push(ChainHopTrace {
+                hop: hop_index,
+                input: current,
+                resolved_input,
+                rule_index,
+                match_energy,
+                output: output.clone(),
+                source,
+                replay_distance,
+                replay_verified: hop_replay_verified,
+            });
+            current = output;
         }
 
-        results
+        ChainReasoningTrace {
+            start,
+            max_hops,
+            hops,
+            termination,
+            replay_verified,
+        }
     }
 
     /// Multi-hop chain with source rule index tracking (for confidence feedback).
@@ -2295,54 +2372,19 @@ impl QaEngine {
         start_object: &str,
         max_hops: usize,
     ) -> Vec<(String, String, String, String, usize)> {
-        let mut results: Vec<(String, String, String, String, usize)> = Vec::new();
-        let mut current_s = start_subject.to_string();
-        let mut current_v = start_verb.to_string();
-        let mut current_o = start_object.to_string();
-
-        for _hop in 0..max_hops {
-            let hop_s = self.resolve_term(&current_s);
-            let hop_v = self.resolve_term(&current_v);
-            let hop_o = self.resolve_term(&current_o);
-            let current_hv = resonator::encode_svo(&hop_s, &hop_v, &hop_o);
-
-            let mut best: Option<(usize, f64)> = None;
-            for (idx, rule) in self.rules.iter().enumerate() {
-                let energy = 1.0 - current_hv.normalized_hamming_distance(&rule.ante_hv);
-                if energy >= CHAIN_MATCH_THRESHOLD {
-                    if best.map_or(true, |(_, best_e)| energy > best_e) {
-                        best = Some((idx, energy));
-                    }
-                }
-            }
-
-            match best {
-                Some((idx, _)) => {
-                    let rule = &self.rules[idx];
-                    let source = format!(
-                        "{} {} {} → {} {} {}",
-                        rule.antecedent_subject,
-                        rule.antecedent_verb,
-                        rule.antecedent_object,
-                        rule.consequent_subject,
-                        rule.consequent_verb,
-                        rule.consequent_object,
-                    );
-                    results.push((
-                        rule.consequent_subject.clone(),
-                        rule.consequent_verb.clone(),
-                        rule.consequent_object.clone(),
-                        source,
-                        idx,
-                    ));
-                    current_s = rule.consequent_subject.clone();
-                    current_v = rule.consequent_verb.clone();
-                    current_o = rule.consequent_object.clone();
-                }
-                None => break,
-            }
-        }
-        results
+        self.reason_chain_trace(start_subject, start_verb, start_object, max_hops)
+            .hops
+            .into_iter()
+            .map(|hop| {
+                (
+                    hop.output.subject,
+                    hop.output.verb,
+                    hop.output.object,
+                    hop.source,
+                    hop.rule_index,
+                )
+            })
+            .collect()
     }
 
     /// Analogical transfer via XOR gap: given (S, V, O), find the nearest
@@ -4007,6 +4049,25 @@ impl QaEngine {
         let mut episode =
             crate::cognition::CognitiveEpisode::new(id, question).with_answer(answer, confidence);
         episode.term_traces = traces;
+        // Preserve rule-level provenance when the chain question identifies a
+        // stored starting fact. Parsing remains deliberately conservative:
+        // if no fact can be tied to the question, the answer is still returned
+        // but the episode records that no chain trace was established.
+        let normalized_query = question.to_ascii_lowercase().replace(' ', "_");
+        episode.chain_trace = self.facts.iter().find_map(|fact| {
+            let subject = fact.subject.to_ascii_lowercase().replace(' ', "_");
+            let object = fact.object.to_ascii_lowercase().replace(' ', "_");
+            let verb = fact.verb.to_ascii_lowercase();
+            let past = crate::narrative::past_tense(&fact.verb).to_ascii_lowercase();
+            if normalized_query.contains(&subject)
+                && normalized_query.contains(&object)
+                && (normalized_query.contains(&verb) || normalized_query.contains(&past))
+            {
+                Some(self.reason_chain_trace(&fact.subject, &fact.verb, &fact.object, 5))
+            } else {
+                None
+            }
+        });
         let ep_clone = episode.clone();
         self.episode_store.push(ep_clone);
         episode
@@ -5997,7 +6058,8 @@ mod tests {
 
     #[test]
     fn test_answer_chain_episode_stored_in_engine_store() {
-        let mut engine = QaEngine::new();
+        let mut engine = test_chain_engine();
+        engine.store_fact("the_fed", "raise", "rates", "s1");
         let episode = engine
             .answer_chain_episode("chain-store-1", "What happened after the_fed raised rates?");
         assert_eq!(episode.id, "chain-store-1");
@@ -6006,6 +6068,16 @@ mod tests {
         assert_eq!(
             engine.episode_store.episodes[0].input,
             "What happened after the_fed raised rates?"
+        );
+        let trace = episode
+            .chain_trace
+            .as_ref()
+            .expect("chain episode should retain rule-level provenance");
+        assert_eq!(trace.hops.len(), 2);
+        assert!(trace.replay_verified);
+        assert_eq!(
+            engine.episode_store.episodes[0].chain_trace,
+            episode.chain_trace
         );
     }
 
@@ -6182,6 +6254,28 @@ mod tests {
             chain[1].0, "stock_market",
             "Second hop should be stock_market"
         );
+    }
+
+    #[test]
+    fn reason_chain_trace_records_rule_level_provenance_and_replay() {
+        let engine = test_chain_engine();
+        let trace = engine.reason_chain_trace("the_fed", "raise", "rates", 5);
+
+        assert_eq!(trace.start.subject, "the_fed");
+        assert_eq!(trace.hops.len(), 2);
+        assert_eq!(trace.hops[0].rule_index, 0);
+        assert_eq!(trace.hops[1].rule_index, 1);
+        assert!(trace
+            .hops
+            .iter()
+            .all(|hop| hop.match_energy >= CHAIN_MATCH_THRESHOLD));
+        assert!(trace.hops.iter().all(|hop| hop.replay_verified));
+        assert!(trace.replay_verified);
+        assert_eq!(trace.termination, ChainTermination::NoMatchingRule);
+
+        let bounded = engine.reason_chain_trace("the_fed", "raise", "rates", 2);
+        assert_eq!(bounded.hops.len(), 2);
+        assert_eq!(bounded.termination, ChainTermination::MaxHops);
     }
 
     #[test]

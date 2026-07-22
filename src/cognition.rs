@@ -4,7 +4,7 @@
 //! answer or act, observe the outcome, then decide what changed in memory.
 
 use crate::actuator::{ActionRequest, ActionResult};
-use crate::qa::ResolveTrace;
+use crate::qa::{ChainReasoningTrace, ResolveTrace};
 use std::collections::HashMap;
 use std::path::Path;
 
@@ -139,6 +139,9 @@ pub struct CognitiveEpisode {
     pub id: String,
     pub input: String,
     pub term_traces: Vec<ResolveTrace>,
+    /// Optional rule-level provenance for causal-chain answers.
+    #[serde(default)]
+    pub chain_trace: Option<ChainReasoningTrace>,
     pub answer: Option<String>,
     pub confidence: f64,
     pub outcome: EpisodeOutcome,
@@ -152,6 +155,7 @@ impl CognitiveEpisode {
             id: id.into(),
             input: input.into(),
             term_traces: Vec::new(),
+            chain_trace: None,
             answer: None,
             confidence: 0.0,
             outcome: EpisodeOutcome::Unknown,

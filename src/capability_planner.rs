@@ -8769,6 +8769,66 @@ mod tests {
         assert_eq!(contextual_strategy.global_supporting_instances, 4);
         assert_eq!(contextual_strategy.contextual_supporting_instances, Some(2));
         assert_eq!(contextual_strategy.supporting_instances, 2);
+        strategy_index
+            .record_context_evidence(
+                &strategy_id,
+                CapabilityChainStrategicRouteContextEvidence {
+                    domain: "equation".into(),
+                    contract_signature: "equation->exact_value".into(),
+                    policy_class: "default".into(),
+                    epoch: 11,
+                    successful_executions: 100,
+                    safety_failures: 1,
+                },
+            )
+            .unwrap();
+        let mismatched_contexts = vec![
+            CapabilityChainStrategicRouteContext {
+                domain: "geometry".into(),
+                ..context.clone()
+            },
+            CapabilityChainStrategicRouteContext {
+                contract_signature: "equation->solution_set".into(),
+                ..context.clone()
+            },
+            CapabilityChainStrategicRouteContext {
+                policy_class: "strict-proof".into(),
+                ..context.clone()
+            },
+            CapabilityChainStrategicRouteContext {
+                current_epoch: 20,
+                recent_window: 5,
+                ..context.clone()
+            },
+            CapabilityChainStrategicRouteContext {
+                current_epoch: 11,
+                recent_window: 0,
+                ..context.clone()
+            },
+        ];
+        for mismatched_context in mismatched_contexts {
+            let comparison = strategy_index.compare_with_fresh_plan_in_context(
+                &[CapabilityIoType::Equation],
+                CapabilityIoType::ExactValue,
+                Some(&fresh_plan),
+                &mismatched_context,
+                &production,
+            );
+            let stored = comparison
+                .candidates
+                .iter()
+                .find(|candidate| candidate.candidate_id == strategy_id)
+                .unwrap();
+            assert_eq!(stored.global_supporting_instances, 4);
+            assert_eq!(stored.contextual_supporting_instances, Some(0));
+            assert_eq!(stored.supporting_instances, 0);
+            assert_eq!(
+                comparison.diagnose_exploration(1).decision,
+                CapabilityChainStrategicRouteDecision::ExploreFresh(
+                    "fresh-capability-plan".into()
+                )
+            );
+        }
         let mixed_decision = route_comparison.diagnose_exploration(3);
         assert!(matches!(
             mixed_decision.decision,

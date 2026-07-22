@@ -13,6 +13,7 @@ use crate::capability_planner::{
 };
 use crate::cognition::ExperimentResult;
 use crate::expression_evaluation::{execute_expression_evaluation, replay_expression_evaluation};
+use crate::linear_system::{execute_linear_system, replay_linear_system};
 use crate::substitution::{execute_substitution, replay_substitution};
 use serde::Serialize;
 use std::collections::{BTreeMap, HashMap};
@@ -831,5 +832,71 @@ mod tests {
         let receipt = execute_substitution(&trace.target_completion.target).unwrap();
         assert!(receipt.replay_verified);
         assert!(replay_substitution(&receipt));
+    }
+
+    #[test]
+    fn second_domain_strategy_shadow_uses_system_receipt_authority() {
+        let registry = CapabilityRegistry::production();
+        let strategy = CapabilityChainProofConceptStrategyContract {
+            strategy_id: "controls-system-shadow".into(),
+            concept_ids: vec!["validated-system-concept".into()],
+            plan: CapabilityChainPlan {
+                goal: CapabilityIoType::SystemSolution,
+                steps: vec!["linear_system_solve".into()],
+            },
+            input_artifacts: vec![CapabilityIoType::EquationSystem, CapabilityIoType::VariableSet],
+            output_artifacts: vec![CapabilityIoType::SystemSolution],
+            supporting_instances: 6,
+            diagnostic_only: true,
+        };
+        let validation = strategy.validate(1, 3, 0, 0);
+        assert!(validation.passed);
+        let mut index = CapabilityChainProofConceptStrategyIndex::default();
+        let strategy_id = index.insert(strategy, &validation).unwrap();
+        index
+            .record_context_evidence(
+                &strategy_id,
+                CapabilityChainStrategicRouteContextEvidence {
+                    domain: "controls".into(),
+                    contract_signature: "system->system_solution".into(),
+                    policy_class: "strict-replay".into(),
+                    epoch: 4,
+                    successful_executions: 2,
+                    safety_failures: 0,
+                },
+            )
+            .unwrap();
+        let context = CapabilityChainStrategicRouteContext {
+            domain: "controls".into(),
+            contract_signature: "system->system_solution".into(),
+            policy_class: "strict-replay".into(),
+            current_epoch: 4,
+            recent_window: 2,
+        };
+        let comparison = index.compare_with_fresh_plan_in_context(
+            &[CapabilityIoType::EquationSystem, CapabilityIoType::VariableSet],
+            CapabilityIoType::SystemSolution,
+            None,
+            &context,
+            &registry,
+        );
+        let stored = comparison
+            .candidates
+            .iter()
+            .find(|candidate| candidate.candidate_id == strategy_id)
+            .unwrap();
+        assert_eq!(stored.global_supporting_instances, 6);
+        assert_eq!(stored.contextual_supporting_instances, Some(2));
+        assert_eq!(
+            comparison.diagnose_exploration(2).decision,
+            CapabilityChainStrategicRouteDecision::ExploitStored(vec![strategy_id.clone()])
+        );
+        assert_eq!(stored.plan.steps, vec!["linear_system_solve"]);
+        assert!(registry.get(&stored.plan.steps[0]).is_some());
+
+        let receipt = execute_linear_system("Solve system: 2*x+1*y=5; 1*x+1*y=3 for x,y")
+            .unwrap();
+        assert!(receipt.replay_verified);
+        assert!(replay_linear_system(&receipt));
     }
 }

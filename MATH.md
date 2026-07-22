@@ -11,7 +11,7 @@
 
 | Current implementation check | Snapshot |
 |---|---|
-| Full Rust test suite | **423 passing tests** (with one known pre-existing `thread_rng()`-based flaky test) |
+| Full Rust test suite | **~1,980 `#[test]` items** (with one known pre-existing `thread_rng()`-based flaky test) |
 | Structural SVO zero-overlap diagnostic | **3/3 correct**; historical trigram path: 0/3 |
 | Governed evaluation | 27/27 direct algebra; 324/500 proposition cases accepted with 1.000 replay; 500/500 strategic selection |
 | Verification control | 32/32 valid receipts accepted; 32/32 tampered receipts rejected; bypass diagnostic false-accepts 32/32 |

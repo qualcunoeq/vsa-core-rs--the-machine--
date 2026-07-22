@@ -261,10 +261,12 @@ Current anchors:
   seven-tier report over direct execution, light formalization, proposition
   proofs, strategic selection, adversarial refusal, and recurrence slices;
   emits explicit evaluated versus unevaluated ablation status.
+- `src/reuse_ablation_benchmark.rs`: deterministic proof-index and governed
+  derived-fact reuse controls used by the unified ablation report.
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `b0011d2`):
+Current evidence (commit `dc41912`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task
@@ -296,9 +298,11 @@ Current evidence (commit `b0011d2`):
   500/500 correct with receipt-shadow replay rate 1.000; recurrence is
   251/500 authorized/replayed with 50/100 positive holdout execution/replay;
   and the 21-case adversarial tier has zero false authorizations or denials.
-  Strategy-memory, concept-memory, and contextual-support ablations are
-  evaluated; proof, fact, and verification-off ablations remain explicitly
-  `not_evaluated` because no isolated end-to-end controls exist.
+  Strategy-memory, concept-memory, contextual-support, proof-reuse, and
+  fact-reuse ablations are evaluated. The proof control records 50/50 indexed
+  hits with replay verification; the fact control records 50/50 governed
+  retrieval hits with receipts. Only verification-off remains explicitly
+  `not_evaluated`, because no safe isolated end-to-end control exists.
 - Operational baseline: the release unified runner records a
   `governed_suite_runtime` receipt; seed-42 500/500 runs measured about
   1.0–1.1 s on the development host. Runtime is measured as evidence, with no

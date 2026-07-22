@@ -208,6 +208,7 @@ pub fn evaluate(
 
     let stored = strategic.modes["stored_strategy"].clone();
     let direct_mode = strategic.modes["direct_capability"].clone();
+    let concept_mode = strategic.modes["concept_guided"].clone();
     let contextual = &strategic.contextual_ablation;
     let mut ablations = vec![
         AblationOutcome {
@@ -229,13 +230,15 @@ pub fn evaluate(
                 contextual.global_only_wrong_decisions
             ),
         },
+        AblationOutcome {
+            name: "concept_memory".into(),
+            status: "evaluated".into(),
+            safety_preserved: Some(concept_mode.false_authorizations == 0),
+            primary_metric: Some(concept_mode.accuracy - direct_mode.accuracy),
+            notes: "concept-guided planning accuracy delta versus direct capability mode".into(),
+        },
     ];
-    for name in [
-        "concept_memory",
-        "proof_reuse",
-        "fact_reuse",
-        "verification",
-    ] {
+    for name in ["proof_reuse", "fact_reuse", "verification"] {
         ablations.push(AblationOutcome {
             name: name.into(),
             status: "not_evaluated".into(),
@@ -313,5 +316,9 @@ mod tests {
             .ablations
             .iter()
             .any(|ablation| ablation.name == "proof_reuse" && ablation.status == "not_evaluated"));
+        assert!(report
+            .ablations
+            .iter()
+            .any(|ablation| ablation.name == "concept_memory" && ablation.status == "evaluated"));
     }
 }

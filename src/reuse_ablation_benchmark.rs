@@ -105,7 +105,6 @@ pub fn evaluate(cases: usize, _seed: u64) -> ReuseAblationReport {
         let probe = proof_trace(&format!("probe-{value}"), value);
         let reused = proof_index.find_equivalent(&probe).is_some();
         proof_hits += usize::from(reused);
-        proof_baseline_hits += 0;
         proof_false_hits += usize::from(reused != expected_reuse);
         proof_replay_verified += usize::from(
             reused
@@ -134,7 +133,6 @@ pub fn evaluate(cases: usize, _seed: u64) -> ReuseAblationReport {
             .map(|plan| !plan.derived_fact_proofs.is_empty())
             .unwrap_or(false);
         fact_hits += usize::from(retrieved);
-        fact_baseline_hits += 0;
         fact_false_hits += usize::from(retrieved != fact_reuse);
         fact_retrieval_receipts += usize::from(plan.as_ref().ok().is_some_and(|plan| {
             plan.derived_fact_proofs

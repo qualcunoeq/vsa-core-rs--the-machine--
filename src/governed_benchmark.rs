@@ -128,7 +128,11 @@ fn strategic_tier(
         positive_success_rate: metrics.accuracy,
         replay_rate: shadow.replay_success as f64
             / shadow.executions_under_existing_authority.max(1) as f64,
-        positive_replay_rate: shadow.replay_success as f64 / metrics.tasks.max(1) as f64,
+        // Strategic replay is a fixed receipt-shadow slice (three cases), not
+        // one replay receipt per generated task; keep its positive rate on the
+        // same authority denominator as replay_rate.
+        positive_replay_rate: shadow.replay_success as f64
+            / shadow.executions_under_existing_authority.max(1) as f64,
         failure_taxonomy: BTreeMap::new(),
     }
 }

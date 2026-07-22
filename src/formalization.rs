@@ -1892,6 +1892,14 @@ fn operation_from_text(text: &str) -> OperationKind {
     } else if lower.contains("evaluate") || lower.contains("compute") || lower.contains("calculate")
     {
         OperationKind::Evaluate
+    } else if lower.contains("determine whether") || lower.contains("determine if") {
+        if lower.contains('=') || lower.contains('<') || lower.contains('>') {
+            OperationKind::Compare
+        } else {
+            OperationKind::Evaluate
+        }
+    } else if lower.contains("determine") {
+        OperationKind::Evaluate
     } else if lower.contains("compare") || lower.contains("equivalent") || lower.contains("same as")
     {
         OperationKind::Compare
@@ -2006,6 +2014,22 @@ fn resolve_subject(
         .expect("static function-reference regex")
         .captures_iter(target_text)
         .map(|capture| capture.get(1).unwrap().as_str().to_ascii_lowercase())
+        .filter(|name| {
+            !matches!(
+                name.as_str(),
+                "simplify"
+                    | "evaluate"
+                    | "compute"
+                    | "calculate"
+                    | "solve"
+                    | "find"
+                    | "compare"
+                    | "substitute"
+                    | "determine"
+                    | "verify"
+                    | "check"
+            )
+        })
         .find(|name| {
             !candidates
                 .iter()
@@ -2911,6 +2935,30 @@ mod tests {
             TargetStatus::Complete
         ));
         assert_eq!(target.build_trace.binding_status, BindingStatus::Complete);
+    }
+
+    #[test]
+    fn parenthesized_expression_is_not_misread_as_undefined_function() {
+        let trace = assess_prompt("q", "Simplify (x + 2) + (3x - 1).", "Math", false);
+        let target = &trace.target_completion;
+        assert!(target.complete);
+        assert!(target.target.subject_resolution.blockers.is_empty());
+        assert!(matches!(
+            target.target.frame,
+            Some(OperationFrame::Simplify { .. })
+        ));
+    }
+
+    #[test]
+    fn determine_relation_is_typed_as_comparison() {
+        let trace = assess_prompt("q", "Determine whether 2^3 = 8.", "Math", false);
+        let target = &trace.target_completion;
+        assert_eq!(
+            target.target.operation_status,
+            OperationStatus::Recognized(OperationKind::Compare)
+        );
+        assert!(target.complete);
+        assert!(target.operation_supported);
     }
 
     #[test]

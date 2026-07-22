@@ -257,7 +257,7 @@ Current anchors:
 - `docs/EVALUATION.md`: reproducible commands, tier denominators, ablations,
   and recorded large-tier results.
 
-Current evidence (commit `6b07a3b`):
+Current evidence (commit `f311a23`):
 
 - 500 strategic tasks: all four modes retain 1.000 planning accuracy; the
   context-aware/global-only ablation is correct on every context-sensitive task

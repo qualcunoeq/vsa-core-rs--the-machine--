@@ -329,7 +329,7 @@ candidates pruned, and whether a budget equal to the full proposal count
 preserves the complete frontier. The budget only bounds diagnostics: it does
 not execute, authorize, or register a composed route.
 
-Latest larger-tier smoke runs (commit `654cfe2`) used 500 generated cases in
+Latest larger-tier smoke runs (commit `f311a23`) used 500 generated cases in
 addition to the 60-case seed (560 total) and the 20-case prose slice. The
 generated run retained 1.000 solution, execution, and replay rates with zero
 false authorizations/denials; its shadow revalidated 553/553 recommendations,

@@ -187,8 +187,19 @@ pub struct StrategicRouteBenchmarkReport {
     pub seed: u64,
     pub task_count: usize,
     pub modes: BTreeMap<String, StrategicRouteModeMetrics>,
+    pub contextual_ablation: ContextualSupportAblationMetrics,
     pub failure_taxonomy: BTreeMap<String, usize>,
     pub deterministic: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ContextualSupportAblationMetrics {
+    pub tasks: usize,
+    pub context_sensitive_tasks: usize,
+    pub contextual_correct: usize,
+    pub global_only_correct: usize,
+    pub global_only_wrong_decisions: usize,
+    pub global_only_misleading_exploitations: usize,
 }
 
 fn registry() -> CapabilityRegistry {
@@ -452,6 +463,14 @@ pub fn evaluate(seed: u64, count: usize) -> StrategicRouteBenchmarkReport {
     let mut full_abstentions = 0;
     let mut full_unnecessary = 0;
     let mut full_steps = 0;
+    let mut contextual_ablation = ContextualSupportAblationMetrics {
+        tasks: task_list.len(),
+        context_sensitive_tasks: 0,
+        contextual_correct: 0,
+        global_only_correct: 0,
+        global_only_wrong_decisions: 0,
+        global_only_misleading_exploitations: 0,
+    };
     for task in &task_list {
         let fresh = if task.has_fresh_plan {
             Some(CapabilityChainPlan {
@@ -524,6 +543,26 @@ pub fn evaluate(seed: u64, count: usize) -> StrategicRouteBenchmarkReport {
         );
         let full_decision = full_comparison.diagnose_exploration(3);
         let full_kind = decision_kind(&full_decision.decision);
+        let global_comparison = strategies.compare_with_fresh_plan(
+            &task.available_inputs,
+            task.goal_artifact,
+            fresh.as_ref(),
+            &registry,
+        );
+        let global_kind = decision_kind(&global_comparison.diagnose_exploration(3).decision);
+        if task.dominant_failure.is_some() {
+            contextual_ablation.context_sensitive_tasks += 1;
+            contextual_ablation.contextual_correct +=
+                usize::from(full_kind == task.expected_full_decision);
+            contextual_ablation.global_only_correct +=
+                usize::from(global_kind == task.expected_full_decision);
+            contextual_ablation.global_only_wrong_decisions +=
+                usize::from(global_kind != task.expected_full_decision);
+            contextual_ablation.global_only_misleading_exploitations += usize::from(
+                global_kind == ExpectedDecision::ExploitStored
+                    && task.expected_full_decision != ExpectedDecision::ExploitStored,
+            );
+        }
         full_correct += usize::from(full_kind == task.expected_full_decision);
         full_abstentions += usize::from(matches!(full_kind, ExpectedDecision::NoCandidates | ExpectedDecision::Ambiguous));
         full_unnecessary += usize::from(full_kind == ExpectedDecision::Ambiguous && task.expected_full_decision != ExpectedDecision::Ambiguous);
@@ -549,6 +588,7 @@ pub fn evaluate(seed: u64, count: usize) -> StrategicRouteBenchmarkReport {
         seed,
         task_count: count,
         modes: mode_rows,
+        contextual_ablation,
         failure_taxonomy,
         deterministic: tasks(count, seed) == task_list,
     }
@@ -574,6 +614,24 @@ pub fn experiment_results(
             metrics.insert(
                 "stale_or_irrelevant_strategy_retrieval_rate".into(),
                 mode.stale_or_irrelevant_strategy_retrieval_rate,
+            );
+            metrics.insert(
+                "contextual_ablation_correct_rate".into(),
+                report.contextual_ablation.contextual_correct as f64
+                    / report.contextual_ablation.context_sensitive_tasks.max(1) as f64,
+            );
+            metrics.insert(
+                "global_only_ablation_correct_rate".into(),
+                report.contextual_ablation.global_only_correct as f64
+                    / report.contextual_ablation.context_sensitive_tasks.max(1) as f64,
+            );
+            metrics.insert(
+                "global_only_misleading_exploitations".into(),
+                report.contextual_ablation.global_only_misleading_exploitations as f64,
+            );
+            metrics.insert(
+                "global_only_wrong_decisions".into(),
+                report.contextual_ablation.global_only_wrong_decisions as f64,
             );
             for (failure, count) in &report.failure_taxonomy {
                 metrics.insert(format!("failure_{failure}"), *count as f64);
@@ -613,6 +671,8 @@ mod tests {
         assert!(full.stored_strategy_usefulness > 0.2);
         assert!(direct.mean_route_steps < full.mean_route_steps);
         assert_eq!(full.false_authorizations, 0);
+        assert_eq!(report.contextual_ablation.contextual_correct, 198);
+        assert!(report.contextual_ablation.global_only_wrong_decisions > 0);
     }
 
     #[test]
@@ -621,9 +681,11 @@ mod tests {
         let results = experiment_results(&report, "test-commit");
         assert_eq!(results.len(), 4);
         assert!(results.iter().all(|result| result.passed));
-        assert!(results.iter().all(|result| {
-            result.metric("false_authorization_rate") == Some(0.0)
-        }));
-        assert!(serde_json::to_string(&results[0]).unwrap().contains("planning_accuracy"));
+        assert!(results
+            .iter()
+            .all(|result| { result.metric("false_authorization_rate") == Some(0.0) }));
+        assert!(serde_json::to_string(&results[0])
+            .unwrap()
+            .contains("planning_accuracy"));
     }
 }

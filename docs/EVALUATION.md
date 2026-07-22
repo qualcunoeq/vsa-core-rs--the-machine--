@@ -173,6 +173,10 @@ concept-retrieval, stored-strategy usefulness, contextual-retrieval, and
 false-authorization metrics. Failure taxonomy counts are emitted as stable
 `failure_<class>` metrics. These are route-oracle tasks, not solved-answer
 claims; execution and verification remain outside the benchmark.
+The report also includes a contextual-support ablation: the same frontier is
+evaluated with matching contextual evidence and with global support only. On
+the medium seed, contextual guidance is correct on all 198 context-sensitive
+tasks, while global-only support produces wrong decisions on a nonzero subset.
 
 The formalization baseline now emits the same dominant-failure taxonomy in its
 report. Run it against a versioned corpus with:

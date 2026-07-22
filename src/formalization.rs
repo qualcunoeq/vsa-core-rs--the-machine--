@@ -3465,6 +3465,18 @@ mod tests {
         assert!(equation.target_completion.complete);
         assert!(!assess_direct_instantiation(&equation).authorization_safe());
 
+        let inequality = assess_prompt(
+            "prose-inequality",
+            "A value is at least 10. Write an inequality.",
+            "Math",
+            false,
+        );
+        assert!(!inequality.target_completion.complete);
+        assert!(matches!(
+            inequality.target_completion.build_trace.final_status,
+            TargetStatus::Complete
+        ));
+
         let system = assess_prompt(
             "prose-system",
             "Two numbers sum to 10 and differ by 2. Find them.",

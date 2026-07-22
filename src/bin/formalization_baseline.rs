@@ -34,6 +34,9 @@ struct Aggregate {
     target_domain_complete: usize,
     target_requested_form_complete: usize,
     target_provenance_complete: usize,
+    /// Structural target completeness is separate from executable capability
+    /// support.  A typed, fully sourced target may still lack an executor.
+    target_structurally_complete: usize,
     target_complete: usize,
     target_constructed: usize,
     target_ambiguous: usize,
@@ -183,6 +186,7 @@ impl Aggregate {
             target_domain_complete: 0,
             target_requested_form_complete: 0,
             target_provenance_complete: 0,
+            target_structurally_complete: 0,
             target_complete: 0,
             target_constructed: 0,
             target_ambiguous: 0,
@@ -295,6 +299,10 @@ impl Aggregate {
             usize::from(completeness.requested_form != TargetFieldStatus::Missing);
         self.target_provenance_complete +=
             usize::from(completeness.provenance == TargetFieldStatus::Complete);
+        self.target_structurally_complete += usize::from(matches!(
+            target_completion.build_trace.final_status,
+            TargetStatus::Complete
+        ));
         self.target_complete += usize::from(target_completion.complete);
         let inventory = &target_completion.target.object_inventory;
         self.object_candidates_found += inventory.objects.len();

@@ -4,7 +4,13 @@
 //! boundary.  It still keeps authorization, execution, and replay metrics
 //! separate so a correct refusal cannot be confused with a failed solve.
 
-use crate::capabilities::{CapabilityRegistry, CapabilitySelection};
+use crate::capabilities::{CapabilityIoType, CapabilityRegistry, CapabilitySelection};
+use crate::capability_planner::{
+    plan_capability_chain, plan_equation_chain, CapabilityChainPlan,
+    CapabilityChainProofConceptStrategyContract, CapabilityChainProofConceptStrategyIndex,
+    CapabilityChainStrategicRouteContext, CapabilityChainStrategicRouteContextEvidence,
+    CapabilityChainStrategicRouteDecision,
+};
 use crate::cognition::ExperimentResult;
 use crate::formalization::{assess_prompt, FormalizedTarget};
 use crate::linear_equation::{execute_linear_equation, replay_linear_equation};
@@ -187,7 +193,30 @@ pub struct AlgebraGroupMetrics {
 pub struct AlgebraBenchmarkReport {
     pub corpus_cases: usize,
     pub groups: BTreeMap<String, AlgebraGroupMetrics>,
+    pub strategy_shadow: AlgebraStrategyShadowMetrics,
     pub deterministic: bool,
+}
+
+/// Shadow execution evidence for the staged strategy-integration boundary.
+/// A stored route is never executed as authority: it must first match an
+/// independently generated route, after which the existing capability
+/// executor and replay verifier remain the only execution path.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct AlgebraStrategyShadowMetrics {
+    pub cases: usize,
+    pub eligible_cases: usize,
+    pub recommendations: usize,
+    pub independent_revalidations: usize,
+    pub executed_under_existing_authority: usize,
+    pub successful_executions: usize,
+    pub replay_success: usize,
+    pub positive_executions: usize,
+    pub positive_successful_executions: usize,
+    pub positive_replay_success: usize,
+    pub route_agreements: usize,
+    pub counterfactual_steps_saved: usize,
+    pub false_authorizations: usize,
+    pub false_denials: usize,
 }
 
 #[derive(Debug, Default)]
@@ -382,6 +411,202 @@ fn execute_case(case: &AlgebraCase, target: &FormalizedTarget) -> ExecutionOutco
     }
 }
 
+fn strategy_fixture(
+    case: &AlgebraCase,
+    target: &FormalizedTarget,
+    registry: &CapabilityRegistry,
+) -> Option<(
+    String,
+    Vec<CapabilityIoType>,
+    CapabilityChainPlan,
+    CapabilityChainPlan,
+)> {
+    let (available_inputs, fresh) = match case.method {
+        AlgebraMethod::LinearEquation | AlgebraMethod::QuadraticEquation => {
+            let subject = target.subject_resolution.selected.as_ref()?;
+            let variable = target.target_variable.as_deref()?;
+            let equation = plan_equation_chain(
+                &subject.object,
+                variable,
+                CapabilityIoType::SolutionSet,
+                registry,
+            )
+            .ok()?;
+            (
+                vec![
+                    CapabilityIoType::NormalizedEquation,
+                    CapabilityIoType::TargetVariable,
+                ],
+                equation.chain,
+            )
+        }
+        AlgebraMethod::LinearSystem => {
+            let available = [
+                CapabilityIoType::EquationSystem,
+                CapabilityIoType::VariableSet,
+            ]
+            .into_iter()
+            .collect();
+            let plan =
+                plan_capability_chain(CapabilityIoType::SystemSolution, &available, registry)
+                    .ok()?;
+            (available.into_iter().collect(), plan)
+        }
+    };
+    let solver = fresh.steps.last()?.clone();
+    let stored = CapabilityChainPlan {
+        goal: fresh.goal,
+        steps: vec![solver.clone()],
+    };
+    Some((
+        format!("algebra-stored-{solver}"),
+        available_inputs,
+        fresh,
+        stored,
+    ))
+}
+
+fn strategy_index_for(
+    strategy_id: &str,
+    input_artifacts: &[CapabilityIoType],
+    stored: &CapabilityChainPlan,
+) -> Option<CapabilityChainProofConceptStrategyIndex> {
+    let mut index = CapabilityChainProofConceptStrategyIndex::default();
+    let strategy = CapabilityChainProofConceptStrategyContract {
+        strategy_id: strategy_id.into(),
+        concept_ids: vec![format!("concept:{strategy_id}")],
+        plan: stored.clone(),
+        input_artifacts: input_artifacts.to_vec(),
+        output_artifacts: vec![stored.goal],
+        supporting_instances: 500,
+        diagnostic_only: true,
+    };
+    let validation = strategy.validate(1, 1, 0, 0);
+    if !validation.passed {
+        return None;
+    }
+    index.insert(strategy, &validation).ok()?;
+    index
+        .record_context_evidence(
+            strategy_id,
+            CapabilityChainStrategicRouteContextEvidence {
+                domain: "algebra".into(),
+                contract_signature: "typed-algebra->solution".into(),
+                policy_class: "strict-replay".into(),
+                epoch: 100,
+                successful_executions: 5,
+                safety_failures: 0,
+            },
+        )
+        .ok()?;
+    Some(index)
+}
+
+fn independently_revalidate_strategy_route(
+    candidate: &crate::capability_planner::CapabilityChainStrategicRouteCandidate,
+    stored: &CapabilityChainPlan,
+    fresh: &CapabilityChainPlan,
+    registry: &CapabilityRegistry,
+) -> bool {
+    candidate.plan == *stored
+        && candidate.plan.steps.len() == 1
+        && fresh.steps.last() == candidate.plan.steps.first()
+        && candidate
+            .plan
+            .steps
+            .iter()
+            .all(|step| registry.get(step).is_some())
+}
+
+fn evaluate_strategy_shadow(corpus: &AlgebraCorpus) -> AlgebraStrategyShadowMetrics {
+    let registry = CapabilityRegistry::production();
+    let context = CapabilityChainStrategicRouteContext {
+        domain: "algebra".into(),
+        contract_signature: "typed-algebra->solution".into(),
+        policy_class: "strict-replay".into(),
+        current_epoch: 100,
+        recent_window: 5,
+    };
+    let mut metrics = AlgebraStrategyShadowMetrics {
+        cases: corpus.cases.len(),
+        eligible_cases: 0,
+        recommendations: 0,
+        independent_revalidations: 0,
+        executed_under_existing_authority: 0,
+        successful_executions: 0,
+        replay_success: 0,
+        positive_executions: 0,
+        positive_successful_executions: 0,
+        positive_replay_success: 0,
+        route_agreements: 0,
+        counterfactual_steps_saved: 0,
+        false_authorizations: 0,
+        false_denials: 0,
+    };
+    for case in &corpus.cases {
+        let trace = assess_prompt(&case.id, &case.prompt, "Algebra", false);
+        if !trace.target_completion.complete {
+            continue;
+        }
+        let Some((strategy_id, inputs, fresh, stored)) =
+            strategy_fixture(case, &trace.target_completion.target, &registry)
+        else {
+            continue;
+        };
+        metrics.eligible_cases += 1;
+        let Some(index) = strategy_index_for(&strategy_id, &inputs, &stored) else {
+            continue;
+        };
+        let comparison = index.compare_with_fresh_plan_in_context(
+            &inputs,
+            fresh.goal,
+            Some(&fresh),
+            &context,
+            &registry,
+        );
+        let decision = comparison.diagnose_exploration(2);
+        let recommended = matches!(
+            decision.decision,
+            CapabilityChainStrategicRouteDecision::ExploitStored(_)
+        );
+        if !recommended {
+            continue;
+        }
+        metrics.recommendations += 1;
+        let stored_candidate = comparison
+            .candidates
+            .iter()
+            .find(|candidate| candidate.candidate_id == strategy_id);
+        let revalidated = stored_candidate
+            .map(|candidate| {
+                independently_revalidate_strategy_route(candidate, &stored, &fresh, &registry)
+            })
+            .unwrap_or(false);
+        if !revalidated {
+            continue;
+        }
+        metrics.independent_revalidations += 1;
+        metrics.route_agreements += 1;
+        metrics.counterfactual_steps_saved += fresh.steps.len().saturating_sub(stored.steps.len());
+
+        // The strategy remains non-authorizing.  This call is deliberately
+        // the existing method-specific executor, which performs its normal
+        // capability contract checks and replay verification.
+        let outcome = execute_case(case, &trace.target_completion.target);
+        metrics.executed_under_existing_authority += 1;
+        metrics.successful_executions += usize::from(outcome.success);
+        metrics.replay_success += usize::from(outcome.replayed);
+        metrics.positive_executions += usize::from(case.should_authorize);
+        metrics.positive_successful_executions +=
+            usize::from(case.should_authorize && outcome.success);
+        metrics.positive_replay_success += usize::from(case.should_authorize && outcome.replayed);
+        metrics.false_authorizations += usize::from(outcome.success && !case.should_authorize);
+        metrics.false_denials +=
+            usize::from(case.should_authorize && (!outcome.success || !outcome.replayed));
+    }
+    metrics
+}
+
 fn add_group(
     groups: &mut BTreeMap<String, GroupAccumulator>,
     name: String,
@@ -414,6 +639,7 @@ pub fn evaluate(corpus: &AlgebraCorpus) -> AlgebraBenchmarkReport {
             case,
             &registry,
         );
+        add_group(&mut groups, format!("tier:{}", case.tier), case, &registry);
     }
     AlgebraBenchmarkReport {
         corpus_cases: corpus.cases.len(),
@@ -421,6 +647,7 @@ pub fn evaluate(corpus: &AlgebraCorpus) -> AlgebraBenchmarkReport {
             .into_iter()
             .map(|(k, v)| (k.clone(), v.finish(k)))
             .collect(),
+        strategy_shadow: evaluate_strategy_shadow(corpus),
         deterministic: true,
     }
 }
@@ -432,7 +659,7 @@ pub fn experiment_results(
 ) -> Vec<ExperimentResult> {
     let dataset = dataset.into();
     let commit = commit.into();
-    report
+    let mut results = report
         .groups
         .values()
         .map(|group| {
@@ -490,7 +717,82 @@ pub fn experiment_results(
                 notes: format!("cases={}, failures={:?}", group.cases, group.failures),
             }
         })
-        .collect()
+        .collect::<Vec<_>>();
+    let shadow = &report.strategy_shadow;
+    let mut metrics = HashMap::new();
+    metrics.insert(
+        "eligible_case_rate".into(),
+        shadow.eligible_cases as f64 / shadow.cases.max(1) as f64,
+    );
+    metrics.insert(
+        "recommendation_rate".into(),
+        shadow.recommendations as f64 / shadow.eligible_cases.max(1) as f64,
+    );
+    metrics.insert(
+        "independent_revalidation_rate".into(),
+        shadow.independent_revalidations as f64 / shadow.recommendations.max(1) as f64,
+    );
+    metrics.insert(
+        "execution_rate".into(),
+        shadow.executed_under_existing_authority as f64
+            / shadow.independent_revalidations.max(1) as f64,
+    );
+    metrics.insert(
+        "replay_rate".into(),
+        shadow.replay_success as f64 / shadow.executed_under_existing_authority.max(1) as f64,
+    );
+    metrics.insert(
+        "successful_execution_rate".into(),
+        shadow.successful_executions as f64
+            / shadow.executed_under_existing_authority.max(1) as f64,
+    );
+    metrics.insert(
+        "positive_execution_rate".into(),
+        shadow.positive_successful_executions as f64 / shadow.positive_executions.max(1) as f64,
+    );
+    metrics.insert(
+        "positive_replay_rate".into(),
+        shadow.positive_replay_success as f64 / shadow.positive_successful_executions.max(1) as f64,
+    );
+    metrics.insert(
+        "route_agreement_rate".into(),
+        shadow.route_agreements as f64 / shadow.independent_revalidations.max(1) as f64,
+    );
+    metrics.insert(
+        "counterfactual_steps_saved".into(),
+        shadow.counterfactual_steps_saved as f64,
+    );
+    metrics.insert(
+        "false_authorization_rate".into(),
+        shadow.false_authorizations as f64 / shadow.cases.max(1) as f64,
+    );
+    metrics.insert(
+        "false_denial_rate".into(),
+        shadow.false_denials as f64 / shadow.cases.max(1) as f64,
+    );
+    results.push(ExperimentResult {
+        experiment: "algebra_strategy_shadow".into(),
+        claim: "validated strategy routes can guide execution only after independent revalidation"
+            .into(),
+        commit: commit.clone(),
+        seed: 0,
+        dataset: Some(dataset),
+        baseline: "ordinary governed algebra executor".into(),
+        metrics,
+        passed: shadow.false_authorizations == 0
+            && shadow.false_denials == 0
+            && shadow.recommendations == shadow.independent_revalidations
+            && shadow.replay_success == shadow.successful_executions,
+        notes: format!(
+            "cases={}, eligible={}, recommendations={}, revalidated={}, saved_steps={}",
+            shadow.cases,
+            shadow.eligible_cases,
+            shadow.recommendations,
+            shadow.independent_revalidations,
+            shadow.counterfactual_steps_saved
+        ),
+    });
+    results
 }
 
 #[cfg(test)]
@@ -526,6 +828,30 @@ mod tests {
         assert_eq!(report.groups["total"].replay_success_rate, 1.0);
         assert_eq!(report.groups["total"].false_authorizations, 0);
         assert_eq!(report.groups["holdout"].cases, 59);
+        assert_eq!(report.groups["tier:development"].cases, 27);
+        assert_eq!(report.groups["tier:holdout"].cases, 19);
+        assert_eq!(report.groups["tier:generated"].cases, 200);
+        assert_eq!(report.groups["tier:adversarial"].cases, 14);
+        assert_eq!(report.strategy_shadow.cases, 260);
+        assert_eq!(report.strategy_shadow.recommendations, 253);
+        assert_eq!(
+            report.strategy_shadow.recommendations,
+            report.strategy_shadow.independent_revalidations
+        );
+        assert_eq!(
+            report.strategy_shadow.replay_success,
+            report.strategy_shadow.successful_executions
+        );
+        assert_eq!(report.strategy_shadow.false_authorizations, 0);
+        assert_eq!(report.strategy_shadow.false_denials, 0);
+        assert_eq!(report.strategy_shadow.positive_executions, 239);
+        assert_eq!(report.strategy_shadow.positive_successful_executions, 239);
+        assert_eq!(report.strategy_shadow.positive_replay_success, 239);
+        let shadow = experiment_results(&report, "generated", "test")
+            .into_iter()
+            .find(|result| result.experiment == "algebra_strategy_shadow")
+            .expect("strategy shadow result");
+        assert!(shadow.passed);
     }
 
     #[test]
@@ -542,5 +868,43 @@ mod tests {
         assert_eq!(total.false_authorizations, 0);
         assert_eq!(total.false_denials, 0);
         assert_eq!(report.groups["holdout"].cases, 4);
+        assert_eq!(report.groups["tier:development"].cases, 16);
+        assert_eq!(report.groups["tier:holdout"].cases, 4);
+        assert_eq!(report.strategy_shadow.positive_executions, 10);
+        assert_eq!(report.strategy_shadow.positive_successful_executions, 10);
+        assert_eq!(report.strategy_shadow.positive_replay_success, 10);
+        let shadow = experiment_results(&report, "prose", "test")
+            .into_iter()
+            .find(|result| result.experiment == "algebra_strategy_shadow")
+            .expect("strategy shadow result");
+        assert!(shadow.passed);
+    }
+
+    #[test]
+    fn strategy_shadow_rejects_route_drift_before_execution() {
+        let case = AlgebraCase {
+            id: "shadow-route-drift".into(),
+            tier: "test".into(),
+            method: AlgebraMethod::LinearEquation,
+            prompt: "Solve for x: x + 3 = 7".into(),
+            expected_result: Some("4".into()),
+            should_authorize: true,
+        };
+        let registry = CapabilityRegistry::production();
+        let trace = assess_prompt(&case.id, &case.prompt, "Algebra", false);
+        let (strategy_id, inputs, fresh, stored) =
+            strategy_fixture(&case, &trace.target_completion.target, &registry).unwrap();
+        let index = strategy_index_for(&strategy_id, &inputs, &stored).unwrap();
+        let comparison =
+            index.compare_with_fresh_plan(&inputs, fresh.goal, Some(&fresh), &registry);
+        let mut drifted = comparison
+            .candidates
+            .into_iter()
+            .find(|candidate| candidate.candidate_id == strategy_id)
+            .unwrap();
+        drifted.plan.steps = vec!["quadratic_equation_solve".into()];
+        assert!(!independently_revalidate_strategy_route(
+            &drifted, &stored, &fresh, &registry
+        ));
     }
 }

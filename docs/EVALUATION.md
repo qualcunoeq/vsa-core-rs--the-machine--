@@ -213,6 +213,9 @@ executors, then replays each successful receipt.  The JSONL report separates
 formalization, method selection, execution, replay, exact-result accuracy,
 route length, false authorization, and false denial.  Adversarial cases are
 expected to abstain; they are not scored as failed solves.
+Every corpus-provided `tier` is also emitted as a `tier:<name>` group, so
+development, holdout, generated, and adversarial performance can be compared
+without mixing their denominators.
 
 To add deterministic parameterized cases without changing the versioned seed:
 
@@ -237,3 +240,18 @@ requests, including four held-out prompts and adversarial abstention cases.
 The current slice executes every authorized case with exact results and replay
 verification, while recording zero false authorizations and zero false
 denials.
+
+The same runner also emits `algebra_strategy_shadow`.  This is the staged
+strategy-integration check: a stored route is compared with a fresh route,
+independently revalidated against the current registry, and then sent through
+the ordinary executor/replay verifier.  Strategy guidance remains diagnostic;
+the stored route never authorizes execution by itself.  The generated 260-case
+run revalidated all 253 eligible recommendations, replayed every successful
+execution, and saved 342 counterfactual capability steps with zero false
+authorizations or denials.
+
+The positive-only shadow metrics form an explicit ablation against the
+ordinary algebra baseline: both modes must retain identical positive execution
+and replay rates. Any claimed benefit is therefore confined to counterfactual
+route cost, preventing a strategy from claiming an accuracy gain when it only
+repackages the same governed executor.

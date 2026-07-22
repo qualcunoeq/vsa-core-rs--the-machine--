@@ -398,6 +398,38 @@ true AND‑branching proof (e.g., prove "if A and B then C" where A and B are
 independent facts that must both be retrieved). Confirm the system correctly
 fails or abstains.
 
+### C-016: Strategy Guidance Can Reduce Route Cost Without Becoming Authority
+
+Status: `supported`
+
+Statement: A validated stored strategy can provide an auditable route-cost
+counterfactual and guide an execution only after independent route
+revalidation; the ordinary capability contract and replay verifier remain the
+authority boundary.
+
+Owner modules: `src/algebra_benchmark.rs`, `src/capability_planner.rs`,
+`src/strategic_route_benchmark.rs`.
+
+Evidence: the algebra strategy-shadow harness independently revalidates every
+recommendation before calling the existing executor.  The 560-case generated
+run revalidated 553/553 recommendations, saved 742 counterfactual steps, and
+kept positive execution/replay at 1.000 with zero false authorizations or
+denials.  The route-drift regression rejects a mutated stored route before
+execution.  Contextual and global-only comparisons include an explicit mixed
+evidence case (500 global successes versus one matching recent success), which
+produces `ExploreFresh` at a support threshold of two.
+
+Baseline: a stored strategy could be treated as an executable route, or global
+support could be mistaken for local precedent.
+
+Failure condition: a stale or drifted strategy bypasses independent
+revalidation, changes positive execution/replay results, or produces a false
+authorization/denial; contextual support inherits mismatched evidence.
+
+Next check: repeat the shadow boundary for expression-evaluation and
+substitution routes, then add a second-domain strategy fixture so the result is
+not confined to the algebra executor family.
+
 ## Retired Or Negative Claims
 
 Negative results are useful research output.  Do not delete them just because

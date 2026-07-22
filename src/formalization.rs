@@ -1919,6 +1919,8 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
         .unwrap_or_default()
         .trim()
         .trim_end_matches(" for real x")
+        .trim_end_matches(" over the real numbers")
+        .trim_end_matches(" over reals")
         .trim_end_matches(" for x")
         .trim_end_matches('.')
         .to_string();
@@ -1933,6 +1935,10 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
         "the equation ",
         "the system ",
         "for real x, ",
+        "find the product of the roots of ",
+        "find the positive solution of ",
+        "determine whether there exists an integer x with ",
+        "determine whether ",
     ] {
         if lhs.to_ascii_lowercase().starts_with(prefix) {
             lhs = lhs[prefix.len()..].trim().to_string();
@@ -1943,6 +1949,44 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
     } else {
         Some((lhs, operator, rhs))
     }
+}
+
+fn extract_system_equation_annotations(question: &str) -> Vec<FactAnnotation> {
+    if !question.to_ascii_lowercase().contains("system") {
+        return Vec::new();
+    }
+    let relation = Regex::new(
+        r"(?i)\b([0-9]*[A-Za-z]\s*[+-]\s*[0-9]*[A-Za-z])\s*=\s*(-?[0-9]+)",
+    )
+        .expect("static system-equation fact regex");
+    relation
+        .captures_iter(question)
+        .map(|capture| FactAnnotation {
+            statement: capture.get(0).unwrap().as_str().trim().into(),
+            source_fragment: capture.get(0).unwrap().as_str().trim().into(),
+        })
+        .collect()
+}
+
+fn extract_real_domain_equation_annotation(question: &str) -> Vec<FactAnnotation> {
+    let relation = Regex::new(
+        r"(?i)\b([A-Za-z0-9_^+*/().\- ]+\s*=\s*[A-Za-z0-9_^+*/().\-]+)\s+over\s+the\s+real\s+numbers",
+    )
+    .expect("static real-domain equation regex");
+    relation
+        .captures(question)
+        .into_iter()
+        .map(|capture| FactAnnotation {
+            statement: capture
+                .get(1)
+                .unwrap()
+                .as_str()
+                .trim()
+                .trim_start_matches("Solve ")
+                .into(),
+            source_fragment: capture.get(0).unwrap().as_str().into(),
+        })
+        .collect()
 }
 
 fn extract_expression_payload(question: &str) -> Option<String> {
@@ -1970,6 +2014,9 @@ fn extract_expression_payload(question: &str) -> Option<String> {
         if let Some(start) = lower.find(verb) {
             let payload = question[start + verb.len()..]
                 .split(['.', '?', '\n'])
+                .next()
+                .unwrap_or_default()
+                .split(',')
                 .next()
                 .unwrap_or_default()
                 .trim()
@@ -2000,6 +2047,23 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
         push(&mut facts, "n+0=n".into(), "n+0=n");
     } else if lower.contains("there exists an integer n") && lower.contains("n^2=4") {
         push(&mut facts, "n^2=4".into(), "n^2=4");
+    } else if let Some(capture) = Regex::new(
+        r"(?i)there exists an integer\s+[A-Za-z_][A-Za-z0-9_]*\s+with\s+([^.?]+)",
+    )
+    .expect("static existential-relation regex")
+    .captures(question)
+    {
+        let statement = capture.get(1).unwrap().as_str().trim();
+        push(&mut facts, statement.into(), statement);
+    }
+    if let Some(capture) = Regex::new(
+        r"(?i)positive solution of\s+([A-Za-z0-9_^+*/.-]+\s*=\s*[0-9]+)",
+    )
+    .expect("static positive-solution fact regex")
+    .captures(question)
+    {
+        let statement = capture.get(1).unwrap().as_str().replace(' ', "");
+        push(&mut facts, statement, capture.get(1).unwrap().as_str());
     }
     let number = |value: &str| -> Option<String> {
         match value.trim().to_ascii_lowercase().as_str() {
@@ -2035,7 +2099,7 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
         if let (Some(decrement), Some(result)) = (number(&capture[1]), number(&capture[2])) {
             push(
                 &mut facts,
-                format!("2x - {decrement} = {result}"),
+                format!("2x-{decrement}={result}"),
                 capture.get(0).unwrap().as_str(),
             );
         }
@@ -2095,12 +2159,24 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
     {
         push(
             &mut facts,
-            format!("y > {}", &capture[1]),
+            format!("y>{}", &capture[1]),
             capture.get(0).unwrap().as_str(),
         );
     }
     if lower.contains("average-speed equation") {
         push(&mut facts, "v = d/t".into(), "average-speed equation");
+        if let Some(capture) = Regex::new(
+            r"(?i)travels\s+([0-9]+)\s+kilometers\s+in\s+([0-9]+)\s+hours",
+        )
+        .expect("static distance-time fact regex")
+        .captures(question)
+        {
+            push(
+                &mut facts,
+                format!("d={} km, t={} h", &capture[1], &capture[2]),
+                capture.get(0).unwrap().as_str(),
+            );
+        }
     } else if let Some(capture) =
         Regex::new(r"(?i)filled at\s+([0-9]+)\s+liters per minute for\s+([0-9]+)\s+minutes")
             .expect("static prose-rate-time regex")
@@ -2237,6 +2313,89 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
             capture.get(0).unwrap().as_str(),
         );
     }
+    if let Some(capture) = Regex::new(
+        r"(?i)operation\s+([^.;?]+?)\s+is\s+defined\s+as\s+([^.;?]+)",
+    )
+    .expect("static operation-fact regex")
+    .captures(question)
+    {
+        push(
+            &mut facts,
+            format!("{}={}", capture[1].trim(), capture[2].trim()),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    if let Some(capture) = Regex::new(
+        r"(?i)\b([A-Za-z_][A-Za-z0-9_]*)\s*\([^)]*\)\s*:\s*([^.;?]+)",
+    )
+    .expect("static predicate-colon fact regex")
+    .captures(question)
+    {
+        push(
+            &mut facts,
+            capture.get(0).unwrap().as_str().trim().into(),
+            capture.get(0).unwrap().as_str(),
+        );
+    }
+    facts
+}
+
+/// Preserve explicit definition facts before the generic relation fallback.
+/// This is intentionally source-grounded: it records only notation that is
+/// visibly introduced by the prompt and does not infer a missing model.
+fn extract_definition_fact_annotations(question: &str) -> Vec<FactAnnotation> {
+    let mut facts = Vec::new();
+    let function_definition = Regex::new(
+        r"(?i)\b([A-Za-z_][A-Za-z0-9_]*\s*\([^()]*\)\s*=\s*[^.;?]+)",
+    )
+    .expect("static definition-fact function regex");
+    for capture in function_definition.captures_iter(question) {
+        let mut statement = capture.get(1).unwrap().as_str().trim().to_string();
+        for marker in [", compute ", ", evaluate ", ", calculate ", ", find ", ", with "] {
+            if let Some(index) = statement.to_ascii_lowercase().find(marker) {
+                statement.truncate(index);
+            }
+        }
+        statement = statement
+            .trim_end_matches(" is supplied")
+            .trim_end_matches(" is given")
+            .trim()
+            .to_string();
+        if !statement.is_empty() {
+            facts.push(FactAnnotation {
+                statement,
+                source_fragment: question.into(),
+            });
+        }
+    }
+    let relation_definition = Regex::new(
+        r"(?i)\b([A-Za-z_][A-Za-z0-9_]*\s*\([^)]*\)\s+(?:means|is\s+defined\s+as)\s+[^.;?]+)",
+    )
+    .expect("static definition-fact relation regex");
+    for capture in relation_definition.captures_iter(question) {
+        facts.push(FactAnnotation {
+            statement: capture.get(1).unwrap().as_str().trim().into(),
+            source_fragment: question.into(),
+        });
+    }
+    let set_definition = Regex::new(r"(?i)\b([A-Za-z_][A-Za-z0-9_]*\s*=\s*\{[^}]*\})")
+        .expect("static definition-fact set regex");
+    for capture in set_definition.captures_iter(question) {
+        facts.push(FactAnnotation {
+            statement: capture.get(1).unwrap().as_str().trim().into(),
+            source_fragment: question.into(),
+        });
+    }
+    let physical_law = Regex::new(r"(?i)\b([FV]\s*=\s*[A-Za-z][A-Za-z0-9]*)\b")
+        .expect("static definition-fact physical regex");
+    for capture in physical_law.captures_iter(question) {
+        facts.push(FactAnnotation {
+            statement: capture.get(1).unwrap().as_str().trim().into(),
+            source_fragment: question.into(),
+        });
+    }
+    facts.sort_by(|left, right| left.statement.cmp(&right.statement));
+    facts.dedup_by(|left, right| left.statement == right.statement);
     facts
 }
 
@@ -2572,6 +2731,32 @@ fn resolve_subject(
         });
     }
     for (index, fact) in formalized_facts.iter().enumerate() {
+        let fact_source = match fact {
+            FormalizedFact::Equation {
+                source_fragment, ..
+            }
+            | FormalizedFact::Expression {
+                source_fragment, ..
+            }
+            | FormalizedFact::LogicalPremise {
+                source_fragment, ..
+            } => source_fragment,
+        };
+        // An explicit definition candidate is authoritative for subject
+        // resolution.  Keep the definition fact in the trace for scoring,
+        // but do not turn the same source span into a competing raw object.
+        if candidates.iter().any(|candidate| {
+            candidate.object_type == SubjectObjectType::Definition
+                && candidate
+                    .source_spans
+                    .iter()
+                    .any(|span| {
+                        span.source_fragment.contains(fact_source)
+                            || fact_source.contains(&span.source_fragment)
+                    })
+        }) {
+            continue;
+        }
         let (object, object_type) = match fact {
             FormalizedFact::Equation {
                 lhs, relation, rhs, ..
@@ -3301,6 +3486,25 @@ pub fn assess_prompt(
     let lower = question.to_ascii_lowercase();
     let domain = classify_domain(question, category);
     let task_shape = classify_task(question);
+    let function_definition_surface = Regex::new(
+        r"(?i)\b[a-z_][a-z0-9_]*\s*\([^()]*\)\s*=",
+    )
+    .expect("static function-definition surface regex")
+    .is_match(question);
+    let set_definition_surface = Regex::new(r"(?i)\b[A-Z]\s*=\s*\{")
+        .expect("static set-definition surface regex")
+        .is_match(question);
+    let physical_model_surface = lower.contains("supplied model")
+        || lower.contains("calculate f")
+        || lower.contains("find v(")
+        || Regex::new(r"(?i)\bF\s*=\s*ma\b")
+            .expect("static physical-law surface regex")
+            .is_match(question);
+    let binary_definition_surface = Regex::new(
+        r"(?i)\b[a-z_][a-z0-9_]*\s*\([^,()]+,[^()]+\)\s*=",
+    )
+    .expect("static binary-definition surface regex")
+    .is_match(question);
     let mut obligations = Vec::new();
     let mut definitions = Vec::new();
     let mut entities = Vec::new();
@@ -3354,24 +3558,28 @@ pub fn assess_prompt(
             "recursive",
             " means ",
         ],
-    ) {
+    ) || function_definition_surface
+        || set_definition_surface
+        || physical_model_surface
+    {
         definitions.push(
-            if Regex::new(r"(?i)\b[A-Z]\s*=\s*\{")
-                .expect("static set-definition detector")
-                .is_match(question)
+            if set_definition_surface
                 || has_any(&lower, &["set of", "subset", "elements"])
             {
                 DefinitionKind::Set
-            } else if Regex::new(r"(?i)\b[a-z][a-z0-9_]*\s*\([^()]*\)\s*=")
-                .expect("static function-definition detector")
-                .is_match(question)
-            {
-                DefinitionKind::Function
             } else if has_any(&lower, &["sequence", "recursive", "recurrence", "a_n"]) {
                 DefinitionKind::Sequence
             } else if has_any(&lower, &["probability", "random variable", "sample space"]) {
                 DefinitionKind::ProbabilityModel
-            } else if has_any(&lower, &["function", "f(", "g("]) {
+            } else if physical_model_surface {
+                DefinitionKind::PhysicalQuantity
+            } else if has_any(&lower, &["operation ", "binary operation"])
+                || (binary_definition_surface && !lower.contains("map "))
+            {
+                DefinitionKind::Operation
+            } else if function_definition_surface
+                || has_any(&lower, &["function", "map ", "f(", "g("])
+            {
                 DefinitionKind::Function
             } else {
                 DefinitionKind::Relation
@@ -3400,17 +3608,21 @@ pub fn assess_prompt(
         obligations.push(ModelingObligation::ExtractQuantifiers);
     }
     let prose_facts = extract_prose_fact_annotations(question);
+    let definition_facts = extract_definition_fact_annotations(question);
+    let system_facts = extract_system_equation_annotations(question);
+    let real_domain_facts = extract_real_domain_equation_annotation(question);
     if !prose_facts.is_empty() {
         facts.extend(prose_facts);
-        let explicit_relation_definition = definitions.contains(&DefinitionKind::Relation)
-            && has_any(&lower, &["predicate", "relation", "means"]);
-        if !explicit_relation_definition && has_any(
-            &lower,
-            &["two numbers", "mother", "alice", "bob", "nickels", "dimes"],
-        ) {
-            obligations.push(ModelingObligation::ConstructSmallSystem);
-        } else {
-            obligations.push(ModelingObligation::ConstructEquation);
+        let explicit_definition = !definitions.is_empty();
+        if !explicit_definition {
+            if has_any(
+                &lower,
+                &["two numbers", "mother", "alice", "bob", "nickels", "dimes"],
+            ) {
+                obligations.push(ModelingObligation::ConstructSmallSystem);
+            } else {
+                obligations.push(ModelingObligation::ConstructEquation);
+            }
         }
         if has_any(
             &lower,
@@ -3442,6 +3654,17 @@ pub fn assess_prompt(
         if lower.contains("determine the width") {
             obligations.push(ModelingObligation::DetermineTargetSemantics);
         }
+    } else if !definition_facts.is_empty() {
+        facts.extend(definition_facts);
+    } else if !system_facts.is_empty() {
+        facts.extend(system_facts);
+    } else if !real_domain_facts.is_empty() {
+        facts.extend(real_domain_facts);
+    } else if let Some(expression) = extract_expression_payload(question) {
+        facts.push(FactAnnotation {
+            statement: expression,
+            source_fragment: question.into(),
+        });
     } else if lower.contains('=')
         || has_any(&lower, &["equation", "given that", "satisfies", "where"])
     {
@@ -3450,11 +3673,6 @@ pub fn assess_prompt(
             .unwrap_or_else(|| "explicit relation or equation signal".into());
         facts.push(FactAnnotation {
             statement,
-            source_fragment: question.into(),
-        });
-    } else if let Some(expression) = extract_expression_payload(question) {
-        facts.push(FactAnnotation {
-            statement: expression,
             source_fragment: question.into(),
         });
     } else if definitions.is_empty()
@@ -3829,10 +4047,6 @@ mod tests {
         }
     }
 
-
-
-
-    #[test]
 
 
     #[test]

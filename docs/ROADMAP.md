@@ -316,9 +316,10 @@ Current evidence (post-`efa01e8` formalization slice):
   domain/side-condition and assumption annotations. The 60-case seed reports
   authorization correctness 60/60, zero false authorizations, zero false
   denials, complete failure-taxonomy coverage, structural target completeness
-  60/60 (executable target completeness 47/60), entities 21/21, assumptions
-  3/3, constraints 9/9, and obligations 35/35. Recurrence targets remain
-  non-executable through the generic direct-audit path.
+  60/60 (executable target completeness 47/60), definitions 21/21, facts
+  69/69, entities 21/21, assumptions 3/3, constraints 9/9, and obligations
+  35/35. Recurrence targets remain non-executable through the generic
+  direct-audit path.
   Recurrence targets remain non-executable through the generic direct-audit
   path. Structural completeness is reported separately from executor/verifier
   availability.

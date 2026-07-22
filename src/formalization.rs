@@ -1766,6 +1766,7 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
         "where ",
         "solve ",
         "the equation ",
+        "the system ",
         "for real x, ",
     ] {
         if lhs.to_ascii_lowercase().starts_with(prefix) {
@@ -2157,7 +2158,7 @@ fn build_target_completion(
         if operation != OperationKind::Solve {
             return None;
         }
-        let symbols = Regex::new(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
+        let symbols = Regex::new(r"[A-Za-z_][A-Za-z0-9_]*")
             .expect("static symbol regex")
             .find_iter(subject.as_deref().unwrap_or_default())
             .map(|value| value.as_str().to_string())
@@ -2178,7 +2179,11 @@ fn build_target_completion(
                 )
             })
             .collect::<BTreeSet<_>>();
-        (symbols.len() == 1).then(|| symbols.into_iter().next().unwrap())
+        if symbols.is_empty() {
+            None
+        } else {
+            Some(symbols.into_iter().collect::<Vec<_>>().join(","))
+        }
     });
     let mut arguments = Vec::new();
     if let Some(captures) = Regex::new(r"\b([A-Za-z_][A-Za-z0-9_]*)\(([^()]*)\)")
@@ -2250,10 +2255,13 @@ fn build_target_completion(
     } else {
         TargetFieldStatus::Missing
     };
+    let function_application = Regex::new(r"\b[A-Za-z_][A-Za-z0-9_]*\s*\(")
+        .expect("static function-application regex")
+        .is_match(target_text);
     let requires_arguments = match operation {
         OperationKind::Substitute | OperationKind::InstantiateDefinition => true,
         OperationKind::Evaluate => {
-            target_text.contains('(')
+            function_application
                 || subject
                     .as_deref()
                     .map(|value| {
@@ -2959,6 +2967,32 @@ mod tests {
         );
         assert!(target.complete);
         assert!(target.operation_supported);
+    }
+
+    #[test]
+    fn solve_infers_implicit_variables_and_numeric_parentheses_are_not_bindings() {
+        let linear = assess_prompt("linear", "Solve 2x - 7 = 1.", "Math", false);
+        assert!(linear.target_completion.complete);
+        assert_eq!(
+            linear.target_completion.target.target_variable.as_deref(),
+            Some("x")
+        );
+
+        let system = assess_prompt(
+            "system",
+            "Solve the system x + y = 5 and x - y = 1.",
+            "Math",
+            false,
+        );
+        assert!(system.target_completion.complete);
+        assert_eq!(
+            system.target_completion.target.target_variable.as_deref(),
+            Some("x,y")
+        );
+
+        let numeric = assess_prompt("numeric", "Evaluate 3(7) - 2.", "Math", false);
+        assert!(numeric.target_completion.complete);
+        assert!(numeric.target_completion.target.arguments.is_empty());
     }
 
     #[test]

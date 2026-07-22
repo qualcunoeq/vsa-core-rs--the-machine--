@@ -287,12 +287,12 @@ $$
 Let $M$ be the number of LSH sectors ($M = 1024$ for the 10-bit hash). The number of clusters $K$ satisfies:
 
 $$
-K \leq M \cdot (1 + \texttt{MAX\_SUB\_SECTORS})
+K \leq M \cdot (1 + \mathtt{MAX\_SUB\_SECTORS})
 $$
 
-where $\texttt{MAX\_SUB\_SECTORS} = 4$ is the cap on bifurcations per sector.
+where `MAX_SUB_SECTORS = 4` is the cap on bifurcations per sector.
 
-**Proof.** Each cluster has a Locked Anchor $a \in \mathcal{H}$. The LSH sector function $\ell: \mathcal{H} \to \{0,\ldots,M-1\}$ assigns each cluster to exactly one sector. The novelty gate creates a new cluster only when $\delta(\tau, c) \geq 0.70$ for all existing centroids $c$ — which implies $\tau$ maps to a different LSH sector than any existing cluster, or to a negligibly populated corner of an existing sector. Therefore each LSH sector can contain at most $1 + \texttt{MAX\_SUB\_SECTORS}$ clusters. $\square$
+**Proof.** Each cluster has a Locked Anchor $a \in \mathcal{H}$. The LSH sector function $\ell: \mathcal{H} \to \{0,\ldots,M-1\}$ assigns each cluster to exactly one sector. The novelty gate creates a new cluster only when $\delta(\tau, c) \geq 0.70$ for all existing centroids $c$ — which implies $\tau$ maps to a different LSH sector than any existing cluster, or to a negligibly populated corner of an existing sector. Therefore each LSH sector can contain at most `1 + MAX_SUB_SECTORS` clusters. $\square$
 
 ### Theorem II.2 (Entry Count Per Cluster is Bounded)
 
@@ -317,7 +317,7 @@ There exists a constant $B$ depending only on $D$, $M$, and system constants suc
 | 3 | Composition frequency map | $\leq 100$ | LFU eviction cap |
 | 4 | Long-term cluster entries | $\leq 2M(1 + S)$ | Theorem II.1 + Theorem II.2 |
 
-where $M = 1024$ is the number of LSH sectors and $S = \texttt{MAX\_SUB\_SECTORS} = 4$.
+where $M = 1024$ is the number of LSH sectors and $S = \mathtt{MAX\_SUB\_SECTORS} = 4$.
 
 The binary centroid occupies $160 \times 8 = 1280$ bytes. The accumulator (when hot) occupies $10240 \times 4 = 40960$ bytes. The number of hot accumulators is capped by `max_hot` (default $100$), giving a maximum memory footprint of:
 

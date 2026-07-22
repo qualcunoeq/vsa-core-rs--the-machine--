@@ -1,0 +1,67 @@
+# RESEARCH USE LICENSE AGREEMENT
+
+**Copyright (c) 2026 Giuseppe Lira Curcio (qualcunoeq)**
+**All rights reserved.**
+
+## 1. DEFINITIONS
+* **"Software"** refers to this repository, including all source code, documentation, mathematical formulations, algorithms, and associated materials.
+* **"Research Use"** means non-commercial use strictly for academic study, personal research, or scientific investigation by individuals or non-profit academic institutions, without direct or indirect commercial advantage.
+
+## 2. PERMITTED USE
+You are granted a limited, non-exclusive, non-transferable, revocable license to:
+* Access, view, and download the Software.
+* Execute and analyze the Software.
+* Use the Software solely for Research Use.
+* Fork the repository using standard GitHub functionality, provided this license remains entirely intact and explicitly governs the forked repository.
+
+## 3. ATTRIBUTION REQUIREMENT
+Any research, publication, or work that uses, derives from, or is based on the Software or its underlying concepts must:
+* Provide clear and visible attribution to the original author (Giuseppe Lira Curcio).
+* Explicitly acknowledge this work as a foundational source.
+
+*Failure to provide proper attribution constitutes a violation of this license.*
+
+## 4. RESTRICTIONS
+You may **NOT**, without prior written permission from the author:
+* Use the Software or any part of it for commercial purposes.
+* Use the Software internally within a for-profit corporation, enterprise, or investment fund, even if labeled as "research" or "R&D".
+* Sell, sublicense, or redistribute the Software outside of standard GitHub forking.
+* Incorporate the Software into any product, service, or system intended for commercial use.
+* Create derivative works for commercial exploitation.
+
+## 5. COMMERCIAL USE & LICENSING
+Any commercial or corporate use of the Software, in whole or in part, requires explicit prior written authorization from the author. To request commercial rights, dual-licensing, or enterprise support, you must contact the author directly **[gliracurcio@gmail.com]**.
+
+## 6. DERIVATIVE RESEARCH
+You may build upon the ideas and concepts presented in this Software for Research Use, provided that:
+* Proper attribution is given (as defined in Section 3).
+* The resulting work remains strictly non-commercial unless authorized.
+
+## 7. NO PATENT OR TRADEMARK LICENSE
+Nothing in this License shall be construed as granting, by implication, estoppel, or otherwise, any license or right under any patent, trademark, or other intellectual property right of the author. The mathematical models and algorithmic architectures described herein remain the exclusive property of the author.
+
+## 8. RESTRICTION ON AI TRAINING
+You may **NOT** use, scrape, or extract any part of the Software—including the source code, documentation, and mathematical proofs—for the purpose of training, fine-tuning, or developing artificial intelligence models, large language models (LLMs), or machine learning systems, whether for commercial or non-commercial use, without explicit written permission.
+
+## 9. CONTRIBUTIONS
+By submitting code, feedback, optimizations, bug fixes, or pull requests to this repository that maintain or enhance the existing architecture, you agree to assign all copyright and intellectual property rights for those contributions to the original author. The author reserves the right to use, modify, and commercialize these standard contributions without restriction or compensation.
+
+If a proposed contribution represents a substantial deviation that completely changes the core functionality or architecture of the Software, the terms of integration and intellectual property ownership must be negotiated independently prior to merging. In such specific cases, financial compensation or profit-sharing may be agreed upon **if and only if** the modified Software is successfully commercialized.
+
+## 10. NO WARRANTY
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+## 11. TERMINATION
+This license is automatically terminated if you violate any of its terms. Upon termination, you must immediately cease all use of the Software and destroy any local copies.
+
+## 12. SEVERABILITY
+If any provision of this license is held to be invalid, illegal, or unenforceable by a court of competent jurisdiction, the remaining provisions shall continue in full force and effect.
+
+## 13. GOVERNING LAW
+This license shall be governed by and construed in accordance with the laws of Italy.
+
+## 14. GOVERNING PRINCIPLE
+This license is intended to promote open scientific visibility while preserving the author’s rights over commercialization and recognition.
+
+***
+*END OF TERMS*

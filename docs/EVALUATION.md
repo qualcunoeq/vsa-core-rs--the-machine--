@@ -1,5 +1,10 @@
 # Evaluation Matrix
 
+**Last Updated:** 2026-07-22
+**Current Test Count:** ~1,980 `#[test]` items across 90 modules
+**Default Suite:** `cargo test --lib` (deterministic, seeded RNG)
+**Ignored Benchmarks:** `cargo test --lib -- --ignored` (research/calibration)
+
 This file defines how to measure progress without narrowing the project.  The
 architecture can stay broad, but each capability should have a local check, a
 baseline, and a failure mode.
@@ -415,3 +420,18 @@ RSS) and the 560-case algebra run in 4.45s (about 5.9MB peak RSS). The
 adversarial algebra tier intentionally reports zero execution/replay attempts;
 its exact-solution accuracy remains 1.000 because safe abstention is scored as
 the correct outcome.
+
+## Latest Results Summary (v3.4, July 2026)
+
+| Vertical | Cases | Positive Execution | Replay Rate | False Auth | False Denial |
+|----------|-------|-------------------|-------------|------------|--------------|
+| Algebra (seed) | 60 | 27/27 (1.000) | 1.000 | 0 | 0 |
+| Algebra (generated) | 500 | 260/260 (1.000) | 1.000 | 0 | 0 |
+| Algebra (prose) | 20 | 15/15 (1.000) | 1.000 | 0 | 0 |
+| Strategic route | 500 | 500/500 (1.000) | 1.000 | 0 | 0 |
+| Recurrence | 500 | 251/251 (1.000) | 1.000 | 0 | 0 |
+| Proposition kernel | 500 | 324/324 (1.000) | 1.000 | 0 | 0 |
+| Adversarial (all) | 21+ | 0 executed (safe abstention) | — | 0 | 0 |
+
+**Verification control:** 32/32 valid receipts accepted, 32/32 tampered receipts rejected.
+**Unified suite runtime:** ~1.0–1.1 s (release, seed 42, 500/500, 7 tiers).

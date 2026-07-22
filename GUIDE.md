@@ -1,8 +1,13 @@
 # The Machine — Developer Guide
 
+**Applies to:** v3.4 (July 2026)
+**Formal spec:** [`MATH.md`](./MATH.md) (3,353 lines)
+**Test count:** ~1,980 `#[test]` items
+
 This guide bridges the formal mathematics (`MATH.md`) and the Rust implementation. It provides:
 1. **Visual flowcharts** of the core pipelines
 2. **Concrete code examples** showing how the key abstractions work in practice
+3. **Optimal τ guide** for soft projection calibration (v3.1 corrected)
 
 ---
 
@@ -31,52 +36,54 @@ This guide bridges the formal mathematics (`MATH.md`) and the Rust implementatio
                     │  current_world_state = bundle(market, news, infra)  │
                     └──────────────────┬──────────────────────────────────┘
                                        │
-                       ┌───────────────┴───────────────┐
-                       ▼                               ▼
-          ┌────────────────────────┐     ┌──────────────────────────────┐
-          │   Dissonance Check     │     │   DEEPTHOUGHT REASONING      │
-          │   δ(world, baseline)   │     │   forward_chain_anchored()   │
-           │   > 0.55 → pivot       │     │   τ = 0.10 soft projection   │
-          └───────────┬────────────┘     │   (or τ = 0 hard projection) │
-                      │                  └──────────────┬───────────────┘
-                      │                                 │
-                      │         ┌───────────────────────┘
-                      │         ▼
-          ┌──────────────────────────────────────────────────────────────┐
-          │                  INTENT SELECTION                            │
-          │  Argmax over: desirability, frequency, crisis override       │
-          │  Winner gets dispatched to action pipeline                   │
-          └──────────────────────────┬───────────────────────────────────┘
-                                     │
-                                     ▼
-          ┌──────────────────────────────────────────────────────────────┐
-          │              ACTION EXECUTION                                │
-          │  forager updates crawl target, admin socket sends command    │
-          └──────────────────────────┬───────────────────────────────────┘
-                                     │ world changes
-                                     ▼
-                    ┌─────────────────────────────────────────────────────┐
-                    │            EPISTEMIC UPDATE (broadcast)             │
-                    │  All agents absorb the new world state:             │
-                    │  cluster.absorb_entry(&new_world_state)             │
-                    │  → returns (centroid_shift, input_distance)         │
-                    │  → records κ_F in ContractionTelemetry              │
-                    └──────────────────┬──────────────────────────────────┘
-                                       │
-                                       ▼
-                    ┌─────────────────────────────────────────────────────┐
-                    │         CLUSTER MAINTENANCE (every N ticks)         │
-                    │  • Decay accumulator (γ = 0.975 every 50 ticks)    │
-                    │  • Hot/cold memory sweep (every 100 ticks)         │
-                    │  • κ_P measurement (20 random pairs, every 50)     │
-                    │  • Tripwire check (κ = κ_P · κ_F < 0.995)         │
-                    │  • Compaction (merge NHD < 0.30, fission > 0.70)    │
-                    └──────────────────┬──────────────────────────────────┘
-                                       │
-                                       ▼
-                    ┌─────────────────────────────────────────────────────┐
-                    │            NEXT CYCLE (tick + 1)                    │
-                    └─────────────────────────────────────────────────────┘
+                        ┌──────────────┴──────────────┐
+                        ▼                             ▼
+           ┌────────────────────────┐     ┌──────────────────────────────┐
+           │   Dissonance Check     │     │   DEEPTHOUGHT REASONING      │
+           │   δ(world, baseline)   │     │   forward_chain_anchored()   │
+            │   > 0.55 → pivot       │     │   τ = 0.10 soft projection   │
+           └───────────┬────────────┘     │   (or τ = 0 hard projection) │
+                       │                  └──────────────┬───────────────┘
+                       │                                 │
+                       │         ┌───────────────────────┘
+                       │         ▼
+           ┌──────────────────────────────────────────────────────────────┐
+           │                  INTENT SELECTION                            │
+           │  Argmax over: desirability, frequency, crisis override       │
+           │  Winner gets dispatched to action pipeline                   │
+           └──────────────────────────┬───────────────────────────────────┘
+                                      │
+                                      ▼
+           ┌──────────────────────────────────────────────────────────────┐
+           │              ACTION EXECUTION                                │
+           │  forager updates crawl target, admin socket sends command    │
+           └──────────────────────────┬───────────────────────────────────┘
+                                      │ world changes
+                                      ▼
+                     ┌─────────────────────────────────────────────────────┐
+                     │            EPISTEMIC UPDATE (broadcast)             │
+                     │  All agents absorb the new world state:             │
+                     │  cluster.absorb_entry(&new_world_state)             │
+                     │  → returns (centroid_shift, input_distance)         │
+                     │  → records κ_F in ContractionTelemetry              │
+                     └──────────────────┬──────────────────────────────────┘
+                                        │
+                                        ▼
+                     ┌─────────────────────────────────────────────────────┐
+                     │         CLUSTER MAINTENANCE (every N ticks)         │
+                     │  • Decay accumulator (γ = 0.975 every 50 ticks)    │
+                     │  • Hot/cold memory sweep (every 100 ticks)         │
+                     │  • κ_P measurement (20 random pairs, every 50)     │
+                     │  • Tripwire check (κ = κ_P · κ_F < 0.995)         │
+                     │  • Compaction (merge NHD < 0.30, fission > 0.70)   │
+                     │  • Entry merging (age-weighted centroid collapse)  │
+                     │  • Memory profiler snapshot (every 250 ticks)      │
+                     └──────────────────┬──────────────────────────────────┘
+                                        │
+                                        ▼
+                     ┌─────────────────────────────────────────────────────┐
+                     │            NEXT CYCLE (tick + 1)                    │
+                     └─────────────────────────────────────────────────────┘
 ```
 
 ### 1.2 The Composition Promotion Pipeline
@@ -107,26 +114,26 @@ This pipeline converts raw causal compositions into promoted, trusted rules.
         │     for all crisis concepts?           │
         └──────────────────┬────────────────────┘
                            │
-                  ┌────────┴────────┐
-                  ▼                 ▼
-          (undesirable)      (desirable)
-                  │                 │
-                  ▼                 ▼
-          ┌────────────┐   ┌──────────────────────┐
-          │  REJECT    │   │  FREQUENCY CHECK     │
-          │  (discard) │   │  f_k ≥ 3 in W_win=5? │
-          └────────────┘   └──────────┬───────────┘
-                                      │
-                             ┌────────┴────────┐
-                             ▼                 ▼
-                      (below threshold)  (above threshold)
-                             │                 │
-                             ▼                 ▼
-                     ┌────────────┐   ┌──────────────────────┐
-                     │  HOLD      │   │  PROMOTE             │
-                     │  (counter  │   │  append_composed_rule│
-                     │   +1)      │   │  → cluster storage   │
-                     └────────────┘   └──────────────────────┘
+                   ┌────────┴────────┐
+                   ▼                 ▼
+           (undesirable)      (desirable)
+                   │                 │
+                   ▼                 ▼
+           ┌────────────┐   ┌──────────────────────┐
+           │  REJECT    │   │  FREQUENCY CHECK     │
+           │  (discard) │   │  f_k ≥ 3 in W_win=5? │
+           └────────────┘   └──────────┬───────────┘
+                                       │
+                              ┌────────┴────────┐
+                              ▼                 ▼
+                       (below threshold)  (above threshold)
+                              │                 │
+                              ▼                 ▼
+                      ┌────────────┐   ┌──────────────────────┐
+                      │  HOLD      │   │  PROMOTE             │
+                      │  (counter  │   │  append_composed_rule│
+                      │   +1)      │   │  → cluster storage   │
+                      └────────────┘   └──────────────────────┘
 ```
 
 The key insight: **algebraic composition is EXPANSIVE** (ε → 0.5), so promoted rules are immediately anchored through the cluster manifold before storage. The **forward_chain_anchored** path avoids this entirely by projecting intermediate states after EVERY hop.
@@ -197,8 +204,9 @@ The key insight: **algebraic composition is EXPANSIVE** (ε → 0.5), so promote
   │                    ALL CLUSTERS                              │
   │  K clusters total, each with:                               │
   │    • centroid (1280 bytes) — ALWAYS live                    │
-  │    • accumulator (40 KB) — only when HOT                    │
+  │    • accumulator (40 KB dense / ~4 KB sparse) — only hot    │
   │    • last_access_tick — tracks recency                      │
+  │    • entries (subject to age-weighted merging)              │
   └────────────────────────┬────────────────────────────────────┘
                            │
                            ▼
@@ -207,33 +215,35 @@ The key insight: **algebraic composition is EXPANSIVE** (ε → 0.5), so promote
   │                                                              │
   │  For each cluster:                                           │
   │    if tick - last_access_tick > FREEZE_AFTER (default 500): │
-  │      cluster.freeze()  → drops accumulator (40 KB freed)    │
-  │      cluster.is_hot()  → false                               │
+  │      → serialize to ColdStorage (centroid-delta + Golomb-Rice)│
+  │      → drop entries & accumulator                            │
+  │      → cluster.is_hot() → false                              │
   │                                                              │
   │  Keep at most MAX_HOT (default 100) accumulators live.       │
   │  If more than 100 are hot, freeze the coldest.               │
   │                                                              │
-  │  Memory:                                                     │
-  │    Hot:   100 × 40 KB  = 4.0 MB  (accumulators)             │
-  │    Hot:   100 × 1.3 KB = 0.13 MB (centroids)                │
-  │    Cold:  900 × 1.3 KB = 1.17 MB (centroids only)           │
-  │    Total:                  5.3 MB  (for K=1000)              │
-  │    Bound (Thm III.1):     ~10.6 MB (for K=5120)             │
+  │  Memory (v3.3 with compression):                             │
+  │    Hot:    100 × 4 KB  = 0.4 MB  (sparse accumulators)      │
+  │    Hot:    100 × 1.3 KB = 0.13 MB (centroids)               │
+  │    Cold:   900 × 0.2 KB = 0.18 MB (cold storage, compressed)│
+  │    Total:                  0.71 MB  (for K=1000, compressed)│
+  │    Bound (Thm III.1):     ~10.6 MB (for K=5120, worst case) │
   └────────────────────────┬────────────────────────────────────┘
                            │
               ┌────────────┴────────────┐
               ▼                         ▼
   ┌─────────────────────┐   ┌──────────────────────────┐
-  │  HOT (accumulator   │   │  COLD (centroid only)    │
+  │  HOT (accumulator   │   │  COLD (serialized)       │
   │  resident)          │   │                          │
   │                     │   │  On next access:         │
-  │  • Full evidence    │   │  ensure_accumulator()    │
-  │    integration      │   │  reconstructs A from c  │
-  │  • Can absorb       │   │  A_i = floor(W/2) + c_i │
-  │    new observations │   │  (Theorem XIII.1:        │
-  │  • Can flip bits    │   │  reconstruction is      │
-  │    via decay        │   │  centroid-preserving)    │
-  └─────────────────────┘   └──────────────────────────┘
+  │  • Full evidence    │   │  deserialize from storage│
+  │    integration      │   │  reconstruct entries +   │
+  │  • Can absorb       │   │  accumulator from        │
+  │    new observations │   │  centroid-delta encoding │
+  │  • Can flip bits    │   │  (Theorem XIII.1:        │
+  │    via decay        │   │  reconstruction is       │
+  └─────────────────────┘   │  centroid-preserving)    │
+                            └──────────────────────────┘
 ```
 
 ### 1.5 Soft Projection Decision Flow
@@ -247,11 +257,13 @@ The key insight: **algebraic composition is EXPANSIVE** (ε → 0.5), so promote
   │    return clusters[argmin δ(x, c_i)]         │
   │                                              │
   │  Compute d_i = δ(x, c_i) for all K centroids │
-  │  Sort by distance, keep top-M = 3            │
   │                                              │
   │  d_min = min(d_i)                            │
-  │  for each of top-3:                          │
-  │    w_i = exp(-(d_i - d_min)² / τ)            │
+  │  for each centroid:                          │
+  │    w_i = exp(-(d_i² - d_min²) / τ)           │
+  │    NOTE: Corrected formula (v3.1)!           │
+  │    Old (buggy): exp(-(d_i - min_d)² / τ)     │
+  │    New (correct): exp(-(d_i² - min_d²) / τ)  │
   │                                              │
   │  Normalize: w_i /= Σ w_j                     │
   │                                              │
@@ -264,10 +276,10 @@ The key insight: **algebraic composition is EXPANSIVE** (ε → 0.5), so promote
   └─────────────────────────────────────────────┘
 
   TAU GUIDE (v3.1 corrected, frontier sweep with 800 pairs/2000 queries):
-    τ = 0.00    → hard projection (4.32 bits, C_eff=20,    κ_P ≈ 0.970)
-    τ = 0.08    → SWEET SPOT (9.58 bits, C_eff=120× gain,  κ_P ≈ 0.932)
-    τ = 0.10    → OPTIMUM (10.58 bits, C_eff=2554=128×,    κ_P ≈ 0.916)
-    τ = 0.12    → HIGH CAPACITY (11.32 bits, C_eff=128×,   κ_P ≈ 0.898)
+    τ = 0.00    → hard projection (4.32 bits, C_eff=20,      κ_P ≈ 0.970)
+    τ = 0.08    → CONSERVATIVE (9.58 bits, C_eff=120× gain,  κ_P ≈ 0.932)
+    τ = 0.10    → OPTIMUM (10.58 bits, C_eff=2554=128×,     κ_P ≈ 0.916)
+    τ = 0.12    → HIGH CAPACITY (11.32 bits, C_eff=128×,     κ_P ≈ 0.898)
     τ > 0.50    → MUSH (outputs blend to centroid mean, κ_P < 0.19)
     
   NOTE (v3.1): The numerical stability transform was corrected from
@@ -458,11 +470,11 @@ let query = Hypervector::new_random();
 let hard = soft_project(&query, &clusters, 0.0);
 // Equivalent to: anchor_through_clusters(&query, &clusters)
 
-// SOFT projection at sweet spot (τ = 0.10, v3.1)
-// 9.1× capacity multiplier, κ_P ≈ 1.0
-let soft = soft_project(&query, &clusters, 0.030);
+// SOFT projection at optimum (τ = 0.10, v3.1 corrected)
+// 128× capacity multiplier, κ_P ≈ 0.916
+let soft = soft_project(&query, &clusters, 0.10);
 
-// The soft output is a weighted blend of the top-3 centroids
+// The soft output is a weighted blend of all centroids (no top-3 truncation)
 // Near Voronoi boundaries, it can be a stable hybrid state
 // that the hard projection would have snapped to a single centroid
 ```
@@ -509,11 +521,10 @@ let mut telemetry = HashMap::new();
 telemetry.insert("vix_zscore".to_string(), 0.5);
 telemetry.insert("move_zscore".to_string(), 0.2);
 let world_state = brain.compile_state_vector(&telemetry);
-// 2. Enable soft projection at sweet spot (v3.1 corrected)
-//    NOTE: The numerical stability transform was fixed from
-//    exp(-(d-min_d)²/τ) to exp(-(d²-min_d²)/τ). The old sweet spot
-//    τ=0.030 was an artifact of the bug; the true optimal is τ=0.10.
 
+// 2. Enable soft projection at optimum (v3.1 corrected)
+//    NOTE: The numerical stability transform was fixed from
+//    exp(-(d-min_d)²/τ) to exp(-(d²-min_d²)/τ). The true optimal is τ=0.10.
 brain.soft_projection_tau = 0.10;
 
 // 3. Project world state through clusters
@@ -565,13 +576,54 @@ assert_eq!(cluster.centroid_bit(0), 1);
 
 ---
 
+## Part 3: Memory Compression Architecture (v3.3)
+
+### L0 — Online Caches
+
+The forager's `visited: HashSet<String>` is replaced by a **Counting Bloom filter** (32M bits, ~4 MB, 6 hash functions). False positives mean we skip an unvisited page — harmless for a crawler.
+
+`seed_urls` is capped at 50,000 entries via `CappedVecDeque`. `doc_frequency` uses exponential decay (×0.85 every 200 docs) to bound vocabulary size.
+
+### L1 — Sparse Accumulator
+
+`SparseAccumulator` stores only indices where the accumulator value differs from the default. For a typical cluster with ~10% non-zero bits:
+
+| Storage | Size |
+|---------|------|
+| Dense `Vec<u32>` | 40,960 bytes |
+| `SparseAccumulator` | ~4,096 bytes |
+
+**10× reduction.**
+
+### L2 — Entry Merging
+
+Age-weighted centroid collapse is triggered when entry count exceeds `MergeConfig.trigger_count` (default: 600). Entries are partitioned into three cohorts — Young (< 50 ticks, preserved verbatim), Middle (50–500, coherence-guarded), Old (> 500, merged unconditionally). The coherence guard bisects incoherent groups via VSA k-means.
+
+### L3 — Cold Storage Serialization
+
+When a cluster is frozen, it's serialized using centroid-delta + Golomb-Rice encoding:
+
+- If > 8% bits differ from centroid → raw (1,280 bytes)
+- If ≤ 8% bits differ → delta-encoded with optimal Rice parameter (~200 bytes typical)
+
+**~6× reduction for cold entries.**
+
+---
+
 ## Summary: Key Files Reference
 
-| File | Purpose |
-|------|---------|
-| `src/lib.rs` | Core VSA types (Hypervector, MemoryCluster, ContractionTelemetry) |
-| `src/reason.rs` | Reasoning engine (DeepThought, forward_chain, soft_project, all tests) |
-| `src/main.rs` | Multi-agent simulation (agent loop, broker, telemetry integration) |
-| `src/MATH.md` | Complete formal specification (1860 lines, 35 theorems) |
-| `prove_decay_plasticity.py` | Monte Carlo verification of I.2-R flip bounds |
-| `prove_adversarial_Lf.py` | Construction of L_F = 1.0 worst case |
+| File | Lines | Purpose |
+|------|-------|---------|
+| `src/lib.rs` | 7123 | Core VSA types (Hypervector, MemoryCluster, ContractionTelemetry) |
+| `src/reason.rs` | ~5000+ | Reasoning engine (DeepThought, forward_chain, soft_project) |
+| `src/drift.rs` | 2291 | 10 DRIFT cognitive subsystems |
+| `src/compression.rs` | 1311 | Memory compression (Bloom filter, sparse accumulator, entry merging) |
+| `src/cognition.rs` | ~2000 | Episodes, ConceptJournal, ConfidenceCalibration, AblationConfig |
+| `src/qa.rs` | ~1500 | QA engine, causal-chain reasoning, fact verification |
+| `src/diagnostic.rs` | ~1200 | Failure classification, structural SVO centroids |
+| `src/narrative.rs` | ~1000 | Pure rule-based NLG, morphology, dependency linearization |
+| `src/main.rs` | ~800 | Multi-agent simulation, agent loop, telemetry |
+| `src/broker.rs` | ~700 | NeocortexBroker, DCP consensus, quorum selection |
+| `MATH.md` | 3353 | Complete formal specification |
+| `prove_decay_plasticity.py` | — | Monte Carlo verification of I.2-R flip bounds |
+| `prove_adversarial_Lf.py` | — | Construction of L_F = 1.0 worst case |

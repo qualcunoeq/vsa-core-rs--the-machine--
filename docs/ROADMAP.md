@@ -1,5 +1,9 @@
 # Research Roadmap
 
+**Last Updated:** 2026-07-22
+**Current Version:** v3.4 (July 2026)
+**Previous Version:** v3.3 (memory compression, DRIFT port)
+
 This project is intentionally broad: the long-term target is a bitwise cognitive
 architecture that can perceive, reason, answer, adapt, improve, use tools, and
 defend its own operating envelope.  The roadmap below does not narrow that
@@ -28,7 +32,7 @@ Current anchors:
   records used by higher layers.
 - `src/reason.rs`: projection, chaining, soft projection, theorem tests.
 - `src/hnsw.rs`: approximate nearest-neighbor search for hypervectors.
-- `src/compression.rs`: bitwise compression and coding experiments.
+- `src/compression.rs`: bitwise compression and coding experiments (v3.3).
 
 Research questions:
 
@@ -40,12 +44,17 @@ Implemented surface:
 
 - Shared `ExperimentResult` records can carry claim, commit, seed, baseline,
   metrics, and pass/fail state.
+- `SparseAccumulator` (v3.3): 10× reduction in accumulator memory with
+  index-delta encoding.
+- `CountingBloomFilter` (v3.3): fixed-memory URL deduplication (~4 MB, 6 hashes)
+  replacing unbounded `HashSet`.
+- Cold storage (v3.3): Golomb-Rice delta encoding for frozen cluster data (~6×).
 
 Near-term work:
 
-- Keep deterministic tests for projection and accumulator invariants.
-- Move long calibration sweeps behind `#[ignore]` with stable output schemas.
-- Reduce warning noise in this layer first.
+- Keep deterministic tests for projection and accumulator invariants. ✅
+- Move long calibration sweeps behind `#[ignore]` with stable output schemas. ✅
+- Reduce warning noise in this layer first. (In progress)
 
 ## Layer 1: Memory And Concept Formation
 
@@ -81,7 +90,7 @@ Implemented:
 
 Near-term work:
 
-- Wire `ConceptJournal` into `freeze_cold_clusters` (cold storage events).
+- Wire `ConceptJournal` into `freeze_cold_clusters` (cold storage events). (Pending — ConceptJournal wired into abstractor/sleep, not yet into freeze_cold_clusters)
 
 ## Layer 2: Reasoning And Explanation
 
@@ -118,9 +127,9 @@ Implemented surface:
 
 Near-term work:
 
-- Add forward-chain / abduce episode wrappers for completeness.
+- Add forward-chain / abduce episode wrappers for completeness. (Pending)
 - Wire `ConfidenceCalibration::record_store()` into the main agent loop every 50 ticks
-  to track calibration over time.
+  to track calibration over time. (Pending)
 
 ## Layer 3: Self-Model And Adaptation
 
@@ -153,9 +162,9 @@ Implemented surface:
 
 Near-term work:
 
-- Wire `ConfidenceCalibration::record_store()` into the main agent loop (every 50 ticks).
-- Add a `run_pre_post()` integration test using `QaEngine`.
-- Persist `SelfModel` state for cross-session trajectory continuity.
+- Wire `ConfidenceCalibration::record_store()` into the main agent loop (every 50 ticks). (Pending)
+- Add a `run_pre_post()` integration test using `QaEngine`. (Pending)
+- Persist `SelfModel` state for cross-session trajectory continuity. (Pending)
 
 ## Layer 4: Tools And World Interfaces
 
@@ -237,7 +246,7 @@ Wired into:
   with full `DecisionRecord` creation, spending, and logging.
 
 Implemented persistence:
-- `decision_journal.save()` runs during the main loop's 50-tick persistence sweep.
+- `decision_journal.save()` runs during the main loop's 50-tick persistence sweep. (Wired in v3.3)
 
 ## Layer 6: Governed Reasoning Evaluation
 
@@ -311,8 +320,20 @@ Current evidence (current formalization and governed benchmark slices):
   exposes 32/32 false accepts. The unsafe counterfactual is diagnostic only.
 - Operational baseline: the release unified runner records a
   `governed_suite_runtime` receipt; the current seed-42 500/500 run measured
-  about 1.52 s on the development host. Runtime is measured as evidence, with no
+  about 1.0–1.1 s on the development host (updated v3.4). Runtime is measured as evidence, with no
   unvalidated performance target inferred from one machine.
+- Formalization audit: complete fact provenance now gates typed direct
+  instantiation; the constrained prose grammar now covers bounded equations,
+  rates, inequalities, systems, quantifiers, units, entity relations, typed
+  verification targets, explicit affine recurrence definitions, and exact
+  domain/side-condition and assumption annotations. The 60-case seed reports
+  authorization correctness 60/60, zero false authorizations, zero false
+  denials, complete failure-taxonomy coverage, structural target completeness
+  60/60 (executable target completeness 47/60), definitions 21/21, facts
+  69/69, entities 21/21, assumptions 3/3, constraints 9/9, and obligations
+  35/35. Recurrence targets remain non-executable through the generic
+  direct-audit path. Structural completeness is reported separately from executor/verifier
+  availability.
 - Formalization audit: complete fact provenance now gates typed direct
   instantiation; the constrained prose grammar now covers bounded equations,
   rates, inequalities, systems, quantifiers, units, entity relations, typed

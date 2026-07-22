@@ -1,5 +1,7 @@
 # Claim Ledger
 
+**Last Updated:** 2026-07-22
+
 This file tracks the research claims the architecture is trying to make true.
 It is not a marketing document.  A claim can be proven, supported, provisional,
 false, or retired.
@@ -374,7 +376,10 @@ Current capability:
   up to 5 hops. Circular detection by max‑hops bound.
 - **Sub‑Lemma S proof**: encoded as a deterministic linear sequence of
   ρ‑admissible invariants (ρ¹³, ρ²⁶, ρ⁵²) and constructive witness geometry.
-  Not a general proof — specific to one theorem.
+  **CLOSED for runtime-admissible manifolds (A3-Q).** The `enforce_a3q_manifold()`
+  admission gate provides the quantitative decorrelation needed. The original
+  "proven modulo decorrelation" gap is resolved by replacing an implicit
+  probabilistic assumption with an executable theorem boundary.
 - **Pure rewriting, no proof search**: the system does not branch on
   alternatives, backtrack, or unify terms. It applies rules in fixed order and
   accepts the first match.
@@ -386,6 +391,20 @@ Known gaps:
   variables, no refutation completeness, no proof‑tree representation.
 - ❌ **General theorem prover**: The VSA algebra lacks a sound inference calculus
   (no modus ponens rule for bound hypervectors, no substitution).
+
+New in v3.4 — governed reasoning verticals:
+- **Proposition kernel**: 12-schema trusted environment with theorem
+  instantiation, premise certificates, and replay verification (500-case seed:
+  324/324 valid accepted, all 176 invalid rejected).
+- **Recurrence vertical**: deterministic first-order affine recurrence solving
+  with authorization, execution, and replay (500-case seed: 251/251 expected-
+  positive executed/replayed, all 249 expected abstentions rejected).
+- **Algebra benchmarks**: linear, quadratic, and 2×2 system executors with
+  generated holdouts (560-case: 1.000 solution/execution/replay).
+
+These are not theorem proving in the AND-branching sense — they are
+deterministic executor-based verification — but they demonstrate bounded
+formal reasoning at scale.
 
 Baseline: pure string‑pattern rewriting with no causal structure.
 

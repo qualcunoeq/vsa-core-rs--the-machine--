@@ -167,6 +167,15 @@ fn classify_denial(
             }
             "operation_unsupported" => FailureClass::MethodNotFound,
             "verification_unavailable" => FailureClass::VerificationFailure,
+            "target_incomplete"
+                if trace.target_completion.complete
+                    && trace.target_completion.build_trace.final_status
+                        == crate::formalization::TargetStatus::Complete =>
+            {
+                // The typed target is complete; the report's direct-audit
+                // path declined because a multi-step method is required.
+                FailureClass::PlanningFailure
+            }
             "representation_incomplete" | "target_incomplete" => {
                 FailureClass::FormalizationFailure
             }
@@ -205,6 +214,16 @@ mod tests {
         let record = classify_formalization_failure(&trace, &receipt, false).unwrap();
         assert_eq!(record.class, FailureClass::FormalizationFailure);
         assert!(!record.blocker.is_empty());
+    }
+
+    #[test]
+    fn complete_typed_target_is_planning_failure_when_direct_audit_abstains() {
+        let trace = assess_prompt("complete-target", "Given x + 4 = 9, solve for x.", "Math", false);
+        assert!(trace.target_completion.complete);
+        let assessment = crate::formalization::assess_direct_instantiation(&trace);
+        let receipt = assessment.denial_trace(true);
+        let record = classify_formalization_failure(&trace, &receipt, false).unwrap();
+        assert_eq!(record.class, FailureClass::PlanningFailure);
     }
 
     #[test]

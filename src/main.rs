@@ -2317,6 +2317,27 @@ async fn run_agent(
                                     },
                                 };
                                 decision_record.action_result = Some(action_result);
+                                // Keep the legacy corrective-action path on
+                                // the same Layer 4 audit surface as governed
+                                // actuator calls. The decision journal remains
+                                // the budget record; ToolEvent is the central
+                                // execution/reliability receipt.
+                                let tool_request =
+                                    the_machine::actuator::ActionRequest::new(
+                                        the_machine::actuator::ActionType::ExecuteCommand,
+                                        &step.parameter,
+                                    );
+                                let tool_event = the_machine::actuator::record_tool_event(
+                                    &mut brain_write,
+                                    &format!("main loop: {} {}", step.action, step.parameter),
+                                    &tool_request,
+                                    decision_record.action_result.as_ref().expect(
+                                        "action result was assigned immediately before audit",
+                                    ),
+                                    the_machine::cognition::SideEffectClass::ExternalWrite,
+                                    1.0 - action_risk,
+                                );
+                                decision_record.tool_event_id = Some(tool_event.id.clone());
                                 let _ = brain_write.autonomy_budget.spend(
                                     action_risk,
                                     2000,

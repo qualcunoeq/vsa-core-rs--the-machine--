@@ -1912,6 +1912,41 @@ mod tests {
         assert_eq!(deserialized.duration_ms, 150);
     }
 
+    #[test]
+    fn test_record_tool_event_updates_audit_and_reliability() {
+        let mut brain = VSABrain::new(0.12);
+        let request = ActionRequest::exec("localhost", "echo ready");
+        let result = ActionResult {
+            success: true,
+            raw_output: "ready".into(),
+            observations: Vec::new(),
+            error: None,
+            duration_ms: 5,
+        };
+
+        let event_id = record_tool_event(
+            &mut brain,
+            "legacy corrective action",
+            &request,
+            &result,
+            SideEffectClass::ExternalWrite,
+            0.30,
+        )
+        .id
+        .clone();
+
+        assert!(!event_id.is_empty());
+        assert_eq!(brain.tool_event_store.len(), 1);
+        assert_eq!(
+            brain.tool_event_store.success_rate("executecommand"),
+            Some(1.0)
+        );
+        assert_eq!(
+            brain.tool_reliability.success_rate("ExecuteCommand"),
+            Some(1.0)
+        );
+    }
+
     // ── ActionType Enum ──────────────────────────────────────────────────
 
     #[test]

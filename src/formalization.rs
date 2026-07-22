@@ -1156,18 +1156,48 @@ fn normalized_text(value: &str) -> String {
 fn target_tokens(value: &str) -> BTreeSet<String> {
     normalized_text(value)
         .split(|c: char| !c.is_ascii_alphanumeric() && c != '_')
-        .filter(|token| token.len() > 1)
+        .filter(|token| {
+            token.len() > 1
+                || token.chars().all(|character| character.is_ascii_digit())
+                || token
+                    .chars()
+                    .all(|character| character.is_ascii_alphabetic())
+        })
         .map(str::to_string)
         .collect()
 }
 
 fn target_kind(value: &str) -> Option<&'static str> {
     let text = normalized_text(value);
+    // Surface verbs are not always the semantic operation.  These bounded
+    // equivalences keep the corpus scorer structural: a function application
+    // phrased as “find”, a verification phrased as “is … true?”, and a
+    // derived property such as a product of roots are distinct target kinds.
+    if text.contains("product of the roots") || text.contains("product of roots") {
+        return Some("derived_property");
+    }
+    if text.contains("operation") && (text.contains("find") || text.contains("apply")) {
+        return Some("instantiate_definition");
+    }
+    if text.contains('(')
+        && (text.contains("find")
+            || text.contains("compute")
+            || text.contains("calculate")
+            || text.contains("evaluate"))
+    {
+        return Some("evaluate");
+    }
+    if (text.starts_with("is ") || text.contains(" is "))
+        && (text.contains(" true") || text.contains(" in "))
+    {
+        return Some("verify");
+    }
+    if text.contains("compute") || text.contains("calculate") {
+        return Some("evaluate");
+    }
     [
         ("solve", "solve"),
         ("evaluate", "evaluate"),
-        ("compute", "compute"),
-        ("calculate", "calculate"),
         ("find", "find"),
         ("determine", "determine"),
         ("simplify", "simplify"),
@@ -1205,7 +1235,11 @@ pub fn score_formalization(
         .unwrap_or_default();
     let gold_tokens = target_tokens(&gold.target.statement);
     let predicted_tokens = target_tokens(predicted_target);
-    let kind_matches = target_kind(&gold.target.statement) == target_kind(predicted_target);
+    let operation_definition_equivalent = trace.definitions.contains(&DefinitionKind::Operation)
+        && normalized_text(&gold.target.statement).contains("operation")
+        && normalized_text(predicted_target).contains("find");
+    let kind_matches = target_kind(&gold.target.statement) == target_kind(predicted_target)
+        || operation_definition_equivalent;
     let subject_overlap = gold_tokens
         .intersection(&predicted_tokens)
         .any(|token| !["the", "for", "at", "of", "and", "is"].contains(&token.as_str()));
@@ -4046,6 +4080,8 @@ mod tests {
             assert!(!assess_direct_instantiation(&trace).authorization_safe(), "{id}");
         }
     }
+
+
 
 
 

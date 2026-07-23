@@ -168,6 +168,18 @@ fn canonicalize_prompt(source: &str) -> String {
         if let Some(caps) = sum.captures(&text) {
             return format!("Evaluate {} + {}", &caps[1], &caps[2]);
         }
+        let added_total = Regex::new(r"(?i)determine\s+the\s+total\s+when\s+(-?\d+)\s+is\s+added\s+to\s+(-?\d+)").unwrap();
+        if let Some(caps) = added_total.captures(&text) {
+            return format!("Evaluate {} + {}", &caps[1], &caps[2]);
+        }
+        let combined_addition = Regex::new(r"(?i)work\s+out\s+the\s+result\s+obtained\s+by\s+combining\s+(-?\d+)\s+and\s+(-?\d+)\s+by\s+addition").unwrap();
+        if let Some(caps) = combined_addition.captures(&text) {
+            return format!("Evaluate {} + {}", &caps[1], &caps[2]);
+        }
+        let increased_by = Regex::new(r"(?i)what\s+number\s+results\s+if\s+(-?\d+)\s+is\s+increased\s+by\s+(-?\d+)").unwrap();
+        if let Some(caps) = increased_by.captures(&text) {
+            return format!("Evaluate {} + {}", &caps[1], &caps[2]);
+        }
         let direct = Regex::new(r"(?i)^(?:please\s+)?(?:calculate|what\s+is|find)\s+(?:the\s+sum\s+of\s+)?(-?\d+)\s*\+\s*(-?\d+)\s*\??\.?$").unwrap();
         if let Some(caps) = direct.captures(text.trim()) {
             return format!("Evaluate {} + {}", &caps[1], &caps[2]);
@@ -230,5 +242,24 @@ mod tests {
         assert!(matches!(decision, DecompositionDecision::Sketch(_)));
         assert!(realize(match &decision { DecompositionDecision::Sketch(s) => s, _ => unreachable!() }).is_some());
         assert!(matches!(decompose("The sequence is relevant but the bridge is missing"), DecompositionDecision::NoDecomposition));
+    }
+
+    #[test]
+    fn arithmetic_paraphrases_canonicalize_without_broadening_authorization() {
+        for prompt in [
+            "Determine the total when 7 is added to 8.",
+            "Work out the result obtained by combining 7 and 8 by addition.",
+            "What number results if 7 is increased by 8?",
+        ] {
+            assert!(matches!(decompose(prompt), DecompositionDecision::Sketch(_)), "{prompt}");
+        }
+        for prompt in [
+            "Determine the total when x is added to 8.",
+            "Work out the result obtained by combining x and 8 by addition.",
+            "What number results if x is increased by 8?",
+            "Either determine the total when 7 is added to 8, or use another route.",
+        ] {
+            assert!(!matches!(decompose(prompt), DecompositionDecision::Sketch(_)), "{prompt}");
+        }
     }
 }

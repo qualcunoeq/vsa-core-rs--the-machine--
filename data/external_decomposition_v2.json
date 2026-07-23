@@ -1,0 +1,1607 @@
+{
+  "schema_version": 1,
+  "oracle": "fresh untouched hand-audited external-style holdout v2",
+  "holdout_locked": true,
+  "cases": [
+    {
+      "id": "external-v2.0000",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 3 is added to 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0001",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 4 is added to 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0002",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 5 is added to 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0003",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 6 is added to 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0004",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 7 is added to 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0005",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 8 is added to 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0006",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 9 is added to 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0007",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 10 is added to 12.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0008",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 11 is added to 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0009",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 12 is added to 14.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0010",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 13 is added to 15.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0011",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 14 is added to 16.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0012",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 15 is added to 17.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0013",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 16 is added to 18.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0014",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 17 is added to 19.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0015",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 18 is added to 20.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0016",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 19 is added to 21.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0017",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 20 is added to 22.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0018",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 21 is added to 23.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0019",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 22 is added to 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0020",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 23 is added to 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0021",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 24 is added to 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0022",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 25 is added to 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0023",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 26 is added to 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0024",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 27 is added to 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0025",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 28 is added to 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0026",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 29 is added to 12.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0027",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 30 is added to 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0028",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 31 is added to 14.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0029",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 3 is added to 15.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0030",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 4 is added to 16.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0031",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 5 is added to 17.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0032",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 6 is added to 18.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0033",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 7 is added to 19.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0034",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 8 is added to 20.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0035",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 9 is added to 21.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0036",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 10 is added to 22.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0037",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 11 is added to 23.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0038",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 12 is added to 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0039",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 13 is added to 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0040",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 14 is added to 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0041",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 15 is added to 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0042",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 16 is added to 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0043",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 17 is added to 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0044",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 18 is added to 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0045",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 19 is added to 12.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0046",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 20 is added to 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0047",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 21 is added to 14.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0048",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 22 is added to 15.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0049",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 23 is added to 16.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0050",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 24 is added to 17.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0051",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 25 is added to 18.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0052",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 26 is added to 19.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0053",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 27 is added to 20.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0054",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 28 is added to 21.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0055",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 29 is added to 22.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0056",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 30 is added to 23.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0057",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 31 is added to 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0058",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 3 is added to 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0059",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Determine the total when 4 is added to 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0060",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 4 and 6 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0061",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 5 and 7 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0062",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 6 and 8 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0063",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 7 and 9 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0064",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 8 and 10 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0065",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 9 and 11 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0066",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 10 and 12 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0067",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 11 and 13 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0068",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 12 and 14 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0069",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 13 and 15 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0070",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 14 and 16 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0071",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 15 and 17 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0072",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 16 and 18 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0073",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 17 and 19 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0074",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 18 and 20 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0075",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 19 and 21 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0076",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 20 and 22 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0077",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 21 and 6 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0078",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 22 and 7 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0079",
+      "source": "fresh-hand-audited-holdout",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 23 and 8 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0080",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 24 and 9 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0081",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 25 and 10 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0082",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 26 and 11 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0083",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 4 and 12 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0084",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 5 and 13 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0085",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 6 and 14 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0086",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 7 and 15 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0087",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 8 and 16 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0088",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 9 and 17 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0089",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 10 and 18 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0090",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 11 and 19 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0091",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 12 and 20 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0092",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 13 and 21 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0093",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 14 and 22 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0094",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 15 and 6 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0095",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 16 and 7 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0096",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 17 and 8 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0097",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 18 and 9 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0098",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 19 and 10 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0099",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 20 and 11 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0100",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 21 and 12 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0101",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 22 and 13 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0102",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 23 and 14 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0103",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 24 and 15 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0104",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 25 and 16 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0105",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 26 and 17 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0106",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 4 and 18 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0107",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 5 and 19 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0108",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 6 and 20 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0109",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 7 and 21 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0110",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 8 and 22 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0111",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 9 and 6 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0112",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 10 and 7 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0113",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 11 and 8 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0114",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 12 and 9 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0115",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 13 and 10 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0116",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 14 and 11 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0117",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 15 and 12 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0118",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 16 and 13 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0119",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 17 and 14 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0120",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 2 is increased by 7?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0121",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 3 is increased by 8?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0122",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 4 is increased by 9?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0123",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 5 is increased by 10?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0124",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 6 is increased by 11?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0125",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 7 is increased by 12?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0126",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 8 is increased by 13?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0127",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 9 is increased by 14?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0128",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 10 is increased by 15?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0129",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 11 is increased by 16?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0130",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 12 is increased by 17?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0131",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 13 is increased by 18?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0132",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 14 is increased by 19?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0133",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 15 is increased by 7?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0134",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 16 is increased by 8?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0135",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 17 is increased by 9?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0136",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 18 is increased by 10?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0137",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 19 is increased by 11?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0138",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 20 is increased by 12?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0139",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 21 is increased by 13?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0140",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 22 is increased by 14?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0141",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 23 is increased by 15?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0142",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 24 is increased by 16?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0143",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 25 is increased by 17?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0144",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 26 is increased by 18?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0145",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 27 is increased by 19?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0146",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 28 is increased by 7?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0147",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 29 is increased by 8?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0148",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 30 is increased by 9?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0149",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 31 is increased by 10?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0150",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 32 is increased by 11?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0151",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 2 is increased by 12?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0152",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 3 is increased by 13?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0153",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 4 is increased by 14?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0154",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 5 is increased by 15?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0155",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 6 is increased by 16?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0156",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 7 is increased by 17?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0157",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 8 is increased by 18?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0158",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 9 is increased by 19?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0159",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "What number results if 10 is increased by 7?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0160",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 8 plus 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0161",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 9 plus 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0162",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 10 plus 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0163",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 11 plus 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0164",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 12 plus 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0165",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 13 plus 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0166",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 14 plus 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0167",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 15 plus 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0168",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 16 plus 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0169",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 17 plus 12.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0170",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 18 plus 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0171",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 19 plus 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0172",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 20 plus 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0173",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 21 plus 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0174",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 22 plus 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0175",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 23 plus 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0176",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 24 plus 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0177",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 25 plus 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0178",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 26 plus 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0179",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Please calculate 27 plus 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external-v2.0180",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Let a_0=3. Each next term is 1 times a_n plus 0. Determine the term at n=1; then add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external-v2.0181",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Let a_0=4. Each next term is 2 times a_n plus 1. Determine the term at n=2; then add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external-v2.0182",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Let a_0=5. Each next term is 3 times a_n plus 2. Determine the term at n=3; then add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external-v2.0183",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Let a_0=6. Each next term is 1 times a_n plus 3. Determine the term at n=1; then add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external-v2.0184",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Let a_0=7. Each next term is 2 times a_n plus 0. Determine the term at n=2; then add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external-v2.0185",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Let a_0=3. Each next term is 3 times a_n plus 1. Determine the term at n=3; then add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external-v2.0186",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Let a_0=4. Each next term is 1 times a_n plus 2. Determine the term at n=1; then add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external-v2.0187",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Let a_0=5. Each next term is 2 times a_n plus 3. Determine the term at n=2; then add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external-v2.0188",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Let a_0=6. Each next term is 3 times a_n plus 0. Determine the term at n=3; then add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external-v2.0189",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Let a_0=7. Each next term is 1 times a_n plus 1. Determine the term at n=1; then add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external-v2.0190",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Either determine the total when 4 is added to 6, or use another route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external-v2.0191",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Either determine the total when 5 is added to 7, or use another route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external-v2.0192",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Either determine the total when 6 is added to 8, or use another route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external-v2.0193",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Either determine the total when 7 is added to 9, or use another route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external-v2.0194",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "Either determine the total when 8 is added to 10, or use another route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external-v2.0195",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "The recurrence a_(n+1)=2*a_n+1 is given, but no initial value or target index is supplied; ignore 0.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external-v2.0196",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "The recurrence a_(n+1)=2*a_n+1 is given, but no initial value or target index is supplied; ignore 1.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external-v2.0197",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "The recurrence a_(n+1)=2*a_n+1 is given, but no initial value or target index is supplied; ignore 2.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external-v2.0198",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "The recurrence a_(n+1)=2*a_n+1 is given, but no initial value or target index is supplied; ignore 3.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external-v2.0199",
+      "source": "fresh-hand-audited-holdout",
+      "split": "holdout",
+      "prompt": "The recurrence a_(n+1)=2*a_n+1 is given, but no initial value or target index is supplied; ignore 4.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    }
+  ]
+}

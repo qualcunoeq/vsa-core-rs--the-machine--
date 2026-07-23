@@ -185,7 +185,7 @@ fn parse_stage_one_integer(source: &str) -> Result<String, CompositionFailure> {
     execute_integer_stage(source).map_err(|_| CompositionFailure::StageOneRejected)
 }
 
-fn execute_integer_stage(source: &str) -> Result<String, CompositionFailure> {
+pub fn execute_integer_stage(source: &str) -> Result<String, CompositionFailure> {
     if let Ok(request) = recurrence::parse_prose_recurrence(source) {
         let answer = request
             .definition
@@ -208,7 +208,7 @@ fn execute_integer_stage(source: &str) -> Result<String, CompositionFailure> {
         .ok_or(CompositionFailure::StageOneReplayFailed)
 }
 
-fn execute_system_stage(source: &str) -> Result<String, CompositionFailure> {
+pub fn execute_system_stage(source: &str) -> Result<String, CompositionFailure> {
     let receipt = linear_system::execute_linear_system(source)
         .map_err(|_| CompositionFailure::StageTwoRejected)?;
     Ok(receipt.result)

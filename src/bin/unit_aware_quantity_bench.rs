@@ -1,6 +1,9 @@
 use serde::Deserialize;
 use std::{collections::BTreeMap, env, fs};
-use the_machine::unit_aware_quantity::{bridge_to_algebra, formalize, UnitQuantityDecision};
+use the_machine::unit_aware_quantity::{formalize, UnitQuantityDecision};
+use the_machine::unit_quantity_composition::{
+    compose_conversion_to_linear_system, compose_to_algebra,
+};
 
 #[derive(Debug, Deserialize)]
 struct Corpus {
@@ -25,6 +28,8 @@ fn main() {
     let mut structural = 0usize;
     let mut accepted = 0usize;
     let mut replayed = 0usize;
+    let mut relation_algebra_replayed = 0usize;
+    let mut conversion_system_replayed = 0usize;
     let mut ambiguous = 0usize;
     let mut unsupported = 0usize;
     let mut results_checked = 0usize;
@@ -41,10 +46,15 @@ fn main() {
             UnitQuantityDecision::Accepted(artifact) => {
                 accepted += 1;
                 replayed += usize::from(artifact.replay_verified());
-                (
-                    "supported",
-                    bridge_to_algebra(&artifact).map(|receipt| receipt.result),
-                )
+                let chain = compose_to_algebra(&artifact);
+                relation_algebra_replayed += usize::from(
+                    chain
+                        .as_ref()
+                        .is_some_and(|receipt| receipt.algebra.algebra_replay_verified),
+                );
+                conversion_system_replayed +=
+                    usize::from(compose_conversion_to_linear_system(&artifact).is_some());
+                ("supported", chain.map(|receipt| receipt.algebra.result))
             }
             UnitQuantityDecision::Ambiguous => {
                 ambiguous += 1;
@@ -98,9 +108,10 @@ fn main() {
         }
     }
     println!(
-        "unit-aware-quantity: cases={} structural={}/{} accepted={} replayed={} ambiguous={} unsupported={} results={}/{} rewrite_pairs={}/{} false_auth={} false_denials={} failures={:?} failure_ids={:?} deterministic=true",
-        corpus.cases.len(), structural, corpus.cases.len(), accepted, replayed, ambiguous,
-        unsupported, results_correct, results_checked, pair_stable, pair_count, false_auth,
-        false_denials, failures, failure_ids
+        "unit-aware-quantity: cases={} structural={}/{} accepted={} replayed={} relation_algebra_replayed={} conversion_system_replayed={} ambiguous={} unsupported={} results={}/{} rewrite_pairs={}/{} false_auth={} false_denials={} failures={:?} failure_ids={:?} deterministic=true",
+        corpus.cases.len(), structural, corpus.cases.len(), accepted, replayed,
+        relation_algebra_replayed, conversion_system_replayed, ambiguous, unsupported,
+        results_correct, results_checked, pair_stable, pair_count, false_auth, false_denials,
+        failures, failure_ids
     );
 }

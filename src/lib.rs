@@ -83,6 +83,7 @@ pub mod quantity_relation_integration;
 pub mod quantity_relation_router;
 pub mod gsm8k_quantity_candidate;
 pub mod unit_aware_quantity;
+pub mod unit_quantity_composition;
 pub mod proposition;
 pub mod prose_recurrence_benchmark;
 pub mod qa;

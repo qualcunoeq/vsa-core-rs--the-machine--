@@ -37,6 +37,8 @@ cases=27
 structural=27/27
 accepted=15
 replayed=15
+relation_algebra_replayed=15
+conversion_system_replayed=5
 ambiguous=6
 unsupported=6
 results=15/15
@@ -47,6 +49,8 @@ failures={}
 ```
 
 Accepted artifacts are handed to the existing algebra executor through an
-explicit typed bridge and require replay verification.  This module is not
-wired into global routing yet; integration should follow a larger independent
-corpus and mixed-domain leakage test.
+explicit typed bridge and require replay verification.  The composition
+pressure test also sends the five explicit conversion cases through a
+two-equation linear-system bridge; all five system receipts replay.  This
+module is not wired into global routing yet; integration should follow a
+larger independent corpus and mixed-domain leakage test.

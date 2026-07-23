@@ -43,7 +43,7 @@ impl UnitQuantityArtifact {
                 .all(|constraint| !constraint.lhs.is_empty() && !constraint.rhs.is_empty())
     }
 
-    fn as_quantity_relation(&self) -> QuantityRelationArtifact {
+    pub fn to_quantity_relation(&self) -> QuantityRelationArtifact {
         QuantityRelationArtifact {
             family: "unit_aware_quantity".into(),
             signature: self.signature.clone(),
@@ -226,7 +226,7 @@ pub fn bridge_to_algebra(artifact: &UnitQuantityArtifact) -> Option<AlgebraBridg
     if !artifact.replay_verified() {
         return None;
     }
-    bridge_quantity_to_algebra(&artifact.as_quantity_relation())
+    bridge_quantity_to_algebra(&artifact.to_quantity_relation())
 }
 
 #[cfg(test)]

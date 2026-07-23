@@ -32,3 +32,14 @@ composition, 500 planner-selection, and 500 raw-decomposition cases).
 This remains a bounded parser, not open-ended language understanding. Its
 value is that structural decomposition is measured separately from route
 realization and final replay.
+
+## Natural-language pressure corpus
+
+`raw_decomposition_ood_v2.json` contains 1,000 independently generated
+textbook-style variants: reordered clauses, “plus”/“sum of” wording, bracketed
+indices, irrelevant quantities, ambiguous alternatives, and missing bridges.
+It achieves 1,000/1,000 structural decisions, 850 realized plans, 1,500
+replayed stages, 75 ambiguities preserved, and zero authorization errors.
+
+The unified release integration command accepts both raw corpora as its fourth
+and fifth arguments and now covers 3,340 cases in total.

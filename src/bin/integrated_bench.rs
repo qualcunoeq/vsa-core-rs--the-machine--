@@ -12,6 +12,7 @@ fn main() {
     let composition_path = env::args().nth(2).unwrap_or_else(|| "data/cross_vertical_ood_v1.json".into());
     let planner_path = env::args().nth(3).unwrap_or_else(|| "data/compositional_planner_ood_v1.json".into());
     let raw_path = env::args().nth(4).unwrap_or_else(|| "data/raw_decomposition_ood_v1.json".into());
+    let raw_v2_path = env::args().nth(5).unwrap_or_else(|| "data/raw_decomposition_ood_v2.json".into());
     let mixed: MixedOodCorpus = serde_json::from_str(&fs::read_to_string(&mixed_path).expect("mixed corpus"))
         .expect("mixed JSON");
     let composition: CompositionCorpus = serde_json::from_str(&fs::read_to_string(&composition_path).expect("composition corpus"))
@@ -20,13 +21,18 @@ fn main() {
         .expect("planner JSON");
     let raw: RawCorpus = serde_json::from_str(&fs::read_to_string(&raw_path).expect("raw decomposition corpus"))
         .expect("raw decomposition JSON");
+    let raw_v2: RawCorpus = serde_json::from_str(&fs::read_to_string(&raw_v2_path).expect("raw decomposition v2 corpus"))
+        .expect("raw decomposition v2 JSON");
     assert!(mixed.validation_errors().is_empty());
     assert!(composition.validation_errors().is_empty());
     assert!(planner.validation_errors().is_empty());
+    assert!(raw.validation_errors().is_empty());
+    assert!(raw_v2.validation_errors().is_empty());
     let mixed_report = evaluate_mixed(&mixed);
     let composition_report = evaluate_composition(&composition);
     let planner_report = evaluate_planner(&planner);
     let raw_report = evaluate_raw(&raw);
+    let raw_v2_report = evaluate_raw(&raw_v2);
     assert_eq!(mixed_report.metrics.false_authorizations, 0);
     assert_eq!(mixed_report.metrics.false_denials, 0);
     assert_eq!(mixed_report.rewrites.regressions, 0);
@@ -40,8 +46,12 @@ fn main() {
     assert_eq!(raw_report.metrics.false_authorizations, 0);
     assert_eq!(raw_report.metrics.false_denials, 0);
     assert_eq!(raw_report.metrics.structural_correct, raw_report.corpus_cases);
-    println!("integrated: cases={} (mixed={} composition={} planner={} raw={}) route={:.3} mixed_auth={} composition_auth={} planner_auth={} raw_realized={} false_auth=0 false_denials=0", mixed_report.corpus_cases + composition_report.corpus_cases + planner_report.corpus_cases + raw_report.corpus_cases, mixed_report.corpus_cases, composition_report.corpus_cases, planner_report.corpus_cases, raw_report.corpus_cases, mixed_report.metrics.route_correct as f64 / mixed_report.corpus_cases as f64, mixed_report.metrics.authorized, composition_report.metrics.authorized, planner_report.metrics.authorized, raw_report.metrics.realized_plans);
+    assert_eq!(raw_v2_report.metrics.false_authorizations, 0);
+    assert_eq!(raw_v2_report.metrics.false_denials, 0);
+    assert_eq!(raw_v2_report.metrics.structural_correct, raw_v2_report.corpus_cases);
+    println!("integrated: cases={} (mixed={} composition={} planner={} raw={} raw_v2={}) route={:.3} mixed_auth={} composition_auth={} planner_auth={} raw_realized={} raw_v2_realized={} false_auth=0 false_denials=0", mixed_report.corpus_cases + composition_report.corpus_cases + planner_report.corpus_cases + raw_report.corpus_cases + raw_v2_report.corpus_cases, mixed_report.corpus_cases, composition_report.corpus_cases, planner_report.corpus_cases, raw_report.corpus_cases, raw_v2_report.corpus_cases, mixed_report.metrics.route_correct as f64 / mixed_report.corpus_cases as f64, mixed_report.metrics.authorized, composition_report.metrics.authorized, planner_report.metrics.authorized, raw_report.metrics.realized_plans, raw_v2_report.metrics.realized_plans);
     println!("composition_replay: intermediate={} final={} forged_rejected={} incompatible_rejected={}", composition_report.metrics.intermediate_replay_verified, composition_report.metrics.final_replay_verified, composition_report.metrics.forged_intermediates_rejected, composition_report.metrics.incompatible_handoffs_rejected);
     println!("planner: replayed_stages={} ambiguous={} invalid_handoffs={}", planner_report.metrics.accepted_replayed_stages, planner_report.metrics.ambiguous, planner_report.metrics.invalid_handoffs_rejected);
     println!("raw_decomposition: structural={} ambiguous={} replayed_stages={}", raw_report.metrics.structural_correct, raw_report.metrics.ambiguous_preserved, raw_report.metrics.replayed_stages);
+    println!("raw_decomposition_v2: structural={} ambiguous={} replayed_stages={}", raw_v2_report.metrics.structural_correct, raw_v2_report.metrics.ambiguous_preserved, raw_v2_report.metrics.replayed_stages);
 }

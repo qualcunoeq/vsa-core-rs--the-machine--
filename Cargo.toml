@@ -100,6 +100,10 @@ name = "raw_decomposition_bench"
 path = "src/bin/raw_decomposition_bench.rs"
 
 [[bin]]
+name = "external_decomposition_bench"
+path = "src/bin/external_decomposition_bench.rs"
+
+[[bin]]
 name = "governed_bench"
 path = "src/bin/governed_bench.rs"
 

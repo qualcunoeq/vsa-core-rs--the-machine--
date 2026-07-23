@@ -1,0 +1,4007 @@
+{
+  "schema_version": 1,
+  "oracle": "independent hand-audited external-style decomposition oracle v1",
+  "holdout_locked": true,
+  "cases": [
+    {
+      "id": "external.0000",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 1 plus 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0001",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 2 + 3?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0002",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 3 and 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0003",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 4 + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0004",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 94, evaluate 5 plus 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0005",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 6 plus 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0006",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 7 + 8?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0007",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 8 and 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0008",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 9 + 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0009",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 99, evaluate 10 plus 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0010",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 11 plus 12.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0011",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 12 + 13?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0012",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 13 and 14.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0013",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 14 + 15.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0014",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 104, evaluate 15 plus 16.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0015",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 16 plus 17.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0016",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 17 + 18?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0017",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 18 and 19.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0018",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 19 + 20.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0019",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 109, evaluate 20 plus 21.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0020",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 21 plus 22.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0021",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 22 + 23?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0022",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 23 and 24.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0023",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 24 + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0024",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 114, evaluate 25 plus 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0025",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 26 plus 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0026",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 27 + 5?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0027",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 28 and 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0028",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 29 + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0029",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 119, evaluate 30 plus 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0030",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 31 plus 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0031",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 1 + 10?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0032",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 2 and 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0033",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 3 + 12.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0034",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 124, evaluate 4 plus 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0035",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 5 plus 14.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0036",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 6 + 15?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0037",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 7 and 16.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0038",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 8 + 17.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0039",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 129, evaluate 9 plus 18.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0040",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 10 plus 19.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0041",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 11 + 20?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0042",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 12 and 21.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0043",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 13 + 22.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0044",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 134, evaluate 14 plus 23.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0045",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 15 plus 24.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0046",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 16 + 2?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0047",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 17 and 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0048",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 18 + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0049",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 139, evaluate 19 plus 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0050",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 20 plus 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0051",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 21 + 7?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0052",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 22 and 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0053",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 23 + 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0054",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 144, evaluate 24 plus 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0055",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 25 plus 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0056",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 26 + 12?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0057",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 27 and 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0058",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 28 + 14.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0059",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 149, evaluate 29 plus 15.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0060",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 30 plus 16.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0061",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 31 + 17?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0062",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 1 and 18.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0063",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 2 + 19.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0064",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 154, evaluate 3 plus 20.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0065",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 4 plus 21.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0066",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 5 + 22?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0067",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 6 and 23.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0068",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 7 + 24.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0069",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 159, evaluate 8 plus 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0070",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 9 plus 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0071",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 10 + 4?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0072",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 11 and 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0073",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 12 + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0074",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 164, evaluate 13 plus 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0075",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 14 plus 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0076",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 15 + 9?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0077",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 16 and 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0078",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 17 + 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0079",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 169, evaluate 18 plus 12.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0080",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 19 plus 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0081",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 20 + 14?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0082",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 21 and 15.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0083",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 22 + 16.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0084",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 174, evaluate 23 plus 17.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0085",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 24 plus 18.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0086",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 25 + 19?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0087",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 26 and 20.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0088",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 27 + 21.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0089",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 179, evaluate 28 plus 22.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0090",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 29 plus 23.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0091",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 30 + 24?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0092",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 31 and 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0093",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 1 + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0094",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 184, evaluate 2 plus 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0095",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 3 plus 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0096",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 4 + 6?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0097",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 5 and 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0098",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 6 + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0099",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 189, evaluate 7 plus 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0100",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 8 plus 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0101",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 9 + 11?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0102",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 10 and 12.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0103",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 11 + 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0104",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 194, evaluate 12 plus 14.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0105",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 13 plus 15.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0106",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 14 + 16?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0107",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 15 and 17.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0108",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 16 + 18.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0109",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 199, evaluate 17 plus 19.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0110",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 18 plus 20.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0111",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 19 + 21?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0112",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 20 and 22.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0113",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 21 + 23.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0114",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 204, evaluate 22 plus 24.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0115",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 23 plus 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0116",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 24 + 3?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0117",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 25 and 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0118",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 26 + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0119",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 209, evaluate 27 plus 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0120",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 28 plus 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0121",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 29 + 8?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0122",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 30 and 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0123",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 31 + 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0124",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 214, evaluate 1 plus 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0125",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 2 plus 12.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0126",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 3 + 13?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0127",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 4 and 14.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0128",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 5 + 15.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0129",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 219, evaluate 6 plus 16.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0130",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 7 plus 17.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0131",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 8 + 18?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0132",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 9 and 19.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0133",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 10 + 20.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0134",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 224, evaluate 11 plus 21.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0135",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 12 plus 22.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0136",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 13 + 23?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0137",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 14 and 24.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0138",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 15 + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0139",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 229, evaluate 16 plus 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0140",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 17 plus 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0141",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 18 + 5?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0142",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 19 and 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0143",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 20 + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0144",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 234, evaluate 21 plus 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0145",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 22 plus 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0146",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 23 + 10?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0147",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 24 and 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0148",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 25 + 12.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0149",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 239, evaluate 26 plus 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0150",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 27 plus 14.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0151",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 28 + 15?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0152",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 29 and 16.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0153",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 30 + 17.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0154",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 244, evaluate 31 plus 18.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0155",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 1 plus 19.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0156",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 2 + 20?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0157",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 3 and 21.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0158",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 4 + 22.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0159",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 249, evaluate 5 plus 23.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0160",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 6 plus 24.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0161",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 7 + 2?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0162",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 8 and 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0163",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 9 + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0164",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 254, evaluate 10 plus 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0165",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 11 plus 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0166",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 12 + 7?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0167",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 13 and 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0168",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 14 + 9.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0169",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 259, evaluate 15 plus 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0170",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 16 plus 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0171",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 17 + 12?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0172",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 18 and 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0173",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 19 + 14.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0174",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 264, evaluate 20 plus 15.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0175",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Please calculate 21 plus 16.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0176",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "What is 22 + 17?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0177",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Find the sum of 23 and 18.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0178",
+      "source": "hand-authored-arithmetic",
+      "split": "development",
+      "prompt": "Compute 24 + 19.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0179",
+      "source": "hand-authored-arithmetic",
+      "split": "holdout",
+      "prompt": "Ignoring the irrelevant quantity 269, evaluate 25 plus 20.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0180",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Determine the total when 3 is added to 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0181",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 4 and 5 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0182",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "What number results if 5 is increased by 6?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0183",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Determine the total when 6 is added to 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0184",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 7 and 8 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0185",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "What number results if 8 is increased by 9?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0186",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Determine the total when 9 is added to 10.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0187",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 10 and 11 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0188",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "What number results if 11 is increased by 12?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0189",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "holdout",
+      "prompt": "Determine the total when 12 is added to 13.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0190",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 13 and 14 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0191",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "What number results if 14 is increased by 4?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0192",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Determine the total when 15 is added to 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0193",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 16 and 6 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0194",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "holdout",
+      "prompt": "What number results if 17 is increased by 7?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0195",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Determine the total when 18 is added to 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0196",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Work out the result obtained by combining 19 and 9 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0197",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "What number results if 3 is increased by 10?",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0198",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "development",
+      "prompt": "Determine the total when 4 is added to 11.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0199",
+      "source": "hand-authored-arithmetic-paraphrase",
+      "split": "holdout",
+      "prompt": "Work out the result obtained by combining 5 and 12 by addition.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "external.0200",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 2; a_(n+1) = 1*a_n + 0. Find the term at n = 1; afterwards calculate a_n + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0201",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=3. Each next term is 2 times a_n plus 1. Determine the term at n=2; then add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0202",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 4 and a_(n+1) = 3a_n + 2. Find a_(n) for the term 3, then evaluate a_n + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0203",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=5 and a[n+1]=1*a[n]+3, find the term at n=4; afterwards add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0204",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "For a sequence, a_0 = 6; a_(n+1) = 2*a_n + 4. Find the term at n = 5; afterwards calculate a_n + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0205",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=7. Each next term is 3 times a_n plus 0. Determine the term at n=1; then add 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0206",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 8 and a_(n+1) = 1a_n + 1. Find a_(n) for the term 2, then evaluate a_n + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0207",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=9 and a[n+1]=2*a[n]+2, find the term at n=3; afterwards add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0208",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 10; a_(n+1) = 3*a_n + 3. Find the term at n = 4; afterwards calculate a_n + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0209",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Let a_0=2. Each next term is 1 times a_n plus 4. Determine the term at n=5; then add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0210",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 3 and a_(n+1) = 2a_n + 0. Find a_(n) for the term 1, then evaluate a_n + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0211",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=4 and a[n+1]=3*a[n]+1, find the term at n=2; afterwards add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0212",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 5; a_(n+1) = 1*a_n + 2. Find the term at n = 3; afterwards calculate a_n + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0213",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=6. Each next term is 2 times a_n plus 3. Determine the term at n=4; then add 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0214",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "The sequence has a_0 = 7 and a_(n+1) = 3a_n + 4. Find a_(n) for the term 5, then evaluate a_n + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0215",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=8 and a[n+1]=1*a[n]+0, find the term at n=1; afterwards add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0216",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 9; a_(n+1) = 2*a_n + 1. Find the term at n = 2; afterwards calculate a_n + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0217",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=10. Each next term is 3 times a_n plus 2. Determine the term at n=3; then add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0218",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 2 and a_(n+1) = 1a_n + 3. Find a_(n) for the term 4, then evaluate a_n + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0219",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Given a[0]=3 and a[n+1]=2*a[n]+4, find the term at n=5; afterwards add 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0220",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 4; a_(n+1) = 3*a_n + 0. Find the term at n = 1; afterwards calculate a_n + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0221",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=5. Each next term is 1 times a_n plus 1. Determine the term at n=2; then add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0222",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 6 and a_(n+1) = 2a_n + 2. Find a_(n) for the term 3, then evaluate a_n + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0223",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=7 and a[n+1]=3*a[n]+3, find the term at n=4; afterwards add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0224",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "For a sequence, a_0 = 8; a_(n+1) = 1*a_n + 4. Find the term at n = 5; afterwards calculate a_n + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0225",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=9. Each next term is 2 times a_n plus 0. Determine the term at n=1; then add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0226",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 10 and a_(n+1) = 3a_n + 1. Find a_(n) for the term 2, then evaluate a_n + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0227",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=2 and a[n+1]=1*a[n]+2, find the term at n=3; afterwards add 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0228",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 3; a_(n+1) = 2*a_n + 3. Find the term at n = 4; afterwards calculate a_n + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0229",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Let a_0=4. Each next term is 3 times a_n plus 4. Determine the term at n=5; then add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0230",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 5 and a_(n+1) = 1a_n + 0. Find a_(n) for the term 1, then evaluate a_n + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0231",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=6 and a[n+1]=2*a[n]+1, find the term at n=2; afterwards add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0232",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 7; a_(n+1) = 3*a_n + 2. Find the term at n = 3; afterwards calculate a_n + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0233",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=8. Each next term is 1 times a_n plus 3. Determine the term at n=4; then add 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0234",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "The sequence has a_0 = 9 and a_(n+1) = 2a_n + 4. Find a_(n) for the term 5, then evaluate a_n + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0235",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=10 and a[n+1]=3*a[n]+0, find the term at n=1; afterwards add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0236",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 2; a_(n+1) = 1*a_n + 1. Find the term at n = 2; afterwards calculate a_n + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0237",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=3. Each next term is 2 times a_n plus 2. Determine the term at n=3; then add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0238",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 4 and a_(n+1) = 3a_n + 3. Find a_(n) for the term 4, then evaluate a_n + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0239",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Given a[0]=5 and a[n+1]=1*a[n]+4, find the term at n=5; afterwards add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0240",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 6; a_(n+1) = 2*a_n + 0. Find the term at n = 1; afterwards calculate a_n + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0241",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=7. Each next term is 3 times a_n plus 1. Determine the term at n=2; then add 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0242",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 8 and a_(n+1) = 1a_n + 2. Find a_(n) for the term 3, then evaluate a_n + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0243",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=9 and a[n+1]=2*a[n]+3, find the term at n=4; afterwards add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0244",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "For a sequence, a_0 = 10; a_(n+1) = 3*a_n + 4. Find the term at n = 5; afterwards calculate a_n + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0245",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=2. Each next term is 1 times a_n plus 0. Determine the term at n=1; then add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0246",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 3 and a_(n+1) = 2a_n + 1. Find a_(n) for the term 2, then evaluate a_n + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0247",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=4 and a[n+1]=3*a[n]+2, find the term at n=3; afterwards add 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0248",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 5; a_(n+1) = 1*a_n + 3. Find the term at n = 4; afterwards calculate a_n + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0249",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Let a_0=6. Each next term is 2 times a_n plus 4. Determine the term at n=5; then add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0250",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 7 and a_(n+1) = 3a_n + 0. Find a_(n) for the term 1, then evaluate a_n + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0251",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=8 and a[n+1]=1*a[n]+1, find the term at n=2; afterwards add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0252",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 9; a_(n+1) = 2*a_n + 2. Find the term at n = 3; afterwards calculate a_n + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0253",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=10. Each next term is 3 times a_n plus 3. Determine the term at n=4; then add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0254",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "The sequence has a_0 = 2 and a_(n+1) = 1a_n + 4. Find a_(n) for the term 5, then evaluate a_n + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0255",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=3 and a[n+1]=2*a[n]+0, find the term at n=1; afterwards add 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0256",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 4; a_(n+1) = 3*a_n + 1. Find the term at n = 2; afterwards calculate a_n + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0257",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=5. Each next term is 1 times a_n plus 2. Determine the term at n=3; then add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0258",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 6 and a_(n+1) = 2a_n + 3. Find a_(n) for the term 4, then evaluate a_n + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0259",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Given a[0]=7 and a[n+1]=3*a[n]+4, find the term at n=5; afterwards add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0260",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 8; a_(n+1) = 1*a_n + 0. Find the term at n = 1; afterwards calculate a_n + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0261",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=9. Each next term is 2 times a_n plus 1. Determine the term at n=2; then add 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0262",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 10 and a_(n+1) = 3a_n + 2. Find a_(n) for the term 3, then evaluate a_n + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0263",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=2 and a[n+1]=1*a[n]+3, find the term at n=4; afterwards add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0264",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "For a sequence, a_0 = 3; a_(n+1) = 2*a_n + 4. Find the term at n = 5; afterwards calculate a_n + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0265",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=4. Each next term is 3 times a_n plus 0. Determine the term at n=1; then add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0266",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 5 and a_(n+1) = 1a_n + 1. Find a_(n) for the term 2, then evaluate a_n + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0267",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=6 and a[n+1]=2*a[n]+2, find the term at n=3; afterwards add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0268",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 7; a_(n+1) = 3*a_n + 3. Find the term at n = 4; afterwards calculate a_n + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0269",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Let a_0=8. Each next term is 1 times a_n plus 4. Determine the term at n=5; then add 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0270",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 9 and a_(n+1) = 2a_n + 0. Find a_(n) for the term 1, then evaluate a_n + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0271",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=10 and a[n+1]=3*a[n]+1, find the term at n=2; afterwards add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0272",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 2; a_(n+1) = 1*a_n + 2. Find the term at n = 3; afterwards calculate a_n + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0273",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=3. Each next term is 2 times a_n plus 3. Determine the term at n=4; then add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0274",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "The sequence has a_0 = 4 and a_(n+1) = 3a_n + 4. Find a_(n) for the term 5, then evaluate a_n + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0275",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=5 and a[n+1]=1*a[n]+0, find the term at n=1; afterwards add 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0276",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 6; a_(n+1) = 2*a_n + 1. Find the term at n = 2; afterwards calculate a_n + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0277",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=7. Each next term is 3 times a_n plus 2. Determine the term at n=3; then add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0278",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 8 and a_(n+1) = 1a_n + 3. Find a_(n) for the term 4, then evaluate a_n + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0279",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Given a[0]=9 and a[n+1]=2*a[n]+4, find the term at n=5; afterwards add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0280",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 10; a_(n+1) = 3*a_n + 0. Find the term at n = 1; afterwards calculate a_n + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0281",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=2. Each next term is 1 times a_n plus 1. Determine the term at n=2; then add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0282",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 3 and a_(n+1) = 2a_n + 2. Find a_(n) for the term 3, then evaluate a_n + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0283",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=4 and a[n+1]=3*a[n]+3, find the term at n=4; afterwards add 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0284",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "For a sequence, a_0 = 5; a_(n+1) = 1*a_n + 4. Find the term at n = 5; afterwards calculate a_n + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0285",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=6. Each next term is 2 times a_n plus 0. Determine the term at n=1; then add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0286",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 7 and a_(n+1) = 3a_n + 1. Find a_(n) for the term 2, then evaluate a_n + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0287",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=8 and a[n+1]=1*a[n]+2, find the term at n=3; afterwards add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0288",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 9; a_(n+1) = 2*a_n + 3. Find the term at n = 4; afterwards calculate a_n + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0289",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Let a_0=10. Each next term is 3 times a_n plus 4. Determine the term at n=5; then add 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0290",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 2 and a_(n+1) = 1a_n + 0. Find a_(n) for the term 1, then evaluate a_n + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0291",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=3 and a[n+1]=2*a[n]+1, find the term at n=2; afterwards add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0292",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 4; a_(n+1) = 3*a_n + 2. Find the term at n = 3; afterwards calculate a_n + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0293",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=5. Each next term is 1 times a_n plus 3. Determine the term at n=4; then add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0294",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "The sequence has a_0 = 6 and a_(n+1) = 2a_n + 4. Find a_(n) for the term 5, then evaluate a_n + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0295",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=7 and a[n+1]=3*a[n]+0, find the term at n=1; afterwards add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0296",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 8; a_(n+1) = 1*a_n + 1. Find the term at n = 2; afterwards calculate a_n + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0297",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=9. Each next term is 2 times a_n plus 2. Determine the term at n=3; then add 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0298",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 10 and a_(n+1) = 3a_n + 3. Find a_(n) for the term 4, then evaluate a_n + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0299",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Given a[0]=2 and a[n+1]=1*a[n]+4, find the term at n=5; afterwards add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0300",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 3; a_(n+1) = 2*a_n + 0. Find the term at n = 1; afterwards calculate a_n + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0301",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=4. Each next term is 3 times a_n plus 1. Determine the term at n=2; then add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0302",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 5 and a_(n+1) = 1a_n + 2. Find a_(n) for the term 3, then evaluate a_n + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0303",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=6 and a[n+1]=2*a[n]+3, find the term at n=4; afterwards add 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0304",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "For a sequence, a_0 = 7; a_(n+1) = 3*a_n + 4. Find the term at n = 5; afterwards calculate a_n + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0305",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=8. Each next term is 1 times a_n plus 0. Determine the term at n=1; then add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0306",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 9 and a_(n+1) = 2a_n + 1. Find a_(n) for the term 2, then evaluate a_n + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0307",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=10 and a[n+1]=3*a[n]+2, find the term at n=3; afterwards add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0308",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 2; a_(n+1) = 1*a_n + 3. Find the term at n = 4; afterwards calculate a_n + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0309",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Let a_0=3. Each next term is 2 times a_n plus 4. Determine the term at n=5; then add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0310",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 4 and a_(n+1) = 3a_n + 0. Find a_(n) for the term 1, then evaluate a_n + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0311",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=5 and a[n+1]=1*a[n]+1, find the term at n=2; afterwards add 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0312",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 6; a_(n+1) = 2*a_n + 2. Find the term at n = 3; afterwards calculate a_n + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0313",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=7. Each next term is 3 times a_n plus 3. Determine the term at n=4; then add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0314",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "The sequence has a_0 = 8 and a_(n+1) = 1a_n + 4. Find a_(n) for the term 5, then evaluate a_n + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0315",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=9 and a[n+1]=2*a[n]+0, find the term at n=1; afterwards add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0316",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 10; a_(n+1) = 3*a_n + 1. Find the term at n = 2; afterwards calculate a_n + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0317",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=2. Each next term is 1 times a_n plus 2. Determine the term at n=3; then add 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0318",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 3 and a_(n+1) = 2a_n + 3. Find a_(n) for the term 4, then evaluate a_n + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0319",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Given a[0]=4 and a[n+1]=3*a[n]+4, find the term at n=5; afterwards add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0320",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 5; a_(n+1) = 1*a_n + 0. Find the term at n = 1; afterwards calculate a_n + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0321",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=6. Each next term is 2 times a_n plus 1. Determine the term at n=2; then add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0322",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 7 and a_(n+1) = 3a_n + 2. Find a_(n) for the term 3, then evaluate a_n + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0323",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=8 and a[n+1]=1*a[n]+3, find the term at n=4; afterwards add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0324",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "For a sequence, a_0 = 9; a_(n+1) = 2*a_n + 4. Find the term at n = 5; afterwards calculate a_n + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0325",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=10. Each next term is 3 times a_n plus 0. Determine the term at n=1; then add 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0326",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 2 and a_(n+1) = 1a_n + 1. Find a_(n) for the term 2, then evaluate a_n + 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0327",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=3 and a[n+1]=2*a[n]+2, find the term at n=3; afterwards add 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0328",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 4; a_(n+1) = 3*a_n + 3. Find the term at n = 4; afterwards calculate a_n + 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0329",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Let a_0=5. Each next term is 1 times a_n plus 4. Determine the term at n=5; then add 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0330",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 6 and a_(n+1) = 2a_n + 0. Find a_(n) for the term 1, then evaluate a_n + 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0331",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=7 and a[n+1]=3*a[n]+1, find the term at n=2; afterwards add 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0332",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 8; a_(n+1) = 1*a_n + 2. Find the term at n = 3; afterwards calculate a_n + 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0333",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=9. Each next term is 2 times a_n plus 3. Determine the term at n=4; then add 2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0334",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "The sequence has a_0 = 10 and a_(n+1) = 3a_n + 4. Find a_(n) for the term 5, then evaluate a_n + 3.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0335",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Given a[0]=2 and a[n+1]=1*a[n]+0, find the term at n=1; afterwards add 4.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0336",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "For a sequence, a_0 = 3; a_(n+1) = 2*a_n + 1. Find the term at n = 2; afterwards calculate a_n + 5.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0337",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "Let a_0=4. Each next term is 3 times a_n plus 2. Determine the term at n=3; then add 6.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0338",
+      "source": "hand-authored-recurrence",
+      "split": "development",
+      "prompt": "The sequence has a_0 = 5 and a_(n+1) = 1a_n + 3. Find a_(n) for the term 4, then evaluate a_n + 7.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0339",
+      "source": "hand-authored-recurrence",
+      "split": "holdout",
+      "prompt": "Given a[0]=6 and a[n+1]=2*a[n]+4, find the term at n=5; afterwards add 8.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0340",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=2; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0341",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=3; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0342",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=4; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0343",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=5; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0344",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=6; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0345",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=7; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0346",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=8; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0347",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=9; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0348",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=2; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0349",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=3; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0350",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=4; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0351",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=5; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0352",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=6; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0353",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=7; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0354",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=8; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0355",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=9; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0356",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=2; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0357",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=3; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0358",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=4; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0359",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=5; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0360",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=6; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0361",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=7; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0362",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=8; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0363",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=9; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0364",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=2; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0365",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=3; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0366",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=4; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0367",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=5; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0368",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=6; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0369",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=7; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0370",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=8; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0371",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=9; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0372",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=2; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0373",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=3; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0374",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=4; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0375",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=5; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0376",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=6; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0377",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=7; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0378",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=8; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0379",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=9; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0380",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=2; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0381",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=3; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0382",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=4; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0383",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=5; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0384",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=6; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0385",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=7; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0386",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=8; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0387",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=9; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0388",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=2; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0389",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=3; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0390",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=4; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0391",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=5; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0392",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=6; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0393",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=7; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0394",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=8; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0395",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=9; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0396",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=2; each next term is 1 times a_n plus 0. At term 1, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0397",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=3; each next term is 2 times a_n plus 1. At term 2, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0398",
+      "source": "hand-authored-recurrence-system",
+      "split": "development",
+      "prompt": "The sequence starts at a_0=4; each next term is 1 times a_n plus 2. At term 3, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0399",
+      "source": "hand-authored-recurrence-system",
+      "split": "holdout",
+      "prompt": "The sequence starts at a_0=5; each next term is 2 times a_n plus 3. At term 4, solve system: x+y=a_n+4; x-y=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet"
+    },
+    {
+      "id": "external.0400",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=2, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 3 and use that value as a_0 in a_(n+1)=1*a_n+4 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0401",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=3, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 4 and use that value as a_0 in a_(n+1)=1*a_n+5 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0402",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=4, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 5 and use that value as a_0 in a_(n+1)=1*a_n+6 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0403",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=5, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 6 and use that value as a_0 in a_(n+1)=1*a_n+7 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0404",
+      "source": "hand-authored-three-stage",
+      "split": "holdout",
+      "prompt": "For a_0=6, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 7 and use that value as a_0 in a_(n+1)=1*a_n+4 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0405",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=7, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 3 and use that value as a_0 in a_(n+1)=1*a_n+5 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0406",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=2, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 4 and use that value as a_0 in a_(n+1)=1*a_n+6 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0407",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=3, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 5 and use that value as a_0 in a_(n+1)=1*a_n+7 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0408",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=4, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 6 and use that value as a_0 in a_(n+1)=1*a_n+4 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0409",
+      "source": "hand-authored-three-stage",
+      "split": "holdout",
+      "prompt": "For a_0=5, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 7 and use that value as a_0 in a_(n+1)=1*a_n+5 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0410",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=6, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 3 and use that value as a_0 in a_(n+1)=1*a_n+6 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0411",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=7, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 4 and use that value as a_0 in a_(n+1)=1*a_n+7 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0412",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=2, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 5 and use that value as a_0 in a_(n+1)=1*a_n+4 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0413",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=3, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 6 and use that value as a_0 in a_(n+1)=1*a_n+5 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0414",
+      "source": "hand-authored-three-stage",
+      "split": "holdout",
+      "prompt": "For a_0=4, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 7 and use that value as a_0 in a_(n+1)=1*a_n+6 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0415",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=5, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 3 and use that value as a_0 in a_(n+1)=1*a_n+7 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0416",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=6, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 4 and use that value as a_0 in a_(n+1)=1*a_n+4 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0417",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=7, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 5 and use that value as a_0 in a_(n+1)=1*a_n+5 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0418",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=2, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 6 and use that value as a_0 in a_(n+1)=1*a_n+6 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0419",
+      "source": "hand-authored-three-stage",
+      "split": "holdout",
+      "prompt": "For a_0=3, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 7 and use that value as a_0 in a_(n+1)=1*a_n+7 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0420",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=4, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 3 and use that value as a_0 in a_(n+1)=1*a_n+4 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0421",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=5, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 4 and use that value as a_0 in a_(n+1)=1*a_n+5 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0422",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=6, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 5 and use that value as a_0 in a_(n+1)=1*a_n+6 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0423",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=7, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 6 and use that value as a_0 in a_(n+1)=1*a_n+7 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0424",
+      "source": "hand-authored-three-stage",
+      "split": "holdout",
+      "prompt": "For a_0=2, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 7 and use that value as a_0 in a_(n+1)=1*a_n+4 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0425",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=3, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 3 and use that value as a_0 in a_(n+1)=1*a_n+5 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0426",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=4, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 4 and use that value as a_0 in a_(n+1)=1*a_n+6 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0427",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=5, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 5 and use that value as a_0 in a_(n+1)=1*a_n+7 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0428",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=6, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 6 and use that value as a_0 in a_(n+1)=1*a_n+4 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0429",
+      "source": "hand-authored-three-stage",
+      "split": "holdout",
+      "prompt": "For a_0=7, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 7 and use that value as a_0 in a_(n+1)=1*a_n+5 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0430",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=2, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 3 and use that value as a_0 in a_(n+1)=1*a_n+6 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0431",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=3, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 4 and use that value as a_0 in a_(n+1)=1*a_n+7 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0432",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=4, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 5 and use that value as a_0 in a_(n+1)=1*a_n+4 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0433",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=5, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 6 and use that value as a_0 in a_(n+1)=1*a_n+5 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0434",
+      "source": "hand-authored-three-stage",
+      "split": "holdout",
+      "prompt": "For a_0=6, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 7 and use that value as a_0 in a_(n+1)=1*a_n+6 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0435",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=7, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 3 and use that value as a_0 in a_(n+1)=1*a_n+7 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0436",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=2, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 4 and use that value as a_0 in a_(n+1)=1*a_n+4 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0437",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=3, a_(n+1)=2*a_n+1, find the term at n=2; afterwards add 5 and use that value as a_0 in a_(n+1)=1*a_n+5 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0438",
+      "source": "hand-authored-three-stage",
+      "split": "development",
+      "prompt": "For a_0=4, a_(n+1)=2*a_n+1, find the term at n=3; afterwards add 6 and use that value as a_0 in a_(n+1)=1*a_n+6 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0439",
+      "source": "hand-authored-three-stage",
+      "split": "holdout",
+      "prompt": "For a_0=5, a_(n+1)=2*a_n+1, find the term at n=1; afterwards add 7 and use that value as a_0 in a_(n+1)=1*a_n+7 at n=2.",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer"
+    },
+    {
+      "id": "external.0440",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 2 + 3 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0441",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 3 + 4 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0442",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 4 + 5 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0443",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 5 + 6 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0444",
+      "source": "hand-authored-ambiguity",
+      "split": "holdout",
+      "prompt": "Either compute 6 + 7 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0445",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 7 + 8 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0446",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 8 + 9 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0447",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 9 + 10 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0448",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 10 + 11 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0449",
+      "source": "hand-authored-ambiguity",
+      "split": "holdout",
+      "prompt": "Either compute 11 + 12 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0450",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 12 + 13 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0451",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 13 + 14 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0452",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 14 + 15 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0453",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 15 + 16 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0454",
+      "source": "hand-authored-ambiguity",
+      "split": "holdout",
+      "prompt": "Either compute 16 + 17 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0455",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 17 + 18 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0456",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 18 + 19 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0457",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 19 + 20 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0458",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 20 + 21 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0459",
+      "source": "hand-authored-ambiguity",
+      "split": "holdout",
+      "prompt": "Either compute 21 + 22 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0460",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 22 + 23 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0461",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 23 + 24 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0462",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 24 + 25 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0463",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 25 + 26 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0464",
+      "source": "hand-authored-ambiguity",
+      "split": "holdout",
+      "prompt": "Either compute 26 + 27 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0465",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 27 + 28 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0466",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 28 + 29 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0467",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 29 + 30 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0468",
+      "source": "hand-authored-ambiguity",
+      "split": "development",
+      "prompt": "Either compute 30 + 31 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0469",
+      "source": "hand-authored-ambiguity",
+      "split": "holdout",
+      "prompt": "Either compute 31 + 32 directly, or use the sequence route.",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0470",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 0.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0471",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 1.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0472",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 2.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0473",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 3.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0474",
+      "source": "hand-authored-unsupported",
+      "split": "holdout",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 4.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0475",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 5.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0476",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 6.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0477",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 7.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0478",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 8.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0479",
+      "source": "hand-authored-unsupported",
+      "split": "holdout",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 9.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0480",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 10.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0481",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 11.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0482",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 12.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0483",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 13.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0484",
+      "source": "hand-authored-unsupported",
+      "split": "holdout",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 14.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0485",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 15.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0486",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 16.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0487",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 17.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0488",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 18.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0489",
+      "source": "hand-authored-unsupported",
+      "split": "holdout",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 19.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0490",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 20.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0491",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 21.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0492",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 22.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0493",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 23.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0494",
+      "source": "hand-authored-unsupported",
+      "split": "holdout",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 24.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0495",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 25.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0496",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 26.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0497",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 27.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0498",
+      "source": "hand-authored-unsupported",
+      "split": "development",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 28.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "external.0499",
+      "source": "hand-authored-unsupported",
+      "split": "holdout",
+      "prompt": "The sequence is described by a_(n+1) = 2*a_n + 1, but its initial value and requested index are omitted; ignore 29.",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    }
+  ]
+}

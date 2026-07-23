@@ -187,7 +187,7 @@ fn signature(decision: &DecompositionDecision) -> Option<String> {
     }
 }
 
-fn realize(sketch: &PlanSketch) -> Option<(String, usize)> {
+pub fn realize(sketch: &PlanSketch) -> Option<(String, usize)> {
     let candidate = CandidatePlan { id: "raw-sketch".into(), steps: sketch.steps.iter().map(|step| PlannerStep { input: step.input, output: step.output, prompt: step.prompt.clone(), cost: 1, support: 100 }).collect() };
     match plan(&PlannerTask { id: "raw-task".into(), candidates: vec![candidate], expected: None, should_authorize: true }) {
         PlannerDecision::Preferred { result, replayed_stages, .. } => Some((result, replayed_stages)),

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "release_id": "multi-step-quantity-v1",
+  "oracle": "independent exact-arithmetic staged quantity oracle",
+  "holdout_locked": true,
+  "cases": [
+    {"id":"m01","prompt":"Start with 20 items. Remove one quarter of them, then add 3 items. What is the final count?","outcome":"supported","expected_result":"18","family":"fraction_then_arithmetic","pair_id":"fraction-chain"},
+    {"id":"m02","prompt":"Start with 30 items. Remove one half of them, then subtract 5 items. What is the final count?","outcome":"supported","expected_result":"10","family":"fraction_then_arithmetic"},
+    {"id":"m03","prompt":"Start with 18 items. Remove 1/2 of them, then add 7 items. What is the final count?","outcome":"supported","expected_result":"16","family":"fraction_then_arithmetic"},
+    {"id":"m04","prompt":"Convert 2 meters to centimeters using 100 centimeters per meter, then add 30 centimeters. What is the total in centimeters?","outcome":"supported","expected_result":"230","family":"unit_then_arithmetic","pair_id":"unit-chain"},
+    {"id":"m05","prompt":"Convert 3 meters to centimeters using 100 centimeters per meter, then add 50 centimeters. What is the total in centimeters?","outcome":"supported","expected_result":"350","family":"unit_then_arithmetic"},
+    {"id":"m06","prompt":"Start with 10 items; add 5 items, then subtract 2 items. What is the final count?","outcome":"supported","expected_result":"13","family":"arithmetic_chain","pair_id":"arithmetic-chain"},
+    {"id":"m07","prompt":"Start with 25 items; add 10 items, then subtract 4 items. What is the final count?","outcome":"supported","expected_result":"31","family":"arithmetic_chain"},
+    {"id":"m08","prompt":"Start with 40 items. Remove one quarter of them, then subtract 10 items. What is the final count?","outcome":"supported","expected_result":"20","family":"fraction_then_arithmetic"},
+    {"id":"m09","prompt":"Convert 4 meters to centimeters using 100 centimeters per meter, then add 25 centimeters. What is the total in centimeters?","outcome":"supported","expected_result":"425","family":"unit_then_arithmetic"},
+    {"id":"m10","prompt":"Start with 7 items; add 8 items, then subtract 3 items. What is the final count?","outcome":"supported","expected_result":"12","family":"arithmetic_chain"},
+    {"id":"m11","prompt":"Start with 20 items. Remove 1/4 of them, then add 3 items. What is the final count?","outcome":"supported","expected_result":"18","family":"fraction_then_arithmetic","pair_id":"fraction-chain"},
+    {"id":"m12","prompt":"Convert 2 meters to centimeters using 100 centimeters per meter, then add 30 centimeters. What is the total in centimeters?","outcome":"supported","expected_result":"230","family":"unit_then_arithmetic","pair_id":"unit-chain"},
+    {"id":"m13","prompt":"Either start with 20 items or 30 items, then add 3 items. What is the final count?","outcome":"ambiguous","expected_result":null,"family":null},
+    {"id":"m14","prompt":"Start with 20 items, then perform a step whose operation is not specified. What is the final count?","outcome":"ambiguous","expected_result":null,"family":null},
+    {"id":"m15","prompt":"The intermediate quantity is unknown before the final addition. What is the result?","outcome":"ambiguous","expected_result":null,"family":null},
+    {"id":"m16","prompt":"Start with 20 items. Remove 20% of them, then add 3 items. What is the final count?","outcome":"unsupported","expected_result":null,"family":null},
+    {"id":"m17","prompt":"Start with 20 items; add 3 items, then subtract 1 item, then add 2 items. What is the final count?","outcome":"unsupported","expected_result":null,"family":null},
+    {"id":"m18","prompt":"Start with a quantity and apply a nonlinear transformation, then add 3. What is the final result?","outcome":"unsupported","expected_result":null,"family":null},
+    {"id":"m19","prompt":"Start with 20 items. Remove one quarter of them, then add 5 items. What is the final count?","outcome":"supported","expected_result":"20","family":"fraction_then_arithmetic"},
+    {"id":"m20","prompt":"Convert 5 meters to centimeters using 100 centimeters per meter, then add 10 centimeters. What is the total in centimeters?","outcome":"supported","expected_result":"510","family":"unit_then_arithmetic"},
+    {"id":"m21","prompt":"Start with 12 items; add 6 items, then subtract 5 items. What is the final count?","outcome":"supported","expected_result":"13","family":"arithmetic_chain"},
+    {"id":"m22","prompt":"Start with 16 items. Remove one half of them, then subtract 2 items. What is the final count?","outcome":"supported","expected_result":"6","family":"fraction_then_arithmetic"},
+    {"id":"m23","prompt":"Convert 6 meters to centimeters using 100 centimeters per meter, then add 5 centimeters. What is the total in centimeters?","outcome":"supported","expected_result":"605","family":"unit_then_arithmetic"},
+    {"id":"m24","prompt":"Start with 10 items; add 5 items, then subtract 2 items. What is the final count?","outcome":"supported","expected_result":"13","family":"arithmetic_chain","pair_id":"arithmetic-chain"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "release_id": "third-party-gsm8k-quantity-candidate-v1",
+  "base_release": "data/third_party_gsm8k_restricted_release_v2.json",
+  "source_release_sha256": "c3d288f3ecf5f4bf1bbc6e8160e0edb1cf469e2df0db21f3476caddd330b1374",
+  "oracle": "locked v2 oracle plus independently reviewed QuantityRelation candidate labels",
+  "holdout_locked": true,
+  "promoted_cases": [
+    { "id": "gsm8k.v2.0003", "family": "unit_rate", "expected_result": "540" },
+    { "id": "gsm8k.v2.0018", "family": "unit_conversion", "expected_result": "7" },
+    { "id": "gsm8k.v2.0032", "family": "unit_rate", "expected_result": "35" },
+    { "id": "gsm8k.v2.0048", "family": "unit_conversion", "expected_result": "8" },
+    { "id": "gsm8k.v2.0050", "family": "unit_rate", "expected_result": "294" },
+    { "id": "gsm8k.v2.0064", "family": "unit_rate", "expected_result": "300" },
+    { "id": "gsm8k.v2.0071", "family": "sum_difference", "expected_result": "60" },
+    { "id": "gsm8k.v2.0081", "family": "sum_difference", "expected_result": "17" }
+  ]
+}

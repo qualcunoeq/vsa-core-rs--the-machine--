@@ -143,7 +143,11 @@ pub fn decompose(prompt: &str) -> DecompositionDecision {
 /// changes presentation only; it never invents a value, assumption, or
 /// target. Anything outside these rewrites remains unrecognized.
 fn canonicalize_prompt(source: &str) -> String {
-    let mut text = source.to_ascii_lowercase().replace('×', "*").replace('−', "-");
+    let mut text = source
+        .to_ascii_lowercase()
+        .replace(['\n', '\r'], " ")
+        .replace('×', "*")
+        .replace('−', "-");
     text = text.replace("plus", "+").replace(" times ", " * ");
     let replacements = [
         (r"a\s*\{\s*n\s*\+\s*1\s*\}", "a_(n+1)"),

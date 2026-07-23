@@ -38,9 +38,35 @@ false_denials=0
 development=90/90
 holdout=10/10
 failures={}
+rejection_clusters: {fractional_quantity: 11, multi_step_quantity_arithmetic: 20, percentage_discount_finance: 19, ratio_rate_proportion: 22, temporal_or_sequential_reasoning: 7, unit_measurement_conversion: 15}
 ```
 
 The holdout contains three supported cases, one ambiguity, and six
 unsupported cases; all ten decisions are correct.  This is an acceptance and
 refusal-integrity baseline for a narrow external slice.  It does not claim
 coverage of the remaining GSM8K problem families.
+
+## Unsupported-case diagnostic clusters
+
+The evaluator now records a deterministic, case-level diagnostic reason for
+each expected unsupported item and aggregates those reasons into research
+clusters.  These labels describe likely missing capability families; they do
+not change authorization or infer that a new capability is safe to add.
+
+```text
+fractional_quantity              11
+multi_step_quantity_arithmetic   20
+percentage_discount_finance      19
+ratio_rate_proportion             22
+temporal_or_sequential_reasoning  7
+unit_measurement_conversion      15
+total                            94
+```
+
+The largest cluster is `ratio_rate_proportion` (22 cases), followed by
+`multi_step_quantity_arithmetic` (20) and
+`percentage_discount_finance` (19).  This makes quantity/rate reasoning a
+concrete candidate for a future bounded vertical, while preserving the
+current safe refusal boundary.  Cluster assignments are exposed in the
+`ThirdPartyReport` as `rejection_clusters` and immutable case-id keyed
+`rejection_reasons` for follow-up analysis.

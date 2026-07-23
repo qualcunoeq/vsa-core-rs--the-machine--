@@ -38,4 +38,5 @@ fn main() {
         report.evaluation.holdout.cases,
         report.evaluation.failure_taxonomy,
     );
+    println!("rejection_clusters: {:?}", report.rejection_clusters);
 }

@@ -11,7 +11,7 @@ use crate::external_decomposition_benchmark::{
 };
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -191,14 +191,104 @@ pub struct ThirdPartyReport {
     pub release_hash: String,
     pub release_kind: ReleaseKind,
     pub evaluation: ExternalReport,
+    /// Diagnostic clusters for cases expected to be unsupported.  These are
+    /// evidence-collection labels, not authorization decisions or inferred
+    /// capabilities.
+    pub rejection_clusters: BTreeMap<String, usize>,
+    /// Case-level diagnostic labels, keyed by immutable corpus case id.
+    pub rejection_reasons: BTreeMap<String, String>,
+}
+
+/// Assign a stable, conservative research cluster to an unsupported prose
+/// problem.  This deliberately describes the missing capability family; it
+/// does not attempt to solve the prompt or broaden `decompose`.
+pub fn rejection_cluster(prompt: &str) -> &'static str {
+    let text = prompt.to_ascii_lowercase();
+    let has_word = |word: &str| {
+        text.split(|ch: char| !ch.is_ascii_alphanumeric() && ch != '%')
+            .any(|token| token == word)
+    };
+    if text.contains('%')
+        || text.contains("percent")
+        || text.contains("percentage")
+        || text.contains("discount")
+        || text.contains("interest")
+        || has_word("fee")
+        || has_word("fees")
+    {
+        return "percentage_discount_finance";
+    }
+    if text.contains("ratio")
+        || text.contains("times as")
+        || text.contains("twice")
+        || text.contains("thrice")
+        || text.contains("three times")
+        || text.contains("four times")
+        || text.contains("rate")
+        || text.contains("speed")
+        || text.contains("mph")
+        || text.contains("per hour")
+    {
+        return "ratio_rate_proportion";
+    }
+    if text.contains("half")
+        || text.contains("third")
+        || text.contains("quarter")
+        || text.contains("fraction")
+        || text.contains("1/6")
+        || text.contains("2/3")
+        || text.contains("3/4")
+        || text.contains("2/5")
+    {
+        return "fractional_quantity";
+    }
+    if text.contains("liter")
+        || text.contains("gallon")
+        || text.contains("pound")
+        || text.contains("ounce")
+        || text.contains("gram")
+        || text.contains("meter")
+        || text.contains("mile")
+        || text.contains("feet")
+        || text.contains("inch")
+        || text.contains("dozen")
+        || text.contains("cups")
+        || text.contains("gb")
+    {
+        return "unit_measurement_conversion";
+    }
+    if text.contains("every day")
+        || text.contains("each year")
+        || text.contains("per day")
+        || text.contains("per week")
+        || text.contains("per month")
+        || text.contains("over ")
+        || text.contains("after ")
+        || text.contains("remaining")
+    {
+        return "temporal_or_sequential_reasoning";
+    }
+    "multi_step_quantity_arithmetic"
 }
 
 pub fn evaluate(corpus: &ThirdPartyCorpus) -> ThirdPartyReport {
+    let evaluation = evaluate_external(&corpus.as_external());
+    let mut rejection_clusters = BTreeMap::new();
+    let mut rejection_reasons = BTreeMap::new();
+    for case in &corpus.cases {
+        if case.expected_outcome == ExpectedOutcome::Unsupported {
+            let cluster = rejection_cluster(&case.original_prompt).to_string();
+            *rejection_clusters.entry(cluster.clone()).or_default() += 1;
+            rejection_reasons.insert(case.id.clone(), cluster);
+        }
+    }
     ThirdPartyReport {
         release_id: corpus.release_id.clone(),
         release_hash: corpus.release_hash(),
         release_kind: corpus.release_kind,
-        evaluation: evaluate_external(&corpus.as_external()),
+        evaluation,
+        rejection_clusters,
+        rejection_reasons,
     }
 }
 
@@ -256,5 +346,30 @@ mod tests {
         assert_eq!(corpus.release_hash().len(), 64);
         let report = evaluate(&corpus);
         assert_eq!(report.evaluation.metrics.structural_correct, 2);
+        assert_eq!(report.rejection_clusters, BTreeMap::new());
+    }
+
+    #[test]
+    fn unsupported_clusters_are_diagnostic_and_deterministic() {
+        assert_eq!(
+            rejection_cluster("What percentage is 20% of the total?"),
+            "percentage_discount_finance"
+        );
+        assert_eq!(
+            rejection_cluster("A train travels at 40 mph for two hours."),
+            "ratio_rate_proportion"
+        );
+        assert_eq!(
+            rejection_cluster("What is half of 24 liters?"),
+            "fractional_quantity"
+        );
+        assert_eq!(
+            rejection_cluster("How many gallons remain?"),
+            "unit_measurement_conversion"
+        );
+        assert_eq!(
+            rejection_cluster("She works at the coffee shop every day."),
+            "temporal_or_sequential_reasoning"
+        );
     }
 }

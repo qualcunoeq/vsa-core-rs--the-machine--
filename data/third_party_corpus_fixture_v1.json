@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "release_id": "third-party-schema-fixture-v1",
+  "release_kind": "fixture",
+  "oracle": "schema validation fixture; not third-party evidence",
+  "holdout_locked": true,
+  "sources": [
+    {
+      "source_id": "fixture",
+      "citation": "Fixture only",
+      "locator": "fixture://third-party-schema",
+      "license": "not-evidence",
+      "retrieved_at": "2026-07-23",
+      "content_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "cases": [
+    {
+      "id": "fixture.0001",
+      "source_id": "fixture",
+      "source_item_id": "item-1",
+      "split": "development",
+      "original_prompt": "Compute 2 + 3",
+      "scope": "in_scope",
+      "expected_outcome": "supported",
+      "expected_signature": "None>Integer"
+    },
+    {
+      "id": "fixture.0002",
+      "source_id": "fixture",
+      "source_item_id": "item-2",
+      "split": "development",
+      "original_prompt": "The recurrence is given, but its initial value and target index are omitted.",
+      "scope": "understandable_unsupported",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    },
+    {
+      "id": "fixture.0003",
+      "source_id": "fixture",
+      "source_item_id": "item-3",
+      "split": "holdout",
+      "original_prompt": "Either compute 2 + 3 directly, or use another route.",
+      "scope": "ambiguous",
+      "expected_outcome": "ambiguous",
+      "expected_signature": null
+    },
+    {
+      "id": "fixture.0004",
+      "source_id": "fixture",
+      "source_item_id": "item-4",
+      "split": "holdout",
+      "original_prompt": "Solve this advanced nonlinear optimization problem.",
+      "scope": "outside_scope",
+      "expected_outcome": "unsupported",
+      "expected_signature": null
+    }
+  ]
+}

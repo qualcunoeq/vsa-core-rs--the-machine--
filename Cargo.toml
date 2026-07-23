@@ -104,6 +104,10 @@ name = "external_decomposition_bench"
 path = "src/bin/external_decomposition_bench.rs"
 
 [[bin]]
+name = "third_party_corpus_bench"
+path = "src/bin/third_party_corpus_bench.rs"
+
+[[bin]]
 name = "governed_bench"
 path = "src/bin/governed_bench.rs"
 

@@ -78,6 +78,7 @@ pub mod reason;
 pub mod recurrence;
 pub mod recurrence_benchmark;
 pub mod proposition_benchmark;
+pub mod proposition_ood_benchmark;
 pub mod governed_benchmark;
 pub mod reuse_ablation_benchmark;
 pub mod resonator;

@@ -1,0 +1,4006 @@
+{
+  "schema_version": 1,
+  "oracle": "python-descriptor-v1",
+  "cases": [
+    {
+      "id": "prop-ood-0000",
+      "family": "refl",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0001",
+      "family": "refl",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0002",
+      "family": "add_zero",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0003",
+      "family": "add_zero",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0004",
+      "family": "mul_one",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0005",
+      "family": "mul_one",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0006",
+      "family": "commutativity",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0007",
+      "family": "commutativity",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0008",
+      "family": "distributivity",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0009",
+      "family": "distributivity",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0010",
+      "family": "symmetry",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0011",
+      "family": "symmetry",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0012",
+      "family": "transitivity",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0013",
+      "family": "transitivity",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0014",
+      "family": "abs_nonnegative",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0015",
+      "family": "abs_nonnegative",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": null,
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0016",
+      "family": "forall_intro",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-000",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0017",
+      "family": "forall_intro",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-000",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0018",
+      "family": "missing_premise",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-001",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0019",
+      "family": "missing_premise",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-001",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0020",
+      "family": "wrong_hypothesis",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-002",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0021",
+      "family": "wrong_hypothesis",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-002",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0022",
+      "family": "distractor_premise",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-003",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0023",
+      "family": "distractor_premise",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-003",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0024",
+      "family": "wrong_certificate",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-004",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0025",
+      "family": "wrong_certificate",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-004",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0026",
+      "family": "unknown_theorem",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-005",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0027",
+      "family": "unknown_theorem",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-005",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0028",
+      "family": "converse_confusion",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-006",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0029",
+      "family": "converse_confusion",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-006",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0030",
+      "family": "wrong_expected",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-007",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0031",
+      "family": "wrong_expected",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-007",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0032",
+      "family": "refl",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-008",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0033",
+      "family": "refl",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-008",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0034",
+      "family": "add_zero",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-009",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0035",
+      "family": "add_zero",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-009",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0036",
+      "family": "mul_one",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-010",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0037",
+      "family": "mul_one",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-010",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0038",
+      "family": "commutativity",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-011",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0039",
+      "family": "commutativity",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-011",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0040",
+      "family": "distributivity",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-012",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0041",
+      "family": "distributivity",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-012",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0042",
+      "family": "symmetry",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-013",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0043",
+      "family": "symmetry",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-013",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0044",
+      "family": "transitivity",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-014",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0045",
+      "family": "transitivity",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-014",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0046",
+      "family": "abs_nonnegative",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-015",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0047",
+      "family": "abs_nonnegative",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-015",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0048",
+      "family": "forall_intro",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-016",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0049",
+      "family": "forall_intro",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-016",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0050",
+      "family": "missing_premise",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-017",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0051",
+      "family": "missing_premise",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-017",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0052",
+      "family": "wrong_hypothesis",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-018",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0053",
+      "family": "wrong_hypothesis",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-018",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0054",
+      "family": "distractor_premise",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-019",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0055",
+      "family": "distractor_premise",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-019",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0056",
+      "family": "wrong_certificate",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-020",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0057",
+      "family": "wrong_certificate",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-020",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0058",
+      "family": "unknown_theorem",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-021",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0059",
+      "family": "unknown_theorem",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-021",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0060",
+      "family": "converse_confusion",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-022",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0061",
+      "family": "converse_confusion",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-022",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0062",
+      "family": "wrong_expected",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-023",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0063",
+      "family": "wrong_expected",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-023",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0064",
+      "family": "refl",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-024",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0065",
+      "family": "refl",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-024",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0066",
+      "family": "add_zero",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-025",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0067",
+      "family": "add_zero",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-025",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0068",
+      "family": "mul_one",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-026",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0069",
+      "family": "mul_one",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-026",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0070",
+      "family": "commutativity",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-027",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0071",
+      "family": "commutativity",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-027",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0072",
+      "family": "distributivity",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-028",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0073",
+      "family": "distributivity",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-028",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0074",
+      "family": "symmetry",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-029",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0075",
+      "family": "symmetry",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-029",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0076",
+      "family": "transitivity",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-030",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0077",
+      "family": "transitivity",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-030",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0078",
+      "family": "abs_nonnegative",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-031",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0079",
+      "family": "abs_nonnegative",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-031",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0080",
+      "family": "forall_intro",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-032",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0081",
+      "family": "forall_intro",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-032",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0082",
+      "family": "missing_premise",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-033",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0083",
+      "family": "missing_premise",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-033",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0084",
+      "family": "wrong_hypothesis",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-034",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0085",
+      "family": "wrong_hypothesis",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-034",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0086",
+      "family": "distractor_premise",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-035",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0087",
+      "family": "distractor_premise",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-035",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0088",
+      "family": "wrong_certificate",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-036",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0089",
+      "family": "wrong_certificate",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-036",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0090",
+      "family": "unknown_theorem",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-037",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0091",
+      "family": "unknown_theorem",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-037",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0092",
+      "family": "converse_confusion",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-038",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0093",
+      "family": "converse_confusion",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-038",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0094",
+      "family": "wrong_expected",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-039",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0095",
+      "family": "wrong_expected",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-039",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0096",
+      "family": "refl",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-040",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0097",
+      "family": "refl",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-040",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0098",
+      "family": "add_zero",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-041",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0099",
+      "family": "add_zero",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-041",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0100",
+      "family": "mul_one",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-042",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0101",
+      "family": "mul_one",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-042",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0102",
+      "family": "commutativity",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-043",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0103",
+      "family": "commutativity",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-043",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0104",
+      "family": "distributivity",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-044",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0105",
+      "family": "distributivity",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-044",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0106",
+      "family": "symmetry",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-045",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0107",
+      "family": "symmetry",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-045",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0108",
+      "family": "transitivity",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-046",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0109",
+      "family": "transitivity",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-046",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0110",
+      "family": "abs_nonnegative",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-047",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0111",
+      "family": "abs_nonnegative",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-047",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0112",
+      "family": "forall_intro",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-048",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0113",
+      "family": "forall_intro",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-048",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0114",
+      "family": "missing_premise",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-049",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0115",
+      "family": "missing_premise",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-049",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0116",
+      "family": "wrong_hypothesis",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-050",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0117",
+      "family": "wrong_hypothesis",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-050",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0118",
+      "family": "distractor_premise",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-051",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0119",
+      "family": "distractor_premise",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-051",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0120",
+      "family": "wrong_certificate",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-052",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0121",
+      "family": "wrong_certificate",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-052",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0122",
+      "family": "unknown_theorem",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-053",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0123",
+      "family": "unknown_theorem",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-053",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0124",
+      "family": "converse_confusion",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-054",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0125",
+      "family": "converse_confusion",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-054",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0126",
+      "family": "wrong_expected",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-055",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0127",
+      "family": "wrong_expected",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-055",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0128",
+      "family": "refl",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-056",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0129",
+      "family": "refl",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-056",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0130",
+      "family": "add_zero",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-057",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0131",
+      "family": "add_zero",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-057",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0132",
+      "family": "mul_one",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-058",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0133",
+      "family": "mul_one",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-058",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0134",
+      "family": "commutativity",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-059",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0135",
+      "family": "commutativity",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-059",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0136",
+      "family": "distributivity",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-060",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0137",
+      "family": "distributivity",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-060",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0138",
+      "family": "symmetry",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-061",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0139",
+      "family": "symmetry",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-061",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0140",
+      "family": "transitivity",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-062",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0141",
+      "family": "transitivity",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-062",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0142",
+      "family": "abs_nonnegative",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-063",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0143",
+      "family": "abs_nonnegative",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-063",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0144",
+      "family": "forall_intro",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-064",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0145",
+      "family": "forall_intro",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-064",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0146",
+      "family": "missing_premise",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-065",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0147",
+      "family": "missing_premise",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-065",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0148",
+      "family": "wrong_hypothesis",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-066",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0149",
+      "family": "wrong_hypothesis",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-066",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0150",
+      "family": "distractor_premise",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-067",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0151",
+      "family": "distractor_premise",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-067",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0152",
+      "family": "wrong_certificate",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-068",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0153",
+      "family": "wrong_certificate",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-068",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0154",
+      "family": "unknown_theorem",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-069",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0155",
+      "family": "unknown_theorem",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-069",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0156",
+      "family": "converse_confusion",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-070",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0157",
+      "family": "converse_confusion",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-070",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0158",
+      "family": "wrong_expected",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-071",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0159",
+      "family": "wrong_expected",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-071",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0160",
+      "family": "refl",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-072",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0161",
+      "family": "refl",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-072",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0162",
+      "family": "add_zero",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-073",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0163",
+      "family": "add_zero",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-073",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0164",
+      "family": "mul_one",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-074",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0165",
+      "family": "mul_one",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-074",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0166",
+      "family": "commutativity",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-075",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0167",
+      "family": "commutativity",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-075",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0168",
+      "family": "distributivity",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-076",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0169",
+      "family": "distributivity",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-076",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0170",
+      "family": "symmetry",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-077",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0171",
+      "family": "symmetry",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-077",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0172",
+      "family": "transitivity",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-078",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0173",
+      "family": "transitivity",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-078",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0174",
+      "family": "abs_nonnegative",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-079",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0175",
+      "family": "abs_nonnegative",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-079",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0176",
+      "family": "forall_intro",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-080",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0177",
+      "family": "forall_intro",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-080",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0178",
+      "family": "missing_premise",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-081",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0179",
+      "family": "missing_premise",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-081",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0180",
+      "family": "wrong_hypothesis",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-082",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0181",
+      "family": "wrong_hypothesis",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-082",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0182",
+      "family": "distractor_premise",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-083",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0183",
+      "family": "distractor_premise",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-083",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0184",
+      "family": "wrong_certificate",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-084",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0185",
+      "family": "wrong_certificate",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-084",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0186",
+      "family": "unknown_theorem",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-085",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0187",
+      "family": "unknown_theorem",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-085",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0188",
+      "family": "converse_confusion",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-086",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0189",
+      "family": "converse_confusion",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-086",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0190",
+      "family": "wrong_expected",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-087",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0191",
+      "family": "wrong_expected",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-087",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0192",
+      "family": "refl",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-088",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0193",
+      "family": "refl",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-088",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0194",
+      "family": "add_zero",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-089",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0195",
+      "family": "add_zero",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-089",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0196",
+      "family": "mul_one",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-090",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0197",
+      "family": "mul_one",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-090",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0198",
+      "family": "commutativity",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-091",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0199",
+      "family": "commutativity",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-091",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0200",
+      "family": "distributivity",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-092",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0201",
+      "family": "distributivity",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-092",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0202",
+      "family": "symmetry",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-093",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0203",
+      "family": "symmetry",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-093",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0204",
+      "family": "transitivity",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-094",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0205",
+      "family": "transitivity",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-094",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0206",
+      "family": "abs_nonnegative",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-095",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0207",
+      "family": "abs_nonnegative",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-095",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0208",
+      "family": "forall_intro",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-096",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0209",
+      "family": "forall_intro",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-096",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0210",
+      "family": "missing_premise",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-097",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0211",
+      "family": "missing_premise",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-097",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0212",
+      "family": "wrong_hypothesis",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-098",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0213",
+      "family": "wrong_hypothesis",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-098",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0214",
+      "family": "distractor_premise",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-099",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0215",
+      "family": "distractor_premise",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-099",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0216",
+      "family": "wrong_certificate",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-100",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0217",
+      "family": "wrong_certificate",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-100",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0218",
+      "family": "unknown_theorem",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-101",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0219",
+      "family": "unknown_theorem",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-101",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0220",
+      "family": "converse_confusion",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-102",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0221",
+      "family": "converse_confusion",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-102",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0222",
+      "family": "wrong_expected",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-103",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0223",
+      "family": "wrong_expected",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-103",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0224",
+      "family": "refl",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-104",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0225",
+      "family": "refl",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-104",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0226",
+      "family": "add_zero",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-105",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0227",
+      "family": "add_zero",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-105",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0228",
+      "family": "mul_one",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-106",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0229",
+      "family": "mul_one",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-106",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0230",
+      "family": "commutativity",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-107",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0231",
+      "family": "commutativity",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-107",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0232",
+      "family": "distributivity",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-108",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0233",
+      "family": "distributivity",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-108",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0234",
+      "family": "symmetry",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-109",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0235",
+      "family": "symmetry",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-109",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0236",
+      "family": "transitivity",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-110",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0237",
+      "family": "transitivity",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-110",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0238",
+      "family": "abs_nonnegative",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-111",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0239",
+      "family": "abs_nonnegative",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-111",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0240",
+      "family": "forall_intro",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-112",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0241",
+      "family": "forall_intro",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-112",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0242",
+      "family": "missing_premise",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-113",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0243",
+      "family": "missing_premise",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-113",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0244",
+      "family": "wrong_hypothesis",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-114",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0245",
+      "family": "wrong_hypothesis",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-114",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0246",
+      "family": "distractor_premise",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-115",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0247",
+      "family": "distractor_premise",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-115",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0248",
+      "family": "wrong_certificate",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-116",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0249",
+      "family": "wrong_certificate",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-116",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0250",
+      "family": "unknown_theorem",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-117",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0251",
+      "family": "unknown_theorem",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-117",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0252",
+      "family": "converse_confusion",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-118",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0253",
+      "family": "converse_confusion",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-118",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0254",
+      "family": "wrong_expected",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-119",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0255",
+      "family": "wrong_expected",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-119",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0256",
+      "family": "refl",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-120",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0257",
+      "family": "refl",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-120",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0258",
+      "family": "add_zero",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-121",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0259",
+      "family": "add_zero",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-121",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0260",
+      "family": "mul_one",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-122",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0261",
+      "family": "mul_one",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-122",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0262",
+      "family": "commutativity",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-123",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0263",
+      "family": "commutativity",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-123",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0264",
+      "family": "distributivity",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-124",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0265",
+      "family": "distributivity",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-124",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0266",
+      "family": "symmetry",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-125",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0267",
+      "family": "symmetry",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-125",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0268",
+      "family": "transitivity",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-126",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0269",
+      "family": "transitivity",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-126",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0270",
+      "family": "abs_nonnegative",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-127",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0271",
+      "family": "abs_nonnegative",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-127",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0272",
+      "family": "forall_intro",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-128",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0273",
+      "family": "forall_intro",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-128",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0274",
+      "family": "missing_premise",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-129",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0275",
+      "family": "missing_premise",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-129",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0276",
+      "family": "wrong_hypothesis",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-130",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0277",
+      "family": "wrong_hypothesis",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-130",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0278",
+      "family": "distractor_premise",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-131",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0279",
+      "family": "distractor_premise",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-131",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0280",
+      "family": "wrong_certificate",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-132",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0281",
+      "family": "wrong_certificate",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-132",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0282",
+      "family": "unknown_theorem",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-133",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0283",
+      "family": "unknown_theorem",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-133",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0284",
+      "family": "converse_confusion",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-134",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0285",
+      "family": "converse_confusion",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-134",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0286",
+      "family": "wrong_expected",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-135",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0287",
+      "family": "wrong_expected",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-135",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0288",
+      "family": "refl",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-136",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0289",
+      "family": "refl",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-136",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0290",
+      "family": "add_zero",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-137",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0291",
+      "family": "add_zero",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-137",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0292",
+      "family": "mul_one",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-138",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0293",
+      "family": "mul_one",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-138",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0294",
+      "family": "commutativity",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-139",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0295",
+      "family": "commutativity",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-139",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0296",
+      "family": "distributivity",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-140",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0297",
+      "family": "distributivity",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-140",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0298",
+      "family": "symmetry",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-141",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0299",
+      "family": "symmetry",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-141",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0300",
+      "family": "transitivity",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-142",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0301",
+      "family": "transitivity",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-142",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0302",
+      "family": "abs_nonnegative",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-143",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0303",
+      "family": "abs_nonnegative",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-143",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0304",
+      "family": "forall_intro",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-144",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0305",
+      "family": "forall_intro",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-144",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0306",
+      "family": "missing_premise",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-145",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0307",
+      "family": "missing_premise",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-145",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0308",
+      "family": "wrong_hypothesis",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-146",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0309",
+      "family": "wrong_hypothesis",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-146",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0310",
+      "family": "distractor_premise",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-147",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0311",
+      "family": "distractor_premise",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-147",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0312",
+      "family": "wrong_certificate",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-148",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0313",
+      "family": "wrong_certificate",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-148",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0314",
+      "family": "unknown_theorem",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-149",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0315",
+      "family": "unknown_theorem",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-149",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0316",
+      "family": "converse_confusion",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-150",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0317",
+      "family": "converse_confusion",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-150",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0318",
+      "family": "wrong_expected",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-151",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0319",
+      "family": "wrong_expected",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-151",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0320",
+      "family": "refl",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-152",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0321",
+      "family": "refl",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-152",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0322",
+      "family": "add_zero",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-153",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0323",
+      "family": "add_zero",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-153",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0324",
+      "family": "mul_one",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-154",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0325",
+      "family": "mul_one",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-154",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0326",
+      "family": "commutativity",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-155",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0327",
+      "family": "commutativity",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-155",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0328",
+      "family": "distributivity",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-156",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0329",
+      "family": "distributivity",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-156",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0330",
+      "family": "symmetry",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-157",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0331",
+      "family": "symmetry",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-157",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0332",
+      "family": "transitivity",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-158",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0333",
+      "family": "transitivity",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-158",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0334",
+      "family": "abs_nonnegative",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-159",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0335",
+      "family": "abs_nonnegative",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-159",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0336",
+      "family": "forall_intro",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-160",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0337",
+      "family": "forall_intro",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-160",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0338",
+      "family": "missing_premise",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-161",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0339",
+      "family": "missing_premise",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-161",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0340",
+      "family": "wrong_hypothesis",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-162",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0341",
+      "family": "wrong_hypothesis",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-162",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0342",
+      "family": "distractor_premise",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-163",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0343",
+      "family": "distractor_premise",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-163",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0344",
+      "family": "wrong_certificate",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-164",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0345",
+      "family": "wrong_certificate",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-164",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0346",
+      "family": "unknown_theorem",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-165",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0347",
+      "family": "unknown_theorem",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-165",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0348",
+      "family": "converse_confusion",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-166",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0349",
+      "family": "converse_confusion",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-166",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0350",
+      "family": "wrong_expected",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-167",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0351",
+      "family": "wrong_expected",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-167",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0352",
+      "family": "refl",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-168",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0353",
+      "family": "refl",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-168",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0354",
+      "family": "add_zero",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-169",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0355",
+      "family": "add_zero",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-169",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0356",
+      "family": "mul_one",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-170",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0357",
+      "family": "mul_one",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-170",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0358",
+      "family": "commutativity",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-171",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0359",
+      "family": "commutativity",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-171",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0360",
+      "family": "distributivity",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-172",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0361",
+      "family": "distributivity",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-172",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0362",
+      "family": "symmetry",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-173",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0363",
+      "family": "symmetry",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-173",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0364",
+      "family": "transitivity",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-174",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0365",
+      "family": "transitivity",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-174",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0366",
+      "family": "abs_nonnegative",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-175",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0367",
+      "family": "abs_nonnegative",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-175",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0368",
+      "family": "forall_intro",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-176",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0369",
+      "family": "forall_intro",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-176",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0370",
+      "family": "missing_premise",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-177",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0371",
+      "family": "missing_premise",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-177",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0372",
+      "family": "wrong_hypothesis",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-178",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0373",
+      "family": "wrong_hypothesis",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-178",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0374",
+      "family": "distractor_premise",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-179",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0375",
+      "family": "distractor_premise",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-179",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0376",
+      "family": "wrong_certificate",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-180",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0377",
+      "family": "wrong_certificate",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-180",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0378",
+      "family": "unknown_theorem",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-181",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0379",
+      "family": "unknown_theorem",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-181",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0380",
+      "family": "converse_confusion",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-182",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0381",
+      "family": "converse_confusion",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-182",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0382",
+      "family": "wrong_expected",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-183",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0383",
+      "family": "wrong_expected",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-183",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0384",
+      "family": "refl",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-184",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0385",
+      "family": "refl",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-184",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0386",
+      "family": "add_zero",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-185",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0387",
+      "family": "add_zero",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-185",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0388",
+      "family": "mul_one",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-186",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0389",
+      "family": "mul_one",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-186",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0390",
+      "family": "commutativity",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-187",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0391",
+      "family": "commutativity",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-187",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0392",
+      "family": "distributivity",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-188",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0393",
+      "family": "distributivity",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-188",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0394",
+      "family": "symmetry",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-189",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0395",
+      "family": "symmetry",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-189",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0396",
+      "family": "transitivity",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-190",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0397",
+      "family": "transitivity",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-190",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0398",
+      "family": "abs_nonnegative",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-191",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0399",
+      "family": "abs_nonnegative",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-191",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0400",
+      "family": "forall_intro",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-192",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0401",
+      "family": "forall_intro",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-192",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0402",
+      "family": "missing_premise",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-193",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0403",
+      "family": "missing_premise",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-193",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0404",
+      "family": "wrong_hypothesis",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-194",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0405",
+      "family": "wrong_hypothesis",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-194",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0406",
+      "family": "distractor_premise",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-195",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0407",
+      "family": "distractor_premise",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-195",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0408",
+      "family": "wrong_certificate",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-196",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0409",
+      "family": "wrong_certificate",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-196",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0410",
+      "family": "unknown_theorem",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-197",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0411",
+      "family": "unknown_theorem",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-197",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0412",
+      "family": "converse_confusion",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-198",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0413",
+      "family": "converse_confusion",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-198",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0414",
+      "family": "wrong_expected",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-199",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0415",
+      "family": "wrong_expected",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-199",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0416",
+      "family": "refl",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-200",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0417",
+      "family": "refl",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-200",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0418",
+      "family": "add_zero",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-201",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0419",
+      "family": "add_zero",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-201",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0420",
+      "family": "mul_one",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-202",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0421",
+      "family": "mul_one",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-202",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0422",
+      "family": "commutativity",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-203",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0423",
+      "family": "commutativity",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-203",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0424",
+      "family": "distributivity",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-204",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0425",
+      "family": "distributivity",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-204",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0426",
+      "family": "symmetry",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-205",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0427",
+      "family": "symmetry",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-205",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0428",
+      "family": "transitivity",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-206",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0429",
+      "family": "transitivity",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-206",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0430",
+      "family": "abs_nonnegative",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-207",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0431",
+      "family": "abs_nonnegative",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-207",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0432",
+      "family": "forall_intro",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-208",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0433",
+      "family": "forall_intro",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-208",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0434",
+      "family": "missing_premise",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-209",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0435",
+      "family": "missing_premise",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-209",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0436",
+      "family": "wrong_hypothesis",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-210",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0437",
+      "family": "wrong_hypothesis",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-210",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0438",
+      "family": "distractor_premise",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-211",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0439",
+      "family": "distractor_premise",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-211",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0440",
+      "family": "wrong_certificate",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-212",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0441",
+      "family": "wrong_certificate",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-212",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0442",
+      "family": "unknown_theorem",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-213",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0443",
+      "family": "unknown_theorem",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-213",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0444",
+      "family": "converse_confusion",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-214",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0445",
+      "family": "converse_confusion",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-214",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0446",
+      "family": "wrong_expected",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-215",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0447",
+      "family": "wrong_expected",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-215",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0448",
+      "family": "refl",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-216",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0449",
+      "family": "refl",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-216",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0450",
+      "family": "add_zero",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-217",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0451",
+      "family": "add_zero",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-217",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0452",
+      "family": "mul_one",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-218",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0453",
+      "family": "mul_one",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-218",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0454",
+      "family": "commutativity",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-219",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0455",
+      "family": "commutativity",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-219",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0456",
+      "family": "distributivity",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-220",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0457",
+      "family": "distributivity",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-220",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0458",
+      "family": "symmetry",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-221",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0459",
+      "family": "symmetry",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-221",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0460",
+      "family": "transitivity",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-222",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0461",
+      "family": "transitivity",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-222",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0462",
+      "family": "abs_nonnegative",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-223",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0463",
+      "family": "abs_nonnegative",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-223",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0464",
+      "family": "forall_intro",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-224",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0465",
+      "family": "forall_intro",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-224",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0466",
+      "family": "missing_premise",
+      "value": -3,
+      "rewrite": false,
+      "pair_id": "rewrite-225",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0467",
+      "family": "missing_premise",
+      "value": -1,
+      "rewrite": true,
+      "pair_id": "rewrite-225",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0468",
+      "family": "wrong_hypothesis",
+      "value": 1,
+      "rewrite": false,
+      "pair_id": "rewrite-226",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0469",
+      "family": "wrong_hypothesis",
+      "value": 3,
+      "rewrite": true,
+      "pair_id": "rewrite-226",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0470",
+      "family": "distractor_premise",
+      "value": 5,
+      "rewrite": false,
+      "pair_id": "rewrite-227",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0471",
+      "family": "distractor_premise",
+      "value": 7,
+      "rewrite": true,
+      "pair_id": "rewrite-227",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0472",
+      "family": "wrong_certificate",
+      "value": -8,
+      "rewrite": false,
+      "pair_id": "rewrite-228",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0473",
+      "family": "wrong_certificate",
+      "value": -6,
+      "rewrite": true,
+      "pair_id": "rewrite-228",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0474",
+      "family": "unknown_theorem",
+      "value": -4,
+      "rewrite": false,
+      "pair_id": "rewrite-229",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0475",
+      "family": "unknown_theorem",
+      "value": -2,
+      "rewrite": true,
+      "pair_id": "rewrite-229",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0476",
+      "family": "converse_confusion",
+      "value": 0,
+      "rewrite": false,
+      "pair_id": "rewrite-230",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0477",
+      "family": "converse_confusion",
+      "value": 2,
+      "rewrite": true,
+      "pair_id": "rewrite-230",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0478",
+      "family": "wrong_expected",
+      "value": 4,
+      "rewrite": false,
+      "pair_id": "rewrite-231",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0479",
+      "family": "wrong_expected",
+      "value": 6,
+      "rewrite": true,
+      "pair_id": "rewrite-231",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0480",
+      "family": "refl",
+      "value": 8,
+      "rewrite": false,
+      "pair_id": "rewrite-232",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0481",
+      "family": "refl",
+      "value": -7,
+      "rewrite": true,
+      "pair_id": "rewrite-232",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0482",
+      "family": "add_zero",
+      "value": -5,
+      "rewrite": false,
+      "pair_id": "rewrite-233",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0483",
+      "family": "add_zero",
+      "value": -3,
+      "rewrite": true,
+      "pair_id": "rewrite-233",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0484",
+      "family": "mul_one",
+      "value": -1,
+      "rewrite": false,
+      "pair_id": "rewrite-234",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0485",
+      "family": "mul_one",
+      "value": 1,
+      "rewrite": true,
+      "pair_id": "rewrite-234",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0486",
+      "family": "commutativity",
+      "value": 3,
+      "rewrite": false,
+      "pair_id": "rewrite-235",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0487",
+      "family": "commutativity",
+      "value": 5,
+      "rewrite": true,
+      "pair_id": "rewrite-235",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0488",
+      "family": "distributivity",
+      "value": 7,
+      "rewrite": false,
+      "pair_id": "rewrite-236",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0489",
+      "family": "distributivity",
+      "value": -8,
+      "rewrite": true,
+      "pair_id": "rewrite-236",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0490",
+      "family": "symmetry",
+      "value": -6,
+      "rewrite": false,
+      "pair_id": "rewrite-237",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0491",
+      "family": "symmetry",
+      "value": -4,
+      "rewrite": true,
+      "pair_id": "rewrite-237",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0492",
+      "family": "transitivity",
+      "value": -2,
+      "rewrite": false,
+      "pair_id": "rewrite-238",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0493",
+      "family": "transitivity",
+      "value": 0,
+      "rewrite": true,
+      "pair_id": "rewrite-238",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0494",
+      "family": "abs_nonnegative",
+      "value": 2,
+      "rewrite": false,
+      "pair_id": "rewrite-239",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0495",
+      "family": "abs_nonnegative",
+      "value": 4,
+      "rewrite": true,
+      "pair_id": "rewrite-239",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0496",
+      "family": "forall_intro",
+      "value": 6,
+      "rewrite": false,
+      "pair_id": "rewrite-240",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0497",
+      "family": "forall_intro",
+      "value": 8,
+      "rewrite": true,
+      "pair_id": "rewrite-240",
+      "should_accept": true
+    },
+    {
+      "id": "prop-ood-0498",
+      "family": "missing_premise",
+      "value": -7,
+      "rewrite": false,
+      "pair_id": "rewrite-241",
+      "should_accept": false
+    },
+    {
+      "id": "prop-ood-0499",
+      "family": "missing_premise",
+      "value": -5,
+      "rewrite": true,
+      "pair_id": "rewrite-241",
+      "should_accept": false
+    }
+  ]
+}

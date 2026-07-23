@@ -8,6 +8,8 @@ use the_machine::gsm8k_quantity_candidate::formalize;
 use the_machine::quantity_relation_integration::bridge_to_algebra;
 use the_machine::raw_decomposition_benchmark::{decompose, realize, DecompositionDecision};
 use the_machine::third_party_corpus_benchmark::ThirdPartyCorpus;
+use the_machine::unit_aware_quantity::{formalize as formalize_unit, UnitQuantityDecision};
+use the_machine::unit_quantity_composition::compose_to_algebra;
 
 #[derive(Debug, Deserialize)]
 struct CandidateRelease {
@@ -23,14 +25,20 @@ struct CandidateRelease {
 #[derive(Debug, Deserialize)]
 struct PromotedCase {
     id: String,
+    #[serde(default = "default_quantity_route")]
+    route: String,
     family: String,
     expected_result: String,
+}
+
+fn default_quantity_route() -> String {
+    "quantity_relation".into()
 }
 
 fn main() {
     let config_path = env::args()
         .nth(1)
-        .unwrap_or_else(|| "data/third_party_gsm8k_quantity_candidate_v1.json".into());
+        .unwrap_or_else(|| "data/third_party_gsm8k_quantity_candidate_v2.json".into());
     let config: CandidateRelease =
         serde_json::from_str(&fs::read_to_string(&config_path).expect("candidate release"))
             .expect("candidate JSON");
@@ -64,6 +72,8 @@ fn main() {
     let mut existing = 0usize;
     let mut quantity = 0usize;
     let mut quantity_replayed = 0usize;
+    let mut unit = 0usize;
+    let mut unit_replayed = 0usize;
     let mut ambiguous = 0usize;
     let mut unsupported = 0usize;
     let mut results_checked = 0usize;
@@ -75,19 +85,38 @@ fn main() {
 
     for case in &base.cases {
         let expected_quantity = promoted.get(case.id.as_str()).copied();
-        if expected_quantity.is_none() && formalize(&case.original_prompt).is_some() {
+        if expected_quantity.is_none()
+            && (formalize(&case.original_prompt).is_some()
+                || matches!(
+                    formalize_unit(&case.original_prompt),
+                    UnitQuantityDecision::Accepted(_)
+                ))
+        {
             candidate_leakage += 1;
         }
         let (actual_route, actual_result, actual_family, replayed) =
             if let Some(expected) = expected_quantity {
-                match formalize(&case.original_prompt) {
-                    Some(artifact) => {
-                        let family = artifact.family.clone();
-                        let replayed = artifact.replay_verified();
-                        let result = bridge_to_algebra(&artifact).map(|receipt| receipt.result);
-                        ("quantity_relation", result, Some(family), replayed)
+                if expected.route == "unit_aware" {
+                    match formalize_unit(&case.original_prompt) {
+                        UnitQuantityDecision::Accepted(artifact) => {
+                            let family = artifact.operation.clone();
+                            let replayed = artifact.replay_verified();
+                            let result =
+                                compose_to_algebra(&artifact).map(|receipt| receipt.algebra.result);
+                            ("unit_aware", result, Some(family), replayed)
+                        }
+                        _ => ("unit_aware", None, None, false),
                     }
-                    None => ("quantity_relation", None, None, false),
+                } else {
+                    match formalize(&case.original_prompt) {
+                        Some(artifact) => {
+                            let family = artifact.family.clone();
+                            let replayed = artifact.replay_verified();
+                            let result = bridge_to_algebra(&artifact).map(|receipt| receipt.result);
+                            ("quantity_relation", result, Some(family), replayed)
+                        }
+                        None => ("quantity_relation", None, None, false),
+                    }
                 }
             } else {
                 match decompose(&case.original_prompt) {
@@ -101,8 +130,12 @@ fn main() {
                 }
             };
 
-        let expected_route = if expected_quantity.is_some() {
-            "quantity_relation"
+        let expected_route = if let Some(expected) = expected_quantity {
+            if expected.route == "unit_aware" {
+                "unit_aware"
+            } else {
+                "quantity_relation"
+            }
         } else {
             match case.expected_outcome {
                 ExpectedOutcome::Supported => "existing",
@@ -129,6 +162,10 @@ fn main() {
             quantity += 1;
             quantity_replayed += usize::from(replayed);
         }
+        if actual_route == "unit_aware" {
+            unit += 1;
+            unit_replayed += usize::from(replayed);
+        }
         if actual_route == "ambiguous" {
             ambiguous += 1;
         }
@@ -140,8 +177,9 @@ fn main() {
             result_correct += usize::from(result_ok);
         }
         let accepted = actual_result.is_some();
-        let expected_supported =
-            expected_route == "existing" || expected_route == "quantity_relation";
+        let expected_supported = expected_route == "existing"
+            || expected_route == "quantity_relation"
+            || expected_route == "unit_aware";
         false_auth += usize::from(accepted && !expected_supported);
         false_denials += usize::from(!accepted && expected_supported);
         if !correct {
@@ -162,10 +200,13 @@ fn main() {
 
     let hash = sha256_file(&config_path);
     println!(
-        "gsm8k-quantity-candidate: release={} config_sha256={} cases={} structural={}/{} existing={} quantity_expected={} quantity_realized={} quantity_replayed={} ambiguous={} unsupported={} results={}/{} false_auth={} false_denials={} candidate_leakage={} failures={:?} deterministic=true",
+        "gsm8k-quantity-candidate: release={} config_sha256={} cases={} structural={}/{} existing={} quantity_expected={} quantity_realized={} quantity_replayed={} unit_expected={} unit_realized={} unit_replayed={} ambiguous={} unsupported={} results={}/{} false_auth={} false_denials={} candidate_leakage={} failures={:?} deterministic=true",
         config.release_id, hash, base.cases.len(), structural, base.cases.len(), existing,
-        config.promoted_cases.len(), quantity, quantity_replayed, ambiguous, unsupported,
-        result_correct, results_checked, false_auth, false_denials, candidate_leakage, failures
+        config.promoted_cases.iter().filter(|case| case.route == "quantity_relation").count(),
+        quantity, quantity_replayed,
+        config.promoted_cases.iter().filter(|case| case.route == "unit_aware").count(),
+        unit, unit_replayed, ambiguous, unsupported, result_correct, results_checked,
+        false_auth, false_denials, candidate_leakage, failures
     );
 }
 

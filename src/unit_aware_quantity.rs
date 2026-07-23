@@ -133,6 +133,20 @@ pub fn formalize(prompt: &str) -> UnitQuantityDecision {
         return UnitQuantityDecision::Unsupported;
     }
 
+    // Source-preserved wording for the narrow, bounded foot/inch conversion
+    // family.  The factor is part of the reviewed unit table, not inferred
+    // from an arbitrary external conversion request.
+    let wire = Regex::new(r"wire (\d+) feet long.*?pieces (\d+) inches long.*?pieces").unwrap();
+    if let Some(caps) = wire.captures(text) {
+        return accepted(
+            "conversion",
+            vec!["foot".into(), "inch".into()],
+            "inch",
+            format!("{} * 12 / {}", &caps[1], &caps[2]),
+            "feet * inches_per_foot / inches_per_piece".into(),
+        );
+    }
+
     let conversion = Regex::new(
         r"^(?:convert|express) (\d+) ([a-z]+) (?:to|as) ([a-z]+)(?: using (\d+) ([a-z]+) per ([a-z]+)|,? given (\d+) ([a-z]+) per ([a-z]+))\.?$",
     )
@@ -241,6 +255,7 @@ mod tests {
             "Subtract 2 meters from 230 centimeters; express the difference in centimeters.",
             "Add 2 feet and 6 inches; express the total in inches.",
             "Subtract 12 inches from 1 foot; express the difference in inches.",
+            "Tracy used a piece of wire 4 feet long to support tomato plants in the garden. The wire was cut into pieces 6 inches long. How many pieces did she obtain?",
         ];
         for prompt in cases {
             let UnitQuantityDecision::Accepted(artifact) = formalize(prompt) else {

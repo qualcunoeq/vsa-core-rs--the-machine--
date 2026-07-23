@@ -11,6 +11,7 @@
       "locator": "fixture://third-party-schema",
       "license": "not-evidence",
       "retrieved_at": "2026-07-23",
+      "hash_basis": "fixture manifest",
       "content_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   ],

@@ -36,6 +36,7 @@ pub struct SourceRecord {
     pub locator: String,
     pub license: String,
     pub retrieved_at: String,
+    pub hash_basis: String,
     pub content_sha256: String,
 }
 
@@ -90,6 +91,7 @@ impl ThirdPartyCorpus {
                 ("locator", &source.locator),
                 ("license", &source.license),
                 ("retrieved_at", &source.retrieved_at),
+                ("hash_basis", &source.hash_basis),
                 ("content_sha256", &source.content_sha256),
             ] {
                 if value.trim().is_empty() {
@@ -208,6 +210,7 @@ mod tests {
             locator: "fixture://third-party-schema".into(),
             license: "not-evidence".into(),
             retrieved_at: "2026-07-23".into(),
+            hash_basis: "fixture manifest".into(),
             content_sha256: "0".repeat(64),
         }
     }

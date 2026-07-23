@@ -1,0 +1,3008 @@
+{
+  "schema_version": 1,
+  "release_id": "quantity-relation-v1-expanded",
+  "status": "pre_implementation_contract_corpus_pending_independent_review",
+  "oracle": "deterministic typed relation contract oracle; no executor results",
+  "cases": [
+    {
+      "id": "qr.exp.pos.001",
+      "prompt": "2 notebooks cost 6 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.001"
+    },
+    {
+      "id": "qr.exp.pos.201",
+      "prompt": "The total price is 6 dollars for 2 notebooks. Determine the dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.001"
+    },
+    {
+      "id": "qr.exp.pos.002",
+      "prompt": "A total of 12 dollars buys 3 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.002"
+    },
+    {
+      "id": "qr.exp.pos.202",
+      "prompt": "The total price is 12 dollars for 3 notebooks. Determine the dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.002"
+    },
+    {
+      "id": "qr.exp.pos.003",
+      "prompt": "4 notebooks cost 20 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.003"
+    },
+    {
+      "id": "qr.exp.pos.203",
+      "prompt": "The total price is 20 dollars for 4 notebooks. Determine the dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.003"
+    },
+    {
+      "id": "qr.exp.pos.004",
+      "prompt": "A total of 30 dollars buys 5 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.004"
+    },
+    {
+      "id": "qr.exp.pos.204",
+      "prompt": "The total price is 30 dollars for 5 notebooks. Determine the dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.004"
+    },
+    {
+      "id": "qr.exp.pos.005",
+      "prompt": "6 notebooks cost 42 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.005"
+    },
+    {
+      "id": "qr.exp.pos.205",
+      "prompt": "The total price is 42 dollars for 6 notebooks. Determine the dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.005"
+    },
+    {
+      "id": "qr.exp.pos.006",
+      "prompt": "A total of 56 dollars buys 7 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.006"
+    },
+    {
+      "id": "qr.exp.pos.206",
+      "prompt": "The total price is 56 dollars for 7 notebooks. Determine the dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.006"
+    },
+    {
+      "id": "qr.exp.pos.007",
+      "prompt": "8 notebooks cost 72 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.007"
+    },
+    {
+      "id": "qr.exp.pos.207",
+      "prompt": "The total price is 72 dollars for 8 notebooks. Determine the dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.007"
+    },
+    {
+      "id": "qr.exp.pos.008",
+      "prompt": "A total of 90 dollars buys 9 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.008"
+    },
+    {
+      "id": "qr.exp.pos.208",
+      "prompt": "The total price is 90 dollars for 9 notebooks. Determine the dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.008"
+    },
+    {
+      "id": "qr.exp.pos.009",
+      "prompt": "10 notebooks cost 30 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.009"
+    },
+    {
+      "id": "qr.exp.pos.209",
+      "prompt": "The total price is 30 dollars for 10 notebooks. Determine the dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.009"
+    },
+    {
+      "id": "qr.exp.pos.010",
+      "prompt": "A total of 8 dollars buys 2 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.010"
+    },
+    {
+      "id": "qr.exp.pos.210",
+      "prompt": "The total price is 8 dollars for 2 notebooks. Determine the dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": "qr.exp.pair.010"
+    },
+    {
+      "id": "qr.exp.pos.011",
+      "prompt": "3 notebooks cost 15 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.012",
+      "prompt": "A total of 24 dollars buys 4 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.013",
+      "prompt": "5 notebooks cost 35 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.014",
+      "prompt": "A total of 48 dollars buys 6 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.015",
+      "prompt": "7 notebooks cost 63 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.016",
+      "prompt": "A total of 80 dollars buys 8 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.017",
+      "prompt": "9 notebooks cost 27 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.018",
+      "prompt": "A total of 40 dollars buys 10 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.019",
+      "prompt": "2 notebooks cost 10 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.020",
+      "prompt": "A total of 18 dollars buys 3 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.021",
+      "prompt": "4 notebooks cost 28 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.022",
+      "prompt": "A total of 40 dollars buys 5 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.023",
+      "prompt": "6 notebooks cost 54 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.024",
+      "prompt": "A total of 70 dollars buys 7 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.025",
+      "prompt": "8 notebooks cost 24 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.026",
+      "prompt": "A total of 36 dollars buys 9 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.027",
+      "prompt": "10 notebooks cost 50 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.028",
+      "prompt": "A total of 12 dollars buys 2 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.029",
+      "prompt": "3 notebooks cost 21 dollars. What is the price per notebook?",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.030",
+      "prompt": "A total of 32 dollars buys 4 notebooks; find dollars per notebook.",
+      "outcome": "supported",
+      "family": "unit_rate",
+      "signature": "[count:count,cost:currency]>currency/count>unit_rate",
+      "target": "unit_rate",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.041",
+      "prompt": "The ratio of red beads to blue beads is 2:3. If there are 4 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.011"
+    },
+    {
+      "id": "qr.exp.pos.211",
+      "prompt": "There are 6 blue beads for 4 red beads under a 2:3 ratio. Find blue beads.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.011"
+    },
+    {
+      "id": "qr.exp.pos.042",
+      "prompt": "For every 3 red beads there are 4 blue beads; the collection has 9 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.012"
+    },
+    {
+      "id": "qr.exp.pos.212",
+      "prompt": "There are 12 blue beads for 9 red beads under a 3:4 ratio. Find blue beads.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.012"
+    },
+    {
+      "id": "qr.exp.pos.043",
+      "prompt": "The ratio of red beads to blue beads is 4:5. If there are 16 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.013"
+    },
+    {
+      "id": "qr.exp.pos.213",
+      "prompt": "There are 20 blue beads for 16 red beads under a 4:5 ratio. Find blue beads.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.013"
+    },
+    {
+      "id": "qr.exp.pos.044",
+      "prompt": "For every 5 red beads there are 6 blue beads; the collection has 25 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.014"
+    },
+    {
+      "id": "qr.exp.pos.214",
+      "prompt": "There are 30 blue beads for 25 red beads under a 5:6 ratio. Find blue beads.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.014"
+    },
+    {
+      "id": "qr.exp.pos.045",
+      "prompt": "The ratio of red beads to blue beads is 6:7. If there are 36 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.015"
+    },
+    {
+      "id": "qr.exp.pos.215",
+      "prompt": "There are 42 blue beads for 36 red beads under a 6:7 ratio. Find blue beads.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.015"
+    },
+    {
+      "id": "qr.exp.pos.046",
+      "prompt": "For every 2 red beads there are 8 blue beads; the collection has 4 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.016"
+    },
+    {
+      "id": "qr.exp.pos.216",
+      "prompt": "There are 16 blue beads for 4 red beads under a 2:8 ratio. Find blue beads.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.016"
+    },
+    {
+      "id": "qr.exp.pos.047",
+      "prompt": "The ratio of red beads to blue beads is 3:3. If there are 9 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.017"
+    },
+    {
+      "id": "qr.exp.pos.217",
+      "prompt": "There are 9 blue beads for 9 red beads under a 3:3 ratio. Find blue beads.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.017"
+    },
+    {
+      "id": "qr.exp.pos.048",
+      "prompt": "For every 4 red beads there are 4 blue beads; the collection has 16 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.018"
+    },
+    {
+      "id": "qr.exp.pos.218",
+      "prompt": "There are 16 blue beads for 16 red beads under a 4:4 ratio. Find blue beads.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.018"
+    },
+    {
+      "id": "qr.exp.pos.049",
+      "prompt": "The ratio of red beads to blue beads is 5:5. If there are 25 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.019"
+    },
+    {
+      "id": "qr.exp.pos.219",
+      "prompt": "There are 25 blue beads for 25 red beads under a 5:5 ratio. Find blue beads.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.019"
+    },
+    {
+      "id": "qr.exp.pos.050",
+      "prompt": "For every 6 red beads there are 6 blue beads; the collection has 36 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.020"
+    },
+    {
+      "id": "qr.exp.pos.220",
+      "prompt": "There are 36 blue beads for 36 red beads under a 6:6 ratio. Find blue beads.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": "qr.exp.pair.020"
+    },
+    {
+      "id": "qr.exp.pos.051",
+      "prompt": "The ratio of red beads to blue beads is 2:7. If there are 4 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.052",
+      "prompt": "For every 3 red beads there are 8 blue beads; the collection has 9 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.053",
+      "prompt": "The ratio of red beads to blue beads is 4:3. If there are 16 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.054",
+      "prompt": "For every 5 red beads there are 4 blue beads; the collection has 25 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.055",
+      "prompt": "The ratio of red beads to blue beads is 6:5. If there are 36 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.056",
+      "prompt": "For every 2 red beads there are 6 blue beads; the collection has 4 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.057",
+      "prompt": "The ratio of red beads to blue beads is 3:7. If there are 9 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.058",
+      "prompt": "For every 4 red beads there are 8 blue beads; the collection has 16 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.059",
+      "prompt": "The ratio of red beads to blue beads is 5:3. If there are 25 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.060",
+      "prompt": "For every 6 red beads there are 4 blue beads; the collection has 36 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.061",
+      "prompt": "The ratio of red beads to blue beads is 2:5. If there are 4 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.062",
+      "prompt": "For every 3 red beads there are 6 blue beads; the collection has 9 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.063",
+      "prompt": "The ratio of red beads to blue beads is 4:7. If there are 16 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.064",
+      "prompt": "For every 5 red beads there are 8 blue beads; the collection has 25 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.065",
+      "prompt": "The ratio of red beads to blue beads is 6:3. If there are 36 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.066",
+      "prompt": "For every 2 red beads there are 4 blue beads; the collection has 4 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.067",
+      "prompt": "The ratio of red beads to blue beads is 3:5. If there are 9 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.068",
+      "prompt": "For every 4 red beads there are 6 blue beads; the collection has 16 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.069",
+      "prompt": "The ratio of red beads to blue beads is 5:7. If there are 25 red beads, how many blue beads are there?",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.070",
+      "prompt": "For every 6 red beads there are 8 blue beads; the collection has 36 red beads. Find the blue count.",
+      "outcome": "supported",
+      "family": "ratio",
+      "signature": "[left:count,right:count,ratio]>count>ratio_target",
+      "target": "ratio_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.081",
+      "prompt": "3 identical batches require 2 liters. How many liters are required for 5 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.021"
+    },
+    {
+      "id": "qr.exp.pos.221",
+      "prompt": "Scale 2 liters for 3 batches to 5 batches at the same rate.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.021"
+    },
+    {
+      "id": "qr.exp.pos.082",
+      "prompt": "At a constant proportion, 3 liters serve 4 batches. Determine liters for 6 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.022"
+    },
+    {
+      "id": "qr.exp.pos.222",
+      "prompt": "Scale 3 liters for 4 batches to 6 batches at the same rate.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.022"
+    },
+    {
+      "id": "qr.exp.pos.083",
+      "prompt": "5 identical batches require 4 liters. How many liters are required for 7 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.023"
+    },
+    {
+      "id": "qr.exp.pos.223",
+      "prompt": "Scale 4 liters for 5 batches to 7 batches at the same rate.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.023"
+    },
+    {
+      "id": "qr.exp.pos.084",
+      "prompt": "At a constant proportion, 5 liters serve 6 batches. Determine liters for 8 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.024"
+    },
+    {
+      "id": "qr.exp.pos.224",
+      "prompt": "Scale 5 liters for 6 batches to 8 batches at the same rate.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.024"
+    },
+    {
+      "id": "qr.exp.pos.085",
+      "prompt": "7 identical batches require 6 liters. How many liters are required for 9 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.025"
+    },
+    {
+      "id": "qr.exp.pos.225",
+      "prompt": "Scale 6 liters for 7 batches to 9 batches at the same rate.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.025"
+    },
+    {
+      "id": "qr.exp.pos.086",
+      "prompt": "At a constant proportion, 7 liters serve 8 batches. Determine liters for 10 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.026"
+    },
+    {
+      "id": "qr.exp.pos.226",
+      "prompt": "Scale 7 liters for 8 batches to 10 batches at the same rate.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.026"
+    },
+    {
+      "id": "qr.exp.pos.087",
+      "prompt": "9 identical batches require 8 liters. How many liters are required for 11 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.027"
+    },
+    {
+      "id": "qr.exp.pos.227",
+      "prompt": "Scale 8 liters for 9 batches to 11 batches at the same rate.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.027"
+    },
+    {
+      "id": "qr.exp.pos.088",
+      "prompt": "At a constant proportion, 2 liters serve 10 batches. Determine liters for 12 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.028"
+    },
+    {
+      "id": "qr.exp.pos.228",
+      "prompt": "Scale 2 liters for 10 batches to 12 batches at the same rate.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.028"
+    },
+    {
+      "id": "qr.exp.pos.089",
+      "prompt": "3 identical batches require 3 liters. How many liters are required for 13 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.029"
+    },
+    {
+      "id": "qr.exp.pos.229",
+      "prompt": "Scale 3 liters for 3 batches to 13 batches at the same rate.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.029"
+    },
+    {
+      "id": "qr.exp.pos.090",
+      "prompt": "At a constant proportion, 4 liters serve 4 batches. Determine liters for 5 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.030"
+    },
+    {
+      "id": "qr.exp.pos.230",
+      "prompt": "Scale 4 liters for 4 batches to 5 batches at the same rate.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.030"
+    },
+    {
+      "id": "qr.exp.pos.091",
+      "prompt": "5 identical batches require 5 liters. How many liters are required for 6 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.092",
+      "prompt": "At a constant proportion, 6 liters serve 6 batches. Determine liters for 7 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.093",
+      "prompt": "7 identical batches require 7 liters. How many liters are required for 8 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.094",
+      "prompt": "At a constant proportion, 8 liters serve 8 batches. Determine liters for 9 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.095",
+      "prompt": "9 identical batches require 2 liters. How many liters are required for 10 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.096",
+      "prompt": "At a constant proportion, 3 liters serve 10 batches. Determine liters for 11 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.097",
+      "prompt": "3 identical batches require 4 liters. How many liters are required for 12 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.098",
+      "prompt": "At a constant proportion, 5 liters serve 4 batches. Determine liters for 13 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.099",
+      "prompt": "5 identical batches require 6 liters. How many liters are required for 5 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.100",
+      "prompt": "At a constant proportion, 7 liters serve 6 batches. Determine liters for 6 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.101",
+      "prompt": "7 identical batches require 8 liters. How many liters are required for 7 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.102",
+      "prompt": "At a constant proportion, 2 liters serve 8 batches. Determine liters for 8 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.103",
+      "prompt": "9 identical batches require 3 liters. How many liters are required for 9 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.104",
+      "prompt": "At a constant proportion, 4 liters serve 10 batches. Determine liters for 10 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.105",
+      "prompt": "3 identical batches require 5 liters. How many liters are required for 11 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.106",
+      "prompt": "At a constant proportion, 6 liters serve 4 batches. Determine liters for 12 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.107",
+      "prompt": "5 identical batches require 7 liters. How many liters are required for 13 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.108",
+      "prompt": "At a constant proportion, 8 liters serve 6 batches. Determine liters for 5 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.109",
+      "prompt": "7 identical batches require 2 liters. How many liters are required for 6 batches at the same rate?",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.110",
+      "prompt": "At a constant proportion, 3 liters serve 8 batches. Determine liters for 7 batches.",
+      "outcome": "supported",
+      "family": "proportion",
+      "signature": "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+      "target": "scaled_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.121",
+      "prompt": "Using the stated conversion of 100 centimeters per meters, convert 2 meters to centimeters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:meters,factor:100centimeters/meters]>centimeters>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.031"
+    },
+    {
+      "id": "qr.exp.pos.231",
+      "prompt": "Express 2 meters as centimeters, given 100 centimeters per meters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:meters,factor:100centimeters/meters]>centimeters>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.031"
+    },
+    {
+      "id": "qr.exp.pos.122",
+      "prompt": "One kilometers contains 1000 meters. Express 3 kilometers in meters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:kilometers,factor:1000meters/kilometers]>meters>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.032"
+    },
+    {
+      "id": "qr.exp.pos.232",
+      "prompt": "Express 3 kilometers as meters, given 1000 meters per kilometers.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:kilometers,factor:1000meters/kilometers]>meters>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.032"
+    },
+    {
+      "id": "qr.exp.pos.123",
+      "prompt": "Using the stated conversion of 60 minutes per hours, convert 4 hours to minutes.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[time:hours,factor:60minutes/hours]>minutes>time_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.033"
+    },
+    {
+      "id": "qr.exp.pos.233",
+      "prompt": "Express 4 hours as minutes, given 60 minutes per hours.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[time:hours,factor:60minutes/hours]>minutes>time_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.033"
+    },
+    {
+      "id": "qr.exp.pos.124",
+      "prompt": "One feet contains 12 inches. Express 5 feet in inches.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:feet,factor:12inches/feet]>inches>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.034"
+    },
+    {
+      "id": "qr.exp.pos.234",
+      "prompt": "Express 5 feet as inches, given 12 inches per feet.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:feet,factor:12inches/feet]>inches>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.034"
+    },
+    {
+      "id": "qr.exp.pos.125",
+      "prompt": "Using the stated conversion of 16 ounces per pounds, convert 6 pounds to ounces.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[mass:pounds,factor:16ounces/pounds]>ounces>mass_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.035"
+    },
+    {
+      "id": "qr.exp.pos.235",
+      "prompt": "Express 6 pounds as ounces, given 16 ounces per pounds.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[mass:pounds,factor:16ounces/pounds]>ounces>mass_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.035"
+    },
+    {
+      "id": "qr.exp.pos.126",
+      "prompt": "One liters contains 1000 milliliters. Express 7 liters in milliliters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[volume:liters,factor:1000milliliters/liters]>milliliters>volume_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.036"
+    },
+    {
+      "id": "qr.exp.pos.236",
+      "prompt": "Express 7 liters as milliliters, given 1000 milliliters per liters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[volume:liters,factor:1000milliliters/liters]>milliliters>volume_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.036"
+    },
+    {
+      "id": "qr.exp.pos.127",
+      "prompt": "Using the stated conversion of 24 hours per days, convert 8 days to hours.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[time:days,factor:24hours/days]>hours>time_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.037"
+    },
+    {
+      "id": "qr.exp.pos.237",
+      "prompt": "Express 8 days as hours, given 24 hours per days.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[time:days,factor:24hours/days]>hours>time_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.037"
+    },
+    {
+      "id": "qr.exp.pos.128",
+      "prompt": "One weeks contains 7 days. Express 9 weeks in days.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[time:weeks,factor:7days/weeks]>days>time_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.038"
+    },
+    {
+      "id": "qr.exp.pos.238",
+      "prompt": "Express 9 weeks as days, given 7 days per weeks.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[time:weeks,factor:7days/weeks]>days>time_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.038"
+    },
+    {
+      "id": "qr.exp.pos.129",
+      "prompt": "Using the stated conversion of 100 centimeters per meters, convert 10 meters to centimeters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:meters,factor:100centimeters/meters]>centimeters>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.039"
+    },
+    {
+      "id": "qr.exp.pos.239",
+      "prompt": "Express 10 meters as centimeters, given 100 centimeters per meters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:meters,factor:100centimeters/meters]>centimeters>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.039"
+    },
+    {
+      "id": "qr.exp.pos.130",
+      "prompt": "One kilometers contains 1000 meters. Express 2 kilometers in meters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:kilometers,factor:1000meters/kilometers]>meters>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.040"
+    },
+    {
+      "id": "qr.exp.pos.240",
+      "prompt": "Express 2 kilometers as meters, given 1000 meters per kilometers.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:kilometers,factor:1000meters/kilometers]>meters>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": "qr.exp.pair.040"
+    },
+    {
+      "id": "qr.exp.pos.131",
+      "prompt": "Using the stated conversion of 60 minutes per hours, convert 3 hours to minutes.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[time:hours,factor:60minutes/hours]>minutes>time_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.132",
+      "prompt": "One feet contains 12 inches. Express 4 feet in inches.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:feet,factor:12inches/feet]>inches>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.133",
+      "prompt": "Using the stated conversion of 16 ounces per pounds, convert 5 pounds to ounces.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[mass:pounds,factor:16ounces/pounds]>ounces>mass_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.134",
+      "prompt": "One liters contains 1000 milliliters. Express 6 liters in milliliters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[volume:liters,factor:1000milliliters/liters]>milliliters>volume_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.135",
+      "prompt": "Using the stated conversion of 24 hours per days, convert 7 days to hours.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[time:days,factor:24hours/days]>hours>time_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.136",
+      "prompt": "One weeks contains 7 days. Express 8 weeks in days.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[time:weeks,factor:7days/weeks]>days>time_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.137",
+      "prompt": "Using the stated conversion of 100 centimeters per meters, convert 9 meters to centimeters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:meters,factor:100centimeters/meters]>centimeters>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.138",
+      "prompt": "One kilometers contains 1000 meters. Express 10 kilometers in meters.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:kilometers,factor:1000meters/kilometers]>meters>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.139",
+      "prompt": "Using the stated conversion of 60 minutes per hours, convert 2 hours to minutes.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[time:hours,factor:60minutes/hours]>minutes>time_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.140",
+      "prompt": "One feet contains 12 inches. Express 3 feet in inches.",
+      "outcome": "supported",
+      "family": "unit_conversion",
+      "signature": "[length:feet,factor:12inches/feet]>inches>length_converted",
+      "target": "converted_quantity",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.151",
+      "prompt": "A box contains 8 red counters and 3 blue counters. How many counters are there altogether?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": "qr.exp.pair.041"
+    },
+    {
+      "id": "qr.exp.pos.241",
+      "prompt": "There are 8 red counters plus 3 blue counters in the box. Find the total count.",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": "qr.exp.pair.041"
+    },
+    {
+      "id": "qr.exp.pos.152",
+      "prompt": "A container has 9 liters and 4 liters are removed. How many liters remain?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": "qr.exp.pair.042"
+    },
+    {
+      "id": "qr.exp.pos.242",
+      "prompt": "After taking 4 liters from a container holding 9 liters, state the remaining volume.",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": "qr.exp.pair.042"
+    },
+    {
+      "id": "qr.exp.pos.153",
+      "prompt": "A box contains 10 red counters and 5 blue counters. How many counters are there altogether?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": "qr.exp.pair.043"
+    },
+    {
+      "id": "qr.exp.pos.243",
+      "prompt": "There are 10 red counters plus 5 blue counters in the box. Find the total count.",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": "qr.exp.pair.043"
+    },
+    {
+      "id": "qr.exp.pos.154",
+      "prompt": "A container has 11 liters and 6 liters are removed. How many liters remain?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": "qr.exp.pair.044"
+    },
+    {
+      "id": "qr.exp.pos.244",
+      "prompt": "After taking 6 liters from a container holding 11 liters, state the remaining volume.",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": "qr.exp.pair.044"
+    },
+    {
+      "id": "qr.exp.pos.155",
+      "prompt": "A box contains 12 red counters and 7 blue counters. How many counters are there altogether?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": "qr.exp.pair.045"
+    },
+    {
+      "id": "qr.exp.pos.245",
+      "prompt": "There are 12 red counters plus 7 blue counters in the box. Find the total count.",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": "qr.exp.pair.045"
+    },
+    {
+      "id": "qr.exp.pos.156",
+      "prompt": "A container has 13 liters and 8 liters are removed. How many liters remain?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": "qr.exp.pair.046"
+    },
+    {
+      "id": "qr.exp.pos.246",
+      "prompt": "After taking 8 liters from a container holding 13 liters, state the remaining volume.",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": "qr.exp.pair.046"
+    },
+    {
+      "id": "qr.exp.pos.157",
+      "prompt": "A box contains 14 red counters and 9 blue counters. How many counters are there altogether?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": "qr.exp.pair.047"
+    },
+    {
+      "id": "qr.exp.pos.247",
+      "prompt": "There are 14 red counters plus 9 blue counters in the box. Find the total count.",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": "qr.exp.pair.047"
+    },
+    {
+      "id": "qr.exp.pos.158",
+      "prompt": "A container has 15 liters and 10 liters are removed. How many liters remain?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": "qr.exp.pair.048"
+    },
+    {
+      "id": "qr.exp.pos.248",
+      "prompt": "After taking 10 liters from a container holding 15 liters, state the remaining volume.",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": "qr.exp.pair.048"
+    },
+    {
+      "id": "qr.exp.pos.159",
+      "prompt": "A box contains 16 red counters and 11 blue counters. How many counters are there altogether?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": "qr.exp.pair.049"
+    },
+    {
+      "id": "qr.exp.pos.249",
+      "prompt": "There are 16 red counters plus 11 blue counters in the box. Find the total count.",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": "qr.exp.pair.049"
+    },
+    {
+      "id": "qr.exp.pos.160",
+      "prompt": "A container has 17 liters and 12 liters are removed. How many liters remain?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": "qr.exp.pair.050"
+    },
+    {
+      "id": "qr.exp.pos.250",
+      "prompt": "After taking 12 liters from a container holding 17 liters, state the remaining volume.",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": "qr.exp.pair.050"
+    },
+    {
+      "id": "qr.exp.pos.161",
+      "prompt": "A box contains 18 red counters and 13 blue counters. How many counters are there altogether?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.162",
+      "prompt": "A container has 19 liters and 14 liters are removed. How many liters remain?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.163",
+      "prompt": "A box contains 20 red counters and 15 blue counters. How many counters are there altogether?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.164",
+      "prompt": "A container has 21 liters and 16 liters are removed. How many liters remain?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.165",
+      "prompt": "A box contains 22 red counters and 17 blue counters. How many counters are there altogether?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.166",
+      "prompt": "A container has 23 liters and 18 liters are removed. How many liters remain?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.167",
+      "prompt": "A box contains 24 red counters and 19 blue counters. How many counters are there altogether?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.168",
+      "prompt": "A container has 25 liters and 3 liters are removed. How many liters remain?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.169",
+      "prompt": "A box contains 26 red counters and 4 blue counters. How many counters are there altogether?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "total",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.170",
+      "prompt": "A container has 27 liters and 5 liters are removed. How many liters remain?",
+      "outcome": "supported",
+      "family": "sum_difference",
+      "signature": "[first:quantity,second:quantity]>quantity>target",
+      "target": "remaining",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.181",
+      "prompt": "A quantity starts at 10 units and increases by 2 units. What is the final quantity?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.182",
+      "prompt": "The final amount is 14 units after adding 3 units. What was the starting amount?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.183",
+      "prompt": "A quantity starts at 12 units and increases by 4 units. What is the final quantity?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.184",
+      "prompt": "The final amount is 18 units after adding 5 units. What was the starting amount?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.185",
+      "prompt": "A quantity starts at 14 units and increases by 6 units. What is the final quantity?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.186",
+      "prompt": "The final amount is 22 units after adding 7 units. What was the starting amount?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.187",
+      "prompt": "A quantity starts at 16 units and increases by 8 units. What is the final quantity?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.188",
+      "prompt": "The final amount is 19 units after adding 2 units. What was the starting amount?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.189",
+      "prompt": "A quantity starts at 18 units and increases by 3 units. What is the final quantity?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.190",
+      "prompt": "The final amount is 23 units after adding 4 units. What was the starting amount?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.191",
+      "prompt": "A quantity starts at 20 units and increases by 5 units. What is the final quantity?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.192",
+      "prompt": "The final amount is 27 units after adding 6 units. What was the starting amount?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.193",
+      "prompt": "A quantity starts at 22 units and increases by 7 units. What is the final quantity?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.194",
+      "prompt": "The final amount is 31 units after adding 8 units. What was the starting amount?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.195",
+      "prompt": "A quantity starts at 24 units and increases by 2 units. What is the final quantity?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.196",
+      "prompt": "The final amount is 28 units after adding 3 units. What was the starting amount?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.197",
+      "prompt": "A quantity starts at 26 units and increases by 4 units. What is the final quantity?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.198",
+      "prompt": "The final amount is 32 units after adding 5 units. What was the starting amount?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.199",
+      "prompt": "A quantity starts at 28 units and increases by 6 units. What is the final quantity?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.pos.200",
+      "prompt": "The final amount is 36 units after adding 7 units. What was the starting amount?",
+      "outcome": "supported",
+      "family": "linear_quantity",
+      "signature": "[base:quantity,change:quantity]>quantity>linear_target",
+      "target": "linear_target",
+      "reason": null,
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.001",
+      "prompt": "A price changes by 2% each year. What is the final price?",
+      "outcome": "unsupported",
+      "family": "percentage",
+      "signature": null,
+      "target": null,
+      "reason": "percentage_without_explicit_linear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.002",
+      "prompt": "A bank compounds 3% interest monthly. What is the balance after a year?",
+      "outcome": "unsupported",
+      "family": "compound_interest",
+      "signature": null,
+      "target": null,
+      "reason": "compound_interest",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.003",
+      "prompt": "The ratio of apples to oranges is 4:5, but neither fruit count is given. Find the apples.",
+      "outcome": "ambiguous",
+      "family": "missing_anchor",
+      "signature": null,
+      "target": null,
+      "reason": "missing_numeric_anchor",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.004",
+      "prompt": "A quantity follows a nonlinear square-law relation. Find its value when the input is 5.",
+      "outcome": "unsupported",
+      "family": "nonlinear",
+      "signature": null,
+      "target": null,
+      "reason": "nonlinear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.005",
+      "prompt": "A circle has radius 6 meters. Find its area.",
+      "outcome": "unsupported",
+      "family": "geometry",
+      "signature": null,
+      "target": null,
+      "reason": "geometry_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.006",
+      "prompt": "A fair die is rolled twice. What is the probability of two sixes?",
+      "outcome": "unsupported",
+      "family": "probability",
+      "signature": null,
+      "target": null,
+      "reason": "probability_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.007",
+      "prompt": "Convert 8 miles to kilometers using the usual conversion.",
+      "outcome": "unsupported",
+      "family": "unstated_conversion",
+      "signature": null,
+      "target": null,
+      "reason": "conversion_factor_not_stated",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.008",
+      "prompt": "Add 9 liters to 10 kilograms and report the total.",
+      "outcome": "ambiguous",
+      "family": "incompatible_units",
+      "signature": null,
+      "target": null,
+      "reason": "incompatible_units",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.009",
+      "prompt": "A vehicle travels at 10 km/h, but the travel time is missing. Find the distance.",
+      "outcome": "ambiguous",
+      "family": "missing_interval",
+      "signature": null,
+      "target": null,
+      "reason": "missing_time_interval",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.010",
+      "prompt": "A machine changes rates three times, pauses, restarts, and then reports a final total.",
+      "outcome": "unsupported",
+      "family": "multi_stage",
+      "signature": null,
+      "target": null,
+      "reason": "unsupported_multi_stage_narrative",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.011",
+      "prompt": "A price changes by 12% each year. What is the final price?",
+      "outcome": "unsupported",
+      "family": "percentage",
+      "signature": null,
+      "target": null,
+      "reason": "percentage_without_explicit_linear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.012",
+      "prompt": "A bank compounds 13% interest monthly. What is the balance after a year?",
+      "outcome": "unsupported",
+      "family": "compound_interest",
+      "signature": null,
+      "target": null,
+      "reason": "compound_interest",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.013",
+      "prompt": "The ratio of apples to oranges is 14:15, but neither fruit count is given. Find the apples.",
+      "outcome": "ambiguous",
+      "family": "missing_anchor",
+      "signature": null,
+      "target": null,
+      "reason": "missing_numeric_anchor",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.014",
+      "prompt": "A quantity follows a nonlinear square-law relation. Find its value when the input is 15.",
+      "outcome": "unsupported",
+      "family": "nonlinear",
+      "signature": null,
+      "target": null,
+      "reason": "nonlinear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.015",
+      "prompt": "A circle has radius 16 meters. Find its area.",
+      "outcome": "unsupported",
+      "family": "geometry",
+      "signature": null,
+      "target": null,
+      "reason": "geometry_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.016",
+      "prompt": "A fair die is rolled twice. What is the probability of two sixes?",
+      "outcome": "unsupported",
+      "family": "probability",
+      "signature": null,
+      "target": null,
+      "reason": "probability_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.017",
+      "prompt": "Convert 18 miles to kilometers using the usual conversion.",
+      "outcome": "unsupported",
+      "family": "unstated_conversion",
+      "signature": null,
+      "target": null,
+      "reason": "conversion_factor_not_stated",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.018",
+      "prompt": "Add 19 liters to 7 kilograms and report the total.",
+      "outcome": "ambiguous",
+      "family": "incompatible_units",
+      "signature": null,
+      "target": null,
+      "reason": "incompatible_units",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.019",
+      "prompt": "A vehicle travels at 20 km/h, but the travel time is missing. Find the distance.",
+      "outcome": "ambiguous",
+      "family": "missing_interval",
+      "signature": null,
+      "target": null,
+      "reason": "missing_time_interval",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.020",
+      "prompt": "A machine changes rates three times, pauses, restarts, and then reports a final total.",
+      "outcome": "unsupported",
+      "family": "multi_stage",
+      "signature": null,
+      "target": null,
+      "reason": "unsupported_multi_stage_narrative",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.021",
+      "prompt": "A price changes by 3% each year. What is the final price?",
+      "outcome": "unsupported",
+      "family": "percentage",
+      "signature": null,
+      "target": null,
+      "reason": "percentage_without_explicit_linear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.022",
+      "prompt": "A bank compounds 4% interest monthly. What is the balance after a year?",
+      "outcome": "unsupported",
+      "family": "compound_interest",
+      "signature": null,
+      "target": null,
+      "reason": "compound_interest",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.023",
+      "prompt": "The ratio of apples to oranges is 5:12, but neither fruit count is given. Find the apples.",
+      "outcome": "ambiguous",
+      "family": "missing_anchor",
+      "signature": null,
+      "target": null,
+      "reason": "missing_numeric_anchor",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.024",
+      "prompt": "A quantity follows a nonlinear square-law relation. Find its value when the input is 6.",
+      "outcome": "unsupported",
+      "family": "nonlinear",
+      "signature": null,
+      "target": null,
+      "reason": "nonlinear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.025",
+      "prompt": "A circle has radius 7 meters. Find its area.",
+      "outcome": "unsupported",
+      "family": "geometry",
+      "signature": null,
+      "target": null,
+      "reason": "geometry_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.026",
+      "prompt": "A fair die is rolled twice. What is the probability of two sixes?",
+      "outcome": "unsupported",
+      "family": "probability",
+      "signature": null,
+      "target": null,
+      "reason": "probability_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.027",
+      "prompt": "Convert 9 miles to kilometers using the usual conversion.",
+      "outcome": "unsupported",
+      "family": "unstated_conversion",
+      "signature": null,
+      "target": null,
+      "reason": "conversion_factor_not_stated",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.028",
+      "prompt": "Add 10 liters to 4 kilograms and report the total.",
+      "outcome": "ambiguous",
+      "family": "incompatible_units",
+      "signature": null,
+      "target": null,
+      "reason": "incompatible_units",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.029",
+      "prompt": "A vehicle travels at 11 km/h, but the travel time is missing. Find the distance.",
+      "outcome": "ambiguous",
+      "family": "missing_interval",
+      "signature": null,
+      "target": null,
+      "reason": "missing_time_interval",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.030",
+      "prompt": "A machine changes rates three times, pauses, restarts, and then reports a final total.",
+      "outcome": "unsupported",
+      "family": "multi_stage",
+      "signature": null,
+      "target": null,
+      "reason": "unsupported_multi_stage_narrative",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.031",
+      "prompt": "A price changes by 13% each year. What is the final price?",
+      "outcome": "unsupported",
+      "family": "percentage",
+      "signature": null,
+      "target": null,
+      "reason": "percentage_without_explicit_linear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.032",
+      "prompt": "A bank compounds 14% interest monthly. What is the balance after a year?",
+      "outcome": "unsupported",
+      "family": "compound_interest",
+      "signature": null,
+      "target": null,
+      "reason": "compound_interest",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.033",
+      "prompt": "The ratio of apples to oranges is 15:9, but neither fruit count is given. Find the apples.",
+      "outcome": "ambiguous",
+      "family": "missing_anchor",
+      "signature": null,
+      "target": null,
+      "reason": "missing_numeric_anchor",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.034",
+      "prompt": "A quantity follows a nonlinear square-law relation. Find its value when the input is 16.",
+      "outcome": "unsupported",
+      "family": "nonlinear",
+      "signature": null,
+      "target": null,
+      "reason": "nonlinear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.035",
+      "prompt": "A circle has radius 17 meters. Find its area.",
+      "outcome": "unsupported",
+      "family": "geometry",
+      "signature": null,
+      "target": null,
+      "reason": "geometry_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.036",
+      "prompt": "A fair die is rolled twice. What is the probability of two sixes?",
+      "outcome": "unsupported",
+      "family": "probability",
+      "signature": null,
+      "target": null,
+      "reason": "probability_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.037",
+      "prompt": "Convert 19 miles to kilometers using the usual conversion.",
+      "outcome": "unsupported",
+      "family": "unstated_conversion",
+      "signature": null,
+      "target": null,
+      "reason": "conversion_factor_not_stated",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.038",
+      "prompt": "Add 20 liters to 14 kilograms and report the total.",
+      "outcome": "ambiguous",
+      "family": "incompatible_units",
+      "signature": null,
+      "target": null,
+      "reason": "incompatible_units",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.039",
+      "prompt": "A vehicle travels at 2 km/h, but the travel time is missing. Find the distance.",
+      "outcome": "ambiguous",
+      "family": "missing_interval",
+      "signature": null,
+      "target": null,
+      "reason": "missing_time_interval",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.040",
+      "prompt": "A machine changes rates three times, pauses, restarts, and then reports a final total.",
+      "outcome": "unsupported",
+      "family": "multi_stage",
+      "signature": null,
+      "target": null,
+      "reason": "unsupported_multi_stage_narrative",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.041",
+      "prompt": "A price changes by 4% each year. What is the final price?",
+      "outcome": "unsupported",
+      "family": "percentage",
+      "signature": null,
+      "target": null,
+      "reason": "percentage_without_explicit_linear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.042",
+      "prompt": "A bank compounds 5% interest monthly. What is the balance after a year?",
+      "outcome": "unsupported",
+      "family": "compound_interest",
+      "signature": null,
+      "target": null,
+      "reason": "compound_interest",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.043",
+      "prompt": "The ratio of apples to oranges is 6:6, but neither fruit count is given. Find the apples.",
+      "outcome": "ambiguous",
+      "family": "missing_anchor",
+      "signature": null,
+      "target": null,
+      "reason": "missing_numeric_anchor",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.044",
+      "prompt": "A quantity follows a nonlinear square-law relation. Find its value when the input is 7.",
+      "outcome": "unsupported",
+      "family": "nonlinear",
+      "signature": null,
+      "target": null,
+      "reason": "nonlinear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.045",
+      "prompt": "A circle has radius 8 meters. Find its area.",
+      "outcome": "unsupported",
+      "family": "geometry",
+      "signature": null,
+      "target": null,
+      "reason": "geometry_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.046",
+      "prompt": "A fair die is rolled twice. What is the probability of two sixes?",
+      "outcome": "unsupported",
+      "family": "probability",
+      "signature": null,
+      "target": null,
+      "reason": "probability_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.047",
+      "prompt": "Convert 10 miles to kilometers using the usual conversion.",
+      "outcome": "unsupported",
+      "family": "unstated_conversion",
+      "signature": null,
+      "target": null,
+      "reason": "conversion_factor_not_stated",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.048",
+      "prompt": "Add 11 liters to 11 kilograms and report the total.",
+      "outcome": "ambiguous",
+      "family": "incompatible_units",
+      "signature": null,
+      "target": null,
+      "reason": "incompatible_units",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.049",
+      "prompt": "A vehicle travels at 12 km/h, but the travel time is missing. Find the distance.",
+      "outcome": "ambiguous",
+      "family": "missing_interval",
+      "signature": null,
+      "target": null,
+      "reason": "missing_time_interval",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.050",
+      "prompt": "A machine changes rates three times, pauses, restarts, and then reports a final total.",
+      "outcome": "unsupported",
+      "family": "multi_stage",
+      "signature": null,
+      "target": null,
+      "reason": "unsupported_multi_stage_narrative",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.051",
+      "prompt": "A price changes by 14% each year. What is the final price?",
+      "outcome": "unsupported",
+      "family": "percentage",
+      "signature": null,
+      "target": null,
+      "reason": "percentage_without_explicit_linear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.052",
+      "prompt": "A bank compounds 15% interest monthly. What is the balance after a year?",
+      "outcome": "unsupported",
+      "family": "compound_interest",
+      "signature": null,
+      "target": null,
+      "reason": "compound_interest",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.053",
+      "prompt": "The ratio of apples to oranges is 16:3, but neither fruit count is given. Find the apples.",
+      "outcome": "ambiguous",
+      "family": "missing_anchor",
+      "signature": null,
+      "target": null,
+      "reason": "missing_numeric_anchor",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.054",
+      "prompt": "A quantity follows a nonlinear square-law relation. Find its value when the input is 17.",
+      "outcome": "unsupported",
+      "family": "nonlinear",
+      "signature": null,
+      "target": null,
+      "reason": "nonlinear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.055",
+      "prompt": "A circle has radius 18 meters. Find its area.",
+      "outcome": "unsupported",
+      "family": "geometry",
+      "signature": null,
+      "target": null,
+      "reason": "geometry_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.056",
+      "prompt": "A fair die is rolled twice. What is the probability of two sixes?",
+      "outcome": "unsupported",
+      "family": "probability",
+      "signature": null,
+      "target": null,
+      "reason": "probability_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.057",
+      "prompt": "Convert 20 miles to kilometers using the usual conversion.",
+      "outcome": "unsupported",
+      "family": "unstated_conversion",
+      "signature": null,
+      "target": null,
+      "reason": "conversion_factor_not_stated",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.058",
+      "prompt": "Add 2 liters to 8 kilograms and report the total.",
+      "outcome": "ambiguous",
+      "family": "incompatible_units",
+      "signature": null,
+      "target": null,
+      "reason": "incompatible_units",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.059",
+      "prompt": "A vehicle travels at 3 km/h, but the travel time is missing. Find the distance.",
+      "outcome": "ambiguous",
+      "family": "missing_interval",
+      "signature": null,
+      "target": null,
+      "reason": "missing_time_interval",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.060",
+      "prompt": "A machine changes rates three times, pauses, restarts, and then reports a final total.",
+      "outcome": "unsupported",
+      "family": "multi_stage",
+      "signature": null,
+      "target": null,
+      "reason": "unsupported_multi_stage_narrative",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.061",
+      "prompt": "A price changes by 5% each year. What is the final price?",
+      "outcome": "unsupported",
+      "family": "percentage",
+      "signature": null,
+      "target": null,
+      "reason": "percentage_without_explicit_linear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.062",
+      "prompt": "A bank compounds 6% interest monthly. What is the balance after a year?",
+      "outcome": "unsupported",
+      "family": "compound_interest",
+      "signature": null,
+      "target": null,
+      "reason": "compound_interest",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.063",
+      "prompt": "The ratio of apples to oranges is 7:13, but neither fruit count is given. Find the apples.",
+      "outcome": "ambiguous",
+      "family": "missing_anchor",
+      "signature": null,
+      "target": null,
+      "reason": "missing_numeric_anchor",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.064",
+      "prompt": "A quantity follows a nonlinear square-law relation. Find its value when the input is 8.",
+      "outcome": "unsupported",
+      "family": "nonlinear",
+      "signature": null,
+      "target": null,
+      "reason": "nonlinear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.065",
+      "prompt": "A circle has radius 9 meters. Find its area.",
+      "outcome": "unsupported",
+      "family": "geometry",
+      "signature": null,
+      "target": null,
+      "reason": "geometry_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.066",
+      "prompt": "A fair die is rolled twice. What is the probability of two sixes?",
+      "outcome": "unsupported",
+      "family": "probability",
+      "signature": null,
+      "target": null,
+      "reason": "probability_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.067",
+      "prompt": "Convert 11 miles to kilometers using the usual conversion.",
+      "outcome": "unsupported",
+      "family": "unstated_conversion",
+      "signature": null,
+      "target": null,
+      "reason": "conversion_factor_not_stated",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.068",
+      "prompt": "Add 12 liters to 5 kilograms and report the total.",
+      "outcome": "ambiguous",
+      "family": "incompatible_units",
+      "signature": null,
+      "target": null,
+      "reason": "incompatible_units",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.069",
+      "prompt": "A vehicle travels at 13 km/h, but the travel time is missing. Find the distance.",
+      "outcome": "ambiguous",
+      "family": "missing_interval",
+      "signature": null,
+      "target": null,
+      "reason": "missing_time_interval",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.070",
+      "prompt": "A machine changes rates three times, pauses, restarts, and then reports a final total.",
+      "outcome": "unsupported",
+      "family": "multi_stage",
+      "signature": null,
+      "target": null,
+      "reason": "unsupported_multi_stage_narrative",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.071",
+      "prompt": "A price changes by 15% each year. What is the final price?",
+      "outcome": "unsupported",
+      "family": "percentage",
+      "signature": null,
+      "target": null,
+      "reason": "percentage_without_explicit_linear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.072",
+      "prompt": "A bank compounds 16% interest monthly. What is the balance after a year?",
+      "outcome": "unsupported",
+      "family": "compound_interest",
+      "signature": null,
+      "target": null,
+      "reason": "compound_interest",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.073",
+      "prompt": "The ratio of apples to oranges is 17:10, but neither fruit count is given. Find the apples.",
+      "outcome": "ambiguous",
+      "family": "missing_anchor",
+      "signature": null,
+      "target": null,
+      "reason": "missing_numeric_anchor",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.074",
+      "prompt": "A quantity follows a nonlinear square-law relation. Find its value when the input is 18.",
+      "outcome": "unsupported",
+      "family": "nonlinear",
+      "signature": null,
+      "target": null,
+      "reason": "nonlinear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.075",
+      "prompt": "A circle has radius 19 meters. Find its area.",
+      "outcome": "unsupported",
+      "family": "geometry",
+      "signature": null,
+      "target": null,
+      "reason": "geometry_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.076",
+      "prompt": "A fair die is rolled twice. What is the probability of two sixes?",
+      "outcome": "unsupported",
+      "family": "probability",
+      "signature": null,
+      "target": null,
+      "reason": "probability_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.077",
+      "prompt": "Convert 2 miles to kilometers using the usual conversion.",
+      "outcome": "unsupported",
+      "family": "unstated_conversion",
+      "signature": null,
+      "target": null,
+      "reason": "conversion_factor_not_stated",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.078",
+      "prompt": "Add 3 liters to 15 kilograms and report the total.",
+      "outcome": "ambiguous",
+      "family": "incompatible_units",
+      "signature": null,
+      "target": null,
+      "reason": "incompatible_units",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.079",
+      "prompt": "A vehicle travels at 4 km/h, but the travel time is missing. Find the distance.",
+      "outcome": "ambiguous",
+      "family": "missing_interval",
+      "signature": null,
+      "target": null,
+      "reason": "missing_time_interval",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.080",
+      "prompt": "A machine changes rates three times, pauses, restarts, and then reports a final total.",
+      "outcome": "unsupported",
+      "family": "multi_stage",
+      "signature": null,
+      "target": null,
+      "reason": "unsupported_multi_stage_narrative",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.081",
+      "prompt": "A price changes by 6% each year. What is the final price?",
+      "outcome": "unsupported",
+      "family": "percentage",
+      "signature": null,
+      "target": null,
+      "reason": "percentage_without_explicit_linear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.082",
+      "prompt": "A bank compounds 7% interest monthly. What is the balance after a year?",
+      "outcome": "unsupported",
+      "family": "compound_interest",
+      "signature": null,
+      "target": null,
+      "reason": "compound_interest",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.083",
+      "prompt": "The ratio of apples to oranges is 8:7, but neither fruit count is given. Find the apples.",
+      "outcome": "ambiguous",
+      "family": "missing_anchor",
+      "signature": null,
+      "target": null,
+      "reason": "missing_numeric_anchor",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.084",
+      "prompt": "A quantity follows a nonlinear square-law relation. Find its value when the input is 9.",
+      "outcome": "unsupported",
+      "family": "nonlinear",
+      "signature": null,
+      "target": null,
+      "reason": "nonlinear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.085",
+      "prompt": "A circle has radius 10 meters. Find its area.",
+      "outcome": "unsupported",
+      "family": "geometry",
+      "signature": null,
+      "target": null,
+      "reason": "geometry_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.086",
+      "prompt": "A fair die is rolled twice. What is the probability of two sixes?",
+      "outcome": "unsupported",
+      "family": "probability",
+      "signature": null,
+      "target": null,
+      "reason": "probability_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.087",
+      "prompt": "Convert 12 miles to kilometers using the usual conversion.",
+      "outcome": "unsupported",
+      "family": "unstated_conversion",
+      "signature": null,
+      "target": null,
+      "reason": "conversion_factor_not_stated",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.088",
+      "prompt": "Add 13 liters to 12 kilograms and report the total.",
+      "outcome": "ambiguous",
+      "family": "incompatible_units",
+      "signature": null,
+      "target": null,
+      "reason": "incompatible_units",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.089",
+      "prompt": "A vehicle travels at 14 km/h, but the travel time is missing. Find the distance.",
+      "outcome": "ambiguous",
+      "family": "missing_interval",
+      "signature": null,
+      "target": null,
+      "reason": "missing_time_interval",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.090",
+      "prompt": "A machine changes rates three times, pauses, restarts, and then reports a final total.",
+      "outcome": "unsupported",
+      "family": "multi_stage",
+      "signature": null,
+      "target": null,
+      "reason": "unsupported_multi_stage_narrative",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.091",
+      "prompt": "A price changes by 16% each year. What is the final price?",
+      "outcome": "unsupported",
+      "family": "percentage",
+      "signature": null,
+      "target": null,
+      "reason": "percentage_without_explicit_linear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.092",
+      "prompt": "A bank compounds 17% interest monthly. What is the balance after a year?",
+      "outcome": "unsupported",
+      "family": "compound_interest",
+      "signature": null,
+      "target": null,
+      "reason": "compound_interest",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.093",
+      "prompt": "The ratio of apples to oranges is 18:4, but neither fruit count is given. Find the apples.",
+      "outcome": "ambiguous",
+      "family": "missing_anchor",
+      "signature": null,
+      "target": null,
+      "reason": "missing_numeric_anchor",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.094",
+      "prompt": "A quantity follows a nonlinear square-law relation. Find its value when the input is 19.",
+      "outcome": "unsupported",
+      "family": "nonlinear",
+      "signature": null,
+      "target": null,
+      "reason": "nonlinear_relation",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.095",
+      "prompt": "A circle has radius 20 meters. Find its area.",
+      "outcome": "unsupported",
+      "family": "geometry",
+      "signature": null,
+      "target": null,
+      "reason": "geometry_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.096",
+      "prompt": "A fair die is rolled twice. What is the probability of two sixes?",
+      "outcome": "unsupported",
+      "family": "probability",
+      "signature": null,
+      "target": null,
+      "reason": "probability_out_of_scope",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.097",
+      "prompt": "Convert 3 miles to kilometers using the usual conversion.",
+      "outcome": "unsupported",
+      "family": "unstated_conversion",
+      "signature": null,
+      "target": null,
+      "reason": "conversion_factor_not_stated",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.098",
+      "prompt": "Add 4 liters to 9 kilograms and report the total.",
+      "outcome": "ambiguous",
+      "family": "incompatible_units",
+      "signature": null,
+      "target": null,
+      "reason": "incompatible_units",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.099",
+      "prompt": "A vehicle travels at 5 km/h, but the travel time is missing. Find the distance.",
+      "outcome": "ambiguous",
+      "family": "missing_interval",
+      "signature": null,
+      "target": null,
+      "reason": "missing_time_interval",
+      "pair_id": null
+    },
+    {
+      "id": "qr.exp.neg.100",
+      "prompt": "A machine changes rates three times, pauses, restarts, and then reports a final total.",
+      "outcome": "unsupported",
+      "family": "multi_stage",
+      "signature": null,
+      "target": null,
+      "reason": "unsupported_multi_stage_narrative",
+      "pair_id": null
+    }
+  ]
+}

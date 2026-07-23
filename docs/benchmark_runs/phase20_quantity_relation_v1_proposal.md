@@ -44,10 +44,10 @@ vertical remains responsible for solving authorized linear constraints.
 ## Evaluation design
 
 `data/quantity_relation_v1_pilot.json` is a frozen, hand-authored contract
-corpus for the pre-implementation review.  It contains positive relation
-cases, negative/ambiguous cases, and semantic rewrite links.  It deliberately
-does not contain executor results because no QuantityRelation executor exists
-yet.
+pilot.  The expanded release is generated from the checked-in, reviewed
+template families by `quantity_relation_corpus_expand` and is stored at
+`data/quantity_relation_v1_expanded.json`.  It deliberately does not contain
+executor results because no QuantityRelation executor exists yet.
 
 Every positive case must satisfy:
 
@@ -60,9 +60,25 @@ Every negative case must remain non-authorizing.  Rewrite pairs must preserve
 the expected typed signature, while minimally changed negative pairs must not
 be promoted into supported relations.
 
-The pilot is a contract and failure-taxonomy gate, not a capability result.
-The full follow-up target is 200 positives, 100 negatives/ambiguities, and 50
-rewrite pairs after the schema and oracle are independently reviewed.
+Reproduce the expanded release and validate its invariants with:
+
+```bash
+RUSTFLAGS='-Awarnings' cargo run --release --quiet --bin quantity_relation_corpus_expand -- --emit data/quantity_relation_v1_expanded.json
+RUSTFLAGS='-Awarnings' cargo run --release --quiet --bin quantity_relation_corpus_check -- data/quantity_relation_v1_expanded.json
+```
+
+The expanded release contains 300 cases: 200 supported relation cases, 100
+negative/ambiguous cases, and 50 rewrite families (the rewrite variants are
+included in the 200 supported cases).  Its generated-release hash is
+`0612b09834b41be2e7ec900b49330dce7f74609b73fe0405f5e5f9f8d0c89fcc`.
+
+```text
+quantity-relation-corpus: cases=300 supported=200 ambiguous=30 unsupported=70 rewrite_pairs=50 deterministic=true
+```
+
+This remains a contract and failure-taxonomy gate, not a capability result.
+The cases are project-authored and template-generated pending independent
+review; they must not be described as third-party evidence.
 
 ## Candidate promotion gate
 

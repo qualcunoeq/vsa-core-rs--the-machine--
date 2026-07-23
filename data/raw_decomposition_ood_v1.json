@@ -1,0 +1,3006 @@
+{
+  "schema_version": 1,
+  "oracle": "independent raw decomposition structure oracle v1",
+  "cases": [
+    {
+      "id": "raw.0000",
+      "prompt": "Compute 1 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0001",
+      "prompt": "Compute 2 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0002",
+      "prompt": "Compute 3 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0003",
+      "prompt": "Compute 4 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0004",
+      "prompt": "Compute 5 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0005",
+      "prompt": "Compute 6 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0006",
+      "prompt": "Compute 7 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0007",
+      "prompt": "Compute 8 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0008",
+      "prompt": "Compute 9 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0009",
+      "prompt": "Compute 1 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0010",
+      "prompt": "Compute 2 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0011",
+      "prompt": "Compute 3 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0012",
+      "prompt": "Compute 4 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0013",
+      "prompt": "Compute 5 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0014",
+      "prompt": "Compute 6 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0015",
+      "prompt": "Compute 7 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0016",
+      "prompt": "Compute 8 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0017",
+      "prompt": "Compute 9 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0018",
+      "prompt": "Compute 1 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0019",
+      "prompt": "Compute 2 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0020",
+      "prompt": "Compute 3 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0021",
+      "prompt": "Compute 4 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0022",
+      "prompt": "Compute 5 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0023",
+      "prompt": "Compute 6 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0024",
+      "prompt": "Compute 7 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0025",
+      "prompt": "Compute 8 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0026",
+      "prompt": "Compute 9 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0027",
+      "prompt": "Compute 1 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0028",
+      "prompt": "Compute 2 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0029",
+      "prompt": "Compute 3 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0030",
+      "prompt": "Compute 4 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0031",
+      "prompt": "Compute 5 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0032",
+      "prompt": "Compute 6 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0033",
+      "prompt": "Compute 7 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0034",
+      "prompt": "Compute 8 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0035",
+      "prompt": "Compute 9 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0036",
+      "prompt": "Compute 1 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0037",
+      "prompt": "Compute 2 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0038",
+      "prompt": "Compute 3 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0039",
+      "prompt": "Compute 4 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0040",
+      "prompt": "Compute 5 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0041",
+      "prompt": "Compute 6 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0042",
+      "prompt": "Compute 7 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0043",
+      "prompt": "Compute 8 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0044",
+      "prompt": "Compute 9 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0045",
+      "prompt": "Compute 1 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0046",
+      "prompt": "Compute 2 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0047",
+      "prompt": "Compute 3 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0048",
+      "prompt": "Compute 4 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0049",
+      "prompt": "Compute 5 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0050",
+      "prompt": "Compute 6 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0051",
+      "prompt": "Compute 7 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0052",
+      "prompt": "Compute 8 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0053",
+      "prompt": "Compute 9 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0054",
+      "prompt": "Compute 1 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0055",
+      "prompt": "Compute 2 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0056",
+      "prompt": "Compute 3 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0057",
+      "prompt": "Compute 4 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0058",
+      "prompt": "Compute 5 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0059",
+      "prompt": "Compute 6 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0060",
+      "prompt": "Compute 7 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0061",
+      "prompt": "Compute 8 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0062",
+      "prompt": "Compute 9 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0063",
+      "prompt": "Compute 1 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0064",
+      "prompt": "Compute 2 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0065",
+      "prompt": "Compute 3 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0066",
+      "prompt": "Compute 4 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0067",
+      "prompt": "Compute 5 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0068",
+      "prompt": "Compute 6 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0069",
+      "prompt": "Compute 7 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0070",
+      "prompt": "Compute 8 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0071",
+      "prompt": "Compute 9 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0072",
+      "prompt": "Compute 1 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0073",
+      "prompt": "Compute 2 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0074",
+      "prompt": "Compute 3 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0075",
+      "prompt": "Compute 4 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0076",
+      "prompt": "Compute 5 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0077",
+      "prompt": "Compute 6 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0078",
+      "prompt": "Compute 7 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0079",
+      "prompt": "Compute 8 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0080",
+      "prompt": "Compute 9 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0081",
+      "prompt": "Compute 1 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0082",
+      "prompt": "Compute 2 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0083",
+      "prompt": "Compute 3 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0084",
+      "prompt": "Compute 4 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0085",
+      "prompt": "Compute 5 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0086",
+      "prompt": "Compute 6 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0087",
+      "prompt": "Compute 7 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0088",
+      "prompt": "Compute 8 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0089",
+      "prompt": "Compute 9 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0090",
+      "prompt": "Compute 1 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0091",
+      "prompt": "Compute 2 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0092",
+      "prompt": "Compute 3 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0093",
+      "prompt": "Compute 4 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0094",
+      "prompt": "Compute 5 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0095",
+      "prompt": "Compute 6 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0096",
+      "prompt": "Compute 7 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0097",
+      "prompt": "Compute 8 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0098",
+      "prompt": "Compute 9 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0099",
+      "prompt": "Compute 1 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0100",
+      "prompt": "Compute 2 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0101",
+      "prompt": "Compute 3 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0102",
+      "prompt": "Compute 4 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0103",
+      "prompt": "Compute 5 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0104",
+      "prompt": "Compute 6 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0105",
+      "prompt": "Compute 7 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0106",
+      "prompt": "Compute 8 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0107",
+      "prompt": "Compute 9 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0108",
+      "prompt": "Compute 1 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0109",
+      "prompt": "Compute 2 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0110",
+      "prompt": "Compute 3 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0111",
+      "prompt": "Compute 4 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0112",
+      "prompt": "Compute 5 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0113",
+      "prompt": "Compute 6 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0114",
+      "prompt": "Compute 7 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0115",
+      "prompt": "Compute 8 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0116",
+      "prompt": "Compute 9 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0117",
+      "prompt": "Compute 1 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0118",
+      "prompt": "Compute 2 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0119",
+      "prompt": "Compute 3 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0120",
+      "prompt": "Compute 4 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0121",
+      "prompt": "Compute 5 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0122",
+      "prompt": "Compute 6 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0123",
+      "prompt": "Compute 7 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0124",
+      "prompt": "Compute 8 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0125",
+      "prompt": "Compute 9 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0126",
+      "prompt": "Compute 1 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0127",
+      "prompt": "Compute 2 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0128",
+      "prompt": "Compute 3 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0129",
+      "prompt": "Compute 4 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0130",
+      "prompt": "Compute 5 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0131",
+      "prompt": "Compute 6 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0132",
+      "prompt": "Compute 7 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0133",
+      "prompt": "Compute 8 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0134",
+      "prompt": "Compute 9 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0135",
+      "prompt": "Compute 1 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0136",
+      "prompt": "Compute 2 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0137",
+      "prompt": "Compute 3 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0138",
+      "prompt": "Compute 4 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0139",
+      "prompt": "Compute 5 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0140",
+      "prompt": "Compute 6 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0141",
+      "prompt": "Compute 7 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0142",
+      "prompt": "Compute 8 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0143",
+      "prompt": "Compute 9 + 5",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0144",
+      "prompt": "Compute 1 + 6",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0145",
+      "prompt": "Compute 2 + 7",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0146",
+      "prompt": "Compute 3 + 8",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0147",
+      "prompt": "Compute 4 + 2",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0148",
+      "prompt": "Compute 5 + 3",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0149",
+      "prompt": "Compute 6 + 4",
+      "expected_signature": "None>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0150",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0151",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0152",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0153",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0154",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0155",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0156",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0157",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0158",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0159",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0160",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0161",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0162",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0163",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0164",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0165",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0166",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0167",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0168",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0169",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0170",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0171",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0172",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0173",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0174",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0175",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0176",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0177",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0178",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0179",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0180",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0181",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0182",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0183",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0184",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0185",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0186",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0187",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0188",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0189",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0190",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0191",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0192",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0193",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0194",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0195",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0196",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0197",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0198",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0199",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0200",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0201",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0202",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0203",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0204",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0205",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0206",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0207",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0208",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0209",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0210",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0211",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0212",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0213",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0214",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0215",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0216",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0217",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0218",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0219",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0220",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0221",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0222",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0223",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0224",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0225",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0226",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0227",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0228",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0229",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0230",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0231",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0232",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0233",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0234",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0235",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0236",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0237",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0238",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0239",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0240",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0241",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0242",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0243",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0244",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0245",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0246",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0247",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0248",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0249",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0250",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0251",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0252",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0253",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0254",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0255",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0256",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0257",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0258",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0259",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0260",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0261",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0262",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0263",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0264",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0265",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0266",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0267",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0268",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0269",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0270",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0271",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0272",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0273",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0274",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0275",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0276",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0277",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0278",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0279",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0280",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0281",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0282",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0283",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0284",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0285",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0286",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0287",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0288",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0289",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 2*a_n + 3; find a_n at n = 4, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0290",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 3*a_n + 0; find a_n at n = 1, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0291",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 1*a_n + 1; find a_n at n = 2, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0292",
+      "prompt": "Starting with a_0 = 8 and a_(n+1) = 2*a_n + 2; find a_n at n = 3, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0293",
+      "prompt": "Starting with a_0 = 9 and a_(n+1) = 3*a_n + 3; find a_n at n = 4, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0294",
+      "prompt": "Starting with a_0 = 2 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then evaluate a_n + 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0295",
+      "prompt": "Starting with a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then evaluate a_n + 3.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0296",
+      "prompt": "Starting with a_0 = 4 and a_(n+1) = 3*a_n + 2; find a_n at n = 3, then evaluate a_n + 4.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0297",
+      "prompt": "Starting with a_0 = 5 and a_(n+1) = 1*a_n + 3; find a_n at n = 4, then evaluate a_n + 5.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0298",
+      "prompt": "Starting with a_0 = 6 and a_(n+1) = 2*a_n + 0; find a_n at n = 1, then evaluate a_n + 6.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0299",
+      "prompt": "Starting with a_0 = 7 and a_(n+1) = 3*a_n + 1; find a_n at n = 2, then evaluate a_n + 7.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0300",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0301",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 2; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0302",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 1*a_n + 4; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0303",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 2*a_n + 0; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0304",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 1*a_n + 2; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0305",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 2*a_n + 4; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0306",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 1*a_n + 0; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0307",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 2; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0308",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 1*a_n + 4; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0309",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 0; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0310",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0311",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 2*a_n + 4; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0312",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0313",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 2*a_n + 2; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0314",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 1*a_n + 4; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0315",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 0; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0316",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 1*a_n + 2; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0317",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 2*a_n + 4; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0318",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 1*a_n + 0; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0319",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 2*a_n + 2; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0320",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 1*a_n + 4; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0321",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 0; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0322",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0323",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 4; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0324",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0325",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 2*a_n + 2; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0326",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 1*a_n + 4; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0327",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 2*a_n + 0; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0328",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 1*a_n + 2; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0329",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 4; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0330",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 1*a_n + 0; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0331",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 2*a_n + 2; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0332",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 1*a_n + 4; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0333",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 2*a_n + 0; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0334",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0335",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 4; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0336",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0337",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 2; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0338",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 1*a_n + 4; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0339",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 2*a_n + 0; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0340",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 1*a_n + 2; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0341",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 2*a_n + 4; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0342",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 1*a_n + 0; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0343",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 2; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0344",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 1*a_n + 4; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0345",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 2*a_n + 0; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0346",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0347",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 2*a_n + 4; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0348",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0349",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 2; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0350",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 1*a_n + 4; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0351",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 0; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0352",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 1*a_n + 2; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0353",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 2*a_n + 4; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0354",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 1*a_n + 0; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0355",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 2*a_n + 2; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0356",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 1*a_n + 4; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0357",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 0; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0358",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0359",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 2*a_n + 4; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0360",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0361",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 2*a_n + 2; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0362",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 1*a_n + 4; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0363",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 0; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0364",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 1*a_n + 2; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0365",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 4; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0366",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 1*a_n + 0; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0367",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 2*a_n + 2; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0368",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 1*a_n + 4; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0369",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 2*a_n + 0; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0370",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0371",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 4; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0372",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0373",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 2*a_n + 2; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0374",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 1*a_n + 4; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0375",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 2*a_n + 0; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0376",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 1*a_n + 2; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0377",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 4; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0378",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 1*a_n + 0; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0379",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 2; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0380",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 1*a_n + 4; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0381",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 2*a_n + 0; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0382",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0383",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 2*a_n + 4; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0384",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0385",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 2; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0386",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 1*a_n + 4; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0387",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 2*a_n + 0; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0388",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 1*a_n + 2; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0389",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 2*a_n + 4; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0390",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 1*a_n + 0; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0391",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 2; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0392",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 1*a_n + 4; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0393",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 0; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0394",
+      "prompt": "Given a_0 = 8 and a_(n+1) = 1*a_n + 2; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0395",
+      "prompt": "Given a_0 = 10 and a_(n+1) = 2*a_n + 4; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0396",
+      "prompt": "Given a_0 = 12 and a_(n+1) = 1*a_n + 0; find a_n at n = 1, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0397",
+      "prompt": "Given a_0 = 14 and a_(n+1) = 2*a_n + 2; find a_n at n = 2, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0398",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 1*a_n + 4; find a_n at n = 3, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0399",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 0; find a_n at n = 4, then solve system: x + y = a_n + 4; x - y = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>SolutionSet",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0400",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 3 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0401",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 4 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0402",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 5 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0403",
+      "prompt": "Given a_0 = 5 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 6 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0404",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 7 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0405",
+      "prompt": "Given a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 3 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0406",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 4 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0407",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 5 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0408",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 6 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0409",
+      "prompt": "Given a_0 = 5 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 7 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0410",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 3 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0411",
+      "prompt": "Given a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 4 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0412",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 5 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0413",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 6 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0414",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 7 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0415",
+      "prompt": "Given a_0 = 5 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 3 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0416",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 4 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0417",
+      "prompt": "Given a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 5 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0418",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 6 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0419",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 7 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0420",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 3 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0421",
+      "prompt": "Given a_0 = 5 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 4 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0422",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 5 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0423",
+      "prompt": "Given a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 6 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0424",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 7 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0425",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 3 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0426",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 4 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0427",
+      "prompt": "Given a_0 = 5 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 5 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0428",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 6 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0429",
+      "prompt": "Given a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 7 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0430",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 3 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0431",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 4 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0432",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 5 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0433",
+      "prompt": "Given a_0 = 5 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 6 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0434",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 7 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0435",
+      "prompt": "Given a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 3 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0436",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 4 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0437",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 5 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0438",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 6 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0439",
+      "prompt": "Given a_0 = 5 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 7 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0440",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 3 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0441",
+      "prompt": "Given a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 4 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0442",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 5 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0443",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 6 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0444",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 7 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0445",
+      "prompt": "Given a_0 = 5 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 3 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0446",
+      "prompt": "Given a_0 = 6 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 4 and use that value as a_0 in a_(n+1) = 1*a_n + 6 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0447",
+      "prompt": "Given a_0 = 7 and a_(n+1) = 2*a_n + 1; find a_n at n = 3, then add 5 and use that value as a_0 in a_(n+1) = 1*a_n + 7 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0448",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2*a_n + 1; find a_n at n = 1, then add 6 and use that value as a_0 in a_(n+1) = 1*a_n + 4 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0449",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2*a_n + 1; find a_n at n = 2, then add 7 and use that value as a_0 in a_(n+1) = 1*a_n + 5 at n = 2.",
+      "expected_signature": "None>Integer/Some(Integer)>Integer/Some(Integer)>Integer",
+      "should_decompose": true
+    },
+    {
+      "id": "raw.0450",
+      "prompt": "Either compute 2 + 3 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0451",
+      "prompt": "Either compute 2 + 4 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0452",
+      "prompt": "Either compute 2 + 5 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0453",
+      "prompt": "Either compute 2 + 6 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0454",
+      "prompt": "Either compute 2 + 7 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0455",
+      "prompt": "Either compute 2 + 8 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0456",
+      "prompt": "Either compute 2 + 9 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0457",
+      "prompt": "Either compute 2 + 10 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0458",
+      "prompt": "Either compute 2 + 11 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0459",
+      "prompt": "Either compute 2 + 12 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0460",
+      "prompt": "Either compute 2 + 13 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0461",
+      "prompt": "Either compute 2 + 14 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0462",
+      "prompt": "Either compute 2 + 15 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0463",
+      "prompt": "Either compute 2 + 16 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0464",
+      "prompt": "Either compute 2 + 17 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0465",
+      "prompt": "Either compute 2 + 18 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0466",
+      "prompt": "Either compute 2 + 19 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0467",
+      "prompt": "Either compute 2 + 20 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0468",
+      "prompt": "Either compute 2 + 21 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0469",
+      "prompt": "Either compute 2 + 22 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0470",
+      "prompt": "Either compute 2 + 23 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0471",
+      "prompt": "Either compute 2 + 24 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0472",
+      "prompt": "Either compute 2 + 25 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0473",
+      "prompt": "Either compute 2 + 26 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0474",
+      "prompt": "Either compute 2 + 27 directly or use a staged route.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0475",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0476",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0477",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0478",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0479",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0480",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0481",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0482",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0483",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0484",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0485",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0486",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0487",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0488",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0489",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0490",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0491",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0492",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0493",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0494",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0495",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0496",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0497",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0498",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    },
+    {
+      "id": "raw.0499",
+      "prompt": "The recurrence is under-specified and has no requested index: a_(n+1) = 2*a_n + 1.",
+      "expected_signature": null,
+      "should_decompose": false
+    }
+  ]
+}

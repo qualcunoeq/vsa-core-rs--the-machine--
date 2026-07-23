@@ -96,6 +96,10 @@ name = "compositional_planner_bench"
 path = "src/bin/compositional_planner_bench.rs"
 
 [[bin]]
+name = "raw_decomposition_bench"
+path = "src/bin/raw_decomposition_bench.rs"
+
+[[bin]]
 name = "governed_bench"
 path = "src/bin/governed_bench.rs"
 

@@ -22,6 +22,7 @@ pub mod capability_planner;
 pub mod concept_composition_benchmark;
 pub mod cross_vertical_benchmark;
 pub mod compositional_planner_benchmark;
+pub mod raw_decomposition_benchmark;
 pub mod constant_rate_model;
 pub mod chess_eval;
 pub mod chess_learner;

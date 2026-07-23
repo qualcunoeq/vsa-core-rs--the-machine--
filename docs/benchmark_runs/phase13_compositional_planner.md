@@ -29,6 +29,6 @@ The accepted set includes direct routes, two-stage routes, and three-stage
 recurrence → algebra → recurrence routes. Unsupported candidates and invalid
 handoffs cannot become fallback paths.
 
-The unified integration command now accepts a third corpus argument and runs
-the 1,000 mixed, 340 typed-composition, and 500 planner-selection cases in one
-release-mode process.
+The unified integration command now accepts a fourth corpus argument and runs
+the 1,000 mixed, 340 typed-composition, 500 planner-selection, and 500
+raw-decomposition cases in one release-mode process.

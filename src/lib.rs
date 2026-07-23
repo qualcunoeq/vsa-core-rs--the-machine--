@@ -78,6 +78,7 @@ pub mod physics;
 pub mod planning;
 pub mod predictive;
 pub mod proportional_model;
+pub mod quantity_relation;
 pub mod proposition;
 pub mod prose_recurrence_benchmark;
 pub mod qa;

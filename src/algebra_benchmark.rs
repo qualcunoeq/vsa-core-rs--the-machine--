@@ -14,7 +14,9 @@ use crate::capability_planner::{
 use crate::cognition::ExperimentResult;
 use crate::formalization::{assess_prompt, FormalizedTarget};
 use crate::linear_equation::{execute_linear_equation, replay_linear_equation};
-use crate::linear_system::{execute_linear_system, replay_linear_system};
+use crate::linear_system::{
+    classify_linear_system, execute_linear_system, replay_linear_system, LinearSystemClassification,
+};
 use crate::quadratic_equation::{execute_quadratic_equation, replay_quadratic_equation};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
@@ -395,7 +397,17 @@ pub fn evaluate_case_independently(case: &AlgebraCase) -> AlgebraCaseEvaluation 
     let registry = CapabilityRegistry::production();
     let trace = assess_prompt(&case.id, &case.prompt, "Algebra", false);
     let assessment = crate::formalization::assess_direct_instantiation(&trace);
-    let authorized = assessment.authorization_safe();
+    let system_classification =
+        (case.method == AlgebraMethod::LinearSystem).then(|| classify_linear_system(&case.prompt));
+    let authorized = assessment.authorization_safe()
+        && !matches!(
+            system_classification.clone(),
+            Some(
+                LinearSystemClassification::NoSolution
+                    | LinearSystemClassification::InfiniteSolutions(_)
+                    | LinearSystemClassification::Unsupported
+            )
+        );
     // The independent audit respects the normal authorization boundary: an
     // unapproved target is observed as a refusal and never reaches execution.
     let outcome = if authorized {
@@ -405,6 +417,12 @@ pub fn evaluate_case_independently(case: &AlgebraCase) -> AlgebraCaseEvaluation 
     };
     let abstention_reason = if authorized {
         None
+    } else if let Some(classification) = system_classification {
+        if !matches!(classification, LinearSystemClassification::Unique(_)) {
+            Some(format!("system_classification:{classification:?}"))
+        } else {
+            Some(assessment.denial_trace(case.should_authorize).first_blocker)
+        }
     } else {
         Some(assessment.denial_trace(case.should_authorize).first_blocker)
     };

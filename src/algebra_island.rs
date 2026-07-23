@@ -744,6 +744,8 @@ fn parse_prose_linear_system(source: &str, lower: &str) -> Option<AlgebraProblem
             || lower.contains("determine")
             || lower.contains("find ")
             || lower.starts_with("use "))
+        || lower.contains("whether")
+        || lower.starts_with("can ")
     {
         return None;
     }
@@ -865,7 +867,7 @@ fn parse_equation_fragment(fragment: &str) -> Option<(SymExpr, SymExpr)> {
     // Find the first parseable equation boundary so leading words such as
     // `Use` or `Given` cannot become part of the expression AST.
     for (offset, ch) in fragment.char_indices() {
-        if !(ch.is_ascii_alphanumeric() || ch == '(') {
+        if !(ch.is_ascii_alphanumeric() || ch == '(' || ch == '-') {
             continue;
         }
         if let Some(equation) = parse_equation(&fragment[offset..]) {

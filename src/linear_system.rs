@@ -34,6 +34,53 @@ pub struct LinearSystemExecutionReceipt {
     pub replay_verified: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct LinearSystemAblationReport {
+    pub cases: usize,
+    pub unique_cases: usize,
+    pub classifier_bypass_false_accepts: usize,
+    pub replay_valid_accepts: usize,
+    pub replay_tampered_rejections: usize,
+    pub replay_bypass_tampered_accepts: usize,
+}
+
+/// Measure the two safety boundaries without changing the production path:
+/// accepting any parsed result instead of requiring a unique classification,
+/// and accepting a receipt without replaying its source. The bypass counts
+/// are diagnostic evidence, not alternate execution behavior.
+pub fn evaluate_system_ablations(sources: &[&str]) -> LinearSystemAblationReport {
+    let mut report = LinearSystemAblationReport {
+        cases: sources.len(),
+        unique_cases: 0,
+        classifier_bypass_false_accepts: 0,
+        replay_valid_accepts: 0,
+        replay_tampered_rejections: 0,
+        replay_bypass_tampered_accepts: 0,
+    };
+    for source in sources {
+        let classification = classify_linear_system(source);
+        if matches!(classification, LinearSystemClassification::Unique(_)) {
+            report.unique_cases += 1;
+            let Ok(receipt) = execute_linear_system(source) else {
+                continue;
+            };
+            report.replay_valid_accepts += usize::from(replay_linear_system(&receipt));
+            let mut tampered = receipt.clone();
+            tampered.result = "tampered-result".into();
+            tampered.solution.clear();
+            report.replay_tampered_rejections += usize::from(!replay_linear_system(&tampered));
+            // A receipt-only consumer would accept this mutated object; this
+            // is the deliberately unsafe counterfactual being measured.
+            report.replay_bypass_tampered_accepts += 1;
+        } else if algebra_island::try_answer(source).is_some() {
+            // The parser understood a degenerate system, but an ablated
+            // classifier that ignored rank/uniqueness would falsely accept it.
+            report.classifier_bypass_false_accepts += 1;
+        }
+    }
+    report
+}
+
 pub fn classify_linear_system(source: &str) -> LinearSystemClassification {
     let Some(answer) = algebra_island::try_answer(source) else {
         return LinearSystemClassification::Unsupported;

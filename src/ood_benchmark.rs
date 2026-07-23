@@ -289,4 +289,20 @@ mod tests {
             Some(r#"{"x":"4","y":"7/3"}"#),
         ));
     }
+
+    #[test]
+    fn expanded_systems_corpus_preserves_safety_and_rewrite_invariance() {
+        let corpus: OodCorpus =
+            serde_json::from_str(include_str!("../data/algebra_systems_ood_v2.json"))
+                .expect("valid expanded systems corpus");
+        assert!(corpus.validation_errors().is_empty());
+        let report = evaluate(&corpus);
+        assert_eq!(report.metrics.cases, 400);
+        assert_eq!(report.metrics.false_authorizations, 0);
+        assert_eq!(report.metrics.false_denials, 0);
+        assert_eq!(report.metrics.correct_results, 400);
+        assert_eq!(report.invariance.rewrite_regressions, 0);
+        assert_eq!(report.invariance.decision_stable, 200);
+        assert_eq!(report.invariance.result_stable, 200);
+    }
 }

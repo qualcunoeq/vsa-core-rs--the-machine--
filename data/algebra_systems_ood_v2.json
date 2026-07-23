@@ -1,0 +1,4007 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "sysv2-unique-000",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 1*x-4*y=14; -5*x+1*y=25 for x,y",
+      "expected_result": "{\"x\":\"-6\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-001",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 8*x-2*y=8 and -3*x+2*y=-8 to determine x,y.",
+      "expected_result": "{\"x\":\"0\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-002",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 7*x+0*y=42; -1*x+3*y=-15.",
+      "expected_result": "{\"x\":\"6\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-003",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 6*x+2*y=-10 and 1*x+4*y=-9, for x and y.",
+      "expected_result": "{\"x\":\"-1\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-004",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 5*x+4*y=21 and 3*x+5*y=10. Solve for x,y.",
+      "expected_result": "{\"x\":\"5\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-005",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 4*x-3*y=-8; 5*x+6*y=-10 for x,y",
+      "expected_result": "{\"x\":\"-2\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-006",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 3*x-1*y=11 and -4*x+7*y=-9 to determine x,y.",
+      "expected_result": "{\"x\":\"4\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-007",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 2*x+1*y=-4; -2*x+8*y=22.",
+      "expected_result": "{\"x\":\"-3\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-008",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 1*x+3*y=12 and 0*x+1*y=3, for x and y.",
+      "expected_result": "{\"x\":\"3\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-009",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 8*x-4*y=-48 and 2*x+2*y=0. Solve for x,y.",
+      "expected_result": "{\"x\":\"-4\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-010",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 7*x-2*y=4; 4*x+3*y=23 for x,y",
+      "expected_result": "{\"x\":\"2\",\"y\":\"5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-011",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 6*x+0*y=-30 and -5*x+4*y=5 to determine x,y.",
+      "expected_result": "{\"x\":\"-5\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-012",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 5*x+2*y=-3; -3*x+5*y=-23.",
+      "expected_result": "{\"x\":\"1\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-013",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 4*x+4*y=-36 and -1*x+6*y=-12, for x and y.",
+      "expected_result": "{\"x\":\"-6\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-014",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 3*x-3*y=6 and 1*x+7*y=-14. Solve for x,y.",
+      "expected_result": "{\"x\":\"0\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-015",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 2*x-1*y=13; 3*x+8*y=10 for x,y",
+      "expected_result": "{\"x\":\"6\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-016",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 1*x+1*y=-1 and 5*x+1*y=-5 to determine x,y.",
+      "expected_result": "{\"x\":\"-1\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-017",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 8*x+3*y=43; -4*x+2*y=-18.",
+      "expected_result": "{\"x\":\"5\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-018",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 7*x-4*y=-22 and -2*x+3*y=10, for x and y.",
+      "expected_result": "{\"x\":\"-2\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-019",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 6*x-2*y=18 and 0*x+4*y=12. Solve for x,y.",
+      "expected_result": "{\"x\":\"4\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-020",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 5*x+0*y=-15; 2*x+5*y=14 for x,y",
+      "expected_result": "{\"x\":\"-3\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-021",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 4*x+2*y=22 and 4*x+6*y=42 to determine x,y.",
+      "expected_result": "{\"x\":\"3\",\"y\":\"5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-022",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 3*x+4*y=-32; -5*x+7*y=-15.",
+      "expected_result": "{\"x\":\"-4\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-023",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 2*x-3*y=16 and -3*x+8*y=-38, for x and y.",
+      "expected_result": "{\"x\":\"2\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-024",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 1*x-1*y=-2 and -1*x+2*y=-1. Solve for x,y.",
+      "expected_result": "{\"x\":\"-5\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-025",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 8*x+1*y=6; 1*x+2*y=-3 for x,y",
+      "expected_result": "{\"x\":\"1\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-026",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 7*x+3*y=-45 and 3*x+3*y=-21 to determine x,y.",
+      "expected_result": "{\"x\":\"-6\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-027",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 6*x-4*y=0; 5*x+4*y=0.",
+      "expected_result": "{\"x\":\"0\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-028",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 5*x-2*y=28 and -4*x+5*y=-19, for x and y.",
+      "expected_result": "{\"x\":\"6\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-029",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 4*x+0*y=-4 and -2*x+6*y=14. Solve for x,y.",
+      "expected_result": "{\"x\":\"-1\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-030",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 3*x+2*y=21; 0*x+7*y=21 for x,y",
+      "expected_result": "{\"x\":\"5\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-031",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 2*x+4*y=12 and 2*x+8*y=28 to determine x,y.",
+      "expected_result": "{\"x\":\"-2\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-032",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 1*x-3*y=-11; 4*x+1*y=21.",
+      "expected_result": "{\"x\":\"4\",\"y\":\"5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-033",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 8*x-1*y=-19 and -5*x+2*y=5, for x and y.",
+      "expected_result": "{\"x\":\"-3\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-034",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 7*x+1*y=17 and -3*x+3*y=-21. Solve for x,y.",
+      "expected_result": "{\"x\":\"3\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-035",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 6*x+3*y=-33; -1*x+4*y=-8 for x,y",
+      "expected_result": "{\"x\":\"-4\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-036",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 5*x-4*y=18 and 1*x+5*y=-8 to determine x,y.",
+      "expected_result": "{\"x\":\"2\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-037",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 4*x-2*y=-18; 3*x+6*y=-21.",
+      "expected_result": "{\"x\":\"-5\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-038",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 3*x+0*y=3 and 5*x+7*y=5, for x and y.",
+      "expected_result": "{\"x\":\"1\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-039",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 2*x+2*y=-10 and -4*x+8*y=32. Solve for x,y.",
+      "expected_result": "{\"x\":\"-6\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-040",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 1*x+4*y=8; -2*x+1*y=2 for x,y",
+      "expected_result": "{\"x\":\"0\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-041",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 8*x-3*y=39 and 0*x+2*y=6 to determine x,y.",
+      "expected_result": "{\"x\":\"6\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-042",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 7*x-1*y=-11; 2*x+3*y=10.",
+      "expected_result": "{\"x\":\"-1\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-043",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 6*x+1*y=35 and 4*x+4*y=40, for x and y.",
+      "expected_result": "{\"x\":\"5\",\"y\":\"5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-044",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 5*x+3*y=-25 and -5*x+5*y=-15. Solve for x,y.",
+      "expected_result": "{\"x\":\"-2\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-045",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 4*x-4*y=32; -3*x+6*y=-36 for x,y",
+      "expected_result": "{\"x\":\"4\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-046",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 3*x-2*y=-3 and -1*x+7*y=-18 to determine x,y.",
+      "expected_result": "{\"x\":\"-3\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-047",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 2*x+0*y=6; 1*x+8*y=-13.",
+      "expected_result": "{\"x\":\"3\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-048",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 1*x+2*y=-6 and 3*x+1*y=-13, for x and y.",
+      "expected_result": "{\"x\":\"-4\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-049",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 8*x+4*y=16 and 5*x+2*y=10. Solve for x,y.",
+      "expected_result": "{\"x\":\"2\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-050",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 7*x-3*y=-38; -4*x+3*y=23 for x,y",
+      "expected_result": "{\"x\":\"-5\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-051",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 6*x-1*y=4 and -2*x+4*y=6 to determine x,y.",
+      "expected_result": "{\"x\":\"1\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-052",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 5*x+1*y=-27; 0*x+5*y=15.",
+      "expected_result": "{\"x\":\"-6\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-053",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 4*x+3*y=12 and 2*x+6*y=24, for x and y.",
+      "expected_result": "{\"x\":\"0\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-054",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 3*x-4*y=-2 and 4*x+7*y=59. Solve for x,y.",
+      "expected_result": "{\"x\":\"6\",\"y\":\"5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-055",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 2*x-2*y=8; -5*x+8*y=-35 for x,y",
+      "expected_result": "{\"x\":\"-1\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-056",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 1*x+0*y=5 and -3*x+1*y=-19 to determine x,y.",
+      "expected_result": "{\"x\":\"5\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-057",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 8*x+2*y=-22; -1*x+2*y=-4.",
+      "expected_result": "{\"x\":\"-2\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-058",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 7*x+4*y=20 and 1*x+3*y=-2, for x and y.",
+      "expected_result": "{\"x\":\"4\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-059",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 6*x-3*y=-15 and 3*x+4*y=-13. Solve for x,y.",
+      "expected_result": "{\"x\":\"-3\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-060",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 5*x-1*y=15; 5*x+5*y=15 for x,y",
+      "expected_result": "{\"x\":\"3\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-061",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 4*x+1*y=-15 and -4*x+6*y=22 to determine x,y.",
+      "expected_result": "{\"x\":\"-4\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-062",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 3*x+3*y=12; -2*x+7*y=10.",
+      "expected_result": "{\"x\":\"2\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-063",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 2*x-4*y=-22 and 0*x+8*y=24, for x and y.",
+      "expected_result": "{\"x\":\"-5\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-064",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 1*x-2*y=-7 and 2*x+1*y=6. Solve for x,y.",
+      "expected_result": "{\"x\":\"1\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-065",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 8*x+0*y=-48; 4*x+2*y=-14 for x,y",
+      "expected_result": "{\"x\":\"-6\",\"y\":\"5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-066",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 7*x+2*y=-10 and -5*x+3*y=-15 to determine x,y.",
+      "expected_result": "{\"x\":\"0\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-067",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 6*x+4*y=20; -3*x+4*y=-34.",
+      "expected_result": "{\"x\":\"6\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-068",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 5*x-3*y=4 and -1*x+5*y=-14, for x and y.",
+      "expected_result": "{\"x\":\"-1\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-069",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 4*x-1*y=22 and 1*x+6*y=-7. Solve for x,y.",
+      "expected_result": "{\"x\":\"5\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-070",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 3*x+1*y=-7; 3*x+7*y=-13 for x,y",
+      "expected_result": "{\"x\":\"-2\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-071",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 2*x+3*y=8 and 5*x+8*y=20 to determine x,y.",
+      "expected_result": "{\"x\":\"4\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-072",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 1*x-4*y=-7; -4*x+1*y=13.",
+      "expected_result": "{\"x\":\"-3\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-073",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 8*x-2*y=20 and -2*x+2*y=-2, for x and y.",
+      "expected_result": "{\"x\":\"3\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-074",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 7*x+0*y=-28 and 0*x+3*y=9. Solve for x,y.",
+      "expected_result": "{\"x\":\"-4\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-075",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 6*x+2*y=20; 2*x+4*y=20 for x,y",
+      "expected_result": "{\"x\":\"2\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-076",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 5*x+4*y=-5 and 4*x+5*y=5 to determine x,y.",
+      "expected_result": "{\"x\":\"-5\",\"y\":\"5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-077",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 4*x-3*y=19; -5*x+6*y=-35.",
+      "expected_result": "{\"x\":\"1\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-078",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 3*x-1*y=-14 and -3*x+7*y=-10, for x and y.",
+      "expected_result": "{\"x\":\"-6\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-079",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 2*x+1*y=-3 and -1*x+8*y=-24. Solve for x,y.",
+      "expected_result": "{\"x\":\"0\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-080",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 1*x+3*y=0; 1*x+1*y=4 for x,y",
+      "expected_result": "{\"x\":\"6\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-081",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 8*x-4*y=-4 and 3*x+2*y=-5 to determine x,y.",
+      "expected_result": "{\"x\":\"-1\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-082",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 7*x-2*y=35; 5*x+3*y=25.",
+      "expected_result": "{\"x\":\"5\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-083",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 6*x+0*y=-12 and -4*x+4*y=12, for x and y.",
+      "expected_result": "{\"x\":\"-2\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-084",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 5*x+2*y=24 and -2*x+5*y=2. Solve for x,y.",
+      "expected_result": "{\"x\":\"4\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-085",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 4*x+4*y=0; 0*x+6*y=18 for x,y",
+      "expected_result": "{\"x\":\"-3\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-086",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 3*x-3*y=-3 and 2*x+7*y=34 to determine x,y.",
+      "expected_result": "{\"x\":\"3\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-087",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 2*x-1*y=-13; 4*x+8*y=24.",
+      "expected_result": "{\"x\":\"-4\",\"y\":\"5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-088",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 1*x+1*y=-3 and -5*x+1*y=-15, for x and y.",
+      "expected_result": "{\"x\":\"2\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-089",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 8*x+3*y=-52 and -3*x+2*y=7. Solve for x,y.",
+      "expected_result": "{\"x\":\"-5\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-090",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 7*x-4*y=19; -1*x+3*y=-10 for x,y",
+      "expected_result": "{\"x\":\"1\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-091",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 6*x-2*y=-32 and 1*x+4*y=-14 to determine x,y.",
+      "expected_result": "{\"x\":\"-6\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-092",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 5*x+0*y=0; 3*x+5*y=-5.",
+      "expected_result": "{\"x\":\"0\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-093",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 4*x+2*y=24 and 5*x+6*y=30, for x and y.",
+      "expected_result": "{\"x\":\"6\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-094",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 3*x+4*y=1 and -4*x+7*y=11. Solve for x,y.",
+      "expected_result": "{\"x\":\"-1\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-095",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 2*x-3*y=4; -2*x+8*y=6 for x,y",
+      "expected_result": "{\"x\":\"5\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-096",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 1*x-1*y=-5 and 0*x+1*y=3 to determine x,y.",
+      "expected_result": "{\"x\":\"-2\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-097",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 8*x+1*y=36; 2*x+2*y=16.",
+      "expected_result": "{\"x\":\"4\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-098",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 7*x+3*y=-6 and 4*x+3*y=3, for x and y.",
+      "expected_result": "{\"x\":\"-3\",\"y\":\"5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-099",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 6*x-4*y=38 and -5*x+4*y=-35. Solve for x,y.",
+      "expected_result": "{\"x\":\"3\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-100",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 5*x-2*y=-12; -3*x+5*y=-8 for x,y",
+      "expected_result": "{\"x\":\"-4\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-101",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 4*x+0*y=8 and -1*x+6*y=-20 to determine x,y.",
+      "expected_result": "{\"x\":\"2\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-102",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 3*x+2*y=-19; 1*x+7*y=-19.",
+      "expected_result": "{\"x\":\"-5\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-103",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 2*x+4*y=-2 and 3*x+8*y=-5, for x and y.",
+      "expected_result": "{\"x\":\"1\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-104",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 1*x-3*y=-6 and 5*x+1*y=-30. Solve for x,y.",
+      "expected_result": "{\"x\":\"-6\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-105",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 8*x-1*y=-1; -4*x+2*y=2 for x,y",
+      "expected_result": "{\"x\":\"0\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-106",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 7*x+1*y=44 and -2*x+3*y=-6 to determine x,y.",
+      "expected_result": "{\"x\":\"6\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-107",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 6*x+3*y=3; 0*x+4*y=12.",
+      "expected_result": "{\"x\":\"-1\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-108",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 5*x-4*y=9 and 2*x+5*y=30, for x and y.",
+      "expected_result": "{\"x\":\"5\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-109",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 4*x-2*y=-18 and 4*x+6*y=22. Solve for x,y.",
+      "expected_result": "{\"x\":\"-2\",\"y\":\"5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-110",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 3*x+0*y=12; -5*x+7*y=-55 for x,y",
+      "expected_result": "{\"x\":\"4\",\"y\":\"-5\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-111",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 2*x+2*y=-14 and -3*x+8*y=-23 to determine x,y.",
+      "expected_result": "{\"x\":\"-3\",\"y\":\"-4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-112",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 1*x+4*y=-9; -1*x+1*y=-6.",
+      "expected_result": "{\"x\":\"3\",\"y\":\"-3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-113",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 8*x-3*y=-26 and 1*x+2*y=-8, for x and y.",
+      "expected_result": "{\"x\":\"-4\",\"y\":\"-2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-114",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 7*x-1*y=15 and 3*x+3*y=3. Solve for x,y.",
+      "expected_result": "{\"x\":\"2\",\"y\":\"-1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-115",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 6*x+1*y=-30; 5*x+4*y=-25 for x,y",
+      "expected_result": "{\"x\":\"-5\",\"y\":\"0\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-116",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 5*x+3*y=8 and -4*x+5*y=1 to determine x,y.",
+      "expected_result": "{\"x\":\"1\",\"y\":\"1\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-117",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 4*x-4*y=-32; -2*x+6*y=24.",
+      "expected_result": "{\"x\":\"-6\",\"y\":\"2\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-118",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 3*x-2*y=-6 and 0*x+7*y=21, for x and y.",
+      "expected_result": "{\"x\":\"0\",\"y\":\"3\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-unique-119",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 2*x+0*y=12 and 2*x+8*y=44. Solve for x,y.",
+      "expected_result": "{\"x\":\"6\",\"y\":\"4\"}",
+      "should_authorize": true
+    },
+    {
+      "id": "sysv2-inconsistent-000",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 1*x+2*y=3; 2*x+4*y=9 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-001",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 2*x+5*y=4 and 4*x+10*y=10 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-002",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 3*x+3*y=5; 6*x+6*y=11.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-003",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 4*x+6*y=6 and 8*x+12*y=12, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-004",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 5*x+4*y=7 and 10*x+8*y=13. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-005",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 6*x+2*y=8; 12*x+4*y=14 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-006",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 1*x+5*y=9 and 2*x+10*y=15 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-007",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 2*x+3*y=10; 4*x+6*y=16.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-008",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 3*x+6*y=11 and 6*x+12*y=17, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-009",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 4*x+4*y=12 and 8*x+8*y=18. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-010",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 5*x+2*y=13; 10*x+4*y=19 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-011",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 6*x+5*y=14 and 12*x+10*y=20 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-012",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 1*x+3*y=15; 2*x+6*y=21.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-013",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 2*x+6*y=16 and 4*x+12*y=22, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-014",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 3*x+4*y=17 and 6*x+8*y=23. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-015",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 4*x+2*y=18; 8*x+4*y=24 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-016",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 5*x+5*y=19 and 10*x+10*y=25 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-017",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 6*x+3*y=20; 12*x+6*y=26.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-018",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 1*x+6*y=21 and 2*x+12*y=27, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-019",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 2*x+4*y=22 and 4*x+8*y=28. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-020",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 3*x+2*y=23; 6*x+4*y=29 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-021",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 4*x+5*y=24 and 8*x+10*y=30 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-022",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 5*x+3*y=25; 10*x+6*y=31.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-023",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 6*x+6*y=26 and 12*x+12*y=32, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-024",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 1*x+4*y=27 and 2*x+8*y=33. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-025",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 2*x+2*y=28; 4*x+4*y=34 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-026",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 3*x+5*y=29 and 6*x+10*y=35 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-027",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 4*x+3*y=30; 8*x+6*y=36.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-028",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 5*x+6*y=31 and 10*x+12*y=37, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-inconsistent-029",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 6*x+4*y=32 and 12*x+8*y=38. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-000",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 1*x+1*y=2; 3*x+3*y=6 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-001",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 2*x+3*y=3 and 6*x+9*y=9 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-002",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 3*x+5*y=4; 9*x+15*y=12.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-003",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 4*x+1*y=5 and 12*x+3*y=15, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-004",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 5*x+3*y=6 and 15*x+9*y=18. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-005",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 1*x+5*y=7; 3*x+15*y=21 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-006",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 2*x+1*y=8 and 6*x+3*y=24 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-007",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 3*x+3*y=9; 9*x+9*y=27.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-008",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 4*x+5*y=10 and 12*x+15*y=30, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-009",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 5*x+1*y=11 and 15*x+3*y=33. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-010",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 1*x+3*y=12; 3*x+9*y=36 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-011",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 2*x+5*y=13 and 6*x+15*y=39 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-012",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 3*x+1*y=14; 9*x+3*y=42.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-013",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 4*x+3*y=15 and 12*x+9*y=45, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-014",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 5*x+5*y=16 and 15*x+15*y=48. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-015",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: 1*x+1*y=17; 3*x+3*y=51 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-016",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use 2*x+3*y=18 and 6*x+9*y=54 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-017",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from 3*x+5*y=19; 9*x+15*y=57.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-018",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: 4*x+1*y=20 and 12*x+3*y=60, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-dependent-019",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys 5*x+3*y=21 and 15*x+9*y=63. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-000",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: x*y=2; x+y=5 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-001",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use x*y=3 and x+y=6 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-002",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from x*y=4; x+y=7.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-003",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: x*y=5 and x+y=8, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-004",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys x*y=6 and x+y=9. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-005",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: x*y=7; x+y=10 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-006",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use x*y=8 and x+y=11 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-007",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from x*y=9; x+y=12.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-008",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: x*y=10 and x+y=13, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-009",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys x*y=11 and x+y=14. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-010",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: x*y=12; x+y=15 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-011",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use x*y=13 and x+y=16 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-012",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from x*y=14; x+y=17.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-013",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: x*y=15 and x+y=18, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-014",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys x*y=16 and x+y=19. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-015",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve system: x*y=17; x+y=20 for x,y",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-016",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Use x*y=18 and x+y=21 to determine x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-017",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Find x,y from x*y=19; x+y=22.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-018",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve simultaneously: x*y=20 and x+y=23, for x and y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-nonlinear-019",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "The pair obeys x*y=21 and x+y=24. Solve for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-malformed-000",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve 1*x+1*y=2, 1*x-1*y=0, and x=4 for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-malformed-001",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve 1*x+1*y=3, 1*x-1*y=1, and x=4 for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-malformed-002",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve 1*x+1*y=4, 1*x-1*y=2, and x=4 for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-malformed-003",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve 1*x+1*y=5, 1*x-1*y=3, and x=4 for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-malformed-004",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve 1*x+1*y=6, 1*x-1*y=4, and x=4 for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-malformed-005",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve 1*x+1*y=7, 1*x-1*y=5, and x=4 for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-malformed-006",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve 1*x+1*y=8, 1*x-1*y=6, and x=4 for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-malformed-007",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve 1*x+1*y=9, 1*x-1*y=7, and x=4 for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-malformed-008",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve 1*x+1*y=10, 1*x-1*y=8, and x=4 for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    },
+    {
+      "id": "sysv2-malformed-009",
+      "tier": "independent-v2",
+      "method": "linear_system",
+      "prompt": "Solve 1*x+1*y=11, 1*x-1*y=9, and x=4 for x,y.",
+      "expected_result": null,
+      "should_authorize": false
+    }
+  ],
+  "variants": [
+    {
+      "id": "sysv2-unique-000-v",
+      "base_id": "sysv2-unique-000",
+      "case": {
+        "id": "sysv2-unique-000-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -5*x+1*y=25 and 1*x-4*y=14.",
+        "expected_result": "{\"x\":\"-6\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-001-v",
+      "base_id": "sysv2-unique-001",
+      "case": {
+        "id": "sysv2-unique-001-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -3*x+2*y=-8; 8*x-2*y=8 for x,y.",
+        "expected_result": "{\"x\":\"0\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-002-v",
+      "base_id": "sysv2-unique-002",
+      "case": {
+        "id": "sysv2-unique-002-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -1*x+3*y=-15 together with 7*x+0*y=42.",
+        "expected_result": "{\"x\":\"6\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-003-v",
+      "base_id": "sysv2-unique-003",
+      "case": {
+        "id": "sysv2-unique-003-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 1*x+4*y=-9 and 6*x+2*y=-10, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-1\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-004-v",
+      "base_id": "sysv2-unique-004",
+      "case": {
+        "id": "sysv2-unique-004-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 3*x+5*y=10 and 5*x+4*y=21.",
+        "expected_result": "{\"x\":\"5\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-005-v",
+      "base_id": "sysv2-unique-005",
+      "case": {
+        "id": "sysv2-unique-005-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 5*x+6*y=-10; 4*x-3*y=-8 for x,y.",
+        "expected_result": "{\"x\":\"-2\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-006-v",
+      "base_id": "sysv2-unique-006",
+      "case": {
+        "id": "sysv2-unique-006-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -4*x+7*y=-9 together with 3*x-1*y=11.",
+        "expected_result": "{\"x\":\"4\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-007-v",
+      "base_id": "sysv2-unique-007",
+      "case": {
+        "id": "sysv2-unique-007-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -2*x+8*y=22 and 2*x+1*y=-4, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-3\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-008-v",
+      "base_id": "sysv2-unique-008",
+      "case": {
+        "id": "sysv2-unique-008-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 0*x+1*y=3 and 1*x+3*y=12.",
+        "expected_result": "{\"x\":\"3\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-009-v",
+      "base_id": "sysv2-unique-009",
+      "case": {
+        "id": "sysv2-unique-009-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 2*x+2*y=0; 8*x-4*y=-48 for x,y.",
+        "expected_result": "{\"x\":\"-4\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-010-v",
+      "base_id": "sysv2-unique-010",
+      "case": {
+        "id": "sysv2-unique-010-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 4*x+3*y=23 together with 7*x-2*y=4.",
+        "expected_result": "{\"x\":\"2\",\"y\":\"5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-011-v",
+      "base_id": "sysv2-unique-011",
+      "case": {
+        "id": "sysv2-unique-011-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -5*x+4*y=5 and 6*x+0*y=-30, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-5\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-012-v",
+      "base_id": "sysv2-unique-012",
+      "case": {
+        "id": "sysv2-unique-012-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -3*x+5*y=-23 and 5*x+2*y=-3.",
+        "expected_result": "{\"x\":\"1\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-013-v",
+      "base_id": "sysv2-unique-013",
+      "case": {
+        "id": "sysv2-unique-013-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -1*x+6*y=-12; 4*x+4*y=-36 for x,y.",
+        "expected_result": "{\"x\":\"-6\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-014-v",
+      "base_id": "sysv2-unique-014",
+      "case": {
+        "id": "sysv2-unique-014-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 1*x+7*y=-14 together with 3*x-3*y=6.",
+        "expected_result": "{\"x\":\"0\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-015-v",
+      "base_id": "sysv2-unique-015",
+      "case": {
+        "id": "sysv2-unique-015-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 3*x+8*y=10 and 2*x-1*y=13, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"6\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-016-v",
+      "base_id": "sysv2-unique-016",
+      "case": {
+        "id": "sysv2-unique-016-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 5*x+1*y=-5 and 1*x+1*y=-1.",
+        "expected_result": "{\"x\":\"-1\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-017-v",
+      "base_id": "sysv2-unique-017",
+      "case": {
+        "id": "sysv2-unique-017-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -4*x+2*y=-18; 8*x+3*y=43 for x,y.",
+        "expected_result": "{\"x\":\"5\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-018-v",
+      "base_id": "sysv2-unique-018",
+      "case": {
+        "id": "sysv2-unique-018-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -2*x+3*y=10 together with 7*x-4*y=-22.",
+        "expected_result": "{\"x\":\"-2\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-019-v",
+      "base_id": "sysv2-unique-019",
+      "case": {
+        "id": "sysv2-unique-019-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 0*x+4*y=12 and 6*x-2*y=18, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"4\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-020-v",
+      "base_id": "sysv2-unique-020",
+      "case": {
+        "id": "sysv2-unique-020-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 2*x+5*y=14 and 5*x+0*y=-15.",
+        "expected_result": "{\"x\":\"-3\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-021-v",
+      "base_id": "sysv2-unique-021",
+      "case": {
+        "id": "sysv2-unique-021-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 4*x+6*y=42; 4*x+2*y=22 for x,y.",
+        "expected_result": "{\"x\":\"3\",\"y\":\"5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-022-v",
+      "base_id": "sysv2-unique-022",
+      "case": {
+        "id": "sysv2-unique-022-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -5*x+7*y=-15 together with 3*x+4*y=-32.",
+        "expected_result": "{\"x\":\"-4\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-023-v",
+      "base_id": "sysv2-unique-023",
+      "case": {
+        "id": "sysv2-unique-023-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -3*x+8*y=-38 and 2*x-3*y=16, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"2\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-024-v",
+      "base_id": "sysv2-unique-024",
+      "case": {
+        "id": "sysv2-unique-024-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -1*x+2*y=-1 and 1*x-1*y=-2.",
+        "expected_result": "{\"x\":\"-5\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-025-v",
+      "base_id": "sysv2-unique-025",
+      "case": {
+        "id": "sysv2-unique-025-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 1*x+2*y=-3; 8*x+1*y=6 for x,y.",
+        "expected_result": "{\"x\":\"1\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-026-v",
+      "base_id": "sysv2-unique-026",
+      "case": {
+        "id": "sysv2-unique-026-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 3*x+3*y=-21 together with 7*x+3*y=-45.",
+        "expected_result": "{\"x\":\"-6\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-027-v",
+      "base_id": "sysv2-unique-027",
+      "case": {
+        "id": "sysv2-unique-027-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 5*x+4*y=0 and 6*x-4*y=0, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"0\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-028-v",
+      "base_id": "sysv2-unique-028",
+      "case": {
+        "id": "sysv2-unique-028-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -4*x+5*y=-19 and 5*x-2*y=28.",
+        "expected_result": "{\"x\":\"6\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-029-v",
+      "base_id": "sysv2-unique-029",
+      "case": {
+        "id": "sysv2-unique-029-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -2*x+6*y=14; 4*x+0*y=-4 for x,y.",
+        "expected_result": "{\"x\":\"-1\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-030-v",
+      "base_id": "sysv2-unique-030",
+      "case": {
+        "id": "sysv2-unique-030-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 0*x+7*y=21 together with 3*x+2*y=21.",
+        "expected_result": "{\"x\":\"5\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-031-v",
+      "base_id": "sysv2-unique-031",
+      "case": {
+        "id": "sysv2-unique-031-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 2*x+8*y=28 and 2*x+4*y=12, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-2\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-032-v",
+      "base_id": "sysv2-unique-032",
+      "case": {
+        "id": "sysv2-unique-032-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 4*x+1*y=21 and 1*x-3*y=-11.",
+        "expected_result": "{\"x\":\"4\",\"y\":\"5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-033-v",
+      "base_id": "sysv2-unique-033",
+      "case": {
+        "id": "sysv2-unique-033-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -5*x+2*y=5; 8*x-1*y=-19 for x,y.",
+        "expected_result": "{\"x\":\"-3\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-034-v",
+      "base_id": "sysv2-unique-034",
+      "case": {
+        "id": "sysv2-unique-034-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -3*x+3*y=-21 together with 7*x+1*y=17.",
+        "expected_result": "{\"x\":\"3\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-035-v",
+      "base_id": "sysv2-unique-035",
+      "case": {
+        "id": "sysv2-unique-035-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -1*x+4*y=-8 and 6*x+3*y=-33, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-4\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-036-v",
+      "base_id": "sysv2-unique-036",
+      "case": {
+        "id": "sysv2-unique-036-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 1*x+5*y=-8 and 5*x-4*y=18.",
+        "expected_result": "{\"x\":\"2\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-037-v",
+      "base_id": "sysv2-unique-037",
+      "case": {
+        "id": "sysv2-unique-037-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 3*x+6*y=-21; 4*x-2*y=-18 for x,y.",
+        "expected_result": "{\"x\":\"-5\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-038-v",
+      "base_id": "sysv2-unique-038",
+      "case": {
+        "id": "sysv2-unique-038-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 5*x+7*y=5 together with 3*x+0*y=3.",
+        "expected_result": "{\"x\":\"1\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-039-v",
+      "base_id": "sysv2-unique-039",
+      "case": {
+        "id": "sysv2-unique-039-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -4*x+8*y=32 and 2*x+2*y=-10, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-6\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-040-v",
+      "base_id": "sysv2-unique-040",
+      "case": {
+        "id": "sysv2-unique-040-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -2*x+1*y=2 and 1*x+4*y=8.",
+        "expected_result": "{\"x\":\"0\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-041-v",
+      "base_id": "sysv2-unique-041",
+      "case": {
+        "id": "sysv2-unique-041-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 0*x+2*y=6; 8*x-3*y=39 for x,y.",
+        "expected_result": "{\"x\":\"6\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-042-v",
+      "base_id": "sysv2-unique-042",
+      "case": {
+        "id": "sysv2-unique-042-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 2*x+3*y=10 together with 7*x-1*y=-11.",
+        "expected_result": "{\"x\":\"-1\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-043-v",
+      "base_id": "sysv2-unique-043",
+      "case": {
+        "id": "sysv2-unique-043-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 4*x+4*y=40 and 6*x+1*y=35, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"5\",\"y\":\"5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-044-v",
+      "base_id": "sysv2-unique-044",
+      "case": {
+        "id": "sysv2-unique-044-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -5*x+5*y=-15 and 5*x+3*y=-25.",
+        "expected_result": "{\"x\":\"-2\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-045-v",
+      "base_id": "sysv2-unique-045",
+      "case": {
+        "id": "sysv2-unique-045-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -3*x+6*y=-36; 4*x-4*y=32 for x,y.",
+        "expected_result": "{\"x\":\"4\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-046-v",
+      "base_id": "sysv2-unique-046",
+      "case": {
+        "id": "sysv2-unique-046-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -1*x+7*y=-18 together with 3*x-2*y=-3.",
+        "expected_result": "{\"x\":\"-3\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-047-v",
+      "base_id": "sysv2-unique-047",
+      "case": {
+        "id": "sysv2-unique-047-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 1*x+8*y=-13 and 2*x+0*y=6, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"3\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-048-v",
+      "base_id": "sysv2-unique-048",
+      "case": {
+        "id": "sysv2-unique-048-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 3*x+1*y=-13 and 1*x+2*y=-6.",
+        "expected_result": "{\"x\":\"-4\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-049-v",
+      "base_id": "sysv2-unique-049",
+      "case": {
+        "id": "sysv2-unique-049-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 5*x+2*y=10; 8*x+4*y=16 for x,y.",
+        "expected_result": "{\"x\":\"2\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-050-v",
+      "base_id": "sysv2-unique-050",
+      "case": {
+        "id": "sysv2-unique-050-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -4*x+3*y=23 together with 7*x-3*y=-38.",
+        "expected_result": "{\"x\":\"-5\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-051-v",
+      "base_id": "sysv2-unique-051",
+      "case": {
+        "id": "sysv2-unique-051-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -2*x+4*y=6 and 6*x-1*y=4, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"1\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-052-v",
+      "base_id": "sysv2-unique-052",
+      "case": {
+        "id": "sysv2-unique-052-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 0*x+5*y=15 and 5*x+1*y=-27.",
+        "expected_result": "{\"x\":\"-6\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-053-v",
+      "base_id": "sysv2-unique-053",
+      "case": {
+        "id": "sysv2-unique-053-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 2*x+6*y=24; 4*x+3*y=12 for x,y.",
+        "expected_result": "{\"x\":\"0\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-054-v",
+      "base_id": "sysv2-unique-054",
+      "case": {
+        "id": "sysv2-unique-054-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 4*x+7*y=59 together with 3*x-4*y=-2.",
+        "expected_result": "{\"x\":\"6\",\"y\":\"5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-055-v",
+      "base_id": "sysv2-unique-055",
+      "case": {
+        "id": "sysv2-unique-055-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -5*x+8*y=-35 and 2*x-2*y=8, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-1\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-056-v",
+      "base_id": "sysv2-unique-056",
+      "case": {
+        "id": "sysv2-unique-056-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -3*x+1*y=-19 and 1*x+0*y=5.",
+        "expected_result": "{\"x\":\"5\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-057-v",
+      "base_id": "sysv2-unique-057",
+      "case": {
+        "id": "sysv2-unique-057-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -1*x+2*y=-4; 8*x+2*y=-22 for x,y.",
+        "expected_result": "{\"x\":\"-2\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-058-v",
+      "base_id": "sysv2-unique-058",
+      "case": {
+        "id": "sysv2-unique-058-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 1*x+3*y=-2 together with 7*x+4*y=20.",
+        "expected_result": "{\"x\":\"4\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-059-v",
+      "base_id": "sysv2-unique-059",
+      "case": {
+        "id": "sysv2-unique-059-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 3*x+4*y=-13 and 6*x-3*y=-15, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-3\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-060-v",
+      "base_id": "sysv2-unique-060",
+      "case": {
+        "id": "sysv2-unique-060-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 5*x+5*y=15 and 5*x-1*y=15.",
+        "expected_result": "{\"x\":\"3\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-061-v",
+      "base_id": "sysv2-unique-061",
+      "case": {
+        "id": "sysv2-unique-061-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -4*x+6*y=22; 4*x+1*y=-15 for x,y.",
+        "expected_result": "{\"x\":\"-4\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-062-v",
+      "base_id": "sysv2-unique-062",
+      "case": {
+        "id": "sysv2-unique-062-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -2*x+7*y=10 together with 3*x+3*y=12.",
+        "expected_result": "{\"x\":\"2\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-063-v",
+      "base_id": "sysv2-unique-063",
+      "case": {
+        "id": "sysv2-unique-063-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 0*x+8*y=24 and 2*x-4*y=-22, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-5\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-064-v",
+      "base_id": "sysv2-unique-064",
+      "case": {
+        "id": "sysv2-unique-064-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 2*x+1*y=6 and 1*x-2*y=-7.",
+        "expected_result": "{\"x\":\"1\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-065-v",
+      "base_id": "sysv2-unique-065",
+      "case": {
+        "id": "sysv2-unique-065-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 4*x+2*y=-14; 8*x+0*y=-48 for x,y.",
+        "expected_result": "{\"x\":\"-6\",\"y\":\"5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-066-v",
+      "base_id": "sysv2-unique-066",
+      "case": {
+        "id": "sysv2-unique-066-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -5*x+3*y=-15 together with 7*x+2*y=-10.",
+        "expected_result": "{\"x\":\"0\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-067-v",
+      "base_id": "sysv2-unique-067",
+      "case": {
+        "id": "sysv2-unique-067-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -3*x+4*y=-34 and 6*x+4*y=20, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"6\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-068-v",
+      "base_id": "sysv2-unique-068",
+      "case": {
+        "id": "sysv2-unique-068-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -1*x+5*y=-14 and 5*x-3*y=4.",
+        "expected_result": "{\"x\":\"-1\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-069-v",
+      "base_id": "sysv2-unique-069",
+      "case": {
+        "id": "sysv2-unique-069-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 1*x+6*y=-7; 4*x-1*y=22 for x,y.",
+        "expected_result": "{\"x\":\"5\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-070-v",
+      "base_id": "sysv2-unique-070",
+      "case": {
+        "id": "sysv2-unique-070-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 3*x+7*y=-13 together with 3*x+1*y=-7.",
+        "expected_result": "{\"x\":\"-2\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-071-v",
+      "base_id": "sysv2-unique-071",
+      "case": {
+        "id": "sysv2-unique-071-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 5*x+8*y=20 and 2*x+3*y=8, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"4\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-072-v",
+      "base_id": "sysv2-unique-072",
+      "case": {
+        "id": "sysv2-unique-072-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -4*x+1*y=13 and 1*x-4*y=-7.",
+        "expected_result": "{\"x\":\"-3\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-073-v",
+      "base_id": "sysv2-unique-073",
+      "case": {
+        "id": "sysv2-unique-073-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -2*x+2*y=-2; 8*x-2*y=20 for x,y.",
+        "expected_result": "{\"x\":\"3\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-074-v",
+      "base_id": "sysv2-unique-074",
+      "case": {
+        "id": "sysv2-unique-074-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 0*x+3*y=9 together with 7*x+0*y=-28.",
+        "expected_result": "{\"x\":\"-4\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-075-v",
+      "base_id": "sysv2-unique-075",
+      "case": {
+        "id": "sysv2-unique-075-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 2*x+4*y=20 and 6*x+2*y=20, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"2\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-076-v",
+      "base_id": "sysv2-unique-076",
+      "case": {
+        "id": "sysv2-unique-076-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 4*x+5*y=5 and 5*x+4*y=-5.",
+        "expected_result": "{\"x\":\"-5\",\"y\":\"5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-077-v",
+      "base_id": "sysv2-unique-077",
+      "case": {
+        "id": "sysv2-unique-077-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -5*x+6*y=-35; 4*x-3*y=19 for x,y.",
+        "expected_result": "{\"x\":\"1\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-078-v",
+      "base_id": "sysv2-unique-078",
+      "case": {
+        "id": "sysv2-unique-078-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -3*x+7*y=-10 together with 3*x-1*y=-14.",
+        "expected_result": "{\"x\":\"-6\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-079-v",
+      "base_id": "sysv2-unique-079",
+      "case": {
+        "id": "sysv2-unique-079-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -1*x+8*y=-24 and 2*x+1*y=-3, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"0\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-080-v",
+      "base_id": "sysv2-unique-080",
+      "case": {
+        "id": "sysv2-unique-080-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 1*x+1*y=4 and 1*x+3*y=0.",
+        "expected_result": "{\"x\":\"6\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-081-v",
+      "base_id": "sysv2-unique-081",
+      "case": {
+        "id": "sysv2-unique-081-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 3*x+2*y=-5; 8*x-4*y=-4 for x,y.",
+        "expected_result": "{\"x\":\"-1\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-082-v",
+      "base_id": "sysv2-unique-082",
+      "case": {
+        "id": "sysv2-unique-082-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 5*x+3*y=25 together with 7*x-2*y=35.",
+        "expected_result": "{\"x\":\"5\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-083-v",
+      "base_id": "sysv2-unique-083",
+      "case": {
+        "id": "sysv2-unique-083-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -4*x+4*y=12 and 6*x+0*y=-12, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-2\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-084-v",
+      "base_id": "sysv2-unique-084",
+      "case": {
+        "id": "sysv2-unique-084-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -2*x+5*y=2 and 5*x+2*y=24.",
+        "expected_result": "{\"x\":\"4\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-085-v",
+      "base_id": "sysv2-unique-085",
+      "case": {
+        "id": "sysv2-unique-085-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 0*x+6*y=18; 4*x+4*y=0 for x,y.",
+        "expected_result": "{\"x\":\"-3\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-086-v",
+      "base_id": "sysv2-unique-086",
+      "case": {
+        "id": "sysv2-unique-086-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 2*x+7*y=34 together with 3*x-3*y=-3.",
+        "expected_result": "{\"x\":\"3\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-087-v",
+      "base_id": "sysv2-unique-087",
+      "case": {
+        "id": "sysv2-unique-087-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 4*x+8*y=24 and 2*x-1*y=-13, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-4\",\"y\":\"5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-088-v",
+      "base_id": "sysv2-unique-088",
+      "case": {
+        "id": "sysv2-unique-088-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -5*x+1*y=-15 and 1*x+1*y=-3.",
+        "expected_result": "{\"x\":\"2\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-089-v",
+      "base_id": "sysv2-unique-089",
+      "case": {
+        "id": "sysv2-unique-089-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -3*x+2*y=7; 8*x+3*y=-52 for x,y.",
+        "expected_result": "{\"x\":\"-5\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-090-v",
+      "base_id": "sysv2-unique-090",
+      "case": {
+        "id": "sysv2-unique-090-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -1*x+3*y=-10 together with 7*x-4*y=19.",
+        "expected_result": "{\"x\":\"1\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-091-v",
+      "base_id": "sysv2-unique-091",
+      "case": {
+        "id": "sysv2-unique-091-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 1*x+4*y=-14 and 6*x-2*y=-32, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-6\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-092-v",
+      "base_id": "sysv2-unique-092",
+      "case": {
+        "id": "sysv2-unique-092-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 3*x+5*y=-5 and 5*x+0*y=0.",
+        "expected_result": "{\"x\":\"0\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-093-v",
+      "base_id": "sysv2-unique-093",
+      "case": {
+        "id": "sysv2-unique-093-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 5*x+6*y=30; 4*x+2*y=24 for x,y.",
+        "expected_result": "{\"x\":\"6\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-094-v",
+      "base_id": "sysv2-unique-094",
+      "case": {
+        "id": "sysv2-unique-094-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -4*x+7*y=11 together with 3*x+4*y=1.",
+        "expected_result": "{\"x\":\"-1\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-095-v",
+      "base_id": "sysv2-unique-095",
+      "case": {
+        "id": "sysv2-unique-095-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -2*x+8*y=6 and 2*x-3*y=4, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"5\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-096-v",
+      "base_id": "sysv2-unique-096",
+      "case": {
+        "id": "sysv2-unique-096-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 0*x+1*y=3 and 1*x-1*y=-5.",
+        "expected_result": "{\"x\":\"-2\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-097-v",
+      "base_id": "sysv2-unique-097",
+      "case": {
+        "id": "sysv2-unique-097-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 2*x+2*y=16; 8*x+1*y=36 for x,y.",
+        "expected_result": "{\"x\":\"4\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-098-v",
+      "base_id": "sysv2-unique-098",
+      "case": {
+        "id": "sysv2-unique-098-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 4*x+3*y=3 together with 7*x+3*y=-6.",
+        "expected_result": "{\"x\":\"-3\",\"y\":\"5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-099-v",
+      "base_id": "sysv2-unique-099",
+      "case": {
+        "id": "sysv2-unique-099-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -5*x+4*y=-35 and 6*x-4*y=38, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"3\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-100-v",
+      "base_id": "sysv2-unique-100",
+      "case": {
+        "id": "sysv2-unique-100-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -3*x+5*y=-8 and 5*x-2*y=-12.",
+        "expected_result": "{\"x\":\"-4\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-101-v",
+      "base_id": "sysv2-unique-101",
+      "case": {
+        "id": "sysv2-unique-101-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -1*x+6*y=-20; 4*x+0*y=8 for x,y.",
+        "expected_result": "{\"x\":\"2\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-102-v",
+      "base_id": "sysv2-unique-102",
+      "case": {
+        "id": "sysv2-unique-102-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 1*x+7*y=-19 together with 3*x+2*y=-19.",
+        "expected_result": "{\"x\":\"-5\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-103-v",
+      "base_id": "sysv2-unique-103",
+      "case": {
+        "id": "sysv2-unique-103-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 3*x+8*y=-5 and 2*x+4*y=-2, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"1\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-104-v",
+      "base_id": "sysv2-unique-104",
+      "case": {
+        "id": "sysv2-unique-104-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 5*x+1*y=-30 and 1*x-3*y=-6.",
+        "expected_result": "{\"x\":\"-6\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-105-v",
+      "base_id": "sysv2-unique-105",
+      "case": {
+        "id": "sysv2-unique-105-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -4*x+2*y=2; 8*x-1*y=-1 for x,y.",
+        "expected_result": "{\"x\":\"0\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-106-v",
+      "base_id": "sysv2-unique-106",
+      "case": {
+        "id": "sysv2-unique-106-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -2*x+3*y=-6 together with 7*x+1*y=44.",
+        "expected_result": "{\"x\":\"6\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-107-v",
+      "base_id": "sysv2-unique-107",
+      "case": {
+        "id": "sysv2-unique-107-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 0*x+4*y=12 and 6*x+3*y=3, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-1\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-108-v",
+      "base_id": "sysv2-unique-108",
+      "case": {
+        "id": "sysv2-unique-108-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 2*x+5*y=30 and 5*x-4*y=9.",
+        "expected_result": "{\"x\":\"5\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-109-v",
+      "base_id": "sysv2-unique-109",
+      "case": {
+        "id": "sysv2-unique-109-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 4*x+6*y=22; 4*x-2*y=-18 for x,y.",
+        "expected_result": "{\"x\":\"-2\",\"y\":\"5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-110-v",
+      "base_id": "sysv2-unique-110",
+      "case": {
+        "id": "sysv2-unique-110-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from -5*x+7*y=-55 together with 3*x+0*y=12.",
+        "expected_result": "{\"x\":\"4\",\"y\":\"-5\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-111-v",
+      "base_id": "sysv2-unique-111",
+      "case": {
+        "id": "sysv2-unique-111-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given -3*x+8*y=-23 and 2*x+2*y=-14, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-3\",\"y\":\"-4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-112-v",
+      "base_id": "sysv2-unique-112",
+      "case": {
+        "id": "sysv2-unique-112-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -1*x+1*y=-6 and 1*x+4*y=-9.",
+        "expected_result": "{\"x\":\"3\",\"y\":\"-3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-113-v",
+      "base_id": "sysv2-unique-113",
+      "case": {
+        "id": "sysv2-unique-113-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 1*x+2*y=-8; 8*x-3*y=-26 for x,y.",
+        "expected_result": "{\"x\":\"-4\",\"y\":\"-2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-114-v",
+      "base_id": "sysv2-unique-114",
+      "case": {
+        "id": "sysv2-unique-114-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 3*x+3*y=3 together with 7*x-1*y=15.",
+        "expected_result": "{\"x\":\"2\",\"y\":\"-1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-115-v",
+      "base_id": "sysv2-unique-115",
+      "case": {
+        "id": "sysv2-unique-115-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 5*x+4*y=-25 and 6*x+1*y=-30, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"-5\",\"y\":\"0\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-116-v",
+      "base_id": "sysv2-unique-116",
+      "case": {
+        "id": "sysv2-unique-116-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations -4*x+5*y=1 and 5*x+3*y=8.",
+        "expected_result": "{\"x\":\"1\",\"y\":\"1\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-117-v",
+      "base_id": "sysv2-unique-117",
+      "case": {
+        "id": "sysv2-unique-117-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair -2*x+6*y=24; 4*x-4*y=-32 for x,y.",
+        "expected_result": "{\"x\":\"-6\",\"y\":\"2\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-118-v",
+      "base_id": "sysv2-unique-118",
+      "case": {
+        "id": "sysv2-unique-118-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 0*x+7*y=21 together with 3*x-2*y=-6.",
+        "expected_result": "{\"x\":\"0\",\"y\":\"3\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-unique-119-v",
+      "base_id": "sysv2-unique-119",
+      "case": {
+        "id": "sysv2-unique-119-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 2*x+8*y=44 and 2*x+0*y=12, find the ordered pair x,y.",
+        "expected_result": "{\"x\":\"6\",\"y\":\"4\"}",
+        "should_authorize": true
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-000-v",
+      "base_id": "sysv2-inconsistent-000",
+      "case": {
+        "id": "sysv2-inconsistent-000-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 2*x+4*y=9 and 1*x+2*y=3.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-001-v",
+      "base_id": "sysv2-inconsistent-001",
+      "case": {
+        "id": "sysv2-inconsistent-001-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 4*x+10*y=10; 2*x+5*y=4 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-002-v",
+      "base_id": "sysv2-inconsistent-002",
+      "case": {
+        "id": "sysv2-inconsistent-002-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 6*x+6*y=11 together with 3*x+3*y=5.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-003-v",
+      "base_id": "sysv2-inconsistent-003",
+      "case": {
+        "id": "sysv2-inconsistent-003-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 8*x+12*y=12 and 4*x+6*y=6, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-004-v",
+      "base_id": "sysv2-inconsistent-004",
+      "case": {
+        "id": "sysv2-inconsistent-004-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 10*x+8*y=13 and 5*x+4*y=7.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-005-v",
+      "base_id": "sysv2-inconsistent-005",
+      "case": {
+        "id": "sysv2-inconsistent-005-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 12*x+4*y=14; 6*x+2*y=8 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-006-v",
+      "base_id": "sysv2-inconsistent-006",
+      "case": {
+        "id": "sysv2-inconsistent-006-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 2*x+10*y=15 together with 1*x+5*y=9.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-007-v",
+      "base_id": "sysv2-inconsistent-007",
+      "case": {
+        "id": "sysv2-inconsistent-007-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 4*x+6*y=16 and 2*x+3*y=10, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-008-v",
+      "base_id": "sysv2-inconsistent-008",
+      "case": {
+        "id": "sysv2-inconsistent-008-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 6*x+12*y=17 and 3*x+6*y=11.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-009-v",
+      "base_id": "sysv2-inconsistent-009",
+      "case": {
+        "id": "sysv2-inconsistent-009-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 8*x+8*y=18; 4*x+4*y=12 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-010-v",
+      "base_id": "sysv2-inconsistent-010",
+      "case": {
+        "id": "sysv2-inconsistent-010-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 10*x+4*y=19 together with 5*x+2*y=13.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-011-v",
+      "base_id": "sysv2-inconsistent-011",
+      "case": {
+        "id": "sysv2-inconsistent-011-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 12*x+10*y=20 and 6*x+5*y=14, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-012-v",
+      "base_id": "sysv2-inconsistent-012",
+      "case": {
+        "id": "sysv2-inconsistent-012-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 2*x+6*y=21 and 1*x+3*y=15.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-013-v",
+      "base_id": "sysv2-inconsistent-013",
+      "case": {
+        "id": "sysv2-inconsistent-013-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 4*x+12*y=22; 2*x+6*y=16 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-014-v",
+      "base_id": "sysv2-inconsistent-014",
+      "case": {
+        "id": "sysv2-inconsistent-014-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 6*x+8*y=23 together with 3*x+4*y=17.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-015-v",
+      "base_id": "sysv2-inconsistent-015",
+      "case": {
+        "id": "sysv2-inconsistent-015-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 8*x+4*y=24 and 4*x+2*y=18, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-016-v",
+      "base_id": "sysv2-inconsistent-016",
+      "case": {
+        "id": "sysv2-inconsistent-016-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 10*x+10*y=25 and 5*x+5*y=19.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-017-v",
+      "base_id": "sysv2-inconsistent-017",
+      "case": {
+        "id": "sysv2-inconsistent-017-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 12*x+6*y=26; 6*x+3*y=20 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-018-v",
+      "base_id": "sysv2-inconsistent-018",
+      "case": {
+        "id": "sysv2-inconsistent-018-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 2*x+12*y=27 together with 1*x+6*y=21.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-019-v",
+      "base_id": "sysv2-inconsistent-019",
+      "case": {
+        "id": "sysv2-inconsistent-019-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 4*x+8*y=28 and 2*x+4*y=22, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-020-v",
+      "base_id": "sysv2-inconsistent-020",
+      "case": {
+        "id": "sysv2-inconsistent-020-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 6*x+4*y=29 and 3*x+2*y=23.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-021-v",
+      "base_id": "sysv2-inconsistent-021",
+      "case": {
+        "id": "sysv2-inconsistent-021-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 8*x+10*y=30; 4*x+5*y=24 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-022-v",
+      "base_id": "sysv2-inconsistent-022",
+      "case": {
+        "id": "sysv2-inconsistent-022-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 10*x+6*y=31 together with 5*x+3*y=25.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-023-v",
+      "base_id": "sysv2-inconsistent-023",
+      "case": {
+        "id": "sysv2-inconsistent-023-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 12*x+12*y=32 and 6*x+6*y=26, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-024-v",
+      "base_id": "sysv2-inconsistent-024",
+      "case": {
+        "id": "sysv2-inconsistent-024-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 2*x+8*y=33 and 1*x+4*y=27.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-025-v",
+      "base_id": "sysv2-inconsistent-025",
+      "case": {
+        "id": "sysv2-inconsistent-025-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 4*x+4*y=34; 2*x+2*y=28 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-026-v",
+      "base_id": "sysv2-inconsistent-026",
+      "case": {
+        "id": "sysv2-inconsistent-026-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 6*x+10*y=35 together with 3*x+5*y=29.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-027-v",
+      "base_id": "sysv2-inconsistent-027",
+      "case": {
+        "id": "sysv2-inconsistent-027-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 8*x+6*y=36 and 4*x+3*y=30, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-028-v",
+      "base_id": "sysv2-inconsistent-028",
+      "case": {
+        "id": "sysv2-inconsistent-028-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 10*x+12*y=37 and 5*x+6*y=31.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-inconsistent-029-v",
+      "base_id": "sysv2-inconsistent-029",
+      "case": {
+        "id": "sysv2-inconsistent-029-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 12*x+8*y=38; 6*x+4*y=32 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-000-v",
+      "base_id": "sysv2-dependent-000",
+      "case": {
+        "id": "sysv2-dependent-000-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 3*x+3*y=6 and 1*x+1*y=2.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-001-v",
+      "base_id": "sysv2-dependent-001",
+      "case": {
+        "id": "sysv2-dependent-001-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 6*x+9*y=9; 2*x+3*y=3 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-002-v",
+      "base_id": "sysv2-dependent-002",
+      "case": {
+        "id": "sysv2-dependent-002-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 9*x+15*y=12 together with 3*x+5*y=4.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-003-v",
+      "base_id": "sysv2-dependent-003",
+      "case": {
+        "id": "sysv2-dependent-003-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 12*x+3*y=15 and 4*x+1*y=5, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-004-v",
+      "base_id": "sysv2-dependent-004",
+      "case": {
+        "id": "sysv2-dependent-004-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 15*x+9*y=18 and 5*x+3*y=6.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-005-v",
+      "base_id": "sysv2-dependent-005",
+      "case": {
+        "id": "sysv2-dependent-005-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 3*x+15*y=21; 1*x+5*y=7 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-006-v",
+      "base_id": "sysv2-dependent-006",
+      "case": {
+        "id": "sysv2-dependent-006-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 6*x+3*y=24 together with 2*x+1*y=8.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-007-v",
+      "base_id": "sysv2-dependent-007",
+      "case": {
+        "id": "sysv2-dependent-007-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 9*x+9*y=27 and 3*x+3*y=9, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-008-v",
+      "base_id": "sysv2-dependent-008",
+      "case": {
+        "id": "sysv2-dependent-008-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 12*x+15*y=30 and 4*x+5*y=10.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-009-v",
+      "base_id": "sysv2-dependent-009",
+      "case": {
+        "id": "sysv2-dependent-009-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 15*x+3*y=33; 5*x+1*y=11 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-010-v",
+      "base_id": "sysv2-dependent-010",
+      "case": {
+        "id": "sysv2-dependent-010-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 3*x+9*y=36 together with 1*x+3*y=12.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-011-v",
+      "base_id": "sysv2-dependent-011",
+      "case": {
+        "id": "sysv2-dependent-011-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 6*x+15*y=39 and 2*x+5*y=13, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-012-v",
+      "base_id": "sysv2-dependent-012",
+      "case": {
+        "id": "sysv2-dependent-012-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 9*x+3*y=42 and 3*x+1*y=14.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-013-v",
+      "base_id": "sysv2-dependent-013",
+      "case": {
+        "id": "sysv2-dependent-013-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 12*x+9*y=45; 4*x+3*y=15 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-014-v",
+      "base_id": "sysv2-dependent-014",
+      "case": {
+        "id": "sysv2-dependent-014-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 15*x+15*y=48 together with 5*x+5*y=16.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-015-v",
+      "base_id": "sysv2-dependent-015",
+      "case": {
+        "id": "sysv2-dependent-015-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 3*x+3*y=51 and 1*x+1*y=17, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-016-v",
+      "base_id": "sysv2-dependent-016",
+      "case": {
+        "id": "sysv2-dependent-016-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "For x,y, solve the simultaneous equations 6*x+9*y=54 and 2*x+3*y=18.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-017-v",
+      "base_id": "sysv2-dependent-017",
+      "case": {
+        "id": "sysv2-dependent-017-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the pair 9*x+15*y=57; 3*x+5*y=19 for x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-018-v",
+      "base_id": "sysv2-dependent-018",
+      "case": {
+        "id": "sysv2-dependent-018-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Determine x and y from 12*x+3*y=60 together with 4*x+1*y=20.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-dependent-019-v",
+      "base_id": "sysv2-dependent-019",
+      "case": {
+        "id": "sysv2-dependent-019-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Given 15*x+9*y=63 and 5*x+3*y=21, find the ordered pair x,y.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-000-v",
+      "base_id": "sysv2-nonlinear-000",
+      "case": {
+        "id": "sysv2-nonlinear-000-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=2 and x+y=5.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-001-v",
+      "base_id": "sysv2-nonlinear-001",
+      "case": {
+        "id": "sysv2-nonlinear-001-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=3 and x+y=6.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-002-v",
+      "base_id": "sysv2-nonlinear-002",
+      "case": {
+        "id": "sysv2-nonlinear-002-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=4 and x+y=7.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-003-v",
+      "base_id": "sysv2-nonlinear-003",
+      "case": {
+        "id": "sysv2-nonlinear-003-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=5 and x+y=8.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-004-v",
+      "base_id": "sysv2-nonlinear-004",
+      "case": {
+        "id": "sysv2-nonlinear-004-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=6 and x+y=9.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-005-v",
+      "base_id": "sysv2-nonlinear-005",
+      "case": {
+        "id": "sysv2-nonlinear-005-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=7 and x+y=10.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-006-v",
+      "base_id": "sysv2-nonlinear-006",
+      "case": {
+        "id": "sysv2-nonlinear-006-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=8 and x+y=11.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-007-v",
+      "base_id": "sysv2-nonlinear-007",
+      "case": {
+        "id": "sysv2-nonlinear-007-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=9 and x+y=12.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-008-v",
+      "base_id": "sysv2-nonlinear-008",
+      "case": {
+        "id": "sysv2-nonlinear-008-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=10 and x+y=13.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-009-v",
+      "base_id": "sysv2-nonlinear-009",
+      "case": {
+        "id": "sysv2-nonlinear-009-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=11 and x+y=14.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-010-v",
+      "base_id": "sysv2-nonlinear-010",
+      "case": {
+        "id": "sysv2-nonlinear-010-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=12 and x+y=15.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-011-v",
+      "base_id": "sysv2-nonlinear-011",
+      "case": {
+        "id": "sysv2-nonlinear-011-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=13 and x+y=16.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-012-v",
+      "base_id": "sysv2-nonlinear-012",
+      "case": {
+        "id": "sysv2-nonlinear-012-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=14 and x+y=17.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-013-v",
+      "base_id": "sysv2-nonlinear-013",
+      "case": {
+        "id": "sysv2-nonlinear-013-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=15 and x+y=18.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-014-v",
+      "base_id": "sysv2-nonlinear-014",
+      "case": {
+        "id": "sysv2-nonlinear-014-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=16 and x+y=19.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-015-v",
+      "base_id": "sysv2-nonlinear-015",
+      "case": {
+        "id": "sysv2-nonlinear-015-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=17 and x+y=20.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-016-v",
+      "base_id": "sysv2-nonlinear-016",
+      "case": {
+        "id": "sysv2-nonlinear-016-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=18 and x+y=21.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-017-v",
+      "base_id": "sysv2-nonlinear-017",
+      "case": {
+        "id": "sysv2-nonlinear-017-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=19 and x+y=22.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-018-v",
+      "base_id": "sysv2-nonlinear-018",
+      "case": {
+        "id": "sysv2-nonlinear-018-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=20 and x+y=23.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-nonlinear-019-v",
+      "base_id": "sysv2-nonlinear-019",
+      "case": {
+        "id": "sysv2-nonlinear-019-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Solve the nonlinear pair x*y=21 and x+y=24.",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-malformed-000-v",
+      "base_id": "sysv2-malformed-000",
+      "case": {
+        "id": "sysv2-malformed-000-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Can x,y be determined from 1*x+1*y=2 and 1*x-1*y=0?",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-malformed-001-v",
+      "base_id": "sysv2-malformed-001",
+      "case": {
+        "id": "sysv2-malformed-001-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Can x,y be determined from 1*x+1*y=3 and 1*x-1*y=1?",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-malformed-002-v",
+      "base_id": "sysv2-malformed-002",
+      "case": {
+        "id": "sysv2-malformed-002-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Can x,y be determined from 1*x+1*y=4 and 1*x-1*y=2?",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-malformed-003-v",
+      "base_id": "sysv2-malformed-003",
+      "case": {
+        "id": "sysv2-malformed-003-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Can x,y be determined from 1*x+1*y=5 and 1*x-1*y=3?",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-malformed-004-v",
+      "base_id": "sysv2-malformed-004",
+      "case": {
+        "id": "sysv2-malformed-004-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Can x,y be determined from 1*x+1*y=6 and 1*x-1*y=4?",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-malformed-005-v",
+      "base_id": "sysv2-malformed-005",
+      "case": {
+        "id": "sysv2-malformed-005-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Can x,y be determined from 1*x+1*y=7 and 1*x-1*y=5?",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-malformed-006-v",
+      "base_id": "sysv2-malformed-006",
+      "case": {
+        "id": "sysv2-malformed-006-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Can x,y be determined from 1*x+1*y=8 and 1*x-1*y=6?",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-malformed-007-v",
+      "base_id": "sysv2-malformed-007",
+      "case": {
+        "id": "sysv2-malformed-007-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Can x,y be determined from 1*x+1*y=9 and 1*x-1*y=7?",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-malformed-008-v",
+      "base_id": "sysv2-malformed-008",
+      "case": {
+        "id": "sysv2-malformed-008-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Can x,y be determined from 1*x+1*y=10 and 1*x-1*y=8?",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    },
+    {
+      "id": "sysv2-malformed-009-v",
+      "base_id": "sysv2-malformed-009",
+      "case": {
+        "id": "sysv2-malformed-009-v",
+        "tier": "independent-v2",
+        "method": "linear_system",
+        "prompt": "Can x,y be determined from 1*x+1*y=11 and 1*x-1*y=9?",
+        "expected_result": null,
+        "should_authorize": false
+      }
+    }
+  ]
+}

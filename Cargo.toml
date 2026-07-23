@@ -84,6 +84,10 @@ name = "prose_recurrence_bench"
 path = "src/bin/prose_recurrence_bench.rs"
 
 [[bin]]
+name = "cross_vertical_bench"
+path = "src/bin/cross_vertical_bench.rs"
+
+[[bin]]
 name = "governed_bench"
 path = "src/bin/governed_bench.rs"
 

@@ -20,6 +20,7 @@ pub mod broker;
 pub mod capabilities;
 pub mod capability_planner;
 pub mod concept_composition_benchmark;
+pub mod cross_vertical_benchmark;
 pub mod constant_rate_model;
 pub mod chess_eval;
 pub mod chess_learner;

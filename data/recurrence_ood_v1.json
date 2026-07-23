@@ -1,0 +1,4506 @@
+{
+  "schema_version": 1,
+  "oracle": "python-recurrence-descriptor-v1",
+  "cases": [
+    {
+      "id": "recurrence-ood-0000",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = -1a_n - 3, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-000"
+    },
+    {
+      "id": "recurrence-ood-0001",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = -1a_n - 3; evaluate its term at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-000"
+    },
+    {
+      "id": "recurrence-ood-0002",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 0a_n - 2, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-001"
+    },
+    {
+      "id": "recurrence-ood-0003",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = 0a_n - 2; evaluate its term at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-001"
+    },
+    {
+      "id": "recurrence-ood-0004",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = a_n - 1, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-002"
+    },
+    {
+      "id": "recurrence-ood-0005",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = a_n - 1; evaluate its term at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-002"
+    },
+    {
+      "id": "recurrence-ood-0006",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 2a_n + 0, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-8",
+      "should_authorize": true,
+      "pair_id": "rewrite-003"
+    },
+    {
+      "id": "recurrence-ood-0007",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = 2a_n + 0; evaluate its term at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "-8",
+      "should_authorize": true,
+      "pair_id": "rewrite-003"
+    },
+    {
+      "id": "recurrence-ood-0008",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = -1a_n + 1, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-004"
+    },
+    {
+      "id": "recurrence-ood-0009",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = -1a_n + 1; evaluate its term at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-004"
+    },
+    {
+      "id": "recurrence-ood-0010",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 0a_n + 2, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": "rewrite-005"
+    },
+    {
+      "id": "recurrence-ood-0011",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 1 and a_(n+1) = 0a_n + 2; evaluate its term at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": "rewrite-005"
+    },
+    {
+      "id": "recurrence-ood-0012",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n + 3, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "20",
+      "should_authorize": true,
+      "pair_id": "rewrite-006"
+    },
+    {
+      "id": "recurrence-ood-0013",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 2 and a_(n+1) = a_n + 3; evaluate its term at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "20",
+      "should_authorize": true,
+      "pair_id": "rewrite-006"
+    },
+    {
+      "id": "recurrence-ood-0014",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n - 3, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "3",
+      "should_authorize": true,
+      "pair_id": "rewrite-007"
+    },
+    {
+      "id": "recurrence-ood-0015",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 3 and a_(n+1) = 2a_n - 3; evaluate its term at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "3",
+      "should_authorize": true,
+      "pair_id": "rewrite-007"
+    },
+    {
+      "id": "recurrence-ood-0016",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = -1a_n - 2, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "4",
+      "should_authorize": true,
+      "pair_id": "rewrite-008"
+    },
+    {
+      "id": "recurrence-ood-0017",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 4 and a_(n+1) = -1a_n - 2; evaluate its term at n = 9.",
+      "expected_route": "math",
+      "expected_answer": "4",
+      "should_authorize": true,
+      "pair_id": "rewrite-008"
+    },
+    {
+      "id": "recurrence-ood-0018",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 0a_n - 1, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-009"
+    },
+    {
+      "id": "recurrence-ood-0019",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = 0a_n - 1; evaluate its term at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-009"
+    },
+    {
+      "id": "recurrence-ood-0020",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = a_n + 0, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-3",
+      "should_authorize": true,
+      "pair_id": "rewrite-010"
+    },
+    {
+      "id": "recurrence-ood-0021",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = a_n + 0; evaluate its term at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-3",
+      "should_authorize": true,
+      "pair_id": "rewrite-010"
+    },
+    {
+      "id": "recurrence-ood-0022",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = 2a_n + 1, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-5",
+      "should_authorize": true,
+      "pair_id": "rewrite-011"
+    },
+    {
+      "id": "recurrence-ood-0023",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = 2a_n + 1; evaluate its term at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-5",
+      "should_authorize": true,
+      "pair_id": "rewrite-011"
+    },
+    {
+      "id": "recurrence-ood-0024",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = -1a_n + 2, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "3",
+      "should_authorize": true,
+      "pair_id": "rewrite-012"
+    },
+    {
+      "id": "recurrence-ood-0025",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = -1a_n + 2; evaluate its term at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "3",
+      "should_authorize": true,
+      "pair_id": "rewrite-012"
+    },
+    {
+      "id": "recurrence-ood-0026",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 0a_n + 3, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "3",
+      "should_authorize": true,
+      "pair_id": "rewrite-013"
+    },
+    {
+      "id": "recurrence-ood-0027",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = 0a_n + 3; evaluate its term at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "3",
+      "should_authorize": true,
+      "pair_id": "rewrite-013"
+    },
+    {
+      "id": "recurrence-ood-0028",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n - 3, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "-14",
+      "should_authorize": true,
+      "pair_id": "rewrite-014"
+    },
+    {
+      "id": "recurrence-ood-0029",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 1 and a_(n+1) = a_n - 3; evaluate its term at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "-14",
+      "should_authorize": true,
+      "pair_id": "rewrite-014"
+    },
+    {
+      "id": "recurrence-ood-0030",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n - 2, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": "rewrite-015"
+    },
+    {
+      "id": "recurrence-ood-0031",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 2 and a_(n+1) = 2a_n - 2; evaluate its term at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": "rewrite-015"
+    },
+    {
+      "id": "recurrence-ood-0032",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = -1a_n - 1, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-016"
+    },
+    {
+      "id": "recurrence-ood-0033",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 3 and a_(n+1) = -1a_n - 1; evaluate its term at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-016"
+    },
+    {
+      "id": "recurrence-ood-0034",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 0a_n + 0, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-017"
+    },
+    {
+      "id": "recurrence-ood-0035",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 4 and a_(n+1) = 0a_n + 0; evaluate its term at n = 9.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-017"
+    },
+    {
+      "id": "recurrence-ood-0036",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = a_n + 1, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-018"
+    },
+    {
+      "id": "recurrence-ood-0037",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = a_n + 1; evaluate its term at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-018"
+    },
+    {
+      "id": "recurrence-ood-0038",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 2a_n + 2, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-019"
+    },
+    {
+      "id": "recurrence-ood-0039",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = 2a_n + 2; evaluate its term at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-019"
+    },
+    {
+      "id": "recurrence-ood-0040",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = -1a_n + 3, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-020"
+    },
+    {
+      "id": "recurrence-ood-0041",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = -1a_n + 3; evaluate its term at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-020"
+    },
+    {
+      "id": "recurrence-ood-0042",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 0a_n - 3, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-3",
+      "should_authorize": true,
+      "pair_id": "rewrite-021"
+    },
+    {
+      "id": "recurrence-ood-0043",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = 0a_n - 3; evaluate its term at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "-3",
+      "should_authorize": true,
+      "pair_id": "rewrite-021"
+    },
+    {
+      "id": "recurrence-ood-0044",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = a_n - 2, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "-8",
+      "should_authorize": true,
+      "pair_id": "rewrite-022"
+    },
+    {
+      "id": "recurrence-ood-0045",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = a_n - 2; evaluate its term at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "-8",
+      "should_authorize": true,
+      "pair_id": "rewrite-022"
+    },
+    {
+      "id": "recurrence-ood-0046",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n - 1, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "1",
+      "should_authorize": true,
+      "pair_id": "rewrite-023"
+    },
+    {
+      "id": "recurrence-ood-0047",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 1 and a_(n+1) = 2a_n - 1; evaluate its term at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "1",
+      "should_authorize": true,
+      "pair_id": "rewrite-023"
+    },
+    {
+      "id": "recurrence-ood-0048",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = -1a_n + 0, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": "rewrite-024"
+    },
+    {
+      "id": "recurrence-ood-0049",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 2 and a_(n+1) = -1a_n + 0; evaluate its term at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": "rewrite-024"
+    },
+    {
+      "id": "recurrence-ood-0050",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 0a_n + 1, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "1",
+      "should_authorize": true,
+      "pair_id": "rewrite-025"
+    },
+    {
+      "id": "recurrence-ood-0051",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 3 and a_(n+1) = 0a_n + 1; evaluate its term at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "1",
+      "should_authorize": true,
+      "pair_id": "rewrite-025"
+    },
+    {
+      "id": "recurrence-ood-0052",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n + 2, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "20",
+      "should_authorize": true,
+      "pair_id": "rewrite-026"
+    },
+    {
+      "id": "recurrence-ood-0053",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 4 and a_(n+1) = a_n + 2; evaluate its term at n = 9.",
+      "expected_route": "math",
+      "expected_answer": "20",
+      "should_authorize": true,
+      "pair_id": "rewrite-026"
+    },
+    {
+      "id": "recurrence-ood-0054",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 2a_n + 3, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-027"
+    },
+    {
+      "id": "recurrence-ood-0055",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = 2a_n + 3; evaluate its term at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-027"
+    },
+    {
+      "id": "recurrence-ood-0056",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = -1a_n - 3, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-028"
+    },
+    {
+      "id": "recurrence-ood-0057",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = -1a_n - 3; evaluate its term at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-028"
+    },
+    {
+      "id": "recurrence-ood-0058",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = 0a_n - 2, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-029"
+    },
+    {
+      "id": "recurrence-ood-0059",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = 0a_n - 2; evaluate its term at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-029"
+    },
+    {
+      "id": "recurrence-ood-0060",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = a_n - 1, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-030"
+    },
+    {
+      "id": "recurrence-ood-0061",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = a_n - 1; evaluate its term at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-030"
+    },
+    {
+      "id": "recurrence-ood-0062",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 0, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-031"
+    },
+    {
+      "id": "recurrence-ood-0063",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = 2a_n + 0; evaluate its term at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-031"
+    },
+    {
+      "id": "recurrence-ood-0064",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = -1a_n + 1, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-032"
+    },
+    {
+      "id": "recurrence-ood-0065",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 1 and a_(n+1) = -1a_n + 1; evaluate its term at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-032"
+    },
+    {
+      "id": "recurrence-ood-0066",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 0a_n + 2, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": "rewrite-033"
+    },
+    {
+      "id": "recurrence-ood-0067",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 2 and a_(n+1) = 0a_n + 2; evaluate its term at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": "rewrite-033"
+    },
+    {
+      "id": "recurrence-ood-0068",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n + 3, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "24",
+      "should_authorize": true,
+      "pair_id": "rewrite-034"
+    },
+    {
+      "id": "recurrence-ood-0069",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 3 and a_(n+1) = a_n + 3; evaluate its term at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "24",
+      "should_authorize": true,
+      "pair_id": "rewrite-034"
+    },
+    {
+      "id": "recurrence-ood-0070",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n - 3, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "259",
+      "should_authorize": true,
+      "pair_id": "rewrite-035"
+    },
+    {
+      "id": "recurrence-ood-0071",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 4 and a_(n+1) = 2a_n - 3; evaluate its term at n = 9.",
+      "expected_route": "math",
+      "expected_answer": "259",
+      "should_authorize": true,
+      "pair_id": "rewrite-035"
+    },
+    {
+      "id": "recurrence-ood-0072",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = -1a_n - 2, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-036"
+    },
+    {
+      "id": "recurrence-ood-0073",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = -1a_n - 2; evaluate its term at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-036"
+    },
+    {
+      "id": "recurrence-ood-0074",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 0a_n - 1, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-1",
+      "should_authorize": true,
+      "pair_id": "rewrite-037"
+    },
+    {
+      "id": "recurrence-ood-0075",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = 0a_n - 1; evaluate its term at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-1",
+      "should_authorize": true,
+      "pair_id": "rewrite-037"
+    },
+    {
+      "id": "recurrence-ood-0076",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = a_n + 0, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-038"
+    },
+    {
+      "id": "recurrence-ood-0077",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = a_n + 0; evaluate its term at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-038"
+    },
+    {
+      "id": "recurrence-ood-0078",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 2a_n + 1, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-1",
+      "should_authorize": true,
+      "pair_id": "rewrite-039"
+    },
+    {
+      "id": "recurrence-ood-0079",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = 2a_n + 1; evaluate its term at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "-1",
+      "should_authorize": true,
+      "pair_id": "rewrite-039"
+    },
+    {
+      "id": "recurrence-ood-0080",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = -1a_n + 2, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-040"
+    },
+    {
+      "id": "recurrence-ood-0081",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = -1a_n + 2; evaluate its term at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": "rewrite-040"
+    },
+    {
+      "id": "recurrence-ood-0082",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 0a_n + 3, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "3",
+      "should_authorize": true,
+      "pair_id": "rewrite-041"
+    },
+    {
+      "id": "recurrence-ood-0083",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 1 and a_(n+1) = 0a_n + 3; evaluate its term at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "3",
+      "should_authorize": true,
+      "pair_id": "rewrite-041"
+    },
+    {
+      "id": "recurrence-ood-0084",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n - 3, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "-16",
+      "should_authorize": true,
+      "pair_id": "rewrite-042"
+    },
+    {
+      "id": "recurrence-ood-0085",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 2 and a_(n+1) = a_n - 3; evaluate its term at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "-16",
+      "should_authorize": true,
+      "pair_id": "rewrite-042"
+    },
+    {
+      "id": "recurrence-ood-0086",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n - 2, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "130",
+      "should_authorize": true,
+      "pair_id": "rewrite-043"
+    },
+    {
+      "id": "recurrence-ood-0087",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 3 and a_(n+1) = 2a_n - 2; evaluate its term at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "130",
+      "should_authorize": true,
+      "pair_id": "rewrite-043"
+    },
+    {
+      "id": "recurrence-ood-0088",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = -1a_n - 1, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "4",
+      "should_authorize": true,
+      "pair_id": "rewrite-044"
+    },
+    {
+      "id": "recurrence-ood-0089",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 4 and a_(n+1) = -1a_n - 1; evaluate its term at n = 9.",
+      "expected_route": "math",
+      "expected_answer": "4",
+      "should_authorize": true,
+      "pair_id": "rewrite-044"
+    },
+    {
+      "id": "recurrence-ood-0090",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 0a_n + 0, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-045"
+    },
+    {
+      "id": "recurrence-ood-0091",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = 0a_n + 0; evaluate its term at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": "rewrite-045"
+    },
+    {
+      "id": "recurrence-ood-0092",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = a_n + 1, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-046"
+    },
+    {
+      "id": "recurrence-ood-0093",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = a_n + 1; evaluate its term at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-046"
+    },
+    {
+      "id": "recurrence-ood-0094",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = 2a_n + 2, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-047"
+    },
+    {
+      "id": "recurrence-ood-0095",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = 2a_n + 2; evaluate its term at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": "rewrite-047"
+    },
+    {
+      "id": "recurrence-ood-0096",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = -1a_n + 3, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "4",
+      "should_authorize": true,
+      "pair_id": "rewrite-048"
+    },
+    {
+      "id": "recurrence-ood-0097",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = -1a_n + 3; evaluate its term at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "4",
+      "should_authorize": true,
+      "pair_id": "rewrite-048"
+    },
+    {
+      "id": "recurrence-ood-0098",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 0a_n - 3, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "-3",
+      "should_authorize": true,
+      "pair_id": "rewrite-049"
+    },
+    {
+      "id": "recurrence-ood-0099",
+      "category": "valid_affine_rewrite",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = 0a_n - 3; evaluate its term at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "-3",
+      "should_authorize": true,
+      "pair_id": "rewrite-049"
+    },
+    {
+      "id": "recurrence-ood-0100",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n - 2, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "-9",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0101",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n - 1, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "65",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0102",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = -1a_n + 0, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "-3",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0103",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 0a_n + 1, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "1",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0104",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = a_n + 2, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0105",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 2a_n + 3, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-3",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0106",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = -1a_n - 3, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0107",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 0a_n - 2, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0108",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = a_n - 1, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0109",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 0, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "32",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0110",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = -1a_n + 1, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0111",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 0a_n + 2, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0112",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n + 3, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "28",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0113",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 2a_n - 3, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0114",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = -1a_n - 2, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "1",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0115",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = 0a_n - 1, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-1",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0116",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = a_n + 0, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-1",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0117",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "15",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0118",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = -1a_n + 2, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "1",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0119",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 0a_n + 3, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "3",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0120",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n - 3, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "-18",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0121",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n - 2, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "514",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0122",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = -1a_n - 1, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0123",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 0a_n + 0, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0124",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = a_n + 1, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0125",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 2a_n + 2, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "6",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0126",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = -1a_n + 3, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0127",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 0a_n - 3, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "-3",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0128",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n - 2, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "-10",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0129",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n - 1, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "257",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0130",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = -1a_n + 0, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "4",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0131",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 0a_n + 1, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0132",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = a_n + 2, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-1",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0133",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = 2a_n + 3, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "1",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0134",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = -1a_n - 3, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0135",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 0a_n - 2, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0136",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n - 1, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0137",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 0, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "128",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0138",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = -1a_n + 1, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0139",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 0a_n + 2, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0140",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = a_n + 3, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0141",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 2a_n - 3, evaluate the recurrence at n = 1.",
+      "expected_route": "math",
+      "expected_answer": "-9",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0142",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -2 and a_(n+1) = -1a_n - 2, evaluate the recurrence at n = 2.",
+      "expected_route": "math",
+      "expected_answer": "-2",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0143",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 0a_n - 1, evaluate the recurrence at n = 3.",
+      "expected_route": "math",
+      "expected_answer": "-1",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0144",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 0 and a_(n+1) = a_n + 0, evaluate the recurrence at n = 4.",
+      "expected_route": "math",
+      "expected_answer": "0",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0145",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence at n = 5.",
+      "expected_route": "math",
+      "expected_answer": "63",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0146",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 2 and a_(n+1) = -1a_n + 2, evaluate the recurrence at n = 6.",
+      "expected_route": "math",
+      "expected_answer": "2",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0147",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 0a_n + 3, evaluate the recurrence at n = 7.",
+      "expected_route": "math",
+      "expected_answer": "3",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0148",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n - 3, evaluate the recurrence at n = 8.",
+      "expected_route": "math",
+      "expected_answer": "-20",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0149",
+      "category": "valid_affine",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 2a_n - 2, evaluate the recurrence at n = 0.",
+      "expected_route": "math",
+      "expected_answer": "-4",
+      "should_authorize": true,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0150",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0151",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0152",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0153",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0154",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0155",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0156",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 8.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0157",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 9.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0158",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0159",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0160",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0161",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0162",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0163",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0164",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 8.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0165",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 9.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0166",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0167",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0168",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0169",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0170",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0171",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0172",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 8.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0173",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 9.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0174",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0175",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0176",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0177",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0178",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0179",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0180",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 8.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0181",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 9.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0182",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0183",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0184",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0185",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0186",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0187",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0188",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 8.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0189",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 9.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0190",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0191",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0192",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0193",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0194",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0195",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0196",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 8.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0197",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 9.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0198",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0199",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0200",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0201",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0202",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0203",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0204",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 8.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0205",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 9.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0206",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0207",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0208",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0209",
+      "category": "missing_initial_condition",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0210",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0211",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0212",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0213",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0214",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0215",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0216",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0217",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0218",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0219",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0220",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0221",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0222",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0223",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0224",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0225",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0226",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0227",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0228",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0229",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0230",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0231",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0232",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0233",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0234",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0235",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0236",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0237",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0238",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0239",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0240",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0241",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0242",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0243",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0244",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0245",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0246",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0247",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0248",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0249",
+      "category": "ambiguous_indexing",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0250",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n^2 + 1, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0251",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n^2 + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0252",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n^2 + 1, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0253",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n^2 + 1, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0254",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 5 and a_(n+1) = a_n^2 + 1, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0255",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n^2 + 1, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0256",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n^2 + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0257",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n^2 + 1, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0258",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n^2 + 1, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0259",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 5 and a_(n+1) = a_n^2 + 1, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0260",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n^2 + 1, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0261",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n^2 + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0262",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n^2 + 1, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0263",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n^2 + 1, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0264",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 5 and a_(n+1) = a_n^2 + 1, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0265",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n^2 + 1, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0266",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n^2 + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0267",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n^2 + 1, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0268",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n^2 + 1, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0269",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 5 and a_(n+1) = a_n^2 + 1, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0270",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n^2 + 1, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0271",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n^2 + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0272",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n^2 + 1, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0273",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n^2 + 1, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0274",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 5 and a_(n+1) = a_n^2 + 1, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0275",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n^2 + 1, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0276",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n^2 + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0277",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n^2 + 1, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0278",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n^2 + 1, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0279",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 5 and a_(n+1) = a_n^2 + 1, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0280",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n^2 + 1, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0281",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n^2 + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0282",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n^2 + 1, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0283",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n^2 + 1, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0284",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 5 and a_(n+1) = a_n^2 + 1, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0285",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n^2 + 1, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0286",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n^2 + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0287",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n^2 + 1, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0288",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n^2 + 1, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0289",
+      "category": "unsupported_nonlinear",
+      "prompt": "Given a_0 = 5 and a_(n+1) = a_n^2 + 1, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0290",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0291",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0292",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0293",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0294",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0295",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0296",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0297",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0298",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0299",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0300",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0301",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0302",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0303",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0304",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0305",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0306",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0307",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0308",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0309",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0310",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0311",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0312",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0313",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0314",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0315",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0316",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0317",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0318",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0319",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0320",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0321",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0322",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0323",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0324",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 6.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0325",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 7.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0326",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 2.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0327",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0328",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 4.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0329",
+      "category": "unsupported_higher_order",
+      "prompt": "Given a_0 = 1, a_1 = 2, and a_(n+2) = a_(n+1) + a_n, evaluate at n = 5.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0330",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 0 and a_0 = 1, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0331",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 1 and a_0 = 2, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0332",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 2 and a_0 = 3, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0333",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 3 and a_0 = 4, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0334",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 0 and a_0 = 1, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0335",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 1 and a_0 = 2, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0336",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 2 and a_0 = 3, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0337",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 3 and a_0 = 4, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0338",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 0 and a_0 = 1, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0339",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 1 and a_0 = 2, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0340",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 2 and a_0 = 3, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0341",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 3 and a_0 = 4, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0342",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 0 and a_0 = 1, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0343",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 1 and a_0 = 2, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0344",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 2 and a_0 = 3, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0345",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 3 and a_0 = 4, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0346",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 0 and a_0 = 1, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0347",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 1 and a_0 = 2, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0348",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 2 and a_0 = 3, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0349",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 3 and a_0 = 4, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0350",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 0 and a_0 = 1, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0351",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 1 and a_0 = 2, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0352",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 2 and a_0 = 3, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0353",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 3 and a_0 = 4, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0354",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 0 and a_0 = 1, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0355",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 1 and a_0 = 2, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0356",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 2 and a_0 = 3, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0357",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 3 and a_0 = 4, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0358",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 0 and a_0 = 1, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0359",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 1 and a_0 = 2, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0360",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 2 and a_0 = 3, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0361",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 3 and a_0 = 4, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0362",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 0 and a_0 = 1, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0363",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 1 and a_0 = 2, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0364",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 2 and a_0 = 3, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0365",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 3 and a_0 = 4, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0366",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 0 and a_0 = 1, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0367",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 1 and a_0 = 2, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0368",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 2 and a_0 = 3, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0369",
+      "category": "conflicting_definition",
+      "prompt": "Given a_0 = 3 and a_0 = 4, with a_(n+1) = 2a_n + 1, evaluate at n = 3.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0370",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0371",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0372",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0373",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0374",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0375",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0376",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0377",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0378",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0379",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0380",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0381",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0382",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0383",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0384",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0385",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0386",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0387",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0388",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0389",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0390",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0391",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0392",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0393",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0394",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0395",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0396",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0397",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0398",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0399",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0400",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0401",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0402",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0403",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0404",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0405",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0406",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0407",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0408",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0409",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0410",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0411",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0412",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0413",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0414",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0415",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0416",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0417",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0418",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0419",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0420",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0421",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0422",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0423",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0424",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0425",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0426",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0427",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0428",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0429",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0430",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0431",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0432",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0433",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0434",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0435",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0436",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0437",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0438",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0439",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0440",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0441",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0442",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0443",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0444",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0445",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0446",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0447",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0448",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0449",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0450",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0451",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0452",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0453",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0454",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0455",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0456",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0457",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0458",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0459",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0460",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0461",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0462",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0463",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0464",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0465",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0466",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0467",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0468",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0469",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0470",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0471",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0472",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0473",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0474",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0475",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0476",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0477",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0478",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0479",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0480",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0481",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0482",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0483",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0484",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0485",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0486",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0487",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0488",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0489",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0490",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0491",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0492",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0493",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0494",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0495",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0496",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0497",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 1 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0498",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 2 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    },
+    {
+      "id": "recurrence-ood-0499",
+      "category": "malformed_recurrence",
+      "prompt": "Evaluate the recurrence a_0 = 0 at n = 4; no recurrence rule is supplied.",
+      "expected_route": "math",
+      "expected_answer": null,
+      "should_authorize": false,
+      "pair_id": null
+    }
+  ]
+}

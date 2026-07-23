@@ -74,6 +74,7 @@ pub mod planning;
 pub mod predictive;
 pub mod proportional_model;
 pub mod proposition;
+pub mod prose_recurrence_benchmark;
 pub mod qa;
 pub mod reason;
 pub mod recurrence;

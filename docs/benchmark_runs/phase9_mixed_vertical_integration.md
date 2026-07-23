@@ -1,16 +1,16 @@
-# Phase 9: Blind Mixed-Vertical Integration
+# Phase 9/10: Blind Mixed-Vertical Integration
 
 Date: 2026-07-23
 
 This benchmark evaluates the router and orchestrator on a blind 1,000-case
 corpus combining direct algebra, linear systems, proposition prompts, and a
-deliberate unsupported recurrence boundary. The expected route and
+bounded prose-recurrence vertical. The expected route and
 authorization labels are generated independently in
 `scripts/generate_mixed_ood.py` and stored in `data/mixed_ood_v1.json`.
 
 ## Initial failure and hardening
 
-The first run exposed 100 false authorizations on degenerate linear systems:
+The first pre-recurrence run exposed 100 false authorizations on degenerate linear systems:
 the generic algebra fallback solved one equation from a multi-equation prompt.
 The router was hardened to classify the complete system first, authorize only
 unique systems, disable the generic fallback for system-like prompts, and
@@ -23,23 +23,35 @@ cases=1000
 route_correct=1000 (1.000)
 formalized=1000 (1.000)
 correct_decisions=1000 (1.000)
-authorized=570
-replay_successes=570
+authorized=720
+replay_successes=720
 false_authorizations=0
 false_denials=0
-rewrite_pairs=189
-route_stable=189
-decision_stable=189
-answer_stable=189
+rewrite_pairs=238
+route_stable=238
+decision_stable=238
+answer_stable=238
 rewrite_regressions=0
 route_confusion={}
 failure_taxonomy={}
 ```
 
-The 230 recurrence prompts are intentionally safe abstentions: the router
-recognizes their mathematical surface, but no prose recurrence executor is
-registered yet. This benchmark therefore measures integration safety, not
-recurrence capability.
+The recurrence slice now contains 150 supported affine evaluations and 80
+intentional refusals (missing target, unsupported definition, or malformed
+input). The executor is deliberately limited to exact first-order affine
+unrolling; it does not authorize closed-form discovery, nonlinear recurrences,
+or higher-order recurrences.
+
+The integrated result is now:
+
+```text
+authorized=720
+replay=720
+rewrite_pairs=238
+rewrite_regressions=0
+false_authorizations=0
+false_denials=0
+```
 
 The result is evidence for this tested distribution only. It is not a claim
 of universal routing or mathematical correctness. The benchmark command is:

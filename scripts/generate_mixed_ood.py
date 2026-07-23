@@ -16,6 +16,12 @@ def main() -> None:
     cases = []
     pair = 0
 
+    def value_at(initial, coefficient, offset, index):
+        value = initial
+        for _ in range(index):
+            value = coefficient * value + offset
+        return value
+
     def add(i, domain, prompt, route, authorize, pair_id=None):
         cases.append({
             "id": f"mixed-ood-{i:04d}",
@@ -78,11 +84,29 @@ def main() -> None:
         add(i, "proposition", f"Prove that x = y, assuming no premise {n}.", "theorem", False)
         i += 1
 
-    # Recurrence cases are a deliberate integration boundary probe.  The
-    # router should classify them as math, but the orchestrator must abstain
-    # because no prose recurrence executor is registered yet.
-    for n in range(230):
-        add(i, "recurrence", f"Evaluate the recurrence a_0 = {n % 5 + 1}, a_n = a_(n-1) + 2 at n = {n % 8 + 2}.", "math", False)
+    # Recurrence cases exercise the bounded prose affine executor plus its
+    # negative boundary.  The expected answer is deliberately kept in this
+    # independent generator; the Rust evaluator only compares authorization
+    # and replay behavior in the mixed benchmark.
+    for n in range(100):
+        initial = n % 9 - 4
+        coefficient = n % 4 - 1
+        offset = n % 7 - 3
+        target = n % 9
+        value_at(initial, coefficient, offset, target)
+        relation = f"{coefficient}a_n + {offset}" if coefficient != 1 else f"a_n + {offset}"
+        pair_id = f"rewrite-{pair:03d}" if n < 50 else None
+        add(i, "recurrence", f"Given a_0 = {initial} and a_(n+1) = {relation}, evaluate at n = {target}.", "math", True, pair_id)
+        i += 1
+        if pair_id:
+            add(i, "recurrence", f"The sequence has a_1 = {initial} and a_(n+1) = {relation}; evaluate at n = {target + 1}.", "math", True, pair_id)
+            i += 1
+            pair += 1
+    for n in range(60):
+        add(i, "recurrence", f"The recurrence a_(n+1) = {n % 3 + 1}a_n + 2 is evaluated at n = {n % 8 + 2}.", "math", False)
+        i += 1
+    for n in range(20):
+        add(i, "recurrence", f"Given a_0 = {n % 5} and a_(n+1) = 2a_n + 1, evaluate the recurrence.", "math", False)
         i += 1
 
     out = Path("data/mixed_ood_v1.json")

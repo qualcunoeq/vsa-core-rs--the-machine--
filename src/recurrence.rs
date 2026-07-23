@@ -7,6 +7,7 @@
 //! execution.
 
 use crate::algebra_island::{AlgebraFailure, ExactNumber};
+use regex::Regex;
 use serde::Serialize;
 use std::collections::BTreeMap;
 
@@ -95,6 +96,7 @@ impl Default for RecurrenceContract {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RecurrenceFailure {
     DefinitionNotIdentified,
+    AmbiguousIndexing,
     EmptySequence,
     IndexVariableUnbound,
     QuantifierMissing,
@@ -109,6 +111,172 @@ pub enum RecurrenceFailure {
     UnrollLimitExceeded,
     ArithmeticFailure(AlgebraFailure),
     ReplayVerificationFailed,
+}
+
+/// A fully parsed prose request accepted by the bounded recurrence island.
+/// Parsing is intentionally stricter than execution: a prompt must state an
+/// explicit affine rule, an indexed initial value, and a numeric target.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ProseRecurrenceRequest {
+    pub definition: RecurrenceDefinition,
+    pub target: RecurrenceTarget,
+    pub contract: RecurrenceContract,
+}
+
+/// Detect recurrence-shaped prose without authorizing it.  Callers should
+/// use `parse_prose_recurrence` before execution.
+pub fn looks_like_recurrence(source: &str) -> bool {
+    let lower = source.to_ascii_lowercase();
+    lower.contains("recurrence")
+        || lower.contains("a_n")
+        || lower.contains("a[n")
+        || lower.contains("a_{n")
+        || lower.contains("a_(n")
+        || (lower.contains("sequence")
+            && (lower.contains("term") || lower.contains("a_0") || lower.contains("a_1")))
+}
+
+fn parse_i128(value: &str) -> Option<i128> {
+    value.trim().parse::<i128>().ok()
+}
+
+/// Parse the deliberately bounded prose grammar:
+/// `a_0 = c`, `a_(n+1) = p*a_n + q`, and `... at n = k`.
+///
+/// The parser rejects closed-form requests, missing/ambiguous indices,
+/// nonlinear or higher-order relations, and conflicting definitions.  It does
+/// not infer an indexing convention from phrases such as "first term".
+pub fn parse_prose_recurrence(source: &str) -> Result<ProseRecurrenceRequest, RecurrenceFailure> {
+    let lower = source.to_ascii_lowercase();
+    if !looks_like_recurrence(source) {
+        return Err(RecurrenceFailure::DefinitionNotIdentified);
+    }
+    if [
+        "closed form",
+        "derive the formula",
+        "find a formula",
+        "verify the candidate",
+        "prove that",
+    ]
+    .iter()
+    .any(|marker| lower.contains(marker))
+    {
+        return Err(RecurrenceFailure::UnsupportedTarget);
+    }
+    if lower.contains("a_n^2")
+        || lower.contains("a_n*a_n")
+        || lower.contains("a[n]*a[n]")
+        || lower.contains("sin(")
+        || lower.contains("cos(")
+    {
+        return Err(RecurrenceFailure::UnsupportedImplicitRecurrence);
+    }
+
+    let target_re = Regex::new(r"(?i)(?:at|for|when)\s+n\s*=\s*(-?\d+)").unwrap();
+    let target_index = target_re
+        .captures(source)
+        .and_then(|captures| captures.get(1))
+        .and_then(|capture| parse_i128(capture.as_str()))
+        .and_then(|value| i64::try_from(value).ok())
+        .ok_or(RecurrenceFailure::AmbiguousIndexing)?;
+
+    // Remove presentation punctuation so a_n, a_(n), a_{n}, and a[n] share
+    // one canonical grammar while preserving +/- signs and digits.
+    let compact: String = lower
+        .chars()
+        .filter(|character| !character.is_whitespace())
+        .filter(|character| !matches!(character, '{' | '}' | '(' | ')' | '[' | ']' | '*'))
+        .collect();
+    let relation_re = Regex::new(r"a_n(?:\+1|n\+1)=([+-]?\d+)?a_n(?:([+-]\d+))?").unwrap();
+    let backward_re = Regex::new(r"a_n=([+-]?\d+)?a_n-1(?:([+-]\d+))?").unwrap();
+    let mut relation: Option<(i128, i128)> = None;
+    for captures in relation_re.captures_iter(&compact) {
+        let coefficient = captures
+            .get(1)
+            .and_then(|capture| parse_i128(capture.as_str()))
+            .unwrap_or(1);
+        let offset = captures
+            .get(2)
+            .and_then(|capture| parse_i128(capture.as_str()))
+            .unwrap_or(0);
+        if relation.is_some_and(|existing| existing != (coefficient, offset)) {
+            return Err(RecurrenceFailure::ConflictingDefinitions);
+        }
+        relation = Some((coefficient, offset));
+    }
+    for captures in backward_re.captures_iter(&compact) {
+        let coefficient = captures
+            .get(1)
+            .and_then(|capture| parse_i128(capture.as_str()))
+            .unwrap_or(1);
+        let offset = captures
+            .get(2)
+            .and_then(|capture| parse_i128(capture.as_str()))
+            .unwrap_or(0);
+        if relation.is_some_and(|existing| existing != (coefficient, offset)) {
+            return Err(RecurrenceFailure::ConflictingDefinitions);
+        }
+        relation = Some((coefficient, offset));
+    }
+    let (coefficient, offset) = relation.ok_or(RecurrenceFailure::DefinitionNotIdentified)?;
+
+    let initial_re = Regex::new(r"a_(-?\d+)=([+-]?\d+)").unwrap();
+    let mut initial_conditions = Vec::new();
+    for captures in initial_re.captures_iter(&compact) {
+        let index = parse_i128(captures.get(1).unwrap().as_str())
+            .and_then(|value| i64::try_from(value).ok())
+            .ok_or(RecurrenceFailure::DefinitionNotIdentified)?;
+        let value = parse_i128(captures.get(2).unwrap().as_str())
+            .ok_or(RecurrenceFailure::DefinitionNotIdentified)?;
+        if initial_conditions
+            .iter()
+            .any(|existing: &InitialCondition| {
+                existing.index == index && existing.value != ExactNumber::Integer(value)
+            })
+        {
+            return Err(RecurrenceFailure::ConflictingDefinitions);
+        }
+        if !initial_conditions
+            .iter()
+            .any(|existing: &InitialCondition| existing.index == index)
+        {
+            initial_conditions.push(InitialCondition {
+                index,
+                value: ExactNumber::Integer(value),
+                source_fragment: captures.get(0).unwrap().as_str().to_string(),
+            });
+        }
+    }
+    if initial_conditions.is_empty() {
+        return Err(RecurrenceFailure::InitialConditionMissing);
+    }
+    if compact.contains("a_n-2=") || compact.contains("a_n+2=") {
+        return Err(RecurrenceFailure::UnsupportedOrder);
+    }
+
+    let target = RecurrenceTarget::ValueAt {
+        index: target_index,
+    };
+    let definition = RecurrenceDefinition {
+        sequence: "a".into(),
+        index_variable: "n".into(),
+        index_domain: IndexDomain::NonNegative,
+        relation: RecurrenceRelation::ExplicitAffine {
+            coefficient: ExactNumber::Integer(coefficient),
+            offset: ExactNumber::Integer(offset),
+        },
+        initial_conditions,
+        quantification: "for all n >= 0".into(),
+        provenance: DefinitionProvenance::PromptSupplied {
+            fragments: vec![source.trim().to_string()],
+            normalized_hash: compact,
+        },
+    };
+    Ok(ProseRecurrenceRequest {
+        definition,
+        target,
+        contract: RecurrenceContract::default(),
+    })
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -272,6 +440,19 @@ impl RecurrenceDefinition {
             },
         })
     }
+}
+
+/// Replay a recurrence receipt from the original typed definition.  Any
+/// changed step, target, or final result makes the receipt invalid.
+pub fn replay_recurrence(
+    definition: &RecurrenceDefinition,
+    target: RecurrenceTarget,
+    contract: RecurrenceContract,
+    receipt: &RecurrenceExecutionReceipt,
+) -> bool {
+    definition
+        .execute(target, contract)
+        .is_ok_and(|answer| answer.receipt == *receipt)
 }
 
 // ---- Manual review of the four heuristic recurrence candidates ---------
@@ -530,5 +711,47 @@ mod tests {
                 .count(),
             1
         );
+    }
+
+    #[test]
+    fn prose_affine_recurrence_parses_and_executes() {
+        let request = parse_prose_recurrence(
+            "Given a_0 = 2 and a_(n+1) = 3*a_n + 1, evaluate the recurrence at n = 5.",
+        )
+        .unwrap();
+        let answer = request
+            .definition
+            .execute(request.target, request.contract)
+            .unwrap();
+        assert_eq!(answer.value.format(), "607");
+        assert!(answer.receipt.steps.iter().all(|step| step.replay_verified));
+    }
+
+    #[test]
+    fn prose_recurrence_rejects_ambiguous_or_unsupported_targets() {
+        assert_eq!(
+            parse_prose_recurrence("The sequence has a_0 = 2 and a_(n+1) = 3a_n + 1.").unwrap_err(),
+            RecurrenceFailure::AmbiguousIndexing
+        );
+        assert_eq!(
+            parse_prose_recurrence(
+                "Given a_0 = 2 and a_(n+1) = a_n^2, derive the closed form at n = 5."
+            )
+            .unwrap_err(),
+            RecurrenceFailure::UnsupportedTarget
+        );
+    }
+
+    #[test]
+    fn shifted_index_rewrite_has_the_same_value() {
+        let zero =
+            parse_prose_recurrence("Given a_0 = 2 and a_(n+1) = 3a_n + 1, evaluate at n = 5.")
+                .unwrap();
+        let one =
+            parse_prose_recurrence("Given a_1 = 2 and a_(n+1) = 3a_n + 1, evaluate at n = 6.")
+                .unwrap();
+        let first = zero.definition.execute(zero.target, zero.contract).unwrap();
+        let second = one.definition.execute(one.target, one.contract).unwrap();
+        assert_eq!(first.value, second.value);
     }
 }

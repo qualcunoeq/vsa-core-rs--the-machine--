@@ -6165,1207 +6165,1207 @@
     {
       "id": "mixed-ood-0770",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = -1a_n + -3, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-190"
     },
     {
       "id": "mixed-ood-0771",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = -1a_n + -3; evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-190"
     },
     {
       "id": "mixed-ood-0772",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 0a_n + -2, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-191"
     },
     {
       "id": "mixed-ood-0773",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = 0a_n + -2; evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-191"
     },
     {
       "id": "mixed-ood-0774",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = a_n + -1, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-192"
     },
     {
       "id": "mixed-ood-0775",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = a_n + -1; evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-192"
     },
     {
       "id": "mixed-ood-0776",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 2a_n + 0, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-193"
     },
     {
       "id": "mixed-ood-0777",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = 2a_n + 0; evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-193"
     },
     {
       "id": "mixed-ood-0778",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = -1a_n + 1, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-194"
     },
     {
       "id": "mixed-ood-0779",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = -1a_n + 1; evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-194"
     },
     {
       "id": "mixed-ood-0780",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 0a_n + 2, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-195"
     },
     {
       "id": "mixed-ood-0781",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = 1 and a_(n+1) = 0a_n + 2; evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-195"
     },
     {
       "id": "mixed-ood-0782",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n + 3, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-196"
     },
     {
       "id": "mixed-ood-0783",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = 2 and a_(n+1) = a_n + 3; evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-196"
     },
     {
       "id": "mixed-ood-0784",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + -3, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-197"
     },
     {
       "id": "mixed-ood-0785",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = 3 and a_(n+1) = 2a_n + -3; evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-197"
     },
     {
       "id": "mixed-ood-0786",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = -1a_n + -2, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-198"
     },
     {
       "id": "mixed-ood-0787",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = 4 and a_(n+1) = -1a_n + -2; evaluate at n = 9.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-198"
     },
     {
       "id": "mixed-ood-0788",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 0a_n + -1, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-199"
     },
     {
       "id": "mixed-ood-0789",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = 0a_n + -1; evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-199"
     },
     {
       "id": "mixed-ood-0790",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = a_n + 0, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-200"
     },
     {
       "id": "mixed-ood-0791",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = a_n + 0; evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-200"
     },
     {
       "id": "mixed-ood-0792",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = 2a_n + 1, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-201"
     },
     {
       "id": "mixed-ood-0793",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = 2a_n + 1; evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-201"
     },
     {
       "id": "mixed-ood-0794",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = -1a_n + 2, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-202"
     },
     {
       "id": "mixed-ood-0795",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = -1a_n + 2; evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-202"
     },
     {
       "id": "mixed-ood-0796",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 0a_n + 3, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-203"
     },
     {
       "id": "mixed-ood-0797",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = 0a_n + 3; evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-203"
     },
     {
       "id": "mixed-ood-0798",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n + -3, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-204"
     },
     {
       "id": "mixed-ood-0799",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = 1 and a_(n+1) = a_n + -3; evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-204"
     },
     {
       "id": "mixed-ood-0800",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + -2, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-205"
     },
     {
       "id": "mixed-ood-0801",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = 2 and a_(n+1) = 2a_n + -2; evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-205"
     },
     {
       "id": "mixed-ood-0802",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = -1a_n + -1, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-206"
     },
     {
       "id": "mixed-ood-0803",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = 3 and a_(n+1) = -1a_n + -1; evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-206"
     },
     {
       "id": "mixed-ood-0804",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 0a_n + 0, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-207"
     },
     {
       "id": "mixed-ood-0805",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = 4 and a_(n+1) = 0a_n + 0; evaluate at n = 9.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-207"
     },
     {
       "id": "mixed-ood-0806",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = a_n + 1, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-208"
     },
     {
       "id": "mixed-ood-0807",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = a_n + 1; evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-208"
     },
     {
       "id": "mixed-ood-0808",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 2a_n + 2, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-209"
     },
     {
       "id": "mixed-ood-0809",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = 2a_n + 2; evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-209"
     },
     {
       "id": "mixed-ood-0810",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = -1a_n + 3, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-210"
     },
     {
       "id": "mixed-ood-0811",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = -1a_n + 3; evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-210"
     },
     {
       "id": "mixed-ood-0812",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 0a_n + -3, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-211"
     },
     {
       "id": "mixed-ood-0813",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = 0a_n + -3; evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-211"
     },
     {
       "id": "mixed-ood-0814",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = a_n + -2, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-212"
     },
     {
       "id": "mixed-ood-0815",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = a_n + -2; evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-212"
     },
     {
       "id": "mixed-ood-0816",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + -1, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-213"
     },
     {
       "id": "mixed-ood-0817",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = 1 and a_(n+1) = 2a_n + -1; evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-213"
     },
     {
       "id": "mixed-ood-0818",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = -1a_n + 0, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-214"
     },
     {
       "id": "mixed-ood-0819",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = 2 and a_(n+1) = -1a_n + 0; evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-214"
     },
     {
       "id": "mixed-ood-0820",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 0a_n + 1, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-215"
     },
     {
       "id": "mixed-ood-0821",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = 3 and a_(n+1) = 0a_n + 1; evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-215"
     },
     {
       "id": "mixed-ood-0822",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n + 2, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-216"
     },
     {
       "id": "mixed-ood-0823",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = 4 and a_(n+1) = a_n + 2; evaluate at n = 9.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-216"
     },
     {
       "id": "mixed-ood-0824",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 2a_n + 3, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-217"
     },
     {
       "id": "mixed-ood-0825",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = 2a_n + 3; evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-217"
     },
     {
       "id": "mixed-ood-0826",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = -1a_n + -3, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-218"
     },
     {
       "id": "mixed-ood-0827",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = -1a_n + -3; evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-218"
     },
     {
       "id": "mixed-ood-0828",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = 0a_n + -2, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-219"
     },
     {
       "id": "mixed-ood-0829",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = 0a_n + -2; evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-219"
     },
     {
       "id": "mixed-ood-0830",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = a_n + -1, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-220"
     },
     {
       "id": "mixed-ood-0831",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = a_n + -1; evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-220"
     },
     {
       "id": "mixed-ood-0832",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 0, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-221"
     },
     {
       "id": "mixed-ood-0833",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = 2a_n + 0; evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-221"
     },
     {
       "id": "mixed-ood-0834",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = -1a_n + 1, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-222"
     },
     {
       "id": "mixed-ood-0835",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = 1 and a_(n+1) = -1a_n + 1; evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-222"
     },
     {
       "id": "mixed-ood-0836",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 0a_n + 2, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-223"
     },
     {
       "id": "mixed-ood-0837",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = 2 and a_(n+1) = 0a_n + 2; evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-223"
     },
     {
       "id": "mixed-ood-0838",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n + 3, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-224"
     },
     {
       "id": "mixed-ood-0839",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = 3 and a_(n+1) = a_n + 3; evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-224"
     },
     {
       "id": "mixed-ood-0840",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + -3, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-225"
     },
     {
       "id": "mixed-ood-0841",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = 4 and a_(n+1) = 2a_n + -3; evaluate at n = 9.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-225"
     },
     {
       "id": "mixed-ood-0842",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = -1a_n + -2, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-226"
     },
     {
       "id": "mixed-ood-0843",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = -1a_n + -2; evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-226"
     },
     {
       "id": "mixed-ood-0844",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 0a_n + -1, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-227"
     },
     {
       "id": "mixed-ood-0845",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = 0a_n + -1; evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-227"
     },
     {
       "id": "mixed-ood-0846",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = a_n + 0, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-228"
     },
     {
       "id": "mixed-ood-0847",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = a_n + 0; evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-228"
     },
     {
       "id": "mixed-ood-0848",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 2a_n + 1, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-229"
     },
     {
       "id": "mixed-ood-0849",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = 2a_n + 1; evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-229"
     },
     {
       "id": "mixed-ood-0850",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = -1a_n + 2, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-230"
     },
     {
       "id": "mixed-ood-0851",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = -1a_n + 2; evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-230"
     },
     {
       "id": "mixed-ood-0852",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 0a_n + 3, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-231"
     },
     {
       "id": "mixed-ood-0853",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = 1 and a_(n+1) = 0a_n + 3; evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-231"
     },
     {
       "id": "mixed-ood-0854",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n + -3, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-232"
     },
     {
       "id": "mixed-ood-0855",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = 2 and a_(n+1) = a_n + -3; evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-232"
     },
     {
       "id": "mixed-ood-0856",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + -2, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-233"
     },
     {
       "id": "mixed-ood-0857",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = 3 and a_(n+1) = 2a_n + -2; evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-233"
     },
     {
       "id": "mixed-ood-0858",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = -1a_n + -1, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-234"
     },
     {
       "id": "mixed-ood-0859",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = 4 and a_(n+1) = -1a_n + -1; evaluate at n = 9.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-234"
     },
     {
       "id": "mixed-ood-0860",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 0a_n + 0, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-235"
     },
     {
       "id": "mixed-ood-0861",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = -4 and a_(n+1) = 0a_n + 0; evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-235"
     },
     {
       "id": "mixed-ood-0862",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = a_n + 1, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-236"
     },
     {
       "id": "mixed-ood-0863",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The sequence has a_1 = -3 and a_(n+1) = a_n + 1; evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-236"
     },
     {
       "id": "mixed-ood-0864",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = 2a_n + 2, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-237"
     },
     {
       "id": "mixed-ood-0865",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The sequence has a_1 = -2 and a_(n+1) = 2a_n + 2; evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-237"
     },
     {
       "id": "mixed-ood-0866",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = -1a_n + 3, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-238"
     },
     {
       "id": "mixed-ood-0867",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The sequence has a_1 = -1 and a_(n+1) = -1a_n + 3; evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-238"
     },
     {
       "id": "mixed-ood-0868",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 0a_n + -3, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-239"
     },
     {
       "id": "mixed-ood-0869",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The sequence has a_1 = 0 and a_(n+1) = 0a_n + -3; evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
-      "pair_id": null
+      "should_authorize": true,
+      "pair_id": "rewrite-239"
     },
     {
       "id": "mixed-ood-0870",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n + -2, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0871",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + -1, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0872",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = -1a_n + 0, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0873",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 0a_n + 1, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0874",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = a_n + 2, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0875",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 2a_n + 3, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0876",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = -1a_n + -3, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0877",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 0a_n + -2, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0878",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = a_n + -1, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0879",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 0, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0880",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = -1a_n + 1, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0881",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 0a_n + 2, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0882",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n + 3, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0883",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 2a_n + -3, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0884",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = -1a_n + -2, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0885",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = 0a_n + -1, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0886",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = a_n + 0, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0887",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0888",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = -1a_n + 2, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0889",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 0a_n + 3, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0890",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = a_n + -3, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0891",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + -2, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0892",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = -1a_n + -1, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0893",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 0a_n + 0, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0894",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = a_n + 1, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0895",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 2a_n + 2, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0896",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = -1a_n + 3, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0897",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 0a_n + -3, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0898",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = a_n + -2, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0899",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + -1, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0900",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = -1a_n + 0, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0901",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 0a_n + 1, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0902",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = a_n + 2, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0903",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = 2a_n + 3, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0904",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = -1a_n + -3, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0905",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 0a_n + -2, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0906",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = a_n + -1, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0907",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 0, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0908",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = -1a_n + 1, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0909",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 0a_n + 2, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0910",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = a_n + 3, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0911",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "Given a_0 = -3 and a_(n+1) = 2a_n + -3, evaluate at n = 1.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0912",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = -2 and a_(n+1) = -1a_n + -2, evaluate at n = 2.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0913",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "Given a_0 = -1 and a_(n+1) = 0a_n + -1, evaluate at n = 3.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0914",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = a_n + 0, evaluate at n = 4.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0915",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate at n = 5.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0916",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = -1a_n + 2, evaluate at n = 6.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0917",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 0a_n + 3, evaluate at n = 7.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0918",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = a_n + -3, evaluate at n = 8.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0919",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "Given a_0 = -4 and a_(n+1) = 2a_n + -2, evaluate at n = 0.",
       "expected_route": "math",
-      "should_authorize": false,
+      "should_authorize": true,
       "pair_id": null
     },
     {
       "id": "mixed-ood-0920",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 2.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7373,7 +7373,7 @@
     {
       "id": "mixed-ood-0921",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 3.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7381,7 +7381,7 @@
     {
       "id": "mixed-ood-0922",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 4.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7389,7 +7389,7 @@
     {
       "id": "mixed-ood-0923",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 5.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7397,7 +7397,7 @@
     {
       "id": "mixed-ood-0924",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 6.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7405,7 +7405,7 @@
     {
       "id": "mixed-ood-0925",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 7.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7413,7 +7413,7 @@
     {
       "id": "mixed-ood-0926",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 8.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7421,7 +7421,7 @@
     {
       "id": "mixed-ood-0927",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 9.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7429,7 +7429,7 @@
     {
       "id": "mixed-ood-0928",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 2.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7437,7 +7437,7 @@
     {
       "id": "mixed-ood-0929",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 3.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7445,7 +7445,7 @@
     {
       "id": "mixed-ood-0930",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 4.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7453,7 +7453,7 @@
     {
       "id": "mixed-ood-0931",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 5.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7461,7 +7461,7 @@
     {
       "id": "mixed-ood-0932",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 6.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7469,7 +7469,7 @@
     {
       "id": "mixed-ood-0933",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 7.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7477,7 +7477,7 @@
     {
       "id": "mixed-ood-0934",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 8.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7485,7 +7485,7 @@
     {
       "id": "mixed-ood-0935",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 9.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7493,7 +7493,7 @@
     {
       "id": "mixed-ood-0936",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 2.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7501,7 +7501,7 @@
     {
       "id": "mixed-ood-0937",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 3.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7509,7 +7509,7 @@
     {
       "id": "mixed-ood-0938",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 4.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7517,7 +7517,7 @@
     {
       "id": "mixed-ood-0939",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 5.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7525,7 +7525,7 @@
     {
       "id": "mixed-ood-0940",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 6.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7533,7 +7533,7 @@
     {
       "id": "mixed-ood-0941",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 7.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7541,7 +7541,7 @@
     {
       "id": "mixed-ood-0942",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 8.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7549,7 +7549,7 @@
     {
       "id": "mixed-ood-0943",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 9.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7557,7 +7557,7 @@
     {
       "id": "mixed-ood-0944",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 2.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7565,7 +7565,7 @@
     {
       "id": "mixed-ood-0945",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 3.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7573,7 +7573,7 @@
     {
       "id": "mixed-ood-0946",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 4.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7581,7 +7581,7 @@
     {
       "id": "mixed-ood-0947",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 5.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7589,7 +7589,7 @@
     {
       "id": "mixed-ood-0948",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 6.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7597,7 +7597,7 @@
     {
       "id": "mixed-ood-0949",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 7.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7605,7 +7605,7 @@
     {
       "id": "mixed-ood-0950",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 8.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7613,7 +7613,7 @@
     {
       "id": "mixed-ood-0951",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 9.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7621,7 +7621,7 @@
     {
       "id": "mixed-ood-0952",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 2.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7629,7 +7629,7 @@
     {
       "id": "mixed-ood-0953",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 3.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7637,7 +7637,7 @@
     {
       "id": "mixed-ood-0954",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 4.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7645,7 +7645,7 @@
     {
       "id": "mixed-ood-0955",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 5.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7653,7 +7653,7 @@
     {
       "id": "mixed-ood-0956",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 6.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7661,7 +7661,7 @@
     {
       "id": "mixed-ood-0957",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 7.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7669,7 +7669,7 @@
     {
       "id": "mixed-ood-0958",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 8.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7677,7 +7677,7 @@
     {
       "id": "mixed-ood-0959",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 9.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7685,7 +7685,7 @@
     {
       "id": "mixed-ood-0960",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 2.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7693,7 +7693,7 @@
     {
       "id": "mixed-ood-0961",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 3.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7701,7 +7701,7 @@
     {
       "id": "mixed-ood-0962",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 4.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7709,7 +7709,7 @@
     {
       "id": "mixed-ood-0963",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 5.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7717,7 +7717,7 @@
     {
       "id": "mixed-ood-0964",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 6.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7725,7 +7725,7 @@
     {
       "id": "mixed-ood-0965",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 7.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7733,7 +7733,7 @@
     {
       "id": "mixed-ood-0966",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 8.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7741,7 +7741,7 @@
     {
       "id": "mixed-ood-0967",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 9.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7749,7 +7749,7 @@
     {
       "id": "mixed-ood-0968",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 2.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7757,7 +7757,7 @@
     {
       "id": "mixed-ood-0969",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 3.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7765,7 +7765,7 @@
     {
       "id": "mixed-ood-0970",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 4.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7773,7 +7773,7 @@
     {
       "id": "mixed-ood-0971",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 5.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7781,7 +7781,7 @@
     {
       "id": "mixed-ood-0972",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 6.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7789,7 +7789,7 @@
     {
       "id": "mixed-ood-0973",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 7.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7797,7 +7797,7 @@
     {
       "id": "mixed-ood-0974",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 8.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7805,7 +7805,7 @@
     {
       "id": "mixed-ood-0975",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 9.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7813,7 +7813,7 @@
     {
       "id": "mixed-ood-0976",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 2.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7821,7 +7821,7 @@
     {
       "id": "mixed-ood-0977",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "The recurrence a_(n+1) = 1a_n + 2 is evaluated at n = 3.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7829,7 +7829,7 @@
     {
       "id": "mixed-ood-0978",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "The recurrence a_(n+1) = 2a_n + 2 is evaluated at n = 4.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7837,7 +7837,7 @@
     {
       "id": "mixed-ood-0979",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "The recurrence a_(n+1) = 3a_n + 2 is evaluated at n = 5.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7845,7 +7845,7 @@
     {
       "id": "mixed-ood-0980",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7853,7 +7853,7 @@
     {
       "id": "mixed-ood-0981",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7861,7 +7861,7 @@
     {
       "id": "mixed-ood-0982",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7869,7 +7869,7 @@
     {
       "id": "mixed-ood-0983",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7877,7 +7877,7 @@
     {
       "id": "mixed-ood-0984",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7885,7 +7885,7 @@
     {
       "id": "mixed-ood-0985",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7893,7 +7893,7 @@
     {
       "id": "mixed-ood-0986",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7901,7 +7901,7 @@
     {
       "id": "mixed-ood-0987",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7909,7 +7909,7 @@
     {
       "id": "mixed-ood-0988",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7917,7 +7917,7 @@
     {
       "id": "mixed-ood-0989",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7925,7 +7925,7 @@
     {
       "id": "mixed-ood-0990",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7933,7 +7933,7 @@
     {
       "id": "mixed-ood-0991",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7941,7 +7941,7 @@
     {
       "id": "mixed-ood-0992",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 8.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7949,7 +7949,7 @@
     {
       "id": "mixed-ood-0993",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 9.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7957,7 +7957,7 @@
     {
       "id": "mixed-ood-0994",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 2.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7965,7 +7965,7 @@
     {
       "id": "mixed-ood-0995",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 1, a_n = a_(n-1) + 2 at n = 3.",
+      "prompt": "Given a_0 = 0 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7973,7 +7973,7 @@
     {
       "id": "mixed-ood-0996",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 2, a_n = a_(n-1) + 2 at n = 4.",
+      "prompt": "Given a_0 = 1 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7981,7 +7981,7 @@
     {
       "id": "mixed-ood-0997",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 3, a_n = a_(n-1) + 2 at n = 5.",
+      "prompt": "Given a_0 = 2 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7989,7 +7989,7 @@
     {
       "id": "mixed-ood-0998",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 4, a_n = a_(n-1) + 2 at n = 6.",
+      "prompt": "Given a_0 = 3 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null
@@ -7997,7 +7997,7 @@
     {
       "id": "mixed-ood-0999",
       "domain": "recurrence",
-      "prompt": "Evaluate the recurrence a_0 = 5, a_n = a_(n-1) + 2 at n = 7.",
+      "prompt": "Given a_0 = 4 and a_(n+1) = 2a_n + 1, evaluate the recurrence.",
       "expected_route": "math",
       "should_authorize": false,
       "pair_id": null

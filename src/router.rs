@@ -1333,8 +1333,14 @@ impl QuestionRouter {
         let math_first = matches!(domain, Tool::Math | Tool::Physics | Tool::FactualQA);
         let system_like = stem.to_ascii_lowercase().contains("solve system")
             || (problem.equations.len() >= 2 && stem.to_ascii_lowercase().contains("for x,y"));
+        let recurrence_like = crate::recurrence::looks_like_recurrence(&stem);
+        let recurrence_specialist = recurrence_like
+            .then(|| Self::answer_recurrence(&stem))
+            .flatten();
         let typed_algebra = if math_first {
-            if system_like {
+            if recurrence_like {
+                None
+            } else if system_like {
                 // A generic algebra recognizer must not solve one equation
                 // from a multi-equation prompt.  Classify the complete
                 // system first; only a unique system may cross the answer
@@ -1375,11 +1381,18 @@ impl QuestionRouter {
                     }
                     _ => answer.answer,
                 })
-                .or_else(|| (!system_like).then(|| Self::safe_math_answer(&stem)).flatten())
+                .or_else(|| {
+                    (!system_like && !recurrence_like)
+                        .then(|| Self::safe_math_answer(&stem))
+                        .flatten()
+                })
         } else {
             None
         };
-        let raw = if let Some(answer) = math_answer {
+        let raw = if let Some(result) = recurrence_specialist {
+            attempts.push("RecurrenceEngine: solved and replay-verified".to_string());
+            Some(result)
+        } else if let Some(answer) = math_answer {
             attempts.push("MathEngine: solved".to_string());
             let mut evidence = vec![VerificationEvidence::DirectDerivation {
                 method: if typed_algebra_used {
@@ -2066,6 +2079,33 @@ impl QuestionRouter {
         Some(SpecialistAnswer {
             answer: Self::normalize_specialist_answer(&answer),
             evidence,
+            planned_derivation: None,
+            execution_receipt: None,
+            depth_two_plan: None,
+            plan_execution_receipt: None,
+        })
+    }
+
+    fn answer_recurrence(stem: &str) -> Option<SpecialistAnswer> {
+        let request = crate::recurrence::parse_prose_recurrence(stem).ok()?;
+        let answer = request
+            .definition
+            .execute(request.target, request.contract)
+            .ok()?;
+        let replayed_steps = answer.receipt.steps.iter().all(|step| step.replay_verified);
+        replayed_steps.then(|| SpecialistAnswer {
+            answer: answer.value.format(),
+            evidence: vec![
+                VerificationEvidence::DirectDerivation {
+                    method: "bounded exact affine recurrence unrolling".to_string(),
+                },
+                VerificationEvidence::ExecutableCheck {
+                    check: format!(
+                        "{} recurrence steps independently replayed",
+                        answer.receipt.steps.len()
+                    ),
+                },
+            ],
             planned_derivation: None,
             execution_receipt: None,
             depth_two_plan: None,
@@ -3522,6 +3562,10 @@ impl QuestionRouter {
     fn is_math(question: &str) -> bool {
         let lower = question.to_lowercase();
 
+        if crate::recurrence::looks_like_recurrence(question) {
+            return true;
+        }
+
         // Direct math computation triggers (same as MathEngine patterns)
         let math_triggers = [
             "derivative",
@@ -3587,6 +3631,26 @@ mod tests {
     fn test_route_physics_orbital() {
         let q = "Calculate the orbital radius of a satellite with period T = 12 hours";
         assert_eq!(QuestionRouter::route(q), Tool::Physics);
+    }
+
+    #[test]
+    fn prose_recurrence_routes_to_exact_verified_executor() {
+        let q = "Given a_0 = 2 and a_(n+1) = 3a_n + 1, evaluate at n = 5.";
+        let result = QuestionRouter::orchestrate(q);
+        assert_eq!(QuestionRouter::route(q), Tool::Math);
+        assert_eq!(result.answer.as_deref(), Some("607"));
+        assert!(result.evidence.iter().any(|e| matches!(
+            e,
+            VerificationEvidence::ExecutableCheck { .. }
+        )));
+    }
+
+    #[test]
+    fn recurrence_boundary_abstains_without_unique_target() {
+        let q = "Given a_0 = 2 and a_(n+1) = 3a_n + 1, evaluate the recurrence.";
+        let result = QuestionRouter::orchestrate(q);
+        assert_eq!(QuestionRouter::route(q), Tool::Math);
+        assert!(result.answer.is_none());
     }
 
     #[test]

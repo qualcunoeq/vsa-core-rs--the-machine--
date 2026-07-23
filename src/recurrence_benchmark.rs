@@ -197,6 +197,7 @@ fn generated_cases(count: usize, seed: u64) -> Vec<RecurrenceCase> {
 
 fn failure_label(failure: &RecurrenceFailure) -> &'static str {
     match failure {
+        RecurrenceFailure::AmbiguousIndexing => "ambiguous_indexing",
         RecurrenceFailure::InitialConditionMissing => "initial_condition_missing",
         RecurrenceFailure::ConflictingDefinitions => "conflicting_definitions",
         RecurrenceFailure::UnrollLimitExceeded => "unroll_limit_exceeded",

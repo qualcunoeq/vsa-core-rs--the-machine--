@@ -307,6 +307,12 @@ mod tests {
         assert_eq!(receipt.stage_one_artifact, "67");
         assert_eq!(receipt.stage_two_artifact, "71");
         assert!(replay_composition(&case, &receipt));
+        let mut tampered_first_boundary = receipt.clone();
+        tampered_first_boundary.stage_one_artifact.push('x');
+        assert!(!replay_composition(&case, &tampered_first_boundary));
+        let mut tampered_second_boundary = receipt.clone();
+        tampered_second_boundary.stage_two_artifact.push('x');
+        assert!(!replay_composition(&case, &tampered_second_boundary));
         let mut forged = case.clone();
         forged.tamper_intermediate = true;
         assert!(matches!(execute_case(&forged), Err(CompositionFailure::ForgedIntermediate)));

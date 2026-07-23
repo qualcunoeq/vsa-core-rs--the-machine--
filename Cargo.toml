@@ -88,6 +88,10 @@ name = "cross_vertical_bench"
 path = "src/bin/cross_vertical_bench.rs"
 
 [[bin]]
+name = "integrated_bench"
+path = "src/bin/integrated_bench.rs"
+
+[[bin]]
 name = "governed_bench"
 path = "src/bin/governed_bench.rs"
 

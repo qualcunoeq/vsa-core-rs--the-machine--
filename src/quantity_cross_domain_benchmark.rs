@@ -8,6 +8,9 @@
 //! registry.
 
 use crate::fractional_quantity::{formalize as formalize_fraction, FractionalQuantityDecision};
+use crate::multi_step_quantity::{
+    execute as execute_multi_step, formalize as formalize_multi_step, MultiStepDecision,
+};
 use crate::quantity_relation::{formalize as formalize_quantity, QuantityRelationDecision};
 use crate::quantity_relation_integration::{bridge_ratio_to_linear_system, bridge_to_algebra};
 use crate::unit_aware_quantity::{formalize as formalize_unit, UnitQuantityDecision};
@@ -23,6 +26,7 @@ pub enum RouteKind {
     UnitToAlgebra,
     UnitToSystem,
     FractionToAlgebra,
+    MultiStepToAlgebra,
     UnsupportedHandoff,
 }
 
@@ -184,6 +188,16 @@ fn execute_route(candidate: &RouteCandidate) -> Result<RouteOutcome, RouteFailur
                 .ok_or(RouteFailure::ReplayFailed)?;
             receipt.algebra_replay_verified.then_some(receipt.result)
         }
+        RouteKind::MultiStepToAlgebra => {
+            let MultiStepDecision::Accepted(plan) = formalize_multi_step(&candidate.prompt) else {
+                return Err(RouteFailure::Unsupported);
+            };
+            let receipt = execute_multi_step(&plan).ok_or(RouteFailure::ReplayFailed)?;
+            if !receipt.replay_verified {
+                return Err(RouteFailure::ReplayFailed);
+            }
+            Some(receipt.final_result)
+        }
         RouteKind::UnsupportedHandoff => return Err(RouteFailure::InvalidHandoff),
     }
     .ok_or(RouteFailure::ReplayFailed)?;
@@ -270,7 +284,9 @@ pub fn evaluate(corpus: &CrossDomainCorpus) -> CrossDomainReport {
                 .is_some_and(|expected| expected != result)
             {
                 metrics.route_failures += 1;
-                *failures.entry("result_mismatch".to_string()).or_default() += 1;
+                *failures
+                    .entry(format!("result_mismatch:{}", task.id))
+                    .or_default() += 1;
             }
         } else if task.should_authorize {
             *failures.entry(format!("{}:no_route", task.id)).or_default() += 1;
@@ -278,7 +294,9 @@ pub fn evaluate(corpus: &CrossDomainCorpus) -> CrossDomainReport {
         metrics.invalid_handoffs_rejected += task
             .candidates
             .iter()
-            .filter(|candidate| matches!(candidate.kind, RouteKind::UnsupportedHandoff))
+            .filter(|candidate| {
+                matches!(execute_route(candidate), Err(RouteFailure::InvalidHandoff))
+            })
             .count();
         outcomes.push((task, decision));
     }

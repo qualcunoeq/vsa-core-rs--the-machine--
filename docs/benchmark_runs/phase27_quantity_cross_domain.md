@@ -31,7 +31,7 @@ Release-mode output:
 
 ```text
 cases=25 authorized=16 correct_decisions=25 false_auth=0 false_denials=0
-intermediate_replays=16 final_replays=16 invalid_handoffs_rejected=3
+intermediate_replays=16 final_replays=16 invalid_handoffs_rejected=4
 route_failures=0 ambiguous=2 rewrite_decisions=2/2 rewrite_results=2/2
 regressions=0 deterministic=true
 ```

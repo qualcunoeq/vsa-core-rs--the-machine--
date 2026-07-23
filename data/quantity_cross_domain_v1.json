@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "oracle": "independent typed-route oracle; diagnostic-only",
+  "cases": [
+    {"id":"qa01","candidates":[{"id":"quantity-algebra","kind":"quantity_to_algebra","prompt":"5 notebooks cost 20 dollars. What is the price per notebook?","cost":2,"support":90},{"id":"invalid","kind":"unsupported_handoff","prompt":"","cost":1,"support":999}],"expected":"4","should_authorize":true,"pair_id":"qa-price"},
+    {"id":"qa02","candidates":[{"id":"quantity-algebra","kind":"quantity_to_algebra","prompt":"There are 8 red counters plus 3 blue counters in the box. Find the total count.","cost":2,"support":90}],"expected":"11","should_authorize":true,"pair_id":"qa-total"},
+    {"id":"qa03","candidates":[{"id":"quantity-algebra","kind":"quantity_to_algebra","prompt":"After taking 3 liters from a container holding 10 liters, state the remaining volume.","cost":2,"support":88}],"expected":"7","should_authorize":true},
+    {"id":"qa04","candidates":[{"id":"quantity-algebra","kind":"quantity_to_algebra","prompt":"A quantity starts at 10 units and increases by 2 units. What is the final quantity?","cost":2,"support":88}],"expected":"12","should_authorize":true},
+    {"id":"qa05","candidates":[{"id":"quantity-system","kind":"quantity_to_system","prompt":"The ratio of red beads to blue beads is 2:3. If there are 8 red beads, how many blue beads are there?","cost":3,"support":70}],"expected":"{\"x\": \"8\", \"y\": \"12\"}","should_authorize":true},
+    {"id":"qa06","candidates":[{"id":"quantity-system","kind":"quantity_to_system","prompt":"For every 2 red beads there are 3 blue beads; the collection has 8 red beads. Find the blue count.","cost":3,"support":70}],"expected":"{\"x\": \"8\", \"y\": \"12\"}","should_authorize":true,"pair_id":"qa-ratio"},
+    {"id":"ua01","candidates":[{"id":"unit-algebra","kind":"unit_to_algebra","prompt":"Add 2 meters and 30 centimeters; express the total in centimeters.","cost":2,"support":85},{"id":"wrong-system","kind":"unsupported_handoff","prompt":"","cost":1,"support":999}],"expected":"230","should_authorize":true,"pair_id":"ua-length"},
+    {"id":"ua02","candidates":[{"id":"unit-algebra","kind":"unit_to_algebra","prompt":"Subtract 2 meters from 230 centimeters; express the difference in centimeters.","cost":2,"support":85}],"expected":"30","should_authorize":true},
+    {"id":"ua03","candidates":[{"id":"unit-algebra","kind":"unit_to_algebra","prompt":"Add 2 feet and 6 inches; express the total in inches.","cost":2,"support":82}],"expected":"30","should_authorize":true},
+    {"id":"ua04","candidates":[{"id":"unit-algebra","kind":"unit_to_algebra","prompt":"Convert 3 meters to centimeters using 100 centimeters per meter.","cost":2,"support":82}],"expected":"300","should_authorize":true,"pair_id":"ua-convert"},
+    {"id":"ua05","candidates":[{"id":"unit-algebra","kind":"unit_to_algebra","prompt":"Express 3 meters as centimeters, given 100 centimeters per meter.","cost":2,"support":82}],"expected":"300","should_authorize":true,"pair_id":"ua-convert"},
+    {"id":"us01","candidates":[{"id":"unit-system","kind":"unit_to_system","prompt":"Convert 3 meters to centimeters using 100 centimeters per meter.","cost":3,"support":75}],"expected":"{\"x\": \"3\", \"y\": \"300\"}","should_authorize":true},
+    {"id":"us02","candidates":[{"id":"unit-system","kind":"unit_to_system","prompt":"Express 4 liters as milliliters, given 1000 milliliters per liter.","cost":3,"support":75}],"expected":"{\"x\": \"4\", \"y\": \"4000\"}","should_authorize":true},
+    {"id":"fr01","candidates":[{"id":"fraction-algebra","kind":"fraction_to_algebra","prompt":"What is three quarters of 20?","cost":2,"support":80}],"expected":"15","should_authorize":true,"pair_id":"fr-part"},
+    {"id":"fr02","candidates":[{"id":"fraction-algebra","kind":"fraction_to_algebra","prompt":"What remains after removing 1/4 of 20?","cost":2,"support":80}],"expected":"15","should_authorize":true,"pair_id":"fr-part"},
+    {"id":"fr03","candidates":[{"id":"fraction-algebra","kind":"fraction_to_algebra","prompt":"One of 5 equal parts of 35.","cost":2,"support":78}],"expected":"7","should_authorize":true},
+    {"id":"amb01","candidates":[{"id":"quantity","kind":"quantity_to_algebra","prompt":"A vehicle travels quickly and the time is missing.","cost":1,"support":50}],"expected":null,"should_authorize":false},
+    {"id":"amb02","candidates":[{"id":"fraction","kind":"fraction_to_algebra","prompt":"What fraction of 50 is the result?","cost":1,"support":50}],"expected":null,"should_authorize":false},
+    {"id":"amb03","candidates":[{"id":"unit","kind":"unit_to_algebra","prompt":"Add 2 meters and an unspecified amount; express the total in centimeters.","cost":1,"support":50}],"expected":null,"should_authorize":false},
+    {"id":"uns01","candidates":[{"id":"fraction","kind":"fraction_to_algebra","prompt":"What is 20% of 50?","cost":1,"support":50}],"expected":null,"should_authorize":false},
+    {"id":"uns02","candidates":[{"id":"unit","kind":"unit_to_algebra","prompt":"Convert 5 miles to kilometers using the usual conversion.","cost":1,"support":50}],"expected":null,"should_authorize":false},
+    {"id":"uns03","candidates":[{"id":"quantity","kind":"quantity_to_algebra","prompt":"A price changes by 20% each year. What is the final price?","cost":1,"support":50}],"expected":null,"should_authorize":false},
+    {"id":"invalid01","candidates":[{"id":"unit-system","kind":"unit_to_system","prompt":"Add 2 meters and 30 centimeters; express the total in centimeters.","cost":1,"support":100}],"expected":null,"should_authorize":false},
+    {"id":"invalid02","candidates":[{"id":"quantity-system","kind":"quantity_to_system","prompt":"5 notebooks cost 20 dollars. What is the price per notebook?","cost":1,"support":100}],"expected":null,"should_authorize":false},
+    {"id":"invalid03","candidates":[{"id":"fraction","kind":"unsupported_handoff","prompt":"What is three quarters of 20?","cost":1,"support":100}],"expected":null,"should_authorize":false}
+  ]
+}

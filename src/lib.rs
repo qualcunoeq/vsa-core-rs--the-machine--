@@ -86,6 +86,7 @@ pub mod unit_aware_quantity;
 pub mod unit_quantity_composition;
 pub mod fractional_quantity;
 pub mod multi_step_quantity;
+pub mod quantity_cross_domain_benchmark;
 pub mod proposition;
 pub mod prose_recurrence_benchmark;
 pub mod qa;

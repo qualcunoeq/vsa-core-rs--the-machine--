@@ -32,6 +32,8 @@ pub struct ExternalCase {
     pub prompt: String,
     pub expected_outcome: ExpectedOutcome,
     pub expected_signature: Option<String>,
+    #[serde(default)]
+    pub expected_result: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -101,6 +103,9 @@ pub struct ExternalMetrics {
     pub ambiguous_preserved: usize,
     pub false_authorizations: usize,
     pub false_denials: usize,
+    pub results_checked: usize,
+    pub result_correct: usize,
+    pub result_mismatches: usize,
 }
 
 impl ExternalMetrics {
@@ -116,6 +121,9 @@ impl ExternalMetrics {
             ambiguous_preserved: 0,
             false_authorizations: 0,
             false_denials: 0,
+            results_checked: 0,
+            result_correct: 0,
+            result_mismatches: 0,
         }
     }
 }
@@ -164,6 +172,9 @@ fn merge_metrics(into: &mut ExternalMetrics, other: &ExternalMetrics) {
     into.ambiguous_preserved += other.ambiguous_preserved;
     into.false_authorizations += other.false_authorizations;
     into.false_denials += other.false_denials;
+    into.results_checked += other.results_checked;
+    into.result_correct += other.result_correct;
+    into.result_mismatches += other.result_mismatches;
 }
 
 fn evaluate_cases(
@@ -189,18 +200,27 @@ fn evaluate_cases(
             case.expected_outcome == ExpectedOutcome::Ambiguous
                 && actual_outcome == ExpectedOutcome::Ambiguous,
         );
-        let realized = match &decision {
+        let realized_result = match &decision {
             DecompositionDecision::Sketch(sketch) => {
-                if let Some((_, stages)) = realize(sketch) {
+                if let Some((result, stages)) = realize(sketch) {
                     metrics.replayed_stages += stages;
                     metrics.realized_plans += 1;
-                    true
+                    Some(result)
                 } else {
-                    false
+                    None
                 }
             }
-            _ => false,
+            _ => None,
         };
+        let realized = realized_result.is_some();
+        if let Some(expected_result) = &case.expected_result {
+            metrics.results_checked += 1;
+            if realized_result.as_ref() == Some(expected_result) {
+                metrics.result_correct += 1;
+            } else {
+                metrics.result_mismatches += 1;
+            }
+        }
         if realized && case.expected_outcome != ExpectedOutcome::Supported {
             metrics.false_authorizations += 1;
         }
@@ -274,6 +294,7 @@ mod tests {
                     prompt: "Compute 2 + 3".into(),
                     expected_outcome: ExpectedOutcome::Supported,
                     expected_signature: Some("None>Integer".into()),
+                    expected_result: None,
                 },
                 ExternalCase {
                     id: "holdout".into(),
@@ -282,6 +303,7 @@ mod tests {
                     prompt: "Either compute 2 + 3 directly, or use another route.".into(),
                     expected_outcome: ExpectedOutcome::Ambiguous,
                     expected_signature: None,
+                    expected_result: None,
                 },
             ],
         };

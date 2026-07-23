@@ -50,6 +50,8 @@ pub struct ThirdPartyCase {
     pub scope: ScopeLabel,
     pub expected_outcome: ExpectedOutcome,
     pub expected_signature: Option<String>,
+    #[serde(default)]
+    pub expected_result: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -176,6 +178,7 @@ impl ThirdPartyCorpus {
                     prompt: case.original_prompt.clone(),
                     expected_outcome: case.expected_outcome,
                     expected_signature: case.expected_signature.clone(),
+                    expected_result: case.expected_result.clone(),
                 })
                 .collect(),
         }
@@ -234,6 +237,7 @@ mod tests {
                     scope: ScopeLabel::InScope,
                     expected_outcome: ExpectedOutcome::Supported,
                     expected_signature: Some("None>Integer".into()),
+                    expected_result: None,
                 },
                 ThirdPartyCase {
                     id: "ambiguous".into(),
@@ -244,6 +248,7 @@ mod tests {
                     scope: ScopeLabel::Ambiguous,
                     expected_outcome: ExpectedOutcome::Ambiguous,
                     expected_signature: None,
+                    expected_result: None,
                 },
             ],
         };

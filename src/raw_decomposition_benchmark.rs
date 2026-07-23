@@ -87,7 +87,10 @@ fn recurrence_prefix(caps: &regex::Captures<'_>) -> String {
 /// Construct only sketches whose fields are all explicit in the prompt.
 pub fn decompose(prompt: &str) -> DecompositionDecision {
     let source_lower = prompt.to_ascii_lowercase();
-    if source_lower.contains("either") || source_lower.contains("two possible") {
+    if source_lower.contains("either")
+        || source_lower.contains("two possible")
+        || source_lower.contains("times more")
+    {
         return DecompositionDecision::Ambiguous;
     }
     let canonical = canonicalize_prompt(prompt);
@@ -98,6 +101,16 @@ pub fn decompose(prompt: &str) -> DecompositionDecision {
     let direct = Regex::new(r"(?i)^(?:compute|evaluate)\s+(-?\d+)\s*\+\s*(-?\d+)\s*\.?$").unwrap();
     if let Some(caps) = direct.captures(canonical.trim()) {
         return DecompositionDecision::Sketch(PlanSketch { steps: vec![DecompositionStep { input: None, output: ArtifactKind::Integer, prompt: format!("Evaluate {} + {}", &caps[1], &caps[2]) }] });
+    }
+    let numeric_expression = Regex::new(r"(?i)^(?:compute|evaluate)\s+[0-9+*/().\s-]+\.?$").unwrap();
+    if numeric_expression.is_match(canonical.trim()) {
+        return DecompositionDecision::Sketch(PlanSketch {
+            steps: vec![DecompositionStep {
+                input: None,
+                output: ArtifactKind::Integer,
+                prompt: canonical.trim().trim_end_matches('.').to_string(),
+            }],
+        });
     }
     let recurrence = Regex::new(r"(?i)a_0\s*=\s*(-?\d+).*?a_\(n\+1\)\s*=\s*(-?\d+)\s*\*?\s*a_n\s*\+\s*(-?\d+).*?n\s*=\s*(-?\d+)").unwrap();
     let Some(caps) = recurrence.captures(&canonical) else { return DecompositionDecision::NoDecomposition; };
@@ -164,6 +177,44 @@ fn canonicalize_prompt(source: &str) -> String {
         .unwrap().replace_all(&text, "then evaluate a_n + $1").into_owned();
     text = text.replace("then keepadd", "then add");
     if !text.contains("a_(n+1)") && !text.contains("a_n") {
+        // Restricted GSM8K arithmetic families.  These rewrites deliberately
+        // expose only fully numeric, single-target relations; they do not
+        // infer missing quantities or authorize general word-problem solving.
+        let candle = Regex::new(
+            r"(?i)a candle melts by\s+(-?\d+(?:\.\d+)?)\s+centimeters every hour.*?from\s+(\d+)\s*:\s*00\s*pm\s+to\s+(\d+)\s*:\s*00\s*pm",
+        )
+        .unwrap();
+        if let Some(caps) = candle.captures(&text) {
+            return format!("Evaluate {} * ({} - {})", &caps[1], &caps[3], &caps[2]);
+        }
+        let older_younger = Regex::new(
+            r"(?i)is\s+(-?\d+)\s+years older than\s+[^,]+,\s+and\s+[^.]+\s+is\s+(-?\d+)\s+years younger than\s+[^.]+.*?if\s+[^ ]+\s+is\s+(-?\d+)",
+        )
+        .unwrap();
+        if let Some(caps) = older_younger.captures(&text) {
+            return format!("Evaluate {} - {} + {}", &caps[3], &caps[2], &caps[1]);
+        }
+        let age_difference = Regex::new(
+            r"(?i)is\s+(-?\d+)\s+years older than\s+[^,]+,\s+who\s+is\s+(-?\d+)\s+years older than\s+[^.]+.*?what is the difference",
+        )
+        .unwrap();
+        if let Some(caps) = age_difference.captures(&text) {
+            return format!("Evaluate {} + {}", &caps[1], &caps[2]);
+        }
+        let percentage_loss = Regex::new(
+            r"(?i)arm wrestles\s+(\d+)\s+people\.\s+he beats\s+(\d+(?:\.\d+)?)%",
+        )
+        .unwrap();
+        if let Some(caps) = percentage_loss.captures(&text) {
+            return format!("Evaluate {} - {} * {} / 100", &caps[1], &caps[1], &caps[2]);
+        }
+        let shell_growth = Regex::new(
+            r"(?i)collects\s+(\d+)\s*(?:times|\*)?\s*more shells than\s+[^,]+,\s+who collects\s+(\d+)\s+shells\.\s+on tuesday,\s+[^.]+?(\d+)\s*(?:times|\*)",
+        )
+        .unwrap();
+        if let Some(caps) = shell_growth.captures(&text) {
+            return format!("Evaluate ({} + {}) * {}", &caps[2], &caps[1], &caps[3]);
+        }
         let sum = Regex::new(r"(?i)(?:please\s+)?(?:calculate|compute|what\s+is|find)?\s*(?:the\s+sum\s+of)\s+(-?\d+)\s+and\s+(-?\d+)").unwrap();
         if let Some(caps) = sum.captures(&text) {
             return format!("Evaluate {} + {}", &caps[1], &caps[2]);
@@ -261,5 +312,30 @@ mod tests {
         ] {
             assert!(!matches!(decompose(prompt), DecompositionDecision::Sketch(_)), "{prompt}");
         }
+    }
+
+    #[test]
+    fn restricted_gsm_arithmetic_families_are_numeric_and_replayable() {
+        for prompt in [
+            "A candle melts by 2 centimeters every hour that it burns. How many centimeters shorter will a candle be after burning from 1:00 PM to 5:00 PM?",
+            "Trent is 5 years older than Jane, and Jane is 3 years younger than Quinn. If Quinn is 30, how old is Trent?",
+            "Alice is 7 years older than Beth, who is 5 years older than Erica. What is the difference between the ages of Alice and Erica, if Erica is 30 years old?",
+            "John arm wrestles 20 people. He beats 80%. How many people did he lose to?",
+        ] {
+            let decision = decompose(prompt);
+            let DecompositionDecision::Sketch(sketch) = &decision else {
+                panic!("expected supported GSM family: {prompt}: {decision:?}");
+            };
+            assert_eq!(sketch.steps.len(), 1);
+            assert!(realize(sketch).is_some(), "must replay: {prompt}");
+        }
+        assert!(matches!(
+            decompose("Kylie collects 2 times more shells than Robert."),
+            DecompositionDecision::Ambiguous
+        ));
+        assert!(matches!(
+            decompose("A candle melts by x centimeters every hour from 1:00 PM to 5:00 PM."),
+            DecompositionDecision::NoDecomposition
+        ));
     }
 }

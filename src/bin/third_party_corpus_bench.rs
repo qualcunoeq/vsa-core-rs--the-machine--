@@ -13,15 +13,20 @@ fn main() {
     let report = evaluate(&corpus);
     let metrics = &report.evaluation.metrics;
     println!(
-        "third-party-corpus: release={} kind={:?} hash={} cases={} structural={}/{} realized={} replayed_stages={} false_auth={} false_denials={}",
+        "third-party-corpus: release={} kind={:?} hash={} cases={} structural={}/{} supported_expected={} realized={} replayed_stages={} ambiguous_preserved={} results={}/{} result_mismatches={} false_auth={} false_denials={}",
         report.release_id,
         report.release_kind,
         report.release_hash,
         report.evaluation.corpus_cases,
         metrics.structural_correct,
         metrics.cases,
+        metrics.supported_expected,
         metrics.realized_plans,
         metrics.replayed_stages,
+        metrics.ambiguous_preserved,
+        metrics.result_correct,
+        metrics.results_checked,
+        metrics.result_mismatches,
         metrics.false_authorizations,
         metrics.false_denials,
     );

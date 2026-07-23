@@ -1,6 +1,7 @@
 use serde::Deserialize;
 use std::{collections::BTreeMap, env, fs};
 use the_machine::quantity_relation::{formalize, QuantityRelationDecision};
+use the_machine::quantity_relation_integration::{bridge_ratio_to_linear_system, bridge_to_algebra};
 
 #[derive(Debug, Deserialize)]
 struct Corpus { cases: Vec<Case> }
@@ -25,6 +26,10 @@ fn main() {
     let mut false_auth = 0usize;
     let mut false_denial = 0usize;
     let mut replayed = 0usize;
+    let mut algebra_bridged = 0usize;
+    let mut algebra_replayed = 0usize;
+    let mut system_bridged = 0usize;
+    let mut system_replayed = 0usize;
     let mut failures = BTreeMap::<String, usize>::new();
     let mut failures_by_family = BTreeMap::<String, usize>::new();
     let mut pair_results = BTreeMap::<String, Vec<(String, Option<String>)>>::new();
@@ -34,6 +39,16 @@ fn main() {
             QuantityRelationDecision::Accepted(artifact) => {
                 accepted += 1;
                 replayed += usize::from(artifact.replay_verified());
+                if let Some(receipt) = bridge_to_algebra(artifact) {
+                    algebra_bridged += 1;
+                    algebra_replayed += usize::from(receipt.algebra_replay_verified);
+                }
+                if artifact.family == "ratio" {
+                    if let Some(receipt) = bridge_ratio_to_linear_system(artifact) {
+                        system_bridged += 1;
+                        system_replayed += usize::from(receipt.replay_verified);
+                    }
+                }
                 ("supported", Some(artifact.signature.clone()))
             }
             QuantityRelationDecision::Ambiguous => { ambiguous += 1; ("ambiguous", None) }
@@ -61,5 +76,5 @@ fn main() {
             rewrite_stable += usize::from(stable);
         }
     }
-    println!("quantity-relation: cases={} structural={}/{} accepted={} ambiguous={} unsupported={} replayed={} rewrite_pairs={}/{} false_auth={} false_denials={} failures={:?} failures_by_family={:?}", corpus.cases.len(), structural, corpus.cases.len(), accepted, ambiguous, unsupported, replayed, rewrite_stable, rewrite_pairs, false_auth, false_denial, failures, failures_by_family);
+    println!("quantity-relation: cases={} structural={}/{} accepted={} ambiguous={} unsupported={} replayed={} algebra_bridge={}/{} ratio_system_bridge={}/{} rewrite_pairs={}/{} false_auth={} false_denials={} failures={:?} failures_by_family={:?}", corpus.cases.len(), structural, corpus.cases.len(), accepted, ambiguous, unsupported, replayed, algebra_bridged, algebra_replayed, system_bridged, system_replayed, rewrite_stable, rewrite_pairs, false_auth, false_denial, failures, failures_by_family);
 }

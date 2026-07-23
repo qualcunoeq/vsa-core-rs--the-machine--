@@ -28,6 +28,8 @@ pub struct QuantityRelationArtifact {
     pub signature: String,
     pub target: String,
     pub constraints: Vec<QuantityConstraint>,
+    /// Optional exact expression for a separately governed algebra handoff.
+    pub algebra_expression: Option<String>,
 }
 
 impl QuantityRelationArtifact {
@@ -38,6 +40,7 @@ impl QuantityRelationArtifact {
             && !self.signature.is_empty()
             && !self.target.is_empty()
             && !self.constraints.is_empty()
+            && self.algebra_expression.as_ref().is_some_and(|expression| !expression.is_empty())
             && self
                 .constraints
                 .iter()
@@ -68,12 +71,14 @@ fn accepted(
     target: &str,
     lhs: String,
     rhs: String,
+    algebra_expression: String,
 ) -> QuantityRelationDecision {
     QuantityRelationDecision::Accepted(QuantityRelationArtifact {
         family: family.into(),
         signature,
         target: target.into(),
         constraints: vec![QuantityConstraint { lhs, rhs }],
+        algebra_expression: Some(algebra_expression),
     })
 }
 
@@ -132,6 +137,7 @@ pub fn formalize(prompt: &str) -> QuantityRelationDecision {
             "unit_rate",
             format!("notebooks * unit_rate = {total} dollars"),
             format!("notebooks = {count}"),
+            format!("{total} / {count}"),
         );
     }
 
@@ -154,6 +160,7 @@ pub fn formalize(prompt: &str) -> QuantityRelationDecision {
             "ratio_target",
             format!("blue/red = {right}/{left}"),
             format!("red = {anchor}"),
+            format!("{right} * {anchor} / {left}"),
         );
     }
 
@@ -176,6 +183,7 @@ pub fn formalize(prompt: &str) -> QuantityRelationDecision {
             "scaled_quantity",
             format!("quantity / batches = {source}/{source_count}"),
             format!("batches = {target_count}"),
+            format!("{source} * {target_count} / {source_count}"),
         );
     }
 
@@ -184,10 +192,10 @@ pub fn formalize(prompt: &str) -> QuantityRelationDecision {
     )
     .unwrap();
     if let Some(caps) = conversion.captures(text) {
-        let (factor, small, large) = if caps.get(1).is_some() {
-            (caps[1].to_string(), caps[2].to_string(), caps[3].to_string())
+        let (amount, factor, small, large) = if caps.get(1).is_some() {
+            (caps[4].to_string(), caps[1].to_string(), caps[2].to_string(), caps[3].to_string())
         } else if caps.get(7).is_some() {
-            (caps[8].to_string(), caps[9].to_string(), caps[7].to_string())
+            (caps[10].to_string(), caps[8].to_string(), caps[9].to_string(), caps[7].to_string())
         } else {
             return QuantityRelationDecision::Unsupported;
         };
@@ -198,6 +206,7 @@ pub fn formalize(prompt: &str) -> QuantityRelationDecision {
             "converted_quantity",
             format!("{large} * {factor} = {small}"),
             format!("factor = {factor}"),
+            format!("{amount} * {factor}"),
         );
     }
     let conversion_rephrased = Regex::new(
@@ -224,6 +233,7 @@ pub fn formalize(prompt: &str) -> QuantityRelationDecision {
             "converted_quantity",
             format!("{amount} {large} * {factor} = {small}"),
             format!("factor = {factor}"),
+            format!("{amount} * {factor}"),
         );
     }
 
@@ -231,19 +241,24 @@ pub fn formalize(prompt: &str) -> QuantityRelationDecision {
     if let Some(caps) = sum.captures(text) {
         let first = caps.iter().skip(1).flatten().next().unwrap().as_str();
         let second = caps.iter().skip(1).flatten().nth(1).unwrap().as_str();
-        return accepted("sum_difference", "[first:quantity,second:quantity]>quantity>target".into(), "total", format!("total = {first} + {second}"), "unit = count".into());
+        return accepted("sum_difference", "[first:quantity,second:quantity]>quantity>target".into(), "total", format!("total = {first} + {second}"), "unit = count".into(), format!("{first} + {second}"));
     }
     let remaining = Regex::new(r"^(?:a container has (\d+) liters and (\d+) liters are removed\. how many liters remain\?|after taking (\d+) liters from a container holding (\d+) liters, state the remaining volume\.)$").unwrap();
     if let Some(caps) = remaining.captures(text) {
         let values = caps.iter().skip(1).flatten().map(|value| value.as_str()).collect::<Vec<_>>();
         let (first, second) = if text.starts_with("a container") { (values[0], values[1]) } else { (values[1], values[0]) };
-        return accepted("sum_difference", "[first:quantity,second:quantity]>quantity>target".into(), "remaining", format!("remaining = {first} - {second}"), "unit = liters".into());
+        return accepted("sum_difference", "[first:quantity,second:quantity]>quantity>target".into(), "remaining", format!("remaining = {first} - {second}"), "unit = liters".into(), format!("{first} - {second}"));
     }
 
     let linear = Regex::new(r"^(?:a quantity starts at (\d+) units and increases by (\d+) units\. what is the final quantity\?|the final amount is (\d+) units after adding (\d+) units\. what was the starting amount\??)$").unwrap();
     if let Some(caps) = linear.captures(text) {
         let values = caps.iter().skip(1).flatten().map(|value| value.as_str()).collect::<Vec<_>>();
-        return accepted("linear_quantity", "[base:quantity,change:quantity]>quantity>linear_target".into(), "linear_target", format!("quantity = {} + {}", values[0], values[1]), "unit = units".into());
+        let expression = if text.starts_with("a quantity") {
+            format!("{} + {}", values[0], values[1])
+        } else {
+            format!("{} - {}", values[0], values[1])
+        };
+        return accepted("linear_quantity", "[base:quantity,change:quantity]>quantity>linear_target".into(), "linear_target", format!("quantity = {expression}"), "unit = units".into(), expression);
     }
     QuantityRelationDecision::Unsupported
 }

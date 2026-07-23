@@ -1331,8 +1331,25 @@ impl QuestionRouter {
         // handles arithmetic, number theory and explicit CAS directives even
         // when keyword routing would otherwise choose another shallow route.
         let math_first = matches!(domain, Tool::Math | Tool::Physics | Tool::FactualQA);
+        let system_like = stem.to_ascii_lowercase().contains("solve system")
+            || (problem.equations.len() >= 2 && stem.to_ascii_lowercase().contains("for x,y"));
         let typed_algebra = if math_first {
-            crate::algebra_island::try_answer(&stem)
+            if system_like {
+                // A generic algebra recognizer must not solve one equation
+                // from a multi-equation prompt.  Classify the complete
+                // system first; only a unique system may cross the answer
+                // boundary.  Degenerate and unsupported systems abstain.
+                match crate::linear_system::classify_linear_system(&stem) {
+                    crate::linear_system::LinearSystemClassification::Unique(_) => {
+                        crate::algebra_island::try_answer(&stem)
+                    }
+                    crate::linear_system::LinearSystemClassification::NoSolution
+                    | crate::linear_system::LinearSystemClassification::InfiniteSolutions(_)
+                    | crate::linear_system::LinearSystemClassification::Unsupported => None,
+                }
+            } else {
+                crate::algebra_island::try_answer(&stem)
+            }
         } else {
             None
         };
@@ -1358,7 +1375,7 @@ impl QuestionRouter {
                     }
                     _ => answer.answer,
                 })
-                .or_else(|| Self::safe_math_answer(&stem))
+                .or_else(|| (!system_like).then(|| Self::safe_math_answer(&stem)).flatten())
         } else {
             None
         };
@@ -3514,6 +3531,7 @@ impl QuestionRouter {
             "compute ",
             "calculate ",
             "solve for ",
+            "solve ",
             "what is the derivative",
             "what is the integral",
             "simplify",
@@ -3521,6 +3539,9 @@ impl QuestionRouter {
             "d/dx",
             "d/dy",
             "d/dt", // derivative shorthand
+            "solve system",
+            "find x",
+            "can x be determined",
         ];
         if math_triggers.iter().any(|t| lower.contains(t)) {
             return true;

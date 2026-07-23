@@ -76,6 +76,10 @@ name = "proposition_ood_bench"
 path = "src/bin/proposition_ood_bench.rs"
 
 [[bin]]
+name = "mixed_ood_bench"
+path = "src/bin/mixed_ood_bench.rs"
+
+[[bin]]
 name = "governed_bench"
 path = "src/bin/governed_bench.rs"
 

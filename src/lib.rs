@@ -19,6 +19,7 @@ pub mod bridge;
 pub mod broker;
 pub mod capabilities;
 pub mod capability_planner;
+pub mod capability_proposer;
 pub mod concept_composition_benchmark;
 pub mod cross_vertical_benchmark;
 pub mod compositional_planner_benchmark;

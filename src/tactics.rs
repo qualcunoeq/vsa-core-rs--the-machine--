@@ -410,8 +410,9 @@ pub fn prove_and_verify(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::algebra::SymExpr;
+    use crate::algebra::SymExpr::*;
     use crate::kernel::ProofChecker;
-    use SymExpr::*;
 
     fn v(name: &str) -> SymExpr {
         Var(crate::proposition::shared_var(name))

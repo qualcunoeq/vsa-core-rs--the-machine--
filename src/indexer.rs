@@ -1020,7 +1020,8 @@ impl SummaryIndex {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Hypervector;
+use crate::Hypervector;
+use crate::HD_DIMENSION;
     use rand::Rng;
 
     /// Helper: create a random hypervector.

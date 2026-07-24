@@ -10,6 +10,11 @@ use crate::capability_planner::{
     plan_model_to_goal, ModelCapabilityPlan, ModelPlanningFailure,
 };
 use crate::constant_rate_model::ModelConstructorRegistry;
+#[cfg(test)]
+use crate::constant_rate_model::{
+    EvidencePolicy, ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec,
+    ModelConstructorEntry, ModelEvidenceContext, ModelEvidenceState, ModelMatcherResult,
+};
 use serde::Serialize;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]

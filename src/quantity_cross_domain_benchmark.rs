@@ -41,6 +41,48 @@ pub struct RouteCandidate {
     pub support: u32,
 }
 
+/// Standard candidate set used by diagnostic external reclassification.
+/// Production routing is deliberately not wired to this helper.
+pub fn standard_quantity_route_candidates(prompt: &str) -> Vec<RouteCandidate> {
+    vec![
+        RouteCandidate {
+            id: "planner_gsm_quantity".into(),
+            kind: RouteKind::GsmQuantityToAlgebra,
+            prompt: prompt.into(),
+            cost: 2,
+            support: 80,
+        },
+        RouteCandidate {
+            id: "unit_aware".into(),
+            kind: RouteKind::UnitToAlgebra,
+            prompt: prompt.into(),
+            cost: 2,
+            support: 90,
+        },
+        RouteCandidate {
+            id: "quantity_relation".into(),
+            kind: RouteKind::QuantityToAlgebra,
+            prompt: prompt.into(),
+            cost: 2,
+            support: 70,
+        },
+        RouteCandidate {
+            id: "fractional_quantity".into(),
+            kind: RouteKind::FractionToAlgebra,
+            prompt: prompt.into(),
+            cost: 2,
+            support: 65,
+        },
+        RouteCandidate {
+            id: "multi_step_quantity".into(),
+            kind: RouteKind::MultiStepToAlgebra,
+            prompt: prompt.into(),
+            cost: 3,
+            support: 60,
+        },
+    ]
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CrossDomainTask {
     pub id: String,

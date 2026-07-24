@@ -6,7 +6,7 @@ use std::{
 use the_machine::external_decomposition_benchmark::ExpectedOutcome;
 use the_machine::gsm8k_quantity_candidate::formalize as formalize_gsm;
 use the_machine::quantity_cross_domain_benchmark::{
-    plan, CrossDomainTask, PlannerDecision, RouteCandidate, RouteKind,
+    plan, standard_quantity_route_candidates, CrossDomainTask, PlannerDecision,
 };
 use the_machine::third_party_corpus_benchmark::ThirdPartyCorpus;
 use the_machine::unit_aware_quantity::{formalize as formalize_unit, UnitQuantityDecision};
@@ -36,46 +36,6 @@ fn sha256_file(path: &str) -> String {
         "{:x}",
         Sha256::digest(fs::read(path).expect("release bytes"))
     )
-}
-
-fn candidate_set(prompt: &str) -> Vec<RouteCandidate> {
-    vec![
-        RouteCandidate {
-            id: "planner_gsm_quantity".into(),
-            kind: RouteKind::GsmQuantityToAlgebra,
-            prompt: prompt.into(),
-            cost: 2,
-            support: 80,
-        },
-        RouteCandidate {
-            id: "unit_aware".into(),
-            kind: RouteKind::UnitToAlgebra,
-            prompt: prompt.into(),
-            cost: 2,
-            support: 90,
-        },
-        RouteCandidate {
-            id: "quantity_relation".into(),
-            kind: RouteKind::QuantityToAlgebra,
-            prompt: prompt.into(),
-            cost: 2,
-            support: 70,
-        },
-        RouteCandidate {
-            id: "fractional_quantity".into(),
-            kind: RouteKind::FractionToAlgebra,
-            prompt: prompt.into(),
-            cost: 2,
-            support: 65,
-        },
-        RouteCandidate {
-            id: "multi_step_quantity".into(),
-            kind: RouteKind::MultiStepToAlgebra,
-            prompt: prompt.into(),
-            cost: 3,
-            support: 60,
-        },
-    ]
 }
 
 fn family_matches(case: &PromotedCase, prompt: &str) -> bool {
@@ -142,7 +102,7 @@ fn main() {
         let expected = promoted.get(case.id.as_str()).copied();
         let decision = plan(&CrossDomainTask {
             id: case.id.clone(),
-            candidates: candidate_set(&case.original_prompt),
+            candidates: standard_quantity_route_candidates(&case.original_prompt),
             expected: None,
             should_authorize: true,
             pair_id: None,

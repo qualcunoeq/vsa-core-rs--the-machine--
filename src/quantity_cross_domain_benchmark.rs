@@ -8,6 +8,7 @@
 //! registry.
 
 use crate::fractional_quantity::{formalize as formalize_fraction, FractionalQuantityDecision};
+use crate::gsm8k_quantity_candidate::formalize as formalize_gsm_quantity;
 use crate::multi_step_quantity::{
     execute as execute_multi_step, formalize as formalize_multi_step, MultiStepDecision,
 };
@@ -22,6 +23,7 @@ use std::collections::BTreeMap;
 #[serde(rename_all = "snake_case")]
 pub enum RouteKind {
     QuantityToAlgebra,
+    GsmQuantityToAlgebra,
     QuantityToSystem,
     UnitToAlgebra,
     UnitToSystem,
@@ -140,6 +142,12 @@ fn execute_route(candidate: &RouteCandidate) -> Result<RouteOutcome, RouteFailur
                 QuantityRelationDecision::Ambiguous => return Err(RouteFailure::Ambiguous),
                 QuantityRelationDecision::Unsupported => return Err(RouteFailure::Unsupported),
             };
+            let receipt = bridge_to_algebra(&artifact).ok_or(RouteFailure::ReplayFailed)?;
+            receipt.algebra_replay_verified.then_some(receipt.result)
+        }
+        RouteKind::GsmQuantityToAlgebra => {
+            let artifact =
+                formalize_gsm_quantity(&candidate.prompt).ok_or(RouteFailure::Unsupported)?;
             let receipt = bridge_to_algebra(&artifact).ok_or(RouteFailure::ReplayFailed)?;
             receipt.algebra_replay_verified.then_some(receipt.result)
         }

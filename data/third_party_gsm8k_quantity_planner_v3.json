@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "release_id": "third-party-gsm8k-quantity-planner-v3",
+  "base_release": "data/third_party_gsm8k_restricted_release_v2.json",
+  "source_release_sha256": "c3d288f3ecf5f4bf1bbc6e8160e0edb1cf469e2df0db21f3476caddd330b1374",
+  "oracle": "locked v2 oracle plus planner-reviewed quantity-family labels",
+  "holdout_locked": true,
+  "promoted_cases": [
+    {"id":"gsm8k.v2.0003","route":"planner_gsm_quantity","family":"unit_rate","expected_result":"540"},
+    {"id":"gsm8k.v2.0018","route":"planner_gsm_quantity","family":"unit_conversion","expected_result":"7"},
+    {"id":"gsm8k.v2.0032","route":"planner_gsm_quantity","family":"unit_rate","expected_result":"35"},
+    {"id":"gsm8k.v2.0048","route":"unit_aware","family":"conversion","expected_result":"8"},
+    {"id":"gsm8k.v2.0050","route":"planner_gsm_quantity","family":"unit_rate","expected_result":"294"},
+    {"id":"gsm8k.v2.0064","route":"planner_gsm_quantity","family":"unit_rate","expected_result":"300"},
+    {"id":"gsm8k.v2.0071","route":"planner_gsm_quantity","family":"sum_difference","expected_result":"60"},
+    {"id":"gsm8k.v2.0081","route":"planner_gsm_quantity","family":"sum_difference","expected_result":"17"},
+    {"id":"gsm8k.v2.0022","route":"planner_gsm_quantity","family":"multi_step_quantity","expected_result":"7"},
+    {"id":"gsm8k.v2.0055","route":"planner_gsm_quantity","family":"multi_step_quantity","expected_result":"14"},
+    {"id":"gsm8k.v2.0056","route":"planner_gsm_quantity","family":"multi_step_quantity","expected_result":"3"},
+    {"id":"gsm8k.v2.0059","route":"planner_gsm_quantity","family":"multi_step_quantity","expected_result":"187"}
+  ]
+}

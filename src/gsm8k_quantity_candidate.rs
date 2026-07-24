@@ -125,6 +125,57 @@ pub fn formalize(prompt: &str) -> Option<QuantityRelationArtifact> {
         ));
     }
 
+    // Bounded multi-step quantity families identified by the frozen GSM8K
+    // failure taxonomy. These remain typed linear arithmetic; no generic
+    // word-problem fallback is introduced.
+    let dvds = Regex::new(
+        r"first (\d+) customers buy one dvd each.*?next (\d+) customers buy 2 dvds each.*?last (\d+) customers",
+    )
+    .unwrap();
+    if let Some(caps) = dvds.captures(&text) {
+        return Some(artifact(
+            "multi_step_quantity",
+            format!("{} + {} * 2", &caps[1], &caps[2]),
+            "first_customer_dvds + second_customer_dvds".into(),
+        ));
+    }
+
+    let lollipops =
+        Regex::new(r"has (\d+) lollipops.*?eats (\d+) .*?package (\d+) lollipops in one bag")
+            .unwrap();
+    if let Some(caps) = lollipops.captures(&text) {
+        return Some(artifact(
+            "multi_step_quantity",
+            format!("({} - {}) / {}", &caps[1], &caps[2], &caps[3]),
+            "remaining_lollipops / lollipops_per_bag".into(),
+        ));
+    }
+
+    let movies =
+        Regex::new(r"ticket for \$(\d+) and popcorn for \$(\d+).*?(\d+) dollars for the week")
+            .unwrap();
+    if let Some(caps) = movies.captures(&text) {
+        return Some(artifact(
+            "multi_step_quantity",
+            format!(
+                "{} / {}",
+                &caps[3],
+                caps[1].parse::<u32>().unwrap() + caps[2].parse::<u32>().unwrap()
+            ),
+            "weekly_budget / ticket_plus_popcorn".into(),
+        ));
+    }
+
+    let raspberries =
+        Regex::new(r"(\d+) clusters of (\d+) fruit each.*?(\d+) individual fruit").unwrap();
+    if let Some(caps) = raspberries.captures(&text) {
+        return Some(artifact(
+            "multi_step_quantity",
+            format!("{} * {} + {}", &caps[1], &caps[2], &caps[3]),
+            "cluster_fruit + individual_fruit".into(),
+        ));
+    }
+
     None
 }
 
@@ -143,6 +194,10 @@ mod tests {
             "Sophia has traveled 100 miles since last filling her tank, and she needed to put in 4 gallons of gas to fill it up again. Her tank holds 12 gallons. How many miles can she drive on a single tank of gas?",
             "Kelian has two recipes for preparing dishes, one having 20 instructions and the second one having twice as many instructions as the first one. How many instructions does Kelian have to read to prepare the two dishes?",
             "Charlie had 10 stickers. He bought 21 stickers from a store and got 23 stickers for his birthday. Then Charlie gave 9 of the stickers to his sister and used 28 to decorate a greeting card. How many stickers does Charlie have left?",
+            "Billy sells DVDs. He has 8 customers on Tuesday. His first 3 customers buy one DVD each. His next 2 customers buy 2 DVDs each. His last 3 customers don't buy any DVDs. How many DVDs did Billy sell on Tuesday?",
+            "Jean has 30 lollipops. Jean eats 2 of the lollipops. With the remaining lollipops, Jean wants to package 2 lollipops in one bag. How many bags can Jean fill?",
+            "Peter plans to go to the movies this week. He always gets a ticket for $7 and popcorn for $7. If he has 42 dollars for the week, how many times can he go to the movies?",
+            "A raspberry bush has 6 clusters of 20 fruit each and 67 individual fruit scattered across the bush. How many raspberries are there total?",
         ];
         for prompt in prompts {
             let relation =

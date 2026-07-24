@@ -25,8 +25,8 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 use std::time::Instant;
-use the_machine::diagnostic::{absorb_diagnosis, seed_diagnostic_knowledge, seed_error_classifier};
-use the_machine::meta_reasoning::{assess, solve_autonomously, ReasoningState, SolutionResult};
+use the_machine::diagnostic::{seed_diagnostic_knowledge, seed_error_classifier};
+use the_machine::meta_reasoning::{assess, ReasoningState};
 use the_machine::qa::QaEngine;
 use the_machine::VSABrain;
 
@@ -41,10 +41,12 @@ fn fresh_brain_qa() -> (VSABrain, QaEngine) {
 
 /// Simulated actuator for testing without a real jump-box.
 /// Records actions for verification.
+#[allow(dead_code)]
 struct SimActuator {
     pub actions_taken: Vec<(String, String)>,
 }
 
+#[allow(dead_code)]
 impl SimActuator {
     fn new() -> Self {
         SimActuator {
@@ -108,9 +110,8 @@ async fn experiment_1() {
     eprintln!("  Experiment 1: Known problem, pre-seeded rules");
     eprintln!("═══════════════════════════════════════════════\n");
 
-    let (mut brain, mut qa) = fresh_brain_qa();
+    let (brain, qa) = fresh_brain_qa();
     let classifier = seed_error_classifier();
-    let mut actuator = SimActuator::new();
 
     let problem = "bind() to 0.0.0.0:80 failed (98: Unknown error)";
     eprintln!("  Problem: {}", problem);
@@ -151,9 +152,8 @@ async fn experiment_2() {
     eprintln!("═══════════════════════════════════════════════\n");
 
     // Use a fresh brain with NO knowledge about this error
-    let (mut brain, mut qa) = fresh_brain_qa();
-    let mut classifier = seed_error_classifier();
-    let mut actuator = SimActuator::new();
+    let (brain, mut qa) = fresh_brain_qa();
+    let classifier = seed_error_classifier();
 
     let problem = "KMS keyserver unreachable: timeout";
     eprintln!("  Problem: {}", problem);
@@ -213,9 +213,8 @@ async fn experiment_3() {
     eprintln!("  Experiment 3: Multi-step autonomous solve");
     eprintln!("═══════════════════════════════════════════════\n");
 
-    let (mut brain, mut qa) = fresh_brain_qa();
-    let mut classifier = seed_error_classifier();
-    let mut actuator = SimActuator::new();
+    let (brain, mut qa) = fresh_brain_qa();
+    let classifier = seed_error_classifier();
 
     let problem = "bind() to 0.0.0.0:80 failed (98: Unknown error)";
     let goal = ("service", "is", "running");
@@ -237,7 +236,7 @@ async fn experiment_3() {
         ReasoningState::Confident {
             plan,
             confidence,
-            category,
+            ..
         } => {
             eprintln!(
                 "  Iter 0: Confident → executing plan ({} steps, conf={:.2})",

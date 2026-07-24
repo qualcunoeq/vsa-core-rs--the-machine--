@@ -67,7 +67,7 @@ impl serde::Serialize for Variable {
 
 impl<'de> serde::Deserialize<'de> for Variable {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use serde::de;
+        
         #[derive(serde::Deserialize)]
         struct VariableData {
             id: VarId,
@@ -1311,8 +1311,6 @@ impl SymExpr {
             SymExpr::Cos(a) => SymExpr::Cos(Box::new(a.apply_exp_log_cancel())),
             SymExpr::Tan(a) => SymExpr::Tan(Box::new(a.apply_exp_log_cancel())),
             SymExpr::Sqrt(a) => SymExpr::Sqrt(Box::new(a.apply_exp_log_cancel())),
-            SymExpr::Exp(a) => SymExpr::Exp(Box::new(a.apply_exp_log_cancel())),
-            SymExpr::Ln(a) => SymExpr::Ln(Box::new(a.apply_exp_log_cancel())),
             SymExpr::Abs(a) => SymExpr::Abs(Box::new(a.apply_exp_log_cancel())),
             SymExpr::Sinh(a) => SymExpr::Sinh(Box::new(a.apply_exp_log_cancel())),
             SymExpr::Cosh(a) => SymExpr::Cosh(Box::new(a.apply_exp_log_cancel())),
@@ -2160,8 +2158,8 @@ fn integrate_numeric(
     let fm = expr.evaluate(&make_bindings((a + b) * 0.5))?;
 
     let h = (b - a) * 0.5;
-    let left_mid = (a + (a + b) * 0.25); // 3/4 point
-    let right_mid = ((a + b) * 0.75 + b) * 0.5; // quarter of the way
+    let _left_mid = a + (a + b) * 0.25; // 3/4 point
+    let _right_mid = ((a + b) * 0.75 + b) * 0.5; // quarter of the way
 
     // Actually let's use a simpler two-point Simpson for the initial call
     let f_left_mid = expr.evaluate(&make_bindings((a + b) * 0.25))?;
@@ -2713,7 +2711,7 @@ fn is_polynomial_in(expr: &SymExpr, var: &str) -> bool {
     match expr {
         SymExpr::Num(_) => true,
         // var itself IS polynomial (degree 1 in var)
-        SymExpr::Var(v) => true,
+        SymExpr::Var(_v) => true,
         SymExpr::Add(a, b) | SymExpr::Sub(a, b) | SymExpr::Mul(a, b) => {
             is_polynomial_in(a, var) && is_polynomial_in(b, var)
         }
@@ -2845,6 +2843,7 @@ fn integrate_partial_fractions_1_over_product(denom: &SymExpr, var: &str) -> Opt
 }
 
 /// Build `m * x` where m is a numeric coefficient.
+#[allow(dead_code)]
 fn x_times(m: f64, var: &str) -> SymExpr {
     if m == 1.0 {
         SymExpr::Var(Variable::named(var))
@@ -2867,6 +2866,7 @@ impl SymExpr {
     }
 
     /// Check if this expression is an addition node.
+    #[allow(dead_code)]
     fn is_add(&self) -> bool {
         matches!(self, SymExpr::Add(_, _))
     }
@@ -4339,8 +4339,8 @@ fn solve_polynomial(coeffs: &[f64], var: &str) -> Vec<String> {
     let constant = int_coeffs[0];
 
     if leading != 0 && constant != 0 {
-        let p_factors = factors(constant.abs());
-        let q_factors = factors(leading.abs());
+        let _p_factors = factors(constant.abs());
+        let _q_factors = factors(leading.abs());
 
         let mut found_root = true;
         while found_root && remaining.len() > 2 {
@@ -4486,56 +4486,56 @@ fn solve_quartic_ferrari(a: f64, b: f64, c: f64, d: f64, e: f64, var: &str) -> O
     // Cubic resolvent: 8m³ + 8p*m² + (2p² - 8r)*m - q² = 0
     let m = find_cubic_real_root(8.0, 8.0 * p, 2.0 * p * p - 8.0 * r, -q * q)?;
 
-    // RHS coefficients: Ay² + By + C where:
-    //   A = 2m
-    //   B = -q
-    //   C = m² + mp + p²/4 - r
-    let A = 2.0 * m;
-    let C = m * m + m * p + p * p / 4.0 - r;
+    // RHS coefficients: A·y² + B·y + C where:
+    //   a = 2m
+    //   b = -q
+    //   c = m² + mp + p²/4 - r
+    let a_rhs = 2.0 * m;
+    let _c_rhs = m * m + m * p + p * p / 4.0 - r;
 
-    if A.abs() < 1e-12 {
-        // A ≈ 0: equation degenerates. Fall through to numeric.
+    if a_rhs.abs() < 1e-12 {
+        // a ≈ 0: equation degenerates. Fall through to numeric.
         return None;
     }
 
-    // RHS = (√A*y - q/(2√A))² since B² - 4AC = 0 by construction
-    // So: (y² + p/2 + m)² = (√A*y - q/(2√A))²
-    // → y² + p/2 + m = ±(√A*y - q/(2√A))
+    // RHS = (√a*y - q/(2√a))² since b² - 4ac = 0 by construction
+    // So: (y² + p/2 + m)² = (√a*y - q/(2√a))²
+    // → y² + p/2 + m = ±(√a*y - q/(2√a))
     //
-    // Quadratic 1 (+): y² - √A*y + (p/2 + m + q/(2√A)) = 0
-    // Quadratic 2 (-): y² + √A*y + (p/2 + m - q/(2√A)) = 0
+    // Quadratic 1 (+): y² - √a*y + (p/2 + m + q/(2√a)) = 0
+    // Quadratic 2 (-): y² + √a*y + (p/2 + m - q/(2√a)) = 0
 
-    let sqrt_A = A.sqrt(); // May be NaN if A < 0; handled below
-    if sqrt_A.is_nan() {
+    let sqrt_a = a_rhs.sqrt(); // May be NaN if a < 0; handled below
+    if sqrt_a.is_nan() {
         return None; // Complex intermediate — fall through to numeric Newton
     }
 
     let half = p / 2.0 + m;
-    let q_over_2sqrtA = q / (2.0 * sqrt_A);
+    let q_over_2sqrt_a = q / (2.0 * sqrt_a);
 
-    let term1 = half + q_over_2sqrtA;
-    let term2 = half - q_over_2sqrtA;
+    let term1 = half + q_over_2sqrt_a;
+    let term2 = half - q_over_2sqrt_a;
 
     let mut solutions = Vec::new();
 
-    // Quadratic 1: y² - √A*y + term1 = 0
-    let disc1 = A - 4.0 * term1;
+    // Quadratic 1: y² - √a*y + term1 = 0
+    let disc1 = a_rhs - 4.0 * term1;
     if disc1 >= -1e-10 {
         let sqrt_d1 = disc1.max(0.0).sqrt();
-        let y1 = (sqrt_A + sqrt_d1) / 2.0 - b1 / 4.0;
-        let y2 = (sqrt_A - sqrt_d1) / 2.0 - b1 / 4.0;
+        let y1 = (sqrt_a + sqrt_d1) / 2.0 - b1 / 4.0;
+        let y2 = (sqrt_a - sqrt_d1) / 2.0 - b1 / 4.0;
         solutions.push(format!("{} = {}", var, format_solution(y1)));
         if (y2 - y1).abs() > 1e-12 {
             solutions.push(format!("{} = {}", var, format_solution(y2)));
         }
     }
 
-    // Quadratic 2: y² + √A*y + term2 = 0
-    let disc2 = A - 4.0 * term2;
+    // Quadratic 2: y² + √a*y + term2 = 0
+    let disc2 = a_rhs - 4.0 * term2;
     if disc2 >= -1e-10 {
         let sqrt_d2 = disc2.max(0.0).sqrt();
-        let y1 = (-sqrt_A + sqrt_d2) / 2.0 - b1 / 4.0;
-        let y2 = (-sqrt_A - sqrt_d2) / 2.0 - b1 / 4.0;
+        let y1 = (-sqrt_a + sqrt_d2) / 2.0 - b1 / 4.0;
+        let y2 = (-sqrt_a - sqrt_d2) / 2.0 - b1 / 4.0;
         solutions.push(format!("{} = {}", var, format_solution(y1)));
         if (y2 - y1).abs() > 1e-12 {
             solutions.push(format!("{} = {}", var, format_solution(y2)));
@@ -4769,7 +4769,7 @@ fn try_solve_product(expr: &SymExpr, var: &str) -> Option<Vec<String>> {
             }
             None
         }
-        SymExpr::Pow(base, exp) => {
+        SymExpr::Pow(base, _exp) => {
             // x^n = 0 → x = 0
             if let SymExpr::Var(v) = base.as_ref() {
                 if v.display.as_ref() == var {
@@ -5153,7 +5153,7 @@ fn try_solve_mixed_trig_identity(expr: &SymExpr, var: &str) -> Option<Vec<String
                 c1: &mut f64,
             ) {
                 match expr {
-                    SymExpr::Num(n) => {} // handled separately
+                    SymExpr::Num(_n) => {} // handled separately
                     SymExpr::Add(a, b) => {
                         collect_mixed_term(a, sin_inner, cos_inner, sign, s2, s1, c2, c1);
                         collect_mixed_term(b, sin_inner, cos_inner, sign, s2, s1, c2, c1);
@@ -5503,7 +5503,7 @@ pub fn solve_eq(lhs: &SymExpr, rhs: &SymExpr, var: &str) -> Vec<String> {
     }
 
     // Check for x^n = c form
-    if let SymExpr::Pow(base, exp) = &expanded {
+    if let SymExpr::Pow(base, _exp) = &expanded {
         if let SymExpr::Var(v) = base.as_ref() {
             if v.display.as_ref() == var {
                 // x^n = 0 → x = 0

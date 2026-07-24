@@ -1116,7 +1116,7 @@ pub fn record_tool_event<'a>(
     } else {
         side_effect
     };
-    let mut event = ToolEvent {
+    let event = ToolEvent {
         id: String::new(),
         intent: intent.to_string(),
         request: request.clone(),

@@ -126,6 +126,7 @@ const NOVEL_TESTS: &[(&str, &str)] = &[
 ];
 
 /// Feature vector for reporting.
+#[allow(dead_code)]
 struct EpisodeStats {
     category: &'static str,
     episode_count: usize,
@@ -307,7 +308,7 @@ fn main() {
     for category in CATEGORIES {
         let sim = measure_centroid_similarity(&brain, category);
         let concept_hv_string = format!("concept:{}", category);
-        let concept_hv = Hypervector::encode_text_ngram(&concept_hv_string, 3);
+        let _concept_hv = Hypervector::encode_text_ngram(&concept_hv_string, 3);
 
         // Find the number of clusters whose label matches this concept
         let cluster_count = brain

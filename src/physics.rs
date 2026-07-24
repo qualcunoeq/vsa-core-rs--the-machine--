@@ -3762,6 +3762,7 @@ pub fn inject_extended_constants(
 
 /// Common English → variable name mappings for physics.
 /// Used by `infer_variable_name` to convert "force" → "F", "distance" → "r", etc.
+#[allow(dead_code)]
 const PROSE_TO_VARIABLE: &[(&[&str], &[&str])] = &[
     (
         &[
@@ -3851,6 +3852,7 @@ const PROSE_TO_VARIABLE: &[(&[&str], &[&str])] = &[
 
 /// Infer the variable name for a physics concept from prose text.
 /// E.g. "the electrostatic force between two charges" → "F"
+#[allow(dead_code)]
 fn infer_variable_name(context: &str) -> Option<&'static str> {
     let lower = context.to_lowercase();
     for (patterns, vars) in PROSE_TO_VARIABLE {
@@ -4722,6 +4724,7 @@ pub fn fetch_and_ingest_wikipedia(
 }
 
 /// Simple URL-encoding for page titles (replaces spaces with underscores and percent-encodes special chars).
+#[allow(dead_code)]
 fn urlencoding(s: &str) -> String {
     let mut result = String::with_capacity(s.len());
     for c in s.chars() {
@@ -6962,6 +6965,7 @@ pub fn physics_solve_for(formula: &str, target: &str) -> Option<crate::algebra::
         return None;
     };
     // Use crate::algebra::contains_var for the isolation logic
+    #[allow(dead_code)]
     fn contains_v(expr: &crate::algebra::SymExpr, var: &str) -> bool {
         crate::algebra::contains_var(expr, var)
     }

@@ -19,6 +19,7 @@ use serde::Serialize;
 use std::collections::{BTreeMap, HashMap};
 
 const STRATEGY_ID: &str = "stored-expression-strategy";
+#[cfg(test)]
 const FRESH_ID: &str = "fresh-capability-plan";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]

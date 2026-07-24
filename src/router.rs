@@ -3066,6 +3066,7 @@ impl QuestionRouter {
     /// Chemistry/biology are factual scientific domains.  They never use the
     /// SVO index as evidence: the only admissible result is a record carrying
     /// source, assumptions, domain and a non-candidate quality level.
+    #[allow(dead_code)]
     fn answer_life_science(question: &str) -> Option<String> {
         Self::curated_answer(question, true).map(|(answer, _)| answer)
     }
@@ -3073,6 +3074,7 @@ impl QuestionRouter {
     /// Factual QA may use a pack only after the same anchor, provenance and
     /// applicability gate as scientific records.  VSA/SVO retrieval remains
     /// a candidate generator elsewhere, never a source of authority here.
+    #[allow(dead_code)]
     fn answer_curated_factual(question: &str) -> Option<String> {
         Self::curated_answer(question, false).map(|(answer, _)| answer)
     }

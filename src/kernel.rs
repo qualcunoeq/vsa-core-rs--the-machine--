@@ -586,7 +586,7 @@ impl ProofChecker {
             Proof::Intro { binder, body } => {
                 match binder {
                     Binder::Assumption {
-                        hypothesis_id,
+                        hypothesis_id: _,
                         proposition,
                     } => {
                         // Extend context with the assumption

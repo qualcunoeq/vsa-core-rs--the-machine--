@@ -8,6 +8,7 @@ struct Corpus { cases: Vec<Case> }
 
 #[derive(Debug, Deserialize)]
 struct Case {
+    #[allow(dead_code)]
     id: String,
     prompt: String,
     outcome: String,

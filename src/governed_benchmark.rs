@@ -317,7 +317,7 @@ pub fn evaluate(
     let direct_mode = strategic.modes["direct_capability"].clone();
     let concept_mode = strategic.modes["concept_guided"].clone();
     let contextual = &strategic.contextual_ablation;
-    let mut ablations = vec![
+    let ablations = vec![
         AblationOutcome {
             name: "strategy_memory".into(),
             status: "evaluated".into(),

@@ -1,5 +1,4 @@
 //! Quick check of LibreTexts PDFs
-use std::path::Path;
 
 fn main() {
     let dir = "data/libretexts_pdfs";

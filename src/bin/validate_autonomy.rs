@@ -15,12 +15,10 @@
 use std::time::Instant;
 use the_machine::actuator::{ActionRequest, ActionResult, JumpBoxActuator};
 use the_machine::diagnostic::{
-    classify_structural, parse_error_structure, seed_diagnostic_knowledge, seed_error_classifier,
-    structure_to_triples,
+    classify_structural, seed_diagnostic_knowledge, seed_error_classifier,
 };
 use the_machine::meta_reasoning::{
-    assess, extract_key_terms, resolve_stuck, resolve_uncertain, Hypothesis, HypothesisSource,
-    ReasoningState,
+    assess, extract_key_terms, ReasoningState,
 };
 use the_machine::qa::QaEngine;
 use the_machine::text_encoder::ingest_text;
@@ -28,6 +26,7 @@ use the_machine::VSABrain;
 
 const DEFAULT_JUMPBOX: &str = "192.168.100.2:7878";
 const DEFAULT_TARGET: &str = "192.168.100.10";
+#[allow(dead_code)]
 const SSH_PREFIX: &str = "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@";
 
 fn parse_args() -> (String, String, bool) {
@@ -266,7 +265,7 @@ async fn experiment_2(
     brain: &mut VSABrain,
     qa: &mut QaEngine,
     classifier: &mut the_machine::diagnostic::ErrorClassifier,
-    verbose: bool,
+    _verbose: bool,
 ) {
     eprintln!("\n═══════════════════════════════════════════════════════════");
     eprintln!("  Experiment 2: Novel problem (structural analogy)");

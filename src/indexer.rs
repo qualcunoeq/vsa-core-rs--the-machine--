@@ -30,8 +30,6 @@
 // - **40× cheaper** than full centroid scan.
 
 use crate::Hypervector;
-use crate::HD_DIMENSION;
-use crate::U64_BLOCKS;
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -628,7 +626,7 @@ impl LightningIndexer {
 
         // Track whether the best candidate (by full similarity) was in our
         // indexer results.  We check by looking at the best full‑sim result.
-        if let Some(&(_, best_sim)) = verified.first() {
+        if let Some(&(_, _best_sim)) = verified.first() {
             // Simulate what full scan would have returned: only matters for telemetry.
             // We check if the best low‑dim candidate corresponds to the best full‑dim.
             let best_low_sim = candidates[0].1;

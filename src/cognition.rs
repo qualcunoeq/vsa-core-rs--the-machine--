@@ -899,7 +899,7 @@ impl ConfidenceCalibration {
                 self.record(episode.confidence, *score > 0.5);
                 true
             }
-            EpisodeOutcome::Failure { score, .. } => {
+            EpisodeOutcome::Failure { score: _, .. } => {
                 // Treat score < 0.5 as "incorrect" (higher score = less wrong? No —
                 // Failure score is the failure severity.  We treat any failure as
                 // incorrect regardless of score.)

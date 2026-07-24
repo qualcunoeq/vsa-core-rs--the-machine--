@@ -655,7 +655,7 @@ pub fn substitute_proposition(p: &Proposition, subst: &Substitution) -> Proposit
 
     // Collect all variables that would be introduced by the substitution.
     // These are the free vars of all substitution RHS expressions.
-    let introduced_vars: HashSet<String> = subst
+    let _introduced_vars: HashSet<String> = subst
         .iter()
         .flat_map(|(_, expr)| free_vars_term(expr))
         .collect();
@@ -1628,11 +1628,12 @@ pub fn apply_theorem(theorem: &TheoremSchema, goal: &Proposition) -> Option<Appl
         subgoals,
     })
 }
+#[cfg(test)]
 mod tests {
     use super::*;
-    use std::collections::HashMap;
-    use std::sync::LazyLock;
-    use std::sync::Mutex;
+    
+    
+    
     use SymExpr::*;
 
     // ── Shared variable cache for tests ────────────────────────

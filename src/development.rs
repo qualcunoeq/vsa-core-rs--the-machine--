@@ -1067,7 +1067,7 @@ pub fn assess_calculus_funnel(question: &str, category: &str) -> CalculusFunnelA
     let proof = ["prove", "proof", "show that", "theorem", "rigorously"]
         .iter()
         .any(|term| lower.contains(term));
-    let modeling = [
+    let _modeling = [
         "physical",
         "mass",
         "velocity",

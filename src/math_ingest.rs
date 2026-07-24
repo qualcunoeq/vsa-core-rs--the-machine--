@@ -232,9 +232,6 @@ pub fn match_symexpr(
         | (SymExpr::Acos(a), SymExpr::Acos(pa))
         | (SymExpr::Atan(a), SymExpr::Atan(pa)) => match_symexpr(a, pa, bindings),
 
-        // Negation
-        (SymExpr::Neg(a), SymExpr::Neg(pa)) => match_symexpr(a, pa, bindings),
-
         // Mismatch
         _ => false,
     }
@@ -436,10 +433,10 @@ fn strip_calculus_operator(s: &str) -> (String, Option<RuleDomain>, bool) {
         let s = s.trim();
         if s.starts_with('_') {
             // Pattern: _lower^upper   or   _{lower}^{upper}
-            let after_underscore = &s[1..].trim_start();
+            let _after_underscore = &s[1..].trim_start();
             // Find the end of bounds: find the next non-^}_ char
             // Simple approach: skip until we hit a whitespace, letter, or digit
-            let mut pos = 1; // skip '_'
+            let pos = 1; // skip '_'
             if pos < s.len() && s.as_bytes().get(pos) == Some(&b'{') {
                 // _{...}^{...} form — skip until '}' (first brace group)
                 let close = s[pos + 1..]
@@ -607,7 +604,7 @@ impl RuleEngine {
     /// Seed with bootstrap rules from the existing hardcoded knowledge.
     /// This is called once at initialization time.
     pub fn seed_bootstrap(&mut self) {
-        use crate::algebra::SymExpr::{self, *};
+        use crate::algebra::SymExpr::*;
 
         let x = || Var("x".into());
         let n = || Var("n".into());
@@ -2746,6 +2743,7 @@ const FORMULA_DEFINITION_PATTERNS: &[&str] = &[
 ];
 
 /// Pre-computed normalized token set for a single alias query.
+#[allow(dead_code)]
 struct IndexedAliasQuery {
     /// Slug of the formula being searched for.
     pub slug: String,
@@ -3915,7 +3913,7 @@ fn parse_unary(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
             Some((-expr, pos))
         }
         LToken::Op('+') => parse_unary(tokens, pos + 1),
-        LToken::Command(cmd) => parse_command(tokens, pos),
+        LToken::Command(_cmd) => parse_command(tokens, pos),
         _ => parse_atom(tokens, pos),
     }
 }
@@ -4017,7 +4015,7 @@ fn parse_command(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                 }
                 "int" | "integral" => {
                     // \int, \int_{a}^{b} f(x) dx
-                    let (mut p, lower, upper) = parse_command_bounds(tokens, pos + 1);
+                    let (p, lower, upper) = parse_command_bounds(tokens, pos + 1);
                     // Parse the integrand
                     let (integrand, p) = parse_expr(tokens, p)?;
                     // Strip trailing differential (e.g., "*dx", "*dy", "*dt")
@@ -4037,7 +4035,7 @@ fn parse_command(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                 }
                 "sum" | "Sigma" => {
                     // \sum_{i=1}^{n} expr
-                    let (mut p, _lower, _upper) = parse_command_bounds(tokens, pos + 1);
+                    let (p, _lower, _upper) = parse_command_bounds(tokens, pos + 1);
                     let (body, p) = parse_expr(tokens, p)?;
                     Some((body, p))
                 }
@@ -4257,7 +4255,7 @@ fn parse_atom(tokens: &[LToken], pos: usize) -> Option<(SymExpr, usize)> {
                 None
             }
         }
-        LToken::Command(cmd) => parse_command(tokens, pos),
+        LToken::Command(_cmd) => parse_command(tokens, pos),
         LToken::End => None,
         _ => None,
     }

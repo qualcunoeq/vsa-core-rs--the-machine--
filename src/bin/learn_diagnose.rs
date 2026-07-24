@@ -31,8 +31,8 @@
 
 use std::time::Instant;
 use the_machine::diagnostic::{
-    absorb_diagnosis, classify_structural, query_diagnostic_category, seed_diagnostic_knowledge,
-    seed_error_classifier, structure_to_triples,
+    absorb_diagnosis, classify_structural, query_diagnostic_category,
+    seed_diagnostic_knowledge, seed_error_classifier,
 };
 use the_machine::qa::QaEngine;
 use the_machine::VSABrain;
@@ -44,6 +44,7 @@ struct Episode {
     /// The expected category.
     pub expected_category: &'static str,
     /// Whether this episode is "novel" (no trigger match, tests learning).
+    #[allow(dead_code)]
     pub is_novel: bool,
 }
 
@@ -344,7 +345,7 @@ fn main() {
     let mut structural_classified = 0;
     let mut structural_total = 0;
 
-    for (text, expected_category) in ZERO_OVERLAP_TESTS {
+    for (text, _expected_category) in ZERO_OVERLAP_TESTS {
         structural_total += 1;
         eprintln!("  Text: \"{}…\"", &text[..text.len().min(40)]);
 

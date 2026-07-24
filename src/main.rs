@@ -1453,7 +1453,7 @@ async fn run_agent(
                 }
                 if ticker > 0 && ticker % 50 == 0 {
                     let qa_read = qa_for_loop.read().await;
-                    if let Some(ref ep_path) = qa_read.episode_store.path {
+                    if let Some(ref _ep_path) = qa_read.episode_store.path {
                         if !qa_read.episode_store.episodes.is_empty() {
                             if let Err(e) = qa_read.episode_store.save() {
                                 eprintln!("[tick {}] Failed to save episode store: {}", ticker, e);
@@ -2205,7 +2205,7 @@ async fn run_agent(
                             };
                             // ── Autonomy budget check (Layer 5) ────────
                             let budget_allowed = {
-                                let mut brain_write = brain_subconscious.write().await;
+                                let brain_write = brain_subconscious.write().await;
                                 brain_write
                                     .autonomy_budget
                                     .can_spend(action_risk, is_external_write)
@@ -2255,7 +2255,7 @@ async fn run_agent(
 
                             // Create the decision record for the allowed action
                             let mut decision_record = {
-                                let mut brain_write = brain_subconscious.write().await;
+                                let brain_write = brain_subconscious.write().await;
                                 let action_req = the_machine::actuator::ActionRequest::new(
                                     the_machine::actuator::ActionType::ExecuteCommand,
                                     &step.parameter,

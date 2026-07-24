@@ -83,12 +83,12 @@ pub fn evaluate(cases: usize, _seed: u64) -> ReuseAblationReport {
     let mut proof_index = CapabilityChainProofIndex::default();
     let mut proof_expected_hits = 0;
     let mut proof_hits = 0;
-    let mut proof_baseline_hits = 0;
+    let proof_baseline_hits = 0;
     let mut proof_false_hits = 0;
     let mut proof_replay_verified = 0;
     let mut fact_expected_hits = 0;
     let mut fact_hits = 0;
-    let mut fact_baseline_hits = 0;
+    let fact_baseline_hits = 0;
     let mut fact_false_hits = 0;
     let mut fact_retrieval_receipts = 0;
     let registry = fact_registry();

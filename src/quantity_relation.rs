@@ -173,8 +173,7 @@ pub fn formalize(prompt: &str) -> QuantityRelationDecision {
             .filter_map(|index| caps.get(index).map(|value| value.as_str()))
             .collect::<Vec<_>>();
         let (source, source_count, target_count) = match numbers.as_slice() {
-            [source_count, source, target_count] => (*source, *source_count, *target_count),
-            [source, source_count, target_count] => (*source, *source_count, *target_count),
+            [a, b, c] => (*a, *b, *c),
             _ => return QuantityRelationDecision::Unsupported,
         };
         return accepted(

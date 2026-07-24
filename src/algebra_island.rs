@@ -1498,7 +1498,7 @@ fn execute(problem: &AlgebraProblem) -> Option<AlgebraAnswer> {
                         } else {
                             let af = ea.to_f64();
                             let bf = eb.to_f64();
-                            let cf = ec.to_f64();
+                            let _cf = ec.to_f64();
                             let s = disc_f.max(0.0).sqrt();
                             let mut roots = vec![(-bf - s) / (2.0 * af), (-bf + s) / (2.0 * af)];
                             roots.sort_by(|x, y| x.partial_cmp(y).unwrap());

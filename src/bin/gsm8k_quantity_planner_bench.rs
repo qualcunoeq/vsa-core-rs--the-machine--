@@ -88,7 +88,7 @@ fn main() {
     let mut gsm_quantity = 0usize;
     let mut multi_step = 0usize;
     let mut unit_aware = 0usize;
-    let mut fractional = 0usize;
+    let fractional = 0usize;
     let mut ambiguous = 0usize;
     let mut unsupported = 0usize;
     let mut results_checked = 0usize;

@@ -1091,6 +1091,7 @@ fn bench_transformer_cousin(cfg: &BenchConfig) -> Vec<ExperimentResult> {
 /// The curated portion of the knowledge file uses the canonical SVO schema.
 /// Later records are an auto-extraction dump with a different field layout;
 /// they are not trusted enough to enter the benchmark's grounded fact store.
+#[allow(dead_code)]
 fn is_canonical_knowledge_fact(line: &str) -> bool {
     line.starts_with(r#"{"subject": "#)
         && line.contains(r#"", "verb": "#)
@@ -1102,6 +1103,7 @@ fn is_canonical_knowledge_fact(line: &str) -> bool {
 /// Store a corpus entry only when it is a complete SVO fact.  Knowledge files
 /// also contain metadata and partial extraction records; treating those as
 /// empty facts pollutes every QA index without adding retrievable knowledge.
+#[allow(dead_code)]
 fn store_usable_knowledge_entry(qa: &mut QaEngine, entry: &serde_json::Value) -> bool {
     // The corpus interleaves extracted metadata with asserted knowledge.  Only
     // entries explicitly marked as facts are reliable SVO knowledge triples.

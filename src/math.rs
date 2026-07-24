@@ -501,7 +501,7 @@ print(result)
         };
 
         // Extract the equation: "solve 2*x + 1 = 0" → "2*x + 1 = 0"
-        let eq_str = if let Some(eq_pos) = lower.find('=') {
+        let eq_str = if let Some(_eq_pos) = lower.find('=') {
             // Find the start of the equation (after "solve" or at the beginning)
             let start = if lower.starts_with("solve") {
                 let after_solve = lower.strip_prefix("solve")?.trim();

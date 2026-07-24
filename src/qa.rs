@@ -928,7 +928,7 @@ impl ProofTree {
                 conclusion_object,
                 rule_source,
                 ante_proof,
-                confidence,
+                confidence: _,
             } => {
                 let a_obj = if antecedent_object.is_empty() {
                     String::new()
@@ -3836,43 +3836,7 @@ impl QaEngine {
 
         // Only after the exact SVO path has failed do we permit the
         // concept-normalized retrieval/reranking backoff.
-        return self.retrieve_facts_semantically(question);
-
-        // (dead code below — preserved for reference)
-        let mut results: Vec<(String, f64, &QaFact)> = Vec::new();
-
-        for fact in &self.facts {
-            let result_hv =
-                self.unbind_slot(&fact.thought, &answer_slot, &clean_s, &clean_v, &clean_o);
-            let token = self.best_vocab_match(&result_hv);
-
-            let (s_str, v_str, o_str) = match &answer_slot {
-                AnswerSlot::Subject => (
-                    token.as_str(),
-                    clean_v.as_deref().unwrap_or(""),
-                    clean_o.as_deref().unwrap_or(""),
-                ),
-                AnswerSlot::Verb => (
-                    clean_s.as_deref().unwrap_or(""),
-                    token.as_str(),
-                    clean_o.as_deref().unwrap_or(""),
-                ),
-                AnswerSlot::Object => (
-                    clean_s.as_deref().unwrap_or(""),
-                    clean_v.as_deref().unwrap_or(""),
-                    token.as_str(),
-                ),
-            };
-
-            let energy = self.reconstruction_energy(&fact.thought, s_str, v_str, o_str);
-            if energy >= MIN_CLEANUP_ENERGY {
-                results.push((token, energy, fact));
-            }
-        }
-
-        // Sort by tick (oldest first) for chronological output
-        results.sort_by(|a, b| a.2.tick.cmp(&b.2.tick));
-        results.into_iter().map(|(t, _, f)| (t, f)).collect()
+        self.retrieve_facts_semantically(question)
     }
 
     /// Return the first factual candidate and its reconstruction confidence
@@ -4155,6 +4119,7 @@ impl QaEngine {
     }
 
     /// Join contradicted facts with contrastive discourse markers.
+    #[allow(dead_code)]
     fn conjoin_with_contrast(&self, facts: &[String]) -> String {
         if facts.is_empty() {
             return String::new();
@@ -4198,6 +4163,7 @@ impl QaEngine {
     }
 
     /// Format an answer for a contradicted fact (past-tense, with temporal marking).
+    #[allow(dead_code)]
     fn format_answer_contradicted(&self, _token: &str, fact: &QaFact) -> String {
         // For contradicted facts, use past-perfect-like framing
         format!(
@@ -4947,6 +4913,7 @@ impl QaEngine {
     // ═════════════════════════════════════════════════════════════════
 
     /// Parse a string into a Term: `"?X"` → Variable, anything else → Concrete.
+    #[cfg(test)]
     fn parse_term(s: &str) -> Term {
         Term::from_str(s)
     }

@@ -27,7 +27,6 @@
 // A max_depth parameter prevents infinite recursion. Each tactic call
 // that produces subgoals consumes one depth level.
 
-use crate::algebra::SymExpr;
 use crate::kernel::{check_constant_evaluation, Certificate, Proof, ProofChecker};
 use crate::proposition::*;
 use std::fmt;

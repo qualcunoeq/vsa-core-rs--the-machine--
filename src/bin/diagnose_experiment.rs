@@ -25,8 +25,8 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 use std::time::Instant;
-use the_machine::actuator::{self, ActionRequest, ActionResult, ActionType, JumpBoxActuator};
-use the_machine::diagnostic::{seed_diagnostic_knowledge, seed_error_classifier, CanonicalSvo};
+use the_machine::actuator::{ActionRequest, JumpBoxActuator};
+use the_machine::diagnostic::{seed_diagnostic_knowledge, seed_error_classifier};
 use the_machine::qa::QaEngine;
 use the_machine::text_encoder::{ingest_text, store_knowledge_triple};
 use the_machine::VSABrain;
@@ -39,7 +39,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
     let mut jb_addr = DEFAULT_JUMPBOX.to_string();
     let mut target_ip = DEFAULT_TARGET.to_string();
-    let mut max_steps: usize = 20;
 
     let mut i = 1;
     while i < args.len() {
@@ -59,7 +58,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "--steps" => {
                 i += 1;
                 if i < args.len() {
-                    max_steps = args[i].parse().unwrap_or(20);
+                    // max_steps intentionally parsed and discarded;
+                    // kept for future use
+                    let _ = args[i].parse::<usize>().ok();
                 }
             }
             "--help" | "-h" => {
@@ -135,7 +136,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     eprintln!("[2/4] Connecting to jump-box at {}...", jb_addr);
     let test_req = ActionRequest::exec(&target_ip, "echo jumpbox_ready");
-    let test_result = actuator.send_request(&test_req).await;
+    let _test_result = actuator.send_request(&test_req).await;
     eprintln!("  ✓ Jump-box reachable");
 
     // ── Set up the diagnostic scenario ──────────────────────────────────

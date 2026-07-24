@@ -30,7 +30,6 @@
 //   5. --bind defaults to 127.0.0.1:7878 for safety; explicitly set for deployment
 // ────────────────────────────────────────────────────────────────────────────
 
-use std::collections::HashMap;
 use std::fs;
 use std::time::Instant;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};

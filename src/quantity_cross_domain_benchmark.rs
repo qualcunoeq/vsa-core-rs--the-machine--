@@ -12,6 +12,10 @@ use crate::gsm8k_quantity_candidate::formalize as formalize_gsm_quantity;
 use crate::multi_step_quantity::{
     execute as execute_multi_step, formalize as formalize_multi_step, MultiStepDecision,
 };
+use crate::percentage_quantity::{
+    bridge_to_algebra as bridge_percentage_to_algebra,
+    formalize as formalize_percentage, PercentageQuantityDecision,
+};
 use crate::quantity_relation::{formalize as formalize_quantity, QuantityRelationDecision};
 use crate::quantity_relation_integration::{bridge_ratio_to_linear_system, bridge_to_algebra};
 use crate::unit_aware_quantity::{formalize as formalize_unit, UnitQuantityDecision};
@@ -29,6 +33,7 @@ pub enum RouteKind {
     UnitToSystem,
     FractionToAlgebra,
     MultiStepToAlgebra,
+    PercentageToAlgebra,
     UnsupportedHandoff,
 }
 
@@ -79,6 +84,13 @@ pub fn standard_quantity_route_candidates(prompt: &str) -> Vec<RouteCandidate> {
             prompt: prompt.into(),
             cost: 3,
             support: 60,
+        },
+        RouteCandidate {
+            id: "percentage_quantity".into(),
+            kind: RouteKind::PercentageToAlgebra,
+            prompt: prompt.into(),
+            cost: 2,
+            support: 85,
         },
     ]
 }
@@ -247,6 +259,18 @@ fn execute_route(candidate: &RouteCandidate) -> Result<RouteOutcome, RouteFailur
                 return Err(RouteFailure::ReplayFailed);
             }
             Some(receipt.final_result)
+        }
+        RouteKind::PercentageToAlgebra => {
+            let artifact = match formalize_percentage(&candidate.prompt) {
+                PercentageQuantityDecision::Accepted(artifact) => artifact,
+                PercentageQuantityDecision::Ambiguous => return Err(RouteFailure::Ambiguous),
+                PercentageQuantityDecision::Unsupported => return Err(RouteFailure::Unsupported),
+            };
+            let receipt =
+                bridge_percentage_to_algebra(&artifact).ok_or(RouteFailure::ReplayFailed)?;
+            receipt
+                .algebra_replay_verified
+                .then_some(receipt.result)
         }
         RouteKind::UnsupportedHandoff => return Err(RouteFailure::InvalidHandoff),
     }

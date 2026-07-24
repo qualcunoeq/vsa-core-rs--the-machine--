@@ -31,13 +31,29 @@ unsupported=100
 rewrite_pairs=50
 validation_errors=0
 deterministic=true
+release_hash=f6ebdcf826e10125050f5b83b50a31a38fcb4b7f8c197dc6d0833a91bf7d336c
 ```
 
 Every supported case carries the typed relation schema and explicit input and
 output contracts. Ambiguous and unsupported cases carry no executable relation
 schema. Rewrite pairs must share the same canonical relation schema.
 
-The next phase, if approved, is an independent implementation corpus and
-formalizer—not production integration. It must preserve the distinction among
-“of,” “more than,” “less than,” “to,” and percentage points before any bridge to
-the existing quantity/algebra graph is considered.
+## Implementation Release (e3a5778)
+
+The formalizer, typed artifact, algebra bridge, replay verification, and
+adversarial ablation test suite have been implemented.  All 200 supported
+cases are accepted with correct operation kind and replay verification.
+All 50 ambiguous and 100 unsupported cases are correctly rejected.
+
+The formalizer supports all four contract forms:
+- **PercentageOf** — "What is X% of Y?" / "Find X% of Y." / "Calculate X percent
+  of the whole quantity Y."
+- **IncreaseByPercentage** — "A quantity with base value B increases by R%."
+- **DecreaseByPercentage** — "An item priced at $B receives an R% discount." /
+  "Apply an R percent reduction to a base price of B dollars."
+- **RecoverBase** — "After an R% increase, the new value is F." / "After an R%
+  reduction, the discounted price is F." / "The final price is F after an R%
+  discount."
+
+Test results: 34/34 pass (29 individual form tests + 5 bridge/replay tests),
+plus 3 cross-domain planner tests, 2 proposal corpus tests.

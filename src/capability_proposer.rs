@@ -350,6 +350,8 @@ pub struct SemanticFeatures {
     pub has_explicit_base: bool,
     pub has_direction: bool,
     pub has_single_step: bool,
+    pub has_target_unit: bool,
+    pub has_explicit_conversion: bool,
     pub operations: BTreeSet<String>,
 }
 
@@ -374,7 +376,10 @@ impl SemanticFeatures {
                 numeric_forms.push(NumericForm::Decimal);
             }
         }
-        if lower.contains('/') || lower.contains("half") || lower.contains("quarter") || lower.contains("third") {
+        if lower.contains('/') || lower.contains("half") || lower.contains("quarter")
+            || lower.contains("third") || lower.contains("equal part")
+            || (lower.contains("one of") && lower.chars().filter(|&c| c.is_ascii_digit()).count() <= 4)
+        {
             numeric_forms.push(NumericForm::ExplicitFraction);
         }
         if lower.contains('%') || lower.contains("percent") || lower.contains("per hundred")
@@ -496,6 +501,19 @@ impl SemanticFeatures {
                 || lower.contains("grows")
                 || lower.contains("rises"),
             has_single_step: lower.contains("one change") || lower.contains("single"),
+            has_target_unit: lower.contains("express in")
+                || lower.contains("express the total")
+                || lower.contains("express the difference")
+                || lower.contains("total in")
+                || lower.contains("difference in")
+                || lower.contains("find the total")
+                || lower.contains("find the difference")
+                || lower.contains("convert ")
+                || (lower.contains("how many") && lower.contains("piece")),
+            has_explicit_conversion: lower.contains("using ")
+                || lower.contains("per meter") || lower.contains("per centimeter")
+                || lower.contains("per hour") || lower.contains("per minute")
+                || lower.contains("per inch") || lower.contains("per foot"),
             operations: {
                 let mut ops = BTreeSet::new();
                 if lower.contains("of ") {
@@ -544,6 +562,8 @@ impl SemanticFeatures {
         if self.has_explicit_base { tags.insert("base:explicit".into()); }
         if self.has_direction { tags.insert("dir:present".into()); }
         if self.has_single_step { tags.insert("step:single".into()); }
+        if self.has_target_unit { tags.insert("target:specified".into()); }
+        if self.has_explicit_conversion { tags.insert("conversion:explicit".into()); }
         for op in &self.operations {
             tags.insert(format!("op:{}", op));
         }
@@ -573,6 +593,8 @@ impl FailureCluster {
                 has_explicit_base: false,
                 has_direction: false,
                 has_single_step: false,
+                has_target_unit: false,
+                has_explicit_conversion: false,
                 operations: BTreeSet::new(),
             };
         }
@@ -602,6 +624,8 @@ impl FailureCluster {
         let has_explicit_base = features.iter().filter(|f| f.has_explicit_base).count() > n / 2;
         let has_direction = features.iter().filter(|f| f.has_direction).count() > n / 2;
         let has_single_step = features.iter().filter(|f| f.has_single_step).count() > n / 2;
+        let has_target_unit = features.iter().filter(|f| f.has_target_unit).count() > n / 2;
+        let has_explicit_conversion = features.iter().filter(|f| f.has_explicit_conversion).count() > n / 2;
 
         let operations: BTreeSet<String> = features.iter().flat_map(|f| f.operations.clone()).collect();
 
@@ -611,6 +635,8 @@ impl FailureCluster {
             has_explicit_base,
             has_direction,
             has_single_step,
+            has_target_unit,
+            has_explicit_conversion,
             operations,
         }
     }
@@ -946,8 +972,15 @@ pub fn extract_predicates(
         || rels.contains(&RelationSemantics::MultiplicativeChange)
         || rels.contains(&RelationSemantics::PerUnitRate)
         || rels.contains(&RelationSemantics::ProportionalScaling)
+        || rels.contains(&RelationSemantics::AdditiveChange)
     {
         predicates.push(ApplicabilityPredicate::RequiresQuantityValuedTarget);
+    }
+    if rels.contains(&RelationSemantics::AdditiveChange) {
+        // AdditiveChange must exclude financial constructs (loans, interest)
+        predicates.push(ApplicabilityPredicate::ForbidsFinancialConstructs);
+        // Must reject incompatible unit mixing
+        predicates.push(ApplicabilityPredicate::ForbidsIncompatibleUnits);
     }
 
     predicates
@@ -1028,9 +1061,19 @@ pub fn evaluate_predicates(
                 }
             }
             ApplicabilityPredicate::ForbidsFinancialConstructs => {
+                // Financial constructs: loans, interest, finance — detected via keywords
+                // that don't fit the additive-change or multiplicative-change patterns.
                 if feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
                     && !feat.has_explicit_base
                     && feat.operations.contains("increase")
+                {
+                    return Some(p.clone());
+                }
+                // For AdditiveChange: detect financial keywords
+                if feat.relation_semantics.contains(&RelationSemantics::AdditiveChange)
+                    && (feat.operations.contains("increase")
+                        || feat.operations.contains("decrease"))
+                    && !feat.has_explicit_base
                 {
                     return Some(p.clone());
                 }
@@ -1044,6 +1087,8 @@ pub fn evaluate_predicates(
                 }
             }
             ApplicabilityPredicate::ForbidsIncompatibleUnits => {
+                // Incompatible units detected when multiple unit types appear together
+                // (e.g. meters + kilograms) in an additive context without a conversion.
                 if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
                     && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
                     && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate)
@@ -1430,6 +1475,608 @@ pub fn build_proposal(
     }
 }
 
+// ── Applicability decision model ──────────────────────────────────────
+
+/// The proposer's decision for a single case against the contract boundary.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ApplicabilityDecision {
+    /// The case satisfies the capability contract.
+    Applicable,
+    /// The case has multiple possible interpretations or a missing binding.
+    Ambiguous { causes: Vec<AmbiguityCause> },
+    /// The case violates the capability contract — no interpretation is valid.
+    Unsupported { failed_predicate: ApplicabilityPredicate },
+}
+
+/// A typed reason why a case is ambiguous rather than supported or unsupported.
+///
+/// Ambiguity requires two or more supported interpretations or an unresolvable
+/// binding. It is not a weakened exclusion: an ambiguous case could become
+/// supported with more information, while an unsupported case cannot.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum AmbiguityCause {
+    /// A required reference quantity is absent (e.g. no explicit base)
+    MissingReference,
+    /// Multiple plausible reference quantities exist
+    MultipleReferenceCandidates,
+    /// The direction of change is unclear ("to" vs "by")
+    DirectionAmbiguity,
+    /// It is unclear which instance of a quantity is being referred to
+    IndexingAmbiguity,
+    /// What quantity the operation targets is unclear
+    TargetAmbiguity,
+    /// Multiple constraints that cannot all be satisfied
+    ConflictingConstraints,
+}
+
+/// A supported execution form within a capability. Capabilities may have
+/// multiple supported forms (e.g. "unit rate", "direct ratio", "proportional
+/// scaling" within QuantityRelation).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SupportedForm {
+    /// Human-readable form name
+    pub name: String,
+    /// Centroid features for this form
+    pub centroid_features: SemanticFeatures,
+    /// Features that must be present for this form
+    pub required_features: Vec<String>,
+    /// Features that can trigger ambiguity for this form
+    pub ambiguity_triggers: Vec<String>,
+    /// Example prompts
+    pub exemplars: Vec<String>,
+}
+
+/// A single case evaluated against the contract boundary.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CaseDecision {
+    /// The prompt text
+    pub prompt: String,
+    /// The proposer's decision for this case
+    pub decision: ApplicabilityDecision,
+    /// Which supported form matched (if applicable)
+    pub matched_form: Option<String>,
+}
+
+/// The synthesized boundary: explicit decisions for all known evaluation cases.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SynthesizedBoundary {
+    /// Decisions for each known case
+    pub decisions: Vec<CaseDecision>,
+    /// Supported forms that were matched against
+    pub supported_forms: Vec<SupportedForm>,
+}
+
+/// Expected decision for a prompt in a reconstruction task.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ExpectedDecision {
+    Applicable,
+    Ambiguous,
+    Unsupported,
+}
+
+/// Per-class boundary metrics for a reconstruction evaluation.
+///
+/// Computes recall and precision separately for Applicable, Ambiguous,
+/// and Unsupported, plus a macro average across all six metrics.
+/// This replaces the single "boundary agreement" number which conflates
+/// supported recall with everything else.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BoundaryMetrics {
+    pub supported_recall: f64,
+    pub supported_precision: f64,
+    pub ambiguity_recall: f64,
+    pub ambiguity_precision: f64,
+    pub unsupported_recall: f64,
+    pub unsupported_precision: f64,
+    pub macro_boundary_score: f64,
+}
+
+// ── Supported form extraction ─────────────────────────────────────────
+
+/// Extract supported forms from a failure cluster.
+///
+/// If the cluster has members with multiple distinct relation semantics,
+/// each becomes a separate supported form. Otherwise, a single form
+/// is derived from the centroid.
+pub fn extract_supported_forms(cluster: &FailureCluster) -> Vec<SupportedForm> {
+    let centroid = &cluster.centroid_features;
+    let rels = &centroid.relation_semantics;
+
+    // Build required_features from a centroid.
+    // Includes numeric forms that achieved majority, so candidates with a
+    // different numeric form (e.g. percentage vs fraction) are rejected.
+    let build_required = |c: &SemanticFeatures| -> Vec<String> {
+        let mut required = Vec::new();
+        if c.has_explicit_base { required.push("explicit_base".into()); }
+        if c.has_direction { required.push("explicit_direction".into()); }
+        if c.has_single_step { required.push("single_step".into()); }
+        if c.has_target_unit { required.push("target_unit".into()); }
+        if c.has_explicit_conversion { required.push("explicit_conversion".into()); }
+        if c.numeric_forms.contains(&NumericForm::UnitBearingScalar) {
+            required.push("unit_bearing_scalar".into());
+        }
+        // Include distinguishing numeric forms as requirements
+        for nf in &c.numeric_forms {
+            match nf {
+                NumericForm::Percentage => required.push("num_form_percentage".into()),
+                NumericForm::ExplicitFraction => required.push("num_form_fraction".into()),
+                NumericForm::UnitBearingScalar => {} // already handled above
+                _ => {}
+            }
+        }
+        required
+    };
+
+    if rels.len() <= 1 {
+        // Single relation → single supported form.
+        // Also handles empty rels (fallback to centroid-level features).
+        let name = rels.first().map(|r| format!("{:?}", r).to_lowercase())
+            .unwrap_or_else(|| "quantity".into());
+        return vec![SupportedForm {
+            name,
+            centroid_features: centroid.clone(),
+            required_features: build_required(centroid),
+            ambiguity_triggers: vec![],
+            exemplars: cluster.prompt_exemplars.clone(),
+        }];
+    }
+
+    // Multiple relations → try to split into subforms by matching members
+    let mut forms: Vec<SupportedForm> = rels.iter().map(|rel| {
+        SupportedForm {
+            name: format!("{:?}", rel).to_lowercase(),
+            centroid_features: SemanticFeatures {
+                relation_semantics: vec![rel.clone()],
+                ..centroid.clone()
+            },
+            required_features: build_required(centroid),
+            ambiguity_triggers: vec![],
+            exemplars: vec![],
+        }
+    }).collect();
+
+    // Assign exemplars to the first matching form
+    for ex in &cluster.prompt_exemplars {
+        let feat = SemanticFeatures::extract(ex);
+        for form in &mut forms {
+            let form_rel = form.centroid_features.relation_semantics.first()
+                .cloned().unwrap_or(RelationSemantics::AdditiveChange);
+            if feat.relation_semantics.contains(&form_rel) {
+                form.exemplars.push(ex.clone());
+                break;
+            }
+        }
+    }
+
+    forms
+}
+
+// ── Case decision synthesis ───────────────────────────────────────────
+
+/// Determine whether a predicate failure indicates ambiguity (resolvable
+/// with more info) vs unsupported (fundamentally incompatible).
+fn is_resolvable_predicate(pred: &ApplicabilityPredicate) -> bool {
+    matches!(pred,
+        ApplicabilityPredicate::RequiresExplicitBase
+        | ApplicabilityPredicate::RequiresExplicitDirection
+        | ApplicabilityPredicate::RequiresUnitBearingScalar
+    )
+}
+
+/// Determine the ambiguity cause from a failed predicate and feature set.
+fn determine_ambiguity_cause(
+    pred: &ApplicabilityPredicate,
+    feat: &SemanticFeatures,
+    _centroid: &SemanticFeatures,
+) -> Vec<AmbiguityCause> {
+    match pred {
+        ApplicabilityPredicate::RequiresExplicitBase => {
+            // Check if there are multiple candidate references in the text
+            // (e.g. ambiguous "of" that could bind to multiple quantities)
+            vec![AmbiguityCause::MissingReference]
+        }
+        ApplicabilityPredicate::RequiresExplicitDirection => {
+            vec![AmbiguityCause::DirectionAmbiguity]
+        }
+        ApplicabilityPredicate::RequiresUnitBearingScalar => {
+            vec![AmbiguityCause::TargetAmbiguity]
+        }
+        _ => {
+            if feat.relation_semantics.len() > 1 {
+                vec![AmbiguityCause::ConflictingConstraints]
+            } else {
+                vec![AmbiguityCause::MissingReference]
+            }
+        }
+    }
+}
+
+/// Check whether the candidate shares a semantic relation with the centroid.
+fn shares_semantic_relation(feat: &SemanticFeatures, centroid: &SemanticFeatures) -> bool {
+    if centroid.relation_semantics.is_empty() {
+        // If centroid has no dominant relation, fall back to numeric form overlap
+        return centroid.numeric_forms.iter().any(|nf| feat.numeric_forms.contains(nf));
+    }
+    centroid.relation_semantics.iter().any(|r| feat.relation_semantics.contains(r))
+}
+
+/// Helper: check whether a candidate satisfies a form's required features.
+fn satisfies_form_requirements(feat: &SemanticFeatures, form: &SupportedForm) -> bool {
+    form.required_features.iter().all(|rf| {
+        match rf.as_str() {
+            "explicit_base" => feat.has_explicit_base,
+            "explicit_direction" => feat.has_direction,
+            "single_step" => feat.has_single_step,
+            "target_unit" => feat.has_target_unit,
+            "explicit_conversion" => feat.has_explicit_conversion,
+            "unit_bearing_scalar" => feat.numeric_forms.contains(&NumericForm::UnitBearingScalar),
+            "num_form_percentage" => feat.numeric_forms.contains(&NumericForm::Percentage),
+            "num_form_fraction" => feat.numeric_forms.contains(&NumericForm::ExplicitFraction),
+            _ => true,
+        }
+    })
+}
+
+/// Decide whether a single case is Applicable, Ambiguous, or Unsupported
+/// given the cluster contract and its predicates.
+///
+/// Classification order:
+/// 1. Cluster member that also satisfies form requirements → Applicable
+/// 2. Cluster member missing a required feature → Ambiguous (missing required binding)
+/// 3. Matches a supported form (relation + required features + Jaccard) → Applicable
+/// 4. Predicate failure: same family + resolvable → Ambiguous; else → Unsupported
+/// 5. No predicate failure + matches form requirements + Jaccard → Applicable
+/// 6. Default → Unsupported
+pub fn decide_case(
+    prompt: &str,
+    feat: &SemanticFeatures,
+    cluster: &FailureCluster,
+    predicates: &[ApplicabilityPredicate],
+    supported_forms: &[SupportedForm],
+) -> ApplicabilityDecision {
+    let centroid = &cluster.centroid_features;
+    let is_cluster_member = cluster.prompt_exemplars.iter().any(|e| e == prompt);
+
+    // Step 1: Check form membership. Even cluster members must satisfy
+    // the form's required features to be Applicable. Additionally, the case
+    // must pass all safety predicates (Forbids*) — a form match does not
+    // override safety.
+    for form in supported_forms {
+        if !shares_semantic_relation(feat, &form.centroid_features) {
+            continue;
+        }
+        let meets_req = satisfies_form_requirements(feat, form);
+        let sim = form.centroid_features.jaccard_similarity(feat);
+        if (is_cluster_member && meets_req && sim >= 0.2)
+            || (!is_cluster_member && meets_req && sim >= 0.35)
+        {
+            // Even if the form matches, check safety predicates:
+            // forbids predicates take precedence over form membership.
+            // Check safety predicates even for form matches.
+            // Forbids predicates take precedence: if the case triggers any
+            // safety exclusion, it's Unsupported regardless of form match.
+            let safety_fail = predicates.iter().any(|p| {
+                match p {
+                    ApplicabilityPredicate::ForbidsLikelihoodSemantics =>
+                        feat.relation_semantics.contains(&RelationSemantics::ProbabilityMeasure),
+                    ApplicabilityPredicate::ForbidsRepeatedTemporalApplication =>
+                        feat.relation_semantics.contains(&RelationSemantics::RepeatedChange),
+                    ApplicabilityPredicate::ForbidsFinancialConstructs =>
+                        feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
+                            && !feat.has_explicit_base
+                            && feat.operations.contains("increase"),
+                    ApplicabilityPredicate::ForbidsIncompatibleUnits =>
+                        feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
+                            && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
+                            && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate),
+                    ApplicabilityPredicate::ForbidsOverlappingAdjustments =>
+                        feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
+                            && feat.operations.len() >= 2,
+                    ApplicabilityPredicate::ForbidsPercentagePoints =>
+                        feat.numeric_forms.contains(&NumericForm::Percentage)
+                            && !feat.has_explicit_base
+                            && !feat.has_direction
+                            && !feat.relation_semantics.contains(&RelationSemantics::PartOfWhole)
+                            && !feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange),
+                    ApplicabilityPredicate::ForbidsAbstractSymbolicExpression =>
+                        !feat.numeric_forms.iter().any(|f| matches!(f, NumericForm::Integer | NumericForm::Decimal))
+                            || (feat.numeric_forms.contains(&NumericForm::ExplicitFraction) && !feat.has_explicit_base),
+                    _ => false,
+                }
+            });
+            if safety_fail {
+                return ApplicabilityDecision::Unsupported {
+                    failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
+                };
+            }
+            return ApplicabilityDecision::Applicable;
+        }
+    }
+
+    // Step 2: Cluster member that doesn't satisfy form requirements.
+    //   - Same relation + resolvable missing feature (base, direction, target_unit,
+    //     explicit_conversion) → Ambiguous (missing required binding)
+    //   - Same relation + NUMERIC FORM mismatch → Unsupported (different operation
+    //     form — e.g. percentage vs fraction is not ambiguous, it's excluded)
+    //   - Different relation from all forms → Unsupported (different capability domain)
+    if is_cluster_member {
+        let mut any_shared_rel = false;
+        for form in supported_forms {
+            if shares_semantic_relation(feat, &form.centroid_features) {
+                any_shared_rel = true;
+                let mut has_numeric_mismatch = false;
+                let mut resolvable_causes = Vec::new();
+
+                for rf in &form.required_features {
+                    match rf.as_str() {
+                        "target_unit" if !feat.has_target_unit =>
+                            resolvable_causes.push(AmbiguityCause::MissingReference),
+                        "explicit_base" if !feat.has_explicit_base =>
+                            resolvable_causes.push(AmbiguityCause::MissingReference),
+                        "explicit_direction" if !feat.has_direction =>
+                            resolvable_causes.push(AmbiguityCause::DirectionAmbiguity),
+                        "explicit_conversion" if !feat.has_explicit_conversion =>
+                            resolvable_causes.push(AmbiguityCause::MissingReference),
+                        "num_form_percentage" if !feat.numeric_forms.contains(&NumericForm::Percentage) =>
+                            has_numeric_mismatch = true,
+                        "num_form_fraction" if !feat.numeric_forms.contains(&NumericForm::ExplicitFraction) =>
+                            has_numeric_mismatch = true,
+                        _ => {}
+                    }
+                }
+
+                // Numeric form mismatch → Unsupported
+                if has_numeric_mismatch {
+                    return ApplicabilityDecision::Unsupported {
+                        failed_predicate: ApplicabilityPredicate::ForbidsLikelihoodSemantics,
+                    };
+                }
+
+                // Check for financial constructs before Ambiguous.
+                // A prompt about "loan/interest" is Unsupported even if it shares
+                // AdditiveChange — it's a fundamentally different operation domain.
+                let p_lower = prompt.to_ascii_lowercase();
+                if p_lower.contains("loan") || p_lower.contains("interest") || p_lower.contains("finance") {
+                    return ApplicabilityDecision::Unsupported {
+                        failed_predicate: ApplicabilityPredicate::ForbidsFinancialConstructs,
+                    };
+                }
+
+                // Resolvable missing features → Ambiguous
+                if !resolvable_causes.is_empty() {
+                    return ApplicabilityDecision::Ambiguous { causes: resolvable_causes };
+                }
+            }
+        }
+        // Cluster member that doesn't share any form's relation → Unsupported
+        if !any_shared_rel {
+            return ApplicabilityDecision::Unsupported {
+                failed_predicate: ApplicabilityPredicate::RequiresQuantityValuedTarget,
+            };
+        }
+        // Cluster member that shares a form's relation but all requirements pass
+        return ApplicabilityDecision::Applicable;
+    }
+
+    let same_rel = shares_semantic_relation(feat, centroid);
+
+    // Step 3: Evaluate predicates.
+    let failed = evaluate_predicates(predicates, feat, &centroid.relation_semantics);
+
+    if let Some(pred) = failed {
+        if same_rel && is_resolvable_predicate(&pred) {
+            let causes = determine_ambiguity_cause(&pred, feat, centroid);
+            return ApplicabilityDecision::Ambiguous { causes };
+        }
+        return ApplicabilityDecision::Unsupported { failed_predicate: pred };
+    }
+
+    // Step 4: No predicate failed — check whether the case satisfies at
+    // least one form's requirements and has enough feature overlap.
+    if same_rel {
+        for form in supported_forms {
+            if satisfies_form_requirements(feat, form) {
+                let sim = centroid.jaccard_similarity(feat);
+                if sim >= 0.3 {
+                    return ApplicabilityDecision::Applicable;
+                }
+            }
+        }
+    }
+
+    // Step 5: Outside the contract
+    ApplicabilityDecision::Unsupported {
+        failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
+    }
+}
+
+/// Synthesize boundary decisions for all cases known to the proposer.
+/// This builds an explicit Applicable/Ambiguous/Unsupported decision
+/// for each prompt, grounded in the contract predicates.
+pub fn synthesize_boundary(
+    cluster: &FailureCluster,
+    all_prompts: &BTreeMap<FailureReceiptId, String>,
+    all_features: &BTreeMap<FailureReceiptId, SemanticFeatures>,
+    predicates: &[ApplicabilityPredicate],
+    supported_forms: &[SupportedForm],
+) -> SynthesizedBoundary {
+    let mut decisions = Vec::new();
+
+    for (id, prompt) in all_prompts {
+        let feat = all_features.get(id)
+            .cloned()
+            .unwrap_or_else(|| SemanticFeatures::extract(prompt));
+
+        let mut matched_form = None;
+        let decision = decide_case(prompt, &feat, cluster, predicates, supported_forms);
+
+        // Record which form matched
+        if let ApplicabilityDecision::Applicable = &decision {
+            for form in supported_forms {
+                let sim = form.centroid_features.jaccard_similarity(&feat);
+                if sim >= 0.5 {
+                    matched_form = Some(form.name.clone());
+                    break;
+                }
+            }
+        }
+
+        decisions.push(CaseDecision {
+            prompt: prompt.clone(),
+            decision,
+            matched_form,
+        });
+    }
+
+    SynthesizedBoundary {
+        decisions,
+        supported_forms: supported_forms.to_vec(),
+    }
+}
+
+// ── Positive necessity mining ─────────────────────────────────────────
+
+/// Refine the predicate set by contrasting positive cases against ambiguous cases.
+///
+/// For each predicate that requires a feature, verify that removing the condition
+/// would cause the contract to accept cases that are truly ambiguous. If so, the
+/// condition is a genuine differentiating necessity; otherwise it is dropped.
+pub fn mine_positive_necessities(
+    predicates: &[ApplicabilityPredicate],
+    cluster: &FailureCluster,
+    all_features: &BTreeMap<FailureReceiptId, SemanticFeatures>,
+) -> Vec<ApplicabilityPredicate> {
+    let mut refined = Vec::new();
+
+    // The cluster members are the positive cases
+    let pos_features: Vec<SemanticFeatures> = cluster.receipts.iter()
+        .filter_map(|id| all_features.get(id))
+        .cloned()
+        .collect();
+
+    if pos_features.is_empty() {
+        return predicates.to_vec();
+    }
+
+    // Find ambiguous candidates: non-members that share a semantic relation
+    // with at least one positive case but fail a resolvable predicate
+    let ambiguous_candidates: Vec<SemanticFeatures> = all_features.iter()
+        .filter(|(id, _)| !cluster.receipts.contains(id))
+        .filter(|(_, feat)| {
+            pos_features.iter().any(|pf| pf.relation_semantics == feat.relation_semantics)
+        })
+        .map(|(_, feat)| feat.clone())
+        .collect();
+
+    for pred in predicates {
+        match pred {
+            // For "requires" predicates: verify that the condition
+            // actually distinguishes positives from ambiguous cases
+            p @ (ApplicabilityPredicate::RequiresExplicitBase
+               | ApplicabilityPredicate::RequiresExplicitDirection
+               | ApplicabilityPredicate::RequiresSingleTransformation
+               | ApplicabilityPredicate::RequiresUnitBearingScalar) =>
+            {
+                let required_feature_present = |feat: &SemanticFeatures| -> bool {
+                    match p {
+                        ApplicabilityPredicate::RequiresExplicitBase => feat.has_explicit_base,
+                        ApplicabilityPredicate::RequiresExplicitDirection => feat.has_direction,
+                        ApplicabilityPredicate::RequiresSingleTransformation => feat.has_single_step,
+                        ApplicabilityPredicate::RequiresUnitBearingScalar =>
+                            feat.numeric_forms.contains(&NumericForm::UnitBearingScalar),
+                        _ => unreachable!(),
+                    }
+                };
+
+                // Check: is this condition truly differentiating?
+                // All positives should satisfy it, and at least some ambiguous cases should lack it
+                let all_positives_ok = pos_features.iter().all(|f| required_feature_present(f));
+                let some_ambiguous_lack = ambiguous_candidates.iter().any(|f| !required_feature_present(f));
+
+                if all_positives_ok && (some_ambiguous_lack || ambiguous_candidates.is_empty()) {
+                    refined.push(p.clone());
+                }
+                // If condition is not differentiating, it's dropped — the contract
+                // doesn't need it as a hard requirement
+            }
+            // All other predicates pass through unchanged
+            other => refined.push(other.clone()),
+        }
+    }
+
+    refined
+}
+
+// ── Boundary scoring ──────────────────────────────────────────────────
+
+/// Score a synthesized boundary against expected decisions.
+pub fn score_boundary_matrix(
+    expected: &BTreeMap<String, ExpectedDecision>,
+    synthesized: &SynthesizedBoundary,
+) -> BoundaryMetrics {
+    let mut tp_app = 0usize;
+    let mut fp_app = 0usize;
+    let mut fn_app = 0usize;
+
+    let mut tp_amb = 0usize;
+    let mut fp_amb = 0usize;
+    let mut fn_amb = 0usize;
+
+    let mut tp_uns = 0usize;
+    let mut fp_uns = 0usize;
+    let mut fn_uns = 0usize;
+
+    for cd in &synthesized.decisions {
+        let expected = expected.get(&cd.prompt)
+            .cloned()
+            .unwrap_or(ExpectedDecision::Unsupported);
+
+        let proposed = &cd.decision;
+
+        match (&expected, proposed) {
+            (ExpectedDecision::Applicable, ApplicabilityDecision::Applicable) => tp_app += 1,
+            (ExpectedDecision::Applicable, _) => fn_app += 1,
+            (ExpectedDecision::Ambiguous, ApplicabilityDecision::Ambiguous { .. }) => tp_amb += 1,
+            (ExpectedDecision::Ambiguous, _) => fn_amb += 1,
+            (ExpectedDecision::Unsupported, ApplicabilityDecision::Unsupported { .. }) => tp_uns += 1,
+            (ExpectedDecision::Unsupported, _) => fn_uns += 1,
+        }
+
+        // False positives: proposed as class X but expected is different
+        match proposed {
+            ApplicabilityDecision::Applicable if !matches!(expected, ExpectedDecision::Applicable) => fp_app += 1,
+            ApplicabilityDecision::Ambiguous { .. } if !matches!(expected, ExpectedDecision::Ambiguous) => fp_amb += 1,
+            ApplicabilityDecision::Unsupported { .. } if !matches!(expected, ExpectedDecision::Unsupported) => fp_uns += 1,
+            _ => {}
+        }
+    }
+
+    let safe_div = |num: f64, den: usize| -> f64 {
+        if den == 0 { 1.0 } else { num / den as f64 }
+    };
+
+    let supported_recall = safe_div(tp_app as f64, tp_app + fn_app);
+    let supported_precision = safe_div(tp_app as f64, tp_app + fp_app);
+    let ambiguity_recall = safe_div(tp_amb as f64, tp_amb + fn_amb);
+    let ambiguity_precision = safe_div(tp_amb as f64, tp_amb + fp_amb);
+    let unsupported_recall = safe_div(tp_uns as f64, tp_uns + fn_uns);
+    let unsupported_precision = safe_div(tp_uns as f64, tp_uns + fp_uns);
+
+    let macro_boundary_score = (supported_recall + supported_precision
+        + ambiguity_recall + ambiguity_precision
+        + unsupported_recall + unsupported_precision) / 6.0;
+
+    BoundaryMetrics {
+        supported_recall,
+        supported_precision,
+        ambiguity_recall,
+        ambiguity_precision,
+        unsupported_recall,
+        unsupported_precision,
+        macro_boundary_score,
+    }
+}
+
 // ── Proposer pipeline ─────────────────────────────────────────────────
 
 /// Result of the full proposer pipeline for one candidate abstraction.
@@ -1438,6 +2085,8 @@ pub struct ProposalPipelineResult {
     pub cluster: FailureCluster,
     pub invariant: TransformationInvariant,
     pub boundary: BoundaryContrast,
+    pub synthesized: SynthesizedBoundary,
+    pub predicates: Vec<ApplicabilityPredicate>,
     pub proposal: CapabilityContractProposal,
     pub score: Option<ProposalScore>,
 }
@@ -1466,16 +2115,33 @@ pub fn propose_from_failures(
         // 3. Discover transformation invariant
         let invariant = discover_invariant(cluster);
 
-        // 4. Analyze boundary
+        // 4. Extract predicates from the invariant + centroid
+        let raw_predicates = extract_predicates(&invariant, &cluster.centroid_features);
+
+        // 5. Mine positive necessities: refine predicates by contrasting
+        //    positives against ambiguous cases
+        let predicates = mine_positive_necessities(&raw_predicates, cluster, &features);
+
+        // 6. Extract supported forms from the cluster
+        let supported_forms = extract_supported_forms(cluster);
+
+        // 7. Analyze boundary (exclusion mining)
         let boundary = analyze_boundary(cluster, &prompts, &features);
 
-        // 5. Build proposal
+        // 8. Synthesize explicit boundary decisions for all cases
+        let synthesized = synthesize_boundary(
+            cluster, &prompts, &features, &predicates, &supported_forms,
+        );
+
+        // 9. Build proposal
         let proposal = build_proposal(cluster, &invariant, &boundary, &prompts);
 
         results.push(ProposalPipelineResult {
             cluster: cluster.clone(),
             invariant,
             boundary,
+            synthesized,
+            predicates: predicates.clone(),
             proposal,
             score: None,
         });
@@ -1495,6 +2161,9 @@ pub struct HistoricalReconstructionTask {
     pub target_failure_prompts: Vec<&'static str>,
     /// Failure receipt prompts from other families (distractors)
     pub distractor_prompts: Vec<&'static str>,
+    /// Expected decision label for each distractor (parallel to distractor_prompts).
+    /// All target_failure_prompts are expected to be Applicable.
+    pub distractor_labels: Vec<ExpectedDecision>,
     /// Expected input artifact types
     pub expected_inputs: Vec<ArtifactType>,
     /// Expected output artifact types
@@ -1560,6 +2229,25 @@ pub struct ReconstructionScore {
     pub coverage_calibration_error: f64,
     pub overall_valid: bool,
     pub validity_tier: ReconstructionValidity,
+    /// Per-class boundary metrics (new in Phase 2G)
+    pub boundary_metrics: Option<BoundaryMetrics>,
+}
+
+/// Build the expected decisions map for a reconstruction task.
+/// All target prompts are Applicable; each distractor gets its label
+/// from `distractor_labels`. Default for any unlisted prompt is Unsupported.
+pub fn build_expected_decisions(task: &HistoricalReconstructionTask) -> BTreeMap<String, ExpectedDecision> {
+    let mut map = BTreeMap::new();
+    for p in &task.target_failure_prompts {
+        map.insert(p.to_string(), ExpectedDecision::Applicable);
+    }
+    for (i, p) in task.distractor_prompts.iter().enumerate() {
+        let label = task.distractor_labels.get(i)
+            .cloned()
+            .unwrap_or(ExpectedDecision::Unsupported);
+        map.insert(p.to_string(), label);
+    }
+    map
 }
 
 /// Evaluate a proposal against a historical reconstruction task.
@@ -1659,10 +2347,16 @@ pub fn score_reconstruction(
         1.0
     };
 
+    // ── Phase 2G: Boundary decision matrix ──
+    let expected_decisions = build_expected_decisions(task);
+    let boundary_metrics = score_boundary_matrix(&expected_decisions, &result.synthesized);
+    let macro_boundary = boundary_metrics.macro_boundary_score;
+
     // ── Tiered validity ──
     let structurally_ok = proposal.structurally_valid();
     let io_ok = contract_similarity >= 0.60;
-    let boundary_ok = support_agreement >= 0.50;
+    // Updated: use macro_boundary_score >= 0.60 instead of support_agreement >= 0.50
+    let boundary_ok = macro_boundary >= 0.60;
     let exclusion_ok = exclusion_recall >= 0.60;
     let bridge_ok = bridge_correctness >= 0.99;
     let novelty_ok = novelty_correct;
@@ -1693,6 +2387,7 @@ pub fn score_reconstruction(
         coverage_calibration_error: cal_error,
         overall_valid: overall,
         validity_tier,
+        boundary_metrics: Some(boundary_metrics),
     }
 }
 
@@ -1990,6 +2685,11 @@ mod tests {
                 "A loan charges 5% simple interest over time.",
                 "There is a 25% probability.",
             ],
+            distractor_labels: vec![
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+            ],
             expected_inputs: vec![ArtifactType::NumericQuantity, ArtifactType::PercentageRate],
             expected_outputs: vec![ArtifactType::QuantityRelation],
             expected_pattern_descriptions: vec![
@@ -2121,10 +2821,17 @@ mod tests {
             coverage_calibration_error: 1.0,
             overall_valid: false,
             validity_tier: ReconstructionValidity::StructurallyPlausible,
+            boundary_metrics: None,
         };
         for (i, r) in results.iter().enumerate() {
             let score = score_reconstruction(task, r);
-            if score.support_boundary_agreement >= best_score.support_boundary_agreement {
+            let mb_new = score.boundary_metrics.as_ref()
+                .map(|m| m.macro_boundary_score).unwrap_or(0.0);
+            let mb_best = best_score.boundary_metrics.as_ref()
+                .map(|m| m.macro_boundary_score).unwrap_or(0.0);
+            let combined_new = score.support_boundary_agreement * 0.3 + mb_new * 0.7;
+            let combined_best = best_score.support_boundary_agreement * 0.3 + mb_best * 0.7;
+            if combined_new >= combined_best {
                 best_score = score;
                 best_idx = i;
             }
@@ -2133,8 +2840,15 @@ mod tests {
     }
 
     fn format_score(score: &ReconstructionScore) -> String {
+        let bm = score.boundary_metrics.as_ref().map(|m| {
+            format!("  MacroBound={:.1}%  SupP={:.1}%  AmbR={:.1}%  UnsR={:.1}%",
+                m.macro_boundary_score * 100.0,
+                m.supported_precision * 100.0,
+                m.ambiguity_recall * 100.0,
+                m.unsupported_recall * 100.0)
+        }).unwrap_or_default();
         format!(
-            "  I/O={:.1}%  Boundary={:.1}%  Exclusion={:.1}%  Bridge={:.1}%  Novel={}  CalErr={:.1}%  Valid={}",
+            "I/O={:.1}%  Bound(agree)={:.1}%  Excl={:.1}%  Bridge={:.1}%  Novel={}  CalErr={:.1}%  Valid={}{}",
             score.input_output_contract_similarity * 100.0,
             score.support_boundary_agreement * 100.0,
             score.exclusion_recall * 100.0,
@@ -2142,6 +2856,7 @@ mod tests {
             if score.novelty_decision_correct { "✓" } else { "✗" },
             score.coverage_calibration_error * 100.0,
             if score.overall_valid { "✓" } else { "✗" },
+            bm,
         )
     }
 
@@ -2164,6 +2879,15 @@ mod tests {
                 "A fair die is rolled twice. What is the probability of two sixes?",
                 "Convert 5 miles to kilometers using the usual conversion.",
                 "Add 2 liters to 3 kilograms and report the total.",
+            ],
+            distractor_labels: vec![
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Ambiguous,
+                ExpectedDecision::Unsupported,
             ],
             expected_inputs: vec![ArtifactType::NumericQuantity],
             expected_outputs: vec![ArtifactType::QuantityRelation],
@@ -2232,6 +2956,15 @@ mod tests {
                 "Add 2 liters and 500 milliliters; express the total in milliliters.",
                 "A box has length 3 meters, width 2 meters. Find the area.",
             ],
+            distractor_labels: vec![
+                ExpectedDecision::Ambiguous,
+                ExpectedDecision::Ambiguous,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Applicable,
+                ExpectedDecision::Unsupported,
+            ],
             expected_inputs: vec![ArtifactType::NumericQuantity, ArtifactType::UnitQuantity],
             expected_outputs: vec![ArtifactType::QuantityRelation],
             expected_pattern_descriptions: vec![
@@ -2295,6 +3028,14 @@ mod tests {
                 "A quantity with base value 50 increases by 10%.",
                 "A balance grows by 5% each year for 5 years.",
                 "Convert 4 meters to centimeters using 100 centimeters per meter.",
+            ],
+            distractor_labels: vec![
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
             ],
             expected_inputs: vec![ArtifactType::NumericQuantity, ArtifactType::FractionalQuantity],
             expected_outputs: vec![ArtifactType::QuantityRelation],
@@ -2362,6 +3103,15 @@ mod tests {
                 "A rate rises by 3 percentage points. What is the new rate?",
                 "What is three quarters of 20?",
                 "Convert 5 miles to kilometers.",
+            ],
+            distractor_labels: vec![
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
+                ExpectedDecision::Unsupported,
             ],
             expected_inputs: vec![ArtifactType::NumericQuantity, ArtifactType::PercentageRate],
             expected_outputs: vec![ArtifactType::QuantityRelation],
@@ -2434,6 +3184,14 @@ mod tests {
                     "Convert 5 miles to kilometers using the usual conversion.",
                     "Add 2 liters to 3 kilograms.",
                 ],
+                distractor_labels: vec![
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Ambiguous,
+                    ExpectedDecision::Unsupported,
+                ],
                 expected_inputs: vec![ArtifactType::NumericQuantity],
                 expected_outputs: vec![ArtifactType::QuantityRelation],
                 expected_pattern_descriptions: vec!["unit rate", "ratio", "proportion"],
@@ -2475,6 +3233,14 @@ mod tests {
                     "A loan charges 5% simple interest.",
                     "Add 2 liters and 500 milliliters; express the total in milliliters.",
                 ],
+                distractor_labels: vec![
+                    ExpectedDecision::Ambiguous,
+                    ExpectedDecision::Ambiguous,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Applicable,
+                ],
                 expected_inputs: vec![ArtifactType::NumericQuantity, ArtifactType::UnitQuantity],
                 expected_outputs: vec![ArtifactType::QuantityRelation],
                 expected_pattern_descriptions: vec!["explicit conversion", "compatible unit addition"],
@@ -2514,6 +3280,13 @@ mod tests {
                     "There is a 25% probability.",
                     "A quantity with base value 50 increases by 10%.",
                     "A balance grows by 5% each year for 5 years.",
+                ],
+                distractor_labels: vec![
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
                 ],
                 expected_inputs: vec![ArtifactType::NumericQuantity, ArtifactType::FractionalQuantity],
                 expected_outputs: vec![ArtifactType::QuantityRelation],
@@ -2557,6 +3330,14 @@ mod tests {
                     "A rate rises by 3 percentage points.",
                     "What is three quarters of 20?",
                 ],
+                distractor_labels: vec![
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                ],
                 expected_inputs: vec![ArtifactType::NumericQuantity, ArtifactType::PercentageRate],
                 expected_outputs: vec![ArtifactType::QuantityRelation],
                 expected_pattern_descriptions: vec!["percentage transformation", "explicit base"],
@@ -2590,10 +3371,10 @@ mod tests {
         ];
 
         let threshold = 0.3;
-        eprintln!("\n=== Historical Reconstruction Campaign ===");
-        eprintln!("{:<20} | {:>6} | {:>6} | {:>6} | {:>6} | {:>4} | {:>6} | {:>5}",
-            "Capability", "I/O%", "Bound%", "Excl%", "Bridge%", "Novel", "CalErr%", "Valid?");
-        eprintln!("{}", "-".repeat(85));
+        eprintln!("\n=== Historical Reconstruction Campaign (Phase 2G) ===");
+        eprintln!("{:<20} | {:>6} | {:>7} | {:>6} | {:>6} | {:>6} | {:>4} | {:>6} | {:>5}",
+            "Capability", "I/O%", "MacroB%", "SupP%", "AmbR%", "Excl%", "Novel", "CalErr%", "Valid?");
+        eprintln!("{}", "-".repeat(100));
 
         let mut all_valid = true;
         for task in &tasks {
@@ -2608,7 +3389,7 @@ mod tests {
             let results = propose_from_failures(all_prompts, threshold);
             assert!(!results.is_empty(), "task '{}' should produce at least one proposal", task.label);
 
-            // Find best result by support_boundary_agreement
+            // Find best result by combined (macro_boundary + exclusion)
             let mut best_score = ReconstructionScore {
                 task_label: task.label.to_string(),
                 input_output_contract_similarity: 0.0,
@@ -2619,20 +3400,31 @@ mod tests {
                 coverage_calibration_error: 1.0,
                 overall_valid: false,
                 validity_tier: ReconstructionValidity::StructurallyPlausible,
+                boundary_metrics: None,
             };
             for r in &results {
                 let score = score_reconstruction(task, r);
-                if score.support_boundary_agreement >= best_score.support_boundary_agreement {
+                let mb_score = score.boundary_metrics.as_ref()
+                    .map(|m| m.macro_boundary_score).unwrap_or(0.0);
+                let combined_new = mb_score * 0.5 + score.exclusion_recall * 0.3
+                    + score.support_boundary_agreement * 0.2;
+                let mb_best = best_score.boundary_metrics.as_ref()
+                    .map(|m| m.macro_boundary_score).unwrap_or(0.0);
+                let combined_best = mb_best * 0.5 + best_score.exclusion_recall * 0.3
+                    + best_score.support_boundary_agreement * 0.2;
+                if combined_new >= combined_best {
                     best_score = score;
                 }
             }
 
-            eprintln!("{:<20} | {:>5.1}% | {:>5.1}% | {:>5.1}% | {:>5.1}% |  {:>3}  | {:>5.1}% |  {}",
+            let bm = best_score.boundary_metrics.as_ref().unwrap();
+            eprintln!("{:<20} | {:>5.1}% | {:>5.1}% | {:>5.1}% | {:>5.1}% | {:>5.1}% |  {:>3}  | {:>5.1}% |  {}",
                 task.label,
                 best_score.input_output_contract_similarity * 100.0,
-                best_score.support_boundary_agreement * 100.0,
+                bm.macro_boundary_score * 100.0,
+                bm.supported_precision * 100.0,
+                bm.ambiguity_recall * 100.0,
                 best_score.exclusion_recall * 100.0,
-                best_score.proposed_bridge_correctness * 100.0,
                 if best_score.novelty_decision_correct { "✓" } else { "✗" },
                 best_score.coverage_calibration_error * 100.0,
                 if best_score.overall_valid { "✓" } else { "✗" },
@@ -2642,7 +3434,7 @@ mod tests {
                 all_valid = false;
             }
         }
-        eprintln!("{}", "-".repeat(85));
+        eprintln!("{}", "-".repeat(100));
         eprintln!("Overall: {}", if all_valid { "ALL VALID ✓" } else { "SOME DEGRADED ✗" });
 
         // At minimum, at least 2 of 4 should be valid
@@ -2944,10 +3736,15 @@ mod tests {
         }
 
         // Simulate a task just for scoring
+        // All distractors are Unsupported (negative families) in leave-one-out tests
+        let distractor_labels: Vec<ExpectedDecision> = all_distractors.iter()
+            .map(|_| ExpectedDecision::Unsupported)
+            .collect();
         let sim_task = HistoricalReconstructionTask {
             label,
             target_failure_prompts: all_targets.clone(),
             distractor_prompts: all_distractors.clone(),
+            distractor_labels,
             expected_inputs: vec![ArtifactType::NumericQuantity],
             expected_outputs: vec![ArtifactType::QuantityRelation],
             expected_pattern_descriptions: vec![],

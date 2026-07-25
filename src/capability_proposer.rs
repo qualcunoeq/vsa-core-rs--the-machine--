@@ -3945,4 +3945,235 @@ mod tests {
              ForbidsRepeatedTemporalApplication from PerUnitRate predicates \
              without seeing examples of either family");
     }
+
+    // ── Temporal holdout (Phase 2G — single execution) ──────────────
+    //
+    // PRIVILEGED: This test must NOT be modified after the temporal holdout
+    // has been run. It is executed exactly once with the frozen proposer.
+    // Any subsequent edits invalidate the holdout result.
+    //
+    // Pre-registered rubric: docs/holdouts/temporal_holdout_preregistration.md
+    // Pre-registration commit: e9521a2
+    // Frozen proposer commit: 556a6e5 (Phase 2G boundary synthesis)
+    //
+    // Execution timestamp: 2026-07-25 (recorded in report)
+    #[test]
+    fn temporal_holdout_single_execution() {
+        use crate::external_decomposition_benchmark::ExpectedOutcome;
+        use crate::third_party_corpus_benchmark::ThirdPartyCorpus;
+        use std::time::Instant;
+
+        let start = Instant::now();
+
+        // Load the GSM8K restricted release v2 (100 cases)
+        let corpus: ThirdPartyCorpus = serde_json::from_str(include_str!(
+            "../data/third_party_gsm8k_restricted_release_v2.json"
+        )).expect("valid restricted v2 corpus JSON");
+        assert!(corpus.holdout_locked, "corpus must be holdout-locked");
+
+        eprintln!("\n{}", "=" .repeat(72));
+        eprintln!("  TEMPORAL HOLDOUT — SINGLE EXECUTION");
+        eprintln!("{}", "=" .repeat(72));
+        eprintln!("  corpus:      {} ({} cases)", corpus.release_id, corpus.cases.len());
+        eprintln!("  oracle:      {}", corpus.oracle);
+        eprintln!("  holdout_lock: {}", corpus.holdout_locked);
+
+        // Filter to temporal_or_sequential_reasoning cases
+        let temporal_cases: Vec<_> = corpus.cases.iter()
+            .filter(|c| {
+                let t = c.original_prompt.to_ascii_lowercase();
+                // rejection_cluster logic from third_party_corpus_benchmark
+                t.contains("every day") || t.contains("each year")
+                    || t.contains("per day") || t.contains("per week")
+                    || t.contains("per month") || t.contains("over ")
+                    || t.contains("after ") || t.contains("remaining")
+            })
+            .collect();
+
+        eprintln!("  temporal family cases: {}", temporal_cases.len());
+
+        // Report case IDs and outcomes
+        for c in &temporal_cases {
+            let outcome = match c.expected_outcome {
+                ExpectedOutcome::Supported => "SUPPORTED",
+                ExpectedOutcome::Ambiguous => "AMBIGUOUS",
+                ExpectedOutcome::Unsupported => "UNSUPPORTED",
+            };
+            eprintln!("    [{:30}] split={:?} {}", c.id, c.split, outcome);
+        }
+
+        // Verify: 23 unsupported + 1 supported
+        let unsupported_count = temporal_cases.iter()
+            .filter(|c| c.expected_outcome == ExpectedOutcome::Unsupported).count();
+        let supported_count = temporal_cases.iter()
+            .filter(|c| c.expected_outcome == ExpectedOutcome::Supported).count();
+        eprintln!("  unsupported={} supported={}",
+            unsupported_count, supported_count);
+
+        // Build the failure receipts map (all temporal cases as evidence)
+        let mut holdout_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for c in &temporal_cases {
+            holdout_prompts.insert(
+                FailureReceiptId(c.id.clone()),
+                c.original_prompt.clone(),
+            );
+        }
+
+        // ── Execute the proposer (threshold 0.30, same as campaign) ──
+        eprintln!("\n  Proposing from {} failure receipts...", holdout_prompts.len());
+        let results = propose_from_failures(holdout_prompts, 0.30);
+        let elapsed = start.elapsed();
+        eprintln!("  Proposer returned {} proposals in {:.1}ms",
+            results.len(), elapsed.as_secs_f64() * 1000.0);
+
+        // ── Dump the full proposal ───────────────────────────────────
+        for (i, result) in results.iter().enumerate() {
+            eprintln!("\n{}", "-".repeat(72));
+            eprintln!("  PROPOSAL #{}", i + 1);
+            eprintln!("{}", "-".repeat(72));
+
+            // Cluster summary
+            eprintln!("  Cluster: {} members, {} shared ops",
+                result.cluster.size,
+                result.cluster.shared_operations.len());
+            eprintln!("  Shared operations: {:?}", result.cluster.shared_operations);
+
+            // Centroid features
+            let cf = &result.cluster.centroid_features;
+            eprintln!("  Numeric forms: {:?}", cf.numeric_forms);
+            eprintln!("  Relation semantics: {:?}", cf.relation_semantics);
+            eprintln!("  has_explicit_base: {}  has_direction: {}  has_single_step: {}",
+                cf.has_explicit_base, cf.has_direction, cf.has_single_step);
+            eprintln!("  has_target_unit: {}  has_explicit_conversion: {}",
+                cf.has_target_unit, cf.has_explicit_conversion);
+            eprintln!("  Operations: {:?}", cf.operations);
+
+            // Invariant
+            eprintln!("\n  Invariant: {}", result.invariant.description);
+
+            // Predicates
+            eprintln!("\n  Predicates ({} total):", result.predicates.len());
+            for (j, p) in result.predicates.iter().enumerate() {
+                eprintln!("    {}. {:?}", j + 1, p);
+            }
+
+            // Supported forms
+            eprintln!("\n  Supported forms ({}):",
+                result.synthesized.supported_forms.len());
+            for (j, sf) in result.synthesized.supported_forms.iter().enumerate() {
+                eprintln!("    Form {}: {} (required features: {:?})",
+                    j + 1, sf.name, sf.required_features);
+                eprintln!("      Ambiguity triggers: {:?}", sf.ambiguity_triggers);
+                eprintln!("      Exemplars: {:?}", sf.exemplars.iter().map(|e| &e[..e.len().min(60)]).collect::<Vec<_>>());
+            }
+
+            // Boundary
+            eprintln!("\n  Boundary analysis:");
+            eprintln!("    Exclusions ({}):", result.boundary.exclusions.len());
+            for (j, ex) in result.boundary.exclusions.iter().enumerate() {
+                let ex_frags: Vec<_> = ex.exemplars.iter()
+                    .map(|e| &e[..e.len().min(60)]).collect();
+                eprintln!("      {}. family={:?} predicate={:?} contrast={:?}",
+                    j + 1, ex.excluded_family, ex.failed_predicate, ex.contrast_type);
+                eprintln!("         discriminating: {:?}", ex.discriminating_features);
+                eprintln!("         exemplars: {:?}", ex_frags);
+            }
+            eprintln!("    Ambiguous near-misses ({}):",
+                result.boundary.ambiguous_near_misses.len());
+            for (j, am) in result.boundary.ambiguous_near_misses.iter().enumerate() {
+                let am_frags: Vec<_> = am.exemplars.iter()
+                    .map(|e| &e[..e.len().min(60)]).collect();
+                eprintln!("      {}. family={:?} contrast={:?}",
+                    j + 1, am.excluded_family, am.contrast_type);
+                eprintln!("         discriminating: {:?}", am.discriminating_features);
+                eprintln!("         exemplars: {:?}", am_frags);
+            }
+
+            // Synthesized boundary decisions
+            eprintln!("\n  Synthesized decisions ({} total):",
+                result.synthesized.decisions.len());
+            let mut applicable_count = 0u32;
+            let mut ambiguous_count = 0u32;
+            let mut unsupported_count_syn = 0u32;
+            for cd in &result.synthesized.decisions {
+                match &cd.decision {
+                    ApplicabilityDecision::Applicable { .. } => applicable_count += 1,
+                    ApplicabilityDecision::Ambiguous { .. } => ambiguous_count += 1,
+                    ApplicabilityDecision::Unsupported { .. } => unsupported_count_syn += 1,
+                }
+                let prompt_short: String = cd.prompt.chars().take(28).collect();
+                match &cd.decision {
+                    ApplicabilityDecision::Applicable { .. } => {
+                        eprintln!("    [{:30}] ✓ Applicable", prompt_short);
+                    }
+                    ApplicabilityDecision::Ambiguous { causes } => {
+                        eprintln!("    [{:30}] ? Ambiguous: {:?}", prompt_short, causes);
+                    }
+                    ApplicabilityDecision::Unsupported { failed_predicate } => {
+                        eprintln!("    [{:30}] ✗ Unsupported: {:?}", prompt_short, failed_predicate);
+                    }
+                }
+            }
+            eprintln!("    Summary: {} Applicable, {} Ambiguous, {} Unsupported",
+                applicable_count, ambiguous_count, unsupported_count_syn);
+
+            // Typed contract proposal
+            eprintln!("\n  Contract proposal:");
+            eprintln!("    ID:      {}", result.proposal.proposal_id.0);
+            eprintln!("    Inputs:  {:?}", result.proposal.input_artifacts);
+            eprintln!("    Outputs: {:?}", result.proposal.output_artifacts);
+            eprintln!("    Patterns ({}):", result.proposal.supported_patterns.len());
+            for (j, sp) in result.proposal.supported_patterns.iter().enumerate() {
+                eprintln!("      {}. {}", j + 1, sp.description);
+                eprintln!("         exemplars: {:?}", sp.exemplars);
+            }
+            eprintln!("    Novelty: is_novel={} closest={:?} sim={:.3}",
+                result.proposal.novelty_receipt.is_novel,
+                result.proposal.novelty_receipt.closest_existing,
+                result.proposal.novelty_receipt.similarity_to_closest);
+            eprintln!("    Novelty reasoning: {}", result.proposal.novelty_receipt.reasoning);
+            eprintln!("    Coverage: {:?}", result.proposal.expected_coverage.projected);
+            eprintln!("    Confidence: structural={:.3} boundary={:.3} bridge={:.3}",
+                result.proposal.confidence.structural_confidence,
+                result.proposal.confidence.boundary_confidence,
+                result.proposal.confidence.bridge_confidence);
+        }
+
+        // ── Evidence hashes for reproducibility ──────────────────────
+        use sha2::{Digest, Sha256};
+        let mut hasher = Sha256::new();
+        for c in &temporal_cases {
+            hasher.update(c.id.as_bytes());
+            hasher.update(c.original_prompt.as_bytes());
+        }
+        let evidence_hash = format!("{:x}", hasher.finalize());
+        eprintln!("\n{}", "=".repeat(72));
+        eprintln!("  EVIDENCE HASH:  {}", evidence_hash);
+        eprintln!("  PROPOSER HASH:  556a6e50cc1dbdc447f82868dc5b956a830219ab");
+        eprintln!("  RUBRIC HASH:    e9521a2");
+        eprintln!("  TOTAL TIME:     {:.1}ms", elapsed.as_secs_f64() * 1000.0);
+        eprintln!("  PROPOSALS:      {}", results.len());
+        eprintln!("{}", "=".repeat(72));
+
+        // This test must produce at least one proposal for the temporal cluster
+        assert!(!results.is_empty(),
+            "Temporal holdout must produce at least one proposal, got 0");
+
+        // Save the raw output to a file for later scoring
+        let report_path = "docs/holdouts/temporal_holdout_report.txt";
+        let output = std::io::stderr();
+        // The output is already captured in stderr by the test harness.
+        // We also save a marker file.
+        if let Ok(_) = std::fs::write(report_path, format!(
+            "Temporal holdout executed {}\nProposals: {}\nEvidence hash: {}\n",
+            chrono::Utc::now().format("%Y-%m-%dT%H:%M:%SZ"),
+            results.len(),
+            evidence_hash,
+        )) {
+            eprintln!("  Marker written to {}", report_path);
+        }
+
+        // Assert that proposals exist but don't assert on quality —
+        // quality is scored against the rubric, not by test assertions.
+    }
 }

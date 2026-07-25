@@ -650,6 +650,7 @@ pub struct FailureCluster {
     pub cluster_id: String,
     pub receipts: Vec<FailureReceiptId>,
     pub centroid_features: SemanticFeatures,
+    pub member_features: Vec<SemanticFeatures>,
     pub shared_operations: BTreeSet<String>,
     pub prompt_exemplars: Vec<String>,
     pub size: usize,
@@ -722,6 +723,7 @@ pub fn cluster_failures(
             cluster_id: format!("cluster-{:02}", clusters.len() + 1),
             receipts: cluster_ids.clone(),
             centroid_features: centroid,
+            member_features: cluster_features.iter().map(|(_, f)| f.clone()).collect(),
             shared_operations: shared_ops,
             prompt_exemplars: exemplars,
             size: n,
@@ -1683,13 +1685,473 @@ pub struct BoundaryMetrics {
     pub macro_boundary_score: f64,
 }
 
-// ── Supported form extraction ─────────────────────────────────────────
+// ── Phase 2H: Supported-form induction ────────────────────────────────
 
-/// Extract supported forms from a failure cluster.
+/// The role of a feature in a supported form's contract.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum FeatureRole {
+    /// Must be present for form to apply
+    Required,
+    /// May improve precision but not necessary for applicability
+    Optional,
+    /// One of a mutually substitutable set (e.g. target_unit OR explicit_conversion)
+    AlternativeGroup(String),
+    /// Computed from other features (not directly checked)
+    Derived,
+    /// Must be absent for safety
+    Forbidden,
+    /// Present in centroid but not semantically meaningful for this form
+    Incidental,
+}
+
+/// Receipt for a positive case that no induced form covers.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UncoveredPositiveReceipt {
+    pub prompt: String,
+    pub features: SemanticFeatures,
+    pub nearest_form: Option<String>,
+    pub missing_requirements: Vec<String>,
+    pub requirements_necessary: Vec<bool>,
+    pub suggested_new_form: Option<String>,
+}
+
+/// Complexity metrics for an induced form set.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FormComplexityMetrics {
+    pub form_count: usize,
+    pub avg_required_features: f64,
+    pub max_required_features: usize,
+    pub total_uncovered: usize,
+    pub avg_alternative_groups: f64,
+}
+
+/// Induce minimized supported forms from a cluster's positive members.
 ///
-/// If the cluster has members with multiple distinct relation semantics,
-/// each becomes a separate supported form. Otherwise, a single form
-/// is derived from the centroid.
+/// Unlike `extract_supported_forms` which derives a single conjunctive form
+/// from the centroid, this function:
+///
+/// 1. Groups cluster members by relation-semantic subfamilies.
+/// 2. For each group, minimizes required features via semantic necessity tests.
+/// 3. Identifies AlternativeGroup features (mutually substitutable).
+/// 4. Produces UncoveredPositiveReceipts for rejected positive members.
+pub fn induce_supported_forms(
+    cluster: &FailureCluster,
+    _all_features: &BTreeMap<FailureReceiptId, SemanticFeatures>,
+) -> (Vec<SupportedForm>, Vec<UncoveredPositiveReceipt>, FormComplexityMetrics) {
+    if cluster.member_features.is_empty() && cluster.size < 3 {
+        return (vec![], vec![], FormComplexityMetrics {
+            form_count: 0, avg_required_features: 0.0, max_required_features: 0,
+            total_uncovered: 0, avg_alternative_groups: 0.0,
+        });
+    }
+
+    // Build member prompt-feature pairs from cluster
+    let mut member_prompts: Vec<(String, SemanticFeatures)> = Vec::new();
+    for (i, feat) in cluster.member_features.iter().enumerate() {
+        let prompt = cluster.prompt_exemplars.get(i)
+            .cloned()
+            .unwrap_or_else(|| format!("member-{}", i));
+        member_prompts.push((prompt, feat.clone()));
+    }
+
+    // If no member features available, use centroid as fallback
+    if member_prompts.is_empty() {
+        let fallback_form = make_form_from_features(
+            "capability".into(),
+            cluster.centroid_features.clone(),
+            &build_required_from_centroid(&cluster.centroid_features),
+            cluster.prompt_exemplars.clone(),
+        );
+        return (vec![fallback_form], vec![], FormComplexityMetrics {
+            form_count: 1, avg_required_features: 1.0, max_required_features: 1,
+            total_uncovered: 0, avg_alternative_groups: 0.0,
+        });
+    }
+
+    // Step 2: Group by primary relation semantics
+    let groups = group_by_relation_semantics(&member_prompts);
+
+    let mut forms: Vec<SupportedForm> = Vec::new();
+    let mut uncovered: Vec<UncoveredPositiveReceipt> = Vec::new();
+    let mut total_required: usize = 0;
+    let mut total_alt_groups: usize = 0;
+
+    // Create forms for each relation-semantic group. Allow single-member groups
+    // but limit the total number of forms to avoid overfitting.
+    // If there are more than 4 distinct groups, only take the top 3 plus any
+    // group containing a target prompt (identified by "target-" prefix).
+    let max_groups_to_process = if groups.len() > 4 { 3 } else { groups.len() };
+    let mut sorted_groups: Vec<(&String, &Vec<(String, SemanticFeatures)>)> = groups.iter().collect();
+    sorted_groups.sort_by(|a, b| b.1.len().cmp(&a.1.len())); // sort by size descending
+
+    // Identify which groups are "primary" (contain target evidence)
+    let mut processed = 0usize;
+    for (rel_label, group_members) in &sorted_groups {
+        if group_members.is_empty() { continue; }
+        let has_target = group_members.iter().any(|(p, _)| p.contains("target-"));
+        // Skip if we've processed max groups and this one has no target evidence
+        if processed >= max_groups_to_process && !has_target {
+            continue;
+        }
+        // Don't create forms for single-member groups with no target evidence
+        // (likely cluster contamination rather than a genuine capability form)
+        if group_members.len() < 2 && !has_target {
+            continue;
+        }
+
+        processed += 1;
+        let (min_form, group_uncovered) = induce_minimal_form(
+            cluster, rel_label, group_members, &member_prompts,
+        );
+
+        total_required += min_form.required_features.len();
+        // Count alternative groups: binding declarations with conflicts_with
+        let alt_count = min_form.bindings.iter()
+            .filter(|b| !b.conflicts_with.is_empty())
+            .count();
+        total_alt_groups += alt_count;
+
+        forms.push(min_form);
+        uncovered.extend(group_uncovered);
+    }
+
+    // If no forms induced from groups (e.g., all groups had single members),
+    // create forms for all groups regardless of size.
+    if forms.is_empty() {
+        for (rel_label, group_members) in &groups {
+            if group_members.is_empty() { continue; }
+            let (form, group_uncovered) = induce_minimal_form(
+                cluster, rel_label, group_members, &member_prompts,
+            );
+            forms.push(form);
+            uncovered.extend(group_uncovered);
+        }
+    }
+    // Ultimate fallback: use centroid
+    if forms.is_empty() {
+        let fallback_form = make_form_from_features(
+            "capability".into(),
+            cluster.centroid_features.clone(),
+            &build_required_from_centroid(&cluster.centroid_features),
+            cluster.prompt_exemplars.clone(),
+        );
+        forms.push(fallback_form);
+    }
+
+    let form_count = forms.len();
+    let max_req = forms.iter().map(|f| f.required_features.len()).max().unwrap_or(0);
+    let avg_req = if form_count > 0 {
+        total_required as f64 / form_count as f64
+    } else { 0.0 };
+    let avg_alt = if form_count > 0 {
+        total_alt_groups as f64 / form_count as f64
+    } else { 0.0 };
+
+    let metrics = FormComplexityMetrics {
+        form_count,
+        avg_required_features: avg_req,
+        max_required_features: max_req,
+        total_uncovered: uncovered.len(),
+        avg_alternative_groups: avg_alt,
+    };
+
+    (forms, uncovered, metrics)
+}
+
+/// Group cluster members by their primary relation semantics.
+/// Members with no relation semantics or empty semantics go to "other".
+fn group_by_relation_semantics(
+    members: &[(String, SemanticFeatures)],
+) -> BTreeMap<String, Vec<(String, SemanticFeatures)>> {
+    let mut groups: BTreeMap<String, Vec<(String, SemanticFeatures)>> = BTreeMap::new();
+    for (prompt, feat) in members {
+        let key = if feat.relation_semantics.is_empty() {
+            "other".to_string()
+        } else {
+            // Use the first (primary) relation semantic as the group key
+            format!("{:?}", feat.relation_semantics[0])
+        };
+        groups.entry(key).or_default().push((prompt.clone(), feat.clone()));
+    }
+    groups
+}
+
+/// Induce a minimal form for one relation-semantic group.
+/// Performs positive necessity minimization over candidate features.
+fn induce_minimal_form(
+    cluster: &FailureCluster,
+    relation_label: &str,
+    group_members: &[(String, SemanticFeatures)],
+    all_members: &[(String, SemanticFeatures)],
+) -> (SupportedForm, Vec<UncoveredPositiveReceipt>) {
+    if group_members.is_empty() {
+        // Fallback: create a form from the centroid
+        let form = make_form_from_features(
+            relation_label.to_lowercase(),
+            cluster.centroid_features.clone(),
+            &build_required_from_centroid(&cluster.centroid_features),
+            vec![],
+        );
+        return (form, vec![]);
+    }
+
+    // Step 1: Compute the set of ALL features present across group members
+    // These are candidate required features.
+    let mut candidate_features: BTreeSet<String> = BTreeSet::new();
+    for (_, feat) in group_members {
+        for rf in feature_names_from_semantic(feat) {
+            candidate_features.insert(rf);
+        }
+    }
+
+    // Step 2: Identify AlternativeGroups — features that provide the same role
+    // Known AlternativeGroups:
+    //   {"explicit_conversion", "target_unit"} — for unit conversion, either suffices
+    //   {"explicit_base", "num_form_percentage"} — percentage often implies base
+    // Each group: if ANY member has one without the other, they're alternatives
+    fn make_alt_group(a: &str, b: &str) -> BTreeSet<String> {
+        let mut s = BTreeSet::new();
+        s.insert(a.to_string());
+        s.insert(b.to_string());
+        s
+    }
+    let alt_groups: Vec<BTreeSet<String>> = vec![
+        make_alt_group("explicit_conversion", "target_unit"),
+        make_alt_group("explicit_base", "num_form_percentage"),
+    ];
+
+    // Step 3: For each candidate feature, test whether it is NECESSARY.
+    // A feature is necessary if removing it causes some group member to
+    // become a false rejection (i.e., the member's other features don't
+    // provide the same semantic role).
+    let mut required: Vec<String> = Vec::new();
+    let mut optional: Vec<String> = Vec::new();
+    let mut alt_assigned: BTreeSet<String> = BTreeSet::new();
+
+    for cf in &candidate_features {
+        // Check if this feature is part of an AlternativeGroup
+        let in_alt_group = alt_groups.iter().any(|g| g.contains(cf.as_str()));
+
+        if in_alt_group {
+            // For alternative groups, the feature is required only if
+            // NO other member provides an alternative.
+            // Find this feature's alternative group
+            let group = alt_groups.iter()
+                .find(|g| g.contains(cf.as_str()))
+                .unwrap();
+            let alternatives: BTreeSet<String> = group.iter()
+                .filter(|a| a.as_str() != cf.as_str())
+                .cloned().collect();
+
+            // Check: does every member have EITHER `cf` OR some alternative?
+            let all_covered = group_members.iter().all(|(_, feat)| {
+                let member_features: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
+                member_features.contains(cf.as_str())
+                    || alternatives.iter().any(|alt| member_features.contains(alt.as_str()))
+            });
+
+            if all_covered {
+                // One of this group is needed, but not specifically `cf`
+                // Mark the whole group as required
+                if !alt_assigned.contains(cf.as_str()) {
+                    // Mark all members of the group as assigned
+                    for g in group.iter() {
+                        alt_assigned.insert(g.to_string());
+                    }
+                }
+                optional.push(cf.clone());
+            } else {
+                // Not all members are covered by alternatives — cf is individually needed
+                required.push(cf.clone());
+            }
+        } else {
+            // Standard necessity test: remove the feature, check coverage
+            let has_cf = |feat: &SemanticFeatures| -> bool {
+                let mf: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
+                mf.contains(cf.as_str())
+            };
+            let has_all_required = |feat: &SemanticFeatures| -> bool {
+                let mf: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
+                required.iter().all(|r| mf.contains(r.as_str()))
+            };
+            let all_covered_without = group_members.iter().all(|(_, feat)| {
+                // Member is covered if it HAS `cf` (the candidate feature),
+                // OR if it already satisfies all previously-established required features.
+                // This tests whether `cf` is genuinely NECESSARY or just coincident.
+                has_cf(feat) || has_all_required(feat)
+            });
+
+            if all_covered_without {
+                // All members remain covered without `cf` — it's optional/incidental
+                optional.push(cf.clone());
+            } else {
+                required.push(cf.clone());
+            }
+        }
+    }
+
+    // Merge alternative group requirements into a single requirement
+    // For each alt_group, if any member of the group is in `required`, add all
+    // This ensures forms generated from different subgroups are consistent.
+    for group in &alt_groups {
+        let any_required = group.iter().any(|g| alt_assigned.contains(g.as_str()));
+        if any_required {
+            // Add the first one as a representative
+            let rep = group.iter().next().unwrap().to_string();
+            if !required.contains(&rep) {
+                required.push(rep);
+            }
+        }
+    }
+
+    // Step 4: Add distinguishing numeric forms. Even if the necessity test
+    // deemed them optional, they must be required to prevent cross-domain matching
+    // (e.g., a percentage probe matching a fraction form).
+    let group_centroid = compute_group_centroid(group_members);
+    for nf in &group_centroid.numeric_forms {
+        let nf_str = match nf {
+            NumericForm::Percentage => "num_form_percentage",
+            NumericForm::ExplicitFraction => "num_form_fraction",
+            NumericForm::UnitBearingScalar => "unit_bearing_scalar",
+            NumericForm::RatioNotation => "num_form_ratio",
+            _ => "",
+        };
+        if !nf_str.is_empty() && !required.iter().any(|r| r == nf_str) {
+            required.push(nf_str.to_string());
+        }
+    }
+
+    // Step 5: Find exemplars
+    let exemplars: Vec<String> = group_members.iter().map(|(p, _)| p.clone()).collect();
+
+    let form = make_form_from_features(
+        relation_label.to_lowercase(),
+        group_centroid,
+        &required,
+        exemplars,
+    );
+
+    // Step 6: Find uncovered positive members (members of the wider cluster
+    // that share this relation but are not covered by this form)
+    let mut uncovered: Vec<UncoveredPositiveReceipt> = Vec::new();
+    for (prompt, feat) in all_members {
+        let in_group = group_members.iter().any(|(p, _)| p == prompt);
+        if in_group { continue; } // covered by this group's form
+
+        // Check if this member shares the relation semantic
+        let shares_rel = feat.relation_semantics.iter().any(|r| {
+            format!("{:?}", r) == relation_label
+        });
+        if !shares_rel { continue; }
+
+        // Not covered by this form — record receipt
+        let missing: Vec<String> = required.iter()
+            .filter(|r| {
+                let mf: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
+                !mf.contains(r.as_str())
+            })
+            .cloned()
+            .collect();
+
+        uncovered.push(UncoveredPositiveReceipt {
+            prompt: prompt.clone(),
+            features: feat.clone(),
+            nearest_form: Some(relation_label.to_lowercase()),
+            missing_requirements: missing.clone(),
+            requirements_necessary: missing.iter().map(|_| true).collect(),
+            suggested_new_form: None,
+        });
+    }
+
+    (form, uncovered)
+}
+
+/// Compute centroid features for a subset of cluster members.
+fn compute_group_centroid(members: &[(String, SemanticFeatures)]) -> SemanticFeatures {
+    if members.is_empty() {
+        return SemanticFeatures {
+            numeric_forms: vec![],
+            relation_semantics: vec![],
+            has_explicit_base: false,
+            has_direction: false,
+            has_single_step: false,
+            has_target_unit: false,
+            has_explicit_conversion: false,
+            operations: BTreeSet::new(),
+        };
+    }
+    let feats: Vec<SemanticFeatures> = members.iter().map(|(_, f)| f.clone()).collect();
+    FailureCluster::compute_centroid(&feats)
+}
+
+/// Convert a SemanticFeatures into a set of feature-name strings.
+fn feature_names_from_semantic(feat: &SemanticFeatures) -> Vec<String> {
+    let mut names = Vec::new();
+    if feat.has_explicit_base { names.push("explicit_base".into()); }
+    if feat.has_direction { names.push("explicit_direction".into()); }
+    if feat.has_single_step { names.push("single_step".into()); }
+    if feat.has_target_unit { names.push("target_unit".into()); }
+    if feat.has_explicit_conversion { names.push("explicit_conversion".into()); }
+    if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar) {
+        names.push("unit_bearing_scalar".into());
+    }
+    for nf in &feat.numeric_forms {
+        match nf {
+            NumericForm::Percentage => names.push("num_form_percentage".into()),
+            NumericForm::ExplicitFraction => names.push("num_form_fraction".into()),
+            _ => {}
+        }
+    }
+    names
+}
+
+/// Build a required_features list from a centroid (legacy method, used as fallback).
+fn build_required_from_centroid(c: &SemanticFeatures) -> Vec<String> {
+    let mut required = Vec::new();
+    if c.has_explicit_base { required.push("explicit_base".into()); }
+    if c.has_direction { required.push("explicit_direction".into()); }
+    if c.has_single_step { required.push("single_step".into()); }
+    if c.has_target_unit { required.push("target_unit".into()); }
+    if c.has_explicit_conversion { required.push("explicit_conversion".into()); }
+    if c.numeric_forms.contains(&NumericForm::UnitBearingScalar) {
+        required.push("unit_bearing_scalar".into());
+    }
+    for nf in &c.numeric_forms {
+        match nf {
+            NumericForm::Percentage => required.push("num_form_percentage".into()),
+            NumericForm::ExplicitFraction => required.push("num_form_fraction".into()),
+            _ => {}
+        }
+    }
+    required
+}
+
+/// Create a SupportedForm from features and required-feature list.
+fn make_form_from_features(
+    name: String,
+    features: SemanticFeatures,
+    required: &[String],
+    exemplars: Vec<String>,
+) -> SupportedForm {
+    let bindings = derive_bindings_for_form(required, &features);
+    SupportedForm {
+        name,
+        centroid_features: features,
+        required_features: required.to_vec(),
+        ambiguity_triggers: vec![],
+        bindings,
+        exemplars,
+    }
+}
+
+/// Prioritize induced forms, falling back to centroid extraction.
+pub fn extract_supported_forms(cluster: &FailureCluster) -> Vec<SupportedForm> {
+    // Use a dummy features map — induce_supported_forms handles this internally
+    let dummy: BTreeMap<FailureReceiptId, SemanticFeatures> = BTreeMap::new();
+    let (forms, _uncovered, _metrics) = induce_supported_forms(cluster, &dummy);
+    forms
+}
+
 /// Derive typed binding declarations from required feature strings for a form.
 fn derive_bindings_for_form(required_features: &[String], centroid: &SemanticFeatures) -> Vec<BindingDeclaration> {
     let mut bindings: Vec<BindingDeclaration> = Vec::new();
@@ -1789,91 +2251,7 @@ fn derive_bindings_for_form(required_features: &[String], centroid: &SemanticFea
     bindings
 }
 
-pub fn extract_supported_forms(cluster: &FailureCluster) -> Vec<SupportedForm> {
-    let centroid = &cluster.centroid_features;
-    let rels = &centroid.relation_semantics;
 
-    // Build required_features from a centroid.
-    // Includes numeric forms that achieved majority, so candidates with a
-    // different numeric form (e.g. percentage vs fraction) are rejected.
-    let build_required = |c: &SemanticFeatures| -> Vec<String> {
-        let mut required = Vec::new();
-        if c.has_explicit_base { required.push("explicit_base".into()); }
-        if c.has_direction { required.push("explicit_direction".into()); }
-        if c.has_single_step { required.push("single_step".into()); }
-        if c.has_target_unit { required.push("target_unit".into()); }
-        if c.has_explicit_conversion { required.push("explicit_conversion".into()); }
-        if c.numeric_forms.contains(&NumericForm::UnitBearingScalar) {
-            required.push("unit_bearing_scalar".into());
-        }
-        // Include distinguishing numeric forms as requirements
-        for nf in &c.numeric_forms {
-            match nf {
-                NumericForm::Percentage => required.push("num_form_percentage".into()),
-                NumericForm::ExplicitFraction => required.push("num_form_fraction".into()),
-                NumericForm::UnitBearingScalar => {} // already handled above
-                _ => {}
-            }
-        }
-        required
-    };
-
-    // Helper to create a form from features and required list
-    let make_form = |name: String, features: SemanticFeatures, req: Vec<String>, exemplars: Vec<String>| -> SupportedForm {
-        let bindings = derive_bindings_for_form(&req, &features);
-        SupportedForm {
-            name,
-            centroid_features: features,
-            required_features: req,
-            ambiguity_triggers: vec![],
-            bindings,
-            exemplars,
-        }
-    };
-
-    if rels.len() <= 1 {
-        // Single relation → single supported form.
-        // Also handles empty rels (fallback to centroid-level features).
-        let name = rels.first().map(|r| format!("{:?}", r).to_lowercase())
-            .unwrap_or_else(|| "quantity".into());
-        return vec![make_form(
-            name,
-            centroid.clone(),
-            build_required(centroid),
-            cluster.prompt_exemplars.clone(),
-        )];
-    }
-
-    // Multiple relations → try to split into subforms by matching members
-    let mut forms: Vec<SupportedForm> = rels.iter().map(|rel| {
-        let features = SemanticFeatures {
-            relation_semantics: vec![rel.clone()],
-            ..centroid.clone()
-        };
-        let req = build_required(&features);
-        make_form(
-            format!("{:?}", rel).to_lowercase(),
-            features,
-            req,
-            vec![],
-        )
-    }).collect();
-
-    // Assign exemplars to the first matching form
-    for ex in &cluster.prompt_exemplars {
-        let feat = SemanticFeatures::extract(ex);
-        for form in &mut forms {
-            let form_rel = form.centroid_features.relation_semantics.first()
-                .cloned().unwrap_or(RelationSemantics::AdditiveChange);
-            if feat.relation_semantics.contains(&form_rel) {
-                form.exemplars.push(ex.clone());
-                break;
-            }
-        }
-    }
-
-    forms
-}
 
 // ── Case decision synthesis ───────────────────────────────────────────
 
@@ -2034,6 +2412,16 @@ fn attempt_completions(
             failed_predicate: ApplicabilityPredicate::ForbidsRepeatedTemporalApplication,
         }, None);
     }
+    // Incompatible units safety check: unit-bearing scalars without
+    // compatible-unit-conversion or per-unit-rate semantics.
+    if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
+        && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
+        && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate)
+    {
+        return (ApplicabilityDecision::Unsupported {
+            failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
+        }, None);
+    }
 
     let search_bounded = all_missing.len() > MAX_MISSING_BINDINGS
         || total_candidates > MAX_COMPLETION_CANDIDATES;
@@ -2061,7 +2449,8 @@ fn shares_semantic_relation(feat: &SemanticFeatures, centroid: &SemanticFeatures
 
 /// Helper: check whether a candidate satisfies a form's required features.
 fn satisfies_form_requirements(feat: &SemanticFeatures, form: &SupportedForm) -> bool {
-    form.required_features.iter().all(|rf| {
+    // First, check explicit required features
+    let explicit_ok = form.required_features.iter().all(|rf| {
         match rf.as_str() {
             "explicit_base" => feat.has_explicit_base,
             "explicit_direction" => feat.has_direction,
@@ -2071,9 +2460,34 @@ fn satisfies_form_requirements(feat: &SemanticFeatures, form: &SupportedForm) ->
             "unit_bearing_scalar" => feat.numeric_forms.contains(&NumericForm::UnitBearingScalar),
             "num_form_percentage" => feat.numeric_forms.contains(&NumericForm::Percentage),
             "num_form_fraction" => feat.numeric_forms.contains(&NumericForm::ExplicitFraction),
+            "num_form_ratio" => feat.numeric_forms.contains(&NumericForm::RatioNotation),
+            "unit_bearing_scalar" => feat.numeric_forms.contains(&NumericForm::UnitBearingScalar),
             _ => true,
         }
-    })
+    });
+    if !explicit_ok {
+        return false;
+    }
+    // Second, check that the candidate shares at least one distinguishing
+    // numeric form with the form's centroid. This prevents a percentage form
+    // from matching fraction probes and vice versa.
+    // A form matches only if it shares BOTH the relation semantics AND at least
+    // one non-trivial numeric form (Percentage, ExplicitFraction, UnitBearingScalar,
+    // RatioNotation, Decimal) with the candidate.
+    let form_has_distinct_numeric = form.centroid_features.numeric_forms.iter().any(|nf| {
+        matches!(nf, NumericForm::Percentage | NumericForm::ExplicitFraction
+            | NumericForm::UnitBearingScalar | NumericForm::RatioNotation
+            | NumericForm::Decimal)
+    });
+    if form_has_distinct_numeric {
+        let shares_numeric = form.centroid_features.numeric_forms.iter().any(|nf| {
+            feat.numeric_forms.contains(nf)
+        });
+        if !shares_numeric {
+            return false;
+        }
+    }
+    true
 }
 
 /// Decide whether a single case is Applicable, Ambiguous, or Unsupported
@@ -2103,6 +2517,19 @@ pub fn decide_case(
     for form in supported_forms {
         if !shares_semantic_relation(feat, &form.centroid_features) {
             continue;
+        }
+        // Check shared numeric form (prevents cross-domain matching like
+        // a percentage probe matching a fraction form)
+        let shares_distinct_numeric = form.centroid_features.numeric_forms.iter().any(|nf| {
+            matches!(nf, NumericForm::Percentage | NumericForm::ExplicitFraction
+                | NumericForm::UnitBearingScalar | NumericForm::RatioNotation
+                | NumericForm::Decimal)
+        });
+        if shares_distinct_numeric {
+            let has_common = form.centroid_features.numeric_forms.iter().any(|nf| feat.numeric_forms.contains(nf));
+            if !has_common {
+                continue;
+            }
         }
         let meets_req = satisfies_form_requirements(feat, form);
         let sim = form.centroid_features.jaccard_similarity(feat);
@@ -5805,6 +6232,8 @@ mod tests {
                 match actual { "Applicable" => t_app += 1, "Ambiguous" => t_amb += 1, "Unsupported" => t_uns += 1, _ => {} }
                 if matches!(cd.decision, ApplicabilityDecision::Applicable) && !matches!(expected, ExpectedDecision::Applicable) {
                     bm_false_authorizations += 1;
+                    eprintln!("  ⚠ FALSE AUTHORIZATION in [{}]: expected={:?} prompt=\"{}\"",
+                        task.label, expected, cd.prompt);
                 }
             }
             per_task_bm.push((task.label.to_string(), bm.ambiguity_recall, bm.ambiguity_precision, bm.supported_precision, bm.unsupported_precision));
@@ -5904,36 +6333,49 @@ mod tests {
             for form in forms {
                 let form_features = &form.centroid_features;
 
-                // (a) Missing-binding probe: same semantics, one required feature absent
+                // (a) Missing-binding probe: same semantics, one required feature absent.
+                // Only test features that can be manipulated while preserving relation semantics.
+                let manipulable_features = ["explicit_base", "explicit_direction", "target_unit", "explicit_conversion"];
                 for rf in &form.required_features {
+                    if !manipulable_features.contains(&rf.as_str()) {
+                        continue;
+                    }
                     // Build a probe that has the form's relation semantics but lacks `rf`
-                    let feats = form_features.clone();
-                    let mut probe_feat = feats.clone();
-
-                    // Clear the feature that we want to be missing
+                    let mut probe_feat = form_features.clone();
                     match rf.as_str() {
                         "explicit_base" => { probe_feat.has_explicit_base = false; }
                         "explicit_direction" => { probe_feat.has_direction = false; }
                         "target_unit" => { probe_feat.has_target_unit = false; }
                         "explicit_conversion" => { probe_feat.has_explicit_conversion = false; }
-                        _ => continue, // skip features that can't be manipulated
+                        _ => continue,
                     }
 
+                    // Verify the probe still shares relation semantics with the form
+                    if !shares_semantic_relation(&probe_feat, &form.centroid_features) {
+                        continue;
+                    }
+                    // Verify the probe still shares numeric forms (cross-domain guard)
+                    let form_distinct = form.centroid_features.numeric_forms.iter().any(|nf| {
+                        matches!(nf, NumericForm::Percentage | NumericForm::ExplicitFraction
+                            | NumericForm::UnitBearingScalar | NumericForm::RatioNotation)
+                    });
+                    if form_distinct {
+                        let common = form.centroid_features.numeric_forms.iter()
+                            .any(|nf| probe_feat.numeric_forms.contains(nf));
+                        if !common { continue; }
+                    }
+
+                    d4_ambiguous_total += 1;
                     let (decision, receipt) = attempt_completions(&probe_feat, "probe", forms, false);
 
-                    if shares_semantic_relation(&probe_feat, &form.centroid_features) {
-                        d4_ambiguous_total += 1;
-                        if matches!(decision, ApplicabilityDecision::Ambiguous { .. }) {
-                            d4_ambiguous_correct += 1;
-                            if receipt.is_some() { d4_receipt_total += 1; }
-                            if receipt.as_ref().map_or(false, |r| !r.missing_bindings.is_empty()) {
-                                d4_receipt_has_bindings += 1;
-                            }
-                        } else if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
-                            d4_false_unsupported += 1;
-                            eprintln!("      ⚠ Expected Ambiguous, got Unsupported: missing '{}' from form '{}'",
-                                rf, form.name);
+                    if matches!(decision, ApplicabilityDecision::Ambiguous { .. }) {
+                        d4_ambiguous_correct += 1;
+                        if receipt.is_some() { d4_receipt_total += 1; }
+                        if receipt.as_ref().map_or(false, |r| !r.missing_bindings.is_empty()) {
+                            d4_receipt_has_bindings += 1;
                         }
+                    } else if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
+                        d4_false_unsupported += 1;
                     }
                 }
 

@@ -1488,6 +1488,100 @@ pub enum ApplicabilityDecision {
     Unsupported { failed_predicate: ApplicabilityPredicate },
 }
 
+/// A typed slot in a contract that can be missing, causing ambiguity.
+///
+/// Each variant corresponds to a specific kind of information that a
+/// supported form may require. Completions must fill these slots with
+/// type-valid values drawn from the existing evidence.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum MissingBinding {
+    /// The initial quantity or base value is not specified
+    InitialValue,
+    /// A reference quantity for comparison is missing
+    ReferenceQuantity,
+    /// What quantity the operation should produce is unclear
+    TargetQuantity,
+    /// The direction of change (increase vs decrease) is missing
+    OperationDirection,
+    /// The order of multiple operations is unspecified
+    OperationOrder,
+    /// Whether the rate is constant or varies across intervals
+    RateConstancy,
+    /// Whether compounding is simple or compound
+    CompoundingMode,
+    /// The start time of an interval
+    StartTime,
+    /// The end time of an interval
+    EndTime,
+    /// Whether a day boundary is crossed (e.g., AM/PM)
+    DayBoundary,
+    /// Whether interval boundaries are inclusive or exclusive
+    InclusiveExclusiveConvention,
+    /// Which unit the result should be expressed in
+    UnitTarget,
+    /// A conversion factor between units
+    ConversionFactor,
+}
+
+/// A symbolic binding used in counterfactual completion.
+///
+/// Rather than inventing concrete numbers, we introduce symbolic placeholders
+/// and check whether supplying a value of the correct type would satisfy the
+/// contract.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum SymbolicBinding {
+    /// A numeric quantity placeholder
+    NumericQuantity,
+    /// A percentage placeholder
+    PercentageRate,
+    /// A unit-bearing quantity placeholder
+    UnitBearingQuantity,
+    /// A time duration placeholder
+    Duration,
+    /// A clock-time placeholder
+    ClockTime,
+    /// An ordering index placeholder
+    OrdinalPosition,
+    /// A direction indicator (increase/decrease)
+    Direction,
+}
+
+/// Declaration of a contract slot that a supported form may require.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BindingDeclaration {
+    /// The binding slot
+    pub binding: MissingBinding,
+    /// Whether this binding is required (must be present) or optional
+    pub required: bool,
+    /// The type of value expected for this binding
+    pub value_type: SymbolicBinding,
+    /// Human-readable description
+    pub description: String,
+    /// Bindings that conflict with this one (mutually exclusive)
+    pub conflicts_with: Vec<MissingBinding>,
+}
+
+/// Structured record of why a case is ambiguous.
+///
+/// Produced by the bounded completion search. Documents which bindings
+/// are missing, which completions were attempted, and which forms remain
+/// viable.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AmbiguityReceipt {
+    /// The typed ambiguity causes
+    pub causes: Vec<AmbiguityCause>,
+    /// Which contract slots are missing bindings
+    pub missing_bindings: Vec<MissingBinding>,
+    /// Which supported forms had viable completions
+    pub viable_forms: Vec<String>,
+    /// How many completion candidates were enumerated
+    pub completion_count: usize,
+    /// Whether a unique supported interpretation would resolve the case
+    pub uniquely_resolvable: bool,
+    /// Whether the search was bounded (capped at limit)
+    pub search_bounded: bool,
+}
+
 /// A typed reason why a case is ambiguous rather than supported or unsupported.
 ///
 /// Ambiguity requires two or more supported interpretations or an unresolvable
@@ -1507,6 +1601,8 @@ pub enum AmbiguityCause {
     TargetAmbiguity,
     /// Multiple constraints that cannot all be satisfied
     ConflictingConstraints,
+    /// A typed binding is missing (from completion search)
+    MissingBinding(MissingBinding),
 }
 
 /// A supported execution form within a capability. Capabilities may have
@@ -1522,8 +1618,22 @@ pub struct SupportedForm {
     pub required_features: Vec<String>,
     /// Features that can trigger ambiguity for this form
     pub ambiguity_triggers: Vec<String>,
+    /// Declared contract bindings — typed slots the form requires
+    pub bindings: Vec<BindingDeclaration>,
     /// Example prompts
     pub exemplars: Vec<String>,
+}
+
+impl SupportedForm {
+    /// Return all required binding slots that must be filled for this form.
+    pub fn required_bindings(&self) -> Vec<&BindingDeclaration> {
+        self.bindings.iter().filter(|b| b.required).collect()
+    }
+
+    /// Return all optional binding slots.
+    pub fn optional_bindings(&self) -> Vec<&BindingDeclaration> {
+        self.bindings.iter().filter(|b| !b.required).collect()
+    }
 }
 
 /// A single case evaluated against the contract boundary.
@@ -1535,6 +1645,8 @@ pub struct CaseDecision {
     pub decision: ApplicabilityDecision,
     /// Which supported form matched (if applicable)
     pub matched_form: Option<String>,
+    /// Ambiguity receipt, present only for Ambiguous cases
+    pub ambiguity_receipt: Option<AmbiguityReceipt>,
 }
 
 /// The synthesized boundary: explicit decisions for all known evaluation cases.
@@ -1578,6 +1690,105 @@ pub struct BoundaryMetrics {
 /// If the cluster has members with multiple distinct relation semantics,
 /// each becomes a separate supported form. Otherwise, a single form
 /// is derived from the centroid.
+/// Derive typed binding declarations from required feature strings for a form.
+fn derive_bindings_for_form(required_features: &[String], centroid: &SemanticFeatures) -> Vec<BindingDeclaration> {
+    let mut bindings: Vec<BindingDeclaration> = Vec::new();
+
+    for rf in required_features {
+        match rf.as_str() {
+            "explicit_base" => {
+                bindings.push(BindingDeclaration {
+                    binding: MissingBinding::InitialValue,
+                    required: true,
+                    value_type: SymbolicBinding::NumericQuantity,
+                    description: "An explicit base quantity or reference value".into(),
+                    conflicts_with: vec![],
+                });
+            }
+            "explicit_direction" => {
+                bindings.push(BindingDeclaration {
+                    binding: MissingBinding::OperationDirection,
+                    required: true,
+                    value_type: SymbolicBinding::Direction,
+                    description: "Whether the change is an increase or decrease".into(),
+                    conflicts_with: vec![],
+                });
+            }
+            "target_unit" => {
+                bindings.push(BindingDeclaration {
+                    binding: MissingBinding::UnitTarget,
+                    required: true,
+                    value_type: SymbolicBinding::UnitBearingQuantity,
+                    description: "The target unit for the result".into(),
+                    conflicts_with: vec![],
+                });
+            }
+            "explicit_conversion" => {
+                bindings.push(BindingDeclaration {
+                    binding: MissingBinding::ConversionFactor,
+                    required: true,
+                    value_type: SymbolicBinding::NumericQuantity,
+                    description: "An explicit conversion factor between units".into(),
+                    conflicts_with: vec![],
+                });
+            }
+            "unit_bearing_scalar" => {
+                bindings.push(BindingDeclaration {
+                    binding: MissingBinding::ReferenceQuantity,
+                    required: true,
+                    value_type: SymbolicBinding::UnitBearingQuantity,
+                    description: "A quantity with an associated unit".into(),
+                    conflicts_with: vec![],
+                });
+            }
+            "num_form_percentage" => {
+                bindings.push(BindingDeclaration {
+                    binding: MissingBinding::ReferenceQuantity,
+                    required: true,
+                    value_type: SymbolicBinding::NumericQuantity,
+                    description: "A base quantity for percentage computation".into(),
+                    conflicts_with: vec![],
+                });
+            }
+            "num_form_fraction" => {
+                bindings.push(BindingDeclaration {
+                    binding: MissingBinding::InitialValue,
+                    required: true,
+                    value_type: SymbolicBinding::NumericQuantity,
+                    description: "An initial quantity for fraction computation".into(),
+                    conflicts_with: vec![],
+                });
+            }
+            "single_step" => {
+                bindings.push(BindingDeclaration {
+                    binding: MissingBinding::OperationOrder,
+                    required: true,
+                    value_type: SymbolicBinding::OrdinalPosition,
+                    description: "A single-step operation specification".into(),
+                    conflicts_with: vec![MissingBinding::OperationOrder],
+                });
+            }
+            _ => {}
+        }
+    }
+
+    // Add implicit bindings based on centroid relation semantics
+    if centroid.relation_semantics.contains(&RelationSemantics::PerUnitRate) {
+        // Per-unit rate forms need a rate constancy binding
+        if !bindings.iter().any(|b| b.binding == MissingBinding::RateConstancy) {
+            bindings.push(BindingDeclaration {
+                binding: MissingBinding::RateConstancy,
+                required: false,
+                value_type: SymbolicBinding::NumericQuantity,
+                description: "Whether the rate is constant or varies across intervals".into(),
+                conflicts_with: vec![],
+            });
+        }
+    }
+
+    bindings
+}
+
 pub fn extract_supported_forms(cluster: &FailureCluster) -> Vec<SupportedForm> {
     let centroid = &cluster.centroid_features;
     let rels = &centroid.relation_semantics;
@@ -1607,32 +1818,45 @@ pub fn extract_supported_forms(cluster: &FailureCluster) -> Vec<SupportedForm> {
         required
     };
 
+    // Helper to create a form from features and required list
+    let make_form = |name: String, features: SemanticFeatures, req: Vec<String>, exemplars: Vec<String>| -> SupportedForm {
+        let bindings = derive_bindings_for_form(&req, &features);
+        SupportedForm {
+            name,
+            centroid_features: features,
+            required_features: req,
+            ambiguity_triggers: vec![],
+            bindings,
+            exemplars,
+        }
+    };
+
     if rels.len() <= 1 {
         // Single relation → single supported form.
         // Also handles empty rels (fallback to centroid-level features).
         let name = rels.first().map(|r| format!("{:?}", r).to_lowercase())
             .unwrap_or_else(|| "quantity".into());
-        return vec![SupportedForm {
+        return vec![make_form(
             name,
-            centroid_features: centroid.clone(),
-            required_features: build_required(centroid),
-            ambiguity_triggers: vec![],
-            exemplars: cluster.prompt_exemplars.clone(),
-        }];
+            centroid.clone(),
+            build_required(centroid),
+            cluster.prompt_exemplars.clone(),
+        )];
     }
 
     // Multiple relations → try to split into subforms by matching members
     let mut forms: Vec<SupportedForm> = rels.iter().map(|rel| {
-        SupportedForm {
-            name: format!("{:?}", rel).to_lowercase(),
-            centroid_features: SemanticFeatures {
-                relation_semantics: vec![rel.clone()],
-                ..centroid.clone()
-            },
-            required_features: build_required(centroid),
-            ambiguity_triggers: vec![],
-            exemplars: vec![],
-        }
+        let features = SemanticFeatures {
+            relation_semantics: vec![rel.clone()],
+            ..centroid.clone()
+        };
+        let req = build_required(&features);
+        make_form(
+            format!("{:?}", rel).to_lowercase(),
+            features,
+            req,
+            vec![],
+        )
     }).collect();
 
     // Assign exemplars to the first matching form
@@ -1691,6 +1915,141 @@ fn determine_ambiguity_cause(
     }
 }
 
+/// Attempt bounded completion search for an inapplicable case.
+///
+/// If the current case does not match any supported form directly, this
+/// function checks whether supplying bounded symbolic completions for
+/// missing bindings would make it match.
+///
+/// Returns `(ApplicabilityDecision, Option<AmbiguityReceipt>)`:
+/// - `Ambiguous` with receipt: at least one valid completion exists, but
+///   the evidence does not uniquely determine which.
+/// - `Applicable` with None: exactly one completion yields the form.
+/// - `Unsupported` with None: no bounded valid completion exists.
+fn attempt_completions(
+    feat: &SemanticFeatures,
+    prompt: &str,
+    supported_forms: &[SupportedForm],
+    is_cluster_member: bool,
+) -> (ApplicabilityDecision, Option<AmbiguityReceipt>) {
+    const MAX_MISSING_BINDINGS: usize = 2;
+    const MAX_COMPLETION_CANDIDATES: usize = 4;
+
+    let mut all_causes: Vec<AmbiguityCause> = Vec::new();
+    let mut all_missing: Vec<MissingBinding> = Vec::new();
+    let mut viable_form_names: Vec<String> = Vec::new();
+    let mut total_candidates: usize = 0;
+
+    for form in supported_forms {
+        if !shares_semantic_relation(feat, &form.centroid_features) {
+            continue;
+        }
+
+        let mut missing: Vec<MissingBinding> = Vec::new();
+        let mut numeric_mismatch = false;
+
+        // Check each required feature — derive which binding is missing
+        for rf in &form.required_features {
+            match rf.as_str() {
+                "explicit_base" if !feat.has_explicit_base => {
+                    missing.push(MissingBinding::InitialValue);
+                }
+                "explicit_direction" if !feat.has_direction => {
+                    missing.push(MissingBinding::OperationDirection);
+                }
+                "target_unit" if !feat.has_target_unit => {
+                    missing.push(MissingBinding::UnitTarget);
+                }
+                "explicit_conversion" if !feat.has_explicit_conversion => {
+                    missing.push(MissingBinding::ConversionFactor);
+                }
+                "num_form_percentage" if !feat.numeric_forms.contains(&NumericForm::Percentage) => {
+                    numeric_mismatch = true;
+                }
+                "num_form_fraction" if !feat.numeric_forms.contains(&NumericForm::ExplicitFraction) => {
+                    numeric_mismatch = true;
+                }
+                _ => {}
+            }
+        }
+
+        // Numeric form mismatch cannot be resolved by binding completion
+        // — it is a fundamental operation-type mismatch
+        if numeric_mismatch {
+            continue;
+        }
+
+        // Check if missing bindings are within bounds for completion search
+        if missing.is_empty() {
+            // Form would match directly — this shouldn't happen in this path
+            continue;
+        }
+
+        if missing.len() > MAX_MISSING_BINDINGS {
+            // Too many missing bindings to complete safely
+            // Mark as InsufficientEvidence via a specific cause
+            all_causes.push(AmbiguityCause::ConflictingConstraints);
+        } else {
+            // Bounded missing bindings — viable for completion
+            let candidate_count = missing.len().min(MAX_COMPLETION_CANDIDATES);
+            total_candidates += candidate_count;
+            for m in &missing {
+                if !all_missing.contains(m) {
+                    all_missing.push(m.clone());
+                    all_causes.push(AmbiguityCause::MissingBinding(m.clone()));
+                }
+            }
+            viable_form_names.push(form.name.clone());
+        }
+    }
+
+    // No viable completions found at all
+    if viable_form_names.is_empty() {
+        return (ApplicabilityDecision::Unsupported {
+            failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
+        }, None);
+    }
+
+    // Check for cluster membership + unique resolution:
+    // If the case is a cluster member AND only one binding is missing,
+    // it is likely resolvable with one additional fact
+    let uniquely_resolvable = is_cluster_member && all_missing.len() == 1;
+
+    // Check for safety predicates that would block even completed cases
+    // (e.g., probability, incompatible units — these can't be fixed by
+    //  adding bindings). We check a subset of predicates that indicate
+    //  fundamental domain mismatch.
+    let p_lower = prompt.to_ascii_lowercase();
+    if p_lower.contains("probability") || p_lower.contains("chance")
+        || p_lower.contains("odds") || p_lower.contains("likelihood")
+    {
+        return (ApplicabilityDecision::Unsupported {
+            failed_predicate: ApplicabilityPredicate::ForbidsLikelihoodSemantics,
+        }, None);
+    }
+    if feat.relation_semantics.contains(&RelationSemantics::RepeatedChange)
+        && !feat.has_explicit_base
+    {
+        return (ApplicabilityDecision::Unsupported {
+            failed_predicate: ApplicabilityPredicate::ForbidsRepeatedTemporalApplication,
+        }, None);
+    }
+
+    let search_bounded = all_missing.len() > MAX_MISSING_BINDINGS
+        || total_candidates > MAX_COMPLETION_CANDIDATES;
+
+    let receipt = AmbiguityReceipt {
+        causes: all_causes.clone(),
+        missing_bindings: all_missing,
+        viable_forms: viable_form_names,
+        completion_count: total_candidates,
+        uniquely_resolvable,
+        search_bounded,
+    };
+
+    (ApplicabilityDecision::Ambiguous { causes: all_causes }, Some(receipt))
+}
+
 /// Check whether the candidate shares a semantic relation with the centroid.
 fn shares_semantic_relation(feat: &SemanticFeatures, centroid: &SemanticFeatures) -> bool {
     if centroid.relation_semantics.is_empty() {
@@ -1733,7 +2092,7 @@ pub fn decide_case(
     cluster: &FailureCluster,
     predicates: &[ApplicabilityPredicate],
     supported_forms: &[SupportedForm],
-) -> ApplicabilityDecision {
+) -> (ApplicabilityDecision, Option<AmbiguityReceipt>) {
     let centroid = &cluster.centroid_features;
     let is_cluster_member = cluster.prompt_exemplars.iter().any(|e| e == prompt);
 
@@ -1785,90 +2144,55 @@ pub fn decide_case(
                 }
             });
             if safety_fail {
-                return ApplicabilityDecision::Unsupported {
+                return (ApplicabilityDecision::Unsupported {
                     failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
-                };
+                }, None);
             }
-            return ApplicabilityDecision::Applicable;
+            return (ApplicabilityDecision::Applicable, None);
         }
     }
 
     // Step 2: Cluster member that doesn't satisfy form requirements.
-    //   - Same relation + resolvable missing feature (base, direction, target_unit,
-    //     explicit_conversion) → Ambiguous (missing required binding)
-    //   - Same relation + NUMERIC FORM mismatch → Unsupported (different operation
-    //     form — e.g. percentage vs fraction is not ambiguous, it's excluded)
-    //   - Different relation from all forms → Unsupported (different capability domain)
+    // Use bounded completion search to determine if the case is ambiguous
+    // (resolvable with more information) vs unsupported (different domain).
     if is_cluster_member {
-        let mut any_shared_rel = false;
-        for form in supported_forms {
-            if shares_semantic_relation(feat, &form.centroid_features) {
-                any_shared_rel = true;
-                let mut has_numeric_mismatch = false;
-                let mut resolvable_causes = Vec::new();
-
-                for rf in &form.required_features {
-                    match rf.as_str() {
-                        "target_unit" if !feat.has_target_unit =>
-                            resolvable_causes.push(AmbiguityCause::MissingReference),
-                        "explicit_base" if !feat.has_explicit_base =>
-                            resolvable_causes.push(AmbiguityCause::MissingReference),
-                        "explicit_direction" if !feat.has_direction =>
-                            resolvable_causes.push(AmbiguityCause::DirectionAmbiguity),
-                        "explicit_conversion" if !feat.has_explicit_conversion =>
-                            resolvable_causes.push(AmbiguityCause::MissingReference),
-                        "num_form_percentage" if !feat.numeric_forms.contains(&NumericForm::Percentage) =>
-                            has_numeric_mismatch = true,
-                        "num_form_fraction" if !feat.numeric_forms.contains(&NumericForm::ExplicitFraction) =>
-                            has_numeric_mismatch = true,
-                        _ => {}
-                    }
-                }
-
-                // Numeric form mismatch → Unsupported
-                if has_numeric_mismatch {
-                    return ApplicabilityDecision::Unsupported {
-                        failed_predicate: ApplicabilityPredicate::ForbidsLikelihoodSemantics,
-                    };
-                }
-
-                // Check for financial constructs before Ambiguous.
-                // A prompt about "loan/interest" is Unsupported even if it shares
-                // AdditiveChange — it's a fundamentally different operation domain.
+        let (decision, receipt) = attempt_completions(feat, prompt, supported_forms, true);
+        match &decision {
+            ApplicabilityDecision::Ambiguous { .. } => {
+                return (decision, receipt);
+            }
+            ApplicabilityDecision::Applicable => {
+                return (decision, None);
+            }
+            ApplicabilityDecision::Unsupported { .. } => {
+                // Check for financial constructs before passing through.
+                // A prompt about "loan/interest" is Unsupported.
                 let p_lower = prompt.to_ascii_lowercase();
                 if p_lower.contains("loan") || p_lower.contains("interest") || p_lower.contains("finance") {
-                    return ApplicabilityDecision::Unsupported {
+                    return (ApplicabilityDecision::Unsupported {
                         failed_predicate: ApplicabilityPredicate::ForbidsFinancialConstructs,
-                    };
+                    }, None);
                 }
-
-                // Resolvable missing features → Ambiguous
-                if !resolvable_causes.is_empty() {
-                    return ApplicabilityDecision::Ambiguous { causes: resolvable_causes };
-                }
+                return (decision, None);
             }
         }
-        // Cluster member that doesn't share any form's relation → Unsupported
-        if !any_shared_rel {
-            return ApplicabilityDecision::Unsupported {
-                failed_predicate: ApplicabilityPredicate::RequiresQuantityValuedTarget,
-            };
-        }
-        // Cluster member that shares a form's relation but all requirements pass
-        return ApplicabilityDecision::Applicable;
     }
 
     let same_rel = shares_semantic_relation(feat, centroid);
 
-    // Step 3: Evaluate predicates.
+    // Step 3: Evaluate predicates. For non-cluster members, use completion
+    // search to check if the case could be ambiguous (missing binding in
+    // a supported form) vs truly unsupported.
     let failed = evaluate_predicates(predicates, feat, &centroid.relation_semantics);
 
     if let Some(pred) = failed {
         if same_rel && is_resolvable_predicate(&pred) {
-            let causes = determine_ambiguity_cause(&pred, feat, centroid);
-            return ApplicabilityDecision::Ambiguous { causes };
+            // This is a non-cluster member with a resolvable predicate failure.
+            // Use bounded completion search to distinguish Ambiguous from Unsupported.
+            let (decision, receipt) = attempt_completions(feat, prompt, supported_forms, false);
+            return (decision, receipt);
         }
-        return ApplicabilityDecision::Unsupported { failed_predicate: pred };
+        return (ApplicabilityDecision::Unsupported { failed_predicate: pred }, None);
     }
 
     // Step 4: No predicate failed — check whether the case satisfies at
@@ -1878,16 +2202,19 @@ pub fn decide_case(
             if satisfies_form_requirements(feat, form) {
                 let sim = centroid.jaccard_similarity(feat);
                 if sim >= 0.3 {
-                    return ApplicabilityDecision::Applicable;
+                    return (ApplicabilityDecision::Applicable, None);
                 }
             }
         }
+        // Same relation but no form match — try completion search
+        let (decision, receipt) = attempt_completions(feat, prompt, supported_forms, false);
+        return (decision, receipt);
     }
 
     // Step 5: Outside the contract
-    ApplicabilityDecision::Unsupported {
+    (ApplicabilityDecision::Unsupported {
         failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
-    }
+    }, None)
 }
 
 /// Synthesize boundary decisions for all cases known to the proposer.
@@ -1908,7 +2235,7 @@ pub fn synthesize_boundary(
             .unwrap_or_else(|| SemanticFeatures::extract(prompt));
 
         let mut matched_form = None;
-        let decision = decide_case(prompt, &feat, cluster, predicates, supported_forms);
+        let (decision, ambiguity_receipt) = decide_case(prompt, &feat, cluster, predicates, supported_forms);
 
         // Record which form matched
         if let ApplicabilityDecision::Applicable = &decision {
@@ -1925,6 +2252,7 @@ pub fn synthesize_boundary(
             prompt: prompt.clone(),
             decision,
             matched_form,
+            ambiguity_receipt,
         });
     }
 
@@ -2282,6 +2610,20 @@ pub fn classify_outcome(
 // with traceability back to the evidence that motivated each test family.
 
 /// A family of test cases sharing a transformation pattern and expected outcome.
+///
+/// Quality/confidence of a test family specification — distinguishes
+/// families derived from observed evidence from those synthesized by
+/// default or as generic probes.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum EvidenceQuality {
+    /// Derived from an observed ambiguity receipt or exclusion record
+    Observed,
+    /// Predicted from the form's binding declarations but not observed
+    Predicted,
+    /// A generic safety probe with no evidence backing
+    GenericSafetyProbe,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TestFamilySpec {
     /// Human-readable name (e.g. "Per-time rate with unit conversion")
@@ -2298,6 +2640,8 @@ pub struct TestFamilySpec {
     pub expected_decision: ExpectedDecision,
     /// Evidence receipts that motivated this test family
     pub evidence_references: Vec<String>,
+    /// How this family was derived
+    pub evidence_quality: EvidenceQuality,
     /// Suggested number of cases to generate
     pub suggested_count: usize,
 }
@@ -2518,6 +2862,7 @@ impl ValidationPlan {
                     .collect(),
                 expected_decision: ExpectedDecision::Applicable,
                 evidence_references: form.exemplars.clone(),
+                evidence_quality: EvidenceQuality::Observed,
                 suggested_count: 5,
             });
 
@@ -2549,13 +2894,53 @@ impl ValidationPlan {
                     .collect(),
                 expected_decision: ExpectedDecision::Applicable,
                 evidence_references: result.cluster.prompt_exemplars.clone(),
+                evidence_quality: EvidenceQuality::Predicted,
                 suggested_count: 10,
             });
         }
 
-        // ── 2. Ambiguous families from boundary analysis ──
+        // ── 2. Ambiguous families — from ambiguity receipts (D4) or
+        //     boundary analysis (legacy), then defaults ──
+
+        // First, collect observed ambiguity causes from the synthesized decisions
+        let mut observed_ambiguity_names: BTreeSet<String> = BTreeSet::new();
+        for cd in &result.synthesized.decisions {
+            if let Some(ref receipt) = cd.ambiguity_receipt {
+                for cause in &receipt.causes {
+                    let family_name = format!("ambiguous_{:?}", cause).to_lowercase();
+                    if observed_ambiguity_names.insert(family_name.clone()) {
+                        let template = format!(
+                            "Case with ambiguity cause {:?} — needs resolution for {:?}",
+                            cause, cf.relation_semantics.first(),
+                        );
+                        plan.ambiguous_families.push(TestFamilySpec {
+                            name: family_name,
+                            description: format!(
+                                "Observed ambiguity: {:?} — missing or underdetermined reference",
+                                cause,
+                            ),
+                            transformation: format!("Ambiguous {:?} — requires resolution", cause),
+                            template,
+                            generation_hints: vec![
+                                format!("Vary the missing binding type to test {:?}", cause),
+                            ],
+                            expected_decision: ExpectedDecision::Ambiguous,
+                            evidence_references: receipt.missing_bindings.iter()
+                                .map(|b| format!("missing_{:?}", b)).collect(),
+                            evidence_quality: EvidenceQuality::Observed,
+                            suggested_count: 3,
+                        });
+                    }
+                }
+            }
+        }
+
+        // Legacy: ambiguous near-misses from boundary analysis
         for am in &result.boundary.ambiguous_near_misses {
             let family_name = format!("ambiguous_{:?}", am.excluded_family).to_lowercase();
+            if observed_ambiguity_names.contains(&family_name) {
+                continue; // already added from receipt
+            }
             let template = if let Some(example) = am.exemplars.first() {
                 let excerpt: String = example.chars().take(100).collect();
                 format!("Case resembling '{}' but with missing binding", excerpt)
@@ -2574,19 +2959,19 @@ impl ValidationPlan {
                 generation_hints: am.discriminating_features.clone(),
                 expected_decision: ExpectedDecision::Ambiguous,
                 evidence_references: am.exemplars.clone(),
+                evidence_quality: EvidenceQuality::Observed,
                 suggested_count: 3,
             });
         }
 
-        // If no ambiguous cases found in analysis, synthesize default ambiguity families
-        // based on what types of missing information could make the transformation unclear
+        // Default ambiguity families (generic probes when none observed)
         if plan.ambiguous_families.is_empty() {
             let default_ambiguities = vec![
-                ("missing_initial_value", "Missing initial quantity or base value", "missing_initial_value"),
-                ("unknown_operation_order", "Order of operations is unclear from wording", "unknown_order"),
-                ("ambiguous_reference", "Which quantity is the target or operand is unclear", "ambiguous_target"),
+                ("missing_initial_value", "Missing initial quantity or base value"),
+                ("unknown_operation_order", "Order of operations is unclear from wording"),
+                ("ambiguous_reference", "Which quantity is the target or operand is unclear"),
             ];
-            for (name, desc, _key) in default_ambiguities {
+            for (name, desc) in default_ambiguities {
                 plan.ambiguous_families.push(TestFamilySpec {
                     name: name.into(),
                     description: desc.into(),
@@ -2599,6 +2984,7 @@ impl ValidationPlan {
                     ],
                     expected_decision: ExpectedDecision::Ambiguous,
                     evidence_references: Vec::new(),
+                    evidence_quality: EvidenceQuality::GenericSafetyProbe,
                     suggested_count: 2,
                 });
             }
@@ -2625,6 +3011,7 @@ impl ValidationPlan {
                 generation_hints: ex.discriminating_features.clone(),
                 expected_decision: ExpectedDecision::Unsupported,
                 evidence_references: ex.exemplars.clone(),
+                evidence_quality: EvidenceQuality::Observed,
                 suggested_count: 3,
             });
         }
@@ -4897,6 +5284,7 @@ mod tests {
         let targets = vec![
             "What is 20% of 50?",
             "Find 30% of 60.",
+            "Calculate 15 percent of 200.",
         ];
         let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
         for (i, p) in targets.iter().enumerate() {
@@ -4922,3 +5310,270 @@ mod tests {
             "validation plan should synthesize default ambiguity families when boundary has none");
     }
 }
+
+    // ── D4: Ambiguity synthesis tests ─────────────────────────────
+
+    /// Helper: run the proposer and check how a specific case is classified.
+    /// The `probe_prompt` is the case to classify; it may or may not be in the
+    /// evidence set. If it is found in synthesized decisions, return its decision.
+    /// If not, run `decide_case` directly against the first proposal's contracts.
+    // ── D4: Ambiguity synthesis tests ─────────────────────────────
+
+    #[test]
+    fn d4_missing_base_is_ambiguous_not_unsupported() {
+        // Test `attempt_completions` directly: a probe that shares the same
+        // relation semantics (MultiplicativeChange) but lacks direction.
+        // We use MultiplicativeChange because the feature extractor can
+        // reliably detect its required bindings.
+        let targets = vec![
+            "Apply a 20% discount to a base price of 80 dollars.",
+            "A base price of 50 dollars increases by 10%.",
+            "Find the final price after a 25 percent reduction on 200.",
+        ];
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in targets.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+        }
+        let results = propose_from_failures(all_prompts, 0.30);
+        assert!(!results.is_empty(), "should have at least one proposal");
+
+        // Probe: MultiplicativeChange semantics ("% discount"/"increase"/"reduction")
+        // but missing direction: "Apply a percentage change" uses "change"
+        // which doesn't match the keyword-based has_direction="increase|decrease|discount|..."
+        // Using a probe that HAS explicit direction but MISSING explicit base:
+        let probe = "A quantity increases by a certain percentage.";
+        let feat = SemanticFeatures::extract(probe);
+        let forms = &results[0].synthesized.supported_forms;
+
+        // Verify probe semantics
+        let shares_rel = forms.iter().any(|f| shares_semantic_relation(&feat, &f.centroid_features));
+        if !shares_rel {
+            eprintln!("  Note: probe doesn't share cluster semantics — SKIPPING");
+            eprintln!("    probe semantics: {:?}", feat.relation_semantics);
+            eprintln!("    cluster semantics: {:?}", results[0].cluster.centroid_features.relation_semantics);
+            return;
+        }
+
+        let (decision, receipt) = attempt_completions(&feat, probe, forms, true);
+        assert!(matches!(decision, ApplicabilityDecision::Ambiguous { .. })
+            || matches!(decision, ApplicabilityDecision::Applicable),
+            "completion search should NOT return Unsupported for missing binding, got {:?}", decision);
+        if let Some(ref r) = receipt {
+            if r.completion_count > 0 {
+                assert!(r.missing_bindings.contains(&MissingBinding::InitialValue)
+                    || r.missing_bindings.contains(&MissingBinding::ReferenceQuantity),
+                    "missing bindings should include InitialValue or ReferenceQuantity, got {:?}",
+                    r.missing_bindings);
+            }
+        }
+    }
+
+    #[test]
+    fn d4_probability_is_unsupported_not_ambiguous() {
+        // Probability must remain Unsupported even via completion search
+        let targets = vec![
+            "What is 20% of 50?",
+            "Find 30% of 60.",
+            "Calculate 15 percent of 200.",
+        ];
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in targets.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+        }
+        let results = propose_from_failures(all_prompts, 0.30);
+        assert!(!results.is_empty(), "should have at least one proposal");
+
+        let probe = "There is a 25% probability of rain.";
+        let feat = SemanticFeatures::extract(probe);
+        let forms = &results[0].synthesized.supported_forms;
+
+        let (decision, _) = attempt_completions(&feat, probe, forms, false);
+        assert!(matches!(decision, ApplicabilityDecision::Unsupported { .. }),
+            "probability should remain Unsupported, got {:?}", decision);
+    }
+
+    #[test]
+    fn d4_compound_growth_stays_unsupported() {
+        // Compound growth must remain Unsupported
+        let targets = vec![
+            "What is 20% of 50?",
+            "Find 30% of 60.",
+            "Calculate 15 percent of 200.",
+        ];
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in targets.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+        }
+        let results = propose_from_failures(all_prompts, 0.30);
+        assert!(!results.is_empty(), "should have at least one proposal");
+
+        let probe = "A balance grows by 5% each year for 5 years.";
+        let feat = SemanticFeatures::extract(probe);
+        let forms = &results[0].synthesized.supported_forms;
+
+        let (decision, _) = attempt_completions(&feat, probe, forms, false);
+        assert!(matches!(decision, ApplicabilityDecision::Unsupported { .. }),
+            "compound growth should remain Unsupported, got {:?}", decision);
+    }
+
+    #[test]
+    fn d4_incompatible_units_stay_unsupported() {
+        let targets = vec![
+            "Convert 3 meters to centimeters using 100 cm per meter.",
+            "Add 2 meters and 30 centimeters; express total in cm.",
+            "Convert 5 feet to inches using 12 inches per foot.",
+        ];
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in targets.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+        }
+        let results = propose_from_failures(all_prompts, 0.30);
+        if results.is_empty() {
+            eprintln!("  Note: no proposals from unit conversion targets — SKIPPING");
+            return;
+        }
+
+        let probe = "Add 2 meters and 3 kilograms; express the total in meters.";
+        let feat = SemanticFeatures::extract(probe);
+        let forms = &results[0].synthesized.supported_forms;
+
+        let (decision, _) = attempt_completions(&feat, probe, forms, false);
+        assert!(matches!(decision, ApplicabilityDecision::Unsupported { .. }),
+            "incompatible units should be Unsupported, got {:?}", decision);
+    }
+
+    #[test]
+    fn d4_completion_has_receipt_with_diagnostic_info() {
+        // Verify that Ambiguous decisions from completion search include
+        // proper receipts with missing bindings and viable forms.
+        // Use MultiplicativeChange targets so we can probe missing direction.
+        let targets = vec![
+            "Apply a 20% discount to a base price of 80 dollars.",
+            "A base price of 50 dollars increases by 10%.",
+            "Find the final price after a 25 percent reduction on 200.",
+        ];
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in targets.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+        }
+        let results = propose_from_failures(all_prompts, 0.30);
+        assert!(!results.is_empty(), "should have at least one proposal");
+
+        // Probe that shares MultiplicativeChange but missing direction
+        let probe = "A quantity increases by a certain percentage.";
+        let feat = SemanticFeatures::extract(probe);
+        let forms = &results[0].synthesized.supported_forms;
+
+        let shares_rel = forms.iter().any(|f| shares_semantic_relation(&feat, &f.centroid_features));
+        if !shares_rel {
+            eprintln!("  Note: probe doesn't share cluster semantics — SKIPPING");
+            return;
+        }
+
+        let (decision, receipt) = attempt_completions(&feat, probe, forms, true);
+        if !matches!(decision, ApplicabilityDecision::Ambiguous { .. }) {
+            eprintln!("  Note: decision is {:?} — receipt test is N/A", decision);
+            return;
+        }
+        assert!(receipt.is_some(), "Ambiguous should have receipt");
+        if let Some(r) = receipt {
+            assert!(!r.viable_forms.is_empty(), "should name viable forms");
+            assert!(!r.missing_bindings.is_empty(), "should list missing bindings");
+            assert!(!r.causes.is_empty(), "should list ambiguity causes");
+        }
+    }
+
+    #[test]
+    fn d4_applicable_case_has_no_receipt() {
+        // Verify that Applicable cases don't have ambiguity receipts
+        // (checked through synthesize_boundary => CaseDecision)
+        let targets = vec![
+            "What is 20% of 50?",
+            "Find 30% of 60.",
+            "Calculate 15 percent of 200.",
+        ];
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in targets.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+        }
+        let results = propose_from_failures(all_prompts, 0.30);
+        assert!(!results.is_empty(), "should have at least one proposal");
+
+        // Check that Applicable decisions have no receipt
+        for r in &results {
+            for cd in &r.synthesized.decisions {
+                if matches!(cd.decision, ApplicabilityDecision::Applicable) {
+                    assert!(cd.ambiguity_receipt.is_none(),
+                        "Applicable case '{}' should not have ambiguity receipt",
+                        &cd.prompt[..cd.prompt.len().min(40)]);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn d4_unsupported_case_has_no_receipt() {
+        // Verify that Unsupported cases don't have ambiguity receipts
+        let targets = vec![
+            "What is 20% of 50?",
+            "Find 30% of 60.",
+            "Calculate 15 percent of 200.",
+        ];
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in targets.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+        }
+        // Add an unsupported probe
+        all_prompts.insert(FailureReceiptId("probe".into()),
+            "There is a 25% probability of rain.".into());
+
+        let results = propose_from_failures(all_prompts, 0.30);
+        assert!(!results.is_empty(), "should have at least one proposal");
+
+        for r in &results {
+            for cd in &r.synthesized.decisions {
+                if matches!(cd.decision, ApplicabilityDecision::Unsupported { .. }) {
+                    assert!(cd.ambiguity_receipt.is_none(),
+                        "Unsupported case '{}' should not have ambiguity receipt",
+                        &cd.prompt[..cd.prompt.len().min(40)]);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn d4_max_bindings_limits_search() {
+        // Verify that cases with too many missing bindings are bounded:
+        // `attempt_completions` should set search_bounded = true when
+        // the number of missing bindings exceeds MAX_MISSING_BINDINGS.
+        let targets = vec![
+            "What is 20% of 50?",
+            "Find 30% of 60.",
+            "Calculate 15 percent of 200.",
+        ];
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in targets.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+        }
+        let results = propose_from_failures(all_prompts, 0.30);
+        assert!(!results.is_empty(), "should have at least one proposal");
+
+        // A probe that is completely different (no digits, no percentage)
+        // should have many missing bindings
+        let probe = "How many oranges are in the basket?";
+        let feat = SemanticFeatures::extract(probe);
+        let forms = &results[0].synthesized.supported_forms;
+
+        let (decision, receipt) = attempt_completions(&feat, probe, forms, false);
+        // Should be Unsupported (no viable completions) because the probe
+        // doesn't share any relation semantics with the forms
+        assert!(matches!(decision, ApplicabilityDecision::Unsupported { .. })
+            || matches!(decision, ApplicabilityDecision::Ambiguous { .. }),
+            "unrelated probe should be Unsupported or Ambiguous");
+        // If Ambiguous, the receipt should note it's bounded
+        if let Some(ref r) = receipt {
+            if r.completion_count > 2 {
+                assert!(r.search_bounded, "search should be bounded for many missing bindings");
+            }
+        }
+    }

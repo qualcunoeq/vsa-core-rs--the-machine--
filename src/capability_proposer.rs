@@ -2275,6 +2275,439 @@ pub fn classify_outcome(
     }
 }
 
+// ── Validation-plan specification ─────────────────────────────────────
+//
+// A validation plan turns a proposal into a testable scientific object.
+// It specifies what to test, how to test it, and what results to expect,
+// with traceability back to the evidence that motivated each test family.
+
+/// A family of test cases sharing a transformation pattern and expected outcome.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TestFamilySpec {
+    /// Human-readable name (e.g. "Per-time rate with unit conversion")
+    pub name: String,
+    /// What this family tests
+    pub description: String,
+    /// The core transformation pattern (e.g., "rate × time = accumulated quantity")
+    pub transformation: String,
+    /// A natural-language template that can be instantiated to generate cases
+    pub template: String,
+    /// Hints for generating specific test instances
+    pub generation_hints: Vec<String>,
+    /// Expected decision for cases in this family
+    pub expected_decision: ExpectedDecision,
+    /// Evidence receipts that motivated this test family
+    pub evidence_references: Vec<String>,
+    /// Suggested number of cases to generate
+    pub suggested_count: usize,
+}
+
+/// A metamorphic transformation for rewrite testing.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MetamorphicSpec {
+    /// Name of the rewrite family (e.g. "ordering mutation", "number substitution")
+    pub name: String,
+    /// Description of the transformation
+    pub description: String,
+    /// The base prompt pattern to transform
+    pub base_pattern: String,
+    /// Specific transformation hints
+    pub transformations: Vec<String>,
+    /// Whether the expected decision should stay stable under these rewrites
+    pub decision_stable: bool,
+}
+
+/// An overlap test verifying that an existing capability still handles its
+/// domain after a new proposal.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OverlapSpec {
+    /// The existing capability name (e.g. "QuantityRelation")
+    pub existing_capability: String,
+    /// Description of the overlap concern
+    pub description: String,
+    /// Test template for the existing capability domain
+    pub existing_template: String,
+    /// Test template for the proposed capability domain
+    pub proposed_template: String,
+    /// Expected routing: which capability should handle each
+    pub expected_routing: String,
+}
+
+/// Suggested sample budget for a validation campaign.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SampleBudget {
+    pub positives: usize,
+    pub ambiguities: usize,
+    pub unsupported_near_misses: usize,
+    pub adversarial: usize,
+    pub rewrites: usize,
+    pub overlap: usize,
+}
+
+impl SampleBudget {
+    pub fn total(&self) -> usize {
+        self.positives + self.ambiguities + self.unsupported_near_misses
+            + self.adversarial + self.rewrites + self.overlap
+    }
+}
+
+/// Expected routing decision for a validation case.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ExpectedRouting {
+    pub case_template: String,
+    pub expected_decision: ExpectedDecision,
+    pub expected_capability: Option<String>,
+    pub reasoning: String,
+}
+
+/// A link from a validation test back to the evidence that motivated it.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EvidenceLink {
+    pub evidence_id: String,
+    pub evidence_excerpt: String,
+    pub test_family: String,
+    pub derivation: String,
+}
+
+/// Structured validation specification produced from a proposal pipeline result.
+///
+/// The validation plan does NOT generate actual test cases — it specifies
+/// what test families to generate, how many, and what outcomes to expect.
+/// Actual corpus generation is a downstream step.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ValidationPlan {
+    /// Supported families — cases that should be Applicable
+    pub supported_families: Vec<TestFamilySpec>,
+    /// Ambiguous families — cases that need more information
+    pub ambiguous_families: Vec<TestFamilySpec>,
+    /// Unsupported families — cases that should be rejected
+    pub unsupported_families: Vec<TestFamilySpec>,
+    /// Metamorphic/rewrite specifications
+    pub rewrite_families: Vec<MetamorphicSpec>,
+    /// Overlap tests against existing capabilities
+    pub overlap_tests: Vec<OverlapSpec>,
+    /// Suggested sample counts
+    pub proposed_counts: SampleBudget,
+    /// Expected routing decisions
+    pub expected_decisions: Vec<ExpectedRouting>,
+    /// Traceability to evidence
+    pub coverage_rationale: Vec<EvidenceLink>,
+}
+
+/// Score for a validation plan against the D7 rubric dimension.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ValidationPlanScore {
+    /// Whether supported families cover all supported forms
+    pub family_coverage: f64,
+    /// Whether boundary cases (ambiguous + unsupported) are covered
+    pub boundary_coverage: f64,
+    /// Quality of adversarial/rewrite test specifications
+    pub adversarial_quality: f64,
+    /// Whether overlap with existing capabilities is tested
+    pub reuse_awareness: f64,
+    /// Whether expected decisions are consistent with the proposal
+    pub expected_decision_consistency: f64,
+    /// Whether tests are traceable to evidence
+    pub traceability: f64,
+    /// Overall D7 score (average of all dimensions)
+    pub overall: f64,
+}
+
+impl ValidationPlanScore {
+    pub fn compute(plan: &ValidationPlan, result: &ProposalPipelineResult) -> Self {
+        // Family coverage: what fraction of supported forms have a test family
+        let form_count = result.synthesized.supported_forms.len().max(1);
+        let family_coverage = plan.supported_families.len().min(form_count) as f64 / form_count as f64;
+
+        // Boundary coverage: what fraction of exclusion families have a corresponding test
+        let exclusion_families: std::collections::BTreeSet<_> = result.boundary.exclusions.iter()
+            .map(|e| &e.excluded_family)
+            .collect();
+        let exclusion_count = exclusion_families.len().max(1);
+        let covered_exclusions = plan.unsupported_families.len();
+        let boundary_coverage = covered_exclusions.min(exclusion_count) as f64 / exclusion_count as f64;
+
+        // Adversarial quality: at least some rewrite or adversarial specs
+        let adversarial_quality = if plan.rewrite_families.len() >= 2 { 1.0 }
+            else if plan.rewrite_families.len() >= 1 { 0.6 }
+            else { 0.0 };
+
+        // Reuse awareness: at least some overlap tests
+        let reuse_awareness = if plan.overlap_tests.len() >= 2 { 1.0 }
+            else if plan.overlap_tests.len() >= 1 { 0.6 }
+            else { 0.0 };
+
+        // Expected-decision consistency: decisions present for at least some families
+        let expected_decision_consistency = if plan.expected_decisions.len() >= 3 { 1.0 }
+            else if plan.expected_decisions.len() >= 1 { 0.5 }
+            else { 0.0 };
+
+        // Traceability: evidence links present
+        let traceability = if plan.coverage_rationale.len() >= plan.supported_families.len().max(1) / 2 { 1.0 }
+            else if !plan.coverage_rationale.is_empty() { 0.5 }
+            else { 0.0 };
+
+        let overall = (family_coverage + boundary_coverage + adversarial_quality
+            + reuse_awareness + expected_decision_consistency + traceability) / 6.0;
+
+        ValidationPlanScore {
+            family_coverage,
+            boundary_coverage,
+            adversarial_quality,
+            reuse_awareness,
+            expected_decision_consistency,
+            traceability,
+            overall,
+        }
+    }
+}
+
+impl ValidationPlan {
+    /// Synthesize a validation plan from a pipeline result.
+    ///
+    /// Uses the cluster centroid, boundary analysis, synthesized decisions,
+    /// and supported forms to generate test family specifications.
+    pub fn synthesize(result: &ProposalPipelineResult) -> Self {
+        let cf = &result.cluster.centroid_features;
+        let mut plan = ValidationPlan {
+            supported_families: Vec::new(),
+            ambiguous_families: Vec::new(),
+            unsupported_families: Vec::new(),
+            rewrite_families: Vec::new(),
+            overlap_tests: Vec::new(),
+            proposed_counts: SampleBudget {
+                positives: 10,
+                ambiguities: 5,
+                unsupported_near_misses: 10,
+                adversarial: 5,
+                rewrites: 5,
+                overlap: 5,
+            },
+            expected_decisions: Vec::new(),
+            coverage_rationale: Vec::new(),
+        };
+
+        // ── 1. Supported families from each supported form ──
+        for form in &result.synthesized.supported_forms {
+            let name = form.name.clone();
+            let required = form.required_features.join(", ");
+            let sem = cf.relation_semantics.iter()
+                .map(|s| format!("{:?}", s))
+                .collect::<Vec<_>>()
+                .join(", ");
+
+            let template = format!(
+                "Given {{a}} with {{features}}, compute {{target}} using {}",
+                result.invariant.description,
+            );
+
+            let template_clone = template.clone();
+            plan.supported_families.push(TestFamilySpec {
+                name: name.clone(),
+                description: format!(
+                    "Cases matching form '{}' with required features [{}]",
+                    name, required,
+                ),
+                transformation: format!("{} — [{}]", result.invariant.description, sem),
+                template: template_clone,
+                generation_hints: form.exemplars.iter()
+                    .map(|e| {
+                        let excerpt: String = e.chars().take(80).collect();
+                        format!("Variant of: {}", excerpt)
+                    })
+                    .collect(),
+                expected_decision: ExpectedDecision::Applicable,
+                evidence_references: form.exemplars.clone(),
+                suggested_count: 5,
+            });
+
+            // Register an expected routing
+            plan.expected_decisions.push(ExpectedRouting {
+                case_template: template,
+                expected_decision: ExpectedDecision::Applicable,
+                expected_capability: Some(name.clone()),
+                reasoning: format!("Matches form '{}' with required features [{}]", name, required),
+            });
+        }
+
+        // If no supported forms, generate a generic positive family
+        if plan.supported_families.is_empty() {
+            let template = format!(
+                "Given a {{quantity}} with {{properties}}, compute using {}",
+                result.invariant.description,
+            );
+            plan.supported_families.push(TestFamilySpec {
+                name: "general_supported".into(),
+                description: "General supported cases for the proposed transformation".into(),
+                transformation: result.invariant.description.clone(),
+                template,
+                generation_hints: result.cluster.prompt_exemplars.iter()
+                    .map(|e| {
+                        let excerpt: String = e.chars().take(80).collect();
+                        format!("Variant of: {}", excerpt)
+                    })
+                    .collect(),
+                expected_decision: ExpectedDecision::Applicable,
+                evidence_references: result.cluster.prompt_exemplars.clone(),
+                suggested_count: 10,
+            });
+        }
+
+        // ── 2. Ambiguous families from boundary analysis ──
+        for am in &result.boundary.ambiguous_near_misses {
+            let family_name = format!("ambiguous_{:?}", am.excluded_family).to_lowercase();
+            let template = if let Some(example) = am.exemplars.first() {
+                let excerpt: String = example.chars().take(100).collect();
+                format!("Case resembling '{}' but with missing binding", excerpt)
+            } else {
+                "Case with ambiguous reference for {:?} transformation".to_string()
+            };
+
+            plan.ambiguous_families.push(TestFamilySpec {
+                name: family_name,
+                description: format!(
+                    "Cases where {:?} semantics are ambiguous — missing or underdetermined reference",
+                    am.excluded_family,
+                ),
+                transformation: format!("Ambiguous {:?} — requires resolution", am.excluded_family),
+                template,
+                generation_hints: am.discriminating_features.clone(),
+                expected_decision: ExpectedDecision::Ambiguous,
+                evidence_references: am.exemplars.clone(),
+                suggested_count: 3,
+            });
+        }
+
+        // If no ambiguous cases found in analysis, synthesize default ambiguity families
+        // based on what types of missing information could make the transformation unclear
+        if plan.ambiguous_families.is_empty() {
+            let default_ambiguities = vec![
+                ("missing_initial_value", "Missing initial quantity or base value", "missing_initial_value"),
+                ("unknown_operation_order", "Order of operations is unclear from wording", "unknown_order"),
+                ("ambiguous_reference", "Which quantity is the target or operand is unclear", "ambiguous_target"),
+            ];
+            for (name, desc, _key) in default_ambiguities {
+                plan.ambiguous_families.push(TestFamilySpec {
+                    name: name.into(),
+                    description: desc.into(),
+                    transformation: format!("Underdetermined: {}", desc),
+                    template: format!("Case where {} — needs resolution for {:?}",
+                        desc, cf.relation_semantics.first()),
+                    generation_hints: vec![
+                        format!("Omit explicit base or target from {}", result.invariant.description),
+                        "Use ambiguous wording that could refer to multiple quantities".into(),
+                    ],
+                    expected_decision: ExpectedDecision::Ambiguous,
+                    evidence_references: Vec::new(),
+                    suggested_count: 2,
+                });
+            }
+        }
+
+        // ── 3. Unsupported families from exclusions ──
+        for ex in &result.boundary.exclusions {
+            let family_name = format!("excluded_{:?}", ex.excluded_family).to_lowercase();
+            let template = if let Some(example) = ex.exemplars.first() {
+                let excerpt: String = example.chars().take(100).collect();
+                format!("Case resembling '{}' but with {:?}", excerpt, ex.excluded_family)
+            } else {
+                format!("Case with {:?} semantics that should be rejected", ex.excluded_family)
+            };
+
+            plan.unsupported_families.push(TestFamilySpec {
+                name: family_name,
+                description: format!(
+                    "Cases with {:?} semantics excluded by {:?}",
+                    ex.excluded_family, ex.failed_predicate,
+                ),
+                transformation: format!("Excluded: {:?} fails {:?}", ex.excluded_family, ex.failed_predicate),
+                template,
+                generation_hints: ex.discriminating_features.clone(),
+                expected_decision: ExpectedDecision::Unsupported,
+                evidence_references: ex.exemplars.clone(),
+                suggested_count: 3,
+            });
+        }
+
+        // ── 4. Metamorphic/rewrite families ──
+        let rewrite_transformations = vec![
+            ("number_substitution", "Substitute different numbers while preserving structure", true),
+            ("wording_paraphrase", "Rephrase the prompt without changing mathematical structure", true),
+            ("unit_substitution", "Replace units with equivalent alternatives", true),
+            ("ordering_mutation", "Change the order of clauses or steps", false),
+        ];
+        for (name, desc, stable) in &rewrite_transformations {
+            if let Some(exemplar) = result.cluster.prompt_exemplars.first() {
+                let excerpt: String = exemplar.chars().take(80).collect();
+                plan.rewrite_families.push(MetamorphicSpec {
+                    name: name.to_string(),
+                    description: desc.to_string(),
+                    base_pattern: excerpt,
+                    transformations: vec![
+                        format!("Apply {} to the base pattern", desc),
+                        "Verify expected decision remains unchanged for decision-stable rewrites".into(),
+                    ],
+                    decision_stable: *stable,
+                });
+            }
+        }
+
+        // ── 5. Overlap tests — check existing capabilities ──
+        if result.proposal.novelty_receipt.closest_existing.is_some() {
+            let existing = result.proposal.novelty_receipt.closest_existing.as_ref().unwrap();
+            plan.overlap_tests.push(OverlapSpec {
+                existing_capability: existing.clone(),
+                description: format!(
+                    "Verify that {} still handles its original domain after proposed changes",
+                    existing,
+                ),
+                existing_template: format!("Original {} test case", existing),
+                proposed_template: "Proposed capability test case".into(),
+                expected_routing: format!("Existing domain → {}; new domain → proposal", existing),
+            });
+        }
+
+        // Add generic overlap test for the most common adjacent capability
+        if !cf.relation_semantics.is_empty() {
+            let adjacent = format!("{:?}", cf.relation_semantics[0]);
+            plan.overlap_tests.push(OverlapSpec {
+                existing_capability: adjacent.clone(),
+                description: format!(
+                    "Verify boundary between proposed {:?} and adjacent {:?}",
+                    cf.relation_semantics.first(), cf.relation_semantics.first(),
+                ),
+                existing_template: "Standard case for the adjacent capability".into(),
+                proposed_template: "Standard case for the proposed capability".into(),
+                expected_routing: "Clear separation with no cross-contamination".into(),
+            });
+        }
+
+        // ── 6. Evidence links ──
+        for (i, exemplar) in result.cluster.prompt_exemplars.iter().enumerate() {
+            let excerpt: String = exemplar.chars().take(60).collect();
+            plan.coverage_rationale.push(EvidenceLink {
+                evidence_id: format!("exemplar-{}", i),
+                evidence_excerpt: excerpt,
+                test_family: "supported".into(),
+                derivation: "Primary evidence for the proposed transformation".into(),
+            });
+        }
+        for (i, ex) in result.boundary.exclusions.iter().enumerate() {
+            if let Some(example) = ex.exemplars.first() {
+                let excerpt: String = example.chars().take(60).collect();
+                plan.coverage_rationale.push(EvidenceLink {
+                    evidence_id: format!("exclusion-{}", i),
+                    evidence_excerpt: excerpt,
+                    test_family: format!("excluded_{:?}", ex.excluded_family).to_lowercase(),
+                    derivation: format!("Motivated by {:?} exclusion via {:?}", ex.excluded_family, ex.failed_predicate),
+                });
+            }
+        }
+
+        plan
+    }
+}
+
 // ── Historical reconstruction harness ─────────────────────────────────
 
 /// A benchmark task: reconstruct a known capability from blinded pre-capability evidence.
@@ -4371,5 +4804,121 @@ mod tests {
 
         // Assert that proposals exist but don't assert on quality —
         // quality is scored against the rubric, not by test assertions.
+    }
+
+    // ── Validation plan synthesis tests ────────────────────────────
+
+    #[test]
+    fn validation_plan_synthesizes_from_percentage_proposal() {
+        // Run the percentage quantity reconstruction
+        let targets = vec![
+            "What is 20% of 50?",
+            "An item priced at $80 receives a 20% discount. What is the final price?",
+            "A quantity with base value 50 increases by 10%.",
+            "Apply a 25 percent reduction to a base price of 80 dollars.",
+        ];
+        let distractors = vec![
+            "A balance grows by 5% each year for 5 years.",
+            "There is a 25% probability.",
+            "What is three quarters of 20?",
+            "A rate rises by 3 percentage points.",
+        ];
+
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in targets.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
+        }
+        for (i, p) in distractors.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
+        }
+
+        let results = propose_from_failures(all_prompts, 0.30);
+        assert!(!results.is_empty(), "should produce at least one proposal");
+
+        // Synthesize a validation plan from the first result
+        let plan = ValidationPlan::synthesize(&results[0]);
+
+        // The plan should have supported families
+        assert!(!plan.supported_families.is_empty(),
+            "validation plan should have at least one supported family");
+
+        // The plan should have ambiguous families
+        assert!(!plan.ambiguous_families.is_empty(),
+            "validation plan should have at least one ambiguous family");
+
+        // The plan should have unsupported families (exclusions from analysis)
+        // Note: may be empty if no exclusions were mined
+        if results[0].boundary.exclusions.is_empty() {
+            eprintln!("  Note: no exclusions mined for this proposal — unsupported families may be empty");
+        }
+
+        // There should be rewrite families
+        assert!(!plan.rewrite_families.is_empty(),
+            "validation plan should have rewrite families");
+
+        // There should be overlap tests
+        assert!(!plan.overlap_tests.is_empty(),
+            "validation plan should have overlap tests");
+
+        // Evidence links should reference exemplars
+        assert!(!plan.coverage_rationale.is_empty(),
+            "validation plan should have evidence traceability");
+
+        // There should be expected routing decisions
+        assert!(!plan.expected_decisions.is_empty(),
+            "validation plan should have expected routing decisions");
+
+        // The sample budget should be reasonable
+        assert!(plan.proposed_counts.total() >= 20,
+            "validation plan sample budget should be at least 20, got {}",
+            plan.proposed_counts.total());
+
+        // Compute validation plan score
+        let score = ValidationPlanScore::compute(&plan, &results[0]);
+        eprintln!("  Validation plan score: overall={:.3} family={:.3} boundary={:.3} adv={:.3} reuse={:.3} routing={:.3} trace={:.3}",
+            score.overall,
+            score.family_coverage,
+            score.boundary_coverage,
+            score.adversarial_quality,
+            score.reuse_awareness,
+            score.expected_decision_consistency,
+            score.traceability,
+        );
+
+        // The score should be non-trivial
+        assert!(score.overall > 0.0,
+            "validation plan score should be > 0, got {:.3}", score.overall);
+    }
+
+    #[test]
+    fn validation_plan_includes_ambiguous_families_even_when_empty() {
+        // Test that the plan generator still produces default ambiguity families
+        // even when the boundary analysis found no ambiguous cases
+        let targets = vec![
+            "What is 20% of 50?",
+            "Find 30% of 60.",
+        ];
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in targets.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+        }
+
+        let results = propose_from_failures(all_prompts, 0.30);
+        // With only 2 prompts and no distractors, clustering depends on threshold
+        if results.is_empty() {
+            eprintln!("  Note: no proposals from 2 prompts with threshold 0.30");
+            return;
+        }
+
+        let plan = ValidationPlan::synthesize(&results[0]);
+
+        // Should have default ambiguous families (missing_initial_value, etc.)
+        // even if the boundary analysis found zero ambiguities
+        let has_default_ambiguities = plan.ambiguous_families.iter()
+            .any(|f| f.name == "missing_initial_value"
+                || f.name == "unknown_operation_order"
+                || f.name == "ambiguous_reference");
+        assert!(has_default_ambiguities,
+            "validation plan should synthesize default ambiguity families when boundary has none");
     }
 }

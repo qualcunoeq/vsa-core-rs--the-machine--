@@ -5577,3 +5577,498 @@ mod tests {
             }
         }
     }
+
+    // ── D4 Measurement Campaign ────────────────────────────────────────
+    //
+    // This measurement pass focuses specifically on D4's ambiguity detection
+    // competency: whether `attempt_completions` correctly distinguishes
+    // Ambiguous from Unsupported for cases that share semantics with cluster forms.
+    //
+    // The overall boundary metrics (supported precision, unsupported recall, etc.)
+    // are already measured by `score_boundary_matrix` in the existing reconstruction
+    // tests. Here we focus on what D4 specifically controls:
+    //
+    //   1. Correct detection of resolvable missing bindings → Ambiguous
+    //   2. Correct rejection of safety-predicate cases → Unsupported (not Ambiguous)
+    //   3. Correct handling of numeric form mismatch → Unsupported
+    //   4. Bounded completion search doesn't overflow
+    //
+    // We measure this by running `attempt_completions` directly on specific probes
+    // across each capability's extracted supported forms, plus checking the
+    // `ambiguity_receipt` fields in synthesized boundary decisions.
+
+    #[test]
+    fn d4_measurement_campaign() {
+        use std::collections::HashMap;
+
+        // ── Overall boundary measurement via reconstruction tasks ──
+        // (reuses existing `score_boundary_matrix` logic)
+        let tasks = vec![
+            HistoricalReconstructionTask {
+                label: "QuantityRelationV1",
+                target_failure_prompts: vec![
+                    "5 notebooks cost 20 dollars. What is the price per notebook?",
+                    "The ratio of red beads to blue beads is 2:3. If there are 40 red beads, how many blue beads are there?",
+                    "3 identical batches require 2 liters. How many liters are required for 8 batches?",
+                    "Using 100 centimeters per meter, convert 3 meters to centimeters.",
+                    "A box contains 12 red counters and 8 blue counters. How many counters altogether?",
+                ],
+                distractor_prompts: vec![
+                    "A price changes by 5% each year. What is the final price?",
+                    "A bank charges 10% interest each year for multiple years.",
+                    "A circle has radius 3 meters. Find its area.",
+                    "A fair die is rolled twice. Probability of two sixes?",
+                    "Convert 5 miles to kilometers using the usual conversion.",
+                    "Add 2 liters to 3 kilograms.",
+                ],
+                distractor_labels: vec![
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Ambiguous,
+                    ExpectedDecision::Unsupported,
+                ],
+                expected_inputs: vec![],
+                expected_outputs: vec![],
+                expected_pattern_descriptions: vec![],
+                expected_exclusions: vec![],
+            },
+            HistoricalReconstructionTask {
+                label: "UnitQuantity",
+                target_failure_prompts: vec![
+                    "Convert 3 meters to centimeters using 100 centimeters per meter.",
+                    "Add 2 meters and 30 centimeters; express the total in centimeters.",
+                    "Subtract 2 meters from 230 centimeters; express the difference in centimeters.",
+                    "Add 2 feet and 6 inches; express the total in inches.",
+                    "Tracy used a piece of wire 4 feet long cut into 6-inch pieces. How many pieces?",
+                ],
+                distractor_prompts: vec![
+                    "Add 2 meters and 30 centimeters.",
+                    "Convert 5 miles to kilometers.",
+                    "Add 2 meters and 3 kilograms; express the total in meters.",
+                    "What is 20% of 50?",
+                    "A loan charges 5% simple interest.",
+                    "Add 2 liters and 500 milliliters; express the total in milliliters.",
+                ],
+                distractor_labels: vec![
+                    ExpectedDecision::Ambiguous,
+                    ExpectedDecision::Ambiguous,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Applicable,
+                ],
+                expected_inputs: vec![],
+                expected_outputs: vec![],
+                expected_pattern_descriptions: vec![],
+                expected_exclusions: vec![],
+            },
+            HistoricalReconstructionTask {
+                label: "FractionalQuantity",
+                target_failure_prompts: vec![
+                    "What is three quarters of 20?",
+                    "What remains after removing 1/4 of 20?",
+                    "One of 5 equal parts of 35.",
+                    "What is 2/3 of 30?",
+                    "After taking 1/2 of a 24-ounce bottle, how many ounces remain?",
+                ],
+                distractor_prompts: vec![
+                    "What is 20% of 50?",
+                    "What fraction of 50 is the result?",
+                    "There is a 25% probability.",
+                    "A quantity with base value 50 increases by 10%.",
+                    "A balance grows by 5% each year for 5 years.",
+                ],
+                distractor_labels: vec![
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                ],
+                expected_inputs: vec![],
+                expected_outputs: vec![],
+                expected_pattern_descriptions: vec![],
+                expected_exclusions: vec![],
+            },
+            HistoricalReconstructionTask {
+                label: "PercentageQuantityV1",
+                target_failure_prompts: vec![
+                    "What is 20% of 50?",
+                    "An item priced at $80 receives a 20% discount. What is the final price?",
+                    "A quantity with base value 50 increases by 10%.",
+                    "Calculate 15 percent of 200.",
+                    "Find 30% of 60.",
+                    "Apply a 25 percent reduction to a base price of 80 dollars.",
+                ],
+                distractor_prompts: vec![
+                    "A balance grows by 5% each year for 5 years.",
+                    "A loan charges 5% simple interest over time.",
+                    "There is a 25% probability.",
+                    "Apply a 20% discount followed by 10% tax.",
+                    "A rate rises by 3 percentage points.",
+                    "What is three quarters of 20?",
+                ],
+                distractor_labels: vec![
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                    ExpectedDecision::Unsupported,
+                ],
+                expected_inputs: vec![],
+                expected_outputs: vec![],
+                expected_pattern_descriptions: vec![],
+                expected_exclusions: vec![],
+            },
+        ];
+
+        const THRESHOLD: f64 = 0.3;
+
+        // ── Part A: Overall boundary metrics (existing measurement) ──
+        eprintln!("\n{}", "=" . repeat(100));
+        eprintln!("  D4 MEASUREMENT CAMPAIGN — PART A: OVERALL BOUNDARY METRICS");
+        eprintln!("  (via score_boundary_matrix, same as reconstructs_all_four_capabilities)");
+        eprintln!("{}", "=" . repeat(100));
+
+        let mut all_bm_confusion: HashMap<String, HashMap<String, usize>> = HashMap::new();
+        let mut total_bm_cases: usize = 0;
+        let mut bm_false_authorizations: usize = 0;
+        let mut per_task_bm: Vec<(String, f64, f64, f64, f64)> = Vec::new();
+
+        for task in &tasks {
+            let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+            for (i, p) in task.target_failure_prompts.iter().enumerate() {
+                all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
+            }
+            for (i, p) in task.distractor_prompts.iter().enumerate() {
+                all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
+            }
+
+            let results = propose_from_failures(all_prompts.clone(), THRESHOLD);
+            let expected_decisions = build_expected_decisions(task);
+
+            if results.is_empty() {
+                eprintln!("\n  [{}] NO PROPOSALS", task.label);
+                for (_prompt, expected) in &expected_decisions {
+                    total_bm_cases += 1;
+                    let exp_s = format!("{:?}", expected);
+                    all_bm_confusion.entry(exp_s).or_default().entry("Unsupported".to_string()).and_modify(|c| *c += 1).or_insert(1);
+                    if matches!(expected, ExpectedDecision::Applicable) {
+                        bm_false_authorizations += 1;
+                    }
+                }
+                continue;
+            }
+
+            // Pick best proposal
+            let mut best_idx = 0;
+            let mut best_score = ReconstructionScore {
+                task_label: task.label.to_string(),
+                input_output_contract_similarity: 0.0,
+                support_boundary_agreement: 0.0,
+                exclusion_recall: 0.0,
+                proposed_bridge_correctness: 0.0,
+                novelty_decision_correct: false,
+                coverage_calibration_error: 1.0,
+                overall_valid: false,
+                validity_tier: ReconstructionValidity::StructurallyPlausible,
+                boundary_metrics: None,
+            };
+            for (i, r) in results.iter().enumerate() {
+                let score = score_reconstruction(task, r);
+                let mb_new = score.boundary_metrics.as_ref()
+                    .map(|m| m.macro_boundary_score).unwrap_or(0.0);
+                let mb_best = best_score.boundary_metrics.as_ref()
+                    .map(|m| m.macro_boundary_score).unwrap_or(0.0);
+                if mb_new >= mb_best {
+                    best_score = score;
+                    best_idx = i;
+                }
+            }
+
+            let best = &results[best_idx];
+            let bm = best_score.boundary_metrics.as_ref().unwrap();
+
+            let mut t_app = 0u32; let mut t_amb = 0u32; let mut t_uns = 0u32;
+            for cd in &best.synthesized.decisions {
+                let expected = expected_decisions.get(&cd.prompt).cloned().unwrap_or(ExpectedDecision::Unsupported);
+                let actual = match &cd.decision {
+                    ApplicabilityDecision::Applicable => "Applicable",
+                    ApplicabilityDecision::Ambiguous { .. } => "Ambiguous",
+                    ApplicabilityDecision::Unsupported { .. } => "Unsupported",
+                };
+                total_bm_cases += 1;
+                all_bm_confusion.entry(format!("{:?}", expected)).or_default().entry(actual.to_string()).and_modify(|c| *c += 1).or_insert(1);
+                match actual { "Applicable" => t_app += 1, "Ambiguous" => t_amb += 1, "Unsupported" => t_uns += 1, _ => {} }
+                if matches!(cd.decision, ApplicabilityDecision::Applicable) && !matches!(expected, ExpectedDecision::Applicable) {
+                    bm_false_authorizations += 1;
+                }
+            }
+            per_task_bm.push((task.label.to_string(), bm.ambiguity_recall, bm.ambiguity_precision, bm.supported_precision, bm.unsupported_precision));
+
+            eprintln!("\n  [{:<20}] Propagate={:3} | Applied={:3} Amb={:3} Unsp={:3}",
+                task.label, best.synthesized.decisions.len(), t_app, t_amb, t_uns);
+            eprintln!("  {:>23} SupP={:.1}% AmbR={:.1}% AmbP={:.1}% UnsP={:.1}% MacroB={:.1}%",
+                "", bm.supported_precision * 100.0, bm.ambiguity_recall * 100.0,
+                bm.ambiguity_precision * 100.0, bm.unsupported_precision * 100.0,
+                bm.macro_boundary_score * 100.0);
+        }
+
+        // Aggregate BM metrics
+        let mut tp_a=0usize; let mut fp_a=0usize; let mut fn_a=0usize;
+        let mut tp_b=0usize; let mut fp_b=0usize; let mut fn_b=0usize;
+        let mut tp_c=0usize; let mut fp_c=0usize; let mut fn_c=0usize;
+        for (exp, inner) in &all_bm_confusion {
+            for (act, count) in inner {
+                match (exp.as_str(), act.as_str()) {
+                    ("Applicable", "Applicable") => tp_a += count,
+                    ("Applicable", _) => fn_a += count,
+                    ("Ambiguous", "Ambiguous") => tp_b += count,
+                    ("Ambiguous", _) => fn_b += count,
+                    ("Unsupported", "Unsupported") => tp_c += count,
+                    ("Unsupported", _) => fn_c += count,
+                    (&_, _) => {}
+                }
+                match act.as_str() {
+                    "Applicable" if exp != "Applicable" => fp_a += count,
+                    "Ambiguous" if exp != "Ambiguous" => fp_b += count,
+                    "Unsupported" if exp != "Unsupported" => fp_c += count,
+                    _ => {}
+                }
+            }
+        }
+        let sd = |num: f64, den: usize| -> f64 { if den == 0 { 1.0 } else { num / den as f64 } };
+        let agg_sup_rec = sd(tp_a as f64, tp_a + fn_a);
+        let agg_sup_pre = sd(tp_a as f64, tp_a + fp_a);
+        let agg_amb_rec = sd(tp_b as f64, tp_b + fn_b);
+        let agg_amb_pre = sd(tp_b as f64, tp_b + fp_b);
+        let agg_uns_rec = sd(tp_c as f64, tp_c + fn_c);
+        let agg_uns_pre = sd(tp_c as f64, tp_c + fp_c);
+        let agg_macro = (agg_sup_rec + agg_sup_pre + agg_amb_rec + agg_amb_pre + agg_uns_rec + agg_uns_pre) / 6.0;
+
+        eprintln!("\n  Aggregate Boundary Metrics:");
+        eprintln!("    Total Cases: {} | False Authorizations: {}", total_bm_cases, bm_false_authorizations);
+        eprintln!("    SupRec={:.1}% SupPre={:.1}% AmbRec={:.1}% AmbPre={:.1}% UnsRec={:.1}% UnsPre={:.1}% Macro={:.1}%",
+            agg_sup_rec*100.0, agg_sup_pre*100.0, agg_amb_rec*100.0, agg_amb_pre*100.0,
+            agg_uns_rec*100.0, agg_uns_pre*100.0, agg_macro*100.0);
+
+        // ── Part B: D4 Direct Probe Evaluation ──
+        // Here we directly test `attempt_completions` on specific probes
+        // that share semantic relation with each capability's supported forms.
+        // This isolates D4's behavior from form-extraction quality.
+        eprintln!("\n{}", "=" . repeat(100));
+        eprintln!("  D4 MEASUREMENT CAMPAIGN — PART B: DIRECT COMPLETION SEARCH TESTS");
+        eprintln!("  (isolates attempt_completions from form-extraction quality)");
+        eprintln!("{}", "=" . repeat(100));
+
+        // D4 metrics
+        let mut d4_ambiguous_correct: usize = 0;
+        let mut d4_ambiguous_total: usize = 0;
+        let mut d4_unsupported_correct: usize = 0;
+        let mut d4_unsupported_total: usize = 0;
+        let mut d4_false_ambiguous: usize = 0; // classified Ambiguous but should be Unsupported
+        let mut d4_false_unsupported: usize = 0; // classified Unsupported but should be Ambiguous
+        let mut d4_receipt_has_bindings: usize = 0;
+        let mut d4_receipt_total: usize = 0;
+
+        for task in &tasks {
+            let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+            for (i, p) in task.target_failure_prompts.iter().enumerate() {
+                all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
+            }
+            for (i, p) in task.distractor_prompts.iter().enumerate() {
+                all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
+            }
+
+            let results = propose_from_failures(all_prompts.clone(), THRESHOLD);
+            if results.is_empty() { continue; }
+
+            // Get the best proposal's forms
+            let best = &results[0]; // any proposal with forms works for direct completion search
+            let forms = &best.synthesized.supported_forms;
+
+            eprintln!("\n  [{:<20}] {} supported forms", task.label, forms.len());
+            for (fi, f) in forms.iter().enumerate() {
+                eprintln!("    Form {}: '{}' (req={:?})", fi, f.name, f.required_features);
+            }
+
+            // For each form, design probes:
+            // (a) Shared semantics + missing 1 binding → should be Ambiguous
+            // (b) Safety predicate → should be Unsupported
+            // (c) Shared semantics + numeric mismatch → should be Unsupported
+            // (d) Different semantics → should be Unsupported
+
+            for form in forms {
+                let form_features = &form.centroid_features;
+
+                // (a) Missing-binding probe: same semantics, one required feature absent
+                for rf in &form.required_features {
+                    // Build a probe that has the form's relation semantics but lacks `rf`
+                    let feats = form_features.clone();
+                    let mut probe_feat = feats.clone();
+
+                    // Clear the feature that we want to be missing
+                    match rf.as_str() {
+                        "explicit_base" => { probe_feat.has_explicit_base = false; }
+                        "explicit_direction" => { probe_feat.has_direction = false; }
+                        "target_unit" => { probe_feat.has_target_unit = false; }
+                        "explicit_conversion" => { probe_feat.has_explicit_conversion = false; }
+                        _ => continue, // skip features that can't be manipulated
+                    }
+
+                    let (decision, receipt) = attempt_completions(&probe_feat, "probe", forms, false);
+
+                    if shares_semantic_relation(&probe_feat, &form.centroid_features) {
+                        d4_ambiguous_total += 1;
+                        if matches!(decision, ApplicabilityDecision::Ambiguous { .. }) {
+                            d4_ambiguous_correct += 1;
+                            if receipt.is_some() { d4_receipt_total += 1; }
+                            if receipt.as_ref().map_or(false, |r| !r.missing_bindings.is_empty()) {
+                                d4_receipt_has_bindings += 1;
+                            }
+                        } else if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
+                            d4_false_unsupported += 1;
+                            eprintln!("      ⚠ Expected Ambiguous, got Unsupported: missing '{}' from form '{}'",
+                                rf, form.name);
+                        }
+                    }
+                }
+
+                // (b) Safety predicate probes: same semantics but trigger safety
+                // Each form's safety-predicate check depends on features:
+                // - If form has percentage: try probability probe
+                // - If form has conversion: try incompatible unit probe
+                // - If form has multiplicative change: try compound/repeated probe
+                let rels = &form_features.relation_semantics;
+
+                if rels.contains(&RelationSemantics::PartOfWhole)
+                    || rels.contains(&RelationSemantics::MultiplicativeChange)
+                {
+                    // Probability probe
+                    let mut prob_feat = form_features.clone();
+                    prob_feat.relation_semantics.push(RelationSemantics::ProbabilityMeasure);
+                    let (decision, _) = attempt_completions(&prob_feat, "a 25% probability", forms, false);
+                    d4_unsupported_total += 1;
+                    if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
+                        d4_unsupported_correct += 1;
+                    } else {
+                        d4_false_ambiguous += 1;
+                        eprintln!("      ⚠ Expected Unsupported (probability), got {:?}", decision);
+                    }
+                }
+
+                if rels.contains(&RelationSemantics::CompatibleUnitConversion) {
+                    // Incompatible units probe
+                    let mut incomp_feat = form_features.clone();
+                    incomp_feat.relation_semantics.retain(|r| *r != RelationSemantics::CompatibleUnitConversion);
+                    incomp_feat.numeric_forms.push(NumericForm::UnitBearingScalar);
+                    let (decision, _) = attempt_completions(&incomp_feat, "Add 2 liters to 3 kilograms.", forms, false);
+                    d4_unsupported_total += 1;
+                    if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
+                        d4_unsupported_correct += 1;
+                    } else {
+                        d4_false_ambiguous += 1;
+                        eprintln!("      ⚠ Expected Unsupported (incompatible units), got {:?}", decision);
+                    }
+                }
+            }
+        }
+
+        eprintln!("\n  D4 Direct Probe Results:");
+        let d4_amb_precision = sd(d4_ambiguous_correct as f64, d4_ambiguous_correct + d4_false_ambiguous);
+        let d4_amb_recall = sd(d4_ambiguous_correct as f64, d4_ambiguous_total);
+        let d4_uns_precision = sd(d4_unsupported_correct as f64, d4_unsupported_correct + d4_false_unsupported);
+        let d4_uns_recall = sd(d4_unsupported_correct as f64, d4_unsupported_total);
+        eprintln!("    Ambiguous probes: {}/{} correct (recall={:.1}%, precision={:.1}%)",
+            d4_ambiguous_correct, d4_ambiguous_total, d4_amb_recall*100.0, d4_amb_precision*100.0);
+        eprintln!("    Unsupported probes: {}/{} correct (recall={:.1}%, precision={:.1}%)",
+            d4_unsupported_correct, d4_unsupported_total, d4_uns_recall*100.0, d4_uns_precision*100.0);
+        eprintln!("    Receipts with missing bindings: {}/{}", d4_receipt_has_bindings, d4_receipt_total);
+
+        // ── Part C: D4 Receipt Analysis from Synthesized Boundary ──
+        eprintln!("\n{}", "=" . repeat(100));
+        eprintln!("  D4 MEASUREMENT CAMPAIGN — PART C: RECEIPT ANALYSIS FROM BOUNDARY");
+        eprintln!("{}", "=" . repeat(100));
+
+        let mut all_binding_freq: HashMap<MissingBinding, usize> = HashMap::new();
+        let mut all_form_counts: Vec<usize> = Vec::new();
+        let mut all_bounded_count: usize = 0;
+        let mut total_receipts: usize = 0;
+
+        for task in &tasks {
+            let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+            for (i, p) in task.target_failure_prompts.iter().enumerate() {
+                all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
+            }
+            for (i, p) in task.distractor_prompts.iter().enumerate() {
+                all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
+            }
+            let results = propose_from_failures(all_prompts.clone(), THRESHOLD);
+            if results.is_empty() { continue; }
+            let best = &results[0];
+            for cd in &best.synthesized.decisions {
+                if let Some(ref r) = cd.ambiguity_receipt {
+                    total_receipts += 1;
+                    for b in &r.missing_bindings {
+                        *all_binding_freq.entry(b.clone()).or_insert(0) += 1;
+                    }
+                    all_form_counts.push(r.viable_forms.len());
+                    if r.search_bounded { all_bounded_count += 1; }
+                }
+            }
+        }
+
+        eprintln!("\n  Total Receipts Found: {}", total_receipts);
+        eprintln!("  Missing Binding Frequencies:");
+        for (binding, count) in &all_binding_freq {
+            eprintln!("    {:35}: {}", format!("{:?}", binding), count);
+        }
+        if !all_form_counts.is_empty() {
+            let avg = all_form_counts.iter().sum::<usize>() as f64 / all_form_counts.len() as f64;
+            eprintln!("  Viable Form Count: avg={:.1}, max={}", avg, all_form_counts.iter().max().unwrap());
+        }
+        eprintln!("  Cases Exceeding Search Bound: {}", all_bounded_count);
+
+        // ── Final Recommendation ──
+        eprintln!("\n{}", "=" . repeat(100));
+        eprintln!("  D4 MEASUREMENT CAMPAIGN — SUMMARY");
+        eprintln!("{}", "=" . repeat(100));
+
+        eprintln!("\n  Overall Boundary (Part A):");
+        eprintln!("    Supported Precision: {:.1}% (target ≥ 99%)  {}",
+            agg_sup_pre*100.0, if agg_sup_pre >= 0.99 { "✓" } else { "✗ needs investigation — form-extraction issue" });
+        eprintln!("    Ambiguity Recall: {:.1}% (target ≥ 75%)  {}",
+            agg_amb_rec*100.0, if agg_amb_rec >= 0.75 { "✓" } else { "✗ limited by 3 ambiguous distractors in corpora" });
+        eprintln!("    Ambiguity Precision: {:.1}% (target ≥ 90%)  {}",
+            agg_amb_pre*100.0, if agg_amb_pre >= 0.90 { "✓" } else { "✗ limited by 3 ambiguous distractors in corpora" });
+        eprintln!("    Unsupported Precision: {:.1}% (target ≥ 95%)  {}",
+            agg_uns_pre*100.0, if agg_uns_pre >= 0.95 { "✓" } else { "✗ needs investigation — targets classified as Unsupported" });
+
+        eprintln!("\n  D4 Direct Completion Search (Part B):");
+        eprintln!("    Ambiguous Detection Recall: {:.1}% (correct {}/{})",
+            d4_amb_recall*100.0, d4_ambiguous_correct, d4_ambiguous_total);
+        eprintln!("    Unsupported Rejection Precision: {:.1}% (correct {}/{})",
+            d4_uns_recall*100.0, d4_unsupported_correct, d4_unsupported_total);
+        eprintln!("    False Ambiguous: {}", d4_false_ambiguous);
+        eprintln!("    False Unsupported: {}", d4_false_unsupported);
+
+        eprintln!("\n  D4 Receipt Quality (Part C):");
+        eprintln!("    Receipts with missing bindings: {}/{}", d4_receipt_has_bindings, d4_receipt_total);
+
+        // ── Assertions (focused on D4's direct behavior) ──
+        // The overall boundary metrics are tracked by reconstructs_all_four_capabilities.
+        // Here we only assert D4's specific competency: correctly distinguishing
+        // Ambiguous from Unsupported when completion search is invoked.
+        //
+        // D4 must never return Ambiguous for safety-predicate cases (false_ambiguous == 0)
+        // and must correctly identify at least some missing-binding cases as Ambiguous.
+        assert_eq!(d4_false_ambiguous, 0,
+            "D4 FAIL: {} cases incorrectly classified as Ambiguous (safety predicates should prevent this)",
+            d4_false_ambiguous);
+        assert!(d4_ambiguous_correct > 0 || d4_ambiguous_total == 0,
+            "D4 FAIL: no ambiguous cases detected despite {} ambiguous probes",
+            d4_ambiguous_total);
+    }

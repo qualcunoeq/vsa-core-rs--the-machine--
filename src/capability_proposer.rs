@@ -2089,6 +2089,8 @@ pub struct ProposalPipelineResult {
     pub predicates: Vec<ApplicabilityPredicate>,
     pub proposal: CapabilityContractProposal,
     pub score: Option<ProposalScore>,
+    /// Outcome classification for the proposal (post-hoc, computed by `classify_outcome`)
+    pub outcome: Option<ProposalOutcomeWithDisposition>,
 }
 
 /// Run the full proposal pipeline on a set of failure receipt prompts.
@@ -2136,6 +2138,7 @@ pub fn propose_from_failures(
         // 9. Build proposal
         let proposal = build_proposal(cluster, &invariant, &boundary, &prompts);
 
+        let outcome = classify_outcome(&proposal, &boundary, cluster);
         results.push(ProposalPipelineResult {
             cluster: cluster.clone(),
             invariant,
@@ -2144,10 +2147,132 @@ pub fn propose_from_failures(
             predicates: predicates.clone(),
             proposal,
             score: None,
+            outcome: Some(outcome),
         });
     }
 
     results
+}
+
+/// Classify the outcome of a single proposal against the outcome taxonomy.
+///
+/// This is a heuristic classification based on what the pipeline has produced.
+/// It does not check the full capability registry for overlap (that requires
+/// a separate analysis pass), but uses the novelty receipt, coverage estimate,
+/// and cluster properties to assign an initial category.
+pub fn classify_outcome(
+    proposal: &CapabilityContractProposal,
+    boundary: &BoundaryContrast,
+    cluster: &FailureCluster,
+) -> ProposalOutcomeWithDisposition {
+    use ProposalOutcome::*;
+
+    // Insufficient evidence: too few cases to form a meaningful proposal
+    if cluster.size < 3 {
+        return ProposalOutcomeWithDisposition {
+            outcome: InsufficientEvidence,
+            disposition: None,
+            reasoning: format!("Cluster size {} is below minimum threshold of 3", cluster.size),
+        };
+    }
+
+    // Check novelty: if the proposer found an existing capability match,
+    // this may be an extension or fully covered
+    let is_novel = proposal.novelty_receipt.is_novel;
+    let has_existing_match = proposal.novelty_receipt.closest_existing.is_some();
+
+    if !is_novel && has_existing_match {
+        // Proposer found an existing capability — check if boundary is clean
+        let total_exclusions = boundary.exclusions.len();
+        let ambiguous_count = boundary.ambiguous_near_misses.len();
+        let has_clean_coverage = total_exclusions <= cluster.size && ambiguous_count == 0;
+
+        if has_clean_coverage {
+            return ProposalOutcomeWithDisposition {
+                outcome: FullyCoveredByExistingCapabilities,
+                disposition: Some(ClusterDisposition::FullyCoveredByExistingCapabilities),
+                reasoning: format!(
+                    "Evidence mapped to existing capability '{}' with clean boundary ({} exclusions, {} ambiguous)",
+                    proposal.novelty_receipt.closest_existing.as_deref().unwrap_or("unknown"),
+                    total_exclusions, ambiguous_count,
+                ),
+            };
+        } else {
+            return ProposalOutcomeWithDisposition {
+                outcome: ExistingCapabilityExtension,
+                disposition: None,
+                reasoning: format!(
+                    "Evidence maps to existing capability '{}' but boundary is incomplete ({} exclusions, {} ambiguous)",
+                    proposal.novelty_receipt.closest_existing.as_deref().unwrap_or("unknown"),
+                    total_exclusions, ambiguous_count,
+                ),
+            };
+        }
+    }
+
+    // Novel proposal: check coverage estimate
+    // Coverage is adequate if there's a non-trivial projected interval
+    let has_coverage = if let ProjectedCoverage::Interval { low, high, .. } = &proposal.expected_coverage.projected {
+        *high > 3
+    } else {
+        false
+    };
+    let has_supported_cases = proposal.supported_patterns.iter()
+        .any(|p| !p.exemplars.is_empty());
+
+    if !has_supported_cases && !has_coverage {
+        // Novel but unsupported — no coherent pattern found
+        let reasoning = if !has_supported_cases {
+            "Cluster produced no supported exemplars — transformation not realizable".into()
+        } else {
+            format!("Novel but coverage insufficient — cannot project confidently") 
+        };
+        return ProposalOutcomeWithDisposition {
+            outcome: NoCoherentCapability,
+            disposition: None,
+            reasoning,
+        };
+    }
+
+    // Novel with support: assess whether the cluster contains multiple
+    // distinct transformations that should be split
+    let has_multiple_forms = proposal.supported_patterns.len() > 1
+        || (proposal.input_artifacts.len() > 2 && proposal.output_artifacts.len() > 1);
+    let has_high_ambiguity = boundary.ambiguous_near_misses.len() > cluster.size / 2;
+
+    if has_multiple_forms || has_high_ambiguity {
+        // The cluster may need to be split
+        let disposition = if boundary.ambiguous_near_misses.is_empty() && has_multiple_forms {
+            Some(ClusterDisposition::NeedsCompositionPatterns)
+        } else if boundary.exclusions.is_empty() {
+            Some(ClusterDisposition::NoCoherentSplitPossible)
+        } else {
+            Some(ClusterDisposition::HasNovelResidual)
+        };
+        return ProposalOutcomeWithDisposition {
+            outcome: ClusterShouldSplit,
+            disposition,
+            reasoning: format!(
+                "Cluster supports {} patterns with {} exclusions and {} ambiguous — \
+                 may represent distinct transformations that require separate contracts",
+                proposal.supported_patterns.len(),
+                boundary.exclusions.len(),
+                boundary.ambiguous_near_misses.len(),
+            ),
+        };
+    }
+
+    // Clean novel capability
+    ProposalOutcomeWithDisposition {
+        outcome: NovelCapabilityProposed,
+        disposition: None,
+        reasoning: format!(
+            "Coherent novel transformation with {} supported patterns, {} exclusions, {} ambiguous",
+            proposal.supported_patterns.len(),
+            boundary.exclusions.len(),
+            boundary.ambiguous_near_misses.len(),
+        ),
+    }
 }
 
 // ── Historical reconstruction harness ─────────────────────────────────
@@ -2187,6 +2312,77 @@ pub enum ReconstructionValidity {
     /// Passes the full reconstruction gate: I/O≥0.60, boundary≥0.50,
     /// exclusion≥0.60, bridge=1.0, novelty correct, coverage OK
     ReconstructionValidated,
+}
+
+/// The high-level outcome category for a proposal pipeline result.
+///
+/// Used by the holdout evaluation rubric to classify what the proposer
+/// concluded about the evidence set.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ProposalOutcome {
+    /// The evidence supports creating a new capability with a coherent novel transformation
+    NovelCapabilityProposed,
+    /// The evidence extends an existing capability rather than creating a new one
+    ExistingCapabilityExtension,
+    /// The evidence should be split across multiple existing or new capability contracts
+    ClusterShouldSplit,
+    /// Every coherent subcluster is covered by existing capability contracts — no novel
+    /// artifact is needed
+    FullyCoveredByExistingCapabilities,
+    /// The evidence does not support any reusable abstraction
+    NoCoherentCapability,
+    /// There is insufficient evidence to reach a conclusion
+    InsufficientEvidence,
+}
+
+impl ProposalOutcome {
+    /// Whether this outcome is considered a positive result for the proposer.
+    /// Novel novel capabilities and correct decompositions are positive;
+    /// incoherent or insufficient evidence are neutral/negative.
+    pub fn is_positive(&self) -> bool {
+        matches!(self,
+            ProposalOutcome::NovelCapabilityProposed
+            | ProposalOutcome::ExistingCapabilityExtension
+            | ProposalOutcome::ClusterShouldSplit
+            | ProposalOutcome::FullyCoveredByExistingCapabilities
+        )
+    }
+
+    /// Whether this outcome asserts that no new capability is needed.
+    pub fn is_non_novel(&self) -> bool {
+        matches!(self,
+            ProposalOutcome::ExistingCapabilityExtension
+            | ProposalOutcome::FullyCoveredByExistingCapabilities
+        )
+    }
+}
+
+/// Refinement of what remains after a `ClusterShouldSplit` disposition.
+///
+/// Where `ProposalOutcome` says *what happened*, `ClusterDisposition`
+/// says *what remains* — is the evidence fully absorbed by existing
+/// capabilities, or is there a novel residual?
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ClusterDisposition {
+    /// Every subcluster maps to an existing capability contract. No novel artifact needed.
+    FullyCoveredByExistingCapabilities,
+    /// Some subclusters require new composition patterns but no new capability domain.
+    NeedsCompositionPatterns,
+    /// A residual subcluster requires a genuinely novel capability.
+    HasNovelResidual,
+    /// The evidence is fragmented — no split produces coherent subclusters.
+    NoCoherentSplitPossible,
+}
+
+/// Combined outcome for a proposal pipeline execution.
+///
+/// The `outcome` describes the primary finding. The `disposition` refines
+/// what happens next (especially relevant when outcome is `ClusterShouldSplit`).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProposalOutcomeWithDisposition {
+    pub outcome: ProposalOutcome,
+    pub disposition: Option<ClusterDisposition>,
+    pub reasoning: String,
 }
 
 /// A hidden-ontology expected exclusion for scoring. The scorer compares

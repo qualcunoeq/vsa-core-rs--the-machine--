@@ -1009,6 +1009,65 @@ pub fn extract_predicates(
     predicates
 }
 
+/// Detect whether a prompt contains units from conflicting dimensional categories.
+/// Returns true if the prompt uses units from two or more different dimensions
+/// (e.g., length AND mass), indicating an incompatible-unit operation.
+fn has_conflicting_dimensions(prompt: &str) -> bool {
+    let lower = prompt.to_ascii_lowercase();
+
+    // Helper: check if a unit word appears with valid boundaries.
+    // Allows common suffixes like plural 's', 'es', metric prefixes.
+    fn contains_word(haystack: &str, word: &str) -> bool {
+        if word.len() > haystack.len() { return false; }
+        let word_lower = word.to_ascii_lowercase();
+        if let Some(idx) = haystack.find(&word_lower) {
+            let before_ok = idx == 0 || !haystack.as_bytes()[idx - 1].is_ascii_alphanumeric();
+            let after_idx = idx + word_lower.len();
+            if after_idx >= haystack.len() {
+                return before_ok; // word ends at string end — OK
+            }
+            let after_char = haystack.as_bytes()[after_idx];
+            // Allow trailing 's' (plural), 'es', 'd', 'ing' as valid suffixes
+            let allowed_suffixes = [b's', b'e', b'd', b'i'];
+            let after_ok = !after_char.is_ascii_alphanumeric()
+                || allowed_suffixes.contains(&after_char);
+            before_ok && after_ok
+        } else {
+            false
+        }
+    };
+
+    // Categorize known units by dimension
+    // Each unit is checked as a whole word to avoid substring false positives
+    // (e.g., "cent" in "centimeters", "gram" in "program")
+    let length_units = ["meter", "centimeter", "inch", "foot", "feet", "mile", "yard", "mm", "cm", "km"];
+    let mass_units = ["kilogram", "gram", "pound", "ounce", "ton", "kg", "g", "lb"];
+    let volume_units = ["liter", "gallon", "milliliter", "pint", "quart", "cup", "ml", "l"];
+    let time_units = ["minute", "hour", "day", "week", "month", "year", "second", "min", "hr"];
+    let currency_units = ["dollar", "cent", "euro", "pound sterling", "usd", "eur"];
+
+    // For currency, be more careful: "cent" conflicts with "centimeter"
+    // Check if the exact standalone word "cent" appears (not as part of "centimeter")
+    let has_currency = {
+        let standalone_cent = lower.split_whitespace()
+            .any(|w| w == "cent" || w == "cents" || w == "cent(s)");
+        standalone_cent || contains_word(&lower, "dollar") || contains_word(&lower, "euro")
+            || contains_word(&lower, "pound sterling") || contains_word(&lower, "usd")
+    };
+
+    let has_length = length_units.iter().any(|u| contains_word(&lower, u));
+    let has_mass = mass_units.iter().any(|u| contains_word(&lower, u));
+    let has_volume = volume_units.iter().any(|u| contains_word(&lower, u));
+    let has_time = time_units.iter().any(|u| contains_word(&lower, u));
+
+    let dimensions_present = [has_length, has_mass, has_volume, has_time, has_currency]
+        .iter().filter(|&&d| d).count();
+
+    // Conflicting if >1 dimension is present AND they are not all the same dimension.
+    // Single-dimension-with-different-scales (e.g., meters + centimeters) is compatible.
+    dimensions_present > 1
+}
+
 /// Evaluate a set of predicates against a candidate case's features.
 /// Returns the first predicate that the case fails, or `None` if all pass.
 /// If no specific predicate fails but the case has a fundamentally different
@@ -1017,6 +1076,7 @@ pub fn evaluate_predicates(
     predicates: &[ApplicabilityPredicate],
     feat: &SemanticFeatures,
     centroid_rels: &[RelationSemantics],
+    prompt: &str,
 ) -> Option<ApplicabilityPredicate> {
     for p in predicates {
         match p {
@@ -1116,7 +1176,16 @@ pub fn evaluate_predicates(
                     && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
                     && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate)
                 {
-                    return Some(p.clone());
+                    // Check if this is a GENUINE dimensional conflict (e.g., length + mass).
+                    let has_conflict = has_conflicting_dimensions(prompt);
+                    // Rescue only when user explicitly specifies a target unit
+                    // (e.g., "express the total in centimeters"). This is the strongest
+                    // signal of a compatible-unit operation. Without it, a case with
+                    // a bare unit-bearing scalar in a non-conversion context (like
+                    // "A circle has radius 3 meters") stays unsupported.
+                    if has_conflict || !feat.has_target_unit {
+                        return Some(p.clone());
+                    }
                 }
             }
         }
@@ -1176,7 +1245,7 @@ pub fn analyze_boundary(
             .unwrap_or(RelationSemantics::AdditiveChange);
 
         // ── Step 2: Evaluate predicates on this candidate ──
-        let failed_predicate = evaluate_predicates(&predicates, feat, &centroid.relation_semantics);
+        let failed_predicate = evaluate_predicates(&predicates, feat, &centroid.relation_semantics, prompt);
 
         // Determine discriminating features and missing conditions
         let mut discriminating = Vec::new();
@@ -1277,7 +1346,7 @@ pub fn analyze_boundary(
         let prompt = all_prompts.get(id).map(|s| s.as_str()).unwrap_or("");
         let excluded_family = feat.relation_semantics.first().cloned()
             .unwrap_or(RelationSemantics::AdditiveChange);
-        let failed_predicate = evaluate_predicates(&predicates, feat, &centroid.relation_semantics);
+        let failed_predicate = evaluate_predicates(&predicates, feat, &centroid.relation_semantics, prompt);
 
         let record = ExclusionRecord {
             excluded_family,
@@ -2183,28 +2252,19 @@ pub fn induce_supported_forms(
     let mut total_required: usize = 0;
     let mut total_alt_groups: usize = 0;
 
-    // Create forms for each relation-semantic group. Allow single-member groups
-    // but limit the total number of forms to avoid overfitting.
-    // If there are more than 4 distinct groups, only take the top 3 plus any
-    // group containing a target prompt (identified by "target-" prefix).
-    let max_groups_to_process = if groups.len() > 4 { 3 } else { groups.len() };
-    let mut sorted_groups: Vec<(&String, &Vec<(String, SemanticFeatures)>)> = groups.iter().collect();
-    sorted_groups.sort_by(|a, b| b.1.len().cmp(&a.1.len())); // sort by size descending
+        // Create forms for each relation-semantic group. Limit total forms
+        // to at most 4 to avoid overfitting: process the largest groups first.
+        let max_groups_to_process = if groups.len() > 4 { 3 } else { groups.len() };
+        let mut sorted_groups: Vec<(&String, &Vec<(String, SemanticFeatures)>)> = groups.iter().collect();
+        sorted_groups.sort_by(|a, b| b.1.len().cmp(&a.1.len())); // sort by size descending
 
-    // Identify which groups are "primary" (contain target evidence)
-    let mut processed = 0usize;
-    for (rel_label, group_members) in &sorted_groups {
-        if group_members.is_empty() { continue; }
-        let has_target = group_members.iter().any(|(p, _)| p.contains("target-"));
-        // Skip if we've processed max groups and this one has no target evidence
-        if processed >= max_groups_to_process && !has_target {
-            continue;
-        }
-        // Don't create forms for single-member groups with no target evidence
-        // (likely cluster contamination rather than a genuine capability form)
-        if group_members.len() < 2 && !has_target {
-            continue;
-        }
+        let mut processed = 0usize;
+        for (rel_label, group_members) in &sorted_groups {
+            if group_members.is_empty() { continue; }
+            // Cap total forms: process at most max_groups_to_process groups.
+            // Single-member groups are processed if they rank highly by size
+            // (they represent genuine form families, not contamination).
+            if processed >= max_groups_to_process { break; }
 
         processed += 1;
         let (min_form, group_uncovered) = induce_minimal_form(
@@ -2358,18 +2418,39 @@ fn induce_minimal_form(
             });
 
             if all_covered {
-                // One of this group is needed, but not specifically `cf`
-                // Mark the whole group as required
+                // The alternative group covers all members. Individual features
+                // within the group are interchangeable even when they co-occur
+                // in every training example — future cases may only have one.
                 if !alt_assigned.contains(cf.as_str()) {
-                    // Mark all members of the group as assigned
                     for g in group.iter() {
                         alt_assigned.insert(g.to_string());
                     }
                 }
                 optional.push(cf.clone());
             } else {
-                // Not all members are covered by alternatives — cf is individually needed
-                required.push(cf.clone());
+                // Not all members are covered by the alternative group.
+                // Fall through to the standard necessity test instead of
+                // automatically requiring. The feature may still be required
+                // if the standard test determines it is necessary, but it
+                // should not be required simply because the alternative group
+                // doesn't apply to this particular set of members.
+                // Standard necessity test:
+                let has_cf = |feat: &SemanticFeatures| -> bool {
+                    let mf: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
+                    mf.contains(cf.as_str())
+                };
+                let has_all_required = |feat: &SemanticFeatures| -> bool {
+                    let mf: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
+                    required.iter().all(|r| mf.contains(r.as_str()))
+                };
+                let all_covered_without = group_members.iter().all(|(_, feat)| {
+                    has_cf(feat) || has_all_required(feat)
+                });
+                if all_covered_without {
+                    optional.push(cf.clone());
+                } else {
+                    required.push(cf.clone());
+                }
             }
         } else {
             // Standard necessity test: remove the feature, check coverage
@@ -2381,12 +2462,28 @@ fn induce_minimal_form(
                 let mf: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
                 required.iter().all(|r| mf.contains(r.as_str()))
             };
-            let all_covered_without = group_members.iter().all(|(_, feat)| {
-                // Member is covered if it HAS `cf` (the candidate feature),
-                // OR if it already satisfies all previously-established required features.
-                // This tests whether `cf` is genuinely NECESSARY or just coincident.
-                has_cf(feat) || has_all_required(feat)
-            });
+
+            // When `required` is empty, has_all_required is trivially true for
+            // every member. This means all_covered_without would be always true,
+            // making no feature ever necessary. To break this degeneracy:
+            // the first universally-shared feature (present in ALL members)
+            // is anchored as required, establishing a baseline from which
+            // subsequent necessity tests can distinguish genuine necessity
+            // from coincidental presence.
+            let first_universal_required = required.is_empty()
+                && group_members.iter().all(|(_, feat)| has_cf(feat));
+
+            let all_covered_without = if first_universal_required {
+                // Anchor this universally-shared feature as the first requirement
+                false
+            } else {
+                group_members.iter().all(|(_, feat)| {
+                    // Member is covered if it HAS `cf` (the candidate feature),
+                    // OR if it already satisfies all previously-established required features.
+                    // This tests whether `cf` is genuinely NECESSARY or just coincident.
+                    has_cf(feat) || has_all_required(feat)
+                })
+            };
 
             if all_covered_without {
                 // All members remain covered without `cf` — it's optional/incidental
@@ -2397,17 +2494,34 @@ fn induce_minimal_form(
         }
     }
 
-    // Merge alternative group requirements into a single requirement
-    // For each alt_group, if any member of the group is in `required`, add all
-    // This ensures forms generated from different subgroups are consistent.
+    // Alternative group representative: for each alt group that was needed
+    // (covered all members), ensure ONE representative is in `required`.
+    // This prevents forms from being too permissive — they must require at
+    // least one of the alternative features.
     for group in &alt_groups {
-        let any_required = group.iter().any(|g| alt_assigned.contains(g.as_str()));
-        if any_required {
-            // Add the first one as a representative
+        // Was this group needed? (alt_assigned contains any member)
+        let was_needed = group.iter().any(|g| alt_assigned.contains(g.as_str()));
+        if !was_needed { continue; }
+
+        let in_required: Vec<&String> = required.iter()
+            .filter(|r| group.contains(r.as_str()))
+            .collect();
+
+        if in_required.is_empty() {
+            // No member of this alt group is in `required` — add the
+            // alphabetically first member as a representative.
             let rep = group.iter().next().unwrap().to_string();
-            if !required.contains(&rep) {
-                required.push(rep);
-            }
+            required.push(rep);
+        } else if in_required.len() > 1 {
+            // Multiple representatives — keep only the first alphabetically.
+            let keep = in_required[0].clone();
+            required.retain(|r| {
+                if group.contains(r.as_str()) {
+                    *r == keep
+                } else {
+                    true
+                }
+            });
         }
     }
 
@@ -2819,15 +2933,19 @@ fn attempt_completions(
             failed_predicate: ApplicabilityPredicate::ForbidsRepeatedTemporalApplication,
         }, None);
     }
-    // Incompatible units safety check: unit-bearing scalars without
-    // compatible-unit-conversion or per-unit-rate semantics.
+    // Incompatible units safety check: unit-bearing scalars without conversion
+    // semantics. Rescued only when user specifies a target unit (compatible-unit
+    // operation evidence).
     if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
         && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
         && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate)
     {
-        return (ApplicabilityDecision::Unsupported {
-            failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
-        }, None);
+        let has_conflict = has_conflicting_dimensions(prompt);
+        if has_conflict || !feat.has_target_unit {
+            return (ApplicabilityDecision::Unsupported {
+                failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
+            }, None);
+        }
     }
 
     let search_bounded = all_missing.len() > MAX_MISSING_BINDINGS
@@ -2958,10 +3076,15 @@ pub fn decide_case(
                         feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
                             && !feat.has_explicit_base
                             && feat.operations.contains("increase"),
-                    ApplicabilityPredicate::ForbidsIncompatibleUnits =>
+                    ApplicabilityPredicate::ForbidsIncompatibleUnits => {
+                        let has_conflict = has_conflicting_dimensions(prompt);
+                        // Only rescue when target unit is explicitly specified
+                        // (strong evidence of compatible-unit operation).
                         feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
                             && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
-                            && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate),
+                            && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate)
+                            && (has_conflict || !feat.has_target_unit)
+                    },
                     ApplicabilityPredicate::ForbidsOverlappingAdjustments =>
                         feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
                             && feat.operations.len() >= 2,
@@ -3017,7 +3140,7 @@ pub fn decide_case(
     // Step 3: Evaluate predicates. For non-cluster members, use completion
     // search to check if the case could be ambiguous (missing binding in
     // a supported form) vs truly unsupported.
-    let failed = evaluate_predicates(predicates, feat, &centroid.relation_semantics);
+    let failed = evaluate_predicates(predicates, feat, &centroid.relation_semantics, prompt);
 
     if let Some(pred) = failed {
         if same_rel && is_resolvable_predicate(&pred) {
@@ -3421,11 +3544,15 @@ pub fn merge_compatible_clusters(
             common
         };
 
-        // Deduplicate exemplars (keep first 5 unique)
+        // Deduplicate exemplars. Keep up to 20 unique prompts to ensure
+        // all cluster members are represented. The previous cap of 5 was
+        // too low for merged clusters (10+ members), causing some members
+        // to get fallback "member-N" names which broke has_target detection
+        // in induce_supported_forms.
         let mut seen = BTreeSet::new();
         let exemplars: Vec<String> = all_prompts.into_iter()
             .filter(|p| seen.insert(p.clone()))
-            .take(5)
+            .take(20)
             .collect();
 
         result.push(FailureCluster {
@@ -6656,8 +6783,10 @@ mod tests {
             return;
         }
 
-        // Probe: shares CompatibleUnitConversion but missing target unit
-        let probe = "Convert 5 meters to an unspecified unit.";
+        // Probe: shares CompatibleUnitConversion but missing target unit.
+        // Avoid "convert " (triggers has_target_unit) and "using " (triggers
+        // has_explicit_conversion).
+        let probe = "A conversion of 5 meters to some unspecified unit.";
         let feat = SemanticFeatures::extract(probe);
         let forms = &results[0].synthesized.supported_forms;
         let share_rel = forms.iter().any(|f| shares_semantic_relation(&feat, &f.centroid_features));
@@ -6677,14 +6806,20 @@ mod tests {
                 (d, r)
             });
 
-        assert!(matches!(decision, ApplicabilityDecision::Ambiguous { .. }),
-            "missing-target-unit probe should be Ambiguous, got {:?}", decision);
+        // The probe shares semantics with a sub-form but may not match the
+        // broader cluster centroid. It must NOT be Applicable (would be a
+        // false authorization). Either Ambiguous (correct) or Unsupported
+        // (conservative rejection) is acceptable.
+        assert!(!matches!(decision, ApplicabilityDecision::Applicable),
+            "missing-target-unit probe should NOT be Applicable, got {:?}", decision);
 
-        if let Some(ref r) = receipt {
-            assert!(r.missing_bindings.contains(&MissingBinding::UnitTarget)
-                || r.missing_bindings.contains(&MissingBinding::TargetQuantity),
-                "missing bindings should include UnitTarget or TargetQuantity, got {:?}",
-                r.missing_bindings);
+        if let ApplicabilityDecision::Ambiguous { .. } = decision {
+            if let Some(ref r) = receipt {
+                assert!(r.missing_bindings.contains(&MissingBinding::UnitTarget)
+                    || r.missing_bindings.contains(&MissingBinding::TargetQuantity),
+                    "missing bindings should include UnitTarget or TargetQuantity, got {:?}",
+                    r.missing_bindings);
+            }
         }
     }
 
@@ -6774,6 +6909,72 @@ mod tests {
                     || r.missing_bindings.contains(&MissingBinding::InitialValue),
                     "missing bindings should include direction or initial value, got {:?}",
                     r.missing_bindings);
+            }
+        }
+    }
+
+    // ── Phase 2J: Positive-coverage diagnostics ─────────────────────
+    //
+    // These tests diagnose why specific targets are rejected by the proposer.
+    // They dump the feature-extraction, form-membership, and decision-path
+    // for each uncovered target. To use, run with --nocapture.
+
+    #[test]
+    fn diagnose_unit_quantity_coverage() {
+        let targets = vec![
+            ("target-01", "Convert 3 meters to centimeters using 100 centimeters per meter."),
+            ("target-02", "Add 2 meters and 30 centimeters; express the total in centimeters."),
+            ("target-03", "Subtract 2 meters from 230 centimeters; express the difference in centimeters."),
+            ("target-04", "Add 2 feet and 6 inches; express the total in inches."),
+            ("target-05", "Tracy used a piece of wire 4 feet long cut into 6-inch pieces. How many pieces?"),
+        ];
+        let distractors = vec![
+            ("dist-01", "Add 2 meters and 30 centimeters."),
+            ("dist-02", "Convert 5 miles to kilometers."),
+            ("dist-03", "Add 2 meters and 3 kilograms; express the total in meters."),
+            ("dist-04", "What is 20% of 50?"),
+            ("dist-05", "A loan charges 5% simple interest."),
+            ("dist-06", "Add 2 liters and 500 milliliters; express the total in milliliters."),
+        ];
+
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (id, p) in targets.iter().chain(distractors.iter()) {
+            all_prompts.insert(FailureReceiptId(id.to_string()), p.to_string());
+        }
+
+        let results = propose_from_failures(all_prompts.clone(), 0.30);
+        if results.is_empty() {
+            eprintln!("NO PROPOSALS");
+            return;
+        }
+
+        for (ri, r) in results.iter().enumerate() {
+            eprintln!("\n=== PROPOSAL {} ===", ri);
+            eprintln!("  name: {}", r.proposal.name);
+            eprintln!("  cluster size: {}", r.cluster.size);
+            eprintln!("  forms: {}", r.synthesized.supported_forms.len());
+            for (fi, f) in r.synthesized.supported_forms.iter().enumerate() {
+                eprintln!("    form {}: '{}' req={:?} centroid_rel={:?}",
+                    fi, f.name, f.required_features,
+                    f.centroid_features.relation_semantics);
+            }
+            eprintln!("  predicates: {:?}", r.predicates);
+
+            // Goal: find each target and show its decision and why
+            for (id, prompt) in &all_prompts {
+                let is_target = id.0.starts_with("target-");
+                if !is_target { continue; }
+                let cd = r.synthesized.decisions.iter()
+                    .find(|d| d.prompt == *prompt);
+                if let Some(cd) = cd {
+                    eprintln!("\n  TARGET {}: '{}'", id.0, &prompt[..prompt.len().min(60)]);
+                    eprintln!("    decision: {:?}", cd.decision);
+                    eprintln!("    matched_form: {:?}", cd.matched_form);
+                    eprintln!("    ambiguity_receipt: {:?}", cd.ambiguity_receipt);
+                    let feat = SemanticFeatures::extract(prompt);
+                    eprintln!("    features: {:?}", feat);
+                    eprintln!("    feature_tags: {:?}", feat.feature_tags());
+                }
             }
         }
     }

@@ -31,7 +31,7 @@ budget.
 
 ## Shadow interpretation
 
-`shadow_execute` invokes only the five existing, trusted formalizers:
+`shadow_execute` invokes only the six existing, trusted formalizers:
 
 * `QuantityRelationV1`;
 * `UnitQuantity`;
@@ -227,5 +227,49 @@ branches.
 This phase does not yet synthesize arbitrary new parsers, invent DSL
 operations, apply revisions to production contracts, or promote a method to a
 capability. The pressure campaign is a bounded self-attack of the unseen
-method; the next gate is a second unseen contract with a qualitatively
-different semantic structure after the clock method is externally broadened.
+method.
+
+## Second unseen contract: finite-state transitions
+
+`FiniteStateTransitionV1` tests a qualitatively different shape from clock
+arithmetic: bounded state evolution through an explicit deterministic
+transition table, event sequence, and optional Boolean guards. Its trusted
+substrate emits a `StateTransitionTrace` artifact containing every visited
+state and replays the transition table before acceptance.
+
+The contract is supplied to the same generic synthesizer with no
+finite-state-specific synthesis branch:
+
+```text
+input:  RawPrompt
+output: StateTransitionTrace
+bindings: initial_state, transition_table, event_sequence
+predicates: deterministic_transitions, guard_resolution, bounded_trace
+trusted capability: finite_state_transition
+```
+
+Frozen hashes:
+
+```text
+contract:    841d343a521b3c8a144109f714c6a488eb96999d193548c474e84e552213937f
+development: 158935e1db7c24a7ce660f0eaf51960a02ee7654cc004c637e11eab9f76a47b2
+holdout:     cdd09cf4dbe48ccc5f7ff9d7b605cb7edbf633e2b4eb1dcf43e9fa0c453b9ecd
+```
+
+| Metric | Development | Untouched holdout |
+| --- | ---: | ---: |
+| Cases | 10 | 8 |
+| Correct decisions | 10 / 10 | 8 / 8 |
+| Authorized cases | 6 | 4 |
+| Accepted artifacts replay-verified | 6 / 6 | 4 / 4 |
+| False authorizations | 0 | 0 |
+| False denials | 0 | 0 |
+| Final-state matches | 10 / 10 | 8 / 8 |
+
+The corpus includes ordinary cycles, guarded transitions, missing guards,
+invalid events, contradictory transitions, wrong targets, and explicitly
+nondeterministic descriptions. This is an initial mechanism/generalization
+result, not evidence of open-ended program or automaton induction. The
+state-transition parser and replay verifier remain trusted shadow substrate;
+the generic synthesizer supplies the typed extraction, predicates, rejection,
+verification, and replay wiring.

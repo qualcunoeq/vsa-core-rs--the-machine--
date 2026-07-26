@@ -8,6 +8,7 @@
 
 use crate::clock_time_contract::{self, ClockBehaviorDefect, ClockDecision};
 use crate::fractional_quantity::{self, FractionalQuantityDecision};
+use crate::finite_state_contract::{self, StateDecision};
 use crate::percentage_quantity::{self, PercentageQuantityDecision};
 use crate::quantity_relation::{self, QuantityRelationDecision};
 use crate::unit_aware_quantity::{self, UnitQuantityDecision};
@@ -25,6 +26,7 @@ pub enum ArtifactType {
     FractionalQuantity,
     PercentageQuantity,
     ClockTimeDuration,
+    StateTransitionTrace,
     VerifiedArtifact,
     ReplayReceipt,
 }
@@ -260,6 +262,7 @@ fn trusted_capability(capability: &str) -> bool {
             | "fractional_quantity"
             | "percentage_quantity"
             | "clock_time_difference"
+            | "finite_state_transition"
     )
 }
 
@@ -277,6 +280,7 @@ pub struct ShadowExecution {
     pub decision: ShadowDecision,
     pub artifact_type: Option<ArtifactType>,
     pub observed_duration_minutes: Option<u16>,
+    pub observed_final_state: Option<String>,
     pub artifact_replay_verified: bool,
     pub method_replay_verified: bool,
 }
@@ -644,6 +648,7 @@ pub fn shadow_execute(
     spec.validate()
         .map_err(|errors| format!("invalid method spec: {errors:?}"))?;
     let mut observed_duration_minutes = None;
+    let mut observed_final_state = None;
     let (decision, artifact_type, artifact_replay_verified) = match spec.capability_family.as_str()
     {
         "QuantityRelationV1" => match quantity_relation::formalize(prompt) {
@@ -695,6 +700,19 @@ pub fn shadow_execute(
             (ClockDecision::Unsupported, _) => (ShadowDecision::Unsupported, None, false),
             (ClockDecision::Supported, None) => (ShadowDecision::Unsupported, None, false),
         },
+        "FiniteStateTransitionV1" => match finite_state_contract::formalize(prompt) {
+            (StateDecision::Supported, Some(artifact)) => {
+                observed_final_state = Some(artifact.final_state.clone());
+                (
+                    ShadowDecision::Applicable,
+                    Some(ArtifactType::StateTransitionTrace),
+                    artifact.replay_verified(),
+                )
+            }
+            (StateDecision::Ambiguous, _) => (ShadowDecision::Ambiguous, None, false),
+            (StateDecision::Unsupported, _) => (ShadowDecision::Unsupported, None, false),
+            (StateDecision::Supported, None) => (ShadowDecision::Unsupported, None, false),
+        },
         other => return Err(format!("unsupported shadow family: {other}")),
     };
     // A formalizer's positive classification is never sufficient by itself:
@@ -713,6 +731,7 @@ pub fn shadow_execute(
         decision,
         artifact_type,
         observed_duration_minutes,
+        observed_final_state,
         artifact_replay_verified,
         method_replay_verified,
     })
@@ -770,6 +789,7 @@ pub fn shadow_execute_faulted(
         decision,
         artifact_type: artifact.as_ref().map(|_| ArtifactType::ClockTimeDuration),
         observed_duration_minutes,
+        observed_final_state: None,
         artifact_replay_verified: replay,
         method_replay_verified: replay,
     })
@@ -1400,5 +1420,82 @@ mod tests {
             assert!(parent.validate().is_ok());
         }
         assert_eq!(detected, defects.len());
+    }
+
+    #[test]
+    fn unseen_state_contract_synthesizes_and_replays_dev_holdout() {
+        let contract = finite_state_contract::contract();
+        assert!(contract.validation_errors().is_empty());
+        let method_contract = ValidatedMethodContract {
+            contract_id: contract.contract_id.clone(),
+            input_artifact: ArtifactType::RawPrompt,
+            output_artifact: ArtifactType::StateTransitionTrace,
+            required_bindings: contract.required_bindings.clone(),
+            predicates: contract.predicates.clone(),
+            trusted_capability: "finite_state_transition".into(),
+            operation_budget: 16,
+            depth_budget: 8,
+        };
+        let spec = synthesize_from_contract(&method_contract).expect("generic state synthesis");
+        assert!(spec.validate().is_ok());
+        let to_historical = |case: &finite_state_contract::StateCase| HistoricalCase {
+            family: contract.contract_id.clone(),
+            prompt: case.prompt.clone(),
+            expected: match case.expected {
+                StateDecision::Supported => ShadowDecision::Applicable,
+                StateDecision::Ambiguous => ShadowDecision::Ambiguous,
+                StateDecision::Unsupported => ShadowDecision::Unsupported,
+            },
+        };
+        let development: Vec<HistoricalCase> = contract
+            .cases
+            .iter()
+            .filter(|case| case.split == finite_state_contract::StateSplit::Development)
+            .map(to_historical)
+            .collect();
+        let holdout: Vec<HistoricalCase> = contract
+            .cases
+            .iter()
+            .filter(|case| case.split == finite_state_contract::StateSplit::Holdout)
+            .map(to_historical)
+            .collect();
+        let development_report = evaluate_method_spec(&spec, &development);
+        let holdout_report = evaluate_method_spec(&spec, &holdout);
+        let mut state_matches = 0;
+        for case in &contract.cases {
+            let observed = shadow_execute(&spec, &case.prompt).expect("shadow state");
+            let expected = match case.expected {
+                StateDecision::Supported => ShadowDecision::Applicable,
+                StateDecision::Ambiguous => ShadowDecision::Ambiguous,
+                StateDecision::Unsupported => ShadowDecision::Unsupported,
+            };
+            if (observed.decision == expected && expected != ShadowDecision::Applicable)
+                || (observed.decision == expected
+                    && observed.observed_final_state == case.expected_state)
+            {
+                state_matches += 1;
+            }
+        }
+        eprintln!(
+            "phase4 unseen state: synthesis_version={} contract_hash={} dev_hash={} holdout_hash={} dev={}/{} holdout={}/{} holdout_authorized={} holdout_replay={} state_matches={} trace={:?}",
+            SYNTHESIS_VERSION,
+            contract.release_hash(),
+            contract.split_hash(finite_state_contract::StateSplit::Development),
+            contract.split_hash(finite_state_contract::StateSplit::Holdout),
+            development_report.correct_decisions,
+            development_report.cases,
+            holdout_report.correct_decisions,
+            holdout_report.cases,
+            holdout_report.authorized,
+            holdout_report.accepted_replay_verified,
+            state_matches,
+            operation_trace(&spec),
+        );
+        assert_eq!(development_report.correct_decisions, development_report.cases);
+        assert_eq!(holdout_report.correct_decisions, holdout_report.cases);
+        assert_eq!(state_matches, contract.cases.len());
+        assert_eq!(holdout_report.false_authorizations, 0);
+        assert_eq!(holdout_report.false_denials, 0);
+        assert_eq!(holdout_report.accepted_replay_verified, holdout_report.authorized);
     }
 }

@@ -72,6 +72,10 @@ name = "hle_notation_recovery"
 path = "src/bin/hle_notation_recovery.rs"
 
 [[bin]]
+name = "hle_notation_downstream"
+path = "src/bin/hle_notation_downstream.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

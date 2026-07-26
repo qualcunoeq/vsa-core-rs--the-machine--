@@ -114,7 +114,7 @@ ReorderChecksUnsafely
 ```
 
 The sandbox revision test repairs an omitted replay step without mutating the
-parent specification. The current focused module suite reports **8 passed, 0
+parent specification. The current focused module suite reports **10 passed, 0
 failed**, including the full-corpus, unseen-contract, and defect campaigns.
 
 ## First unseen-contract experiment
@@ -273,3 +273,38 @@ result, not evidence of open-ended program or automaton induction. The
 state-transition parser and replay verifier remain trusted shadow substrate;
 the generic synthesizer supplies the typed extraction, predicates, rejection,
 verification, and replay wiring.
+
+## Unseen finite-state pressure and repair campaign
+
+The 18-case unseen state contract remains frozen. A separate 240-case corpus
+pressures the synthesized state method across valid evolution, self-transitions,
+guards, unknown events, malformed and nondeterministic tables, duplicate
+definitions, terminal-state violations, event-order variants, cycles, and
+sequence-budget boundaries.
+
+| Metric | Result |
+| --- | ---: |
+| Pressure cases | 240 |
+| Supported / ambiguous / unsupported | 100 / 40 / 100 |
+| Pressure corpus hash | `d80321e5d608ad4c43137d16546dc48200275be45063321f644578cf8b5feee4` |
+| Baseline exact decisions and final states | 240 / 240 |
+| Baseline false authorizations / denials | 0 / 0 |
+
+Eight sandbox-only semantic defects all produced counterexamples:
+
+| Injected defect | Observable counterexamples |
+| --- | ---: |
+| Ignore guards | 19 false authorizations |
+| First matching transition | 102 decision mismatches; 80 replay failures |
+| Skip invalid intermediate | 23 decision mismatches |
+| Reorder events | 40 decision mismatches; 40 replay failures |
+| Continue after terminal | 23 decision mismatches |
+| Omit trace replay | 100 replay failures |
+| Accept unknown states | 11 false authorizations |
+| Bypass sequence budget | 11 false authorizations |
+
+Each fault was detected and repaired in a sandboxed immutable copy. Every
+repaired specification restored 240 / 240 decisions with zero false
+authorizations, zero false denials, and replay-equivalent state traces; the
+parent method specification remained unchanged. These mutations are pressure
+instrumentation only and are not production DSL operations.

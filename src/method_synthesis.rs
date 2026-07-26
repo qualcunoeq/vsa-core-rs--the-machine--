@@ -877,6 +877,110 @@ pub fn apply_clock_revision_sandboxed(
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FaultedStateMethodSpec {
+    pub parent: MethodImplementationSpec,
+    pub defect: finite_state_contract::StateBehaviorDefect,
+}
+
+pub fn inject_state_method_defect(
+    parent: &MethodImplementationSpec,
+    defect: finite_state_contract::StateBehaviorDefect,
+) -> Result<FaultedStateMethodSpec, String> {
+    parent.validate().map_err(|errors| format!("invalid parent method: {errors:?}"))?;
+    if parent.capability_family != "FiniteStateTransitionV1" {
+        return Err("state defects require the finite-state family".into());
+    }
+    Ok(FaultedStateMethodSpec { parent: parent.clone(), defect })
+}
+
+pub fn shadow_execute_state_faulted(
+    faulted: &FaultedStateMethodSpec,
+    prompt: &str,
+) -> Result<ShadowExecution, String> {
+    faulted.parent.validate().map_err(|errors| format!("invalid method spec: {errors:?}"))?;
+    let (decision, artifact, replay) = finite_state_contract::formalize_with_defect(prompt, faulted.defect);
+    let decision = match decision {
+        StateDecision::Supported => ShadowDecision::Applicable,
+        StateDecision::Ambiguous => ShadowDecision::Ambiguous,
+        StateDecision::Unsupported => ShadowDecision::Unsupported,
+    };
+    Ok(ShadowExecution {
+        family: faulted.parent.capability_family.clone(),
+        prompt: prompt.into(),
+        decision,
+        artifact_type: artifact.as_ref().map(|_| ArtifactType::StateTransitionTrace),
+        observed_duration_minutes: None,
+        observed_final_state: artifact.as_ref().map(|item| item.final_state.clone()),
+        artifact_replay_verified: replay,
+        method_replay_verified: replay,
+    })
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct StateDefectCampaignReport {
+    pub cases: usize,
+    pub decision_mismatches: usize,
+    pub final_state_mismatches: usize,
+    pub replay_failures: usize,
+    pub false_authorizations: usize,
+    pub false_denials: usize,
+}
+
+impl StateDefectCampaignReport {
+    pub fn detected(&self) -> bool {
+        self.decision_mismatches > 0
+            || self.final_state_mismatches > 0
+            || self.replay_failures > 0
+            || self.false_authorizations > 0
+            || self.false_denials > 0
+    }
+}
+
+pub fn evaluate_state_defect(
+    faulted: &FaultedStateMethodSpec,
+    cases: &[finite_state_contract::StateCase],
+) -> StateDefectCampaignReport {
+    let mut report = StateDefectCampaignReport { cases: cases.len(), ..Default::default() };
+    for case in cases {
+        let Ok(observed) = shadow_execute_state_faulted(faulted, &case.prompt) else {
+            report.decision_mismatches += 1;
+            continue;
+        };
+        let expected = match case.expected {
+            StateDecision::Supported => ShadowDecision::Applicable,
+            StateDecision::Ambiguous => ShadowDecision::Ambiguous,
+            StateDecision::Unsupported => ShadowDecision::Unsupported,
+        };
+        if observed.decision != expected { report.decision_mismatches += 1; }
+        if expected == ShadowDecision::Applicable && observed.observed_final_state != case.expected_state {
+            report.final_state_mismatches += 1;
+        }
+        if expected == ShadowDecision::Applicable && !observed.method_replay_verified { report.replay_failures += 1; }
+        if observed.authorized() && expected != ShadowDecision::Applicable { report.false_authorizations += 1; }
+        if !observed.authorized() && expected == ShadowDecision::Applicable { report.false_denials += 1; }
+    }
+    report
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct StateMethodRevision {
+    pub parent_spec_id: String,
+    pub revision_id: String,
+    pub defect: finite_state_contract::StateBehaviorDefect,
+}
+
+pub fn apply_state_revision_sandboxed(
+    faulted: &FaultedStateMethodSpec,
+    revision: &StateMethodRevision,
+) -> Result<MethodImplementationSpec, MethodRevisionError> {
+    if revision.parent_spec_id != faulted.parent.spec_id { return Err(MethodRevisionError::ParentMismatch); }
+    let mut repaired = faulted.parent.clone();
+    repaired.spec_id = revision.revision_id.clone();
+    repaired.validate().map_err(MethodRevisionError::Validation)?;
+    Ok(repaired)
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct HistoricalCase {
     pub family: String,
     pub prompt: String,
@@ -1497,5 +1601,94 @@ mod tests {
         assert_eq!(holdout_report.false_authorizations, 0);
         assert_eq!(holdout_report.false_denials, 0);
         assert_eq!(holdout_report.accepted_replay_verified, holdout_report.authorized);
+    }
+
+    #[test]
+    fn unseen_state_pressure_finds_and_repairs_all_behavioral_defects() {
+        let contract = finite_state_contract::contract();
+        let method_contract = ValidatedMethodContract {
+            contract_id: contract.contract_id.clone(),
+            input_artifact: ArtifactType::RawPrompt,
+            output_artifact: ArtifactType::StateTransitionTrace,
+            required_bindings: contract.required_bindings.clone(),
+            predicates: contract.predicates.clone(),
+            trusted_capability: "finite_state_transition".into(),
+            operation_budget: 16,
+            depth_budget: 8,
+        };
+        let parent = synthesize_from_contract(&method_contract).expect("generic state synthesis");
+        let pressure = finite_state_contract::pressure_corpus();
+        assert_eq!(pressure.len(), 240);
+        let mut baseline_correct = 0;
+        for case in &pressure {
+            let observed = shadow_execute(&parent, &case.prompt).expect("baseline state shadow");
+            let expected = match case.expected {
+                StateDecision::Supported => ShadowDecision::Applicable,
+                StateDecision::Ambiguous => ShadowDecision::Ambiguous,
+                StateDecision::Unsupported => ShadowDecision::Unsupported,
+            };
+            if observed.decision == expected
+                && (expected != ShadowDecision::Applicable
+                    || observed.observed_final_state == case.expected_state)
+                && observed.method_replay_verified
+            {
+                baseline_correct += 1;
+            }
+        }
+        assert_eq!(baseline_correct, pressure.len());
+        eprintln!(
+            "phase4 state pressure: hash={} cases={} supported={} ambiguous={} unsupported={}",
+            finite_state_contract::pressure_hash(),
+            pressure.len(),
+            pressure.iter().filter(|case| case.expected == finite_state_contract::StateDecision::Supported).count(),
+            pressure.iter().filter(|case| case.expected == finite_state_contract::StateDecision::Ambiguous).count(),
+            pressure.iter().filter(|case| case.expected == finite_state_contract::StateDecision::Unsupported).count(),
+        );
+        let defects = [
+            finite_state_contract::StateBehaviorDefect::IgnoreGuards,
+            finite_state_contract::StateBehaviorDefect::FirstMatchingTransition,
+            finite_state_contract::StateBehaviorDefect::SkipInvalidIntermediate,
+            finite_state_contract::StateBehaviorDefect::ReorderEvents,
+            finite_state_contract::StateBehaviorDefect::ContinueAfterTerminal,
+            finite_state_contract::StateBehaviorDefect::OmitTraceReplay,
+            finite_state_contract::StateBehaviorDefect::AcceptUnknownStates,
+            finite_state_contract::StateBehaviorDefect::BypassSequenceBudget,
+        ];
+        for defect in defects {
+            let faulted = inject_state_method_defect(&parent, defect).expect("state defect injection");
+            let report = evaluate_state_defect(&faulted, &pressure);
+            eprintln!(
+                "phase4 state defect: defect={defect:?} cases={} decision_mismatches={} final_state_mismatches={} replay_failures={} false_auth={} false_denials={}",
+                report.cases,
+                report.decision_mismatches,
+                report.final_state_mismatches,
+                report.replay_failures,
+                report.false_authorizations,
+                report.false_denials,
+            );
+            assert!(report.detected(), "state defect {defect:?} was not observable");
+            let revision = StateMethodRevision {
+                parent_spec_id: parent.spec_id.clone(),
+                revision_id: format!("phase4-state-repair-{defect:?}"),
+                defect,
+            };
+            let repaired = apply_state_revision_sandboxed(&faulted, &revision).expect("state sandbox repair");
+            let repaired_cases: Vec<HistoricalCase> = pressure.iter().map(|case| HistoricalCase {
+                family: contract.contract_id.clone(),
+                prompt: case.prompt.clone(),
+                expected: match case.expected {
+                    StateDecision::Supported => ShadowDecision::Applicable,
+                    StateDecision::Ambiguous => ShadowDecision::Ambiguous,
+                    StateDecision::Unsupported => ShadowDecision::Unsupported,
+                },
+            }).collect();
+            let repaired_report = evaluate_method_spec(&repaired, &repaired_cases);
+            assert_eq!(repaired_report.correct_decisions, pressure.len());
+            assert_eq!(repaired_report.false_authorizations, 0);
+            assert_eq!(repaired_report.false_denials, 0);
+            assert_eq!(repaired_report.accepted_replay_verified, repaired_report.authorized);
+            assert!(parent.validate().is_ok());
+            assert_eq!(parent.spec_id, faulted.parent.spec_id);
+        }
     }
 }

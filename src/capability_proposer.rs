@@ -1178,12 +1178,12 @@ pub fn evaluate_predicates(
                 {
                     // Check if this is a GENUINE dimensional conflict (e.g., length + mass).
                     let has_conflict = has_conflicting_dimensions(prompt);
-                    // Rescue only when user explicitly specifies a target unit
-                    // (e.g., "express the total in centimeters"). This is the strongest
-                    // signal of a compatible-unit operation. Without it, a case with
-                    // a bare unit-bearing scalar in a non-conversion context (like
-                    // "A circle has radius 3 meters") stays unsupported.
-                    if has_conflict || !feat.has_target_unit {
+                    // Missing target unit is NOT a safety violation when there are
+                    // operation keywords — that is a resolvable ambiguity. But
+                    // unit-bearing scalars WITHOUT any operation keyword AND without
+                    // a target unit are descriptive, not operational (e.g., "A circle
+                    // has radius 3 meters") and stay unsupported.
+                    if has_conflict || (feat.operations.is_empty() && !feat.has_target_unit) {
                         return Some(p.clone());
                     }
                 }
@@ -2878,6 +2878,20 @@ fn attempt_completions(
             continue;
         }
 
+        // Centroid-implied missing binding detection: even when a feature is
+        // not strictly required (alternative-group made it optional), the
+        // form's centroid may indicate semantic importance for disambiguation.
+        // For unit-bearing forms, target_unit is the key example — without it
+        // the operation is ambiguously directed.
+        if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
+            && !feat.has_target_unit
+            && form.centroid_features.has_target_unit
+        {
+            if !missing.contains(&MissingBinding::UnitTarget) {
+                missing.push(MissingBinding::UnitTarget);
+            }
+        }
+
         // Check if missing bindings are within bounds for completion search
         if missing.is_empty() {
             // Form would match directly — this shouldn't happen in this path
@@ -2933,19 +2947,52 @@ fn attempt_completions(
             failed_predicate: ApplicabilityPredicate::ForbidsRepeatedTemporalApplication,
         }, None);
     }
-    // Incompatible units safety check: unit-bearing scalars without conversion
-    // semantics. Rescued only when user specifies a target unit (compatible-unit
-    // operation evidence).
+    // Incompatible units safety check: unit-bearing scalars with genuinely
+    // conflicting dimensions (e.g., length + mass) cannot be reconciled.
+    // Missing target unit is NOT a safety violation when there are operation
+    // keywords (e.g., "Add 2 meters and 30 cm") — that is a resolvable
+    // ambiguity. But unit-bearing scalars WITHOUT any operation keyword AND
+    // without a target unit are not unit operations at all (e.g., "A circle
+    // has radius 3 meters") and should stay Unsupported.
     if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
         && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
         && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate)
     {
         let has_conflict = has_conflicting_dimensions(prompt);
-        if has_conflict || !feat.has_target_unit {
+        if has_conflict || (feat.operations.is_empty() && !feat.has_target_unit) {
             return (ApplicabilityDecision::Unsupported {
                 failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
             }, None);
         }
+    }
+
+    // Centroid-implied missing binding detection: even when a feature is not
+    // strictly required (alternative-group made it optional), the form's
+    // centroid may indicate it is semantically important for disambiguation.
+    // For unit-bearing forms, target_unit is the primary example.
+    if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar) && !feat.has_target_unit {
+        for form in supported_forms {
+            if !shares_semantic_relation(feat, &form.centroid_features) {
+                continue;
+            }
+            if form.centroid_features.has_target_unit {
+                let tu_missing = MissingBinding::UnitTarget;
+                if !all_missing.contains(&tu_missing) {
+                    all_missing.push(tu_missing.clone());
+                    all_causes.push(AmbiguityCause::MissingBinding(tu_missing));
+                }
+                if !viable_form_names.contains(&form.name) {
+                    viable_form_names.push(form.name.clone());
+                }
+            }
+        }
+    }
+
+    // No viable completions found at all
+    if viable_form_names.is_empty() {
+        return (ApplicabilityDecision::Unsupported {
+            failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
+        }, None);
     }
 
     let search_bounded = all_missing.len() > MAX_MISSING_BINDINGS
@@ -3078,12 +3125,18 @@ pub fn decide_case(
                             && feat.operations.contains("increase"),
                     ApplicabilityPredicate::ForbidsIncompatibleUnits => {
                         let has_conflict = has_conflicting_dimensions(prompt);
-                        // Only rescue when target unit is explicitly specified
-                        // (strong evidence of compatible-unit operation).
+                        // Genuinely incompatible unit dimensions (length + mass)
+                        // are always unsupported. Additionally, unit-bearing
+                        // scalars WITHOUT any operation keyword AND without a
+                        // target unit are not unit operations at all — they are
+                        // descriptive statements ("A circle has radius 3 meters")
+                        // that happened to get AdditiveChange from the fallback.
+                        // Missing target unit WITH operation keywords (e.g.,
+                        // "Add 2 meters and 30 cm") is a resolvable ambiguity.
                         feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
                             && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
                             && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate)
-                            && (has_conflict || !feat.has_target_unit)
+                            && (has_conflict || (feat.operations.is_empty() && !feat.has_target_unit))
                     },
                     ApplicabilityPredicate::ForbidsOverlappingAdjustments =>
                         feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
@@ -3104,6 +3157,19 @@ pub fn decide_case(
                 return (ApplicabilityDecision::Unsupported {
                     failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
                 }, None);
+            }
+            // Before declaring this case Applicable, check for missing target
+            // unit in unit-bearing operations. This is a resolvable ambiguity
+            // (the user needs to specify an output unit) not an unconditional
+            // acceptance.
+            if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
+                && !feat.has_target_unit
+                && form.centroid_features.has_target_unit
+            {
+                let (decision, receipt) = attempt_completions(
+                    feat, prompt, supported_forms, is_cluster_member,
+                );
+                return (decision, receipt);
             }
             return (ApplicabilityDecision::Applicable, None);
         }
@@ -6960,20 +7026,19 @@ mod tests {
             }
             eprintln!("  predicates: {:?}", r.predicates);
 
-            // Goal: find each target and show its decision and why
+            // Show ALL cases with decisions
             for (id, prompt) in &all_prompts {
-                let is_target = id.0.starts_with("target-");
-                if !is_target { continue; }
                 let cd = r.synthesized.decisions.iter()
                     .find(|d| d.prompt == *prompt);
                 if let Some(cd) = cd {
-                    eprintln!("\n  TARGET {}: '{}'", id.0, &prompt[..prompt.len().min(60)]);
-                    eprintln!("    decision: {:?}", cd.decision);
-                    eprintln!("    matched_form: {:?}", cd.matched_form);
-                    eprintln!("    ambiguity_receipt: {:?}", cd.ambiguity_receipt);
+                    let tag = if id.0.starts_with("target-") { "TARGET" } else { "DIST" };
+                    eprintln!("\n  {} {}: '{}'", tag, id.0, &prompt[..prompt.len().min(70)]);
+                    eprintln!("    decision: {:?}  form: {:?}", cd.decision, cd.matched_form);
+                    eprintln!("    receipt: {:?}", cd.ambiguity_receipt);
+                } else {
+                    eprintln!("\n  ??? {}: NOT IN DECISIONS", id.0);
                     let feat = SemanticFeatures::extract(prompt);
-                    eprintln!("    features: {:?}", feat);
-                    eprintln!("    feature_tags: {:?}", feat.feature_tags());
+                    eprintln!("    features: {:?}  tags: {:?}", feat, feat.feature_tags());
                 }
             }
         }
@@ -7218,6 +7283,9 @@ mod tests {
                 "", bm.supported_precision * 100.0, bm.ambiguity_recall * 100.0,
                 bm.ambiguity_precision * 100.0, bm.unsupported_precision * 100.0,
                 bm.macro_boundary_score * 100.0);
+
+            // Per-case detail for UnitQuantity debugging
+
         }
 
         // Aggregate BM metrics
@@ -7488,3 +7556,5 @@ mod tests {
             "D4 FAIL: no ambiguous cases detected despite {} ambiguous probes",
             d4_ambiguous_total);
     }
+
+

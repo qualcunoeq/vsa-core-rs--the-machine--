@@ -33,6 +33,7 @@ pub mod shifted_ingest;
 pub mod ontology_extension;
 pub mod ontology_realization;
 pub mod location_realization;
+pub mod battery_realization;
 pub mod method_synthesis;
 pub mod concept_composition_benchmark;
 pub mod cross_vertical_benchmark;

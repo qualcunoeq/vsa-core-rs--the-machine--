@@ -15,7 +15,8 @@ The corpus has 350 cases with the following shape:
 | Adversarial    | 100   | Scope-creep cases (compound, finance, points, etc) |
 | Rewrite pairs  | 50    | Surface-variant preservation (25 of + 25 discount) |
 
-Frozen hash: `9d8a3f8f1e2c4b5a6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c`
+Frozen contract-corpus hash (from `eee07ad`):
+`f6ebdcf826e10125050f5b83b50a31a38fcb4b7f8c197dc6d0833a91bf7d336c`
 
 ## Supported Target Forms (V1)
 

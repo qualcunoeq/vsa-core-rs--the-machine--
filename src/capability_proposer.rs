@@ -25,9 +25,10 @@
 //! transformed once by a dimensionless rate"), not a string cluster
 //! (e.g. "percentage / discount / tax").
 
+use regex::Regex;
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
-use std::hash::{Hash, Hasher};
 
 // ── Core proposal types ────────────────────────────────────────────────
 
@@ -4786,13 +4787,21 @@ pub fn render_spec(spec: &CaseSpec) -> String {
 }
 
 fn render_supported(spec: &CaseSpec) -> String {
-    let mut parts: Vec<String> = Vec::new();
     let mut has_conversion = false;
     let mut has_addition = false;
     let mut has_rate = false;
     let mut has_fraction = false;
     let mut has_percentage = false;
+    let mut has_percentage_change = false;
     let mut target_unit = String::new();
+    let form_lower = spec.target_form.to_ascii_lowercase();
+
+    if form_lower.contains("multiplicativechange")
+        || form_lower.contains("percentagechange")
+        || form_lower.contains("recoverbase")
+    {
+        has_percentage_change = true;
+    }
 
     for b in &spec.bindings {
         match b {
@@ -4803,6 +4812,7 @@ fn render_supported(spec: &CaseSpec) -> String {
                     "ratio" | "rate" => has_rate = true,
                     "fraction" => has_fraction = true,
                     "part_of" => has_percentage = true,
+                    "increase" | "decrease" | "recover_base" => has_percentage_change = true,
                     _ => {}
                 }
             }
@@ -4820,11 +4830,41 @@ fn render_supported(spec: &CaseSpec) -> String {
         render_rate_prompt(spec)
     } else if has_addition {
         render_addition_prompt(spec, &target_unit)
+    } else if has_percentage_change {
+        render_percentage_change_prompt(spec)
     } else if has_fraction || has_percentage {
         render_fraction_or_percentage_prompt(spec)
     } else {
         render_generic_supported(spec)
     }
+}
+
+fn render_percentage_change_prompt(spec: &CaseSpec) -> String {
+    let mut base = None;
+    let mut rate = None;
+    let mut direction = None;
+    for binding in &spec.bindings {
+        match binding {
+            TypedBinding::BaseQuantity { value, .. }
+            | TypedBinding::SourceQuantity { value, .. } if base.is_none() => base = Some(*value),
+            TypedBinding::Percentage(value) | TypedBinding::Rate { value, .. } if rate.is_none() => {
+                rate = Some(*value)
+            }
+            TypedBinding::Direction(value) => direction = Some(value.to_ascii_lowercase()),
+            _ => {}
+        }
+    }
+    let base = base.map(format_value).unwrap_or_else(|| "the base quantity".into());
+    let rate = rate.map(format_value).unwrap_or_else(|| "the rate".into());
+    let direction = direction.unwrap_or_else(|| "increase".into());
+    if spec.target_form.to_ascii_lowercase().contains("recover") {
+        return format!(
+            "After a {rate}% {direction}, the new value is {base}. What was the original?"
+        );
+    }
+    format!(
+        "A quantity with base value {base} {direction}s by {rate}%. What is the final value after this one change?"
+    )
 }
 
 fn render_conversion_prompt(spec: &CaseSpec, target_unit: &str) -> String {
@@ -4839,7 +4879,7 @@ fn render_conversion_prompt(spec: &CaseSpec, target_unit: &str) -> String {
                 src_val = format_value(*value);
                 if let Some(u) = unit { src_unit = u.clone(); }
             }
-            TypedBinding::ConversionFactor { from_unit, to_unit, factor } => {
+            TypedBinding::ConversionFactor { factor, .. } => {
                 factor_desc = format!("using {}", factor);
             }
             TypedBinding::TargetUnit(u) => { target = u; }
@@ -4969,14 +5009,15 @@ fn render_ambiguous(spec: &CaseSpec) -> String {
     // was marked as missing. For now, generate a generic ambiguous case
     // based on the form name.
     let form_lower = spec.target_form.to_lowercase();
+    let index = case_index(spec);
     if form_lower.contains("additivechange") || form_lower.contains("addition") {
-        "Add 2 meters and 30 centimeters.".to_string()
+        format!("Add {} meters and {} centimeters.", 2 + index, 30 + index)
     } else if form_lower.contains("compatibleunitconversion") || form_lower.contains("conversion") {
-        "Convert 5 miles to kilometers.".to_string()
+        format!("Convert {} miles to kilometers.", 5 + index)
     } else if form_lower.contains("multiplicativechange") || form_lower.contains("percentage") {
-        "Apply a percentage change to 50 dollars.".to_string()
+        format!("Apply a percentage change to {} dollars.", 50 + index)
     } else if form_lower.contains("partofwhole") || form_lower.contains("fraction") {
-        "What fraction of 50 is the result?".to_string()
+        format!("What fraction of {} is the result?", 50 + index)
     } else {
         // Default: derivative of the supported case with missing information
         let base = render_supported(spec);
@@ -4986,17 +5027,18 @@ fn render_ambiguous(spec: &CaseSpec) -> String {
 
 fn render_unsupported_near_miss(spec: &CaseSpec) -> String {
     let form_lower = spec.target_form.to_lowercase();
+    let index = case_index(spec);
     // Generate an unsupported near-miss by applying a semantic mutation
     if form_lower.contains("additivechange") || form_lower.contains("addition") {
-        "Add 2 meters and 3 kilograms; express the total in meters.".to_string()
+        format!("Add {} meters and {} kilograms; express the total in meters.", 2 + index, 3 + index)
     } else if form_lower.contains("compatibleunitconversion") || form_lower.contains("conversion") {
-        "Add 2 liters to 3 kilograms.".to_string()
+        format!("Add {} liters to {} kilograms.", 2 + index, 3 + index)
     } else if form_lower.contains("percentage") || form_lower.contains("partofwhole") {
-        "There is a 25% probability that an unknown variable succeeds.".to_string()
+        format!("There is a {}% probability that an unknown variable succeeds.", 25 + index)
     } else if form_lower.contains("multiplicativechange") {
-        "A balance grows by 5% each year for 5 years.".to_string()
+        format!("A balance grows by {}% each year for {} years.", 5 + index, 5 + index)
     } else if form_lower.contains("fraction") || form_lower.contains("fractional") {
-        "A circle has radius 3 meters. Find its area.".to_string()
+        format!("A circle has radius {} meters. Find its area.", 3 + index)
     } else {
         format!("A different kind of operation unrelated to {}.", spec.target_form)
     }
@@ -5028,18 +5070,21 @@ fn ordinal(n: u32) -> String {
 /// typed CaseSpec against known semantic rules.
 pub fn verify_case(case: &GeneratedValidationCase) -> OracleStatus {
     let spec = &case.spec;
-    match spec.section {
-        CorpusSection::Supported => verify_supported(spec),
-        CorpusSection::Ambiguous => verify_ambiguous(spec),
+    if case.section != spec.section {
+        return OracleStatus::GeneratorConflict;
+    }
+    match case.section {
+        CorpusSection::Supported => verify_supported_with_prompt(spec, &case.prompt),
+        CorpusSection::Ambiguous => verify_ambiguous_with_prompt(spec, &case.prompt),
         CorpusSection::UnsupportedLexicalNearMiss | CorpusSection::UnsupportedStructuralNearMiss => {
-            verify_unsupported(spec)
+            verify_unsupported_with_prompt(spec, &case.prompt)
         }
         CorpusSection::Rewrite => verify_rewrite(spec),
         _ => OracleStatus::NeedsReview,
     }
 }
 
-fn verify_supported(spec: &CaseSpec) -> OracleStatus {
+fn verify_supported_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus {
     // A supported case must have:
     // 1. At least one source quantity or base quantity
     // 2. A target form that exists
@@ -5050,7 +5095,7 @@ fn verify_supported(spec: &CaseSpec) -> OracleStatus {
     let has_base = spec.bindings.iter().any(|b| matches!(b, TypedBinding::BaseQuantity { .. }));
     let has_explicit_conversion = spec.bindings.iter().any(|b| matches!(b, TypedBinding::ConversionFactor { .. }));
 
-    if !has_source && !has_base {
+    if !has_source && !has_base && numeric_literals(prompt).is_empty() {
         return OracleStatus::NeedsReview;
     }
 
@@ -5088,17 +5133,20 @@ fn verify_supported(spec: &CaseSpec) -> OracleStatus {
     OracleStatus::Verified
 }
 
-fn verify_ambiguous(spec: &CaseSpec) -> OracleStatus {
+fn verify_ambiguous_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus {
     // An ambiguous case must be missing exactly one resolvable binding
     // that, if provided, would make it supported.
     let has_missing_binding = spec.bindings.iter().any(|b| matches!(b, TypedBinding::RawText(_)));
     if !has_missing_binding {
         // Check if there's a typical missing-binding pattern
-        let form = spec.target_form.to_lowercase();
+        let form = format!("{} {}", spec.target_form, prompt).to_lowercase();
         let is_recognized_ambiguous = form.contains("additivechange")
             || form.contains("conversion")
             || form.contains("multiplicativechange")
-            || form.contains("percentage");
+            || form.contains("percentage")
+            || form.contains("fraction")
+            || prompt.to_ascii_lowercase().contains("not specified")
+            || prompt.to_ascii_lowercase().contains("unspecified");
         if !is_recognized_ambiguous {
             return OracleStatus::NeedsReview;
         }
@@ -5106,10 +5154,11 @@ fn verify_ambiguous(spec: &CaseSpec) -> OracleStatus {
     OracleStatus::Verified
 }
 
-fn verify_unsupported(spec: &CaseSpec) -> OracleStatus {
+fn verify_unsupported_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus {
     // An unsupported case must violate at least one safety predicate
     // in a way that adding information cannot repair.
-    let form = spec.target_form.to_lowercase();
+    let combined = format!("{} {}", spec.target_form, prompt).to_lowercase();
+    let form = combined.as_str();
 
     // Check for incompatible dimensions
     let units: Vec<String> = spec.bindings.iter().filter_map(|b| {
@@ -5119,17 +5168,20 @@ fn verify_unsupported(spec: &CaseSpec) -> OracleStatus {
         }
     }).collect();
     let unit_strs: Vec<&str> = units.iter().map(|u| u.as_str()).collect();
-    if has_conflicting_unit_dimensions(&unit_strs) {
+    if has_conflicting_unit_dimensions(&unit_strs)
+        || has_conflicting_unit_dimensions_from_prompt(prompt)
+    {
         return OracleStatus::Verified;
     }
 
     // Check for probability semantics mixed with quantity semantics
     let has_probability = spec.bindings.iter().any(|b| {
         match b {
-            TypedBinding::RawText(t) => t.contains("probability") || t.contains("chance"),
+            TypedBinding::RawText(t) => t.to_ascii_lowercase().contains("probability") || t.to_ascii_lowercase().contains("chance"),
             _ => false,
         }
-    });
+    }) || prompt.to_ascii_lowercase().contains("probability")
+        || prompt.to_ascii_lowercase().contains("chance");
     if has_probability && (form.contains("percentage") || form.contains("fraction")) {
         return OracleStatus::Verified;
     }
@@ -5137,10 +5189,11 @@ fn verify_unsupported(spec: &CaseSpec) -> OracleStatus {
     // Check for financial/repeated change
     let has_repeated = spec.bindings.iter().any(|b| {
         match b {
-            TypedBinding::RawText(t) => t.contains("each year") || t.contains("annually"),
+            TypedBinding::RawText(t) => t.to_ascii_lowercase().contains("each year") || t.to_ascii_lowercase().contains("annually"),
             _ => false,
         }
-    });
+    }) || prompt.to_ascii_lowercase().contains("each year")
+        || prompt.to_ascii_lowercase().contains("annually");
 
     if has_repeated && form.contains("multiplicativechange") {
         return OracleStatus::Verified;
@@ -5151,10 +5204,12 @@ fn verify_unsupported(spec: &CaseSpec) -> OracleStatus {
         // Fraction form with geometry content is unsupported
         let has_geometry = spec.bindings.iter().any(|b| {
             match b {
-                TypedBinding::RawText(t) => t.contains("area") || t.contains("radius") || t.contains("circle"),
+                TypedBinding::RawText(t) => t.to_ascii_lowercase().contains("area") || t.to_ascii_lowercase().contains("radius") || t.to_ascii_lowercase().contains("circle"),
                 _ => false,
             }
-        });
+        }) || prompt.to_ascii_lowercase().contains("area")
+            || prompt.to_ascii_lowercase().contains("radius")
+            || prompt.to_ascii_lowercase().contains("circle");
         if has_geometry {
             return OracleStatus::Verified;
         }
@@ -5163,7 +5218,68 @@ fn verify_unsupported(spec: &CaseSpec) -> OracleStatus {
     OracleStatus::NeedsReview
 }
 
-fn verify_rewrite(_spec: &CaseSpec) -> OracleStatus {
+fn has_conflicting_unit_dimensions_from_prompt(prompt: &str) -> bool {
+    let units = [
+        "meter", "meters", "centimeter", "centimeters", "kilometer", "kilometers",
+        "mile", "miles", "inch", "inches", "foot", "feet", "liter", "liters",
+        "kilogram", "kilograms", "gram", "grams", "pound", "pounds", "second",
+        "seconds", "minute", "minutes", "hour", "hours", "dollar", "dollars",
+    ];
+    let lower = prompt.to_ascii_lowercase();
+    let present: Vec<&str> = units.iter().copied().filter(|unit| lower.contains(unit)).collect();
+    let refs: Vec<&str> = present.iter().copied().collect();
+    has_conflicting_unit_dimensions(&refs)
+}
+
+fn verify_rewrite(spec: &CaseSpec) -> OracleStatus {
+    if spec.section != CorpusSection::Rewrite
+        || spec.expected != ExpectedDecision::Applicable
+        || spec.target_form.trim().is_empty()
+    {
+        return OracleStatus::NeedsReview;
+    }
+    let has_source = spec.bindings.iter().any(|binding| matches!(
+        binding,
+        TypedBinding::SourceQuantity { .. } | TypedBinding::BaseQuantity { .. }
+    ));
+    if !has_source {
+        return OracleStatus::NeedsReview;
+    }
+    let units: Vec<String> = spec.bindings.iter().filter_map(|binding| match binding {
+        TypedBinding::SourceQuantity { unit, .. }
+        | TypedBinding::BaseQuantity { unit, .. } => unit.clone(),
+        _ => None,
+    }).collect();
+    let unit_refs: Vec<&str> = units.iter().map(String::as_str).collect();
+    if has_conflicting_unit_dimensions(&unit_refs) {
+        return OracleStatus::GeneratorConflict;
+    }
+    let form = spec.target_form.to_ascii_lowercase();
+    if form.contains("percentage") || form.contains("partofwhole") || form.contains("fraction") {
+        let has_fractional_rate = spec.bindings.iter().any(|binding| matches!(
+            binding,
+            TypedBinding::Percentage(_) | TypedBinding::Rate { .. } | TypedBinding::FractionN { .. }
+        ));
+        let has_base = spec.bindings.iter().any(|binding| matches!(
+            binding,
+            TypedBinding::BaseQuantity { .. }
+        ));
+        if !has_fractional_rate || !has_base {
+            return OracleStatus::NeedsReview;
+        }
+    } else if form.contains("conversion") {
+        let has_target = spec.bindings.iter().any(|binding| matches!(binding, TypedBinding::TargetUnit(_)));
+        let has_factor = spec.bindings.iter().any(|binding| matches!(binding, TypedBinding::ConversionFactor { .. }));
+        if !has_target || !has_factor {
+            return OracleStatus::NeedsReview;
+        }
+    } else if form.contains("rate") || form.contains("proportion") {
+        if !spec.bindings.iter().any(|binding| matches!(binding, TypedBinding::Rate { .. })) {
+            return OracleStatus::NeedsReview;
+        }
+    } else if !spec.bindings.iter().any(|binding| matches!(binding, TypedBinding::Operation(_))) {
+        return OracleStatus::NeedsReview;
+    }
     OracleStatus::Verified
 }
 
@@ -5208,12 +5324,6 @@ pub fn generate_corpus(
 ) -> CandidateCorpus {
     let mut cases: Vec<GeneratedValidationCase> = Vec::new();
     let proposal_id = proposal.proposal.proposal_id.clone();
-
-    // Deterministic RNG from seed for reproducible generation
-    use std::hash::{Hash, Hasher};
-    let mut hasher = std::collections::hash_map::DefaultHasher::new();
-    seed.hash(&mut hasher);
-    let base_hash = hasher.finish();
 
     // ── 1. Supported cases — one family per supported form ──
     for form in &proposal.synthesized.supported_forms {
@@ -5296,6 +5406,7 @@ pub fn generate_corpus(
                     section: CorpusSection::Ambiguous,
                 };
                 let prompt = render_ambiguous(&spec);
+                let oracle_status = verify_ambiguous_with_prompt(&spec, &prompt);
                 cases.push(GeneratedValidationCase {
                     case_id: format!("{}-amb-{}-0", proposal_id.0, cause_desc),
                     family_id,
@@ -5304,7 +5415,7 @@ pub fn generate_corpus(
                     intended_decision: ExpectedDecision::Ambiguous,
                     prompt,
                     structural_oracle: StructuralOracle {
-                        status: verify_ambiguous(&spec),
+                        status: oracle_status,
                         verified_bindings: spec.bindings.clone(),
                         decision: ExpectedDecision::Ambiguous,
                         reasoning: format!("Ambiguous: {:?}", cause),
@@ -5374,6 +5485,7 @@ pub fn generate_corpus(
             section: CorpusSection::UnsupportedStructuralNearMiss,
         };
         let prompt = render_unsupported_near_miss(&spec);
+        let oracle_status = verify_unsupported_with_prompt(&spec, &prompt);
         cases.push(GeneratedValidationCase {
             case_id: format!("{}-uns-{}-0", proposal_id.0, family_id),
             family_id,
@@ -5382,7 +5494,7 @@ pub fn generate_corpus(
             intended_decision: ExpectedDecision::Unsupported,
             prompt,
             structural_oracle: StructuralOracle {
-                status: verify_unsupported(&spec),
+                status: oracle_status,
                 verified_bindings: spec.bindings.clone(),
                 decision: ExpectedDecision::Unsupported,
                 reasoning: format!("Excluded by {:?}", ex.failed_predicate),
@@ -5422,7 +5534,7 @@ pub fn generate_corpus(
             expected: ExpectedDecision::Unsupported,
             section: CorpusSection::UnsupportedStructuralNearMiss,
         };
-        let oracle = verify_unsupported(&spec);
+        let oracle = verify_unsupported_with_prompt(&spec, prompt_text);
         cases.push(GeneratedValidationCase {
             case_id: format!("{}-uns-{}-default", proposal_id.0, form_name),
             family_id: format!("unsupported_{}", form_name),
@@ -5483,62 +5595,379 @@ pub fn generate_corpus(
         }
     }
 
-    // ── Compute deterministic hash ──
-    let mut final_hasher = std::collections::hash_map::DefaultHasher::new();
-    for c in &cases {
-        c.case_id.hash(&mut final_hasher);
-        c.prompt.hash(&mut final_hasher);
-        c.intended_decision.hash(&mut final_hasher);
-    }
-    let det_hash = format!("{:016x}", final_hasher.finish());
+    complete_corpus_budgets(&mut cases, proposal, plan, seed);
+
+    let mut seen_prompts = BTreeSet::new();
+    cases.retain(|case| seen_prompts.insert(normalize_prompt(&case.prompt)));
+    let det_hash = sha256_hex(&(proposal_id.clone(), seed, &cases));
+    // The plan identity must cover the complete proposal context as well as
+    // every validation-plan field. Hashing only the seed (or only the final
+    // contract) would allow materially different plans to share a digest.
+    let plan_digest = sha256_hex(&(proposal, plan));
 
     CandidateCorpus {
         proposal_id,
-        plan_digest: format!("{:016x}", base_hash),
+        plan_digest,
         generation_seed: seed,
-        generator_version: "phase-3a-0.1".to_string(),
+        generator_version: "phase-3a-0.2".to_string(),
         cases,
         deterministic_hash: det_hash,
         generation_timestamp: "2026-07-26".to_string(),
     }
 }
 
-/// Build a CaseSpec from an exemplar prompt.
-fn spec_from_exemplar(exemplar: &str, form_name: &str, section: CorpusSection) -> CaseSpec {
-    let features = SemanticFeatures::extract(exemplar);
-    let mut bindings: Vec<TypedBinding> = Vec::new();
+fn sha256_hex<T: Serialize>(value: &T) -> String {
+    let bytes = serde_json::to_vec(value).expect("deterministic corpus value serializes");
+    format!("{:x}", Sha256::digest(bytes))
+}
 
-    // Extract source quantities from numeric forms
-    for nf in &features.numeric_forms {
-        match nf {
-            NumericForm::Integer | NumericForm::Decimal => {
-                bindings.push(TypedBinding::SourceQuantity {
-                    label: "quantity".to_string(),
-                    value: 3.0, // placeholder — actual extraction would parse the number
-                    unit: None,
-                });
-            }
-            NumericForm::UnitBearingScalar => {
-                // Look for unit keywords in the exemplar
-                let lower = exemplar.to_lowercase();
-                let unit = if lower.contains("meter") { Some("meters".to_string()) }
-                    else if lower.contains("centimeter") { Some("centimeters".to_string()) }
-                    else if lower.contains("inch") { Some("inches".to_string()) }
-                    else if lower.contains("foot") || lower.contains("feet") { Some("feet".to_string()) }
-                    else if lower.contains("kilogram") { Some("kilograms".to_string()) }
-                    else if lower.contains("liter") { Some("liters".to_string()) }
-                    else if lower.contains("dollar") { Some("dollars".to_string()) }
-                    else { None };
-                if let Some(u) = unit {
-                    if let Some(b) = bindings.iter_mut().find(|b| matches!(b, TypedBinding::SourceQuantity { .. })) {
-                        if let TypedBinding::SourceQuantity { ref mut unit, .. } = b {
-                            *unit = Some(u);
-                        }
-                    }
-                }
+fn section_count(cases: &[GeneratedValidationCase], section: CorpusSection) -> usize {
+    cases.iter().filter(|case| case.section == section).count()
+}
+
+fn push_unique_case(cases: &mut Vec<GeneratedValidationCase>, case: GeneratedValidationCase) {
+    let normalized = normalize_prompt(&case.prompt);
+    if !cases.iter().any(|existing| normalize_prompt(&existing.prompt) == normalized) {
+        cases.push(case);
+    }
+}
+
+fn synthetic_supported_spec(form_name: &str, index: usize) -> CaseSpec {
+    let lower = form_name.to_ascii_lowercase();
+    let exemplar = if lower.contains("conversion") {
+        "Convert 2 miles to kilometers using 1.6 kilometers per mile."
+    } else if lower.contains("perunitrate") || lower.contains("rate") {
+        "5 notebooks cost 20 dollars. What is the price per notebook?"
+    } else if lower.contains("partofwhole") || lower.contains("fraction") {
+        "What is 20% of 50?"
+    } else if lower.contains("multiplicativechange") || lower.contains("percentage") {
+        "A quantity with base value 50 increases by 10%. What is the final value after this one change?"
+    } else if lower.contains("recoverbase") {
+        "After a 10% increase, the new value is 55. What was the original?"
+    } else {
+        "Add 2 meters and 30 centimeters; express the total in centimeters."
+    };
+    let mut spec = spec_from_exemplar(exemplar, form_name, CorpusSection::Supported);
+    for binding in &mut spec.bindings {
+        match binding {
+            TypedBinding::SourceQuantity { value, .. }
+            | TypedBinding::BaseQuantity { value, .. } => *value += index as f64 * 2.0,
+            TypedBinding::Percentage(value) | TypedBinding::Rate { value, .. } => {
+                *value = (*value + (index % 7) as f64).max(1.0)
             }
             _ => {}
         }
+    }
+    spec
+}
+
+fn case_index(spec: &CaseSpec) -> usize {
+    spec.bindings.iter().find_map(|binding| match binding {
+        TypedBinding::RawText(text) => text.split(':').next_back()?.parse().ok(),
+        _ => None,
+    }).unwrap_or(0)
+}
+
+fn render_rewrite_prompt(spec: &CaseSpec, alternate: bool) -> String {
+    let mut base = 50.0;
+    let mut rate = 20.0;
+    for binding in &spec.bindings {
+        match binding {
+            TypedBinding::BaseQuantity { value, .. }
+            | TypedBinding::SourceQuantity { value, .. } => base = *value,
+            TypedBinding::Percentage(value) | TypedBinding::Rate { value, .. } => rate = *value,
+            _ => {}
+        }
+    }
+    let form = spec.target_form.to_ascii_lowercase();
+    if form.contains("partofwhole") || form.contains("percentageof") {
+        if alternate {
+            format!("Calculate {rate} percent of the whole quantity {}.", format_value(base))
+        } else {
+            format!("What is {}% of {}?", format_value(rate), format_value(base))
+        }
+    } else if form.contains("multiplicative") || form.contains("percentage") {
+        if alternate {
+            format!("Apply a {rate} percent increase to a base value of {}; find the final value.", format_value(base))
+        } else {
+            format!("A quantity with base value {} increases by {}%. What is the final value after this one change?", format_value(base), format_value(rate))
+        }
+    } else if form.contains("conversion") {
+        if alternate {
+            format!("Using 1.6 kilometers per mile, convert {} miles to kilometers.", format_value(base))
+        } else {
+            format!("Convert {} miles to kilometers using 1.6 kilometers per mile.", format_value(base))
+        }
+    } else {
+        let prompt = render_spec(spec);
+        if alternate { format!("Please compute the same relation: {prompt}") } else { prompt }
+    }
+}
+
+fn complete_corpus_budgets(
+    cases: &mut Vec<GeneratedValidationCase>,
+    proposal: &ProposalPipelineResult,
+    plan: &ValidationPlan,
+    seed: u64,
+) {
+    let target_supported = plan.proposed_counts.positives;
+    let target_ambiguous = plan.proposed_counts.ambiguities;
+    let target_unsupported = plan.proposed_counts.unsupported_near_misses
+        + plan.proposed_counts.adversarial;
+    let target_rewrites = plan.proposed_counts.rewrites.saturating_mul(2);
+    let forms: Vec<String> = proposal.synthesized.supported_forms.iter()
+        .map(|form| form.name.clone())
+        .collect();
+    let forms = if forms.is_empty() { vec!["partofwhole".to_string()] } else { forms };
+
+    let mut index = 0usize;
+    while section_count(cases, CorpusSection::Supported) < target_supported && index < 10_000 {
+        let form = &forms[index % forms.len()];
+        let spec = synthetic_supported_spec(form, index + (seed as usize % 997));
+        let prompt = render_spec(&spec);
+        let oracle_status = verify_supported_with_prompt(&spec, &prompt);
+        push_unique_case(cases, GeneratedValidationCase {
+            case_id: format!("{}-fill-supported-{index:04}", proposal.proposal.proposal_id.0),
+            family_id: format!("supported_{form}"),
+            section: CorpusSection::Supported,
+            evidence_quality: EvidenceQuality::Predicted,
+            intended_decision: ExpectedDecision::Applicable,
+            prompt,
+            structural_oracle: StructuralOracle {
+                status: oracle_status,
+                verified_bindings: spec.bindings.clone(),
+                decision: ExpectedDecision::Applicable,
+                reasoning: "Deterministic typed supported variant".into(),
+            },
+            generation_transform: GenerationTransform::NumericVariant,
+            source_evidence: vec![],
+            spec,
+        });
+        index += 1;
+    }
+
+    index = 0;
+    while section_count(cases, CorpusSection::Ambiguous) < target_ambiguous && index < 10_000 {
+        let form = &forms[index % forms.len()];
+        let spec = CaseSpec {
+            target_form: form.clone(),
+            bindings: vec![TypedBinding::RawText(format!("case_index:{}:{index}", seed))],
+            expected: ExpectedDecision::Ambiguous,
+            section: CorpusSection::Ambiguous,
+        };
+        let prompt = render_ambiguous(&spec);
+        let oracle_status = verify_ambiguous_with_prompt(&spec, &prompt);
+        push_unique_case(cases, GeneratedValidationCase {
+            case_id: format!("{}-fill-ambiguous-{index:04}", proposal.proposal.proposal_id.0),
+            family_id: format!("ambiguous_{form}"),
+            section: CorpusSection::Ambiguous,
+            evidence_quality: EvidenceQuality::Predicted,
+            intended_decision: ExpectedDecision::Ambiguous,
+            prompt,
+            structural_oracle: StructuralOracle {
+                status: oracle_status,
+                verified_bindings: spec.bindings.clone(),
+                decision: ExpectedDecision::Ambiguous,
+                reasoning: "Deterministic missing-binding probe".into(),
+            },
+            generation_transform: GenerationTransform::BindingRemoved("required_binding".into()),
+            source_evidence: vec![],
+            spec,
+        });
+        index += 1;
+    }
+
+    index = 0;
+    while section_count(cases, CorpusSection::UnsupportedStructuralNearMiss) < target_unsupported && index < 10_000 {
+        let form = &forms[index % forms.len()];
+        let spec = CaseSpec {
+            target_form: form.clone(),
+            bindings: vec![TypedBinding::RawText(format!("case_index:{}:{index}", seed))],
+            expected: ExpectedDecision::Unsupported,
+            section: CorpusSection::UnsupportedStructuralNearMiss,
+        };
+        let prompt = render_unsupported_near_miss(&spec);
+        let oracle_status = verify_unsupported_with_prompt(&spec, &prompt);
+        push_unique_case(cases, GeneratedValidationCase {
+            case_id: format!("{}-fill-unsupported-{index:04}", proposal.proposal.proposal_id.0),
+            family_id: format!("unsupported_{form}"),
+            section: CorpusSection::UnsupportedStructuralNearMiss,
+            evidence_quality: EvidenceQuality::Predicted,
+            intended_decision: ExpectedDecision::Unsupported,
+            prompt,
+            structural_oracle: StructuralOracle {
+                status: oracle_status,
+                verified_bindings: spec.bindings.clone(),
+                decision: ExpectedDecision::Unsupported,
+                reasoning: "Deterministic semantic near-miss probe".into(),
+            },
+            generation_transform: GenerationTransform::SemanticMutation("near_miss".into()),
+            source_evidence: vec![],
+            spec,
+        });
+        index += 1;
+    }
+
+    index = 0;
+    while section_count(cases, CorpusSection::Rewrite) < target_rewrites && index < 10_000 {
+        let form = &forms[index % forms.len()];
+        let spec = synthetic_supported_spec(form, index + 100 + (seed as usize % 997));
+        let mut spec = spec;
+        spec.section = CorpusSection::Rewrite;
+        let family_id = format!("rewrite_{form}_{:04}", index / 2);
+        let prompt = render_rewrite_prompt(&spec, index % 2 == 1);
+        push_unique_case(cases, GeneratedValidationCase {
+            case_id: format!("{}-rewrite-{index:04}", proposal.proposal.proposal_id.0),
+            family_id,
+            section: CorpusSection::Rewrite,
+            evidence_quality: EvidenceQuality::Predicted,
+            intended_decision: ExpectedDecision::Applicable,
+            prompt,
+            structural_oracle: StructuralOracle {
+                status: verify_rewrite(&spec),
+                verified_bindings: spec.bindings.clone(),
+                decision: ExpectedDecision::Applicable,
+                reasoning: "Equivalent surface rewrite of a typed specification".into(),
+            },
+            generation_transform: GenerationTransform::Rewrite,
+            source_evidence: vec![],
+            spec,
+        });
+        index += 1;
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct NumericLiteral {
+    value: f64,
+    start: usize,
+    end: usize,
+}
+
+fn numeric_literals(text: &str) -> Vec<NumericLiteral> {
+    let re = Regex::new(r"(?P<value>\d+(?:\.\d+)?)").expect("numeric literal regex");
+    re.captures_iter(text)
+        .filter_map(|caps| {
+            let whole = caps.get(0)?;
+            let value = caps.name("value")?.as_str().parse::<f64>().ok()?;
+            Some(NumericLiteral { value, start: whole.start(), end: whole.end() })
+        })
+        .collect()
+}
+
+fn unit_after(text: &str, end: usize) -> Option<String> {
+    let tail = text.get(end..)?.trim_start().to_ascii_lowercase();
+    let units = [
+        "centimeters", "kilometers", "milliliters", "milligrams", "kilograms",
+        "meters", "miles", "inches", "feet", "liters", "hours", "minutes",
+        "seconds", "dollars", "euros", "cm", "km", "kg", "ml", "m", "ft", "in", "l", "g", "s",
+    ];
+    units.iter().find(|unit| {
+        tail.starts_with(*unit)
+            && tail.as_bytes().get(unit.len()).map_or(true, |next| !next.is_ascii_alphabetic())
+    }).map(|unit| (*unit).to_string())
+}
+
+fn percentage_literal(text: &str) -> Option<NumericLiteral> {
+    let re = Regex::new(r"(?P<value>\d+(?:\.\d+)?)\s*(?:%|percent(?:age)?)")
+        .expect("percentage literal regex");
+    re.captures(text).and_then(|caps| {
+        let whole = caps.get(0)?;
+        let value = caps.name("value")?.as_str().parse::<f64>().ok()?;
+        Some(NumericLiteral { value, start: whole.start(), end: whole.end() })
+    })
+}
+
+fn fraction_binding(text: &str) -> Option<(u32, u32)> {
+    let numeric = Regex::new(r"(?P<n>\d+)\s*/\s*(?P<d>\d+)").expect("fraction regex");
+    if let Some(caps) = numeric.captures(text) {
+        let n = caps.name("n")?.as_str().parse::<u32>().ok()?;
+        let d = caps.name("d")?.as_str().parse::<u32>().ok()?;
+        if d > 0 && n > 0 && n < d {
+            return Some((n, d));
+        }
+    }
+    let lower = text.to_ascii_lowercase();
+    let words = [
+        ("one half", (1, 2)),
+        ("a half", (1, 2)),
+        ("one third", (1, 3)),
+        ("two thirds", (2, 3)),
+        ("one quarter", (1, 4)),
+        ("one fourth", (1, 4)),
+        ("three quarters", (3, 4)),
+        ("three fourths", (3, 4)),
+        ("two fifths", (2, 5)),
+        ("one fifth", (1, 5)),
+    ];
+    words.iter().find(|(phrase, _)| lower.contains(phrase)).map(|(_, value)| *value)
+}
+
+fn conversion_factor_from_exemplar(text: &str) -> String {
+    let re = Regex::new(r"(?i)(?:using|at)\s+(\d+(?:\.\d+)?[^!?]*)")
+        .expect("conversion factor regex");
+    re.captures(text)
+        .and_then(|caps| caps.get(1).map(|m| m.as_str().trim().trim_end_matches('.').to_string()))
+        .filter(|factor| !factor.is_empty())
+        .unwrap_or_else(|| "explicit conversion factor".to_string())
+}
+
+/// Build a CaseSpec from an exemplar prompt.
+///
+/// Numeric values and nearby units are parsed from the exemplar. The old
+/// implementation inserted a fixed `3.0`, making generated cases identical.
+fn spec_from_exemplar(exemplar: &str, form_name: &str, section: CorpusSection) -> CaseSpec {
+    let features = SemanticFeatures::extract(exemplar);
+    let lower = exemplar.to_ascii_lowercase();
+    let form_lower = form_name.to_ascii_lowercase();
+    let literals = numeric_literals(exemplar);
+    let mut bindings: Vec<TypedBinding> = Vec::new();
+    let mut base_span: Option<(usize, usize)> = None;
+
+    if let Some(pct) = percentage_literal(exemplar) {
+        bindings.push(TypedBinding::Percentage(pct.value));
+        let base = literals.iter()
+            .filter(|literal| literal.start != pct.start || literal.end != pct.end)
+            .find(|literal| literal.start >= pct.end)
+            .or_else(|| literals.iter().find(|literal| {
+                literal.start != pct.start || literal.end != pct.end
+            }));
+        if let Some(base) = base {
+            base_span = Some((base.start, base.end));
+            bindings.push(TypedBinding::BaseQuantity {
+                value: base.value,
+                unit: unit_after(exemplar, base.end),
+            });
+        }
+    } else if let Some((n, d)) = fraction_binding(exemplar) {
+        bindings.push(TypedBinding::FractionN { n, d });
+        // For "3/4 of 20" and worded equivalents, the final numeric
+        // literal is the anchored whole quantity.
+        if let Some(base) = literals.last() {
+            base_span = Some((base.start, base.end));
+            bindings.push(TypedBinding::BaseQuantity {
+                value: base.value,
+                unit: unit_after(exemplar, base.end),
+            });
+        }
+    }
+
+    for literal in &literals {
+        if percentage_literal(exemplar).is_some_and(|pct| pct.start == literal.start && pct.end == literal.end) {
+            continue;
+        }
+        if base_span == Some((literal.start, literal.end)) {
+            continue;
+        }
+        bindings.push(TypedBinding::SourceQuantity {
+            label: format!("quantity_{}", bindings.len()),
+            value: literal.value,
+            unit: unit_after(exemplar, literal.end),
+        });
+    }
+
+    if literals.is_empty() {
+        bindings.push(TypedBinding::RawText(exemplar.to_string()));
     }
 
     if features.has_target_unit {
@@ -5553,11 +5982,11 @@ fn spec_from_exemplar(exemplar: &str, form_name: &str, section: CorpusSection) -
         bindings.push(TypedBinding::TargetUnit(target.to_string()));
     }
 
-    if features.has_explicit_conversion {
+    if features.has_explicit_conversion || form_lower.contains("conversion") {
         bindings.push(TypedBinding::ConversionFactor {
             from_unit: "source".to_string(),
             to_unit: "target".to_string(),
-            factor: "100 per 1".to_string(),
+            factor: conversion_factor_from_exemplar(exemplar),
         });
     }
 
@@ -5572,6 +6001,18 @@ fn spec_from_exemplar(exemplar: &str, form_name: &str, section: CorpusSection) -
     }
     if features.operations.contains("part_of") {
         bindings.push(TypedBinding::Operation("part_of".to_string()));
+    }
+    if features.operations.contains("increase") || lower.contains("increases") {
+        bindings.push(TypedBinding::Direction("increase".to_string()));
+        bindings.push(TypedBinding::Operation("increase".to_string()));
+    } else if features.operations.contains("decrease") || lower.contains("discount") || lower.contains("reduction") {
+        bindings.push(TypedBinding::Direction("decrease".to_string()));
+        bindings.push(TypedBinding::Operation("decrease".to_string()));
+    }
+    if form_lower.contains("multiplicativechange")
+        && !bindings.iter().any(|b| matches!(b, TypedBinding::Direction(_)))
+    {
+        bindings.push(TypedBinding::Direction("increase".to_string()));
     }
 
     for rel in &features.relation_semantics {
@@ -5589,9 +6030,27 @@ fn spec_from_exemplar(exemplar: &str, form_name: &str, section: CorpusSection) -
 /// Create a numeric variant spec from a form's exemplars.
 fn make_numeric_variant_spec(form: &SupportedForm, exemplars: &[String]) -> Option<CaseSpec> {
     let ex = exemplars.first()?;
-    let base = spec_from_exemplar(ex, &form.name, CorpusSection::Supported);
-    // Replace numeric values (placeholder — real impl would parse and transform)
-    Some(base)
+    let mut variant = spec_from_exemplar(ex, &form.name, CorpusSection::Supported);
+    let mut changed = false;
+    for binding in &mut variant.bindings {
+        match binding {
+            TypedBinding::SourceQuantity { value, .. }
+            | TypedBinding::BaseQuantity { value, .. } => {
+                *value = (*value + 7.0).max(1.0);
+                changed = true;
+            }
+            TypedBinding::Percentage(value) | TypedBinding::Rate { value, .. } => {
+                *value = ((*value + 3.0) % 95.0).max(1.0);
+                changed = true;
+            }
+            TypedBinding::FractionN { n, d } => {
+                *n = (*n + 1).min(d.saturating_sub(1).max(1));
+                changed = true;
+            }
+            _ => {}
+        }
+    }
+    changed.then_some(variant)
 }
 
 // ── Corpus measurement ─────────────────────────────────────────────
@@ -5623,20 +6082,35 @@ pub fn compare_corpus_against_task(
         };
     }
 
-    // Check supported patterns
-    let supported_in_corpus: BTreeSet<String> = corpus.cases.iter()
-        .filter(|c| c.section == CorpusSection::Supported)
-        .map(|c| c.family_id.clone())
-        .collect();
-    let expected_patterns: BTreeSet<&str> = task.expected_pattern_descriptions.iter().cloned().collect();
-    let pattern_overlap = expected_patterns.iter()
-        .filter(|p| supported_in_corpus.iter().any(|s| s.contains(&p.replace(' ', "_"))))
-        .count();
-    let supported_family_recall = if expected_patterns.is_empty() {
-        1.0
-    } else {
-        pattern_overlap as f64 / expected_patterns.len() as f64
+    let semantic_match = |prompt: &str, section: CorpusSection| -> bool {
+        let expected_features = SemanticFeatures::extract(prompt);
+        corpus.cases.iter().any(|case| {
+            case.section == section
+                && (normalize_prompt(&case.prompt) == normalize_prompt(prompt)
+                    || expected_features.jaccard_similarity(&SemanticFeatures::extract(&case.prompt)) >= 0.35)
+        })
     };
+    let recall = |prompts: Vec<&str>, section: CorpusSection| -> f64 {
+        if prompts.is_empty() { return 1.0; }
+        prompts.iter().filter(|prompt| semantic_match(prompt, section.clone())).count() as f64
+            / prompts.len() as f64
+    };
+    let supported_family_recall = recall(
+        task.target_failure_prompts.clone(),
+        CorpusSection::Supported,
+    );
+    let ambiguous_prompts: Vec<&str> = task.distractor_prompts.iter().enumerate()
+        .filter_map(|(index, prompt)| {
+            (task.distractor_labels.get(index) == Some(&ExpectedDecision::Ambiguous)).then_some(*prompt)
+        })
+        .collect();
+    let unsupported_prompts: Vec<&str> = task.distractor_prompts.iter().enumerate()
+        .filter_map(|(index, prompt)| {
+            (task.distractor_labels.get(index) == Some(&ExpectedDecision::Unsupported)).then_some(*prompt)
+        })
+        .collect();
+    let ambiguous_family_recall = recall(ambiguous_prompts, CorpusSection::Ambiguous);
+    let unsupported_family_recall = recall(unsupported_prompts, CorpusSection::UnsupportedStructuralNearMiss);
 
     // Oracle verification rate
     let verified = corpus.cases.iter()
@@ -5656,8 +6130,8 @@ pub fn compare_corpus_against_task(
 
     CorpusComparisonMetrics {
         supported_family_recall,
-        ambiguous_family_recall: 0.5, // placeholder — needs distractor family mapping
-        unsupported_family_recall: 0.5, // placeholder
+        ambiguous_family_recall,
+        unsupported_family_recall,
         oracle_verification_rate,
         duplicate_rate,
         total_cases: total,
@@ -5678,13 +6152,706 @@ pub fn normalize_prompt(prompt: &str) -> String {
 
 /// Compute a stable fingerprint for a case specification.
 pub fn spec_fingerprint(spec: &CaseSpec) -> String {
-    use std::hash::{Hash, Hasher};
-    let mut hasher = std::collections::hash_map::DefaultHasher::new();
-    spec.target_form.hash(&mut hasher);
-    for b in &spec.bindings {
-        std::mem::discriminant(b).hash(&mut hasher);
+    sha256_hex(spec)
+}
+
+// ── Phase 3B — Counterexample-driven contract refinement ─────────────
+
+/// Why a proposal disagrees with an independently verified generated case.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ContractFailureKind {
+    FalseApplicable,
+    FalseAmbiguous,
+    FalseUnsupported,
+    WrongSupportedForm,
+    MissingSupportedForm,
+    OverlyStrictRequirement,
+    MissingSafetyPredicate,
+    IncorrectAmbiguityCause,
+    BridgeMismatch,
+}
+
+/// A minimized (or minimizable) disagreement between a proposal and its oracle.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ContractCounterexample {
+    pub case_id: String,
+    pub family_id: String,
+    pub provenance: Vec<EvidenceRef>,
+    pub spec: CaseSpec,
+    pub prompt: String,
+    pub expected: ExpectedDecision,
+    pub actual: Option<ExpectedDecision>,
+    pub matched_form: Option<String>,
+    pub failure_kind: ContractFailureKind,
+    pub oracle_reasoning: String,
+}
+
+/// A bounded edit to one existing supported form.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FormModification {
+    pub form_name: String,
+    pub add_required_features: Vec<String>,
+    pub remove_required_features: Vec<String>,
+    pub add_ambiguity_triggers: Vec<String>,
+    pub reasoning: String,
+}
+
+/// A diagnostic ambiguity-rule change. It is not executable authorization.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AmbiguityRuleChange {
+    pub form_name: String,
+    pub add_missing_binding: Option<MissingBinding>,
+    pub remove_missing_binding: Option<MissingBinding>,
+    pub reasoning: String,
+}
+
+/// Before/after boundary counts used to compare a revision proposal.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct BoundaryDelta {
+    pub false_applicable_before: usize,
+    pub false_applicable_after: usize,
+    pub false_ambiguous_before: usize,
+    pub false_ambiguous_after: usize,
+    pub false_unsupported_before: usize,
+    pub false_unsupported_after: usize,
+    pub supported_coverage_before: f64,
+    pub supported_coverage_after: f64,
+}
+
+/// A proposed, non-authorizing revision to a capability contract.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ContractRevisionProposal {
+    pub parent_proposal_id: ProposalId,
+    pub revision_id: String,
+    pub triggering_counterexamples: Vec<String>,
+    pub added_forms: Vec<SupportedForm>,
+    pub modified_forms: Vec<FormModification>,
+    pub added_predicates: Vec<ApplicabilityPredicate>,
+    pub removed_predicates: Vec<ApplicabilityPredicate>,
+    pub ambiguity_changes: Vec<AmbiguityRuleChange>,
+    pub expected_boundary_delta: BoundaryDelta,
+    pub evidence_strength: usize,
+    pub complexity_budget: usize,
+}
+
+/// Bounded revision history used to reject repeated contract fingerprints.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct RevisionHistory {
+    pub fingerprints: Vec<String>,
+    pub max_iterations: usize,
+}
+
+impl RevisionHistory {
+    pub fn with_budget(max_iterations: usize) -> Self {
+        Self { fingerprints: Vec::new(), max_iterations }
     }
-    format!("{:016x}", hasher.finish())
+
+    pub fn can_accept(&self, revision: &ContractRevisionProposal) -> bool {
+        self.fingerprints.len() < self.max_iterations
+            && !self.fingerprints.iter().any(|fingerprint| {
+                fingerprint == &revision_fingerprint(revision)
+            })
+    }
+
+    pub fn record(&mut self, revision: &ContractRevisionProposal) -> bool {
+        if !self.can_accept(revision) {
+            return false;
+        }
+        self.fingerprints.push(revision_fingerprint(revision));
+        true
+    }
+}
+
+/// Outcome of comparing a proposed revision against the evidence and controls.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum RevisionOutcome {
+    Improved,
+    Tradeoff,
+    NoImprovement,
+    Overfit,
+    OscillationDetected,
+    InsufficientEvidence,
+}
+
+pub fn revision_fingerprint(revision: &ContractRevisionProposal) -> String {
+    sha256_hex(revision)
+}
+
+/// Score a revision without applying it. The comparison is intentionally
+/// Pareto-like: safety regressions dominate coverage gains, while complexity
+/// and repeated fingerprints remain explicit diagnostics.
+pub fn score_revision(
+    before: &ContractEvaluationReport,
+    after: &BoundaryDelta,
+    revision: &ContractRevisionProposal,
+    history: &RevisionHistory,
+) -> RevisionOutcome {
+    if !history.can_accept(revision) {
+        return if history.fingerprints.iter().any(|fingerprint| {
+            fingerprint == &revision_fingerprint(revision)
+        }) {
+            RevisionOutcome::OscillationDetected
+        } else {
+            RevisionOutcome::InsufficientEvidence
+        };
+    }
+    if revision.complexity_budget > 5
+        || after.false_applicable_after > before.false_applicable
+    {
+        return RevisionOutcome::Overfit;
+    }
+    let safety_improved = after.false_applicable_after <= before.false_applicable
+        && after.false_ambiguous_after <= before.false_ambiguous
+        && after.false_unsupported_after <= before.false_unsupported;
+    let coverage_improved = after.supported_coverage_after >= before.supported_recall;
+    if safety_improved && coverage_improved {
+        if after.supported_coverage_after > before.supported_recall
+            || after.false_applicable_after < before.false_applicable
+            || after.false_ambiguous_after < before.false_ambiguous
+            || after.false_unsupported_after < before.false_unsupported
+        {
+            RevisionOutcome::Improved
+        } else {
+            RevisionOutcome::NoImprovement
+        }
+    } else if safety_improved || coverage_improved {
+        RevisionOutcome::Tradeoff
+    } else {
+        RevisionOutcome::NoImprovement
+    }
+}
+
+/// Aggregate Phase 3B evaluation output.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ContractEvaluationReport {
+    pub counterexamples: Vec<ContractCounterexample>,
+    pub oracle_cases: usize,
+    pub compared_cases: usize,
+    pub false_applicable: usize,
+    pub false_ambiguous: usize,
+    pub false_unsupported: usize,
+    pub supported_recall: f64,
+    pub oracle_verification_rate: f64,
+}
+
+fn expected_from_applicability(decision: &ApplicabilityDecision) -> ExpectedDecision {
+    match decision {
+        ApplicabilityDecision::Applicable => ExpectedDecision::Applicable,
+        ApplicabilityDecision::Ambiguous { .. } => ExpectedDecision::Ambiguous,
+        ApplicabilityDecision::Unsupported { .. } => ExpectedDecision::Unsupported,
+    }
+}
+
+fn nearest_case_decision<'a>(
+    prompt: &str,
+    decisions: &'a [CaseDecision],
+) -> Option<&'a CaseDecision> {
+    if let Some(exact) = decisions.iter().find(|decision| {
+        normalize_prompt(&decision.prompt) == normalize_prompt(prompt)
+    }) {
+        return Some(exact);
+    }
+    let features = SemanticFeatures::extract(prompt);
+    decisions.iter()
+        .filter_map(|decision| {
+            let similarity = features.jaccard_similarity(&SemanticFeatures::extract(&decision.prompt));
+            (similarity >= 0.35).then_some((similarity, decision))
+        })
+        .max_by(|(left, _), (right, _)| left.partial_cmp(right).unwrap_or(std::cmp::Ordering::Equal))
+        .map(|(_, decision)| decision)
+}
+
+fn nearest_case_decision_index(prompt: &str, decisions: &[CaseDecision]) -> Option<usize> {
+    if let Some(index) = decisions.iter().position(|decision| {
+        normalize_prompt(&decision.prompt) == normalize_prompt(prompt)
+    }) {
+        return Some(index);
+    }
+    let features = SemanticFeatures::extract(prompt);
+    decisions.iter().enumerate()
+        .filter_map(|(index, decision)| {
+            let similarity = features.jaccard_similarity(&SemanticFeatures::extract(&decision.prompt));
+            (similarity >= 0.35).then_some((similarity, index))
+        })
+        .max_by(|(left, _), (right, _)| left.partial_cmp(right).unwrap_or(std::cmp::Ordering::Equal))
+        .map(|(_, index)| index)
+}
+
+fn classify_contract_failure(
+    expected: &ExpectedDecision,
+    actual: Option<&CaseDecision>,
+    spec: &CaseSpec,
+) -> Option<ContractFailureKind> {
+    let actual_decision = actual.map(|decision| expected_from_applicability(&decision.decision));
+    if actual_decision.as_ref() == Some(expected) {
+        if *expected == ExpectedDecision::Applicable {
+            if let Some(decision) = actual {
+                if let Some(form) = &decision.matched_form {
+                    if !spec.target_form.is_empty()
+                        && !form.eq_ignore_ascii_case(&spec.target_form)
+                        && !spec.target_form.eq_ignore_ascii_case("supported")
+                    {
+                        return Some(ContractFailureKind::WrongSupportedForm);
+                    }
+                }
+            }
+        }
+        return None;
+    }
+    match (expected, actual_decision.as_ref()) {
+        (ExpectedDecision::Applicable, None) => Some(ContractFailureKind::MissingSupportedForm),
+        (ExpectedDecision::Applicable, Some(ExpectedDecision::Ambiguous)) => {
+            if actual.and_then(|decision| decision.matched_form.as_ref()).is_some() {
+                Some(ContractFailureKind::OverlyStrictRequirement)
+            } else {
+                Some(ContractFailureKind::MissingSupportedForm)
+            }
+        }
+        (ExpectedDecision::Applicable, Some(ExpectedDecision::Unsupported)) => {
+            if actual.and_then(|decision| decision.matched_form.as_ref()).is_some() {
+                Some(ContractFailureKind::OverlyStrictRequirement)
+            } else {
+                Some(ContractFailureKind::MissingSupportedForm)
+            }
+        }
+        (ExpectedDecision::Ambiguous, Some(ExpectedDecision::Applicable)) => {
+            Some(ContractFailureKind::FalseApplicable)
+        }
+        (ExpectedDecision::Ambiguous, Some(ExpectedDecision::Unsupported)) | (ExpectedDecision::Ambiguous, None) => {
+            Some(ContractFailureKind::FalseUnsupported)
+        }
+        (ExpectedDecision::Unsupported, Some(ExpectedDecision::Applicable)) => {
+            Some(ContractFailureKind::FalseApplicable)
+        }
+        (ExpectedDecision::Unsupported, Some(ExpectedDecision::Ambiguous)) | (ExpectedDecision::Unsupported, None) => {
+            Some(ContractFailureKind::FalseAmbiguous)
+        }
+        _ => None,
+    }
+}
+
+/// Compare oracle-verified corpus cases with the proposal's own decisions.
+/// Missing exact decisions are resolved by semantic similarity, never by
+/// treating the oracle result as a proposal result.
+pub fn evaluate_candidate_corpus(
+    proposal: &ProposalPipelineResult,
+    corpus: &CandidateCorpus,
+) -> ContractEvaluationReport {
+    let mut counterexamples = Vec::new();
+    let mut oracle_cases = 0usize;
+    let mut compared_cases = 0usize;
+    let mut false_applicable = 0usize;
+    let mut false_ambiguous = 0usize;
+    let mut false_unsupported = 0usize;
+    let mut supported_total = 0usize;
+    let mut supported_correct = 0usize;
+
+    for case in &corpus.cases {
+        let oracle = verify_case(case);
+        if oracle != OracleStatus::Verified {
+            continue;
+        }
+        oracle_cases += 1;
+        let expected = case.structural_oracle.decision.clone();
+        if expected == ExpectedDecision::Applicable {
+            supported_total += 1;
+        }
+        let actual = nearest_case_decision(&case.prompt, &proposal.synthesized.decisions);
+        if actual.is_some() {
+            compared_cases += 1;
+        }
+        if let Some(kind) = classify_contract_failure(&expected, actual, &case.spec) {
+            match kind {
+                ContractFailureKind::FalseApplicable => false_applicable += 1,
+                ContractFailureKind::FalseAmbiguous => false_ambiguous += 1,
+                ContractFailureKind::FalseUnsupported => false_unsupported += 1,
+                _ => {}
+            }
+            counterexamples.push(ContractCounterexample {
+                case_id: case.case_id.clone(),
+                family_id: case.family_id.clone(),
+                provenance: case.source_evidence.clone(),
+                spec: case.spec.clone(),
+                prompt: case.prompt.clone(),
+                expected,
+                actual: actual.map(|decision| expected_from_applicability(&decision.decision)),
+                matched_form: actual.and_then(|decision| decision.matched_form.clone()),
+                failure_kind: kind,
+                oracle_reasoning: case.structural_oracle.reasoning.clone(),
+            });
+        } else if expected == ExpectedDecision::Applicable && actual.is_some() {
+            supported_correct += 1;
+        }
+    }
+
+    ContractEvaluationReport {
+        counterexamples,
+        oracle_cases,
+        compared_cases,
+        false_applicable,
+        false_ambiguous,
+        false_unsupported,
+        supported_recall: if supported_total == 0 {
+            1.0
+        } else {
+            supported_correct as f64 / supported_total as f64
+        },
+        oracle_verification_rate: if corpus.cases.is_empty() {
+            0.0
+        } else {
+            oracle_cases as f64 / corpus.cases.len() as f64
+        },
+    }
+}
+
+/// Deterministically minimize a counterexample by removing bindings while
+/// preserving its expected decision and failure class. Rendering is rebuilt
+/// from the reduced typed spec, so arbitrary string deletion is avoided.
+pub fn minimize_counterexample(
+    proposal: &ProposalPipelineResult,
+    counterexample: &ContractCounterexample,
+) -> ContractCounterexample {
+    let mut minimized = counterexample.clone();
+    let mut index = 0usize;
+    while index < minimized.spec.bindings.len() {
+        let mut candidate_spec = minimized.spec.clone();
+        candidate_spec.bindings.remove(index);
+        let candidate_prompt = render_spec(&candidate_spec);
+        let actual = nearest_case_decision(&candidate_prompt, &proposal.synthesized.decisions);
+        let retained = classify_contract_failure(&candidate_spec.expected, actual, &candidate_spec)
+            .is_some_and(|kind| kind == minimized.failure_kind);
+        if retained {
+            minimized.spec = candidate_spec;
+            minimized.prompt = candidate_prompt;
+            minimized.actual = actual.map(|decision| expected_from_applicability(&decision.decision));
+            minimized.matched_form = actual.and_then(|decision| decision.matched_form.clone());
+        } else {
+            index += 1;
+        }
+    }
+    minimized
+}
+
+/// Produce a bounded diagnostic revision proposal from repeated counterexamples.
+/// This function never mutates the input proposal or capability registry.
+pub fn propose_contract_revision(
+    proposal: &ProposalPipelineResult,
+    report: &ContractEvaluationReport,
+) -> Option<ContractRevisionProposal> {
+    if report.counterexamples.is_empty() {
+        return None;
+    }
+    let mut added_forms = Vec::new();
+    let mut modified_forms = Vec::new();
+    let mut added_predicates = Vec::new();
+    let mut triggering = Vec::new();
+    let mut grouped_specs: BTreeMap<String, Vec<&ContractCounterexample>> = BTreeMap::new();
+
+    for counterexample in &report.counterexamples {
+        triggering.push(counterexample.case_id.clone());
+        grouped_specs.entry(counterexample.spec.target_form.clone()).or_default().push(counterexample);
+        match counterexample.failure_kind {
+            ContractFailureKind::MissingSupportedForm => {}
+            ContractFailureKind::OverlyStrictRequirement => {
+                if let Some(form) = counterexample.matched_form.clone() {
+                    modified_forms.push(FormModification {
+                        form_name: form,
+                        add_required_features: vec![],
+                        remove_required_features: vec![],
+                        add_ambiguity_triggers: vec![],
+                        reasoning: "Generated positive counterexample was rejected by an existing form".into(),
+                    });
+                }
+            }
+            ContractFailureKind::FalseApplicable => {
+                // Safety tightening is allowed from one severe false accept.
+                if let Some(predicate) = proposal.predicates.first() {
+                    added_predicates.push(predicate.clone());
+                }
+            }
+            _ => {}
+        }
+    }
+
+    // A new form requires at least two independent specs, preventing one-off
+    // generated cases from turning into contract exceptions.
+    for (form_name, examples) in grouped_specs {
+        if examples.len() < 2 || !examples.iter().all(|example| {
+            matches!(example.failure_kind, ContractFailureKind::MissingSupportedForm)
+        }) {
+            continue;
+        }
+        let form = if let Some(template) = proposal.synthesized.supported_forms.iter()
+            .find(|form| form.name.eq_ignore_ascii_case(&form_name))
+        {
+            let mut form = template.clone();
+            form.exemplars = examples.iter().map(|example| example.prompt.clone()).collect();
+            form
+        } else {
+            let first = examples[0];
+            let features = SemanticFeatures::extract(&first.prompt);
+            SupportedForm {
+                name: form_name.clone(),
+                centroid_features: features.clone(),
+                required_features: features.feature_tags().into_iter().collect(),
+                ambiguity_triggers: vec![],
+                bindings: vec![],
+                exemplars: examples.iter().map(|example| example.prompt.clone()).collect(),
+            }
+        };
+        added_forms.push(form);
+    }
+
+    if added_forms.is_empty() && modified_forms.is_empty() && added_predicates.is_empty() {
+        return Some(ContractRevisionProposal {
+            parent_proposal_id: proposal.proposal.proposal_id.clone(),
+            revision_id: format!("{}-revision-insufficient", proposal.proposal.proposal_id.0),
+            triggering_counterexamples: triggering,
+            added_forms,
+            modified_forms,
+            added_predicates,
+            removed_predicates: vec![],
+            ambiguity_changes: vec![],
+            expected_boundary_delta: BoundaryDelta::default(),
+            evidence_strength: report.counterexamples.len(),
+            complexity_budget: 0,
+        });
+    }
+
+    let complexity_budget = added_forms.len() + modified_forms.len() + added_predicates.len();
+    Some(ContractRevisionProposal {
+        parent_proposal_id: proposal.proposal.proposal_id.clone(),
+        revision_id: format!("{}-revision-{}", proposal.proposal.proposal_id.0, report.counterexamples.len()),
+        triggering_counterexamples: triggering,
+        added_forms,
+        modified_forms,
+        added_predicates,
+        removed_predicates: vec![],
+        ambiguity_changes: vec![],
+        expected_boundary_delta: BoundaryDelta {
+            false_applicable_before: report.false_applicable,
+            false_ambiguous_before: report.false_ambiguous,
+            false_unsupported_before: report.false_unsupported,
+            supported_coverage_before: report.supported_recall,
+            ..BoundaryDelta::default()
+        },
+        evidence_strength: report.counterexamples.len(),
+        complexity_budget,
+    })
+}
+
+/// Errors raised when a diagnostic revision cannot be applied to a sandbox.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum RevisionApplyError {
+    ParentMismatch,
+    ComplexityBudgetExceeded,
+    UnknownForm(String),
+    UnsupportedBridgeChange,
+}
+
+/// Apply a revision to an immutable clone of a proposal. The parent proposal
+/// and every live registry remain untouched.
+pub fn apply_revision_sandboxed(
+    parent: &ProposalPipelineResult,
+    revision: &ContractRevisionProposal,
+) -> Result<ProposalPipelineResult, RevisionApplyError> {
+    if revision.parent_proposal_id != parent.proposal.proposal_id {
+        return Err(RevisionApplyError::ParentMismatch);
+    }
+    if revision.complexity_budget > 5 {
+        return Err(RevisionApplyError::ComplexityBudgetExceeded);
+    }
+    let mut revised = parent.clone();
+    for form in &revision.added_forms {
+        if revised.synthesized.supported_forms.iter().any(|existing| existing.name == form.name) {
+            continue;
+        }
+        revised.synthesized.supported_forms.push(form.clone());
+    }
+    for modification in &revision.modified_forms {
+        let form = revised.synthesized.supported_forms.iter_mut()
+            .find(|form| form.name == modification.form_name)
+            .ok_or_else(|| RevisionApplyError::UnknownForm(modification.form_name.clone()))?;
+        form.required_features.retain(|feature| {
+            !modification.remove_required_features.iter().any(|removed| removed == feature)
+        });
+        for feature in &modification.add_required_features {
+            if !form.required_features.contains(feature) {
+                form.required_features.push(feature.clone());
+            }
+        }
+        for trigger in &modification.add_ambiguity_triggers {
+            if !form.ambiguity_triggers.contains(trigger) {
+                form.ambiguity_triggers.push(trigger.clone());
+            }
+        }
+    }
+    for predicate in &revision.added_predicates {
+        if !revised.predicates.contains(predicate) {
+            revised.predicates.push(predicate.clone());
+        }
+    }
+    revised.predicates.retain(|predicate| {
+        !revision.removed_predicates.contains(predicate)
+    });
+    for change in &revision.ambiguity_changes {
+        let form = revised.synthesized.supported_forms.iter_mut()
+            .find(|form| form.name == change.form_name)
+            .ok_or_else(|| RevisionApplyError::UnknownForm(change.form_name.clone()))?;
+        if let Some(binding) = &change.add_missing_binding {
+            let trigger = format!("missing:{binding:?}");
+            if !form.ambiguity_triggers.contains(&trigger) {
+                form.ambiguity_triggers.push(trigger);
+            }
+        }
+        if let Some(binding) = &change.remove_missing_binding {
+            let trigger = format!("missing:{binding:?}");
+            form.ambiguity_triggers.retain(|existing| existing != &trigger);
+        }
+    }
+    if !revision.removed_predicates.is_empty() && revised.predicates.is_empty() {
+        return Err(RevisionApplyError::UnsupportedBridgeChange);
+    }
+    Ok(revised)
+}
+
+/// Evaluate a revision in a sandbox and return before/after diagnostics.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SandboxRevisionEvaluation {
+    pub before: ContractEvaluationReport,
+    pub after: ContractEvaluationReport,
+    pub boundary_delta: BoundaryDelta,
+    pub outcome: RevisionOutcome,
+    pub revised_proposal: ProposalPipelineResult,
+}
+
+pub fn evaluate_revision_sandboxed(
+    parent: &ProposalPipelineResult,
+    corpus: &CandidateCorpus,
+    revision: &ContractRevisionProposal,
+    history: &RevisionHistory,
+) -> Result<SandboxRevisionEvaluation, RevisionApplyError> {
+    let before = evaluate_candidate_corpus(parent, corpus);
+    let revised_proposal = apply_revision_sandboxed(parent, revision)?;
+    let after = evaluate_candidate_corpus(&revised_proposal, corpus);
+    let boundary_delta = BoundaryDelta {
+        false_applicable_before: before.false_applicable,
+        false_applicable_after: after.false_applicable,
+        false_ambiguous_before: before.false_ambiguous,
+        false_ambiguous_after: after.false_ambiguous,
+        false_unsupported_before: before.false_unsupported,
+        false_unsupported_after: after.false_unsupported,
+        supported_coverage_before: before.supported_recall,
+        supported_coverage_after: after.supported_recall,
+    };
+    let outcome = score_revision(&before, &boundary_delta, revision, history);
+    Ok(SandboxRevisionEvaluation {
+        before,
+        after,
+        boundary_delta,
+        outcome,
+        revised_proposal,
+    })
+}
+
+/// Defect families used by the historical Phase 3B campaign.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum InjectedDefectKind {
+    RemoveSafetyPredicate,
+    AddSpuriousRequirement,
+    RemoveSupportedForm,
+    CollapseAmbiguityToUnsupported,
+    WrongBridge,
+    BroadenNumericForm,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct InjectedContractDefect {
+    pub kind: InjectedDefectKind,
+    pub expected_failure: ContractFailureKind,
+    pub expected_repair: String,
+    pub proposal: ProposalPipelineResult,
+}
+
+/// Create a deliberately weakened proposal copy for a controlled campaign.
+/// The corpus is used only to locate affected decision records; no live state
+/// is changed and the parent remains byte-for-byte independent.
+pub fn inject_contract_defect(
+    parent: &ProposalPipelineResult,
+    corpus: &CandidateCorpus,
+    kind: InjectedDefectKind,
+) -> Option<InjectedContractDefect> {
+    let mut proposal = parent.clone();
+    let mut changed = false;
+    let default_form = proposal.synthesized.supported_forms.first().map(|form| form.name.clone());
+    for case in &corpus.cases {
+        let Some(decision_index) = nearest_case_decision_index(&case.prompt, &proposal.synthesized.decisions) else {
+            continue;
+        };
+        let decision = &mut proposal.synthesized.decisions[decision_index];
+        match kind {
+            InjectedDefectKind::RemoveSafetyPredicate
+            | InjectedDefectKind::BroadenNumericForm
+                if case.structural_oracle.decision == ExpectedDecision::Unsupported =>
+            {
+                decision.decision = ApplicabilityDecision::Applicable;
+                decision.matched_form = default_form.clone();
+                changed = true;
+            }
+            InjectedDefectKind::AddSpuriousRequirement
+                if case.structural_oracle.decision == ExpectedDecision::Applicable =>
+            {
+                decision.decision = ApplicabilityDecision::Ambiguous {
+                    causes: vec![AmbiguityCause::MissingBinding(MissingBinding::InitialValue)],
+                };
+                changed = true;
+            }
+            InjectedDefectKind::RemoveSupportedForm
+                if case.structural_oracle.decision == ExpectedDecision::Applicable =>
+            {
+                decision.decision = ApplicabilityDecision::Unsupported {
+                    failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
+                };
+                decision.matched_form = None;
+                changed = true;
+            }
+            InjectedDefectKind::CollapseAmbiguityToUnsupported
+                if case.structural_oracle.decision == ExpectedDecision::Ambiguous =>
+            {
+                decision.decision = ApplicabilityDecision::Unsupported {
+                    failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
+                };
+                changed = true;
+            }
+            InjectedDefectKind::WrongBridge
+                if case.structural_oracle.decision == ExpectedDecision::Applicable =>
+            {
+                decision.matched_form = Some("wrong_bridge".into());
+                changed = true;
+            }
+            _ => {}
+        }
+        if changed {
+            break;
+        }
+    }
+    if !changed {
+        return None;
+    }
+    let (expected_failure, expected_repair) = match kind {
+        InjectedDefectKind::RemoveSafetyPredicate => (ContractFailureKind::FalseApplicable, "restore safety predicate"),
+        InjectedDefectKind::AddSpuriousRequirement => (ContractFailureKind::OverlyStrictRequirement, "relax requirement"),
+        InjectedDefectKind::RemoveSupportedForm => (ContractFailureKind::MissingSupportedForm, "add supported form"),
+        InjectedDefectKind::CollapseAmbiguityToUnsupported => (ContractFailureKind::FalseUnsupported, "restore ambiguity rule"),
+        InjectedDefectKind::WrongBridge => (ContractFailureKind::WrongSupportedForm, "repair bridge"),
+        InjectedDefectKind::BroadenNumericForm => (ContractFailureKind::FalseApplicable, "tighten numeric boundary"),
+    };
+    Some(InjectedContractDefect {
+        kind,
+        expected_failure,
+        expected_repair: expected_repair.into(),
+        proposal,
+    })
 }
 
 #[cfg(test)]
@@ -8158,16 +9325,23 @@ mod tests {
         assert_eq!(corpus.deterministic_hash, corpus2.deterministic_hash,
             "same seed must produce same deterministic hash");
 
-        // Different seed should (likely) produce different hash
+        // Different seeds are part of the generated release identity.
         let corpus3 = generate_corpus(&results[0], &plan, 99);
-        if corpus.deterministic_hash == corpus3.deterministic_hash {
-            eprintln!("  Note: different seeds produced same hash (acceptable for small corpora)");
-        }
+        assert_ne!(corpus.deterministic_hash, corpus3.deterministic_hash,
+            "different seeds must produce different corpus identities");
 
         // Test spec fingerprinting
         if let Some(case) = corpus.cases.first() {
             let fp = spec_fingerprint(&case.spec);
             assert!(!fp.is_empty(), "fingerprint should not be empty");
+            let mut changed = case.spec.clone();
+            if let Some(TypedBinding::SourceQuantity { value, .. }) = changed.bindings.iter_mut()
+                .find(|binding| matches!(binding, TypedBinding::SourceQuantity { .. }))
+            {
+                *value += 1.0;
+                assert_ne!(fp, spec_fingerprint(&changed),
+                    "fingerprints must include binding contents");
+            }
         }
 
         eprintln!("  Supported forms in corpus:");
@@ -8185,12 +9359,7 @@ mod tests {
             }
         }
         eprintln!("  Duplicate prompts: {}/{}", dup_count, corpus.cases.len());
-        let dup_rate = dup_count as f64 / corpus.cases.len().max(1) as f64;
-        // Note: first-generation generator may produce duplicates across
-        // sections (same prompt appearing as both supported and unsupported).
-        // Target for Phase 3A staging: < 50% (will improve with dedup filtering).
-        assert!(dup_rate < 0.5,
-            "duplicate rate should be below 50% for staging, got {}/{}", dup_count, corpus.cases.len());
+        assert_eq!(dup_count, 0, "generated corpus must not contain duplicate prompts");
 
         // Test prompt rendering produces valid strings
         let rendered = render_spec(&CaseSpec {
@@ -8417,6 +9586,219 @@ mod tests {
         // Without a TargetUnit binding, the oracle should flag NeedsReview
         assert!(status3 == OracleStatus::NeedsReview || status3 == OracleStatus::Verified,
             "conversion without target unit: got {:?}", status3);
+    }
+
+    #[test]
+    fn candidate_corpus_generation_is_content_sensitive_and_rewrite_checked() {
+        let spec = spec_from_exemplar(
+            "What is 20% of 50?",
+            "partofwhole",
+            CorpusSection::Supported,
+        );
+        assert!(spec.bindings.iter().any(|binding| matches!(
+            binding,
+            TypedBinding::Percentage(value) if (*value - 20.0).abs() < f64::EPSILON
+        )));
+        assert!(spec.bindings.iter().any(|binding| matches!(
+            binding,
+            TypedBinding::BaseQuantity { value, .. } if (*value - 50.0).abs() < f64::EPSILON
+        )));
+        let fraction = spec_from_exemplar(
+            "What is three quarters of 20?",
+            "partofwhole",
+            CorpusSection::Supported,
+        );
+        assert!(fraction.bindings.iter().any(|binding| matches!(
+            binding,
+            TypedBinding::FractionN { n: 3, d: 4 }
+        )));
+        assert!(fraction.bindings.iter().any(|binding| matches!(
+            binding,
+            TypedBinding::BaseQuantity { value, .. } if (*value - 20.0).abs() < f64::EPSILON
+        )));
+        let conversion = spec_from_exemplar(
+            "Convert 2 miles to kilometers using 1.6 kilometers per mile.",
+            "compatibleunitconversion",
+            CorpusSection::Supported,
+        );
+        assert!(conversion.bindings.iter().any(|binding| matches!(
+            binding,
+            TypedBinding::ConversionFactor { factor, .. } if factor.contains("1.6")
+        )));
+
+        let form = SupportedForm {
+            name: "partofwhole".to_string(),
+            centroid_features: SemanticFeatures::extract("What is 20% of 50?"),
+            required_features: vec![],
+            ambiguity_triggers: vec![],
+            bindings: vec![],
+            exemplars: vec!["What is 20% of 50?".to_string()],
+        };
+        let variant = make_numeric_variant_spec(&form, &form.exemplars)
+            .expect("numeric exemplar should produce a changed variant");
+        assert_ne!(spec_fingerprint(&spec), spec_fingerprint(&variant));
+
+        let rewrite_spec = CaseSpec {
+            section: CorpusSection::Rewrite,
+            ..spec.clone()
+        };
+        assert_eq!(verify_rewrite(&rewrite_spec), OracleStatus::Verified);
+
+        let invalid_rewrite = CaseSpec {
+            bindings: vec![TypedBinding::BaseQuantity { value: 50.0, unit: None }],
+            section: CorpusSection::Rewrite,
+            ..spec
+        };
+        assert_eq!(verify_rewrite(&invalid_rewrite), OracleStatus::NeedsReview);
+    }
+
+    #[test]
+    fn phase3b_finds_and_classifies_a_weakened_contract() {
+        let prompts = [
+            "What is 20% of 50?",
+            "An item priced at $80 receives a 20% discount. What is the final price?",
+            "Calculate 15 percent of 200.",
+            "A balance grows by 5% each year for 5 years.",
+            "There is a 25% probability.",
+        ];
+        let failures: BTreeMap<FailureReceiptId, String> = prompts.iter().enumerate()
+            .map(|(index, prompt)| (FailureReceiptId(format!("phase3b-{index}")), (*prompt).to_string()))
+            .collect();
+        let proposals = propose_from_failures(failures, 0.30);
+        assert!(!proposals.is_empty());
+        let proposal = &proposals[0];
+        let plan = ValidationPlan::synthesize(proposal);
+        let corpus = generate_corpus(proposal, &plan, 7);
+
+        let mut weakened = proposal.clone();
+        let target_prompt = corpus.cases.iter()
+            .find(|case| case.structural_oracle.status == OracleStatus::Verified
+                && case.structural_oracle.decision == ExpectedDecision::Applicable)
+            .map(|case| normalize_prompt(&case.prompt))
+            .expect("generated corpus should contain an applicable case");
+        let decision = weakened.synthesized.decisions.iter_mut()
+            .find(|decision| normalize_prompt(&decision.prompt) == target_prompt)
+            .expect("proposal should contain the canonical case");
+        decision.decision = ApplicabilityDecision::Unsupported {
+            failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
+        };
+
+        let report = evaluate_candidate_corpus(&weakened, &corpus);
+        assert!(!report.counterexamples.is_empty(), "weakened contract must yield counterexamples");
+        assert!(report.counterexamples.iter().any(|counterexample| matches!(
+            counterexample.failure_kind,
+            ContractFailureKind::OverlyStrictRequirement | ContractFailureKind::MissingSupportedForm
+        )));
+        let minimized = minimize_counterexample(&weakened, &report.counterexamples[0]);
+        assert!(!minimized.prompt.is_empty());
+        let revision = propose_contract_revision(&weakened, &report)
+            .expect("counterexamples should produce a diagnostic revision proposal");
+        assert!(!revision.triggering_counterexamples.is_empty());
+        assert_eq!(revision.parent_proposal_id, weakened.proposal.proposal_id);
+        let mut history = RevisionHistory::with_budget(3);
+        assert!(history.record(&revision));
+        assert!(!history.can_accept(&revision));
+        assert_eq!(score_revision(
+            &report,
+            &revision.expected_boundary_delta,
+            &revision,
+            &history,
+        ), RevisionOutcome::OscillationDetected);
+    }
+
+    #[test]
+    fn phase3b_defect_injection_campaign_is_fail_closed() {
+        let prompts = [
+            "What is 20% of 50?",
+            "An item priced at $80 receives a 20% discount. What is the final price?",
+            "Calculate 15 percent of 200.",
+            "Convert 2 miles to kilometers using 1.6 kilometers per mile.",
+            "A balance grows by 5% each year for 5 years.",
+            "There is a 25% probability.",
+        ];
+        let receipts: BTreeMap<FailureReceiptId, String> = prompts.iter().enumerate()
+            .map(|(index, prompt)| (FailureReceiptId(format!("campaign-{index}")), (*prompt).to_string()))
+            .collect();
+        let proposal = propose_from_failures(receipts, 0.30).remove(0);
+        let plan = ValidationPlan::synthesize(&proposal);
+        let corpus = generate_corpus(&proposal, &plan, 11);
+        let kinds = [
+            InjectedDefectKind::RemoveSafetyPredicate,
+            InjectedDefectKind::AddSpuriousRequirement,
+            InjectedDefectKind::RemoveSupportedForm,
+            InjectedDefectKind::CollapseAmbiguityToUnsupported,
+            InjectedDefectKind::WrongBridge,
+            InjectedDefectKind::BroadenNumericForm,
+        ];
+        for kind in kinds {
+            let Some(defect) = inject_contract_defect(&proposal, &corpus, kind) else {
+                // A defect is only meaningful when its target class exists in
+                // this corpus; the API must fail closed rather than inventing a case.
+                continue;
+            };
+            let report = evaluate_candidate_corpus(&defect.proposal, &corpus);
+            assert!(!report.counterexamples.is_empty(), "{kind:?} must be observable");
+            assert!(report.oracle_cases > 0);
+            assert!(!defect.expected_repair.is_empty());
+        }
+    }
+
+    #[test]
+    fn phase3b_campaign_covers_four_historical_capability_families() {
+        let families: [(&str, &[&str]); 4] = [
+            ("QuantityRelationV1", &[
+                "5 notebooks cost 20 dollars. What is the price per notebook?",
+                "3 identical batches require 2 liters. How many liters for 8 batches?",
+                "Add 2 meters and 30 centimeters; express the total in centimeters.",
+                "A circle has radius 3 meters. Find its area.",
+            ]),
+            ("UnitQuantity", &[
+                "Convert 4 meters to centimeters using 100 centimeters per meter.",
+                "Add 2 meters and 30 centimeters; express the total in centimeters.",
+                "Add 2 liters to 3 kilograms.",
+                "Convert 5 miles to kilometers.",
+            ]),
+            ("FractionalQuantity", &[
+                "What is three quarters of 20?",
+                "What remains after removing 1/4 of 20?",
+                "One of 5 equal parts of 35.",
+                "What is 2/3 of 30?",
+                "After taking 1/2 of a 24-ounce bottle, how many ounces remain?",
+                "Divide 40 into 4 equal parts and take one part.",
+            ]),
+            ("PercentageQuantityV1", &[
+                "What is 20% of 50?",
+                "An item priced at $80 receives a 20% discount. What is the final price?",
+                "A balance grows by 5% each year for 5 years.",
+                "There is a 25% probability.",
+            ]),
+        ];
+        for (label, prompts) in families {
+            let receipts: BTreeMap<FailureReceiptId, String> = prompts.iter().enumerate()
+                .map(|(index, prompt)| (FailureReceiptId(format!("{label}-{index}")), (*prompt).to_string()))
+                .collect();
+            let Some(proposal) = propose_from_failures(receipts, 0.30).into_iter().next() else {
+                panic!("{label} did not produce a proposal");
+            };
+            let plan = ValidationPlan::synthesize(&proposal);
+            let corpus = generate_corpus(&proposal, &plan, 31);
+            let mut observed = 0usize;
+            for kind in [
+                InjectedDefectKind::RemoveSafetyPredicate,
+                InjectedDefectKind::AddSpuriousRequirement,
+                InjectedDefectKind::RemoveSupportedForm,
+                InjectedDefectKind::CollapseAmbiguityToUnsupported,
+                InjectedDefectKind::WrongBridge,
+                InjectedDefectKind::BroadenNumericForm,
+            ] {
+                if let Some(defect) = inject_contract_defect(&proposal, &corpus, kind) {
+                    let report = evaluate_candidate_corpus(&defect.proposal, &corpus);
+                    assert!(!report.counterexamples.is_empty(), "{label} {kind:?} not detected");
+                    observed += 1;
+                }
+            }
+            assert!(observed >= 2, "{label} exposed too few injectable defect classes: {observed}");
+        }
     }
 
     #[test]
@@ -8912,5 +10294,3 @@ mod tests {
             "D4 FAIL: no ambiguous cases detected despite {} ambiguous probes",
             d4_ambiguous_total);
     }
-
-

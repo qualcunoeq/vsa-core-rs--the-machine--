@@ -28,6 +28,7 @@ pub mod open_set;
 pub mod adversarial;
 pub mod long_horizon;
 pub mod independent_env;
+pub mod natural_ingest;
 pub mod method_synthesis;
 pub mod concept_composition_benchmark;
 pub mod cross_vertical_benchmark;

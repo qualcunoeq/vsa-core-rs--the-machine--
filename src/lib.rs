@@ -81,6 +81,7 @@ pub mod linear_system;
 pub mod quadratic_equation;
 pub mod math;
 pub mod math_ingest;
+pub mod notation_normalization;
 pub mod math_method_mining;
 pub mod math_methods;
 pub mod model_planning_benchmark;

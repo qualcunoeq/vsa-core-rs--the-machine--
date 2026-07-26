@@ -56,6 +56,10 @@ name = "hle_release"
 path = "src/bin/hle_release.rs"
 
 [[bin]]
+name = "hle_knowledge_audit"
+path = "src/bin/hle_knowledge_audit.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

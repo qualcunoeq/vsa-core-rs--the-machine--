@@ -31,12 +31,13 @@ budget.
 
 ## Shadow interpretation
 
-`shadow_execute` invokes only the four existing, trusted formalizers:
+`shadow_execute` invokes only the five existing, trusted formalizers:
 
 * `QuantityRelationV1`;
 * `UnitQuantity`;
 * `FractionalQuantity`;
-* `PercentageQuantityV1`.
+* `PercentageQuantityV1`;
+* `ClockTimeDifferenceV1` (the unseen-contract trusted substrate).
 
 An accepted artifact must pass its native replay gate before the method receipt
 is marked replay-verified. Ambiguous and unsupported cases remain non-executed
@@ -113,8 +114,8 @@ ReorderChecksUnsafely
 ```
 
 The sandbox revision test repairs an omitted replay step without mutating the
-parent specification. The current focused module suite reports **6 passed, 0
-failed**, including the full-corpus and defect campaigns.
+parent specification. The current focused module suite reports **8 passed, 0
+failed**, including the full-corpus, unseen-contract, and defect campaigns.
 
 ## First unseen-contract experiment
 
@@ -180,10 +181,51 @@ claimed as synthesized code. This separation is intentional: Phase 4
 synthesizes the method wiring and governance checks, while the shadow
 substrate remains independently reviewed and non-authorizing.
 
+## Unseen clock pressure and repair campaign
+
+The initial 18-case clock corpus remains frozen. A separate deterministic
+pressure corpus attacks the synthesized method without changing that contract
+release:
+
+| Metric | Result |
+| --- | ---: |
+| Pressure cases | 240 |
+| Supported / ambiguous / unsupported | 160 / 40 / 40 |
+| Pressure corpus hash | `e751f796efbc903c2474627a23751147b308b8e1a8afe7285e895a0e92544759` |
+| Baseline exact decisions | 240 / 240 |
+| Baseline false authorizations / denials | 0 / 0 |
+
+The pressure cases cover same-day and overnight intervals, 12-hour and
+24-hour notation, alternate wording, midnight/noon boundaries, malformed
+times, missing meridiem, unclear rollover, dates, time zones, DST, recurring
+schedules, and multi-day prompts. Its hash is separate from the frozen
+contract hash so expanding the attack set cannot silently redefine the unseen
+contract.
+
+Six semantic faults were injected at the trusted invocation boundary in a
+sandbox-only `FaultedClockMethodSpec`; the immutable synthesized parent and
+live registry are never changed:
+
+| Injected defect | Observable counterexamples |
+| --- | ---: |
+| Reversed subtraction | 160 duration mismatches; 160 replay failures |
+| Broken meridiem normalization | 80 duration mismatches |
+| Missing rollover guard | 7 duration/replay failures |
+| Missing replay gate | 160 replay failures |
+| Accept missing meridiem | 15 false authorizations |
+| Allow multiple-day rollover | 10 false authorizations |
+
+All six defects were detected. A bounded sandbox revision clears each fault
+and restores 240 / 240 decisions, zero false authorizations, zero false
+denials, and replay equality with the parent method. The repaired spec gets a
+new immutable id; the parent remains unchanged. These faults are test
+instrumentation, not production DSL operations or synthesized capability
+branches.
+
 ## Deliberate non-goals
 
 This phase does not yet synthesize arbitrary new parsers, invent DSL
 operations, apply revisions to production contracts, or promote a method to a
-capability. The next gate is to hide the historical implementations, compare
-the DSL boundary against larger frozen corpora, and run Phase 3B counterexample
-refinement against a deliberately weakened synthesized specification.
+capability. The pressure campaign is a bounded self-attack of the unseen
+method; the next gate is a second unseen contract with a qualitatively
+different semantic structure after the clock method is externally broadened.

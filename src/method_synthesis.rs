@@ -6,8 +6,8 @@
 //! authority.  The shadow interpreter may call only the existing, named
 //! capability formalizers and their replay gates.
 
+use crate::clock_time_contract::{self, ClockBehaviorDefect, ClockDecision};
 use crate::fractional_quantity::{self, FractionalQuantityDecision};
-use crate::clock_time_contract::{self, ClockDecision};
 use crate::percentage_quantity::{self, PercentageQuantityDecision};
 use crate::quantity_relation::{self, QuantityRelationDecision};
 use crate::unit_aware_quantity::{self, UnitQuantityDecision};
@@ -65,17 +65,36 @@ pub struct MethodImplementationSpec {
 }
 
 pub fn operation_trace(spec: &MethodImplementationSpec) -> Vec<String> {
-    spec.steps.iter().map(|step| format!("{:?}", step.operation)).collect()
+    spec.steps
+        .iter()
+        .map(|step| format!("{:?}", step.operation))
+        .collect()
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SpecValidationError {
     EmptySteps,
-    WrongInitialInput { expected: ArtifactType, actual: ArtifactType },
-    BrokenHandoff { index: usize, expected: ArtifactType, actual: ArtifactType },
-    WrongFinalOutput { expected: ArtifactType, actual: ArtifactType },
-    OperationBudgetExceeded { actual: usize, budget: usize },
-    DepthBudgetExceeded { actual: usize, budget: usize },
+    WrongInitialInput {
+        expected: ArtifactType,
+        actual: ArtifactType,
+    },
+    BrokenHandoff {
+        index: usize,
+        expected: ArtifactType,
+        actual: ArtifactType,
+    },
+    WrongFinalOutput {
+        expected: ArtifactType,
+        actual: ArtifactType,
+    },
+    OperationBudgetExceeded {
+        actual: usize,
+        budget: usize,
+    },
+    DepthBudgetExceeded {
+        actual: usize,
+        budget: usize,
+    },
     AuthorityRequired,
     UntrustedCapability(String),
     VerificationMissing,
@@ -83,7 +102,10 @@ pub enum SpecValidationError {
     MatchSupportedFormMissing,
     SafetyPredicateMissing,
     UnsafeOperationOrder,
-    CapabilityFamilyMismatch { expected: String, actual: String },
+    CapabilityFamilyMismatch {
+        expected: String,
+        actual: String,
+    },
     BindingExtractionMissing,
 }
 
@@ -123,11 +145,21 @@ impl MethodImplementationSpec {
                 budget: self.operation_budget.min(MAX_STEPS),
             });
         }
-        let logical_depth = self.steps.iter().filter(|step| matches!(
-            step.operation,
-            DslOperation::InvokeCapability { .. } | DslOperation::ConstructTypedRelation
-        )).count().max(1);
-        if self.depth_budget == 0 || self.depth_budget > MAX_DEPTH || logical_depth > self.depth_budget {
+        let logical_depth = self
+            .steps
+            .iter()
+            .filter(|step| {
+                matches!(
+                    step.operation,
+                    DslOperation::InvokeCapability { .. } | DslOperation::ConstructTypedRelation
+                )
+            })
+            .count()
+            .max(1);
+        if self.depth_budget == 0
+            || self.depth_budget > MAX_DEPTH
+            || logical_depth > self.depth_budget
+        {
             errors.push(SpecValidationError::DepthBudgetExceeded {
                 actual: logical_depth,
                 budget: self.depth_budget.min(MAX_DEPTH),
@@ -177,12 +209,20 @@ impl MethodImplementationSpec {
                 _ => {}
             }
         }
-        if !matched { errors.push(SpecValidationError::MatchSupportedFormMissing); }
-        if !predicate { errors.push(SpecValidationError::SafetyPredicateMissing); }
+        if !matched {
+            errors.push(SpecValidationError::MatchSupportedFormMissing);
+        }
+        if !predicate {
+            errors.push(SpecValidationError::SafetyPredicateMissing);
+        }
         if let (Some(invoke), Some(match_index), Some(predicate_index)) = (
             invoke_index,
-            self.steps.iter().position(|step| matches!(step.operation, DslOperation::MatchSupportedForm)),
-            self.steps.iter().position(|step| matches!(step.operation, DslOperation::CheckPredicate { .. })),
+            self.steps
+                .iter()
+                .position(|step| matches!(step.operation, DslOperation::MatchSupportedForm)),
+            self.steps
+                .iter()
+                .position(|step| matches!(step.operation, DslOperation::CheckPredicate { .. })),
         ) {
             if invoke < match_index || invoke < predicate_index {
                 errors.push(SpecValidationError::UnsafeOperationOrder);
@@ -204,14 +244,22 @@ impl MethodImplementationSpec {
         if !replay {
             errors.push(SpecValidationError::ReplayMissing);
         }
-        if errors.is_empty() { Ok(()) } else { Err(errors) }
+        if errors.is_empty() {
+            Ok(())
+        } else {
+            Err(errors)
+        }
     }
 }
 
 fn trusted_capability(capability: &str) -> bool {
     matches!(
         capability,
-        "quantity_relation" | "unit_aware_quantity" | "fractional_quantity" | "percentage_quantity" | "clock_time_difference"
+        "quantity_relation"
+            | "unit_aware_quantity"
+            | "fractional_quantity"
+            | "percentage_quantity"
+            | "clock_time_difference"
     )
 }
 
@@ -228,19 +276,20 @@ pub struct ShadowExecution {
     pub prompt: String,
     pub decision: ShadowDecision,
     pub artifact_type: Option<ArtifactType>,
+    pub observed_duration_minutes: Option<u16>,
     pub artifact_replay_verified: bool,
     pub method_replay_verified: bool,
 }
 
 impl ShadowExecution {
-    pub fn authorized(&self) -> bool { self.decision == ShadowDecision::Applicable }
+    pub fn authorized(&self) -> bool {
+        self.decision == ShadowDecision::Applicable
+    }
 }
 
 /// Build the first restricted method specification for a historical family.
 /// The result is a plan, not an executable capability or registry entry.
-pub fn synthesize_historical_method(
-    family: &str,
-) -> Result<MethodImplementationSpec, String> {
+pub fn synthesize_historical_method(family: &str) -> Result<MethodImplementationSpec, String> {
     let (capability, artifact) = match family {
         "QuantityRelationV1" => ("quantity_relation", ArtifactType::QuantityRelation),
         "UnitQuantity" => ("unit_aware_quantity", ArtifactType::UnitQuantity),
@@ -250,7 +299,9 @@ pub fn synthesize_historical_method(
     };
     let mut steps = vec![
         MethodStep {
-            operation: DslOperation::ExtractBinding { name: "source_text".into() },
+            operation: DslOperation::ExtractBinding {
+                name: "source_text".into(),
+            },
             input: ArtifactType::RawPrompt,
             output: ArtifactType::RawPrompt,
         },
@@ -265,12 +316,16 @@ pub fn synthesize_historical_method(
             output: ArtifactType::RawPrompt,
         },
         MethodStep {
-            operation: DslOperation::CheckPredicate { predicate: "declared_contract_predicates".into() },
+            operation: DslOperation::CheckPredicate {
+                predicate: "declared_contract_predicates".into(),
+            },
             input: ArtifactType::RawPrompt,
             output: ArtifactType::RawPrompt,
         },
         MethodStep {
-            operation: DslOperation::InvokeCapability { capability: capability.into() },
+            operation: DslOperation::InvokeCapability {
+                capability: capability.into(),
+            },
             input: ArtifactType::RawPrompt,
             output: artifact,
         },
@@ -307,7 +362,8 @@ pub fn synthesize_historical_method(
         diagnostic_only: true,
         trusted_capability: capability.into(),
     };
-    spec.validate().map_err(|errors| format!("invalid synthesized spec: {errors:?}"))?;
+    spec.validate()
+        .map_err(|errors| format!("invalid synthesized spec: {errors:?}"))?;
     Ok(spec)
 }
 
@@ -332,7 +388,10 @@ pub fn synthesize_from_contract(
     contract: &ValidatedMethodContract,
 ) -> Result<MethodImplementationSpec, String> {
     if !trusted_capability(&contract.trusted_capability) {
-        return Err(format!("untrusted capability: {}", contract.trusted_capability));
+        return Err(format!(
+            "untrusted capability: {}",
+            contract.trusted_capability
+        ));
     }
     if contract.required_bindings.is_empty() || contract.predicates.is_empty() {
         return Err("contract requires bindings and predicates".into());
@@ -340,34 +399,66 @@ pub fn synthesize_from_contract(
     let mut steps = Vec::new();
     for binding in &contract.required_bindings {
         steps.push(MethodStep {
-            operation: DslOperation::ExtractBinding { name: binding.clone() },
+            operation: DslOperation::ExtractBinding {
+                name: binding.clone(),
+            },
             input: contract.input_artifact,
             output: contract.input_artifact,
         });
         steps.push(MethodStep {
-            operation: DslOperation::RequireBinding { name: binding.clone() },
+            operation: DslOperation::RequireBinding {
+                name: binding.clone(),
+            },
             input: contract.input_artifact,
             output: contract.input_artifact,
         });
     }
-    steps.push(MethodStep { operation: DslOperation::NormalizeNumeric, input: contract.input_artifact, output: contract.input_artifact });
-    steps.push(MethodStep { operation: DslOperation::MatchSupportedForm, input: contract.input_artifact, output: contract.input_artifact });
+    steps.push(MethodStep {
+        operation: DslOperation::NormalizeNumeric,
+        input: contract.input_artifact,
+        output: contract.input_artifact,
+    });
+    steps.push(MethodStep {
+        operation: DslOperation::MatchSupportedForm,
+        input: contract.input_artifact,
+        output: contract.input_artifact,
+    });
     for predicate in &contract.predicates {
         steps.push(MethodStep {
-            operation: DslOperation::CheckPredicate { predicate: predicate.clone() },
+            operation: DslOperation::CheckPredicate {
+                predicate: predicate.clone(),
+            },
             input: contract.input_artifact,
             output: contract.input_artifact,
         });
     }
-    steps.push(MethodStep { operation: DslOperation::RejectAmbiguous, input: contract.input_artifact, output: contract.input_artifact });
-    steps.push(MethodStep { operation: DslOperation::RejectUnsupported, input: contract.input_artifact, output: contract.input_artifact });
     steps.push(MethodStep {
-        operation: DslOperation::InvokeCapability { capability: contract.trusted_capability.clone() },
+        operation: DslOperation::RejectAmbiguous,
+        input: contract.input_artifact,
+        output: contract.input_artifact,
+    });
+    steps.push(MethodStep {
+        operation: DslOperation::RejectUnsupported,
+        input: contract.input_artifact,
+        output: contract.input_artifact,
+    });
+    steps.push(MethodStep {
+        operation: DslOperation::InvokeCapability {
+            capability: contract.trusted_capability.clone(),
+        },
         input: contract.input_artifact,
         output: contract.output_artifact,
     });
-    steps.push(MethodStep { operation: DslOperation::VerifyArtifact, input: contract.output_artifact, output: ArtifactType::VerifiedArtifact });
-    steps.push(MethodStep { operation: DslOperation::Replay, input: ArtifactType::VerifiedArtifact, output: ArtifactType::ReplayReceipt });
+    steps.push(MethodStep {
+        operation: DslOperation::VerifyArtifact,
+        input: contract.output_artifact,
+        output: ArtifactType::VerifiedArtifact,
+    });
+    steps.push(MethodStep {
+        operation: DslOperation::Replay,
+        input: ArtifactType::VerifiedArtifact,
+        output: ArtifactType::ReplayReceipt,
+    });
     let spec = MethodImplementationSpec {
         spec_id: format!("synthesized-{}", contract.contract_id),
         capability_family: contract.contract_id.clone(),
@@ -379,7 +470,8 @@ pub fn synthesize_from_contract(
         diagnostic_only: true,
         trusted_capability: contract.trusted_capability.clone(),
     };
-    spec.validate().map_err(|errors| format!("invalid synthesized contract method: {errors:?}"))?;
+    spec.validate()
+        .map_err(|errors| format!("invalid synthesized contract method: {errors:?}"))?;
     Ok(spec)
 }
 
@@ -411,22 +503,36 @@ pub fn inject_method_defect(
     let mut spec = parent.clone();
     let expected_failure = match kind {
         MethodSpecDefectKind::OmitSafetyCheck => {
-            spec.steps.retain(|step| !matches!(step.operation, DslOperation::CheckPredicate { .. }));
+            spec.steps
+                .retain(|step| !matches!(step.operation, DslOperation::CheckPredicate { .. }));
             SpecValidationError::SafetyPredicateMissing
         }
         MethodSpecDefectKind::RemoveSupportedFormBranch => {
-            spec.steps.retain(|step| !matches!(step.operation, DslOperation::MatchSupportedForm));
+            spec.steps
+                .retain(|step| !matches!(step.operation, DslOperation::MatchSupportedForm));
             SpecValidationError::MatchSupportedFormMissing
         }
         MethodSpecDefectKind::WrongBindingExtraction => {
-            if let Some(step) = spec.steps.iter_mut().find(|step| matches!(step.operation, DslOperation::ExtractBinding { .. })) {
-                step.operation = DslOperation::ExtractBinding { name: String::new() };
+            if let Some(step) = spec
+                .steps
+                .iter_mut()
+                .find(|step| matches!(step.operation, DslOperation::ExtractBinding { .. }))
+            {
+                step.operation = DslOperation::ExtractBinding {
+                    name: String::new(),
+                };
             }
             SpecValidationError::BindingExtractionMissing
         }
         MethodSpecDefectKind::WrongTrustedBridge => {
-            if let Some(step) = spec.steps.iter_mut().find(|step| matches!(step.operation, DslOperation::InvokeCapability { .. })) {
-                step.operation = DslOperation::InvokeCapability { capability: "unit_aware_quantity".into() };
+            if let Some(step) = spec
+                .steps
+                .iter_mut()
+                .find(|step| matches!(step.operation, DslOperation::InvokeCapability { .. }))
+            {
+                step.operation = DslOperation::InvokeCapability {
+                    capability: "unit_aware_quantity".into(),
+                };
             }
             SpecValidationError::CapabilityFamilyMismatch {
                 expected: spec.trusted_capability.clone(),
@@ -434,21 +540,37 @@ pub fn inject_method_defect(
             }
         }
         MethodSpecDefectKind::OmitReplay => {
-            spec.steps.retain(|step| !matches!(step.operation, DslOperation::Replay));
+            spec.steps
+                .retain(|step| !matches!(step.operation, DslOperation::Replay));
             SpecValidationError::ReplayMissing
         }
         MethodSpecDefectKind::ExceedBudget => {
             spec.operation_budget = 0;
-            SpecValidationError::OperationBudgetExceeded { actual: spec.steps.len(), budget: 0 }
+            SpecValidationError::OperationBudgetExceeded {
+                actual: spec.steps.len(),
+                budget: 0,
+            }
         }
         MethodSpecDefectKind::ReorderChecksUnsafely => {
-            let invoke = spec.steps.iter().position(|step| matches!(step.operation, DslOperation::InvokeCapability { .. })).unwrap();
-            let predicate = spec.steps.iter().position(|step| matches!(step.operation, DslOperation::CheckPredicate { .. })).unwrap();
+            let invoke = spec
+                .steps
+                .iter()
+                .position(|step| matches!(step.operation, DslOperation::InvokeCapability { .. }))
+                .unwrap();
+            let predicate = spec
+                .steps
+                .iter()
+                .position(|step| matches!(step.operation, DslOperation::CheckPredicate { .. }))
+                .unwrap();
             spec.steps.swap(invoke, predicate);
             SpecValidationError::UnsafeOperationOrder
         }
     };
-    InjectedMethodDefect { kind, expected_failure, spec }
+    InjectedMethodDefect {
+        kind,
+        expected_failure,
+        spec,
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -485,22 +607,30 @@ pub fn apply_method_revision_sandboxed(
     for edit in &revision.edits {
         match edit {
             MethodRevisionEdit::AddStep { index, step } => {
-                if *index > revised.steps.len() { return Err(MethodRevisionError::InvalidIndex); }
+                if *index > revised.steps.len() {
+                    return Err(MethodRevisionError::InvalidIndex);
+                }
                 revised.steps.insert(*index, step.clone());
             }
             MethodRevisionEdit::RemoveStep { index } => {
-                if *index >= revised.steps.len() { return Err(MethodRevisionError::InvalidIndex); }
+                if *index >= revised.steps.len() {
+                    return Err(MethodRevisionError::InvalidIndex);
+                }
                 revised.steps.remove(*index);
             }
             MethodRevisionEdit::ReplaceStep { index, step } => {
-                if *index >= revised.steps.len() { return Err(MethodRevisionError::InvalidIndex); }
+                if *index >= revised.steps.len() {
+                    return Err(MethodRevisionError::InvalidIndex);
+                }
                 revised.steps[*index] = step.clone();
             }
             MethodRevisionEdit::SetOperationBudget { budget } => revised.operation_budget = *budget,
         }
     }
     revised.spec_id = revision.revision_id.clone();
-    revised.validate().map_err(MethodRevisionError::Validation)?;
+    revised
+        .validate()
+        .map_err(MethodRevisionError::Validation)?;
     Ok(revised)
 }
 
@@ -511,35 +641,56 @@ pub fn shadow_execute(
     spec: &MethodImplementationSpec,
     prompt: &str,
 ) -> Result<ShadowExecution, String> {
-    spec.validate().map_err(|errors| format!("invalid method spec: {errors:?}"))?;
-    let (decision, artifact_type, artifact_replay_verified) = match spec.capability_family.as_str() {
+    spec.validate()
+        .map_err(|errors| format!("invalid method spec: {errors:?}"))?;
+    let mut observed_duration_minutes = None;
+    let (decision, artifact_type, artifact_replay_verified) = match spec.capability_family.as_str()
+    {
         "QuantityRelationV1" => match quantity_relation::formalize(prompt) {
-            QuantityRelationDecision::Accepted(artifact) =>
-                (ShadowDecision::Applicable, Some(ArtifactType::QuantityRelation), artifact.replay_verified()),
+            QuantityRelationDecision::Accepted(artifact) => (
+                ShadowDecision::Applicable,
+                Some(ArtifactType::QuantityRelation),
+                artifact.replay_verified(),
+            ),
             QuantityRelationDecision::Ambiguous => (ShadowDecision::Ambiguous, None, false),
             QuantityRelationDecision::Unsupported => (ShadowDecision::Unsupported, None, false),
         },
         "UnitQuantity" => match unit_aware_quantity::formalize(prompt) {
-            UnitQuantityDecision::Accepted(artifact) =>
-                (ShadowDecision::Applicable, Some(ArtifactType::UnitQuantity), artifact.replay_verified()),
+            UnitQuantityDecision::Accepted(artifact) => (
+                ShadowDecision::Applicable,
+                Some(ArtifactType::UnitQuantity),
+                artifact.replay_verified(),
+            ),
             UnitQuantityDecision::Ambiguous => (ShadowDecision::Ambiguous, None, false),
             UnitQuantityDecision::Unsupported => (ShadowDecision::Unsupported, None, false),
         },
         "FractionalQuantity" => match fractional_quantity::formalize(prompt) {
-            FractionalQuantityDecision::Accepted(artifact) =>
-                (ShadowDecision::Applicable, Some(ArtifactType::FractionalQuantity), artifact.replay_verified()),
+            FractionalQuantityDecision::Accepted(artifact) => (
+                ShadowDecision::Applicable,
+                Some(ArtifactType::FractionalQuantity),
+                artifact.replay_verified(),
+            ),
             FractionalQuantityDecision::Ambiguous => (ShadowDecision::Ambiguous, None, false),
             FractionalQuantityDecision::Unsupported => (ShadowDecision::Unsupported, None, false),
         },
         "PercentageQuantityV1" => match percentage_quantity::formalize(prompt) {
-            PercentageQuantityDecision::Accepted(artifact) =>
-                (ShadowDecision::Applicable, Some(ArtifactType::PercentageQuantity), artifact.replay_verified()),
+            PercentageQuantityDecision::Accepted(artifact) => (
+                ShadowDecision::Applicable,
+                Some(ArtifactType::PercentageQuantity),
+                artifact.replay_verified(),
+            ),
             PercentageQuantityDecision::Ambiguous => (ShadowDecision::Ambiguous, None, false),
             PercentageQuantityDecision::Unsupported => (ShadowDecision::Unsupported, None, false),
         },
         "ClockTimeDifferenceV1" => match clock_time_contract::formalize(prompt) {
-            (ClockDecision::Supported, Some(artifact)) =>
-                (ShadowDecision::Applicable, Some(ArtifactType::ClockTimeDuration), artifact.replay_verified()),
+            (ClockDecision::Supported, Some(artifact)) => {
+                observed_duration_minutes = Some(artifact.duration_minutes);
+                (
+                    ShadowDecision::Applicable,
+                    Some(ArtifactType::ClockTimeDuration),
+                    artifact.replay_verified(),
+                )
+            }
             (ClockDecision::Ambiguous, _) => (ShadowDecision::Ambiguous, None, false),
             (ClockDecision::Unsupported, _) => (ShadowDecision::Unsupported, None, false),
             (ClockDecision::Supported, None) => (ShadowDecision::Unsupported, None, false),
@@ -549,22 +700,160 @@ pub fn shadow_execute(
     // A formalizer's positive classification is never sufficient by itself:
     // a failed artifact replay gate downgrades the shadow decision to a safe
     // refusal before any method receipt can be considered authorized.
-    let (decision, artifact_type) = if decision == ShadowDecision::Applicable
-        && !artifact_replay_verified
-    {
-        (ShadowDecision::Unsupported, None)
-    } else {
-        (decision, artifact_type)
-    };
+    let (decision, artifact_type) =
+        if decision == ShadowDecision::Applicable && !artifact_replay_verified {
+            (ShadowDecision::Unsupported, None)
+        } else {
+            (decision, artifact_type)
+        };
     let method_replay_verified = decision != ShadowDecision::Applicable || artifact_replay_verified;
     Ok(ShadowExecution {
         family: spec.capability_family.clone(),
         prompt: prompt.into(),
         decision,
         artifact_type,
+        observed_duration_minutes,
         artifact_replay_verified,
         method_replay_verified,
     })
+}
+
+/// A synthesized method with one semantic fault injected at its trusted
+/// invocation boundary.  This is a sandbox-only test object: the underlying
+/// immutable `MethodImplementationSpec` is unchanged and the fault cannot be
+/// published to the registry.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FaultedClockMethodSpec {
+    pub parent: MethodImplementationSpec,
+    pub defect: ClockBehaviorDefect,
+}
+
+pub fn inject_clock_method_defect(
+    parent: &MethodImplementationSpec,
+    defect: ClockBehaviorDefect,
+) -> Result<FaultedClockMethodSpec, String> {
+    parent
+        .validate()
+        .map_err(|errors| format!("invalid parent method: {errors:?}"))?;
+    if parent.capability_family != "ClockTimeDifferenceV1" {
+        return Err("clock defects require the unseen clock family".into());
+    }
+    Ok(FaultedClockMethodSpec {
+        parent: parent.clone(),
+        defect,
+    })
+}
+
+/// Execute a faulted clock method without applying the normal fail-closed
+/// replay downgrade.  This makes the defect observable to the counterexample
+/// evaluator (for example, an omitted replay gate can be reported rather than
+/// hidden by the production safety gate).
+pub fn shadow_execute_faulted(
+    faulted: &FaultedClockMethodSpec,
+    prompt: &str,
+) -> Result<ShadowExecution, String> {
+    faulted
+        .parent
+        .validate()
+        .map_err(|errors| format!("invalid method spec: {errors:?}"))?;
+    let (decision, artifact, replay) =
+        clock_time_contract::formalize_with_defect(prompt, faulted.defect);
+    let decision = match decision {
+        ClockDecision::Supported => ShadowDecision::Applicable,
+        ClockDecision::Ambiguous => ShadowDecision::Ambiguous,
+        ClockDecision::Unsupported => ShadowDecision::Unsupported,
+    };
+    let observed_duration_minutes = artifact.as_ref().map(|item| item.duration_minutes);
+    Ok(ShadowExecution {
+        family: faulted.parent.capability_family.clone(),
+        prompt: prompt.into(),
+        decision,
+        artifact_type: artifact.as_ref().map(|_| ArtifactType::ClockTimeDuration),
+        observed_duration_minutes,
+        artifact_replay_verified: replay,
+        method_replay_verified: replay,
+    })
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ClockDefectCampaignReport {
+    pub cases: usize,
+    pub decision_mismatches: usize,
+    pub duration_mismatches: usize,
+    pub replay_failures: usize,
+    pub false_authorizations: usize,
+    pub false_denials: usize,
+}
+
+impl ClockDefectCampaignReport {
+    pub fn detected(&self) -> bool {
+        self.decision_mismatches > 0
+            || self.duration_mismatches > 0
+            || self.replay_failures > 0
+            || self.false_authorizations > 0
+            || self.false_denials > 0
+    }
+}
+
+pub fn evaluate_clock_defect(
+    faulted: &FaultedClockMethodSpec,
+    cases: &[clock_time_contract::ClockCase],
+) -> ClockDefectCampaignReport {
+    let mut report = ClockDefectCampaignReport {
+        cases: cases.len(),
+        ..Default::default()
+    };
+    for case in cases {
+        let Ok(observed) = shadow_execute_faulted(faulted, &case.prompt) else {
+            report.decision_mismatches += 1;
+            continue;
+        };
+        let expected = match case.expected {
+            ClockDecision::Supported => ShadowDecision::Applicable,
+            ClockDecision::Ambiguous => ShadowDecision::Ambiguous,
+            ClockDecision::Unsupported => ShadowDecision::Unsupported,
+        };
+        if observed.decision != expected {
+            report.decision_mismatches += 1;
+        }
+        if expected == ShadowDecision::Applicable
+            && observed.observed_duration_minutes != case.expected_duration
+        {
+            report.duration_mismatches += 1;
+        }
+        if expected == ShadowDecision::Applicable && !observed.method_replay_verified {
+            report.replay_failures += 1;
+        }
+        if observed.authorized() && expected != ShadowDecision::Applicable {
+            report.false_authorizations += 1;
+        }
+        if !observed.authorized() && expected == ShadowDecision::Applicable {
+            report.false_denials += 1;
+        }
+    }
+    report
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ClockMethodRevision {
+    pub parent_spec_id: String,
+    pub revision_id: String,
+    pub defect: ClockBehaviorDefect,
+}
+
+pub fn apply_clock_revision_sandboxed(
+    faulted: &FaultedClockMethodSpec,
+    revision: &ClockMethodRevision,
+) -> Result<MethodImplementationSpec, MethodRevisionError> {
+    if revision.parent_spec_id != faulted.parent.spec_id {
+        return Err(MethodRevisionError::ParentMismatch);
+    }
+    let mut repaired = faulted.parent.clone();
+    repaired.spec_id = revision.revision_id.clone();
+    repaired
+        .validate()
+        .map_err(MethodRevisionError::Validation)?;
+    Ok(repaired)
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -590,7 +879,10 @@ pub fn evaluate_method_spec(
     spec: &MethodImplementationSpec,
     cases: &[HistoricalCase],
 ) -> SynthesisCampaignReport {
-    let mut report = SynthesisCampaignReport { cases: cases.len(), ..Default::default() };
+    let mut report = SynthesisCampaignReport {
+        cases: cases.len(),
+        ..Default::default()
+    };
     for case in cases {
         let Ok(result) = shadow_execute(spec, &case.prompt) else {
             report.invalid_specs += 1;
@@ -602,21 +894,33 @@ pub fn evaluate_method_spec(
         report.accepted_replay_verified += usize::from(
             result.authorized() && result.artifact_replay_verified && result.method_replay_verified,
         );
-        report.false_authorizations += usize::from(
-            result.authorized() && case.expected != ShadowDecision::Applicable,
-        );
-        report.false_denials += usize::from(
-            !result.authorized() && case.expected == ShadowDecision::Applicable,
-        );
+        report.false_authorizations +=
+            usize::from(result.authorized() && case.expected != ShadowDecision::Applicable);
+        report.false_denials +=
+            usize::from(!result.authorized() && case.expected == ShadowDecision::Applicable);
     }
     report
 }
 
 pub fn evaluate_historical_cases(cases: &[HistoricalCase]) -> SynthesisCampaignReport {
-    let mut report = SynthesisCampaignReport { cases: cases.len(), ..Default::default() };
-    for family in ["QuantityRelationV1", "UnitQuantity", "FractionalQuantity", "PercentageQuantityV1"] {
-        let family_cases: Vec<HistoricalCase> = cases.iter().filter(|case| case.family == family).cloned().collect();
-        if family_cases.is_empty() { continue; }
+    let mut report = SynthesisCampaignReport {
+        cases: cases.len(),
+        ..Default::default()
+    };
+    for family in [
+        "QuantityRelationV1",
+        "UnitQuantity",
+        "FractionalQuantity",
+        "PercentageQuantityV1",
+    ] {
+        let family_cases: Vec<HistoricalCase> = cases
+            .iter()
+            .filter(|case| case.family == family)
+            .cloned()
+            .collect();
+        if family_cases.is_empty() {
+            continue;
+        }
         let Ok(spec) = synthesize_historical_method(family) else {
             report.invalid_specs += family_cases.len();
             continue;
@@ -639,20 +943,57 @@ mod tests {
 
     fn historical_cases() -> Vec<HistoricalCase> {
         vec![
-            HistoricalCase { family: "QuantityRelationV1".into(), prompt: "5 notebooks cost 20 dollars. What is the price per notebook?".into(), expected: ShadowDecision::Applicable },
-            HistoricalCase { family: "QuantityRelationV1".into(), prompt: "A price changes by 5% each year. What is the final price?".into(), expected: ShadowDecision::Unsupported },
-            HistoricalCase { family: "UnitQuantity".into(), prompt: "Convert 3 meters to centimeters using 100 centimeters per meter.".into(), expected: ShadowDecision::Applicable },
-            HistoricalCase { family: "UnitQuantity".into(), prompt: "Add 2 meters and 30 centimeters.".into(), expected: ShadowDecision::Ambiguous },
-            HistoricalCase { family: "FractionalQuantity".into(), prompt: "What is three quarters of 20?".into(), expected: ShadowDecision::Applicable },
-            HistoricalCase { family: "FractionalQuantity".into(), prompt: "There is a 25% probability.".into(), expected: ShadowDecision::Unsupported },
-            HistoricalCase { family: "PercentageQuantityV1".into(), prompt: "What is 20% of 50?".into(), expected: ShadowDecision::Applicable },
-            HistoricalCase { family: "PercentageQuantityV1".into(), prompt: "A balance grows by 5% each year for 5 years.".into(), expected: ShadowDecision::Unsupported },
+            HistoricalCase {
+                family: "QuantityRelationV1".into(),
+                prompt: "5 notebooks cost 20 dollars. What is the price per notebook?".into(),
+                expected: ShadowDecision::Applicable,
+            },
+            HistoricalCase {
+                family: "QuantityRelationV1".into(),
+                prompt: "A price changes by 5% each year. What is the final price?".into(),
+                expected: ShadowDecision::Unsupported,
+            },
+            HistoricalCase {
+                family: "UnitQuantity".into(),
+                prompt: "Convert 3 meters to centimeters using 100 centimeters per meter.".into(),
+                expected: ShadowDecision::Applicable,
+            },
+            HistoricalCase {
+                family: "UnitQuantity".into(),
+                prompt: "Add 2 meters and 30 centimeters.".into(),
+                expected: ShadowDecision::Ambiguous,
+            },
+            HistoricalCase {
+                family: "FractionalQuantity".into(),
+                prompt: "What is three quarters of 20?".into(),
+                expected: ShadowDecision::Applicable,
+            },
+            HistoricalCase {
+                family: "FractionalQuantity".into(),
+                prompt: "There is a 25% probability.".into(),
+                expected: ShadowDecision::Unsupported,
+            },
+            HistoricalCase {
+                family: "PercentageQuantityV1".into(),
+                prompt: "What is 20% of 50?".into(),
+                expected: ShadowDecision::Applicable,
+            },
+            HistoricalCase {
+                family: "PercentageQuantityV1".into(),
+                prompt: "A balance grows by 5% each year for 5 years.".into(),
+                expected: ShadowDecision::Unsupported,
+            },
         ]
     }
 
     #[test]
     fn historical_specs_are_bounded_and_non_authorizing() {
-        for family in ["QuantityRelationV1", "UnitQuantity", "FractionalQuantity", "PercentageQuantityV1"] {
+        for family in [
+            "QuantityRelationV1",
+            "UnitQuantity",
+            "FractionalQuantity",
+            "PercentageQuantityV1",
+        ] {
             let spec = synthesize_historical_method(family).expect("historical spec");
             assert!(spec.diagnostic_only);
             assert!(spec.validate().is_ok());
@@ -682,47 +1023,84 @@ mod tests {
         spec.diagnostic_only = false;
         assert!(spec.validate().is_err());
         spec.diagnostic_only = true;
-        spec.steps[5].operation = DslOperation::InvokeCapability { capability: "arbitrary_code".into() };
+        spec.steps[5].operation = DslOperation::InvokeCapability {
+            capability: "arbitrary_code".into(),
+        };
         assert!(spec.validate().is_err());
     }
 
     #[test]
     fn full_frozen_historical_corpora_are_fail_closed() {
         #[derive(serde::Deserialize)]
-        struct Cases<T> { cases: Vec<T> }
+        struct Cases<T> {
+            cases: Vec<T>,
+        }
         #[derive(serde::Deserialize)]
-        struct BasicCase { prompt: String, outcome: String }
+        struct BasicCase {
+            prompt: String,
+            outcome: String,
+        }
 
         fn basic(path: &str, family: &str) -> Vec<HistoricalCase> {
             let corpus: Cases<BasicCase> = serde_json::from_str(path).expect("historical corpus");
-            corpus.cases.into_iter().map(|case| HistoricalCase {
-                family: family.into(),
-                prompt: case.prompt,
-                expected: match case.outcome.as_str() {
-                    "supported" => ShadowDecision::Applicable,
-                    "ambiguous" => ShadowDecision::Ambiguous,
-                    "unsupported" => ShadowDecision::Unsupported,
-                    other => panic!("unknown outcome: {other}"),
-                },
-            }).collect()
+            corpus
+                .cases
+                .into_iter()
+                .map(|case| HistoricalCase {
+                    family: family.into(),
+                    prompt: case.prompt,
+                    expected: match case.outcome.as_str() {
+                        "supported" => ShadowDecision::Applicable,
+                        "ambiguous" => ShadowDecision::Ambiguous,
+                        "unsupported" => ShadowDecision::Unsupported,
+                        other => panic!("unknown outcome: {other}"),
+                    },
+                })
+                .collect()
         }
 
-        let mut cases = basic(include_str!("../data/quantity_relation_v1_expanded.json"), "QuantityRelationV1");
-        cases.extend(basic(include_str!("../data/unit_aware_quantity_v1.json"), "UnitQuantity"));
-        cases.extend(basic(include_str!("../data/fractional_quantity_v1.json"), "FractionalQuantity"));
-        cases.extend(crate::percentage_quantity_proposal::corpus().cases.into_iter().map(|case| HistoricalCase {
-            family: "PercentageQuantityV1".into(),
-            prompt: case.prompt,
-            expected: match case.scope {
-                crate::percentage_quantity_proposal::PercentageScope::Supported => ShadowDecision::Applicable,
-                crate::percentage_quantity_proposal::PercentageScope::Ambiguous => ShadowDecision::Ambiguous,
-                crate::percentage_quantity_proposal::PercentageScope::Unsupported => ShadowDecision::Unsupported,
-            },
-        }));
+        let mut cases = basic(
+            include_str!("../data/quantity_relation_v1_expanded.json"),
+            "QuantityRelationV1",
+        );
+        cases.extend(basic(
+            include_str!("../data/unit_aware_quantity_v1.json"),
+            "UnitQuantity",
+        ));
+        cases.extend(basic(
+            include_str!("../data/fractional_quantity_v1.json"),
+            "FractionalQuantity",
+        ));
+        cases.extend(
+            crate::percentage_quantity_proposal::corpus()
+                .cases
+                .into_iter()
+                .map(|case| HistoricalCase {
+                    family: "PercentageQuantityV1".into(),
+                    prompt: case.prompt,
+                    expected: match case.scope {
+                        crate::percentage_quantity_proposal::PercentageScope::Supported => {
+                            ShadowDecision::Applicable
+                        }
+                        crate::percentage_quantity_proposal::PercentageScope::Ambiguous => {
+                            ShadowDecision::Ambiguous
+                        }
+                        crate::percentage_quantity_proposal::PercentageScope::Unsupported => {
+                            ShadowDecision::Unsupported
+                        }
+                    },
+                }),
+        );
 
         let report = evaluate_historical_cases(&cases);
-        for family in ["QuantityRelationV1", "UnitQuantity", "FractionalQuantity", "PercentageQuantityV1"] {
-            let family_cases: Vec<HistoricalCase> = cases.iter()
+        for family in [
+            "QuantityRelationV1",
+            "UnitQuantity",
+            "FractionalQuantity",
+            "PercentageQuantityV1",
+        ] {
+            let family_cases: Vec<HistoricalCase> = cases
+                .iter()
                 .filter(|case| case.family == family)
                 .cloned()
                 .collect();
@@ -774,8 +1152,14 @@ mod tests {
         ];
         for kind in kinds {
             let defect = inject_method_defect(&spec, kind);
-            let errors = defect.spec.validate().expect_err("injected defect must be rejected");
-            assert!(errors.iter().any(|error| error == &defect.expected_failure), "{kind:?}: {errors:?}");
+            let errors = defect
+                .spec
+                .validate()
+                .expect_err("injected defect must be rejected");
+            assert!(
+                errors.iter().any(|error| error == &defect.expected_failure),
+                "{kind:?}: {errors:?}"
+            );
         }
     }
 
@@ -797,9 +1181,13 @@ mod tests {
                 },
             }],
         };
-        let repaired = apply_method_revision_sandboxed(&defect.spec, &revision).expect("sandbox repair");
+        let repaired =
+            apply_method_revision_sandboxed(&defect.spec, &revision).expect("sandbox repair");
         assert!(repaired.validate().is_ok());
-        assert_eq!(parent.steps.last().map(|step| &step.operation), Some(&DslOperation::Replay));
+        assert_eq!(
+            parent.steps.last().map(|step| &step.operation),
+            Some(&DslOperation::Replay)
+        );
         assert_ne!(parent.spec_id, repaired.spec_id);
     }
 
@@ -820,7 +1208,9 @@ mod tests {
         let spec = synthesize_from_contract(&method_contract).expect("generic unseen synthesis");
         assert!(spec.validate().is_ok());
         assert_eq!(spec.trusted_capability, "clock_time_difference");
-        let development: Vec<HistoricalCase> = contract.cases.iter()
+        let development: Vec<HistoricalCase> = contract
+            .cases
+            .iter()
             .filter(|case| case.split == clock_time_contract::ClockSplit::Development)
             .map(|case| HistoricalCase {
                 family: contract.contract_id.clone(),
@@ -830,8 +1220,11 @@ mod tests {
                     clock_time_contract::ClockDecision::Ambiguous => ShadowDecision::Ambiguous,
                     clock_time_contract::ClockDecision::Unsupported => ShadowDecision::Unsupported,
                 },
-            }).collect();
-        let holdout: Vec<HistoricalCase> = contract.cases.iter()
+            })
+            .collect();
+        let holdout: Vec<HistoricalCase> = contract
+            .cases
+            .iter()
             .filter(|case| case.split == clock_time_contract::ClockSplit::Holdout)
             .map(|case| HistoricalCase {
                 family: contract.contract_id.clone(),
@@ -841,13 +1234,19 @@ mod tests {
                     clock_time_contract::ClockDecision::Ambiguous => ShadowDecision::Ambiguous,
                     clock_time_contract::ClockDecision::Unsupported => ShadowDecision::Unsupported,
                 },
-            }).collect();
+            })
+            .collect();
         let development_report = evaluate_method_spec(&spec, &development);
         let holdout_report = evaluate_method_spec(&spec, &holdout);
         for case in development.iter().chain(holdout.iter()) {
-            let observed = shadow_execute(&spec, &case.prompt).expect("shadow clock").decision;
+            let observed = shadow_execute(&spec, &case.prompt)
+                .expect("shadow clock")
+                .decision;
             if observed != case.expected {
-                eprintln!("phase4 clock mismatch: prompt={:?} expected={:?} observed={:?}", case.prompt, case.expected, observed);
+                eprintln!(
+                    "phase4 clock mismatch: prompt={:?} expected={:?} observed={:?}",
+                    case.prompt, case.expected, observed
+                );
             }
         }
         eprintln!(
@@ -865,11 +1264,141 @@ mod tests {
             holdout_report.false_authorizations,
             holdout_report.false_denials,
         );
-        eprintln!("phase4 unseen clock operation trace: {:?}", operation_trace(&spec));
-        assert_eq!(development_report.correct_decisions, development_report.cases);
+        eprintln!(
+            "phase4 unseen clock operation trace: {:?}",
+            operation_trace(&spec)
+        );
+        assert_eq!(
+            development_report.correct_decisions,
+            development_report.cases
+        );
         assert_eq!(holdout_report.correct_decisions, holdout_report.cases);
         assert_eq!(holdout_report.false_authorizations, 0);
         assert_eq!(holdout_report.false_denials, 0);
-        assert_eq!(holdout_report.accepted_replay_verified, holdout_report.authorized);
+        assert_eq!(
+            holdout_report.accepted_replay_verified,
+            holdout_report.authorized
+        );
+    }
+
+    #[test]
+    fn unseen_clock_pressure_campaign_finds_and_repairs_all_behavioral_defects() {
+        let contract = clock_time_contract::contract();
+        let method_contract = ValidatedMethodContract {
+            contract_id: contract.contract_id.clone(),
+            input_artifact: ArtifactType::RawPrompt,
+            output_artifact: ArtifactType::ClockTimeDuration,
+            required_bindings: contract.required_bindings.clone(),
+            predicates: contract.predicates.clone(),
+            trusted_capability: "clock_time_difference".into(),
+            operation_budget: 16,
+            depth_budget: 8,
+        };
+        let parent = synthesize_from_contract(&method_contract).expect("generic clock synthesis");
+        let pressure = clock_time_contract::pressure_corpus();
+        assert_eq!(pressure.len(), 240);
+        let mut baseline_correct = 0;
+        let mut baseline_false_auth = 0;
+        let mut baseline_false_denials = 0;
+        for case in &pressure {
+            let observed = shadow_execute(&parent, &case.prompt).expect("baseline clock shadow");
+            let expected = match case.expected {
+                clock_time_contract::ClockDecision::Supported => ShadowDecision::Applicable,
+                clock_time_contract::ClockDecision::Ambiguous => ShadowDecision::Ambiguous,
+                clock_time_contract::ClockDecision::Unsupported => ShadowDecision::Unsupported,
+            };
+            let duration_ok = expected != ShadowDecision::Applicable
+                || observed.observed_duration_minutes == case.expected_duration;
+            if observed.decision == expected && duration_ok && observed.method_replay_verified {
+                baseline_correct += 1;
+            }
+            baseline_false_auth +=
+                usize::from(observed.authorized() && expected != ShadowDecision::Applicable);
+            baseline_false_denials +=
+                usize::from(!observed.authorized() && expected == ShadowDecision::Applicable);
+        }
+        assert_eq!(baseline_correct, pressure.len());
+        assert_eq!(baseline_false_auth, 0);
+        assert_eq!(baseline_false_denials, 0);
+        eprintln!(
+            "phase4 clock pressure: hash={} cases={} supported={} ambiguous={} unsupported={}",
+            clock_time_contract::pressure_hash(),
+            pressure.len(),
+            pressure
+                .iter()
+                .filter(|case| case.expected == clock_time_contract::ClockDecision::Supported)
+                .count(),
+            pressure
+                .iter()
+                .filter(|case| case.expected == clock_time_contract::ClockDecision::Ambiguous)
+                .count(),
+            pressure
+                .iter()
+                .filter(|case| case.expected == clock_time_contract::ClockDecision::Unsupported)
+                .count(),
+        );
+        let defects = [
+            ClockBehaviorDefect::ReversedSubtraction,
+            ClockBehaviorDefect::BrokenMeridiemNormalization,
+            ClockBehaviorDefect::MissingRolloverGuard,
+            ClockBehaviorDefect::MissingReplayGate,
+            ClockBehaviorDefect::AcceptMissingMeridiem,
+            ClockBehaviorDefect::AllowMultipleDayRollover,
+        ];
+        let mut detected = 0;
+        for defect in defects {
+            let faulted =
+                inject_clock_method_defect(&parent, defect).expect("clock defect injection");
+            let report = evaluate_clock_defect(&faulted, &pressure);
+            eprintln!(
+                "phase4 clock defect: defect={defect:?} cases={} decision_mismatches={} duration_mismatches={} replay_failures={} false_auth={} false_denials={}",
+                report.cases,
+                report.decision_mismatches,
+                report.duration_mismatches,
+                report.replay_failures,
+                report.false_authorizations,
+                report.false_denials,
+            );
+            assert!(report.detected(), "defect {defect:?} was not observable");
+            detected += 1;
+            let revision = ClockMethodRevision {
+                parent_spec_id: parent.spec_id.clone(),
+                revision_id: format!("phase4-clock-repair-{defect:?}"),
+                defect,
+            };
+            let repaired = apply_clock_revision_sandboxed(&faulted, &revision)
+                .expect("sandboxed clock repair");
+            let repaired_report = evaluate_method_spec(
+                &repaired,
+                &pressure
+                    .iter()
+                    .map(|case| HistoricalCase {
+                        family: "ClockTimeDifferenceV1".into(),
+                        prompt: case.prompt.clone(),
+                        expected: match case.expected {
+                            clock_time_contract::ClockDecision::Supported => {
+                                ShadowDecision::Applicable
+                            }
+                            clock_time_contract::ClockDecision::Ambiguous => {
+                                ShadowDecision::Ambiguous
+                            }
+                            clock_time_contract::ClockDecision::Unsupported => {
+                                ShadowDecision::Unsupported
+                            }
+                        },
+                    })
+                    .collect::<Vec<_>>(),
+            );
+            assert_eq!(repaired_report.correct_decisions, pressure.len());
+            assert_eq!(repaired_report.false_authorizations, 0);
+            assert_eq!(repaired_report.false_denials, 0);
+            assert_eq!(
+                repaired_report.accepted_replay_verified,
+                repaired_report.authorized
+            );
+            assert_eq!(parent.spec_id, faulted.parent.spec_id);
+            assert!(parent.validate().is_ok());
+        }
+        assert_eq!(detected, defects.len());
     }
 }

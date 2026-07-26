@@ -41,7 +41,17 @@ struct AuditReport {
     missing_knowledge_rows: usize,
     classifications: BTreeMap<KnowledgeGap, usize>,
     samples: BTreeMap<KnowledgeGap, Vec<String>>,
+    records: Vec<AuditRecord>,
     method: String,
+}
+
+#[derive(Debug, Serialize)]
+struct AuditRecord {
+    id: Option<String>,
+    category: String,
+    gap: KnowledgeGap,
+    confidence: String,
+    question: String,
 }
 
 fn hash(bytes: &[u8]) -> String {
@@ -102,6 +112,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     let mut classifications = BTreeMap::new();
     let mut samples: BTreeMap<KnowledgeGap, Vec<String>> = BTreeMap::new();
+    let mut records = Vec::new();
     let missing: Vec<_> = rows
         .iter()
         .filter(|row| row.terminal_classification == "missing_factual_knowledge")
@@ -113,6 +124,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if sample.len() < 5 {
             sample.push(format!("{} [{}] {}", row.id.as_deref().unwrap_or("no-id"), confidence, row.question.replace('\n', " ")));
         }
+        records.push(AuditRecord {
+            id: row.id.clone(),
+            category: row.category.clone(),
+            gap,
+            confidence: confidence.to_string(),
+            question: row.question.clone(),
+        });
     }
     let report = AuditReport {
         input_trace_sha256: hash(&bytes),
@@ -120,6 +138,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         missing_knowledge_rows: missing.len(),
         classifications,
         samples,
+        records,
         method: "deterministic lexical shadow taxonomy; manual review required before acquisition".into(),
     };
     fs::write(&output, serde_json::to_vec_pretty(&report)?)?;

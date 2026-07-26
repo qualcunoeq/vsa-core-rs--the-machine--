@@ -63,6 +63,59 @@ implementation structure. Malformed and unauthorized specifications are
 rejected before interpretation, and no live registry or executor state is
 changed.
 
+## Full frozen-corpus campaign
+
+The same synthesized family specs were then evaluated against the complete
+frozen corpora: 300 QuantityRelation cases, 27 UnitQuantity cases, 29
+FractionalQuantity cases, and the 350-case PercentageQuantity contract corpus.
+
+| Metric | Result |
+| --- | ---: |
+| Total cases | 706 |
+| Correct decisions | 706 / 706 |
+| Authorized cases | 432 |
+| Accepted artifacts replay-verified | 432 / 432 |
+| Method receipts replay-verified | 706 / 706 |
+| False authorizations | 0 |
+| False denials | 0 |
+| Invalid synthesized specs | 0 |
+
+This is still a shadow reconstruction using trusted historical formalizers;
+it is not yet an unseen-contract synthesis result.
+
+Per-family results are recorded by the deterministic campaign test:
+
+| Family | Cases | Correct | Authorized | Accepted replay | Method replay | Steps / depth / budget |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| QuantityRelationV1 | 300 | 300 | 200 | 200 / 200 | 300 / 300 | 8 / 8 / 9 |
+| UnitQuantity | 27 | 27 | 15 | 15 / 15 | 27 / 27 | 8 / 8 / 9 |
+| FractionalQuantity | 29 | 29 | 17 | 17 / 17 | 29 / 29 | 8 / 8 / 9 |
+| PercentageQuantityV1 | 350 | 350 | 200 | 200 / 200 | 350 / 350 | 8 / 8 / 9 |
+
+All four families recorded zero false authorizations and zero false denials.
+Downstream bridge correctness is intentionally **not claimed by this Phase 4
+shadow interpreter**; the existing family-specific bridge benchmarks remain
+the authority for bridge execution. The synthesized method itself only
+constructs, verifies, and replays the typed artifact.
+
+## Method-spec defect campaign
+
+Seven implementation-level defect fixtures are rejected statically:
+
+```text
+OmitSafetyCheck
+RemoveSupportedFormBranch
+WrongBindingExtraction
+WrongTrustedBridge
+OmitReplay
+ExceedBudget
+ReorderChecksUnsafely
+```
+
+The sandbox revision test repairs an omitted replay step without mutating the
+parent specification. The current focused module suite reports **6 passed, 0
+failed**, including the full-corpus and defect campaigns.
+
 ## Deliberate non-goals
 
 This phase does not yet synthesize arbitrary new parsers, invent DSL

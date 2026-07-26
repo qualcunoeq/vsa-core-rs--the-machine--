@@ -72,6 +72,11 @@ pub enum SpecValidationError {
     UntrustedCapability(String),
     VerificationMissing,
     ReplayMissing,
+    MatchSupportedFormMissing,
+    SafetyPredicateMissing,
+    UnsafeOperationOrder,
+    CapabilityFamilyMismatch { expected: String, actual: String },
+    BindingExtractionMissing,
 }
 
 impl MethodImplementationSpec {
@@ -122,16 +127,63 @@ impl MethodImplementationSpec {
 
         let mut verified = false;
         let mut replay = false;
-        for step in &self.steps {
+        let mut matched = false;
+        let mut predicate = false;
+        let mut invoke_index = None;
+        let mut verify_index = None;
+        let mut replay_index = None;
+        for (index, step) in self.steps.iter().enumerate() {
             match &step.operation {
                 DslOperation::InvokeCapability { capability }
                     if !trusted_capability(capability) =>
                 {
                     errors.push(SpecValidationError::UntrustedCapability(capability.clone()));
                 }
-                DslOperation::VerifyArtifact => verified = true,
-                DslOperation::Replay => replay = true,
+                DslOperation::InvokeCapability { capability } => {
+                    invoke_index = Some(index);
+                    let expected = expected_capability(&self.capability_family);
+                    if expected.as_deref() != Some(capability.as_str()) {
+                        errors.push(SpecValidationError::CapabilityFamilyMismatch {
+                            expected: expected.unwrap_or_default(),
+                            actual: capability.clone(),
+                        });
+                    }
+                }
+                DslOperation::MatchSupportedForm => matched = true,
+                DslOperation::CheckPredicate { .. } => predicate = true,
+                DslOperation::VerifyArtifact => {
+                    verified = true;
+                    verify_index = Some(index);
+                }
+                DslOperation::Replay => {
+                    replay = true;
+                    replay_index = Some(index);
+                }
+                DslOperation::ExtractBinding { name } if name.trim().is_empty() => {
+                    errors.push(SpecValidationError::BindingExtractionMissing);
+                }
                 _ => {}
+            }
+        }
+        if !matched { errors.push(SpecValidationError::MatchSupportedFormMissing); }
+        if !predicate { errors.push(SpecValidationError::SafetyPredicateMissing); }
+        if let (Some(invoke), Some(match_index), Some(predicate_index)) = (
+            invoke_index,
+            self.steps.iter().position(|step| matches!(step.operation, DslOperation::MatchSupportedForm)),
+            self.steps.iter().position(|step| matches!(step.operation, DslOperation::CheckPredicate { .. })),
+        ) {
+            if invoke < match_index || invoke < predicate_index {
+                errors.push(SpecValidationError::UnsafeOperationOrder);
+            }
+        }
+        if let Some(invoke) = invoke_index {
+            let verification_before_invoke = verify_index.is_some_and(|verify| verify < invoke);
+            let replay_before_verification = match (replay_index, verify_index) {
+                (Some(replay), Some(verify)) => replay < verify,
+                _ => false,
+            };
+            if verification_before_invoke || replay_before_verification {
+                errors.push(SpecValidationError::UnsafeOperationOrder);
             }
         }
         if !verified {
@@ -149,6 +201,16 @@ fn trusted_capability(capability: &str) -> bool {
         capability,
         "quantity_relation" | "unit_aware_quantity" | "fractional_quantity" | "percentage_quantity"
     )
+}
+
+fn expected_capability(family: &str) -> Option<String> {
+    match family {
+        "QuantityRelationV1" => Some("quantity_relation".into()),
+        "UnitQuantity" => Some("unit_aware_quantity".into()),
+        "FractionalQuantity" => Some("fractional_quantity".into()),
+        "PercentageQuantityV1" => Some("percentage_quantity".into()),
+        _ => None,
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -246,6 +308,127 @@ pub fn synthesize_historical_method(
     Ok(spec)
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum MethodSpecDefectKind {
+    OmitSafetyCheck,
+    RemoveSupportedFormBranch,
+    WrongBindingExtraction,
+    WrongTrustedBridge,
+    OmitReplay,
+    ExceedBudget,
+    ReorderChecksUnsafely,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct InjectedMethodDefect {
+    pub kind: MethodSpecDefectKind,
+    pub expected_failure: SpecValidationError,
+    pub spec: MethodImplementationSpec,
+}
+
+/// Make a deliberately invalid method specification for the Phase 4
+/// reconstruction campaign.  This only clones data; it never mutates the
+/// historical specification or a live registry.
+pub fn inject_method_defect(
+    parent: &MethodImplementationSpec,
+    kind: MethodSpecDefectKind,
+) -> InjectedMethodDefect {
+    let mut spec = parent.clone();
+    let expected_failure = match kind {
+        MethodSpecDefectKind::OmitSafetyCheck => {
+            spec.steps.retain(|step| !matches!(step.operation, DslOperation::CheckPredicate { .. }));
+            SpecValidationError::SafetyPredicateMissing
+        }
+        MethodSpecDefectKind::RemoveSupportedFormBranch => {
+            spec.steps.retain(|step| !matches!(step.operation, DslOperation::MatchSupportedForm));
+            SpecValidationError::MatchSupportedFormMissing
+        }
+        MethodSpecDefectKind::WrongBindingExtraction => {
+            if let Some(step) = spec.steps.iter_mut().find(|step| matches!(step.operation, DslOperation::ExtractBinding { .. })) {
+                step.operation = DslOperation::ExtractBinding { name: String::new() };
+            }
+            SpecValidationError::BindingExtractionMissing
+        }
+        MethodSpecDefectKind::WrongTrustedBridge => {
+            if let Some(step) = spec.steps.iter_mut().find(|step| matches!(step.operation, DslOperation::InvokeCapability { .. })) {
+                step.operation = DslOperation::InvokeCapability { capability: "unit_aware_quantity".into() };
+            }
+            SpecValidationError::CapabilityFamilyMismatch {
+                expected: expected_capability(&spec.capability_family).unwrap_or_default(),
+                actual: "unit_aware_quantity".into(),
+            }
+        }
+        MethodSpecDefectKind::OmitReplay => {
+            spec.steps.retain(|step| !matches!(step.operation, DslOperation::Replay));
+            SpecValidationError::ReplayMissing
+        }
+        MethodSpecDefectKind::ExceedBudget => {
+            spec.operation_budget = 0;
+            SpecValidationError::OperationBudgetExceeded { actual: spec.steps.len(), budget: 0 }
+        }
+        MethodSpecDefectKind::ReorderChecksUnsafely => {
+            let invoke = spec.steps.iter().position(|step| matches!(step.operation, DslOperation::InvokeCapability { .. })).unwrap();
+            let predicate = spec.steps.iter().position(|step| matches!(step.operation, DslOperation::CheckPredicate { .. })).unwrap();
+            spec.steps.swap(invoke, predicate);
+            SpecValidationError::UnsafeOperationOrder
+        }
+    };
+    InjectedMethodDefect { kind, expected_failure, spec }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum MethodRevisionEdit {
+    AddStep { index: usize, step: MethodStep },
+    RemoveStep { index: usize },
+    ReplaceStep { index: usize, step: MethodStep },
+    SetOperationBudget { budget: usize },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MethodSpecRevision {
+    pub parent_spec_id: String,
+    pub revision_id: String,
+    pub triggering_defect: MethodSpecDefectKind,
+    pub edits: Vec<MethodRevisionEdit>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum MethodRevisionError {
+    ParentMismatch,
+    InvalidIndex,
+    Validation(Vec<SpecValidationError>),
+}
+
+pub fn apply_method_revision_sandboxed(
+    parent: &MethodImplementationSpec,
+    revision: &MethodSpecRevision,
+) -> Result<MethodImplementationSpec, MethodRevisionError> {
+    if revision.parent_spec_id != parent.spec_id {
+        return Err(MethodRevisionError::ParentMismatch);
+    }
+    let mut revised = parent.clone();
+    for edit in &revision.edits {
+        match edit {
+            MethodRevisionEdit::AddStep { index, step } => {
+                if *index > revised.steps.len() { return Err(MethodRevisionError::InvalidIndex); }
+                revised.steps.insert(*index, step.clone());
+            }
+            MethodRevisionEdit::RemoveStep { index } => {
+                if *index >= revised.steps.len() { return Err(MethodRevisionError::InvalidIndex); }
+                revised.steps.remove(*index);
+            }
+            MethodRevisionEdit::ReplaceStep { index, step } => {
+                if *index >= revised.steps.len() { return Err(MethodRevisionError::InvalidIndex); }
+                revised.steps[*index] = step.clone();
+            }
+            MethodRevisionEdit::SetOperationBudget { budget } => revised.operation_budget = *budget,
+        }
+    }
+    revised.spec_id = revision.revision_id.clone();
+    revised.validate().map_err(MethodRevisionError::Validation)?;
+    Ok(revised)
+}
+
 /// Execute a validated method spec in the shadow interpreter.  Only the
 /// trusted historical formalizers are callable; all accepted artifacts pass
 /// their own replay gate before the method receipt is marked valid.
@@ -321,14 +504,13 @@ pub struct SynthesisCampaignReport {
     pub invalid_specs: usize,
 }
 
-pub fn evaluate_historical_cases(cases: &[HistoricalCase]) -> SynthesisCampaignReport {
+pub fn evaluate_method_spec(
+    spec: &MethodImplementationSpec,
+    cases: &[HistoricalCase],
+) -> SynthesisCampaignReport {
     let mut report = SynthesisCampaignReport { cases: cases.len(), ..Default::default() };
     for case in cases {
-        let Ok(spec) = synthesize_historical_method(&case.family) else {
-            report.invalid_specs += 1;
-            continue;
-        };
-        let Ok(result) = shadow_execute(&spec, &case.prompt) else {
+        let Ok(result) = shadow_execute(spec, &case.prompt) else {
             report.invalid_specs += 1;
             continue;
         };
@@ -344,6 +526,27 @@ pub fn evaluate_historical_cases(cases: &[HistoricalCase]) -> SynthesisCampaignR
         report.false_denials += usize::from(
             !result.authorized() && case.expected == ShadowDecision::Applicable,
         );
+    }
+    report
+}
+
+pub fn evaluate_historical_cases(cases: &[HistoricalCase]) -> SynthesisCampaignReport {
+    let mut report = SynthesisCampaignReport { cases: cases.len(), ..Default::default() };
+    for family in ["QuantityRelationV1", "UnitQuantity", "FractionalQuantity", "PercentageQuantityV1"] {
+        let family_cases: Vec<HistoricalCase> = cases.iter().filter(|case| case.family == family).cloned().collect();
+        if family_cases.is_empty() { continue; }
+        let Ok(spec) = synthesize_historical_method(family) else {
+            report.invalid_specs += family_cases.len();
+            continue;
+        };
+        let family_report = evaluate_method_spec(&spec, &family_cases);
+        report.correct_decisions += family_report.correct_decisions;
+        report.authorized += family_report.authorized;
+        report.replay_verified += family_report.replay_verified;
+        report.accepted_replay_verified += family_report.accepted_replay_verified;
+        report.false_authorizations += family_report.false_authorizations;
+        report.false_denials += family_report.false_denials;
+        report.invalid_specs += family_report.invalid_specs;
     }
     report
 }
@@ -399,5 +602,122 @@ mod tests {
         spec.diagnostic_only = true;
         spec.steps[5].operation = DslOperation::InvokeCapability { capability: "arbitrary_code".into() };
         assert!(spec.validate().is_err());
+    }
+
+    #[test]
+    fn full_frozen_historical_corpora_are_fail_closed() {
+        #[derive(serde::Deserialize)]
+        struct Cases<T> { cases: Vec<T> }
+        #[derive(serde::Deserialize)]
+        struct BasicCase { prompt: String, outcome: String }
+
+        fn basic(path: &str, family: &str) -> Vec<HistoricalCase> {
+            let corpus: Cases<BasicCase> = serde_json::from_str(path).expect("historical corpus");
+            corpus.cases.into_iter().map(|case| HistoricalCase {
+                family: family.into(),
+                prompt: case.prompt,
+                expected: match case.outcome.as_str() {
+                    "supported" => ShadowDecision::Applicable,
+                    "ambiguous" => ShadowDecision::Ambiguous,
+                    "unsupported" => ShadowDecision::Unsupported,
+                    other => panic!("unknown outcome: {other}"),
+                },
+            }).collect()
+        }
+
+        let mut cases = basic(include_str!("../data/quantity_relation_v1_expanded.json"), "QuantityRelationV1");
+        cases.extend(basic(include_str!("../data/unit_aware_quantity_v1.json"), "UnitQuantity"));
+        cases.extend(basic(include_str!("../data/fractional_quantity_v1.json"), "FractionalQuantity"));
+        cases.extend(crate::percentage_quantity_proposal::corpus().cases.into_iter().map(|case| HistoricalCase {
+            family: "PercentageQuantityV1".into(),
+            prompt: case.prompt,
+            expected: match case.scope {
+                crate::percentage_quantity_proposal::PercentageScope::Supported => ShadowDecision::Applicable,
+                crate::percentage_quantity_proposal::PercentageScope::Ambiguous => ShadowDecision::Ambiguous,
+                crate::percentage_quantity_proposal::PercentageScope::Unsupported => ShadowDecision::Unsupported,
+            },
+        }));
+
+        let report = evaluate_historical_cases(&cases);
+        for family in ["QuantityRelationV1", "UnitQuantity", "FractionalQuantity", "PercentageQuantityV1"] {
+            let family_cases: Vec<HistoricalCase> = cases.iter()
+                .filter(|case| case.family == family)
+                .cloned()
+                .collect();
+            let spec = synthesize_historical_method(family).expect("family spec");
+            let family_report = evaluate_method_spec(&spec, &family_cases);
+            eprintln!(
+                "phase4 family: family={} cases={} correct={} authorized={} accepted_replay={} method_replay={} false_auth={} false_denials={} steps={} depth_budget={} operation_budget={}",
+                family,
+                family_report.cases,
+                family_report.correct_decisions,
+                family_report.authorized,
+                family_report.accepted_replay_verified,
+                family_report.replay_verified,
+                family_report.false_authorizations,
+                family_report.false_denials,
+                spec.steps.len(),
+                spec.depth_budget,
+                spec.operation_budget,
+            );
+        }
+        eprintln!(
+            "phase4 full corpus: cases={} correct={} authorized={} replay={} accepted_replay={} false_auth={} false_denials={} invalid_specs={}",
+            report.cases,
+            report.correct_decisions,
+            report.authorized,
+            report.replay_verified,
+            report.accepted_replay_verified,
+            report.false_authorizations,
+            report.false_denials,
+            report.invalid_specs,
+        );
+        assert_eq!(report.invalid_specs, 0);
+        assert_eq!(report.false_authorizations, 0);
+        assert_eq!(report.accepted_replay_verified, report.authorized);
+        assert!(report.replay_verified >= report.cases.saturating_sub(report.invalid_specs));
+    }
+
+    #[test]
+    fn method_defect_campaign_is_static_and_fail_closed() {
+        let spec = synthesize_historical_method("PercentageQuantityV1").unwrap();
+        let kinds = [
+            MethodSpecDefectKind::OmitSafetyCheck,
+            MethodSpecDefectKind::RemoveSupportedFormBranch,
+            MethodSpecDefectKind::WrongBindingExtraction,
+            MethodSpecDefectKind::WrongTrustedBridge,
+            MethodSpecDefectKind::OmitReplay,
+            MethodSpecDefectKind::ExceedBudget,
+            MethodSpecDefectKind::ReorderChecksUnsafely,
+        ];
+        for kind in kinds {
+            let defect = inject_method_defect(&spec, kind);
+            let errors = defect.spec.validate().expect_err("injected defect must be rejected");
+            assert!(errors.iter().any(|error| error == &defect.expected_failure), "{kind:?}: {errors:?}");
+        }
+    }
+
+    #[test]
+    fn method_revision_is_immutable_and_can_repair_omitted_replay() {
+        let parent = synthesize_historical_method("QuantityRelationV1").unwrap();
+        let defect = inject_method_defect(&parent, MethodSpecDefectKind::OmitReplay);
+        assert!(defect.spec.validate().is_err());
+        let revision = MethodSpecRevision {
+            parent_spec_id: defect.spec.spec_id.clone(),
+            revision_id: "phase4-repaired-replay".into(),
+            triggering_defect: MethodSpecDefectKind::OmitReplay,
+            edits: vec![MethodRevisionEdit::AddStep {
+                index: defect.spec.steps.len(),
+                step: MethodStep {
+                    operation: DslOperation::Replay,
+                    input: ArtifactType::VerifiedArtifact,
+                    output: ArtifactType::ReplayReceipt,
+                },
+            }],
+        };
+        let repaired = apply_method_revision_sandboxed(&defect.spec, &revision).expect("sandbox repair");
+        assert!(repaired.validate().is_ok());
+        assert_eq!(parent.steps.last().map(|step| &step.operation), Some(&DslOperation::Replay));
+        assert_ne!(parent.spec_id, repaired.spec_id);
     }
 }

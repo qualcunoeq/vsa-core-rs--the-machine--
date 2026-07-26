@@ -181,7 +181,7 @@ pub fn evaluate_corpus(cases: &[OpenSetInvestigation]) -> OpenSetBenchmarkReport
 }
 
 fn hypothesis(id: &str, query: &str, outcome: &str) -> Hypothesis {
-    Hypothesis { id: HypothesisId(id.into()), description: format!("hypothesis {id}"), predictions: [(query.into(), outcome.into())].into_iter().collect() }
+    Hypothesis { id: HypothesisId(id.into()), description: format!("hypothesis {id}"), predictions: [(query.into(), outcome.into())].into_iter().collect(), causal_paths: BTreeMap::new() }
 }
 
 fn query(id: &str) -> crate::epistemic::EvidenceQuery {
@@ -189,7 +189,7 @@ fn query(id: &str) -> crate::epistemic::EvidenceQuery {
 }
 
 fn evidence(id: &str, query_id: &str, outcome: &str, reliability: u8, valid_until: Option<u64>) -> EvidenceRecord {
-    EvidenceRecord { id: id.into(), query_id: query_id.into(), outcome: outcome.into(), timestamp: 1, valid_until, source: format!("sensor-{id}"), reliability, confidence: 90 }
+    EvidenceRecord { id: id.into(), query_id: query_id.into(), outcome: outcome.into(), timestamp: 1, valid_until, source: format!("sensor-{id}"), reliability, confidence: 90, ancestry: Vec::new(), correlation_group: None, failure_mode: None, causal_path: Vec::new() }
 }
 
 pub fn synthetic_corpus() -> Vec<OpenSetInvestigation> {

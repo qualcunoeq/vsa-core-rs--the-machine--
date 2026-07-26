@@ -25,6 +25,7 @@ pub mod finite_state_contract;
 pub mod world_model;
 pub mod epistemic;
 pub mod open_set;
+pub mod adversarial;
 pub mod method_synthesis;
 pub mod concept_composition_benchmark;
 pub mod cross_vertical_benchmark;

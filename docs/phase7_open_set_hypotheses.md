@@ -49,7 +49,7 @@ The corpus contains 300 deterministic investigations:
 
 Corpus hash:
 
-`3dcc8b7c3ed79950c01a8a91ffa8940e6adb30a8bd05d9d880a2ec3a2b20e6d2`
+`30511af3a69d9bfd628b43d5192a99a8d4ece8587e889033bafa93f64265facf`
 
 Measured result:
 

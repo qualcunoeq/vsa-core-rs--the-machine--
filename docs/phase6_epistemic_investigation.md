@@ -42,7 +42,7 @@ The controlled corpus contains 300 investigations:
 
 Corpus hash:
 
-`f99efdf3d328f652195f55a5ed4ba52f4fb4cf514a2e4b174e32105be7a9a134`
+`0689f2d6e12180d991522edd593ead8bf2fc7459028afcaebc19f7b2c66839e5`
 
 Measured result:
 

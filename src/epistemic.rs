@@ -17,6 +17,18 @@ pub struct Hypothesis {
     pub description: String,
     /// Query id -> predicted outcome.
     pub predictions: BTreeMap<String, String>,
+    /// Query id -> causal path that should produce the prediction.
+    pub causal_paths: BTreeMap<String, Vec<String>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SourceFailureMode {
+    ClockDrift,
+    IdentityConfusion,
+    CopiedReport,
+    StaleCache,
+    SelectiveOmission,
+    AdversarialFabrication,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -29,6 +41,10 @@ pub struct EvidenceRecord {
     pub source: String,
     pub reliability: u8,
     pub confidence: u8,
+    pub ancestry: Vec<String>,
+    pub correlation_group: Option<String>,
+    pub failure_mode: Option<SourceFailureMode>,
+    pub causal_path: Vec<String>,
 }
 
 impl EvidenceRecord {
@@ -232,13 +248,13 @@ pub fn evaluate_corpus(cases: &[EpistemicInvestigation]) -> EpistemicBenchmarkRe
 }
 
 fn hypothesis(id: &str, predictions: &[(&str, &str)]) -> Hypothesis {
-    Hypothesis { id: HypothesisId(id.into()), description: format!("hypothesis {id}"), predictions: predictions.iter().map(|(query, outcome)| ((*query).into(), (*outcome).into())).collect() }
+    Hypothesis { id: HypothesisId(id.into()), description: format!("hypothesis {id}"), predictions: predictions.iter().map(|(query, outcome)| ((*query).into(), (*outcome).into())).collect(), causal_paths: BTreeMap::new() }
 }
 
 fn query(id: &str) -> EvidenceQuery { EvidenceQuery { id: id.into(), description: format!("observe {id}"), cost: 1 } }
 
 fn evidence(id: &str, query_id: &str, outcome: &str, timestamp: u64, reliability: u8) -> EvidenceRecord {
-    EvidenceRecord { id: id.into(), query_id: query_id.into(), outcome: outcome.into(), timestamp, valid_until: None, source: format!("source-{id}"), reliability, confidence: 90 }
+    EvidenceRecord { id: id.into(), query_id: query_id.into(), outcome: outcome.into(), timestamp, valid_until: None, source: format!("source-{id}"), reliability, confidence: 90, ancestry: Vec::new(), correlation_group: None, failure_mode: None, causal_path: Vec::new() }
 }
 
 pub fn synthetic_corpus() -> Vec<EpistemicInvestigation> {

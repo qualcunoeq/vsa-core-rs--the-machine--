@@ -116,6 +116,70 @@ The sandbox revision test repairs an omitted replay step without mutating the
 parent specification. The current focused module suite reports **6 passed, 0
 failed**, including the full-corpus and defect campaigns.
 
+## First unseen-contract experiment
+
+`ClockTimeDifferenceV1` is supplied to the generic synthesizer only as typed
+contract data: input/output artifacts, required bindings, predicates, the
+trusted graph capability, and budgets. No clock-specific branch is present in
+`synthesize_from_contract`.
+
+Frozen contract hash:
+`e6ada0b6f8ac761d7d6d64dcaa2de1c711b27ed8a2c2b9b18eef86d44d4e46f2`
+
+Synthesizer configuration:
+
+```text
+version: phase4-generic-contract-v1
+operation_budget: 16
+depth_budget: 8
+development_hash: 5b64f347fa80347de52517a5fa6e808d96e383f53b6e605f22e322acc9b38829
+holdout_hash: 506fdc57fed2454e74e68d9d84cd06f60cd521f376671a1f3eaf005e0462fd35
+```
+
+The synthesized DSL operation trace is:
+
+```text
+ExtractBinding(start_time)
+RequireBinding(start_time)
+ExtractBinding(end_time)
+RequireBinding(end_time)
+NormalizeNumeric
+MatchSupportedForm
+CheckPredicate(explicit_notation)
+CheckPredicate(bounded_rollover)
+CheckPredicate(no_calendar_or_external_time_context)
+RejectAmbiguous
+RejectUnsupported
+InvokeCapability(clock_time_difference)
+VerifyArtifact
+Replay
+```
+
+The initial development/holdout corpus contains 18 cases (10/8 split),
+covering same-day 12-hour and 24-hour notation, one explicit overnight
+rollover, missing meridiem, unclear rollover, dates, time zones, DST, and
+recurring schedules.
+
+| Metric | Development | Untouched holdout |
+| --- | ---: | ---: |
+| Correct decisions | 10 / 10 | 8 / 8 |
+| Authorized cases | 6 | 4 |
+| Accepted artifacts replay-verified | 6 / 6 | 4 / 4 |
+| False authorizations | 0 | 0 |
+| False denials | 0 | 0 |
+
+The result is shadow-only and does not mutate the registry or production
+router. It is a first bounded unseen-contract result, not yet a broad claim
+about natural-language time reasoning.
+
+The generic synthesizer derives this trace from the typed contract fields; it
+contains no branch on `ClockTimeDifferenceV1` or clock terminology. The
+clock-time parser and its replay verifier are trusted substrate supplied to
+the DSL's allowlisted `clock_time_difference` invocation. They are not
+claimed as synthesized code. This separation is intentional: Phase 4
+synthesizes the method wiring and governance checks, while the shadow
+substrate remains independently reviewed and non-authorizing.
+
 ## Deliberate non-goals
 
 This phase does not yet synthesize arbitrary new parsers, invent DSL

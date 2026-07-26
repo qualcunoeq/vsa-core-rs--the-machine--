@@ -20,6 +20,7 @@ pub mod broker;
 pub mod capabilities;
 pub mod capability_planner;
 pub mod capability_proposer;
+pub mod clock_time_contract;
 pub mod method_synthesis;
 pub mod concept_composition_benchmark;
 pub mod cross_vertical_benchmark;

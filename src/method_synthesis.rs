@@ -7,6 +7,7 @@
 //! capability formalizers and their replay gates.
 
 use crate::fractional_quantity::{self, FractionalQuantityDecision};
+use crate::clock_time_contract::{self, ClockDecision};
 use crate::percentage_quantity::{self, PercentageQuantityDecision};
 use crate::quantity_relation::{self, QuantityRelationDecision};
 use crate::unit_aware_quantity::{self, UnitQuantityDecision};
@@ -14,6 +15,7 @@ use serde::{Deserialize, Serialize};
 
 const MAX_STEPS: usize = 16;
 const MAX_DEPTH: usize = 8;
+pub const SYNTHESIS_VERSION: &str = "phase4-generic-contract-v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ArtifactType {
@@ -22,6 +24,7 @@ pub enum ArtifactType {
     UnitQuantity,
     FractionalQuantity,
     PercentageQuantity,
+    ClockTimeDuration,
     VerifiedArtifact,
     ReplayReceipt,
 }
@@ -58,6 +61,11 @@ pub struct MethodImplementationSpec {
     pub operation_budget: usize,
     pub depth_budget: usize,
     pub diagnostic_only: bool,
+    pub trusted_capability: String,
+}
+
+pub fn operation_trace(spec: &MethodImplementationSpec) -> Vec<String> {
+    spec.steps.iter().map(|step| format!("{:?}", step.operation)).collect()
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -115,9 +123,13 @@ impl MethodImplementationSpec {
                 budget: self.operation_budget.min(MAX_STEPS),
             });
         }
-        if self.depth_budget == 0 || self.depth_budget > MAX_DEPTH || actual > self.depth_budget {
+        let logical_depth = self.steps.iter().filter(|step| matches!(
+            step.operation,
+            DslOperation::InvokeCapability { .. } | DslOperation::ConstructTypedRelation
+        )).count().max(1);
+        if self.depth_budget == 0 || self.depth_budget > MAX_DEPTH || logical_depth > self.depth_budget {
             errors.push(SpecValidationError::DepthBudgetExceeded {
-                actual,
+                actual: logical_depth,
                 budget: self.depth_budget.min(MAX_DEPTH),
             });
         }
@@ -141,10 +153,10 @@ impl MethodImplementationSpec {
                 }
                 DslOperation::InvokeCapability { capability } => {
                     invoke_index = Some(index);
-                    let expected = expected_capability(&self.capability_family);
-                    if expected.as_deref() != Some(capability.as_str()) {
+                    let expected = self.trusted_capability.clone();
+                    if expected != *capability {
                         errors.push(SpecValidationError::CapabilityFamilyMismatch {
-                            expected: expected.unwrap_or_default(),
+                            expected,
                             actual: capability.clone(),
                         });
                     }
@@ -199,18 +211,8 @@ impl MethodImplementationSpec {
 fn trusted_capability(capability: &str) -> bool {
     matches!(
         capability,
-        "quantity_relation" | "unit_aware_quantity" | "fractional_quantity" | "percentage_quantity"
+        "quantity_relation" | "unit_aware_quantity" | "fractional_quantity" | "percentage_quantity" | "clock_time_difference"
     )
-}
-
-fn expected_capability(family: &str) -> Option<String> {
-    match family {
-        "QuantityRelationV1" => Some("quantity_relation".into()),
-        "UnitQuantity" => Some("unit_aware_quantity".into()),
-        "FractionalQuantity" => Some("fractional_quantity".into()),
-        "PercentageQuantityV1" => Some("percentage_quantity".into()),
-        _ => None,
-    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -303,8 +305,81 @@ pub fn synthesize_historical_method(
         operation_budget: 9,
         depth_budget: 8,
         diagnostic_only: true,
+        trusted_capability: capability.into(),
     };
     spec.validate().map_err(|errors| format!("invalid synthesized spec: {errors:?}"))?;
+    Ok(spec)
+}
+
+/// Contract data supplied to generic synthesis.  It contains no
+/// implementation branch or executor-specific template.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ValidatedMethodContract {
+    pub contract_id: String,
+    pub input_artifact: ArtifactType,
+    pub output_artifact: ArtifactType,
+    pub required_bindings: Vec<String>,
+    pub predicates: Vec<String>,
+    pub trusted_capability: String,
+    pub operation_budget: usize,
+    pub depth_budget: usize,
+}
+
+/// Synthesize a method from only typed contract data and the trusted
+/// capability graph.  This is intentionally generic: no capability family
+/// names or implementation structures are inspected here.
+pub fn synthesize_from_contract(
+    contract: &ValidatedMethodContract,
+) -> Result<MethodImplementationSpec, String> {
+    if !trusted_capability(&contract.trusted_capability) {
+        return Err(format!("untrusted capability: {}", contract.trusted_capability));
+    }
+    if contract.required_bindings.is_empty() || contract.predicates.is_empty() {
+        return Err("contract requires bindings and predicates".into());
+    }
+    let mut steps = Vec::new();
+    for binding in &contract.required_bindings {
+        steps.push(MethodStep {
+            operation: DslOperation::ExtractBinding { name: binding.clone() },
+            input: contract.input_artifact,
+            output: contract.input_artifact,
+        });
+        steps.push(MethodStep {
+            operation: DslOperation::RequireBinding { name: binding.clone() },
+            input: contract.input_artifact,
+            output: contract.input_artifact,
+        });
+    }
+    steps.push(MethodStep { operation: DslOperation::NormalizeNumeric, input: contract.input_artifact, output: contract.input_artifact });
+    steps.push(MethodStep { operation: DslOperation::MatchSupportedForm, input: contract.input_artifact, output: contract.input_artifact });
+    for predicate in &contract.predicates {
+        steps.push(MethodStep {
+            operation: DslOperation::CheckPredicate { predicate: predicate.clone() },
+            input: contract.input_artifact,
+            output: contract.input_artifact,
+        });
+    }
+    steps.push(MethodStep { operation: DslOperation::RejectAmbiguous, input: contract.input_artifact, output: contract.input_artifact });
+    steps.push(MethodStep { operation: DslOperation::RejectUnsupported, input: contract.input_artifact, output: contract.input_artifact });
+    steps.push(MethodStep {
+        operation: DslOperation::InvokeCapability { capability: contract.trusted_capability.clone() },
+        input: contract.input_artifact,
+        output: contract.output_artifact,
+    });
+    steps.push(MethodStep { operation: DslOperation::VerifyArtifact, input: contract.output_artifact, output: ArtifactType::VerifiedArtifact });
+    steps.push(MethodStep { operation: DslOperation::Replay, input: ArtifactType::VerifiedArtifact, output: ArtifactType::ReplayReceipt });
+    let spec = MethodImplementationSpec {
+        spec_id: format!("synthesized-{}", contract.contract_id),
+        capability_family: contract.contract_id.clone(),
+        input_artifact: contract.input_artifact,
+        output_artifact: ArtifactType::ReplayReceipt,
+        steps,
+        operation_budget: contract.operation_budget,
+        depth_budget: contract.depth_budget,
+        diagnostic_only: true,
+        trusted_capability: contract.trusted_capability.clone(),
+    };
+    spec.validate().map_err(|errors| format!("invalid synthesized contract method: {errors:?}"))?;
     Ok(spec)
 }
 
@@ -354,7 +429,7 @@ pub fn inject_method_defect(
                 step.operation = DslOperation::InvokeCapability { capability: "unit_aware_quantity".into() };
             }
             SpecValidationError::CapabilityFamilyMismatch {
-                expected: expected_capability(&spec.capability_family).unwrap_or_default(),
+                expected: spec.trusted_capability.clone(),
                 actual: "unit_aware_quantity".into(),
             }
         }
@@ -461,6 +536,13 @@ pub fn shadow_execute(
                 (ShadowDecision::Applicable, Some(ArtifactType::PercentageQuantity), artifact.replay_verified()),
             PercentageQuantityDecision::Ambiguous => (ShadowDecision::Ambiguous, None, false),
             PercentageQuantityDecision::Unsupported => (ShadowDecision::Unsupported, None, false),
+        },
+        "ClockTimeDifferenceV1" => match clock_time_contract::formalize(prompt) {
+            (ClockDecision::Supported, Some(artifact)) =>
+                (ShadowDecision::Applicable, Some(ArtifactType::ClockTimeDuration), artifact.replay_verified()),
+            (ClockDecision::Ambiguous, _) => (ShadowDecision::Ambiguous, None, false),
+            (ClockDecision::Unsupported, _) => (ShadowDecision::Unsupported, None, false),
+            (ClockDecision::Supported, None) => (ShadowDecision::Unsupported, None, false),
         },
         other => return Err(format!("unsupported shadow family: {other}")),
     };
@@ -719,5 +801,75 @@ mod tests {
         assert!(repaired.validate().is_ok());
         assert_eq!(parent.steps.last().map(|step| &step.operation), Some(&DslOperation::Replay));
         assert_ne!(parent.spec_id, repaired.spec_id);
+    }
+
+    #[test]
+    fn unseen_clock_contract_synthesizes_and_preserves_holdout_boundary() {
+        let contract = clock_time_contract::contract();
+        assert!(contract.validation_errors().is_empty());
+        let method_contract = ValidatedMethodContract {
+            contract_id: contract.contract_id.clone(),
+            input_artifact: ArtifactType::RawPrompt,
+            output_artifact: ArtifactType::ClockTimeDuration,
+            required_bindings: contract.required_bindings.clone(),
+            predicates: contract.predicates.clone(),
+            trusted_capability: "clock_time_difference".into(),
+            operation_budget: 16,
+            depth_budget: 8,
+        };
+        let spec = synthesize_from_contract(&method_contract).expect("generic unseen synthesis");
+        assert!(spec.validate().is_ok());
+        assert_eq!(spec.trusted_capability, "clock_time_difference");
+        let development: Vec<HistoricalCase> = contract.cases.iter()
+            .filter(|case| case.split == clock_time_contract::ClockSplit::Development)
+            .map(|case| HistoricalCase {
+                family: contract.contract_id.clone(),
+                prompt: case.prompt.clone(),
+                expected: match case.expected {
+                    clock_time_contract::ClockDecision::Supported => ShadowDecision::Applicable,
+                    clock_time_contract::ClockDecision::Ambiguous => ShadowDecision::Ambiguous,
+                    clock_time_contract::ClockDecision::Unsupported => ShadowDecision::Unsupported,
+                },
+            }).collect();
+        let holdout: Vec<HistoricalCase> = contract.cases.iter()
+            .filter(|case| case.split == clock_time_contract::ClockSplit::Holdout)
+            .map(|case| HistoricalCase {
+                family: contract.contract_id.clone(),
+                prompt: case.prompt.clone(),
+                expected: match case.expected {
+                    clock_time_contract::ClockDecision::Supported => ShadowDecision::Applicable,
+                    clock_time_contract::ClockDecision::Ambiguous => ShadowDecision::Ambiguous,
+                    clock_time_contract::ClockDecision::Unsupported => ShadowDecision::Unsupported,
+                },
+            }).collect();
+        let development_report = evaluate_method_spec(&spec, &development);
+        let holdout_report = evaluate_method_spec(&spec, &holdout);
+        for case in development.iter().chain(holdout.iter()) {
+            let observed = shadow_execute(&spec, &case.prompt).expect("shadow clock").decision;
+            if observed != case.expected {
+                eprintln!("phase4 clock mismatch: prompt={:?} expected={:?} observed={:?}", case.prompt, case.expected, observed);
+            }
+        }
+        eprintln!(
+            "phase4 unseen clock: synthesis_version={} contract_hash={} dev_hash={} holdout_hash={} dev={}/{} holdout={}/{} holdout_authorized={} holdout_replay={} false_auth={} false_denials={}",
+            SYNTHESIS_VERSION,
+            contract.release_hash(),
+            contract.split_hash(clock_time_contract::ClockSplit::Development),
+            contract.split_hash(clock_time_contract::ClockSplit::Holdout),
+            development_report.correct_decisions,
+            development_report.cases,
+            holdout_report.correct_decisions,
+            holdout_report.cases,
+            holdout_report.authorized,
+            holdout_report.accepted_replay_verified,
+            holdout_report.false_authorizations,
+            holdout_report.false_denials,
+        );
+        eprintln!("phase4 unseen clock operation trace: {:?}", operation_trace(&spec));
+        assert_eq!(development_report.correct_decisions, development_report.cases);
+        assert_eq!(holdout_report.correct_decisions, holdout_report.cases);
+        assert_eq!(holdout_report.false_authorizations, 0);
+        assert_eq!(holdout_report.false_denials, 0);
+        assert_eq!(holdout_report.accepted_replay_verified, holdout_report.authorized);
     }
 }

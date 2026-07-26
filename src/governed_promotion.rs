@@ -38,7 +38,7 @@ pub fn new_registry(world_state_hash: &str) -> VersionedRegistry { VersionedRegi
 
 fn registry_hash(registry: &VersionedRegistry) -> String { let mut hasher = Sha256::new(); hasher.update(serde_json::to_vec(registry).expect("registry serializes")); format!("{:x}", hasher.finalize()) }
 
-fn candidate(id: &str, boundary: &str, dependencies: &[&str], holdout: bool, false_auth: u32, regressions: u32) -> CapabilityVersion { CapabilityVersion { id: id.into(), boundary: boundary.into(), dependencies: dependencies.iter().map(|dependency| (*dependency).into()).collect(), schema_hash: format!("schema-{id}"), holdout_passed: holdout, false_authorizations: false_auth, regressions } }
+pub fn candidate(id: &str, boundary: &str, dependencies: &[&str], holdout: bool, false_auth: u32, regressions: u32) -> CapabilityVersion { CapabilityVersion { id: id.into(), boundary: boundary.into(), dependencies: dependencies.iter().map(|dependency| (*dependency).into()).collect(), schema_hash: format!("schema-{id}"), holdout_passed: holdout, false_authorizations: false_auth, regressions } }
 
 pub fn stage_promotion(registry: &VersionedRegistry, candidate: CapabilityVersion, policy: &PromotionPolicy, migration_ok: bool, competing_boundary: bool) -> PromotionReceipt {
     let previous_active = registry.active.clone();

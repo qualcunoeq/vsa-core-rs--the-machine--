@@ -59,7 +59,7 @@ pub struct InformationGain {
 }
 
 impl InformationGain {
-    fn ratio_cmp(&self, other: &Self) -> std::cmp::Ordering {
+    pub(crate) fn ratio_cmp(&self, other: &Self) -> std::cmp::Ordering {
         (self.numerator * other.denominator).cmp(&(other.numerator * self.denominator))
     }
 }
@@ -126,7 +126,7 @@ fn score(record: &EvidenceRecord) -> u16 {
     u16::from(record.reliability) * u16::from(record.confidence)
 }
 
-const MIN_DECISIVE_EVIDENCE_SCORE: u16 = 2_000;
+pub(crate) const MIN_DECISIVE_EVIDENCE_SCORE: u16 = 2_000;
 
 fn usable_evidence(investigation: &EpistemicInvestigation) -> Vec<&EvidenceRecord> {
     let as_of = investigation.evidence.iter().map(|record| record.timestamp).max().unwrap_or(0);

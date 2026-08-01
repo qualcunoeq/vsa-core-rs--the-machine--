@@ -78,6 +78,20 @@ fn has(text: &str, marker: &str) -> bool {
     text.to_ascii_lowercase().contains(marker)
 }
 
+fn asks(text: &str, target: &str) -> bool {
+    has(text, target)
+        && [
+            "find",
+            "calculate",
+            "compute",
+            "determine",
+            "evaluate",
+            "what is",
+        ]
+        .iter()
+        .any(|verb| has(text, verb) || has(text, "what "))
+}
+
 fn add_provenance(provenance: &mut Vec<ProvenanceSpan>, field: &str, marker: &str, text: &str) {
     if has(text, marker) {
         provenance.push(ProvenanceSpan {
@@ -92,23 +106,26 @@ pub fn formalize_mechanics_situation(text: &str) -> MechanicsSituation {
     let mass = number_after(text, "mass");
     let force = number_after(text, "net force").or_else(|| number_after(text, "force"));
     let acceleration = number_after(text, "acceleration");
-    let velocity = number_after(text, "velocity").or_else(|| number_after(text, "speed"));
+    let velocity = number_after(text, "velocity")
+        .or_else(|| number_after(text, "speed"))
+        .or_else(|| number_after(text, "moves at"));
     let spring_constant =
         number_after(text, "spring constant").or_else(|| number_after(text, "stiffness"));
     let displacement = number_after(text, "displacement")
         .or_else(|| number_after(text, "extension"))
-        .or_else(|| number_after(text, "compression"));
-    let requested_output = if has(text, "kinetic energy") || has(text, "energy of motion") {
+        .or_else(|| number_after(text, "compression"))
+        .or_else(|| number_after(text, "displaced by"));
+    let requested_output = if asks(text, "kinetic energy") || asks(text, "energy of motion") {
         Some("K".into())
-    } else if has(text, "elastic potential") || has(text, "spring energy") {
+    } else if asks(text, "elastic potential") || asks(text, "spring energy") {
         Some("U".into())
-    } else if has(text, "momentum") {
+    } else if asks(text, "momentum") {
         Some("p".into())
-    } else if has(text, "restoring force") || has(text, "spring force") {
+    } else if asks(text, "restoring force") || asks(text, "spring force") {
         Some("F_spring".into())
-    } else if has(text, "acceleration") && has(text, "find") {
+    } else if asks(text, "acceleration") {
         Some("a".into())
-    } else if has(text, "net force") && has(text, "find") {
+    } else if asks(text, "net force") {
         Some("F_net".into())
     } else {
         None
@@ -149,6 +166,14 @@ pub fn formalize_mechanics_situation(text: &str) -> MechanicsSituation {
     {
         unresolved_assumptions.push("multiple requested law outputs require composition".into());
     }
+    if (has(text, "two bodies")
+        || has(text, "two objects")
+        || has(text, "multiple bodies")
+        || has(text, "several bodies"))
+        && !has(text, "single body")
+    {
+        unresolved_assumptions.push("multi-body scope is outside the single-body pack".into());
+    }
     let unsupported_domain = (has(text, "relativistic") && !has(text, "non-relativistic"))
         || has(text, "rotation")
         || has(text, "rotational")
@@ -163,6 +188,21 @@ pub fn formalize_mechanics_situation(text: &str) -> MechanicsSituation {
         && candidates.iter().any(|law| law == "newtons_second_law")
     {
         unresolved_assumptions.push("inertial reference frame not stated".into());
+    }
+    if candidates.iter().any(|law| law == "newtons_second_law")
+        && force.is_some()
+        && !has(text, "net force")
+    {
+        unresolved_assumptions.push("ordinary force is not proven to be net force".into());
+    }
+    if candidates
+        .iter()
+        .any(|law| law == "newtons_second_law" || law == "linear_momentum")
+        && has(text, "magnitude")
+        && (!has(text, "direction") || has(text, "no direction"))
+        && !has(text, "one-dimensional")
+    {
+        unresolved_assumptions.push("vector direction is not specified".into());
     }
     if candidates
         .iter()
@@ -193,11 +233,13 @@ pub fn formalize_mechanics_situation(text: &str) -> MechanicsSituation {
     add_provenance(&mut provenance, "acceleration", "acceleration", text);
     add_provenance(&mut provenance, "velocity", "velocity", text);
     add_provenance(&mut provenance, "velocity", "speed", text);
+    add_provenance(&mut provenance, "velocity", "moves at", text);
     add_provenance(&mut provenance, "spring_constant", "spring constant", text);
     add_provenance(&mut provenance, "spring_constant", "stiffness", text);
     add_provenance(&mut provenance, "displacement", "displacement", text);
     add_provenance(&mut provenance, "displacement", "extension", text);
     add_provenance(&mut provenance, "displacement", "compression", text);
+    add_provenance(&mut provenance, "displacement", "displaced by", text);
     let mut situation = MechanicsSituation {
         status,
         mass,

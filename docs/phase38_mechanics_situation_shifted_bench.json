@@ -1,0 +1,5374 @@
+{
+  "schema_version": "phase38.mechanics.situation.shifted.v1",
+  "corpus_sha256": "134caaadf7e9d5d10e22c483a3ac3ad85a8c55721d5e4e74767a8218263794df",
+  "total_cases": 260,
+  "supported_cases": 120,
+  "ambiguous_cases": 120,
+  "unsupported_cases": 20,
+  "exact_status": 260,
+  "exact_law": 120,
+  "exact_values": 120,
+  "situation_replay_verified": 260,
+  "execution_replay_verified": 260,
+  "false_domain_entries": 0,
+  "false_unique_law_selections": 0,
+  "false_authorizations": 0,
+  "pack_invocations": 120,
+  "pack_complete_results": 120,
+  "provenance_complete": 260,
+  "class_counts": [
+    [
+      "force_not_net",
+      20
+    ],
+    [
+      "generic_energy",
+      20
+    ],
+    [
+      "implicit_target",
+      20
+    ],
+    [
+      "indirect_elastic",
+      24
+    ],
+    [
+      "indirect_kinetic",
+      24
+    ],
+    [
+      "indirect_newton",
+      24
+    ],
+    [
+      "missing_assumption",
+      20
+    ],
+    [
+      "multi_body",
+      20
+    ],
+    [
+      "reordered_hooke",
+      24
+    ],
+    [
+      "reordered_momentum",
+      24
+    ],
+    [
+      "scalar_direction",
+      20
+    ],
+    [
+      "unsupported_domain",
+      20
+    ]
+  ],
+  "registry_mutated": false,
+  "hle_routing_mutated": false,
+  "cases": [
+    {
+      "id": "shifted-supported-000",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 2.0,
+      "actual_value": 2.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-001",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 6.0,
+      "actual_value": 6.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-002",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 32.0,
+      "actual_value": 32.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-003",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -5.5,
+      "actual_value": -5.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-004",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.1600000000000006,
+      "actual_value": 2.1600000000000006,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-005",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 7.0,
+      "actual_value": 7.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-006",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 56.0,
+      "actual_value": 56.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-007",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 6.0,
+      "actual_value": 6.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-008",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -8.0,
+      "actual_value": -8.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-009",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.4400000000000004,
+      "actual_value": 1.4400000000000004,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-010",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 6.0,
+      "actual_value": 6.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-011",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 24.0,
+      "actual_value": 24.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-012",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 49.0,
+      "actual_value": 49.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-013",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -6.0,
+      "actual_value": -6.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-014",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.3400000000000007,
+      "actual_value": 2.3400000000000007,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-015",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 5.0,
+      "actual_value": 5.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-016",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 4.0,
+      "actual_value": 4.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-017",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 87.5,
+      "actual_value": 87.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-018",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -4.0,
+      "actual_value": -4.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-019",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.6200000000000003,
+      "actual_value": 1.6200000000000006,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-020",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 4.0,
+      "actual_value": 4.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-021",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 12.0,
+      "actual_value": 12.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-022",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 27.0,
+      "actual_value": 27.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-023",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -6.5,
+      "actual_value": -6.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-024",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.520000000000001,
+      "actual_value": 2.5200000000000005,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-025",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 3.0,
+      "actual_value": 3.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-026",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 21.0,
+      "actual_value": 21.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-027",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 160.0,
+      "actual_value": 160.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-028",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -4.5,
+      "actual_value": -4.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-029",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.8000000000000005,
+      "actual_value": 1.8000000000000005,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-030",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 2.0,
+      "actual_value": 2.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-031",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 40.0,
+      "actual_value": 40.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-032",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 72.0,
+      "actual_value": 72.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-033",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -7.0,
+      "actual_value": -7.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-034",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.700000000000001,
+      "actual_value": 2.7000000000000006,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-035",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 7.0,
+      "actual_value": 7.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-036",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 15.0,
+      "actual_value": 15.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-037",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 24.0,
+      "actual_value": 24.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-038",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -5.0,
+      "actual_value": -5.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-039",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.9800000000000006,
+      "actual_value": 1.9800000000000004,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-040",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 6.0,
+      "actual_value": 6.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-041",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 16.0,
+      "actual_value": 16.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-042",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 4.0,
+      "actual_value": 4.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-043",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -7.5,
+      "actual_value": -7.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-044",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.880000000000001,
+      "actual_value": 2.880000000000001,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-045",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 5.0,
+      "actual_value": 5.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-046",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 42.0,
+      "actual_value": 42.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-047",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 171.5,
+      "actual_value": 171.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-048",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -5.5,
+      "actual_value": -5.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-049",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.1600000000000006,
+      "actual_value": 2.1600000000000006,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-050",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 4.0,
+      "actual_value": 4.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-051",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 16.0,
+      "actual_value": 16.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-052",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 75.0,
+      "actual_value": 75.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-053",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -8.0,
+      "actual_value": -8.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-054",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.4400000000000004,
+      "actual_value": 1.4400000000000004,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-055",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 3.0,
+      "actual_value": 3.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-056",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 2.0,
+      "actual_value": 2.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-057",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 22.5,
+      "actual_value": 22.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-058",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -6.0,
+      "actual_value": -6.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-059",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.3400000000000007,
+      "actual_value": 2.3400000000000007,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-060",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 2.0,
+      "actual_value": 2.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-061",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 42.0,
+      "actual_value": 42.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-062",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 128.0,
+      "actual_value": 128.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-063",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -4.0,
+      "actual_value": -4.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-064",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.6200000000000003,
+      "actual_value": 1.6200000000000006,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-065",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 7.0,
+      "actual_value": 7.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-066",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 15.0,
+      "actual_value": 15.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-067",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 54.0,
+      "actual_value": 54.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-068",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -6.5,
+      "actual_value": -6.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-069",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.520000000000001,
+      "actual_value": 2.5200000000000005,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-070",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 6.0,
+      "actual_value": 6.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-071",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 24.0,
+      "actual_value": 24.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-072",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 16.0,
+      "actual_value": 16.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-073",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -4.5,
+      "actual_value": -4.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-074",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.8000000000000005,
+      "actual_value": 1.8000000000000005,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-075",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 5.0,
+      "actual_value": 5.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-076",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 40.0,
+      "actual_value": 40.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-077",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 14.0,
+      "actual_value": 14.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-078",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -7.0,
+      "actual_value": -7.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-079",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.700000000000001,
+      "actual_value": 2.7000000000000006,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-080",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 4.0,
+      "actual_value": 4.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-081",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 12.0,
+      "actual_value": 12.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-082",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 147.0,
+      "actual_value": 147.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-083",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -5.0,
+      "actual_value": -5.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-084",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.9800000000000006,
+      "actual_value": 1.9800000000000004,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-085",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 3.0,
+      "actual_value": 3.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-086",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 28.0,
+      "actual_value": 28.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-087",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 62.5,
+      "actual_value": 62.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-088",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -7.5,
+      "actual_value": -7.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-089",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.880000000000001,
+      "actual_value": 2.880000000000001,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-090",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 2.0,
+      "actual_value": 2.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-091",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 8.0,
+      "actual_value": 8.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-092",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 18.0,
+      "actual_value": 18.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-093",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -5.5,
+      "actual_value": -5.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-094",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.1600000000000006,
+      "actual_value": 2.1600000000000006,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-095",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 7.0,
+      "actual_value": 7.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-096",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 7.0,
+      "actual_value": 7.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-097",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 96.0,
+      "actual_value": 96.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-098",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -8.0,
+      "actual_value": -8.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-099",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.4400000000000004,
+      "actual_value": 1.4400000000000004,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-100",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 6.0,
+      "actual_value": 6.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-101",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 30.0,
+      "actual_value": 30.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-102",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 36.0,
+      "actual_value": 36.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-103",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -6.0,
+      "actual_value": -6.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-104",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.3400000000000007,
+      "actual_value": 2.3400000000000007,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-105",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 5.0,
+      "actual_value": 5.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-106",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 9.0,
+      "actual_value": 9.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-107",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 56.0,
+      "actual_value": 56.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-108",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -4.0,
+      "actual_value": -4.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-109",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.6200000000000003,
+      "actual_value": 1.6200000000000006,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-110",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 4.0,
+      "actual_value": 4.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-111",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 64.0,
+      "actual_value": 64.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-112",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 12.0,
+      "actual_value": 12.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-113",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -6.5,
+      "actual_value": -6.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-114",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 2.520000000000001,
+      "actual_value": 2.5200000000000005,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-115",
+      "family": "indirect_newton",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "newtons_second_law",
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": 3.0,
+      "actual_value": 3.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-116",
+      "family": "reordered_momentum",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "linear_momentum",
+      "actual_laws": [
+        "linear_momentum"
+      ],
+      "expected_value": 30.0,
+      "actual_value": 30.0,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-117",
+      "family": "indirect_kinetic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "kinetic_energy",
+      "actual_laws": [
+        "kinetic_energy"
+      ],
+      "expected_value": 122.5,
+      "actual_value": 122.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-118",
+      "family": "reordered_hooke",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "hooke_force",
+      "actual_laws": [
+        "hooke_force"
+      ],
+      "expected_value": -4.5,
+      "actual_value": -4.5,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": []
+    },
+    {
+      "id": "shifted-supported-119",
+      "family": "indirect_elastic",
+      "expected_status": "unique",
+      "actual_status": "unique",
+      "expected_law": "elastic_potential_energy",
+      "actual_laws": [
+        "elastic_potential_energy"
+      ],
+      "expected_value": 1.8000000000000005,
+      "actual_value": 1.8000000000000005,
+      "status_correct": true,
+      "law_correct": true,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": []
+    },
+    {
+      "id": "implicit-target-000",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-001",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-002",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-003",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-004",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-005",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-006",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-007",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-008",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-009",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-010",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-011",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-012",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-013",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-014",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-015",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-016",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-017",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-018",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "implicit-target-019",
+      "family": "implicit_target",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "force-not-net-000",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-001",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-002",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-003",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-004",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-005",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-006",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-007",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-008",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-009",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-010",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-011",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-012",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-013",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-014",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-015",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-016",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-017",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-018",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "force-not-net-019",
+      "family": "force_not_net",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "ordinary force is not proven to be net force"
+      ]
+    },
+    {
+      "id": "scalar-direction-000",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-001",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-002",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-003",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-004",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-005",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-006",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-007",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-008",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-009",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-010",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-011",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-012",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-013",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-014",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-015",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-016",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-017",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-018",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "scalar-direction-019",
+      "family": "scalar_direction",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "vector direction is not specified"
+      ]
+    },
+    {
+      "id": "multi-body-000",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-001",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-002",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-003",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-004",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-005",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-006",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-007",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-008",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-009",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-010",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-011",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-012",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-013",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-014",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-015",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-016",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-017",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-018",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "multi-body-019",
+      "family": "multi_body",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "multi-body scope is outside the single-body pack"
+      ]
+    },
+    {
+      "id": "generic-energy-000",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-001",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-002",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-003",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-004",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-005",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-006",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-007",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-008",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-009",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-010",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-011",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-012",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-013",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-014",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-015",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-016",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-017",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-018",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "generic-energy-019",
+      "family": "generic_energy",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-000",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-001",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-002",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-003",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-004",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-005",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-006",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-007",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-008",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-009",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-010",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-011",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-012",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-013",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-014",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-015",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-016",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-017",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-018",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "unsupported-domain-019",
+      "family": "unsupported_domain",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_law": null,
+      "actual_laws": [
+        "linear_momentum",
+        "kinetic_energy"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 2,
+      "reasons": [
+        "requires an out-of-pack mechanics domain",
+        "non-relativistic regime not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-000",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-001",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-002",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-003",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-004",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-005",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-006",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-007",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-008",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-009",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-010",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-011",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-012",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-013",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-014",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-015",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-016",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-017",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-018",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    },
+    {
+      "id": "missing-assumption-019",
+      "family": "missing_assumption",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_law": null,
+      "actual_laws": [
+        "newtons_second_law"
+      ],
+      "expected_value": null,
+      "actual_value": null,
+      "status_correct": true,
+      "law_correct": false,
+      "value_correct": true,
+      "situation_replay": true,
+      "execution_replay": true,
+      "provenance_spans": 3,
+      "reasons": [
+        "inertial reference frame not stated"
+      ]
+    }
+  ],
+  "method": "independent shifted-language corpus; structural situation formalization; no HLE or production routing"
+}

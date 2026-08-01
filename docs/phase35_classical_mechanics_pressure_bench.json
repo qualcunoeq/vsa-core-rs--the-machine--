@@ -1,0 +1,2637 @@
+{
+  "schema_version": "phase35.classical.mechanics.pressure.v1",
+  "pack_sha256": "4ee00660fd138099a25dc20927ccc24b01ba0a530c78bde89bc828bda2a32e53",
+  "corpus_sha256": "fb05666d9f3580501c9ba1fe10682d9ed96d3f5ede576dd6632f548a4b866e4e",
+  "total_cases": 240,
+  "supported_cases": 160,
+  "ambiguous_cases": 20,
+  "boundary_cases": 60,
+  "exact_decisions": 240,
+  "exact_values": 160,
+  "replay_verified": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "defect_count": 7,
+  "defects_with_counterexamples": 7,
+  "defects_diagnosed": 7,
+  "defects_repaired": 7,
+  "parent_immutable": true,
+  "registry_mutated": false,
+  "category_counts": [
+    [
+      "ambiguous_target_or_alias",
+      20
+    ],
+    [
+      "elastic_energy",
+      32
+    ],
+    [
+      "hooke",
+      32
+    ],
+    [
+      "incompatible_units",
+      20
+    ],
+    [
+      "kinetic_energy",
+      32
+    ],
+    [
+      "missing_binding",
+      10
+    ],
+    [
+      "momentum",
+      32
+    ],
+    [
+      "newton",
+      32
+    ],
+    [
+      "unsupported_domain",
+      10
+    ],
+    [
+      "unsupported_multi_law_composition",
+      20
+    ]
+  ],
+  "defects": [
+    {
+      "defect": "swapped_variables",
+      "injected_counterexamples": 10,
+      "counterexample_ids": [
+        "supported-010",
+        "supported-025",
+        "supported-040",
+        "supported-055",
+        "supported-070",
+        "supported-085",
+        "supported-100",
+        "supported-115",
+        "supported-130",
+        "supported-145"
+      ],
+      "diagnosed": true,
+      "sandbox_repaired": true,
+      "parent_pack_sha256": "4ee00660fd138099a25dc20927ccc24b01ba0a530c78bde89bc828bda2a32e53",
+      "revised_shadow_sha256": "109426f192de24f9deb4e5e2a177f5dddfbfc36f402e88c6bf8c2bdacde3a857",
+      "parent_immutable": true
+    },
+    {
+      "defect": "omitted_kinetic_square",
+      "injected_counterexamples": 10,
+      "counterexample_ids": [
+        "supported-012",
+        "supported-027",
+        "supported-042",
+        "supported-057",
+        "supported-072",
+        "supported-087",
+        "supported-102",
+        "supported-117",
+        "supported-132",
+        "supported-147"
+      ],
+      "diagnosed": true,
+      "sandbox_repaired": true,
+      "parent_pack_sha256": "4ee00660fd138099a25dc20927ccc24b01ba0a530c78bde89bc828bda2a32e53",
+      "revised_shadow_sha256": "460cb9257aacb4341f33fa84b68433720e90c23a42e74af057efa09e4717e7b3",
+      "parent_immutable": true
+    },
+    {
+      "defect": "wrong_hooke_sign",
+      "injected_counterexamples": 11,
+      "counterexample_ids": [
+        "supported-003",
+        "supported-018",
+        "supported-033",
+        "supported-048",
+        "supported-063",
+        "supported-078",
+        "supported-093",
+        "supported-108",
+        "supported-123",
+        "supported-138",
+        "supported-153"
+      ],
+      "diagnosed": true,
+      "sandbox_repaired": true,
+      "parent_pack_sha256": "4ee00660fd138099a25dc20927ccc24b01ba0a530c78bde89bc828bda2a32e53",
+      "revised_shadow_sha256": "16430faccfe2e14a656263e4baf0b552ec9d7456a54121879e53d4bad342299f",
+      "parent_immutable": true
+    },
+    {
+      "defect": "momentum_force_confusion",
+      "injected_counterexamples": 11,
+      "counterexample_ids": [
+        "supported-006",
+        "supported-021",
+        "supported-036",
+        "supported-051",
+        "supported-066",
+        "supported-081",
+        "supported-096",
+        "supported-111",
+        "supported-126",
+        "supported-141",
+        "supported-156"
+      ],
+      "diagnosed": true,
+      "sandbox_repaired": true,
+      "parent_pack_sha256": "4ee00660fd138099a25dc20927ccc24b01ba0a530c78bde89bc828bda2a32e53",
+      "revised_shadow_sha256": "4b56f41206a364b13627ff97a0c3f57eeed8e8dab08275371631128f2922222a",
+      "parent_immutable": true
+    },
+    {
+      "defect": "ignored_unit_mismatch",
+      "injected_counterexamples": 20,
+      "counterexample_ids": [
+        "unit-mismatch-000",
+        "unit-mismatch-001",
+        "unit-mismatch-002",
+        "unit-mismatch-003",
+        "unit-mismatch-004",
+        "unit-mismatch-005",
+        "unit-mismatch-006",
+        "unit-mismatch-007",
+        "unit-mismatch-008",
+        "unit-mismatch-009",
+        "unit-mismatch-010",
+        "unit-mismatch-011",
+        "unit-mismatch-012",
+        "unit-mismatch-013",
+        "unit-mismatch-014",
+        "unit-mismatch-015",
+        "unit-mismatch-016",
+        "unit-mismatch-017",
+        "unit-mismatch-018",
+        "unit-mismatch-019"
+      ],
+      "diagnosed": true,
+      "sandbox_repaired": true,
+      "parent_pack_sha256": "4ee00660fd138099a25dc20927ccc24b01ba0a530c78bde89bc828bda2a32e53",
+      "revised_shadow_sha256": "1702beb4146b607d70422e6fff5e1d964a39b66641222046295093640c6514b4",
+      "parent_immutable": true
+    },
+    {
+      "defect": "bypassed_assumptions",
+      "injected_counterexamples": 30,
+      "counterexample_ids": [
+        "missing-or-unsupported-001",
+        "missing-or-unsupported-003",
+        "missing-or-unsupported-005",
+        "missing-or-unsupported-007",
+        "missing-or-unsupported-009",
+        "missing-or-unsupported-011",
+        "missing-or-unsupported-013",
+        "missing-or-unsupported-015",
+        "missing-or-unsupported-017",
+        "missing-or-unsupported-019",
+        "unsupported-composition-000",
+        "unsupported-composition-001",
+        "unsupported-composition-002",
+        "unsupported-composition-003",
+        "unsupported-composition-004",
+        "unsupported-composition-005",
+        "unsupported-composition-006",
+        "unsupported-composition-007",
+        "unsupported-composition-008",
+        "unsupported-composition-009",
+        "unsupported-composition-010",
+        "unsupported-composition-011",
+        "unsupported-composition-012",
+        "unsupported-composition-013",
+        "unsupported-composition-014",
+        "unsupported-composition-015",
+        "unsupported-composition-016",
+        "unsupported-composition-017",
+        "unsupported-composition-018",
+        "unsupported-composition-019"
+      ],
+      "diagnosed": true,
+      "sandbox_repaired": true,
+      "parent_pack_sha256": "4ee00660fd138099a25dc20927ccc24b01ba0a530c78bde89bc828bda2a32e53",
+      "revised_shadow_sha256": "792b8368ac69d5f47688c75f5dc9b2c1c8a430c6c7972140ab095cc0919fd0d5",
+      "parent_immutable": true
+    },
+    {
+      "defect": "omitted_replay",
+      "injected_counterexamples": 1,
+      "counterexample_ids": [
+        "supported-000"
+      ],
+      "diagnosed": true,
+      "sandbox_repaired": true,
+      "parent_pack_sha256": "4ee00660fd138099a25dc20927ccc24b01ba0a530c78bde89bc828bda2a32e53",
+      "revised_shadow_sha256": "69b318a79fda228add9e5d67118fa5813d6a31ac53cdb0dd5ce9d9831e234460",
+      "parent_immutable": true
+    }
+  ],
+  "cases": [
+    {
+      "id": "supported-000",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.0,
+      "oracle_value": 1.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-001",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -5.0,
+      "oracle_value": -5.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-002",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-003",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.91,
+      "oracle_value": 0.91,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-004",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.5,
+      "oracle_value": 0.5,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-005",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-006",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 7.0,
+      "oracle_value": 7.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-007",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 9.0,
+      "oracle_value": 9.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-008",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.18000000000000002,
+      "oracle_value": 0.18000000000000002,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-009",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.5,
+      "oracle_value": 6.5,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-010",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 8.0,
+      "oracle_value": 8.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-011",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 4.0,
+      "oracle_value": 4.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-012",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 75.0,
+      "oracle_value": 75.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-013",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 7.0,
+      "oracle_value": 7.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-014",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 8.0,
+      "oracle_value": 8.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-015",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 2.0,
+      "oracle_value": 2.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-016",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -1.0,
+      "oracle_value": -1.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-017",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 4.0,
+      "oracle_value": 4.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-018",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -3.3600000000000003,
+      "oracle_value": -3.3600000000000003,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-019",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.7,
+      "oracle_value": 0.7,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-020",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-021",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 24.0,
+      "oracle_value": 24.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-022",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-023",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -0.33,
+      "oracle_value": -0.33,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-024",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 5.760000000000002,
+      "oracle_value": 5.760000000000002,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-025",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 40.0,
+      "oracle_value": 40.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-026",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-027",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 14.0,
+      "oracle_value": 14.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-028",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 12.000000000000002,
+      "oracle_value": 12.000000000000002,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-029",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 12.999999999999998,
+      "oracle_value": 12.999999999999998,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-030",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-031",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-032",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 5.0,
+      "oracle_value": 5.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-033",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0100000000000002,
+      "oracle_value": 3.0100000000000002,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-034",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.9,
+      "oracle_value": 0.9,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-035",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 9.0,
+      "oracle_value": 9.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-036",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -15.0,
+      "oracle_value": -15.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-037",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-038",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.48,
+      "oracle_value": 0.48,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-039",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.06500000000000002,
+      "oracle_value": 0.06500000000000002,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-040",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 30.0,
+      "oracle_value": 30.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-041",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 2.0,
+      "oracle_value": 2.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-042",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 32.0,
+      "oracle_value": 32.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-043",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 7.0,
+      "oracle_value": 7.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-044",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 8.0,
+      "oracle_value": 8.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-045",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 4.0,
+      "oracle_value": 4.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-046",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -4.0,
+      "oracle_value": -4.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-047",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-048",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -6.959999999999999,
+      "oracle_value": -6.959999999999999,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-049",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.1,
+      "oracle_value": 1.1,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-050",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-051",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 4.0,
+      "oracle_value": 4.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-052",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 9.0,
+      "oracle_value": 9.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-053",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -0.63,
+      "oracle_value": -0.63,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-054",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.3600000000000001,
+      "oracle_value": 0.3600000000000001,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-055",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 14.0,
+      "oracle_value": 14.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-056",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.0,
+      "oracle_value": 1.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-057",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 25.0,
+      "oracle_value": 25.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-058",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 12.000000000000002,
+      "oracle_value": 12.000000000000002,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-059",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 13.0,
+      "oracle_value": 13.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-060",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 5.0,
+      "oracle_value": 5.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-061",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.0,
+      "oracle_value": 1.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-062",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 7.0,
+      "oracle_value": 7.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-063",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 5.109999999999999,
+      "oracle_value": 5.109999999999999,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-064",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.3,
+      "oracle_value": 1.3,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-065",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-066",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -18.0,
+      "oracle_value": -18.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-067",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-068",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.7799999999999999,
+      "oracle_value": 0.7799999999999999,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-069",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.625,
+      "oracle_value": 1.625,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-070",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 8.0,
+      "oracle_value": 8.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-071",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 8.0,
+      "oracle_value": 8.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-072",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-073",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 7.0,
+      "oracle_value": 7.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-074",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 8.0,
+      "oracle_value": 8.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-075",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-076",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 4.0,
+      "oracle_value": 4.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-077",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.0,
+      "oracle_value": 1.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-078",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -10.56,
+      "oracle_value": -10.56,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-079",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.2,
+      "oracle_value": 0.2,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-080",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 9.0,
+      "oracle_value": 9.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-081",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -4.0,
+      "oracle_value": -4.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-082",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-083",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -0.9299999999999999,
+      "oracle_value": -0.9299999999999999,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-084",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.9599999999999997,
+      "oracle_value": 1.9599999999999997,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-085",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 10.0,
+      "oracle_value": 10.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-086",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 7.0,
+      "oracle_value": 7.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-087",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 128.0,
+      "oracle_value": 128.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-088",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 12.0,
+      "oracle_value": 12.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-089",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 13.0,
+      "oracle_value": 13.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-090",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 7.0,
+      "oracle_value": 7.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-091",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -3.0,
+      "oracle_value": -3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-092",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 2.0,
+      "oracle_value": 2.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-093",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 7.21,
+      "oracle_value": 7.21,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-094",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.4,
+      "oracle_value": 0.4,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-095",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-096",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 2.0,
+      "oracle_value": 2.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-097",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 9.0,
+      "oracle_value": 9.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-098",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.08,
+      "oracle_value": 1.08,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-099",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 5.265000000000001,
+      "oracle_value": 5.265000000000001,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-100",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-101",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-102",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 62.5,
+      "oracle_value": 62.5,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-103",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 7.0,
+      "oracle_value": 7.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-104",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 8.0,
+      "oracle_value": 8.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-105",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.0,
+      "oracle_value": 1.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-106",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.0,
+      "oracle_value": 1.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-107",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-108",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -14.160000000000002,
+      "oracle_value": -14.160000000000002,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-109",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.6,
+      "oracle_value": 0.6,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-110",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-111",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -40.0,
+      "oracle_value": -40.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-112",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-113",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -1.23,
+      "oracle_value": -1.23,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-114",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 4.840000000000001,
+      "oracle_value": 4.840000000000001,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-115",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 32.0,
+      "oracle_value": 32.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-116",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 5.0,
+      "oracle_value": 5.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-117",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 12.0,
+      "oracle_value": 12.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-118",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 12.0,
+      "oracle_value": 12.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-119",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 13.0,
+      "oracle_value": 13.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-120",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 2.0,
+      "oracle_value": 2.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-121",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -6.0,
+      "oracle_value": -6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-122",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 4.0,
+      "oracle_value": 4.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-123",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 9.31,
+      "oracle_value": 9.31,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-124",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.7999999999999999,
+      "oracle_value": 0.7999999999999999,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-125",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 9.0,
+      "oracle_value": 9.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-126",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -7.0,
+      "oracle_value": -7.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-127",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-128",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.3800000000000001,
+      "oracle_value": 1.3800000000000001,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-129",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 10.985000000000001,
+      "oracle_value": 10.985000000000001,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-130",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 25.0,
+      "oracle_value": 25.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-131",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 4.0,
+      "oracle_value": 4.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-132",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 224.0,
+      "oracle_value": 224.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-133",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 7.0,
+      "oracle_value": 7.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-134",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 8.0,
+      "oracle_value": 8.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-135",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-136",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -2.0,
+      "oracle_value": -2.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-137",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 5.0,
+      "oracle_value": 5.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-138",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -17.759999999999998,
+      "oracle_value": -17.759999999999998,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-139",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.0,
+      "oracle_value": 1.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-140",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-141",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 18.0,
+      "oracle_value": 18.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-142",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 9.0,
+      "oracle_value": 9.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-143",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -1.53,
+      "oracle_value": -1.53,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-144",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.16000000000000003,
+      "oracle_value": 0.16000000000000003,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-145",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 12.0,
+      "oracle_value": 12.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-146",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-147",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 12.5,
+      "oracle_value": 12.5,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-148",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 12.0,
+      "oracle_value": 12.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-149",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 13.0,
+      "oracle_value": 13.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-150",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 4.0,
+      "oracle_value": 4.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-151",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 2.0,
+      "oracle_value": 2.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-152",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-153",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 11.41,
+      "oracle_value": 11.41,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-154",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.2000000000000002,
+      "oracle_value": 1.2000000000000002,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-155",
+      "family": "newton",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 3.0,
+      "oracle_value": 3.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-156",
+      "family": "momentum",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -20.0,
+      "oracle_value": -20.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-157",
+      "family": "kinetic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 6.0,
+      "oracle_value": 6.0,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-158",
+      "family": "hooke",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.6800000000000004,
+      "oracle_value": 1.6800000000000004,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "supported-159",
+      "family": "elastic_energy",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.0400000000000003,
+      "oracle_value": 1.0400000000000003,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-000",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-001",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-002",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-003",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-004",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-005",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-006",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-007",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-008",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-009",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-010",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-011",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-012",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-013",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-014",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-015",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-016",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-017",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-018",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "ambiguous-019",
+      "family": "ambiguous_target_or_alias",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-000",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-001",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-002",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-003",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-004",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-005",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-006",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-007",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-008",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-009",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-010",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-011",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-012",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-013",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-014",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-015",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-016",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-017",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-018",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unit-mismatch-019",
+      "family": "incompatible_units",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-000",
+      "family": "missing_binding",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-001",
+      "family": "unsupported_domain",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-002",
+      "family": "missing_binding",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-003",
+      "family": "unsupported_domain",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-004",
+      "family": "missing_binding",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-005",
+      "family": "unsupported_domain",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-006",
+      "family": "missing_binding",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-007",
+      "family": "unsupported_domain",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-008",
+      "family": "missing_binding",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-009",
+      "family": "unsupported_domain",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-010",
+      "family": "missing_binding",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-011",
+      "family": "unsupported_domain",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-012",
+      "family": "missing_binding",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-013",
+      "family": "unsupported_domain",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-014",
+      "family": "missing_binding",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-015",
+      "family": "unsupported_domain",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-016",
+      "family": "missing_binding",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-017",
+      "family": "unsupported_domain",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-018",
+      "family": "missing_binding",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "missing-or-unsupported-019",
+      "family": "unsupported_domain",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-000",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-001",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-002",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-003",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-004",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-005",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-006",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-007",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-008",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-009",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-010",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-011",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-012",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-013",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-014",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-015",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-016",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-017",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-018",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    },
+    {
+      "id": "unsupported-composition-019",
+      "family": "unsupported_multi_law_composition",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "oracle_value": null,
+      "value_matches_oracle": true,
+      "replay_verified": true
+    }
+  ],
+  "method": "independent deterministic pressure corpus; separate oracle; sandbox-only defect injection and repair; no HLE or production routing"
+}

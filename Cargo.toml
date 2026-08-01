@@ -80,6 +80,10 @@ name = "hle_notation_grounding"
 path = "src/bin/hle_notation_grounding.rs"
 
 [[bin]]
+name = "hle_method_audit"
+path = "src/bin/hle_method_audit.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

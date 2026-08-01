@@ -1,0 +1,19 @@
+{
+  "schema_version": "phase27-method-audit-v1",
+  "producer_commit": "16c5983",
+  "release_evaluator_commit": "fa0a241",
+  "dataset": "data/hle.jsonl",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c",
+  "regenerated_trace_sha256": "696ad4e5cc2c3475d5a5c3b5cd4ca691e0317d64adf17b075b9c01f4d2a596c9",
+  "regenerated_grounding_report_sha256": "abc901692e920c47cf6589769b3974202d09e0f7cad80869ac784d0812a061d3",
+  "method_audit_report_sha256": "435afa3c3360f68bd103818e02acd38a3281b5abd08ce78ea3bdcd7c33b3d805",
+  "grounding_record_count": 13,
+  "grounding_replay_verified": 13,
+  "grounding_outcomes": {
+    "accepted": 13,
+    "ambiguous": 23,
+    "unsupported": 22
+  },
+  "status": "aggregate_reproduced; byte_identical_phase26_trace_not_recovered",
+  "note": "The release evaluator was run in bounded 100-question processes to avoid resource termination. Aggregate Phase 26 counts match the recorded result; the regenerated trace hash is retained to prevent claiming byte identity."
+}

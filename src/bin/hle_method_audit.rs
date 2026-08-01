@@ -30,6 +30,8 @@ enum MethodFamily {
     AppliedPde,
     Combinatorics,
     Optimization,
+    SetTheory,
+    RealAnalysis,
     Unclassified,
 }
 
@@ -123,7 +125,14 @@ fn family_for(question: &str) -> (MethodFamily, Vec<String>) {
         ),
         (
             MethodFamily::FractalDimension,
-            &["dimension of", "compact set", "dimension of c"],
+            &[
+                "dimension of",
+                "compact set",
+                "dimension of c",
+                "components of f",
+                "unit square",
+                "self-similar",
+            ],
         ),
         (
             MethodFamily::GraphTheory,
@@ -159,7 +168,7 @@ fn family_for(question: &str) -> (MethodFamily, Vec<String>) {
         ),
         (
             MethodFamily::NumberTheory,
-            &["floor", "modulo", "congruent", "integer"],
+            &["floor", "modulo", " mod ", "\\pmod", "congruent", "integer"],
         ),
         (
             MethodFamily::Topology,
@@ -205,6 +214,19 @@ fn family_for(question: &str) -> (MethodFamily, Vec<String>) {
                 "minimize",
                 "maximize",
                 "evolutionary algorithm",
+            ],
+        ),
+        (
+            MethodFamily::SetTheory,
+            &["ultrafilter", "antichain", "finite-to-one", "cardinality"],
+        ),
+        (
+            MethodFamily::RealAnalysis,
+            &[
+                "lower and upper bounds",
+                "real number",
+                "there always exist",
+                "interval",
             ],
         ),
     ];
@@ -280,9 +302,10 @@ fn requirement(id: Option<String>, question: &str) -> MethodRequirement {
         MethodFamily::GeometryInequality => ("algebra and proposition verifier", true),
         MethodFamily::NumberTheory | MethodFamily::AlgorithmComplexity => ("algebra island", true),
         MethodFamily::ProbabilityStatistics => ("algebra island", true),
-        MethodFamily::Combinatorics | MethodFamily::Optimization => {
-            ("algebra and proposition verifier", true)
-        }
+        MethodFamily::Combinatorics
+        | MethodFamily::Optimization
+        | MethodFamily::SetTheory
+        | MethodFamily::RealAnalysis => ("algebra and proposition verifier", true),
         MethodFamily::GraphTheory
         | MethodFamily::Topology
         | MethodFamily::AbstractAlgebra

@@ -1,0 +1,440 @@
+{
+  "grounding_report_sha256": "abc901692e920c47cf6589769b3974202d09e0f7cad80869ac784d0812a061d3",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "grounded_cases": 13,
+  "family_counts": {
+    "geometry_inequality": 2,
+    "fractal_dimension": 2,
+    "graph_theory": 1,
+    "differential_equation": 1,
+    "number_theory": 2,
+    "linear_algebra": 1,
+    "probability_statistics": 1,
+    "applied_pde": 1,
+    "set_theory": 1,
+    "real_analysis": 1
+  },
+  "reusable_cases": 13,
+  "interface_mismatch_cases": 13,
+  "prerequisite_knowledge_cases": 0,
+  "largest_family": "geometry_inequality",
+  "largest_family_cases": 2,
+  "requirements": [
+    {
+      "id": "66fa67dc29908114d8954b55",
+      "family": "fractal_dimension",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "scalar_answer",
+      "operation": "derive ScalarAnswer from a grounded target using FractalDimension semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "proposition verifier",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [
+        "fractional expression"
+      ],
+      "evidence": [
+        "matched FractalDimension lexical semantic anchors",
+        "requested output classified as ScalarAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "66fcf48f6da31bbbe3d17e72",
+      "family": "geometry_inequality",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "scalar_answer",
+      "operation": "derive ScalarAnswer from a grounded target using GeometryInequality semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "algebra and proposition verifier",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [],
+      "evidence": [
+        "matched GeometryInequality lexical semantic anchors",
+        "requested output classified as ScalarAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "66fd469e7a33ca69ccc69729",
+      "family": "graph_theory",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "boolean_answer",
+      "operation": "derive BooleanAnswer from a grounded target using GraphTheory semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "proposition verifier",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [],
+      "evidence": [
+        "matched GraphTheory lexical semantic anchors",
+        "requested output classified as BooleanAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "66fd4b01b5c28915c8897f6f",
+      "family": "differential_equation",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "scalar_answer",
+      "operation": "derive ScalarAnswer from a grounded target using DifferentialEquation semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "algebra/math parser",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [
+        "differential operator"
+      ],
+      "evidence": [
+        "matched DifferentialEquation lexical semantic anchors",
+        "requested output classified as ScalarAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "670524fec62c9a55b8503379",
+      "family": "number_theory",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "scalar_answer",
+      "operation": "derive ScalarAnswer from a grounded target using NumberTheory semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "algebra island",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [
+        "fractional expression",
+        "summation notation"
+      ],
+      "evidence": [
+        "matched NumberTheory lexical semantic anchors",
+        "requested output classified as ScalarAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "6720b19753f93bde5977a8e9",
+      "family": "set_theory",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "cardinality_answer",
+      "operation": "derive CardinalityAnswer from a grounded target using SetTheory semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "algebra and proposition verifier",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [],
+      "evidence": [
+        "matched SetTheory lexical semantic anchors",
+        "requested output classified as CardinalityAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "6721ac0547bc48850f17f779",
+      "family": "real_analysis",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "scalar_answer",
+      "operation": "derive ScalarAnswer from a grounded target using RealAnalysis semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "algebra and proposition verifier",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [],
+      "evidence": [
+        "matched RealAnalysis lexical semantic anchors",
+        "requested output classified as ScalarAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "672547d531e4efbf27ecd1cf",
+      "family": "linear_algebra",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "scalar_answer",
+      "operation": "derive ScalarAnswer from a grounded target using LinearAlgebra semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "linear-system executor",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [
+        "summation notation"
+      ],
+      "evidence": [
+        "matched LinearAlgebra lexical semantic anchors",
+        "requested output classified as ScalarAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "672b2ff4a7b27beaf0e7779a",
+      "family": "fractal_dimension",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "scalar_answer",
+      "operation": "derive ScalarAnswer from a grounded target using FractalDimension semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "proposition verifier",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [
+        "fractional expression"
+      ],
+      "evidence": [
+        "matched FractalDimension lexical semantic anchors",
+        "requested output classified as ScalarAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "67372559fb093fc159cc790f",
+      "family": "applied_pde",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "expression_answer",
+      "operation": "derive ExpressionAnswer from a grounded target using AppliedPde semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "algebra/math parser",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [],
+      "evidence": [
+        "matched AppliedPde lexical semantic anchors",
+        "requested output classified as ExpressionAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "673b7ee0b22ebd24e26d4ece",
+      "family": "number_theory",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "cardinality_answer",
+      "operation": "derive CardinalityAnswer from a grounded target using NumberTheory semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "algebra island",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [],
+      "evidence": [
+        "matched NumberTheory lexical semantic anchors",
+        "requested output classified as CardinalityAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "67407476202fdf7a5b5c6cc1",
+      "family": "probability_statistics",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "scalar_answer",
+      "operation": "derive ScalarAnswer from a grounded target using ProbabilityStatistics semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "algebra island",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [],
+      "evidence": [
+        "matched ProbabilityStatistics lexical semantic anchors",
+        "requested output classified as ScalarAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    },
+    {
+      "id": "67ae17cf1509e1d55b4a0eec",
+      "family": "geometry_inequality",
+      "input_artifact_type": "grounded_math_target",
+      "requested_output_artifact": "scalar_answer",
+      "operation": "derive ScalarAnswer from a grounded target using GeometryInequality semantics",
+      "prerequisites": [],
+      "reusable": true,
+      "nearest_existing_capability": "algebra and proposition verifier",
+      "interface_mismatch": true,
+      "unsupported_operator_or_representation": [],
+      "evidence": [
+        "matched GeometryInequality lexical semantic anchors",
+        "requested output classified as ScalarAnswer",
+        "existing capability is adjacent but lacks a typed bridge for this family"
+      ]
+    }
+  ],
+  "family_summaries": [
+    {
+      "family": "geometry_inequality",
+      "cases": 2,
+      "reusable_cases": 2,
+      "input_artifact_types": [
+        "grounded_math_target"
+      ],
+      "requested_output_artifacts": [
+        "scalar_answer"
+      ],
+      "shared_operation": "derive ScalarAnswer from a grounded target using GeometryInequality semantics",
+      "prerequisite_families": [],
+      "nearest_existing_capabilities": [
+        "algebra and proposition verifier"
+      ],
+      "interface_mismatch_cases": 2,
+      "contract_status": "candidate reusable method; typed bridge required"
+    },
+    {
+      "family": "fractal_dimension",
+      "cases": 2,
+      "reusable_cases": 2,
+      "input_artifact_types": [
+        "grounded_math_target"
+      ],
+      "requested_output_artifacts": [
+        "scalar_answer"
+      ],
+      "shared_operation": "derive ScalarAnswer from a grounded target using FractalDimension semantics",
+      "prerequisite_families": [],
+      "nearest_existing_capabilities": [
+        "proposition verifier"
+      ],
+      "interface_mismatch_cases": 2,
+      "contract_status": "candidate reusable method; typed bridge required"
+    },
+    {
+      "family": "number_theory",
+      "cases": 2,
+      "reusable_cases": 2,
+      "input_artifact_types": [
+        "grounded_math_target"
+      ],
+      "requested_output_artifacts": [
+        "scalar_answer",
+        "cardinality_answer"
+      ],
+      "shared_operation": "derive ScalarAnswer from a grounded target using NumberTheory semantics",
+      "prerequisite_families": [],
+      "nearest_existing_capabilities": [
+        "algebra island"
+      ],
+      "interface_mismatch_cases": 2,
+      "contract_status": "candidate reusable method; typed bridge required"
+    },
+    {
+      "family": "graph_theory",
+      "cases": 1,
+      "reusable_cases": 1,
+      "input_artifact_types": [
+        "grounded_math_target"
+      ],
+      "requested_output_artifacts": [
+        "boolean_answer"
+      ],
+      "shared_operation": "derive BooleanAnswer from a grounded target using GraphTheory semantics",
+      "prerequisite_families": [],
+      "nearest_existing_capabilities": [
+        "proposition verifier"
+      ],
+      "interface_mismatch_cases": 1,
+      "contract_status": "candidate reusable method; typed bridge required"
+    },
+    {
+      "family": "differential_equation",
+      "cases": 1,
+      "reusable_cases": 1,
+      "input_artifact_types": [
+        "grounded_math_target"
+      ],
+      "requested_output_artifacts": [
+        "scalar_answer"
+      ],
+      "shared_operation": "derive ScalarAnswer from a grounded target using DifferentialEquation semantics",
+      "prerequisite_families": [],
+      "nearest_existing_capabilities": [
+        "algebra/math parser"
+      ],
+      "interface_mismatch_cases": 1,
+      "contract_status": "candidate reusable method; typed bridge required"
+    },
+    {
+      "family": "linear_algebra",
+      "cases": 1,
+      "reusable_cases": 1,
+      "input_artifact_types": [
+        "grounded_math_target"
+      ],
+      "requested_output_artifacts": [
+        "scalar_answer"
+      ],
+      "shared_operation": "derive ScalarAnswer from a grounded target using LinearAlgebra semantics",
+      "prerequisite_families": [],
+      "nearest_existing_capabilities": [
+        "linear-system executor"
+      ],
+      "interface_mismatch_cases": 1,
+      "contract_status": "candidate reusable method; typed bridge required"
+    },
+    {
+      "family": "probability_statistics",
+      "cases": 1,
+      "reusable_cases": 1,
+      "input_artifact_types": [
+        "grounded_math_target"
+      ],
+      "requested_output_artifacts": [
+        "scalar_answer"
+      ],
+      "shared_operation": "derive ScalarAnswer from a grounded target using ProbabilityStatistics semantics",
+      "prerequisite_families": [],
+      "nearest_existing_capabilities": [
+        "algebra island"
+      ],
+      "interface_mismatch_cases": 1,
+      "contract_status": "candidate reusable method; typed bridge required"
+    },
+    {
+      "family": "applied_pde",
+      "cases": 1,
+      "reusable_cases": 1,
+      "input_artifact_types": [
+        "grounded_math_target"
+      ],
+      "requested_output_artifacts": [
+        "expression_answer"
+      ],
+      "shared_operation": "derive ExpressionAnswer from a grounded target using AppliedPde semantics",
+      "prerequisite_families": [],
+      "nearest_existing_capabilities": [
+        "algebra/math parser"
+      ],
+      "interface_mismatch_cases": 1,
+      "contract_status": "candidate reusable method; typed bridge required"
+    },
+    {
+      "family": "set_theory",
+      "cases": 1,
+      "reusable_cases": 1,
+      "input_artifact_types": [
+        "grounded_math_target"
+      ],
+      "requested_output_artifacts": [
+        "cardinality_answer"
+      ],
+      "shared_operation": "derive CardinalityAnswer from a grounded target using SetTheory semantics",
+      "prerequisite_families": [],
+      "nearest_existing_capabilities": [
+        "algebra and proposition verifier"
+      ],
+      "interface_mismatch_cases": 1,
+      "contract_status": "candidate reusable method; typed bridge required"
+    },
+    {
+      "family": "real_analysis",
+      "cases": 1,
+      "reusable_cases": 1,
+      "input_artifact_types": [
+        "grounded_math_target"
+      ],
+      "requested_output_artifacts": [
+        "scalar_answer"
+      ],
+      "shared_operation": "derive ScalarAnswer from a grounded target using RealAnalysis semantics",
+      "prerequisite_families": [],
+      "nearest_existing_capabilities": [
+        "algebra and proposition verifier"
+      ],
+      "interface_mismatch_cases": 1,
+      "contract_status": "candidate reusable method; typed bridge required"
+    }
+  ],
+  "method": "shadow-only deterministic downstream method audit; family labels are diagnostic and non-authorizing"
+}

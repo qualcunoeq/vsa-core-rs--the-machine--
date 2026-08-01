@@ -61,8 +61,45 @@ and 22 unsupported rows. The immutable Phase 26 report hash is
 `a8ce98fbf44f0d2a382468d61df257e9feaad07f2381e9297d74fc687943cc38`; the
 dataset hash is `31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c`.
 The generated JSON report is intentionally kept outside the repository, like
-the Phase 26 HLE artifacts. This prevents benchmark material from becoming a
-silent checked-in source of truth.
+the Phase 26 HLE artifacts. The Phase 27 method report is now checked in as a
+small, answer-free manifest of the 13 IDs and diagnostic requirements so the
+next phase does not depend on an ephemeral `/tmp` file.
+
+## Regenerated Phase 26 input
+
+The original Phase 26 machine-readable report was not recoverable. It was
+regenerated with the `16c5983` grounding implementation, the `fa0a241` frozen
+release evaluator, and the recorded dataset hash. The release evaluator had
+to run in bounded 100-question processes to avoid resource termination; this
+means the regenerated trace is not byte-identical to the missing original.
+That limitation is explicit in
+`docs/phase27_hle_method_audit_manifest.json` rather than hidden behind the
+matching aggregate.
+
+The regenerated totals match Phase 26 exactly:
+
+| Grounding outcome | Result |
+|---|---:|
+| Candidate rows | 58 |
+| Unique accepted targets | 13 |
+| Ambiguous targets | 23 |
+| Unsupported targets | 22 |
+| Accepted replays | 13 |
+
+The Phase 27 method audit then produced:
+
+| Metric | Result |
+|---|---:|
+| Grounded cases audited | 13 |
+| Reusable method hypotheses | 13 |
+| Typed-interface mismatch cases | 13 |
+| Largest family | `geometry_inequality` (2) |
+
+The remaining families are deliberately small rather than being merged by a
+permissive “general mathematics” label: fractal dimension (2), number theory
+(2), graph theory, differential equations, linear algebra, probability and
+statistics, applied PDE, set theory, and real analysis (one each). These are
+method-family hypotheses, not capability proposals.
 
 ## Reproduction
 
@@ -75,6 +112,9 @@ cargo run --bin hle_method_audit -- \
   /tmp/hle_notation_grounding_2147e9e.json \
   /tmp/hle_method_audit_2147e9e.json
 ```
+
+The checked-in diagnostic output from the regenerated run is
+`docs/phase27_hle_method_audit.json`; its SHA-256 is recorded in the manifest.
 
 The report records hashes of both the grounding artifact and
 `data/hle.jsonl`, so a later family cluster can be reproduced against the

@@ -1,0 +1,388 @@
+{
+  "schema_version": "phase42.hle.matrix.coherence.audit.v1",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "method_report_sha256": "426bf65d4daca4430bbb69c717ca4f636ee0d48d9822c8fd001dff6d33fdabd2",
+  "audited_cases": 17,
+  "exact_matrix_signature_cases": 17,
+  "coherence_family_counts": {
+    "control_system_matrices::control_design_or_factorization::matrix_gain_or_factorization::computation_or_construction": 2,
+    "explicit_matrix_expression::determinant_in_identity_or_specialist_formula::scalar_determinant::computation_or_construction": 3,
+    "graph_or_adjacency_matrix::direct_determinant_evaluation::scalar_determinant::computation_or_construction": 1,
+    "graph_or_adjacency_matrix::graph_to_matrix_invariant::expression_or_specialist_answer::computation_or_construction": 2,
+    "matrix_manifold_or_optimization::manifold_or_constrained_optimization::expression_or_specialist_answer::computation_or_construction": 1,
+    "matrix_manifold_or_optimization::specialist_matrix_transformation::expression_or_specialist_answer::computation_or_construction": 1,
+    "probabilistic_matrix::matrix_optimization_information::expression_or_specialist_answer::computation_or_construction": 1,
+    "quantum_state_operator::specialist_matrix_transformation::expression_or_specialist_answer::computation_or_construction": 1,
+    "specialist_matrix_context::rank_or_rank_constraint::scalar_rank_or_rank_classification::computation_or_construction": 2,
+    "specialist_matrix_context::specialist_matrix_transformation::expression_or_specialist_answer::computation_or_construction": 2,
+    "spectral_matrix::determinant_in_identity_or_specialist_formula::scalar_determinant::computation_or_construction": 1
+  },
+  "reason_counts": {
+    "input representation is not a bounded explicit matrix artifact": 14,
+    "operation is not the bounded direct rank/determinant primitive": 14,
+    "parameters or random variables require additional binding semantics": 5
+  },
+  "outcome_counts": {
+    "specialist_or_incompatible": 17
+  },
+  "coherent_families": 0,
+  "cases": [
+    {
+      "id": "66eaa401c7a3252f0f3fe535",
+      "question_sha256": "e811573dcf6832b18a5d274bdd4cc0547d5fc7a7bc99237880943e09ae4c140c",
+      "input_representation": "matrix_manifold_or_optimization",
+      "requested_output": "expression_or_specialist_answer",
+      "dimensions": "7×7",
+      "entry_domain": "complex",
+      "numeric_or_symbolic": "symbolic_or_parameterized",
+      "required_operation": "specialist_matrix_transformation",
+      "theorem_or_identity": "none_explicit",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "specialist_matrix_bridge",
+      "coherence_signature": "matrix_manifold_or_optimization::specialist_matrix_transformation::expression_or_specialist_answer::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "67086f244c1d38378da9f60a",
+      "question_sha256": "90bf7f0d312f94d59349750790dee164440c33700f671a3a978f31971f6257ea",
+      "input_representation": "explicit_matrix_expression",
+      "requested_output": "scalar_determinant",
+      "dimensions": "271 \\times 271",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "symbolic_or_parameterized",
+      "required_operation": "determinant_in_identity_or_specialist_formula",
+      "theorem_or_identity": "none_explicit",
+      "parameter_dependence": "parameterized_or_random",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "matrix_literal_or_symbol_binding",
+      "coherence_signature": "explicit_matrix_expression::determinant_in_identity_or_specialist_formula::scalar_determinant::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "parameters or random variables require additional binding semantics",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "670eeb9c997568ed4298871e",
+      "question_sha256": "3474128f87365749bb70f6f416953d311a39be9b3969f820df0bae02f01d6acc",
+      "input_representation": "spectral_matrix",
+      "requested_output": "scalar_determinant",
+      "dimensions": "not_matrix_explicit",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "determinant_in_identity_or_specialist_formula",
+      "theorem_or_identity": "none_explicit",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "spectral_object_binding",
+      "coherence_signature": "spectral_matrix::determinant_in_identity_or_specialist_formula::scalar_determinant::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "670fca712395d9134a27030e",
+      "question_sha256": "50bd54aae0203ef0f0c1d00eb76c93ca6997b6c66e2cae7c2e94416a903184e6",
+      "input_representation": "control_system_matrices",
+      "requested_output": "matrix_gain_or_factorization",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "control_design_or_factorization",
+      "theorem_or_identity": "none_explicit",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "state_space_matrix_bridge",
+      "coherence_signature": "control_system_matrices::control_design_or_factorization::matrix_gain_or_factorization::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "670fd2a6232fc20b4433c4d7",
+      "question_sha256": "a1bfc9f5262db6348cea7828db1d6b602919a0641406f3a8928c2240520a7cb7",
+      "input_representation": "control_system_matrices",
+      "requested_output": "matrix_gain_or_factorization",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "control_design_or_factorization",
+      "theorem_or_identity": "none_explicit",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "state_space_matrix_bridge",
+      "coherence_signature": "control_system_matrices::control_design_or_factorization::matrix_gain_or_factorization::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "671bdc0d90d834b821acb8b1",
+      "question_sha256": "aa2f1397cf301262bd263b178091a47974bb1b2172b65cd0ee50d29aafa1ebd0",
+      "input_representation": "explicit_matrix_expression",
+      "requested_output": "scalar_determinant",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "determinant_in_identity_or_specialist_formula",
+      "theorem_or_identity": "explicit_theorem_or_identity",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "matrix_literal_or_symbol_binding",
+      "coherence_signature": "explicit_matrix_expression::determinant_in_identity_or_specialist_formula::scalar_determinant::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "67239d8e02ee3ca40bc2034a",
+      "question_sha256": "7dd6fae56733d7ad3d85d160949e9ac1f5ad3e19c3744b16ca5d4a2014cae160",
+      "input_representation": "matrix_manifold_or_optimization",
+      "requested_output": "expression_or_specialist_answer",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "symbolic_or_parameterized",
+      "required_operation": "manifold_or_constrained_optimization",
+      "theorem_or_identity": "local_definitions_or_assumptions",
+      "parameter_dependence": "parameterized_or_random",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "specialist_matrix_bridge",
+      "coherence_signature": "matrix_manifold_or_optimization::manifold_or_constrained_optimization::expression_or_specialist_answer::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "parameters or random variables require additional binding semantics",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "6725840f6681c277a5f9e487",
+      "question_sha256": "1aa022180fc53f20e4fee054908b44b04631d6cc553304f0cf45fb837fa73e63",
+      "input_representation": "probabilistic_matrix",
+      "requested_output": "expression_or_specialist_answer",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "symbolic_or_parameterized",
+      "required_operation": "matrix_optimization_information",
+      "theorem_or_identity": "none_explicit",
+      "parameter_dependence": "parameterized_or_random",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "covariance_to_matrix_bridge",
+      "coherence_signature": "probabilistic_matrix::matrix_optimization_information::expression_or_specialist_answer::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "parameters or random variables require additional binding semantics",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "6725bb338255543498bdcbec",
+      "question_sha256": "d0689ce1d79389578b047531551a0b4721bc623a784dbbf13b0c92ad228f5a11",
+      "input_representation": "specialist_matrix_context",
+      "requested_output": "expression_or_specialist_answer",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "complex",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "specialist_matrix_transformation",
+      "theorem_or_identity": "none_explicit",
+      "parameter_dependence": "parameterized_or_random",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "specialist_matrix_bridge",
+      "coherence_signature": "specialist_matrix_context::specialist_matrix_transformation::expression_or_specialist_answer::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "parameters or random variables require additional binding semantics",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "67327daab33b7d6a440fecf0",
+      "question_sha256": "5e6a4baa19dc57f90eeb326ff179df2b081d2d3ac31c4f89464f899cb4886623",
+      "input_representation": "specialist_matrix_context",
+      "requested_output": "expression_or_specialist_answer",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "complex",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "specialist_matrix_transformation",
+      "theorem_or_identity": "none_explicit",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "specialist_matrix_bridge",
+      "coherence_signature": "specialist_matrix_context::specialist_matrix_transformation::expression_or_specialist_answer::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "673852c82e5179091a7648e8",
+      "question_sha256": "84ad2c807ad0f93d1c72d624d76c6463cd9c7d7c67f8e77cb2ebd8befa961b27",
+      "input_representation": "graph_or_adjacency_matrix",
+      "requested_output": "scalar_determinant",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "direct_determinant_evaluation",
+      "theorem_or_identity": "none_explicit",
+      "parameter_dependence": "fixed_or_unspecified",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "graph_to_matrix_bridge",
+      "coherence_signature": "graph_or_adjacency_matrix::direct_determinant_evaluation::scalar_determinant::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact"
+      ]
+    },
+    {
+      "id": "673b631505be2302d4445ece",
+      "question_sha256": "5bcae7e29a1ab96537c855ae831c68dda2ffc799884ec18ffd6931f2ef150f59",
+      "input_representation": "specialist_matrix_context",
+      "requested_output": "scalar_rank_or_rank_classification",
+      "dimensions": "not_matrix_explicit",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "rank_or_rank_constraint",
+      "theorem_or_identity": "local_definitions_or_assumptions",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "specialist_matrix_bridge",
+      "coherence_signature": "specialist_matrix_context::rank_or_rank_constraint::scalar_rank_or_rank_classification::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact"
+      ]
+    },
+    {
+      "id": "673ff6e9766a23f49ade65df",
+      "question_sha256": "0780c8c3888c34b8ff8d79142879810059e013a801240e5451ee5a4a7a698270",
+      "input_representation": "quantum_state_operator",
+      "requested_output": "expression_or_specialist_answer",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "specialist_matrix_transformation",
+      "theorem_or_identity": "explicit_theorem_or_identity",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "specialist_matrix_bridge",
+      "coherence_signature": "quantum_state_operator::specialist_matrix_transformation::expression_or_specialist_answer::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "677b991a7304702305835cd6",
+      "question_sha256": "c91f4feeffa1f2cef7933dc7e9cae069eddb27c846cc42c2f30a94d7a916367d",
+      "input_representation": "explicit_matrix_expression",
+      "requested_output": "scalar_determinant",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "complex",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "determinant_in_identity_or_specialist_formula",
+      "theorem_or_identity": "local_definitions_or_assumptions",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "matrix_literal_or_symbol_binding",
+      "coherence_signature": "explicit_matrix_expression::determinant_in_identity_or_specialist_formula::scalar_determinant::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "677bd8f5247a21d7a948db6c",
+      "question_sha256": "b70d860f9b495c625417a66f0848f1b45611cf67f548643786c7b216e777dba7",
+      "input_representation": "graph_or_adjacency_matrix",
+      "requested_output": "expression_or_specialist_answer",
+      "dimensions": "101 \\times 101",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "symbolic_or_parameterized",
+      "required_operation": "graph_to_matrix_invariant",
+      "theorem_or_identity": "explicit_theorem_or_identity",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "graph_to_matrix_bridge",
+      "coherence_signature": "graph_or_adjacency_matrix::graph_to_matrix_invariant::expression_or_specialist_answer::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    },
+    {
+      "id": "670698afa89008d75b31f329",
+      "question_sha256": "e1d523c3f4070a6a3d378e548ee3f4afc684ef1a84066c641d6a611687ae2d1e",
+      "input_representation": "specialist_matrix_context",
+      "requested_output": "scalar_rank_or_rank_classification",
+      "dimensions": "not_matrix_explicit",
+      "entry_domain": "symbolic_or_mixed",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "rank_or_rank_constraint",
+      "theorem_or_identity": "none_explicit",
+      "parameter_dependence": "parameterized_or_random",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "specialist_matrix_bridge",
+      "coherence_signature": "specialist_matrix_context::rank_or_rank_constraint::scalar_rank_or_rank_classification::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "parameters or random variables require additional binding semantics"
+      ]
+    },
+    {
+      "id": "6741cd528fdc6e38bd2d343d",
+      "question_sha256": "2fcaddf22a2091bcdcd397b67e2c3824c655124d89e452b76249ebd73f679cd1",
+      "input_representation": "graph_or_adjacency_matrix",
+      "requested_output": "expression_or_specialist_answer",
+      "dimensions": "unspecified_or_embedded",
+      "entry_domain": "real",
+      "numeric_or_symbolic": "numeric_or_mixed",
+      "required_operation": "graph_to_matrix_invariant",
+      "theorem_or_identity": "explicit_theorem_or_identity",
+      "parameter_dependence": "dimension_parameterized",
+      "proof_or_computation": "computation_or_construction",
+      "existing_solver_compatibility": "no_existing_exact_route",
+      "typed_bridge": "graph_to_matrix_bridge",
+      "coherence_signature": "graph_or_adjacency_matrix::graph_to_matrix_invariant::expression_or_specialist_answer::computation_or_construction",
+      "outcome": "specialist_or_incompatible",
+      "reasons": [
+        "input representation is not a bounded explicit matrix artifact",
+        "operation is not the bounded direct rank/determinant primitive"
+      ]
+    }
+  ],
+  "method": "semantic-coherence audit of the 17 scalar matrix candidates; lexical cues are evidence for review only and never authorize execution"
+}

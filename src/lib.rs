@@ -28,6 +28,7 @@ pub mod open_set;
 pub mod adversarial;
 pub mod long_horizon;
 pub mod law_bridge;
+pub mod law_grounding;
 pub mod independent_env;
 pub mod natural_ingest;
 pub mod shifted_ingest;

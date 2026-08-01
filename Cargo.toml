@@ -116,6 +116,10 @@ name = "classical_mechanics_pressure_bench"
 path = "src/bin/classical_mechanics_pressure_bench.rs"
 
 [[bin]]
+name = "hle_classical_mechanics_shadow"
+path = "src/bin/hle_classical_mechanics_shadow.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

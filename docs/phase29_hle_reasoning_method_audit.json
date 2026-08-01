@@ -1,0 +1,2924 @@
+{
+  "trace_sha256": "696ad4e5cc2c3475d5a5c3b5cd4ca691e0317d64adf17b075b9c01f4d2a596c9",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "missing_method_cases": 222,
+  "class_counts": {
+    "transformation_candidate": 141,
+    "representation_bridge": 29,
+    "knowledge_dependent": 1,
+    "specialist_singleton": 51
+  },
+  "signature_counts": {
+    "recurrence_evaluation": 12,
+    "matrix_spectral_invariant": 8,
+    "matrix_manifold_exponential": 1,
+    "matrix_log_gaussian_sampling": 1,
+    "exponential_operator_determinant": 1,
+    "matrix_manifold_constraint": 1,
+    "riemannian_metric_structure": 1,
+    "poincare_disk_geometry": 1,
+    "lorentz_sampling": 1,
+    "function_sampling": 4,
+    "lie_algebra_matrix": 1,
+    "matrix_rank_or_determinant": 20,
+    "group_theory_structure": 1,
+    "number_theory_congruence": 1,
+    "number_theory_prime_density": 1,
+    "probability_expectation": 4,
+    "probability_distribution": 17,
+    "differential_equation_solve": 7,
+    "calculus_transformation": 12,
+    "graph_invariant": 10,
+    "geometric_construction": 12,
+    "asymptotic_runtime": 4,
+    "inequality_bound": 1,
+    "theorem_application": 1,
+    "scientific_law_application": 19,
+    "generic_specialist": 80
+  },
+  "coherent_families": 0,
+  "cases": [
+    {
+      "id": "66e4cdec11c64a7e4051b2d9",
+      "signature": "calculus_transformation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66e8a3ed3aa94517d4573b14",
+      "signature": "number_theory_prime_density",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66e8b578d0c1f7390bad120c",
+      "signature": "probability_distribution",
+      "output_artifact": "choice_or_boolean_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "domain definition"
+      ],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66e9e6b3c27ad6bc46adbc20",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [
+        "domain definition"
+      ],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66ea355dd1767539f1308fc3",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66ea542e4509a12ed7db1d7b",
+      "signature": "scientific_law_application",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66eaa401c7a3252f0f3fe535",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66ec5671713826aca26a9dba",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66ed3e7cd841eb51a985ca7f",
+      "signature": "generic_specialist",
+      "output_artifact": "expression_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66ed458ed841eb51a985ca8d",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66eee253ae4c04f9d17d9420",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66eefc79e487aa1349195d5f",
+      "signature": "geometric_construction",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "named theorem or theorem assumptions"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66ef98088171e6ed71be1454",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66efd054c04acd134cc4bb36",
+      "signature": "scientific_law_application",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66efe2bd21f9ff1dde1c4837",
+      "signature": "scientific_law_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66f28a89f1256af80477e15d",
+      "signature": "probability_expectation",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "specialist convention",
+        "external factual premise"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66f589b926268030174717bd",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 2
+    },
+    {
+      "id": "66f5fd3235147083021a66c6",
+      "signature": "calculus_transformation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66f6bffd76e8f5503a11d413",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66f6c390489d30372dbc1816",
+      "signature": "calculus_transformation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66f9e9d3e0e271cd8ae533c6",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66faeb7db8fca5695f011626",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "choice_or_boolean_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66fb24e7dea0e38a195b0030",
+      "signature": "probability_expectation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66fbd5aca177ae967e47041b",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "specialist convention"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66fc23cfa7be4edbe85cf177",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66fc633698a7264ef58309c0",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66fc8c821d39fbf6d8bcdd11",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66fd442c654e577c714fb724",
+      "signature": "matrix_spectral_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "domain definition"
+      ],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66fdb51b903727942c52222f",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66fde5a291664bba6e391cb5",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66ff35926045e9e64bbc5720",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 2
+    },
+    {
+      "id": "6700b9b6d9849868aa3fb1f9",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670130313d571f9c39e1bea1",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670426b4d831bdf30d3c03cb",
+      "signature": "geometric_construction",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6704486baf0a436d92c65161",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6704d297f486e216becd613f",
+      "signature": "scientific_law_application",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 2
+    },
+    {
+      "id": "67073a60c033e34a5d675f2e",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670777536ce55102ae56fa2c",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67079b3aeb66f588bd3789ec",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67086f244c1d38378da9f60a",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6708862963c4d58d76c98746",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670ad3408b8d4b3af783d31a",
+      "signature": "graph_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670cfd37787b413636ae1e57",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670d91a9ac55362ddccabea1",
+      "signature": "matrix_spectral_invariant",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670e050d857d9fb8d0e70fde",
+      "signature": "matrix_manifold_constraint",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670eeb9c997568ed4298871e",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670f87f6f1e1079f950014e4",
+      "signature": "probability_expectation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "external factual premise"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670fc6e308c7aaef3bd745e2",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670fca712395d9134a27030e",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670fce9a2395d9134a270314",
+      "signature": "matrix_spectral_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670fd2a6232fc20b4433c4d7",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67115e10528102717339d851",
+      "signature": "scientific_law_application",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 2
+    },
+    {
+      "id": "6711e5e05e64a53ed09449fd",
+      "signature": "probability_expectation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67120c351f4769bcbeaadd5a",
+      "signature": "number_theory_congruence",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6712208acecd80f50716f99e",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6712290fcecd80f50716f9aa",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6712c2616313b64cf8499927",
+      "signature": "calculus_transformation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671323607fc02cf5cce975a5",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6713f6ebde9d795856a5d0d2",
+      "signature": "scientific_law_application",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 2
+    },
+    {
+      "id": "6714b65c2b2e7f70a38b9f63",
+      "signature": "geometric_construction",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6716a68fbb8539339d5d7239",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6716dc349a0dd17680df31df",
+      "signature": "inequality_bound",
+      "output_artifact": "choice_or_boolean_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6717aef5a5c8a6a9392b1b39",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6717b2e1961c5de74922e610",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [
+        "specialist convention"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6717cc3a4d6b1e71cab9bc8c",
+      "signature": "function_sampling",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "domain definition"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671802a3e2dff1f07a1b0508",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671805c78b88f01935b58255",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [
+        "external factual premise"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6718c479034f8ddb2f67a346",
+      "signature": "matrix_manifold_exponential",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "specialist convention"
+      ],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67192811212f1ac1f7ec4815",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67192b9472c6fd14e759e369",
+      "signature": "asymptotic_runtime",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671963d90f87e9920aff9d11",
+      "signature": "asymptotic_runtime",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671975e857fcd2edef6930fb",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6719a83547f600be2c21b6f7",
+      "signature": "asymptotic_runtime",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "external factual premise"
+      ],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 2
+    },
+    {
+      "id": "671b16741c8a4560f96a3a66",
+      "signature": "differential_equation_solve",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671b5c079296c3d8d76aaac8",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 2
+    },
+    {
+      "id": "671bdc0d90d834b821acb8b1",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671d6502b996cf9936d1afd0",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671d9eb3355c956ce7de5a90",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671dc1300e30fa8a7d64db58",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671dfc4d348d6bb4709de947",
+      "signature": "graph_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671f0c8fd0f22fd6e50482ef",
+      "signature": "geometric_construction",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671f3c368a33df76faeb71f3",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671f84c91d893bdd9af05be5",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671f8aa5e8fbfa3cf02ce3b6",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671f941e919b83ce036e80d9",
+      "signature": "graph_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671fb32753f9dd7511fe4d70",
+      "signature": "lie_algebra_matrix",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "671fc0c2f0bea11129a5ecdd",
+      "signature": "group_theory_structure",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672059fde8e4162530496e8f",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672068b61177432c7e500289",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6720e184a9e1d1cc990cc8e9",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 2
+    },
+    {
+      "id": "672102b6febecf1a8b9b0845",
+      "signature": "geometric_construction",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67216b3c8238b402204d3432",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6721998686e95ac1054387b3",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67219c66a8cd9fb6c1e25d71",
+      "signature": "riemannian_metric_structure",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "matrix representation",
+        "named operator"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6722084fdcce66512a82d9f4",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6722ac9945d2a9b39caeedd7",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6722ed574ef505a6876b2a85",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67239d8e02ee3ca40bc2034a",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6723a06c2ed591ecf750d591",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67a69b0bc85a56ef94b67f1e",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6723c5cf75ffe38ab99c4e51",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6723cc9539491a3045f62fef",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6723e2eed45a194cda34796b",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6723ede433d757d4f7d6cad3",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6723f1bf0b72766be93d01ae",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6723f44aabdb1dfc2b496a11",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67242bb82a37861b051e617e",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6724dae7f70a476bbcaa32ef",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "named operator"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6724e72e2e4151a53d606225",
+      "signature": "graph_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6724f652efed730d1aaef326",
+      "signature": "calculus_transformation",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "domain definition"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725292085b48a76ea1b5709",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67252aad70e5e32e5897fa56",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67257466e173b172c061372a",
+      "signature": "scientific_law_application",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672579985c16db8f9647559c",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725809d0ce8918bd2e788b8",
+      "signature": "calculus_transformation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725840f6681c277a5f9e487",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation",
+        "matrix representation",
+        "named operator"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67258bcd9fc853c16713ec17",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725b22cf0e7323addabf758",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725bb338255543498bdcbec",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725bb348255543498bdcbed",
+      "signature": "geometric_construction",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725c97d4f347932f9a63e68",
+      "signature": "differential_equation_solve",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725dc14097c6790b292765e",
+      "signature": "function_sampling",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "specialist convention"
+      ],
+      "representation_cues": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725e3f7603864c505f3a699",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672600b226992c47ce3a7efe",
+      "signature": "geometric_construction",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 2
+    },
+    {
+      "id": "67260a2a8f9ce8a272ed4e9a",
+      "signature": "geometric_construction",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672614260019e08d7f82b2d0",
+      "signature": "matrix_spectral_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation",
+        "matrix representation",
+        "named operator"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672895e42863e798a320481b",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67289af83c117573234842fc",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "visual or diagram input"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6729035989898f87cb532106",
+      "signature": "matrix_spectral_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672a80a432cd57d8762583e9",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672aac7a78e0ab15cf86003b",
+      "signature": "scientific_law_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672c84e4975ce618c77a5c49",
+      "signature": "graph_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "named operator"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672c8e7a86c5d04249bd338e",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672d7ebc9a32864a120253cd",
+      "signature": "geometric_construction",
+      "output_artifact": "choice_or_boolean_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672de9b9ed6de72b75b8c802",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672e24f117ed86a6ef9def55",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672e4d316ee63a5d94bf863a",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672e4fe878953b9f63939501",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672f819789e556fe53c8af75",
+      "signature": "graph_invariant",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "named theorem or theorem assumptions",
+        "domain definition"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672f9b772357e1d1acd486b4",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67308f79c5ea548175bbf9fc",
+      "signature": "graph_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67310b7b6e2b21ba84f49060",
+      "signature": "asymptotic_runtime",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67327427dd4c31644d608f5c",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67327daab33b7d6a440fecf0",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6732ce52ec2dbeda063b420b",
+      "signature": "geometric_construction",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 2
+    },
+    {
+      "id": "67344c306c8af1669360d38e",
+      "signature": "scientific_law_application",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6734e070d2fa7918dc2795bb",
+      "signature": "probability_distribution",
+      "output_artifact": "choice_or_boolean_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "scientific law and validity domain",
+        "domain definition"
+      ],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6735c467e35b9d6fab20c23a",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6736b51358f461953a97e879",
+      "signature": "differential_equation_solve",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6736c43123d0fb145461cc78",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [
+        "domain definition",
+        "specialist convention"
+      ],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6736ccc7b9b2577c622e944c",
+      "signature": "calculus_transformation",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6736e17253926b38af8c205e",
+      "signature": "graph_invariant",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 2
+    },
+    {
+      "id": "6736e54a4c96e49df1036fc6",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673701a01baae2c519a9765a",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67370a26144baed9dcabbe11",
+      "signature": "graph_invariant",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67371006980211368f0f954e",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 2
+    },
+    {
+      "id": "67371496e04511118435d5a4",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [
+        "domain definition",
+        "specialist convention"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 2
+    },
+    {
+      "id": "67371c15d09c0e422ae36585",
+      "signature": "generic_specialist",
+      "output_artifact": "expression_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67372089f362584fff2ae1f9",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67c677ac4b9355ec051c5426",
+      "signature": "calculus_transformation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6737309d1988146a57ffab18",
+      "signature": "scientific_law_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67373220a4d09488d430f640",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6737c6ff3b2291333fbb48a4",
+      "signature": "calculus_transformation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6737feb4c11efda6b940d219",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673852c82e5179091a7648e8",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673909949318c3bbb1056f54",
+      "signature": "geometric_construction",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67391a30af74773130b63bb2",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673a31d0efec47c08d597095",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673a3faaed02a359f6002a78",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [
+        "domain definition"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673a85e1551b8b9cc471012d",
+      "signature": "scientific_law_application",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673aa3536b5c65098f208d6f",
+      "signature": "calculus_transformation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "domain definition"
+      ],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673abc341e7de1db582067ae",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673b631505be2302d4445ece",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673ce6500bf8b23a52510a18",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "673ff6e9766a23f49ade65df",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6740f12881d5bb0710804155",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67428dcab53462ceeb83c6f6",
+      "signature": "geometric_construction",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6742b72d714118dd43c25d12",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67440064abafa90f5b9d4da9",
+      "signature": "theorem_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "external factual premise"
+      ],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6746ee2219da4bb05e9d6b99",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6747da64aa7f6182ef02efae",
+      "signature": "scientific_law_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6747e0eaaa7f6182ef02efb4",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6747fa2a456927085f863956",
+      "signature": "scientific_law_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "674818a0d2dbfbb2e99bd257",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67486cd4501c568127ed52d4",
+      "signature": "scientific_law_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "knowledge_dependent",
+      "prerequisite_cues": [
+        "external factual premise"
+      ],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67526499b42d785cf1cb1025",
+      "signature": "scientific_law_application",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "675407879744e5be6fabc0d5",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "visual or diagram input"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6755d8a01c505b5224374708",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6756844266c3ec0e7088bf9f",
+      "signature": "matrix_spectral_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "scientific law and validity domain"
+      ],
+      "representation_cues": [
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "675b894146d55c2ffdebd8f5",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "675bbe800b4a17d6e810b318",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "675d7b901ded33d59eb2c94f",
+      "signature": "poincare_disk_geometry",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "675e0f20488645c4ed8af30b",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6761b89b9d9d4287c0969029",
+      "signature": "function_sampling",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "specialist convention"
+      ],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6769bcbdc2358745fedc9086",
+      "signature": "function_sampling",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "676d5eab75870eef1bf0f9bf",
+      "signature": "graph_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "676e9656e3e0846ee73dbf9d",
+      "signature": "lorentz_sampling",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6775acff518cb15c3772295e",
+      "signature": "matrix_spectral_invariant",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "matrix representation",
+        "named operator"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "677609438253c248a60436cb",
+      "signature": "matrix_log_gaussian_sampling",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6778491dcbd83450e1018208",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "677b87f0a0514619221df8c6",
+      "signature": "exponential_operator_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "677b991a7304702305835cd6",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation",
+        "matrix representation",
+        "named operator"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "677bd8f5247a21d7a948db6c",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "specialist convention"
+      ],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "matrix representation",
+        "visual or diagram input"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725738b6db8d9379bdf1b69",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "specialist_singleton",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6723bea21dd204907be142ee",
+      "signature": "generic_specialist",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67474e78231099aba5aa677d",
+      "signature": "calculus_transformation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "visual or diagram input"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6722c3ce8e469fbdb3ba6a6e",
+      "signature": "matrix_spectral_invariant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672bb9be168a1a30f1f92fcc",
+      "signature": "differential_equation_solve",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672546cf046774791d0f1a3a",
+      "signature": "differential_equation_solve",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "670698afa89008d75b31f329",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "external factual premise"
+      ],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6741cd528fdc6e38bd2d343d",
+      "signature": "matrix_rank_or_determinant",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [
+        "external factual premise"
+      ],
+      "representation_cues": [
+        "summation notation",
+        "matrix representation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6776ffa855710e45669a4481",
+      "signature": "probability_distribution",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672a4e1a302a8fb5c07434bd",
+      "signature": "scientific_law_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "summation notation",
+        "fraction notation",
+        "visual or diagram input"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "672a460edfaab7cdbc587e08",
+      "signature": "scientific_law_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation",
+        "visual or diagram input"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6725ed80de551b21db6a0f29",
+      "signature": "generic_specialist",
+      "output_artifact": "cardinality_answer",
+      "audit_class": "representation_bridge",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66eae5c971adc8ff57780329",
+      "signature": "recurrence_evaluation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6723f0166f89b8c177612dd7",
+      "signature": "calculus_transformation",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "676eab45ffe565c7842c6bad",
+      "signature": "scientific_law_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation",
+        "visual or diagram input"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "6776ba046889be9d113ccce1",
+      "signature": "probability_distribution",
+      "output_artifact": "expression_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66ed86e620ed3db95f9901d3",
+      "signature": "differential_equation_solve",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [],
+      "route_trace_len": 3
+    },
+    {
+      "id": "67339e9c25c864e84bf1a351",
+      "signature": "scientific_law_application",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    },
+    {
+      "id": "66ed6347e50f3c9aca56e5f4",
+      "signature": "differential_equation_solve",
+      "output_artifact": "scalar_or_structured_answer",
+      "audit_class": "transformation_candidate",
+      "prerequisite_cues": [],
+      "representation_cues": [
+        "fraction notation"
+      ],
+      "route_trace_len": 3
+    }
+  ],
+  "families": [
+    {
+      "signature": "generic_specialist",
+      "cases": 80,
+      "output_artifacts": {
+        "cardinality_answer": 15,
+        "expression_answer": 2,
+        "scalar_or_structured_answer": 63
+      },
+      "case_ids": [
+        "66e9e6b3c27ad6bc46adbc20",
+        "66ea355dd1767539f1308fc3",
+        "66ed3e7cd841eb51a985ca7f",
+        "66eee253ae4c04f9d17d9420",
+        "66f589b926268030174717bd",
+        "66f6bffd76e8f5503a11d413",
+        "66f9e9d3e0e271cd8ae533c6",
+        "66fc23cfa7be4edbe85cf177",
+        "66fc8c821d39fbf6d8bcdd11",
+        "66fdb51b903727942c52222f",
+        "66fde5a291664bba6e391cb5",
+        "6700b9b6d9849868aa3fb1f9",
+        "670130313d571f9c39e1bea1",
+        "6704486baf0a436d92c65161",
+        "67073a60c033e34a5d675f2e",
+        "670777536ce55102ae56fa2c",
+        "67079b3aeb66f588bd3789ec",
+        "6708862963c4d58d76c98746",
+        "670cfd37787b413636ae1e57",
+        "670fc6e308c7aaef3bd745e2",
+        "6712208acecd80f50716f99e",
+        "6712290fcecd80f50716f9aa",
+        "671323607fc02cf5cce975a5",
+        "6716a68fbb8539339d5d7239",
+        "6717aef5a5c8a6a9392b1b39",
+        "6717b2e1961c5de74922e610",
+        "671805c78b88f01935b58255",
+        "67192811212f1ac1f7ec4815",
+        "671d6502b996cf9936d1afd0",
+        "671d9eb3355c956ce7de5a90",
+        "671dc1300e30fa8a7d64db58",
+        "671f3c368a33df76faeb71f3",
+        "671f84c91d893bdd9af05be5",
+        "672059fde8e4162530496e8f",
+        "6720e184a9e1d1cc990cc8e9",
+        "67216b3c8238b402204d3432",
+        "6722ac9945d2a9b39caeedd7",
+        "6722ed574ef505a6876b2a85",
+        "6723a06c2ed591ecf750d591",
+        "6723cc9539491a3045f62fef",
+        "6723f1bf0b72766be93d01ae",
+        "6723f44aabdb1dfc2b496a11",
+        "67242bb82a37861b051e617e",
+        "6725292085b48a76ea1b5709",
+        "672579985c16db8f9647559c",
+        "67258bcd9fc853c16713ec17",
+        "6725b22cf0e7323addabf758",
+        "672895e42863e798a320481b",
+        "67289af83c117573234842fc",
+        "672a80a432cd57d8762583e9",
+        "672c8e7a86c5d04249bd338e",
+        "672de9b9ed6de72b75b8c802",
+        "672e24f117ed86a6ef9def55",
+        "672e4d316ee63a5d94bf863a",
+        "672e4fe878953b9f63939501",
+        "672f9b772357e1d1acd486b4",
+        "67327427dd4c31644d608f5c",
+        "6736c43123d0fb145461cc78",
+        "6736e54a4c96e49df1036fc6",
+        "67371006980211368f0f954e",
+        "67371496e04511118435d5a4",
+        "67371c15d09c0e422ae36585",
+        "67372089f362584fff2ae1f9",
+        "67373220a4d09488d430f640",
+        "6737feb4c11efda6b940d219",
+        "67391a30af74773130b63bb2",
+        "673a31d0efec47c08d597095",
+        "673a3faaed02a359f6002a78",
+        "673abc341e7de1db582067ae",
+        "6740f12881d5bb0710804155",
+        "6746ee2219da4bb05e9d6b99",
+        "6747e0eaaa7f6182ef02efb4",
+        "674818a0d2dbfbb2e99bd257",
+        "6755d8a01c505b5224374708",
+        "675b894146d55c2ffdebd8f5",
+        "675bbe800b4a17d6e810b318",
+        "6778491dcbd83450e1018208",
+        "6725738b6db8d9379bdf1b69",
+        "6723bea21dd204907be142ee",
+        "6725ed80de551b21db6a0f29"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "matrix_rank_or_determinant",
+      "cases": 20,
+      "output_artifacts": {
+        "cardinality_answer": 1,
+        "choice_or_boolean_answer": 1,
+        "expression_answer": 1,
+        "scalar_or_structured_answer": 17
+      },
+      "case_ids": [
+        "66eaa401c7a3252f0f3fe535",
+        "66faeb7db8fca5695f011626",
+        "67086f244c1d38378da9f60a",
+        "670eeb9c997568ed4298871e",
+        "670fca712395d9134a27030e",
+        "670fd2a6232fc20b4433c4d7",
+        "671802a3e2dff1f07a1b0508",
+        "671bdc0d90d834b821acb8b1",
+        "67239d8e02ee3ca40bc2034a",
+        "6724dae7f70a476bbcaa32ef",
+        "6725840f6681c277a5f9e487",
+        "6725bb338255543498bdcbec",
+        "67327daab33b7d6a440fecf0",
+        "673852c82e5179091a7648e8",
+        "673b631505be2302d4445ece",
+        "673ff6e9766a23f49ade65df",
+        "677b991a7304702305835cd6",
+        "677bd8f5247a21d7a948db6c",
+        "670698afa89008d75b31f329",
+        "6741cd528fdc6e38bd2d343d"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "scientific_law_application",
+      "cases": 19,
+      "output_artifacts": {
+        "cardinality_answer": 3,
+        "expression_answer": 6,
+        "scalar_or_structured_answer": 10
+      },
+      "case_ids": [
+        "66ea542e4509a12ed7db1d7b",
+        "66efd054c04acd134cc4bb36",
+        "66efe2bd21f9ff1dde1c4837",
+        "6704d297f486e216becd613f",
+        "67115e10528102717339d851",
+        "6713f6ebde9d795856a5d0d2",
+        "67257466e173b172c061372a",
+        "672aac7a78e0ab15cf86003b",
+        "67344c306c8af1669360d38e",
+        "6737309d1988146a57ffab18",
+        "673a85e1551b8b9cc471012d",
+        "6747da64aa7f6182ef02efae",
+        "6747fa2a456927085f863956",
+        "67486cd4501c568127ed52d4",
+        "67526499b42d785cf1cb1025",
+        "672a4e1a302a8fb5c07434bd",
+        "672a460edfaab7cdbc587e08",
+        "676eab45ffe565c7842c6bad",
+        "67339e9c25c864e84bf1a351"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "probability_distribution",
+      "cases": 17,
+      "output_artifacts": {
+        "choice_or_boolean_answer": 2,
+        "expression_answer": 1,
+        "scalar_or_structured_answer": 14
+      },
+      "case_ids": [
+        "66e8b578d0c1f7390bad120c",
+        "66ec5671713826aca26a9dba",
+        "66fc633698a7264ef58309c0",
+        "66ff35926045e9e64bbc5720",
+        "671b5c079296c3d8d76aaac8",
+        "671f8aa5e8fbfa3cf02ce3b6",
+        "6721998686e95ac1054387b3",
+        "6722084fdcce66512a82d9f4",
+        "67a69b0bc85a56ef94b67f1e",
+        "6723c5cf75ffe38ab99c4e51",
+        "6723e2eed45a194cda34796b",
+        "6723ede433d757d4f7d6cad3",
+        "6725e3f7603864c505f3a699",
+        "6734e070d2fa7918dc2795bb",
+        "6735c467e35b9d6fab20c23a",
+        "6776ffa855710e45669a4481",
+        "6776ba046889be9d113ccce1"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "recurrence_evaluation",
+      "cases": 12,
+      "output_artifacts": {
+        "cardinality_answer": 3,
+        "expression_answer": 1,
+        "scalar_or_structured_answer": 8
+      },
+      "case_ids": [
+        "66ed458ed841eb51a985ca8d",
+        "66ef98088171e6ed71be1454",
+        "66fbd5aca177ae967e47041b",
+        "671975e857fcd2edef6930fb",
+        "672068b61177432c7e500289",
+        "67252aad70e5e32e5897fa56",
+        "673701a01baae2c519a9765a",
+        "673ce6500bf8b23a52510a18",
+        "6742b72d714118dd43c25d12",
+        "675407879744e5be6fabc0d5",
+        "675e0f20488645c4ed8af30b",
+        "66eae5c971adc8ff57780329"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "calculus_transformation",
+      "cases": 12,
+      "output_artifacts": {
+        "expression_answer": 2,
+        "scalar_or_structured_answer": 10
+      },
+      "case_ids": [
+        "66e4cdec11c64a7e4051b2d9",
+        "66f5fd3235147083021a66c6",
+        "66f6c390489d30372dbc1816",
+        "6712c2616313b64cf8499927",
+        "6724f652efed730d1aaef326",
+        "6725809d0ce8918bd2e788b8",
+        "6736ccc7b9b2577c622e944c",
+        "67c677ac4b9355ec051c5426",
+        "6737c6ff3b2291333fbb48a4",
+        "673aa3536b5c65098f208d6f",
+        "67474e78231099aba5aa677d",
+        "6723f0166f89b8c177612dd7"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "geometric_construction",
+      "cases": 12,
+      "output_artifacts": {
+        "choice_or_boolean_answer": 1,
+        "expression_answer": 2,
+        "scalar_or_structured_answer": 9
+      },
+      "case_ids": [
+        "66eefc79e487aa1349195d5f",
+        "670426b4d831bdf30d3c03cb",
+        "6714b65c2b2e7f70a38b9f63",
+        "671f0c8fd0f22fd6e50482ef",
+        "672102b6febecf1a8b9b0845",
+        "6725bb348255543498bdcbed",
+        "672600b226992c47ce3a7efe",
+        "67260a2a8f9ce8a272ed4e9a",
+        "672d7ebc9a32864a120253cd",
+        "6732ce52ec2dbeda063b420b",
+        "673909949318c3bbb1056f54",
+        "67428dcab53462ceeb83c6f6"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "graph_invariant",
+      "cases": 10,
+      "output_artifacts": {
+        "cardinality_answer": 3,
+        "scalar_or_structured_answer": 7
+      },
+      "case_ids": [
+        "670ad3408b8d4b3af783d31a",
+        "671dfc4d348d6bb4709de947",
+        "671f941e919b83ce036e80d9",
+        "6724e72e2e4151a53d606225",
+        "672c84e4975ce618c77a5c49",
+        "672f819789e556fe53c8af75",
+        "67308f79c5ea548175bbf9fc",
+        "6736e17253926b38af8c205e",
+        "67370a26144baed9dcabbe11",
+        "676d5eab75870eef1bf0f9bf"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "matrix_spectral_invariant",
+      "cases": 8,
+      "output_artifacts": {
+        "cardinality_answer": 2,
+        "scalar_or_structured_answer": 6
+      },
+      "case_ids": [
+        "66fd442c654e577c714fb724",
+        "670d91a9ac55362ddccabea1",
+        "670fce9a2395d9134a270314",
+        "672614260019e08d7f82b2d0",
+        "6729035989898f87cb532106",
+        "6756844266c3ec0e7088bf9f",
+        "6775acff518cb15c3772295e",
+        "6722c3ce8e469fbdb3ba6a6e"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "differential_equation_solve",
+      "cases": 7,
+      "output_artifacts": {
+        "expression_answer": 1,
+        "scalar_or_structured_answer": 6
+      },
+      "case_ids": [
+        "671b16741c8a4560f96a3a66",
+        "6725c97d4f347932f9a63e68",
+        "6736b51358f461953a97e879",
+        "672bb9be168a1a30f1f92fcc",
+        "672546cf046774791d0f1a3a",
+        "66ed86e620ed3db95f9901d3",
+        "66ed6347e50f3c9aca56e5f4"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "function_sampling",
+      "cases": 4,
+      "output_artifacts": {
+        "cardinality_answer": 1,
+        "scalar_or_structured_answer": 3
+      },
+      "case_ids": [
+        "6717cc3a4d6b1e71cab9bc8c",
+        "6725dc14097c6790b292765e",
+        "6761b89b9d9d4287c0969029",
+        "6769bcbdc2358745fedc9086"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "probability_expectation",
+      "cases": 4,
+      "output_artifacts": {
+        "cardinality_answer": 1,
+        "scalar_or_structured_answer": 3
+      },
+      "case_ids": [
+        "66f28a89f1256af80477e15d",
+        "66fb24e7dea0e38a195b0030",
+        "670f87f6f1e1079f950014e4",
+        "6711e5e05e64a53ed09449fd"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "asymptotic_runtime",
+      "cases": 4,
+      "output_artifacts": {
+        "expression_answer": 2,
+        "scalar_or_structured_answer": 2
+      },
+      "case_ids": [
+        "67192b9472c6fd14e759e369",
+        "671963d90f87e9920aff9d11",
+        "6719a83547f600be2c21b6f7",
+        "67310b7b6e2b21ba84f49060"
+      ],
+      "coherent": false,
+      "contract_readiness": "defer; output artifacts diverge"
+    },
+    {
+      "signature": "matrix_manifold_exponential",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "6718c479034f8ddb2f67a346"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "matrix_log_gaussian_sampling",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "677609438253c248a60436cb"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "exponential_operator_determinant",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "677b87f0a0514619221df8c6"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "matrix_manifold_constraint",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "670e050d857d9fb8d0e70fde"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "riemannian_metric_structure",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "67219c66a8cd9fb6c1e25d71"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "poincare_disk_geometry",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "675d7b901ded33d59eb2c94f"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "lorentz_sampling",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "676e9656e3e0846ee73dbf9d"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "lie_algebra_matrix",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "671fb32753f9dd7511fe4d70"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "group_theory_structure",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "671fc0c2f0bea11129a5ecdd"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "number_theory_congruence",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "67120c351f4769bcbeaadd5a"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "number_theory_prime_density",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "66e8a3ed3aa94517d4573b14"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "inequality_bound",
+      "cases": 1,
+      "output_artifacts": {
+        "choice_or_boolean_answer": 1
+      },
+      "case_ids": [
+        "6716dc349a0dd17680df31df"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    },
+    {
+      "signature": "theorem_application",
+      "cases": 1,
+      "output_artifacts": {
+        "scalar_or_structured_answer": 1
+      },
+      "case_ids": [
+        "67440064abafa90f5b9d4da9"
+      ],
+      "coherent": false,
+      "contract_readiness": "singleton; insufficient evidence"
+    }
+  ],
+  "method": "shadow-only exact transformation coherence audit; no capability or bridge authorization"
+}

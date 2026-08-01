@@ -88,6 +88,10 @@ name = "hle_method_contract_audit"
 path = "src/bin/hle_method_contract_audit.rs"
 
 [[bin]]
+name = "hle_reasoning_method_audit"
+path = "src/bin/hle_reasoning_method_audit.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

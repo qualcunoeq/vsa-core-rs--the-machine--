@@ -19,7 +19,7 @@ in the machine-readable output.
 | Artifact | SHA-256 |
 | --- | --- |
 | HLE dataset | `31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6` |
-| Phase 41 report | `b6c0109d1ca634d3e485af175ba7f1c288d258ca8ed759615255a14d997ea420` |
+| Phase 41 report | `f2c08a4c4b7f180a4362cb6f06589fb0a0fe7d4eae0526de2d88927fe04048ca` |
 
 ## Materialized census
 
@@ -29,13 +29,14 @@ in the machine-readable output.
 | In-question equations | 34 | 34 |
 | Representation bridges | 29 | subset of method cases |
 | Mechanics target residuals | 152 | 152 |
-| Derivation after retrieval | 189 | 0 |
+| Derivation after retrieval | 189 | 189 |
 
-The derivation-after-retrieval category is preserved only as an aggregate in
-the Phase 21 document; no per-question immutable artifact was available. The
-census records that limitation rather than fabricating 189 records.
+The derivation-after-retrieval category is now backed by the recovered,
+byte-identical Phase 21 artifact and its recovery manifest. Its lexical target
+and transformation labels are explicitly marked as regenerated census fields,
+not original semantic annotations.
 
-The combined materialized set contains **393 unique case IDs** after 15
+The combined materialized set contains **568 unique case IDs** after 29
 overlaps are collapsed.
 
 ## Candidate repeated typed transformations

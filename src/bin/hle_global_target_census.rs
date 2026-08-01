@@ -16,6 +16,7 @@ const HLE_DATASET: &str = "data/hle.jsonl";
 const METHOD_REPORT: &str = "docs/phase29_hle_reasoning_method_audit.json";
 const LAW_REPORT: &str = "docs/phase30_hle_law_audit.json";
 const MECHANICS_REPORT: &str = "docs/phase40_hle_mechanics_target_audit.json";
+const KNOWLEDGE_REPORT: &str = "docs/phase21_hle_knowledge_audit_recovered.json";
 
 #[derive(Debug, Clone, Serialize)]
 struct TargetRecord {
@@ -112,9 +113,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let method_bytes = fs::read(METHOD_REPORT)?;
     let law_bytes = fs::read(LAW_REPORT)?;
     let mechanics_bytes = fs::read(MECHANICS_REPORT)?;
+    let knowledge_bytes = fs::read(KNOWLEDGE_REPORT)?;
     let method: Value = serde_json::from_slice(&method_bytes)?;
     let law: Value = serde_json::from_slice(&law_bytes)?;
     let mechanics: Value = serde_json::from_slice(&mechanics_bytes)?;
+    let knowledge: Value = serde_json::from_slice(&knowledge_bytes)?;
     let mut records = BTreeMap::new();
     let mut requested_pool_counts = BTreeMap::new();
     requested_pool_counts.insert("missing_method_cases".into(), 222);
@@ -233,6 +236,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
     }
 
+    for row in knowledge
+        .get("records")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter(|row| {
+            row.get("gap").and_then(Value::as_str) == Some("derivation_after_factual_retrieval")
+        })
+    {
+        let id = row.get("id").and_then(Value::as_str).unwrap_or("unknown");
+        let question = row.get("question").and_then(Value::as_str).unwrap_or("");
+        let lower = question.to_ascii_lowercase();
+        let output = if lower.contains("prove") || lower.contains("derive") {
+            "proof_or_derivation"
+        } else if lower.contains("integral") || lower.contains("differential") {
+            "equation_or_expression"
+        } else if lower.contains("probability") || lower.contains("expectation") {
+            "probability_or_expectation"
+        } else if lower.contains("how many") || lower.contains("count") {
+            "cardinality_or_count"
+        } else {
+            "scalar_or_structured_answer"
+        };
+        let mut input = BTreeSet::new();
+        input.insert("retrieved_claim_or_equation".into());
+        insert_record(
+            &mut records,
+            id,
+            "phase21_recovered_knowledge_audit",
+            output.into(),
+            input,
+            "derivation_after_retrieval".into(),
+            "knowledge_or_assumptions".into(),
+            "derivation_after_factual_retrieval".into(),
+        );
+    }
+
     let mut target_output_counts = BTreeMap::new();
     let mut transformation_counts = BTreeMap::new();
     let mut prerequisite_counts = BTreeMap::new();
@@ -262,6 +302,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .collect();
         let generic = members[0].transformation_signature == "generic_specialist"
             || members[0].transformation_signature == "target_grounding"
+            || members[0].transformation_signature == "derivation_after_retrieval"
             || members[0].output_artifact == "unknown"
             || members[0].output_artifact == "unclassified"
             || members[0].output_artifact == "ambiguous";
@@ -289,7 +330,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     candidate_families
         .sort_by(|left, right| right.cases.cmp(&left.cases).then(left.key.cmp(&right.key)));
-    let duplicate_case_ids_collapsed = 222 + 34 + 152 - records.len();
+    let duplicate_case_ids_collapsed = 222 + 34 + 152 + 189 - records.len();
     let report = Report {
         schema_version: "phase41.hle.global.typed.target.census.v1".into(),
         hle_dataset_sha256: sha256(&hle_bytes),
@@ -297,18 +338,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             ("phase29_method_audit".into(), sha256(&method_bytes)),
             ("phase30_law_audit".into(), sha256(&law_bytes)),
             ("phase40_mechanics_target_audit".into(), sha256(&mechanics_bytes)),
+            ("phase21_recovered_knowledge_audit".into(), sha256(&knowledge_bytes)),
         ]
         .into_iter()
         .collect(),
         requested_pool_counts,
-        unmaterialized_pool_notes: [
-            (
-                "derivation_after_retrieval".into(),
-                "Phase 21 preserves only an aggregate count (189); no immutable per-question machine-readable artifact was available, so no synthetic records were created.".into(),
-            ),
-        ]
-        .into_iter()
-        .collect(),
+        unmaterialized_pool_notes: BTreeMap::new(),
         materialized_unique_cases: records.len(),
         duplicate_case_ids_collapsed,
         target_output_counts,

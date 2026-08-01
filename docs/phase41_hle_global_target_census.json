@@ -2,6 +2,7 @@
   "schema_version": "phase41.hle.global.typed.target.census.v1",
   "hle_dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
   "input_report_hashes": {
+    "phase21_recovered_knowledge_audit": "42ae4475854a67b239c32bcf473ff787196c39b1ac0f0359b451430c56f63276",
     "phase29_method_audit": "426bf65d4daca4430bbb69c717ca4f636ee0d48d9822c8fd001dff6d33fdabd2",
     "phase30_law_audit": "9fbe52a26b378c16e858bca75ca2835b5339aae5c31602e068b446205956c0ed",
     "phase40_mechanics_target_audit": "95541bb22ae43dd14e14b8ec715ed256d6208e0346ce7964a250b0102aef88b9"
@@ -13,27 +14,27 @@
     "missing_method_cases": 222,
     "representation_bridges": 29
   },
-  "unmaterialized_pool_notes": {
-    "derivation_after_retrieval": "Phase 21 preserves only an aggregate count (189); no immutable per-question machine-readable artifact was available, so no synthetic records were created."
-  },
-  "materialized_unique_cases": 393,
-  "duplicate_case_ids_collapsed": 15,
+  "unmaterialized_pool_notes": {},
+  "materialized_unique_cases": 568,
+  "duplicate_case_ids_collapsed": 29,
   "target_output_counts": {
     "ambiguous": 17,
     "asymptotic_or_scaling_law": 5,
     "cardinality_answer": 29,
-    "cardinality_or_count": 8,
+    "cardinality_or_count": 18,
     "choice_or_boolean": 8,
     "choice_or_boolean_answer": 5,
     "conceptual_consequence": 2,
     "dimensionless_parameter": 1,
-    "equation_or_expression": 1,
+    "equation_or_expression": 20,
     "expression_answer": 18,
     "integral_or_differential_equation": 4,
     "named_object_theorem_or_convention": 6,
     "optimization_or_bound": 2,
     "physical_phenomenon_or_model": 11,
-    "scalar_or_structured_answer": 170,
+    "probability_or_expectation": 8,
+    "proof_or_derivation": 17,
+    "scalar_or_structured_answer": 291,
     "scalar_or_structured_value": 17,
     "specialist_factual_target": 11,
     "spectrum_eigenvalue_or_mode": 4,
@@ -42,6 +43,7 @@
   "transformation_counts": {
     "asymptotic_runtime": 4,
     "calculus_transformation": 12,
+    "derivation_after_retrieval": 175,
     "differential_equation_solve": 7,
     "equation_binding": 22,
     "exponential_operator_determinant": 1,
@@ -75,7 +77,7 @@
     "continuum_mechanics": 5,
     "dynamical_systems": 4,
     "field_theory": 1,
-    "knowledge_or_assumptions": 61,
+    "knowledge_or_assumptions": 236,
     "mathematical_physics": 2,
     "relativity": 3,
     "representation": 102,
@@ -85,9 +87,21 @@
   },
   "candidate_families": [
     {
+      "key": "scalar_or_structured_answer::derivation_after_retrieval",
+      "cases": 121,
+      "source_pools": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "derivation_after_retrieval",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
       "key": "unclassified::target_grounding",
       "cases": 74,
       "source_pools": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "unclassified",
@@ -108,13 +122,36 @@
       "reason": "no stable repeated typed transformation at this census level"
     },
     {
+      "key": "equation_or_expression::derivation_after_retrieval",
+      "cases": 19,
+      "source_pools": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "transformation_signature": "derivation_after_retrieval",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
       "key": "ambiguous::target_grounding",
       "cases": 17,
       "source_pools": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "ambiguous",
       "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "proof_or_derivation::derivation_after_retrieval",
+      "cases": 17,
+      "source_pools": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "transformation_signature": "derivation_after_retrieval",
       "status": "insufficient_coherence_evidence",
       "reason": "no stable repeated typed transformation at this census level"
     },
@@ -177,10 +214,22 @@
       "key": "specialist_factual_target::target_grounding",
       "cases": 11,
       "source_pools": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "specialist_factual_target",
       "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "cardinality_or_count::derivation_after_retrieval",
+      "cases": 10,
+      "source_pools": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "transformation_signature": "derivation_after_retrieval",
       "status": "insufficient_coherence_evidence",
       "reason": "no stable repeated typed transformation at this census level"
     },
@@ -219,6 +268,17 @@
       "transformation_signature": "geometric_construction",
       "status": "candidate_for_external_validation",
       "reason": "repeated output and exact transformation signature; external corpus and semantic review still required"
+    },
+    {
+      "key": "probability_or_expectation::derivation_after_retrieval",
+      "cases": 8,
+      "source_pools": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "probability_or_expectation",
+      "transformation_signature": "derivation_after_retrieval",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
     },
     {
       "key": "scalar_or_structured_answer::recurrence_evaluation",
@@ -334,6 +394,7 @@
       "key": "integral_or_differential_equation::target_grounding",
       "cases": 4,
       "source_pools": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "integral_or_differential_equation",
@@ -817,18 +878,51 @@
       ]
     },
     {
+      "id": "66b2c7c9795022550abb176b",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "66b827b9b64deaedfbb997a2",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "unclassified",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "ambiguous",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66c5c3eae30bdd4f1da62cfc",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -890,6 +984,21 @@
       ]
     },
     {
+      "id": "66e8cfa03add731d7fce4352",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "66e8f69b1440516dd6ab54da",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -905,6 +1014,21 @@
       ]
     },
     {
+      "id": "66e907c51440516dd6ab54fb",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "66e94a88b78e263c565b17ee",
       "sources": [
         "phase30_in_question_equations"
@@ -917,6 +1041,21 @@
       "prerequisite_class": "knowledge_or_assumptions",
       "audit_classes": [
         "in_question_equation"
+      ]
+    },
+    {
+      "id": "66e9a39f2dad0e536fb92efa",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1007,6 +1146,21 @@
       ]
     },
     {
+      "id": "66ea63837c49faf4e570535e",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "66eaa401c7a3252f0f3fe535",
       "sources": [
         "phase29_method_audit"
@@ -1021,6 +1175,36 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66eae4e351a34eec5d943952",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66eae565b2e7406d498f8cc9",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1097,6 +1281,36 @@
       ]
     },
     {
+      "id": "66eb5e0edac136580220ff38",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66ec02c52ec65d6153428744",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "66ec2799da20d530acf3bf1e",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -1137,6 +1351,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66ec5c9bf633b774fa320b36",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1211,18 +1440,96 @@
       ]
     },
     {
+      "id": "66ed985a7b0ffebd9fae6993",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "66eddc58fcc3c877643b5f39",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "integral_or_differential_equation",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66ee7549084dcacdcaac6437",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66ee8c598124ad52c77de7ee",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66eea759f76fda99cec44de6",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66eed8524a95bab59d824b95",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1253,6 +1560,51 @@
       "audit_classes": [
         "mechanics_target_residual",
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66ef0afb2bfc879851eeb93f",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66ef3be2b8a1ba6e0ba23496",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66ef663370b6c01c3d20a5d5",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1338,6 +1690,36 @@
       ]
     },
     {
+      "id": "66f378a504165ae3e4f46de9",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66f57e187a2ac7b4fffe174e",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "probability_or_expectation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "66f589b926268030174717bd",
       "sources": [
         "phase29_method_audit"
@@ -1392,6 +1774,51 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66f6d6bb851e7fd5e8e5e5eb",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66f708eec8903a7f2c03edbe",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66f7292f3f4622b6ce24b961",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1526,6 +1953,21 @@
       ]
     },
     {
+      "id": "66fbbe8cb6f8564117792b00",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "66fbd5aca177ae967e47041b",
       "sources": [
         "phase29_method_audit"
@@ -1564,6 +2006,21 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66fc56f5d90ebe461bfd0c9c",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1690,16 +2147,34 @@
     {
       "id": "66fda7a057cea4445778e88a",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "unclassified",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66fdb31a57cea4445778e8ab",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1718,6 +2193,21 @@
       ]
     },
     {
+      "id": "66fddfcfb3108418b8a5566a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "66fde5a291664bba6e391cb5",
       "sources": [
         "phase29_method_audit"
@@ -1728,6 +2218,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "specialist_singleton"
+      ]
+    },
+    {
+      "id": "66fdecea0cc5d4963e81bb93",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1748,16 +2253,49 @@
     {
       "id": "66fec7825e6051260840e060",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "unclassified",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66fecbff69d5712b5401553e",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "66feef700e977ac289068c27",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1786,6 +2324,66 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6700497e7c6e32185d473d3e",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "670064edbeb5458b701e58b9",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "670079cb5587080e1cf67dce",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "67008a05ad0fee7d7b4efb3c",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1819,6 +2417,21 @@
       ]
     },
     {
+      "id": "67016d95a2a4300e274de8be",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6701ca6bb773dec162bde23c",
       "sources": [
         "phase30_in_question_equations"
@@ -1846,6 +2459,36 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6701d869aee3881b852d40a0",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6703a3c04a760324b0e15a30",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "probability_or_expectation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1878,6 +2521,21 @@
       ]
     },
     {
+      "id": "6704ba2101d8c58fba562885",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6704d297f486e216becd613f",
       "sources": [
         "phase29_method_audit"
@@ -1891,6 +2549,36 @@
       ]
     },
     {
+      "id": "6706033749b90b396d2cb207",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "67065070b3df24f51a3e2914",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "670698afa89008d75b31f329",
       "sources": [
         "phase29_method_audit"
@@ -1901,6 +2589,21 @@
       "prerequisite_class": "knowledge_or_assumptions",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6706bda4cdc5e37f6814fc00",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -1945,6 +2648,21 @@
       ]
     },
     {
+      "id": "6708336666bc940886b27312",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "67086f244c1d38378da9f60a",
       "sources": [
         "phase29_method_audit"
@@ -1975,6 +2693,21 @@
       ]
     },
     {
+      "id": "67099b940109535a956a14ab",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "probability_or_expectation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6709a557139851f6bbbd7a5a",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -1987,6 +2720,21 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6709e5af41a8c7cc16f75d2a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -2061,6 +2809,36 @@
       ]
     },
     {
+      "id": "670d933ad54037c51abbe3ca",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "670df2a72f80209631f57fc2",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "670e050d857d9fb8d0e70fde",
       "sources": [
         "phase29_method_audit"
@@ -2090,6 +2868,21 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "670eb27fd2f45b1198c87766",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -2206,6 +2999,36 @@
       ]
     },
     {
+      "id": "6710210bc47b9b50a333dba8",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6710b2cbd1af6b4823c090d4",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "67115e10528102717339d851",
       "sources": [
         "phase29_method_audit"
@@ -2246,6 +3069,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67121600c227d25db1c1e480",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -2293,6 +3131,36 @@
       ]
     },
     {
+      "id": "6712d9d097b88a1cdb76c51e",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "67130fff5fcf1fbb43d4a687",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "671323607fc02cf5cce975a5",
       "sources": [
         "phase29_method_audit"
@@ -2306,6 +3174,66 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "representation_bridge"
+      ]
+    },
+    {
+      "id": "67136bf495e840a8db703aee",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6713a3e61e0e03ffe2253dcd",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6713a4c60223609143188d32",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6713b3ddffe8069e1f029185",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -2334,6 +3262,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67142e7e7da71e9cbf55a7f9",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -2382,6 +3325,51 @@
       ]
     },
     {
+      "id": "671567cd87cd585dc9f613db",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6715a9a5b3287d3dd4db03cd",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6715e455f818cdd1872c0ef0",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6715f373a35b028a9e88c09f",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -2412,6 +3400,51 @@
       ]
     },
     {
+      "id": "67164d0b4c922006e9e93a8d",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "67169906187dc7ac4a7ae1a8",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "671699cb0b00e84566da1812",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6716a68fbb8539339d5d7239",
       "sources": [
         "phase29_method_audit"
@@ -2422,6 +3455,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6716afcdb8bcd4d88c34cd1d",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -2501,6 +3549,51 @@
       ]
     },
     {
+      "id": "671761abfdbddef7c5a1197e",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6717a999128b7480180c79f8",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "probability_or_expectation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6717ac23a5c8a6a9392b1b34",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6717aef5a5c8a6a9392b1b39",
       "sources": [
         "phase29_method_audit"
@@ -2524,6 +3617,21 @@
       "prerequisite_class": "knowledge_or_assumptions",
       "audit_classes": [
         "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6717bd1d443232c907a31720",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -2613,6 +3721,36 @@
       ]
     },
     {
+      "id": "6718106f713d2e285effa910",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "67182dc779d13ce05adb35d9",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6718487afba38eebcbc8034b",
       "sources": [
         "phase30_in_question_equations"
@@ -2640,6 +3778,21 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6718bf9c58bc11dea7f3be13",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -2739,6 +3892,51 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671a567961c380782c9eea17",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "671a779a0dd354b2ced21608",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "671aad4a17615f09eab6fe3d",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -2848,6 +4046,36 @@
       ]
     },
     {
+      "id": "671bef23b55b44cbffbf0972",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "671cc8c2d99f8e01283e9a90",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "671d16bf60ad0fe6d2494177",
       "sources": [
         "phase30_in_question_equations"
@@ -2863,6 +4091,51 @@
       ]
     },
     {
+      "id": "671d25bc8258d39a94ba00fb",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "671d51ba8411174e64735f4d",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "671d56738411174e64735f59",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "671d6502b996cf9936d1afd0",
       "sources": [
         "phase29_method_audit"
@@ -2873,6 +4146,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "specialist_singleton"
+      ]
+    },
+    {
+      "id": "671d6a90bdac50eb5e8d8e86",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -2922,15 +4210,18 @@
     {
       "id": "671dea179a50e5f7394157de",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "unclassified",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
       ]
     },
@@ -2962,6 +4253,51 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671e91503152969a09cb5ef8",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "671eb856c357c6b4f73592dd",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "671ec6d8a695a5847b48c39a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3038,6 +4374,21 @@
       ]
     },
     {
+      "id": "671f12185a31c38041aa96a8",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "671f1f0bb0b665acec70c3aa",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -3050,6 +4401,21 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671f1f4ae38f776acdad8a77",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3101,15 +4467,18 @@
     {
       "id": "671f6889490be3e9a159f485",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "ambiguous",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
       ]
     },
@@ -3198,6 +4567,21 @@
       ]
     },
     {
+      "id": "671fbea5326bcfd746f4d96f",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "671fc0c2f0bea11129a5ecdd",
       "sources": [
         "phase29_method_audit"
@@ -3226,6 +4610,21 @@
       ]
     },
     {
+      "id": "67200a8a3e7f561778c0c65c",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6720449622c03e062e242dd2",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -3238,6 +4637,21 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67204727dab51faf6135e7e2",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3256,15 +4670,18 @@
     {
       "id": "672065f65681ce2b6f5a08a0",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "ambiguous",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
       ]
     },
@@ -3282,6 +4699,21 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67206ac2f58a25138266a375",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3315,6 +4747,21 @@
       ]
     },
     {
+      "id": "6720a9feec461e4c6a4e2c3a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6720c0cd083a628a849fcb51",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -3332,16 +4779,49 @@
     {
       "id": "6720c10ac6e0d9a4953b636f",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "unclassified",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6720c149c6e0d9a4953b6370",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6720ca4b696f86db458bcfe9",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3362,6 +4842,21 @@
       ]
     },
     {
+      "id": "6720f01e936e8e4575f4f3f4",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6720fda3febecf1a8b9b083d",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -3374,6 +4869,21 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6720fddce4d64797f19fbdb9",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3390,6 +4900,51 @@
       ]
     },
     {
+      "id": "67211971d9397a0c64dba82a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "672119ecd9397a0c64dba82c",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "672162b02795580f2ee8644f",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "67216b3c8238b402204d3432",
       "sources": [
         "phase29_method_audit"
@@ -3400,6 +4955,36 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67216f0abddbccdce9955e93",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "672170613659e79885449d5a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3452,6 +5037,21 @@
       ]
     },
     {
+      "id": "6721b01e63e02c05008905d9",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6722084fdcce66512a82d9f4",
       "sources": [
         "phase29_method_audit"
@@ -3462,6 +5062,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67222f190f0526aefdf441fd",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3525,6 +5140,21 @@
       ]
     },
     {
+      "id": "6722ae097f84054950978f61",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6722c3ce8e469fbdb3ba6a6e",
       "sources": [
         "phase29_method_audit"
@@ -3538,6 +5168,21 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6722cb976bc44598e1fd09be",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3581,6 +5226,36 @@
       "prerequisite_class": "knowledge_or_assumptions",
       "audit_classes": [
         "in_question_equation"
+      ]
+    },
+    {
+      "id": "67231c593913fc1112f91418",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "672378554b5264ad52901028",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3724,6 +5399,21 @@
       ]
     },
     {
+      "id": "6723d5524a5a9552dc3d8836",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6723e2eed45a194cda34796b",
       "sources": [
         "phase29_method_audit"
@@ -3736,6 +5426,36 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6723e67a527c0443bbbe3964",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6723ec50479384d8942cca75",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3841,6 +5561,21 @@
       ]
     },
     {
+      "id": "67244f264d59b659ef10889c",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "672455ce7a14971607e3d9f0",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -3853,6 +5588,141 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67249d57d91756473725533a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6724a047d917564737255345",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "probability_or_expectation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6724a338d917564737255349",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6724aecb2bfc260d444bc385",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6724bcf944c2c3be8ba3cf72",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6724c10df477ce1b85735d01",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6724cdd55ae9c8186f31f920",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6724d70af70a476bbcaa32e1",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6724d9e612a8d5ea6a61936f",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3871,6 +5741,21 @@
       ]
     },
     {
+      "id": "6724e240618e28a18b10117b",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6724e72e2e4151a53d606225",
       "sources": [
         "phase29_method_audit"
@@ -3881,6 +5766,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6724ea8fef7ca78ae041e22d",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3909,6 +5809,21 @@
       "prerequisite_class": "knowledge_or_assumptions",
       "audit_classes": [
         "in_question_equation"
+      ]
+    },
+    {
+      "id": "67252916041c0a0ef1addf6f",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -3969,6 +5884,36 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6725349f3e9860a3b615ce40",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "67253690bcd1c268662e77bb",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -4280,6 +6225,21 @@
       ]
     },
     {
+      "id": "6725f4199a1073f00ecc2312",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6725f64785e54acc9a6323ed",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -4350,6 +6310,21 @@
       "prerequisite_class": "ambiguous",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67269e31f922f333ed9d695f",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -4491,15 +6466,18 @@
     {
       "id": "672a5b4eefd96b7e660d8ea4",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "specialist_factual_target",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
       ]
     },
@@ -4532,6 +6510,21 @@
       ]
     },
     {
+      "id": "672a9c1acaf5258da118f254",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "672aac7a78e0ab15cf86003b",
       "sources": [
         "phase29_method_audit"
@@ -4559,6 +6552,21 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672c0f1d76fec97ec7555a3a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -4593,6 +6601,36 @@
       ]
     },
     {
+      "id": "672ca5b60fcde739f6450e29",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "672d3b378c29cb8f2bac1f31",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "672d7ebc9a32864a120253cd",
       "sources": [
         "phase29_method_audit"
@@ -4605,6 +6643,21 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672d8b9b504a98f0e4799ae0",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -4679,6 +6732,21 @@
       ]
     },
     {
+      "id": "672e2ab240c7d7b0d90e0907",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "672e4d316ee63a5d94bf863a",
       "sources": [
         "phase29_method_audit"
@@ -4702,6 +6770,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "specialist_singleton"
+      ]
+    },
+    {
+      "id": "672f72e3609b665328565e6b",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -4803,6 +6886,36 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672ff8317b5ea0144d26c82d",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "probability_or_expectation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "673029b26ad714f5469388f5",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -4922,6 +7035,36 @@
       ]
     },
     {
+      "id": "6732d91a87eb8fc773aaf2c0",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "67332b7198af9f49ad5d743a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "67339e9c25c864e84bf1a351",
       "sources": [
         "phase29_method_audit",
@@ -4972,16 +7115,49 @@
     {
       "id": "6734989917a9687889930ac9",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "unclassified",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6734af9217a9687889930afd",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6734b2fec14270a5b42323f5",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -4998,6 +7174,36 @@
       "prerequisite_class": "knowledge_or_assumptions",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67350237b7aab4044ebf52ca",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "67359bd848f0d868aea133c4",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -5166,6 +7372,36 @@
       ]
     },
     {
+      "id": "6736d80ac3870d903d810cb3",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6736ddc7ab70ca0b4ee6a2e6",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6736e17253926b38af8c205e",
       "sources": [
         "phase29_method_audit",
@@ -5199,6 +7435,36 @@
       ]
     },
     {
+      "id": "6736ecc681dc32f504545aae",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "6736efd7c62053058bf5eef6",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6736f7bc980211368f0f94eb",
       "sources": [
         "phase30_in_question_equations"
@@ -5224,6 +7490,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6737092e3a78dbef3611f734",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -5322,6 +7603,21 @@
       ]
     },
     {
+      "id": "67372e09a90747ed09962582",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6737309d1988146a57ffab18",
       "sources": [
         "phase29_method_audit"
@@ -5412,6 +7708,21 @@
       ]
     },
     {
+      "id": "6737cd443b2291333fbb48b6",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6737d23a6a364decc45cc7ee",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -5485,6 +7796,21 @@
       ]
     },
     {
+      "id": "67381ce26a5242a22fe4681f",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "probability_or_expectation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "67381f0835f9616e390e737a",
       "sources": [
         "phase30_in_question_equations",
@@ -5515,6 +7841,21 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67385365f50a1fb083fa3f02",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -5563,6 +7904,36 @@
       ]
     },
     {
+      "id": "673940404b79755e8fd591dc",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "673966c85558387c37dd7b7d",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6739674739118cf30f5f1075",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -5578,6 +7949,21 @@
       ]
     },
     {
+      "id": "673971a55c3de09264d6d373",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "67398780bcaf1e028b8576a2",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -5590,6 +7976,21 @@
       "prerequisite_class": "statistical_mechanics",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6739c2b970e297a5bb200fdb",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -5636,15 +8037,18 @@
     {
       "id": "673a6a6c4c465c371379b670",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "unclassified",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
       ]
     },
@@ -5778,6 +8182,21 @@
       ]
     },
     {
+      "id": "673cbc315c871b3f9e026cf8",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "673ce6500bf8b23a52510a18",
       "sources": [
         "phase29_method_audit"
@@ -5855,6 +8274,21 @@
       ]
     },
     {
+      "id": "673ffbd26fcd58c71515bdee",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "probability_or_expectation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "6740f12881d5bb0710804155",
       "sources": [
         "phase29_method_audit"
@@ -5867,6 +8301,21 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "representation_bridge"
+      ]
+    },
+    {
+      "id": "67418f4d1cf0c9eba73432cc",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -5915,6 +8364,36 @@
       ]
     },
     {
+      "id": "6742c352b716c03a202313a3",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "674300b3d5209073dd13ec2a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "67435ecfa59a37c4a0f5d579",
       "sources": [
         "phase30_in_question_equations"
@@ -5927,6 +8406,21 @@
       "prerequisite_class": "knowledge_or_assumptions",
       "audit_classes": [
         "in_question_equation"
+      ]
+    },
+    {
+      "id": "674362ab6b7aa212dfb90595",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -5957,6 +8451,51 @@
       "prerequisite_class": "knowledge_or_assumptions",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6744b7401a3cd63bff1b0a06",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "67455cd07df215d3effe4f4e",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "67455f379dbdcf3802abd8f6",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -6062,17 +8601,35 @@
       ]
     },
     {
+      "id": "6748b7dfac494f3a05306206",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "674c4930f8787d3114abcdd0",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "unclassified",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
       ]
     },
@@ -6150,6 +8707,36 @@
       ]
     },
     {
+      "id": "67578debd068d05e5346d4ee",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "675aa6e703e9471764dfedd2",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "675b84caa03d8b4e391dcc88",
       "sources": [
         "phase40_mechanics_target_audit"
@@ -6194,6 +8781,21 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "representation_bridge"
+      ]
+    },
+    {
+      "id": "675d67cd46f526ea086d3510",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -6259,6 +8861,21 @@
       "prerequisite_class": "representation",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6769bce8a4435c3c69035510",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -6341,17 +8958,35 @@
       ]
     },
     {
+      "id": "676edcd5fc03fd7d07467628",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "676f30b2c0f9a20a47cd3211",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "ambiguous",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "mathematical_physics",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
       ]
     },
@@ -6383,6 +9018,21 @@
       "prerequisite_class": "unclassified",
       "audit_classes": [
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "677296942ebbac6133a1d618",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -6496,6 +9146,21 @@
       ]
     },
     {
+      "id": "677bcc2af80fce832e66a075",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
       "id": "677bd8f5247a21d7a948db6c",
       "sources": [
         "phase29_method_audit"
@@ -6511,6 +9176,36 @@
       "prerequisite_class": "knowledge_or_assumptions",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "677da0a433769e54d305f23c",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
+      ]
+    },
+    {
+      "id": "678276f1cedb95b84a19cb31",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -6574,16 +9269,34 @@
     {
       "id": "67aa35520fe6cda9046f7f54",
       "sources": [
+        "phase21_recovered_knowledge_audit",
         "phase40_mechanics_target_audit"
       ],
       "output_artifact": "specialist_factual_target",
       "input_artifacts": [
-        "mechanics_signal"
+        "mechanics_signal",
+        "retrieved_claim_or_equation"
       ],
       "transformation_signature": "target_grounding",
       "prerequisite_class": "unclassified",
       "audit_classes": [
+        "derivation_after_factual_retrieval",
         "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67c584061122dc051c09a25a",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "proof_or_derivation",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     },
     {
@@ -6597,6 +9310,21 @@
       "prerequisite_class": "unknown",
       "audit_classes": [
         "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67c7405475ac82e0c70a0cfe",
+      "sources": [
+        "phase21_recovered_knowledge_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "retrieved_claim_or_equation"
+      ],
+      "transformation_signature": "derivation_after_retrieval",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "derivation_after_factual_retrieval"
       ]
     }
   ],

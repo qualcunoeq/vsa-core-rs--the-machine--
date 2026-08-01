@@ -1,0 +1,182 @@
+{
+  "schema_version": "phase34.classical.mechanics.pack.v1",
+  "pack_sha256": "4ee00660fd138099a25dc20927ccc24b01ba0a530c78bde89bc828bda2a32e53",
+  "corpus_sha256": "ce50d014cee1dee36834142c7f926c635ead0987f59c61c11772dac2cae20a12",
+  "source_urls": [
+    "https://openstax.org/books/university-physics-volume-1/pages/5-3-newtons-second-law",
+    "https://openstax.org/books/university-physics-volume-1/pages/9-1-linear-momentum",
+    "https://openstax.org/books/university-physics-volume-1/pages/7-2-kinetic-energy",
+    "https://openstax.org/books/university-physics-volume-1/pages/5-6-common-forces",
+    "https://openstax.org/books/university-physics-volume-1/pages/8-1-potential-energy-of-a-system"
+  ],
+  "total_cases": 16,
+  "supported_cases": 10,
+  "rejected_cases": 6,
+  "complete_results": 10,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "replay_verified": 16,
+  "lookup_unique": 5,
+  "lookup_ambiguous": 1,
+  "lookup_unsupported_or_missing": 2,
+  "registry_mutated": false,
+  "cases": [
+    {
+      "id": "newton-a",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 4.0,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:5.3 Newton's Second Law",
+      "reasons": []
+    },
+    {
+      "id": "newton-b",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 8.0,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:5.3 Newton's Second Law",
+      "reasons": []
+    },
+    {
+      "id": "momentum-a",
+      "expected": "complete",
+      "actual": "complete",
+      "value": -6.0,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:9.1 Linear Momentum",
+      "reasons": []
+    },
+    {
+      "id": "momentum-b",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 5.0,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:9.1 Linear Momentum",
+      "reasons": []
+    },
+    {
+      "id": "kinetic-a",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 50.0,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:7.2 Kinetic Energy",
+      "reasons": []
+    },
+    {
+      "id": "kinetic-b",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 5.0,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:7.2 Kinetic Energy",
+      "reasons": []
+    },
+    {
+      "id": "hooke-a",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 2.0,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:5.6 Common Forces",
+      "reasons": []
+    },
+    {
+      "id": "hooke-b",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 10.0,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:5.6 Common Forces",
+      "reasons": []
+    },
+    {
+      "id": "elastic-a",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 1.0,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:8.1 Potential Energy of a System",
+      "reasons": []
+    },
+    {
+      "id": "elastic-b",
+      "expected": "complete",
+      "actual": "complete",
+      "value": 0.5,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:8.1 Potential Energy of a System",
+      "reasons": []
+    },
+    {
+      "id": "missing-mass",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:5.3 Newton's Second Law",
+      "reasons": [
+        "1 required input binding(s) missing"
+      ]
+    },
+    {
+      "id": "wrong-unit",
+      "expected": "unit_mismatch",
+      "actual": "unit_mismatch",
+      "value": null,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:7.2 Kinetic Energy",
+      "reasons": [
+        "input unit conflicts with source law constraint"
+      ]
+    },
+    {
+      "id": "relativistic",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "replay_verified": true,
+      "source_id": null,
+      "reasons": [
+        "law alias does not identify one pack record"
+      ]
+    },
+    {
+      "id": "ambiguous-energy",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "value": null,
+      "replay_verified": true,
+      "source_id": null,
+      "reasons": [
+        "law alias does not identify one pack record"
+      ]
+    },
+    {
+      "id": "missing-speed",
+      "expected": "missing",
+      "actual": "missing",
+      "value": null,
+      "replay_verified": true,
+      "source_id": "openstax-university-physics-volume-1:9.1 Linear Momentum",
+      "reasons": [
+        "1 required input binding(s) missing"
+      ]
+    },
+    {
+      "id": "wrong-regime",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "value": null,
+      "replay_verified": true,
+      "source_id": null,
+      "reasons": [
+        "law alias does not identify one pack record"
+      ]
+    }
+  ],
+  "method": "shadow-only externally sourced classical-mechanics pack; no HLE or production routing"
+}

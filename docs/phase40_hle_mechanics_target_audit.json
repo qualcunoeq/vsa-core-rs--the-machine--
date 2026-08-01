@@ -1,0 +1,2280 @@
+{
+  "schema_version": "phase40.hle.mechanics.target.audit.v1",
+  "dataset": "data/hle.jsonl",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "phase39_report_sha256": "f53668c01485846c41af15f8087bbcf256abb2ee57de30889631bbb44a8c8adf",
+  "audited_cases": 152,
+  "artifact_family_counts": {
+    "ambiguous": 18,
+    "asymptotic_or_scaling_law": 5,
+    "conceptual_consequence": 2,
+    "dimensionless_parameter": 1,
+    "integral_or_differential_equation": 4,
+    "named_object_theorem_or_convention": 8,
+    "optimization_or_bound": 4,
+    "physical_phenomenon_or_model": 12,
+    "specialist_factual_target": 12,
+    "spectrum_eigenvalue_or_mode": 4,
+    "unclassified": 82
+  },
+  "subdomain_counts": {
+    "ambiguous": 5,
+    "continuum_mechanics": 6,
+    "dynamical_systems": 4,
+    "field_theory": 1,
+    "mathematical_physics": 3,
+    "relativity": 5,
+    "statistical_mechanics": 2,
+    "unclassified": 126
+  },
+  "cross_family_subdomain_counts": {
+    "ambiguous::ambiguous": 1,
+    "ambiguous::dynamical_systems": 1,
+    "ambiguous::mathematical_physics": 1,
+    "ambiguous::relativity": 1,
+    "ambiguous::statistical_mechanics": 1,
+    "ambiguous::unclassified": 13,
+    "asymptotic_or_scaling_law::ambiguous": 1,
+    "asymptotic_or_scaling_law::continuum_mechanics": 1,
+    "asymptotic_or_scaling_law::unclassified": 3,
+    "conceptual_consequence::unclassified": 2,
+    "dimensionless_parameter::continuum_mechanics": 1,
+    "integral_or_differential_equation::ambiguous": 1,
+    "integral_or_differential_equation::unclassified": 3,
+    "named_object_theorem_or_convention::mathematical_physics": 2,
+    "named_object_theorem_or_convention::unclassified": 6,
+    "optimization_or_bound::unclassified": 4,
+    "physical_phenomenon_or_model::continuum_mechanics": 1,
+    "physical_phenomenon_or_model::dynamical_systems": 1,
+    "physical_phenomenon_or_model::relativity": 3,
+    "physical_phenomenon_or_model::unclassified": 7,
+    "specialist_factual_target::dynamical_systems": 1,
+    "specialist_factual_target::unclassified": 11,
+    "spectrum_eigenvalue_or_mode::dynamical_systems": 1,
+    "spectrum_eigenvalue_or_mode::unclassified": 3,
+    "unclassified::ambiguous": 2,
+    "unclassified::continuum_mechanics": 3,
+    "unclassified::field_theory": 1,
+    "unclassified::relativity": 1,
+    "unclassified::statistical_mechanics": 1,
+    "unclassified::unclassified": 74
+  },
+  "unclassified_target_cases": 82,
+  "ambiguous_artifact_cases": 18,
+  "ambiguous_subdomain_cases": 5,
+  "records": [
+    {
+      "id": "668828540a642802bdfeadfc",
+      "category": "Other",
+      "raw_subject": "Trivia",
+      "question_sha256": "a861493e0c69237648f2a0032be1ec1533fd5fc5b422710fb8d9dd49fb56c61c",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66b827b9b64deaedfbb997a2",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "c9d14e41ca996b3403cea78c1333b2be5b41880981b97c088a7df6960deb1b57",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [
+        "quantum_mechanics",
+        "mathematical_physics"
+      ],
+      "subdomain": "ambiguous",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66e8f69b1440516dd6ab54da",
+      "category": "Biology/Medicine",
+      "raw_subject": "Genetics",
+      "question_sha256": "983ea5fb64ad0ef3ab1670d4ab3618ba19d76ebe3b8dc6eab31923933e78287d",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66e9b2899cf8fcf41599246f",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Linguistics",
+      "question_sha256": "17f40b33d9ffd7c8af4e87fb837dbc85ff6df50fba0d3d78db3665510d492b5e",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66ea1dd348eb93c2aef1c735",
+      "category": "Biology/Medicine",
+      "raw_subject": "Genetics",
+      "question_sha256": "288731351afcfaa8dce81ed3e3badc3bc36252dff0d4eebba82f1cdb22b11558",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66ea260280667dae8de4a8ec",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Law",
+      "question_sha256": "04ec23d05f40cf1456d87f6408422927fe063610357c13cc67724d3c4912ff15",
+      "artifact_family_candidates": [
+        "optimization_or_bound",
+        "physical_phenomenon_or_model",
+        "named_object_theorem_or_convention",
+        "specialist_factual_target"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "bound",
+        "identify",
+        "law",
+        "process",
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66eaed874f8d520f598dbf11",
+      "category": "Computer Science/AI",
+      "raw_subject": "Robotics",
+      "question_sha256": "0e9d88dffe2ebad11446149619dbf595fe762aa377d455933b4bd537abaebcc9",
+      "artifact_family_candidates": [
+        "conceptual_consequence"
+      ],
+      "artifact_family": "conceptual_consequence",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "meaning"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66eaf1f49c43656de6cf31f6",
+      "category": "Computer Science/AI",
+      "raw_subject": "Robotics",
+      "question_sha256": "4c9f723e6b92dbf7fe22325c3f8439dc3d3811e636351d8d0a9cd48f8e75d4a9",
+      "artifact_family_candidates": [
+        "conceptual_consequence"
+      ],
+      "artifact_family": "conceptual_consequence",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "meaning"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66eefc79e487aa1349195d5f",
+      "category": "Computer Science/AI",
+      "raw_subject": "Programming",
+      "question_sha256": "47904c4014d15eebd21a8003f3d32b88898d0f05434162b8a08e470088c0edd6",
+      "artifact_family_candidates": [
+        "named_object_theorem_or_convention"
+      ],
+      "artifact_family": "named_object_theorem_or_convention",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "theorem"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66f0f65fd23ed0ac5f43b260",
+      "category": "Other",
+      "raw_subject": "Oceanography",
+      "question_sha256": "b9a1435d9bf89b6e11f51d690bbae951d09d0d060c15f2f534e9d0135ef3bcdb",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66f1bc99f8bb4425f74e42a5",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "0e98efcab1a5923021a764a91626e86e39d0a1de69c3f98f6a3fe6d2dadc2659",
+      "artifact_family_candidates": [
+        "optimization_or_bound"
+      ],
+      "artifact_family": "optimization_or_bound",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "bound",
+        "upper bound"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66f87ab781a069162c8e7cd2",
+      "category": "Chemistry",
+      "raw_subject": "Chemistry",
+      "question_sha256": "b8689ba0ec6a6f125499bdfa8f6de5a0c121d38dc5c485bf4cbaf35e7c851f80",
+      "artifact_family_candidates": [
+        "spectrum_eigenvalue_or_mode",
+        "optimization_or_bound"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "optimize",
+        "spectrum"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66f9a1ed4f798b651f6d3c8e",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "5219c09a5727998a1af7f589349affa57fcbf461492388f5d322e32163799ae7",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law"
+      ],
+      "artifact_family": "asymptotic_or_scaling_law",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "asymptotic"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66f9aac10b5d5283ffc39014",
+      "category": "Math",
+      "raw_subject": "Graph Theory",
+      "question_sha256": "a0152f2a81924788c9b8d8b1691fd1396fb6a2727fcf17facdc3c58132c3a5e6",
+      "artifact_family_candidates": [
+        "named_object_theorem_or_convention"
+      ],
+      "artifact_family": "named_object_theorem_or_convention",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "law",
+        "theorem"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66fc49ef5067ff35e6302b7f",
+      "category": "Engineering",
+      "raw_subject": "Mechanical Engineering",
+      "question_sha256": "07f95933270b54da175a2b0e31096ccc9bb804daa2263b918f31ada4546ebe0e",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66fc8353c9752085eff2c8c0",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "dc57bc524245c1ec04f037a18e5a09a5e95f486b539a587452fae57d4db34d4f",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66fc89ce455038a48ed359e4",
+      "category": "Biology/Medicine",
+      "raw_subject": "Theoretical Biology",
+      "question_sha256": "1cd7da94396b90553db0bfe58703f340591259391f7023fce6364152ee57dfda",
+      "artifact_family_candidates": [
+        "optimization_or_bound"
+      ],
+      "artifact_family": "optimization_or_bound",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "maximize"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66fcfe789608881c6aecde88",
+      "category": "Computer Science/AI",
+      "raw_subject": "Computer Science",
+      "question_sha256": "e8fbec37d02e770183a6e46354795074fdfba0e178c85b6c933b10651924a701",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66fd758e29f96fd9d054df43",
+      "category": "Engineering",
+      "raw_subject": "Electrical Engineering",
+      "question_sha256": "8eebc7ef987f78217ce50932ee6dd5e31b65d35843d105c018f11583c89be253",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66fda7a057cea4445778e88a",
+      "category": "Biology/Medicine",
+      "raw_subject": "Biology",
+      "question_sha256": "eed32e6bdf14cb0cd2d2dfb49630c8b689a1cf363aebdfce06ab367af8979dc2",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66fe97540fe93ab7e9405c9b",
+      "category": "Chemistry",
+      "raw_subject": "Chemistry",
+      "question_sha256": "f9d0b8e7e69bd6938528aaf192770b7b8f572d7adb9efabd7e560ebcc5eb8e99",
+      "artifact_family_candidates": [
+        "spectrum_eigenvalue_or_mode"
+      ],
+      "artifact_family": "spectrum_eigenvalue_or_mode",
+      "subdomain_candidates": [
+        "dynamical_systems"
+      ],
+      "subdomain": "dynamical_systems",
+      "indicators": [
+        "spectrum"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66fec7825e6051260840e060",
+      "category": "Chemistry",
+      "raw_subject": "Chemistry",
+      "question_sha256": "914d230d4fa87a503f50009cfbe9d9378b88a1e1da5684d861ae2b760dcef05c",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66ff44de2cfec1499ea021dd",
+      "category": "Math",
+      "raw_subject": "Applied Mathematics",
+      "question_sha256": "ebc4c4a759ac76ffeabf3e0ca412e31346c895c8f1c0d4adb5078bf50c388edb",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "670130313d571f9c39e1bea1",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "aaf7891c8f4d81b103e03afd7e5fcaf5df09ea707db27d462c9923eb9b9983fb",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6701d2675f6691877f264511",
+      "category": "Other",
+      "raw_subject": "Games",
+      "question_sha256": "8f1fb2b3a73a84e495578c7072bc7fdb6e1ba36ecf4a1c870b84b13cc3cd45c8",
+      "artifact_family_candidates": [
+        "named_object_theorem_or_convention"
+      ],
+      "artifact_family": "named_object_theorem_or_convention",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "definition"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6709a557139851f6bbbd7a5a",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Law",
+      "question_sha256": "5548e1f1228c288babb13ff09e3235bc7f3a0b92ef5eaa84156f84263897fd07",
+      "artifact_family_candidates": [
+        "named_object_theorem_or_convention",
+        "specialist_factual_target"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "law",
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "670a2a076973040cfd5994a7",
+      "category": "Other",
+      "raw_subject": "Trivia",
+      "question_sha256": "d050ef096e981b9c4e1811683c037eb244619261ceeb8491211f755e2df05a55",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "670e88d674a7c40e93dd1a5c",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "7c6e392605304af5aed596c20c8892726f1d2500c1b8bc6e120beeb52d059532",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "model"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "670f289fb671096a201efee4",
+      "category": "Biology/Medicine",
+      "raw_subject": "Biochemistry",
+      "question_sha256": "4f5a5422c75818b228a53337b75b97e5ab11aff460d41f1a3da6251522c984fc",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "670f4501dfe615f3d2f7436e",
+      "category": "Biology/Medicine",
+      "raw_subject": "Bioengineering",
+      "question_sha256": "594a5ac5e7aa6981f891159bcbb56779403f5dcc2bff889b745055e5e5507162",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6711e5e05e64a53ed09449fd",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Economics",
+      "question_sha256": "118a0aa8eb4ff6d2c084aeb34732a5d399e9c87034d7cab389a02dd8420cde09",
+      "artifact_family_candidates": [
+        "optimization_or_bound"
+      ],
+      "artifact_family": "optimization_or_bound",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "maximize"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6713e7a2ab68083faeb3fc70",
+      "category": "Engineering",
+      "raw_subject": "Calculus Engineering",
+      "question_sha256": "ee610379f53348ddc6599e6573c5bbb8bb5b1b29fced2263a92be51dfd993785",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67155ca2675b57d8bbc9144d",
+      "category": "Biology/Medicine",
+      "raw_subject": "Biochemistry",
+      "question_sha256": "fada5752c99ce05cc85f08d385ee330bb7a2f065b3a8a8a5b708232328b7f1c3",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "process"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6715f373a35b028a9e88c09f",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "5f70623b5437f67290f1cc93ecffae0e4079445364cdf2cd60d917dafa69aae5",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law"
+      ],
+      "artifact_family": "asymptotic_or_scaling_law",
+      "subdomain_candidates": [
+        "continuum_mechanics"
+      ],
+      "subdomain": "continuum_mechanics",
+      "indicators": [
+        "limit"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671641166bc44542da778ccf",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "73b61dba015374465e3d2fba8b60a565aa3ac18f9297df777f5cefbddd2776e9",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law"
+      ],
+      "artifact_family": "asymptotic_or_scaling_law",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "asymptotic"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6716e28929a01505aba1ddb5",
+      "category": "Biology/Medicine",
+      "raw_subject": "Biochemistry",
+      "question_sha256": "576c6454eac72020aeaf38f44ca41ce0290d62095ef57ad0845212082a35de76",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67171c0c49297038d6740a23",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "e1d02cfa919b8a349252528fc5f7897c4502f08dcf4242223a6582e786123f21",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671746ad21eec7fde8de4026",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "1d830aa92bc636fbd54e8f6704cdf7a0b407c658aa5335873b114bd47afa85bf",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6717dd20e8666ff79cdd82af",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "78e0aa9436a759f101a40ae00e9ae65668c2e07d3605e50b9513110f97c30344",
+      "artifact_family_candidates": [
+        "named_object_theorem_or_convention"
+      ],
+      "artifact_family": "named_object_theorem_or_convention",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "named"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671808958b88f01935b5825a",
+      "category": "Chemistry",
+      "raw_subject": "Chemistry",
+      "question_sha256": "4310ad8550c2b6ad56ddd6c74a0e8cb0bef2056a10055135f09546231ff835c1",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "process"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6718b6f8f879f9699ffd3fbf",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "4007f2829adf3603b838b964119ac82f336bca34f8ada57c3f563227da15e8e9",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law"
+      ],
+      "artifact_family": "asymptotic_or_scaling_law",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "order of"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6719e946a81614142be02bec",
+      "category": "Biology/Medicine",
+      "raw_subject": "Environmental Contamination",
+      "question_sha256": "8fc347b9cae6f786594eb01c172f8c94dd2eebf13af4dc3a64b0bcfc29582d1a",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671ac42e34dde826ba049e63",
+      "category": "Engineering",
+      "raw_subject": "Materials Science",
+      "question_sha256": "88f0cf1d77a48cb47914005fee2adcfd8b20f17836dda99c2bcc2da1119ecc91",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [
+        "relativity"
+      ],
+      "subdomain": "relativity",
+      "indicators": [
+        "mechanism"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671ad72c9fdc33c08a784b3a",
+      "category": "Biology/Medicine",
+      "raw_subject": "Computational Biology",
+      "question_sha256": "5c01401c0dcb65c645fd9d95a558a2ef1d70ba38548927be2a29d69a785b5d64",
+      "artifact_family_candidates": [
+        "optimization_or_bound",
+        "specialist_factual_target"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "identify",
+        "maximize"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671ba7b447e34cf4ed747b30",
+      "category": "Engineering",
+      "raw_subject": "Mechanical Engineering",
+      "question_sha256": "540c19036b775ab92b22858846cc1a7eae7cea66d371cda7897b6d9575db53ba",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671d91bcad7fb0793a0e93bd",
+      "category": "Chemistry",
+      "raw_subject": "Chemistry",
+      "question_sha256": "32ce93788ffd3246cac45ffd2adeb3736fd143b587f4741285bb9b3b4c2fd604",
+      "artifact_family_candidates": [
+        "spectrum_eigenvalue_or_mode"
+      ],
+      "artifact_family": "spectrum_eigenvalue_or_mode",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "mode",
+        "spectrum"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671dea179a50e5f7394157de",
+      "category": "Biology/Medicine",
+      "raw_subject": "Medicine",
+      "question_sha256": "9437de37a1e82ac3a4be5a6c3662534d28f31b0a0e0da216f7993c339a731312",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671e4ade104e72d40d15ae51",
+      "category": "Chemistry",
+      "raw_subject": "Chemistry",
+      "question_sha256": "4fcee49f6421942646df24765f633675b017e3fcaa4bb8c20232f77030772128",
+      "artifact_family_candidates": [
+        "spectrum_eigenvalue_or_mode"
+      ],
+      "artifact_family": "spectrum_eigenvalue_or_mode",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "spectrum"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671eeb53c1a668a6c81e5993",
+      "category": "Engineering",
+      "raw_subject": "Electrical Engineering",
+      "question_sha256": "ff14fa53b40678ba06e432f2ca0018855459fdae7c933b4acd57158f815d7a66",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671f07b1d0f22fd6e50482e7",
+      "category": "Engineering",
+      "raw_subject": "Electrical Engineering",
+      "question_sha256": "d07169b3246111df68ac8d63130390e3d4fb45a45842a5a6dbeb8048d87a7271",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [
+        "relativity"
+      ],
+      "subdomain": "relativity",
+      "indicators": [
+        "model"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671f09d6d0f22fd6e50482eb",
+      "category": "Biology/Medicine",
+      "raw_subject": "Biology",
+      "question_sha256": "c429a9c589101996664ff130c0ca9ddde0dd717a0808bc13f1742dace4467b3f",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671f0b0c7301fac39660e7a3",
+      "category": "Engineering",
+      "raw_subject": "Electrical Engineering",
+      "question_sha256": "38f5800570d27cac9fa169bd6196b15b735575172f40b2e8a09dc629a84c2e68",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671f1f0bb0b665acec70c3aa",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "c4fa7a32de2769f7e6f4e7bc5bbcc04d161bd727150cc0e27e618bb544191da8",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671f584591addf76ff2eb254",
+      "category": "Biology/Medicine",
+      "raw_subject": "Medicine",
+      "question_sha256": "a4810d33aa8e939b30ee0c0c743b2873d587c27922f9702d54c8d6788807474b",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671f5ef82709f18025c61f15",
+      "category": "Biology/Medicine",
+      "raw_subject": "Medicine",
+      "question_sha256": "ac074af965890efa25ca5169b6c5879a71b859b738006bdbe2b0229d244bc0f3",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671f6889490be3e9a159f485",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "9ab5bb8f8386ff0171d5a52b8b02d4452e3c7abdce0a579d520289dc00ddd318",
+      "artifact_family_candidates": [
+        "prove_or_derive_relation",
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "derive",
+        "model"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671fb909298c0d11670fc56b",
+      "category": "Chemistry",
+      "raw_subject": "Chemistry",
+      "question_sha256": "bf0d126c02b7280eb23c94641c7c0c7a27bf8ad89b36967180dfe53874e21b70",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671fee575a0f70920ad3bd80",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Law",
+      "question_sha256": "b6a4905f06bc7703488703b55fcc4ca2d4ac8630656616c7c5aa664fc70c061d",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6720449622c03e062e242dd2",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "c15b75aa2316dcf32d4fcae0d49e66f991a9ebce0209213ce5f7d1adb3df7f18",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672065f65681ce2b6f5a08a0",
+      "category": "Computer Science/AI",
+      "raw_subject": "Computer Science",
+      "question_sha256": "3158663871927b7a0f3a267a78ad55563e4268c65a65411d74fa6731a302e181",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law",
+        "optimization_or_bound",
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "bound",
+        "model",
+        "scaling"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67208aa0563d776c82113daa",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "dd22328a43f418663862a88d4d8a98ce4a427b3d3d5a373b0514e3ab9d646a82",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6720a7b54f57949fff72b9f3",
+      "category": "Computer Science/AI",
+      "raw_subject": "Data Science",
+      "question_sha256": "30d0460e46e015e93b74970c6f4bf08f052b86f9f8010d10a403a2211813fbc8",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "model"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6720c0cd083a628a849fcb51",
+      "category": "Other",
+      "raw_subject": "Classical Ballet",
+      "question_sha256": "037f586738da6da3e94d2e2edf67150140fb5028fc2e74003b4e59bd8d502d9a",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6720c10ac6e0d9a4953b636f",
+      "category": "Physics",
+      "raw_subject": "Acoustics",
+      "question_sha256": "d6ab2e8a51adf4e21b51f94ece1c375d5844fa9702f8f0fd18fb972b4836f85c",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6720e184a9e1d1cc990cc8e9",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "8b2a623e0f7f3c6e81bbd1a087712fc5295fd12f77fdb57498ed365a245d8a66",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6720fda3febecf1a8b9b083d",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "460640154763f0bf76d6a165058e7a6f9b5f9df41ccdbdedd27b195ef8440eb1",
+      "artifact_family_candidates": [
+        "named_object_theorem_or_convention"
+      ],
+      "artifact_family": "named_object_theorem_or_convention",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "principle"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67218f865b0747ce2231d48c",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "4bb358dc4c844f17c1532427cc84ca777ab43b048032d9f1149e252236d44f09",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6722728827542064f9b14815",
+      "category": "Engineering",
+      "raw_subject": "Materials Science",
+      "question_sha256": "caab022f375a1ff5f3f1b424012e693e8e7b4d43ddcc5644154932d568a9d0f9",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [
+        "dynamical_systems"
+      ],
+      "subdomain": "dynamical_systems",
+      "indicators": [
+        "process"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672295eda223ce4156c54839",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "aa909d0c6de12a49b945b3f9725cda578ad7ab662d7e4f295ba8877cfa22db6f",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "mechanism"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672308e609910d09444df92a",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Law",
+      "question_sha256": "0a8b6f406d8268b7a6a35bf2572113b74794fd81af8c290ef189e56b0d84b1d2",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6723a99824c5cdbe41028a46",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "e61a6167d7324ec29bce0a371c961598e7976315a52862718107b76ca116d7b2",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6723ba00339572beba8f91b2",
+      "category": "Biology/Medicine",
+      "raw_subject": "Neuroscience",
+      "question_sha256": "e523da2fd4aa0283a87314385539e58dd076d2f4f92b5adc99f61badaeded327",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67241990a1bd6b06dafb7052",
+      "category": "Biology/Medicine",
+      "raw_subject": "Genetics",
+      "question_sha256": "32fb98062d13ffca798428b47435decf3f7d4b27c38ba5279836688b9e310e7e",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672423111ebc6d08d02c7f2d",
+      "category": "Engineering",
+      "raw_subject": "Biomedical Engineering",
+      "question_sha256": "f7f321f8f7bcfb9b2fcb17c5dd3f2ff82adabe2b59ab731114e63ecdf27140dc",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672455ce7a14971607e3d9f0",
+      "category": "Biology/Medicine",
+      "raw_subject": "Medicine",
+      "question_sha256": "eb8c23f0d25d020650f6afbf55a69bf214aaa899573cb757335574a41fbff548",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67252b9639b66386e0489e94",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Linguistics",
+      "question_sha256": "7a48b44e5f394967849eabe49c9e3e6e514ad5feb8a4b6c3fc5ed791c3d70078",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67252e6e825d7a6248383174",
+      "category": "Chemistry",
+      "raw_subject": "Chemistry",
+      "question_sha256": "f0b3055ff73be2b144f77fd4fa36052576cd1373148895bdb2fffb6a6e789df1",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67256b14ac4f9591b137e180",
+      "category": "Biology/Medicine",
+      "raw_subject": "Genetics",
+      "question_sha256": "6b7d07d5a3d4809ad940313ac75c9c067a212b6a07885c391efb0ccabee7fb1e",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67256e36e5e6cc87293fc3f0",
+      "category": "Biology/Medicine",
+      "raw_subject": "Microbiology",
+      "question_sha256": "a74735a3412f4a17089169a2ef3c57c2c993af8baf41830380df9f9e00f93730",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "identify"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67257fe9be53ed439b973ff9",
+      "category": "Biology/Medicine",
+      "raw_subject": "Genetics",
+      "question_sha256": "5557194263ed141899f809123360003ba3c6826f3dc43c41e5bfda14a1287e62",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "model"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67259a64572ac41765175909",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Economics",
+      "question_sha256": "c495d1be95466817d142ed569a9360f7789fe5da4120f2ccb2cad3ac677c4665",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6725adefc6537022833a1e04",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Law",
+      "question_sha256": "98642c36d0fd0d2124a862012bd5a518eca88bfbd03c73cb6d1341c59832f9ca",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6725c3719aac82ce9cf99f23",
+      "category": "Biology/Medicine",
+      "raw_subject": "Orthopedics",
+      "question_sha256": "9d67faee0634d4061ad837c8e2d94210c88be1665c96676b69d7965e6255dc5b",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6725e382086428ce4e2fa8d6",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "41db6929056f956be778203458e6070dbc1fbe9936907ef93a53ae33ceb20a90",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6725f64785e54acc9a6323ed",
+      "category": "Computer Science/AI",
+      "raw_subject": "Robotics",
+      "question_sha256": "061a0548a4b39adff2374e90d06c7e90bf087220a7b7c731145d0e2df40f2d3f",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67298280a5f43bd5a3870e14",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "ee77d64aa88c188995feefd981107ed70d1e304440ffe4b4197bd7ba63cc2c7f",
+      "artifact_family_candidates": [
+        "prove_or_derive_relation",
+        "specialist_factual_target"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "prove",
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672a5b4eefd96b7e660d8ea4",
+      "category": "Math",
+      "raw_subject": "Applied Mathematics",
+      "question_sha256": "9af567f266774130099c43bbaf848e7c4057f46cce8ecc7d349718034330e3b5",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672a79431629c5c3d6933ca7",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "5d09a53b4960ee49271349eae05117947ad53b04466f788bd03f1a827d770e6f",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672dde1a9a1f996a161fbd05",
+      "category": "Math",
+      "raw_subject": "Applied Mathematics",
+      "question_sha256": "43005f7d65300a22cf1eb519952ae3260c2be2d06bc56abcc2cb10998d26b812",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [
+        "dynamical_systems"
+      ],
+      "subdomain": "dynamical_systems",
+      "indicators": [
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672dfdac63f8d9211905d385",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "3262223a7ae5c60aaf89b4ca30362ad59580f447149681b21f4dd78b8487b243",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [
+        "field_theory"
+      ],
+      "subdomain": "field_theory",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672e09b50a85795d0ed2d36e",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "0393ac4708e7decac69a96e35906a40839091564060cdc8523cb850155530e9b",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law"
+      ],
+      "artifact_family": "asymptotic_or_scaling_law",
+      "subdomain_candidates": [
+        "analytical_mechanics",
+        "statistical_mechanics"
+      ],
+      "subdomain": "ambiguous",
+      "indicators": [
+        "limit"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672f7b4d4b45f2f295a386c5",
+      "category": "Other",
+      "raw_subject": "Chess",
+      "question_sha256": "fd9033df14cc511e4d7b30a3faa418651c2fe5a7da4eac8c8ac65e75f12ce463",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "identify"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672fadd93c2722c42adabef3",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "b96b222901f054ebe5e6fddcc6cf11cfd067827f45fb6860a06062bbc0f66b36",
+      "artifact_family_candidates": [
+        "spectrum_eigenvalue_or_mode"
+      ],
+      "artifact_family": "spectrum_eigenvalue_or_mode",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "spectral"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672fc00e13e5fbd332372f3f",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "aee0d643d6751515bc7004f7910e10ee7653d04d7422c6278b92a521d58e1847",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law",
+        "spectrum_eigenvalue_or_mode"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "asymptotic",
+        "spectrum"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672ff3458e51cc48e8cbb7fd",
+      "category": "Humanities/Social Science",
+      "raw_subject": "History",
+      "question_sha256": "85bc78b02efe578477dd05cf761d442c4d6ee65cb71715a1f3a7f70da142e1aa",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law",
+        "physical_phenomenon_or_model",
+        "specialist_factual_target"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "identify",
+        "model",
+        "order of",
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67325a61292f97f5175026dd",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "aaa133af8989fb3d9a307a40178aa3aecb73bf34ca27f1b3cebaa35316cd7ff1",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673497b017a9687889930ac4",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "ffffc3de6972a1117697ffa66d9dc2a95e2b14bd2e09b03867f13a3ccb4148d5",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [
+        "continuum_mechanics"
+      ],
+      "subdomain": "continuum_mechanics",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6734989917a9687889930ac9",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "f8a6847edab164ee894dd9c2f2a18983bc671ad35cbb9f061bb048835d6dded9",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6735bfec24a805ed5fc0d055",
+      "category": "Computer Science/AI",
+      "raw_subject": "Computer Science",
+      "question_sha256": "84d95f2811c806196aa97c37b8e3cfbaef4887e723543337985bfff443658b13",
+      "artifact_family_candidates": [
+        "named_object_theorem_or_convention"
+      ],
+      "artifact_family": "named_object_theorem_or_convention",
+      "subdomain_candidates": [
+        "mathematical_physics"
+      ],
+      "subdomain": "mathematical_physics",
+      "indicators": [
+        "definition"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673627bc10ec0a5f859365ce",
+      "category": "Computer Science/AI",
+      "raw_subject": "Computer Science",
+      "question_sha256": "92ba7620e07f82e0fb362e879711a1c562fc351f03e20b55aa775b06d202d874",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67364d570965d02f400bb6d2",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Law",
+      "question_sha256": "43ef10a95d076cfa91256dde7ac5aa47337d699e5590d2e7eab52782f6f91217",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model",
+        "specialist_factual_target"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "process",
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67366bc5b5eda7e01fa935c6",
+      "category": "Biology/Medicine",
+      "raw_subject": "Medicine",
+      "question_sha256": "bf910607f074a5fd67a7dff276e5a1e0bbdb8f5f3e7b629bcde7b5efd07113ef",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model",
+        "specialist_factual_target"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [
+        "dynamical_systems"
+      ],
+      "subdomain": "dynamical_systems",
+      "indicators": [
+        "process",
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6736bd0c2f3638e3bc109888",
+      "category": "Computer Science/AI",
+      "raw_subject": "Quantization Scheme",
+      "question_sha256": "56d1d1f0b01d277f8d83690093aac6572234e55a9118cbd7325abb1c0aec9d28",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6736cec9cad1584306eee714",
+      "category": "Humanities/Social Science",
+      "raw_subject": "History",
+      "question_sha256": "1c103cd987b422e4203b063983554475f1693cb0f5d7bf13272e8e30649a93bf",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6736e17253926b38af8c205e",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "e7a79da23f72cec340420fe04cf4fe4ded0919b37eed2d7bc334bc3d8e3473c5",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67370a26144baed9dcabbe11",
+      "category": "Engineering",
+      "raw_subject": "Mechanical Engineering",
+      "question_sha256": "e30bc9284203ac7700fab4f1b8e6e94814004457c0f54f928d37f5f0ce153179",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [
+        "continuum_mechanics"
+      ],
+      "subdomain": "continuum_mechanics",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67371496e04511118435d5a4",
+      "category": "Computer Science/AI",
+      "raw_subject": "Computer Science",
+      "question_sha256": "d9f38123015034c60ad98d9464ebfe5402aeca708d237c1c6fb80833c20c86a2",
+      "artifact_family_candidates": [
+        "named_object_theorem_or_convention"
+      ],
+      "artifact_family": "named_object_theorem_or_convention",
+      "subdomain_candidates": [
+        "mathematical_physics"
+      ],
+      "subdomain": "mathematical_physics",
+      "indicators": [
+        "definition"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67372089f362584fff2ae1f9",
+      "category": "Engineering",
+      "raw_subject": "Electrical Engineering",
+      "question_sha256": "6edc9981b9738df8c44ccf70f7b3c05a92bc537dbde88eee77e6d412cb57832b",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6737224020f2fc6d8d08075c",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Poetry",
+      "question_sha256": "fbc7ae55a45ffdb84df5851afe71dea1f5ca079803190514d759ee430e1056ab",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67373220a4d09488d430f640",
+      "category": "Computer Science/AI",
+      "raw_subject": "Computer Science",
+      "question_sha256": "19ae6cb1427a7cabd7f2d0c967becdabfb93e136723d49f6a24c7103ddb4f06f",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "identify"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6737328119fe786391fedd8a",
+      "category": "Computer Science/AI",
+      "raw_subject": "Computer Science",
+      "question_sha256": "8ed79a27750171e16614f2fabe304eb756cf4e3de5e39a6676952bf3cefd668a",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law",
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [
+        "statistical_mechanics"
+      ],
+      "subdomain": "statistical_mechanics",
+      "indicators": [
+        "model",
+        "scaling"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673797594656f5343e5d35db",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "6dfef375746e1461ea6bba7f3c6f5df478977b5c33c2a340f2e9d0113dc4c2bd",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6737d23a6a364decc45cc7ee",
+      "category": "Physics",
+      "raw_subject": "Astronomy",
+      "question_sha256": "122789e783d01802ef8396c2c58acf1635b34483311d8c9ddb8c4fc593494f8c",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67381812e4ea03183132a54e",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "46b8b513672cade2c9c67ecab09eaea9ae87a1723cbff3063fa8b52e3427c15d",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law",
+        "integral_or_differential_equation"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [
+        "relativity"
+      ],
+      "subdomain": "relativity",
+      "indicators": [
+        "integral",
+        "order of"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673819ece4ea03183132a556",
+      "category": "Engineering",
+      "raw_subject": "Materials Science",
+      "question_sha256": "3f347442efe4db8b774759cbb5ccfcf5066643a1dc52b3aebd14ab8a2286ac2b",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [
+        "continuum_mechanics"
+      ],
+      "subdomain": "continuum_mechanics",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67381f0835f9616e390e737a",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "d7b4c9a2fa65bdc53ecf429e17a881483d7f19986113a1920ccc4caaa162e986",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [
+        "relativity"
+      ],
+      "subdomain": "relativity",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67390213fc9dc4f5102ad835",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "8ce1a4de3881cc7612430f1f145b0f05c330ccf1a5a78047433fad433d9ca86b",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673909949318c3bbb1056f54",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "0e3f88a6c3a728a857eb344baf5220c4fd491a01bce7e06be9974ee2f08045e0",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6739674739118cf30f5f1075",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "7caad7a296518858b94c9d4a2a430cd30df6ddad03c28545c89c7fa68fb164cd",
+      "artifact_family_candidates": [
+        "dimensionless_parameter"
+      ],
+      "artifact_family": "dimensionless_parameter",
+      "subdomain_candidates": [
+        "continuum_mechanics"
+      ],
+      "subdomain": "continuum_mechanics",
+      "indicators": [
+        "mach number"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67398780bcaf1e028b8576a2",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "ac91cb093a720439c9b2df1332d7bd96a1a770aebe24eb3ebc645c9cafc93cb4",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [
+        "statistical_mechanics"
+      ],
+      "subdomain": "statistical_mechanics",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673a6a6c4c465c371379b670",
+      "category": "Biology/Medicine",
+      "raw_subject": "Biochemistry",
+      "question_sha256": "08c1baecc7c9dcaaac31ebad6a413f2f1f54c95ca255ac79c08fc7923d21d11a",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673a716a177d419c991c9f69",
+      "category": "Other",
+      "raw_subject": "Earth Science",
+      "question_sha256": "36c42be05da9643fb1b87bd5f6a0efd7f16f19eb0720745e20b5eb0500cb53a4",
+      "artifact_family_candidates": [
+        "named_object_theorem_or_convention"
+      ],
+      "artifact_family": "named_object_theorem_or_convention",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "law"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673a811139a72249939a6b6d",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "02289e18433f8a39e87f3bbc4cca57ca7d066bcf1965abea7fcd1150bd77e8ea",
+      "artifact_family_candidates": [
+        "integral_or_differential_equation"
+      ],
+      "artifact_family": "integral_or_differential_equation",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "integral"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673a92ad437529d472475406",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "9a7d5fc48f58f223fb92c48a61381f3c7d172cf6e2cfc4479476db82ea7b8e88",
+      "artifact_family_candidates": [
+        "spectrum_eigenvalue_or_mode",
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "eigenvalue",
+        "mechanism"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673ae99a3022b9e17f89d1b6",
+      "category": "Biology/Medicine",
+      "raw_subject": "Biophysics",
+      "question_sha256": "30f8e8b4bd8597903b8d96d77205badb73ed3de7a31df0f9c1cf911bd37270aa",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673cf4fe0a06bbe311425068",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "bb8af71f47b71d35996901440eb8c343aab111d141bd5261570dcc4622ff314c",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673f8ff088d617494f21e0d2",
+      "category": "Physics",
+      "raw_subject": "Physics",
+      "question_sha256": "5465b8a23a6a79103aff81e11c1036f001101d81ea9696c93639deea95a1e4e5",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "675b84caa03d8b4e391dcc88",
+      "category": "Biology/Medicine",
+      "raw_subject": "Biology",
+      "question_sha256": "23f5bca43790672a5f884965487f9ae06fd8a3e5deace211f96944bfcca3124b",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "675d7b901ded33d59eb2c94f",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "75cd29e7fab9274b606f07d1ed8d4ef8f27cca7b444a32cd8d469c662b7f66c2",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [
+        "relativity"
+      ],
+      "subdomain": "relativity",
+      "indicators": [
+        "model"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67709ba48b0ca9dcee5572b8",
+      "category": "Math",
+      "raw_subject": "Mathematics",
+      "question_sha256": "70fd02ed2e89e2e6e71bdf57ce5bdce175f988f6edbf090697cf85a8d3ef71c1",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6782d9482eeb133480ec3268",
+      "category": "Biology/Medicine",
+      "raw_subject": "Medicine",
+      "question_sha256": "465f26596f9c31ff6d6e17c2432ecd4c49d46592401e33f993a1852721d0ee62",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [
+        "continuum_mechanics"
+      ],
+      "subdomain": "continuum_mechanics",
+      "indicators": [
+        "mechanism"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67833c10f5a1ca415084accd",
+      "category": "Chemistry",
+      "raw_subject": "Chemistry",
+      "question_sha256": "14835ba86fd621d7dc0c0a1e7fc7ba1250fa81dccd4438a9d83fb0ddbb057077",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "678fbf931413486f7dc2a7f1",
+      "category": "Humanities/Social Science",
+      "raw_subject": "English Literature",
+      "question_sha256": "87c07a3ba7dfc3d30564e114dfef4cc3d30e710d4ad1bceed477538b18f22776",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "identify",
+        "who"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "674c4930f8787d3114abcdd0",
+      "category": "Humanities/Social Science",
+      "raw_subject": "Historical Studies",
+      "question_sha256": "6661bb8a7d66704568edf61ae3a898a2885b6ad8ee10e0236f00b33db9b122eb",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6723bea21dd204907be142ee",
+      "category": "Math",
+      "raw_subject": "Advanced Multi-Equation Systems",
+      "question_sha256": "3867b36e32b9b06d19084ef481dcb7fb5e9e57603c56b6b99eab50f45caeb195",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "671be6027aa97b5c9f77d90e",
+      "category": "Chemistry",
+      "raw_subject": "Combined Chemistry And Trivia",
+      "question_sha256": "5f5f8f4374c2703bc7923328db4378769ce8f6104d6d5e1395071aab1438dd84",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "676d64b87016c143f4d10eca",
+      "category": "Engineering",
+      "raw_subject": "Engineering Physics",
+      "question_sha256": "546d092bf0dc5ad3cb18bbb27f52a77b347205e1a99df6913d16ea2eef39f87a",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67aa35520fe6cda9046f7f54",
+      "category": "Chemistry",
+      "raw_subject": "Chemistry",
+      "question_sha256": "6bedab509db44221a9870dd5d3e7a7e1f6dd44ad2bc91e53279215a1dc2dfef3",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "identify"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66ec5131c583351821bff661",
+      "category": "Engineering",
+      "raw_subject": "Chemical Engineering",
+      "question_sha256": "8a72f0ff12e83f2f997bc0d1f2195825d92adbe620be0899795d35bcee2e8c09",
+      "artifact_family_candidates": [
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "physical_phenomenon_or_model",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "process"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672635d88217be904f5899ed",
+      "category": "Physics",
+      "raw_subject": "Foremost Quantum: Particle Physics",
+      "question_sha256": "e765b35ecf600cdfb948d61bc4f3f70371d283bb0de4ee3d816a35a9d345e7a0",
+      "artifact_family_candidates": [
+        "asymptotic_or_scaling_law",
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [
+        "quantum_mechanics",
+        "field_theory"
+      ],
+      "subdomain": "ambiguous",
+      "indicators": [
+        "limit",
+        "process"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "672f7ddd281b45ba7e99346d",
+      "category": "Math",
+      "raw_subject": "Mathematical Physics: Functional Equations",
+      "question_sha256": "ce92b9ca33433fa16ce9fef6d81b7330736d2b254b16e1e7a8f94b9d0175f326",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66ec877286c7331c303480f5",
+      "category": "Physics",
+      "raw_subject": "Foremost Quantum: Particle Physics",
+      "question_sha256": "4513ec0c256fde7e92b5f6e13044a5f68ef299a3d40245ea202ffa557290bc82",
+      "artifact_family_candidates": [
+        "spectrum_eigenvalue_or_mode",
+        "specialist_factual_target"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "identify",
+        "mode"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67325d2d189b1ffa84c76d55",
+      "category": "Math",
+      "raw_subject": "Advanced Multi-Equation Systems",
+      "question_sha256": "7537a1552944fbf6eac533fff86e808d80da87536320870ebcc403685001a553",
+      "artifact_family_candidates": [
+        "integral_or_differential_equation"
+      ],
+      "artifact_family": "integral_or_differential_equation",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "integral"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "676f30b2c0f9a20a47cd3211",
+      "category": "Engineering",
+      "raw_subject": "Chemical Engineering",
+      "question_sha256": "44bf8a7af54dd3fb5a39975a134059463b9ef24bc34eb8c0537d1fae7f154a04",
+      "artifact_family_candidates": [
+        "integral_or_differential_equation",
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [
+        "mathematical_physics"
+      ],
+      "subdomain": "mathematical_physics",
+      "indicators": [
+        "partial differential",
+        "process"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6723f0166f89b8c177612dd7",
+      "category": "Math",
+      "raw_subject": "Advanced Multi-Equation Systems",
+      "question_sha256": "89e067e0d96c7f627b0f74d470c04e74f8359d3c3e818418c89da2a3389d9b60",
+      "artifact_family_candidates": [
+        "integral_or_differential_equation",
+        "physical_phenomenon_or_model"
+      ],
+      "artifact_family": "ambiguous",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "derivative",
+        "process"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "673f22056258608e572cc2a2",
+      "category": "Physics",
+      "raw_subject": "Quantum And Classical Physics Combined",
+      "question_sha256": "d88706fb70ab1690123e21afab2928f9716c475b7463f1cb7b4133d18c9fa167",
+      "artifact_family_candidates": [
+        "integral_or_differential_equation"
+      ],
+      "artifact_family": "integral_or_differential_equation",
+      "subdomain_candidates": [
+        "continuum_mechanics",
+        "quantum_mechanics"
+      ],
+      "subdomain": "ambiguous",
+      "indicators": [
+        "derivative"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "670be48d7038d6936230870a",
+      "category": "Physics",
+      "raw_subject": "Classical Physics",
+      "question_sha256": "0365f123b45387fc78f1376d544dffb834844f702cf9794be1e2beecc05eecba",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66eddc58fcc3c877643b5f39",
+      "category": "Physics",
+      "raw_subject": "Mathematical Physics: Odes",
+      "question_sha256": "020290db8f887ffeab1e8718e8569486344ebd43e800fd3c5cd4266c9cf8017c",
+      "artifact_family_candidates": [
+        "integral_or_differential_equation"
+      ],
+      "artifact_family": "integral_or_differential_equation",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "differential equation"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "67339e9c25c864e84bf1a351",
+      "category": "Math",
+      "raw_subject": "Mathematical Physics: Pdes",
+      "question_sha256": "63526737e13f53e8f5751a23f69363013873c3baf92e2abcc6451c4d3c783054",
+      "artifact_family_candidates": [
+        "optimization_or_bound"
+      ],
+      "artifact_family": "optimization_or_bound",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "bound",
+        "upper bound"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "6771217e251029ed2eca577a",
+      "category": "Engineering",
+      "raw_subject": "Chemical Engineering",
+      "question_sha256": "21f59d355f3a12a59db39de4e2bf09b73d6493c8681d66b7028100d7bab5c19f",
+      "artifact_family_candidates": [
+        "specialist_factual_target"
+      ],
+      "artifact_family": "specialist_factual_target",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [
+        "identify"
+      ],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66ec2799da20d530acf3bf1e",
+      "category": "Physics",
+      "raw_subject": "Quantum Physics",
+      "question_sha256": "8dd372d85ce28e5619c1153f4c475b91453a72e17df10867b2a7ad83919131c2",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [],
+      "subdomain": "unclassified",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    },
+    {
+      "id": "66eaee084f8d520f598dbf14",
+      "category": "Physics",
+      "raw_subject": "Astronomy",
+      "question_sha256": "c4a62fa0939ec25a4e5de625ce8f8ea2936d280ec429d745b4aa763cfc2209a0",
+      "artifact_family_candidates": [],
+      "artifact_family": "unclassified",
+      "subdomain_candidates": [
+        "quantum_mechanics",
+        "relativity"
+      ],
+      "subdomain": "ambiguous",
+      "indicators": [],
+      "first_failing_gate": "target_not_groundable"
+    }
+  ],
+  "method": "diagnostic audit of Phase 39 mechanics-signal target-not-groundable cases; lexical indicators are preserved as candidates and never authorize execution"
+}

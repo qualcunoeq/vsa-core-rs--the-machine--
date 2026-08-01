@@ -30,6 +30,7 @@ pub mod long_horizon;
 pub mod law_bridge;
 pub mod law_grounding;
 pub mod classical_mechanics_pack;
+pub mod mechanics_situation;
 pub mod independent_env;
 pub mod natural_ingest;
 pub mod shifted_ingest;

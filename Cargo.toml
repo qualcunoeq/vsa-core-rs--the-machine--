@@ -120,6 +120,10 @@ name = "hle_classical_mechanics_shadow"
 path = "src/bin/hle_classical_mechanics_shadow.rs"
 
 [[bin]]
+name = "mechanics_situation_bench"
+path = "src/bin/mechanics_situation_bench.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

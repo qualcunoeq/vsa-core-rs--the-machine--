@@ -1,0 +1,400 @@
+{
+  "schema_version": "phase43.hle.equation.binding.audit.v1",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "law_report_sha256": "9fbe52a26b378c16e858bca75ca2835b5339aae5c31602e068b446205956c0ed",
+  "audited_cases": 11,
+  "primitive_counts": {
+    "bind_coupled_constraints": 2,
+    "bind_indices_functions_or_domains": 4,
+    "bind_local_symbols_to_typed_values": 11,
+    "bind_requested_unknown": 11,
+    "propagate_assumptions_and_validity": 5
+  },
+  "method_family_counts": {
+    "functional_inequality_constant": 1,
+    "integer_identity_solution": 1,
+    "nonlocal_pde_bound": 1,
+    "parametric_regression_fit": 2,
+    "specialist_domain_method": 5,
+    "statistical_response_derivation": 1
+  },
+  "reusable_bridge_primitives": [
+    "bind_local_symbols_to_typed_values",
+    "bind_requested_unknown"
+  ],
+  "coherent_method_families": [
+    "parametric_regression_fit",
+    "specialist_domain_method"
+  ],
+  "outcome_counts": {
+    "specialist_singleton": 9,
+    "two_case_method_candidate": 2
+  },
+  "cases": [
+    {
+      "id": "66e94a88b78e263c565b17ee",
+      "question_sha256": "78fb03001df4eb0fcb7125540888c0b13513da5ecf7fae79591cb5a73abd8b2f",
+      "input_representation": "topological_classification",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "y",
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "q",
+        "r",
+        "v",
+        "u"
+      ],
+      "invariants": [],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "external specialist assumptions may be required"
+      ],
+      "primitive_operations": [
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown"
+      ],
+      "method_family": "specialist_domain_method",
+      "bridge_signature": "topological_classification::bind_local_symbols::bind_requested_unknown",
+      "outcome": "specialist_singleton"
+    },
+    {
+      "id": "67153bd7f588f3f15b038f5b",
+      "question_sha256": "30cdcca045c62fa5fa99cd19c006eeb6d1db7059770316289ca7b502381d31b0",
+      "input_representation": "statistical_model_equation",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "x",
+        "y",
+        "z",
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "q",
+        "r",
+        "v",
+        "u",
+        "sigma"
+      ],
+      "invariants": [],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "external specialist assumptions may be required"
+      ],
+      "primitive_operations": [
+        "bind_indices_functions_or_domains",
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown"
+      ],
+      "method_family": "statistical_response_derivation",
+      "bridge_signature": "statistical_model_equation::bind_local_symbols::bind_requested_unknown",
+      "outcome": "specialist_singleton"
+    },
+    {
+      "id": "6717eeddd6c14a5dd1563e7c",
+      "question_sha256": "26f2d08fb3638ab03918bc31f5c24c56b6025fc52bdc3dfe77e9673364f6e356",
+      "input_representation": "graph_invariant",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "z",
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "q",
+        "r",
+        "v",
+        "u"
+      ],
+      "invariants": [],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "external specialist assumptions may be required"
+      ],
+      "primitive_operations": [
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown"
+      ],
+      "method_family": "specialist_domain_method",
+      "bridge_signature": "graph_invariant::bind_local_symbols::bind_requested_unknown",
+      "outcome": "specialist_singleton"
+    },
+    {
+      "id": "671d16bf60ad0fe6d2494177",
+      "question_sha256": "974e13deb93b906947ea1fa50faaf369a655f4c496f2e9b3b765be22620bd1cd",
+      "input_representation": "functional_inequality",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "y",
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "r",
+        "v",
+        "u"
+      ],
+      "invariants": [
+        "periodicity/domain condition"
+      ],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "reject when stated assumptions or validity conditions are unsatisfied"
+      ],
+      "primitive_operations": [
+        "bind_coupled_constraints",
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown",
+        "propagate_assumptions_and_validity"
+      ],
+      "method_family": "functional_inequality_constant",
+      "bridge_signature": "functional_inequality::bind_local_symbols::bind_requested_unknown",
+      "outcome": "specialist_singleton"
+    },
+    {
+      "id": "671faf8171f6aa7bd1e604cd",
+      "question_sha256": "1ed35317a34d9e0bae7618292153d10326d102cb85caaccc33bdaef63f7b82ea",
+      "input_representation": "electromagnetic_field_equation",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "x",
+        "y",
+        "z",
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "q",
+        "r",
+        "v",
+        "u",
+        "theta",
+        "mu"
+      ],
+      "invariants": [],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "external specialist assumptions may be required"
+      ],
+      "primitive_operations": [
+        "bind_coupled_constraints",
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown"
+      ],
+      "method_family": "specialist_domain_method",
+      "bridge_signature": "electromagnetic_field_equation::bind_local_symbols::bind_requested_unknown",
+      "outcome": "specialist_singleton"
+    },
+    {
+      "id": "6726f1f73958e8253ed79aed",
+      "question_sha256": "a36b7f97f46aec3dcc3158ee5ef3f98ea232a115a1ad05795168da125296d43a",
+      "input_representation": "nonlocal_pde",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "x",
+        "y",
+        "z",
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "q",
+        "r",
+        "v",
+        "u"
+      ],
+      "invariants": [
+        "explicit assumption",
+        "explicit supposition"
+      ],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "reject when stated assumptions or validity conditions are unsatisfied"
+      ],
+      "primitive_operations": [
+        "bind_indices_functions_or_domains",
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown",
+        "propagate_assumptions_and_validity"
+      ],
+      "method_family": "nonlocal_pde_bound",
+      "bridge_signature": "nonlocal_pde::bind_local_symbols::bind_requested_unknown",
+      "outcome": "specialist_singleton"
+    },
+    {
+      "id": "6728696b7c5ceb52207dc9d8",
+      "question_sha256": "c8c0e144fbc8bac7b67078d74c7a3d2d6823547c7db41e506a68fa92b78e7618",
+      "input_representation": "number_theoretic_identity",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "q",
+        "r",
+        "v",
+        "u"
+      ],
+      "invariants": [
+        "given condition"
+      ],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "reject when stated assumptions or validity conditions are unsatisfied"
+      ],
+      "primitive_operations": [
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown",
+        "propagate_assumptions_and_validity"
+      ],
+      "method_family": "integer_identity_solution",
+      "bridge_signature": "number_theoretic_identity::bind_local_symbols::bind_requested_unknown",
+      "outcome": "specialist_singleton"
+    },
+    {
+      "id": "673a36b569a009bd25ec1a74",
+      "question_sha256": "42b16b202b45c4450d52bc2fb230630f1da886aec7311c4a314c0999273e23d9",
+      "input_representation": "parametric_regression_data",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "x",
+        "y",
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "q",
+        "r",
+        "v",
+        "u"
+      ],
+      "invariants": [
+        "least-squares objective and parsimony criterion"
+      ],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "reject when stated assumptions or validity conditions are unsatisfied"
+      ],
+      "primitive_operations": [
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown",
+        "propagate_assumptions_and_validity"
+      ],
+      "method_family": "parametric_regression_fit",
+      "bridge_signature": "parametric_regression_data::bind_local_symbols::bind_requested_unknown",
+      "outcome": "two_case_method_candidate"
+    },
+    {
+      "id": "673a8ff77acc7cdc8c824b62",
+      "question_sha256": "8b1e8119a76262dff8f28c36548e8ba39470386ef453a61bdb633990e692bac6",
+      "input_representation": "number_theoretic_identity",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "x",
+        "y",
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "r",
+        "v",
+        "u"
+      ],
+      "invariants": [],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "external specialist assumptions may be required"
+      ],
+      "primitive_operations": [
+        "bind_indices_functions_or_domains",
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown"
+      ],
+      "method_family": "specialist_domain_method",
+      "bridge_signature": "number_theoretic_identity::bind_local_symbols::bind_requested_unknown",
+      "outcome": "specialist_singleton"
+    },
+    {
+      "id": "67527ef6de72021d846a7a75",
+      "question_sha256": "ee0dfbb42f9dd9064177347097fe029a555f4bc7916fb91831658a06e886b6ae",
+      "input_representation": "parametric_regression_data",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "x",
+        "y",
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "q",
+        "r",
+        "v",
+        "u"
+      ],
+      "invariants": [
+        "least-squares objective and parsimony criterion"
+      ],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "reject when stated assumptions or validity conditions are unsatisfied"
+      ],
+      "primitive_operations": [
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown",
+        "propagate_assumptions_and_validity"
+      ],
+      "method_family": "parametric_regression_fit",
+      "bridge_signature": "parametric_regression_data::bind_local_symbols::bind_requested_unknown",
+      "outcome": "two_case_method_candidate"
+    },
+    {
+      "id": "676d5438cd83de685f85ed0e",
+      "question_sha256": "68eb30943c4cad2badd8b4e244f66b083bb44cedae17039aa22801ad93ffb8ac",
+      "input_representation": "matrix_model_partition_function",
+      "requested_output": "scalar_or_structured_value",
+      "required_bindings": [
+        "x",
+        "y",
+        "z",
+        "t",
+        "n",
+        "m",
+        "d",
+        "p",
+        "q",
+        "r",
+        "v",
+        "u",
+        "lambda"
+      ],
+      "invariants": [],
+      "ambiguity_rejection_boundaries": [
+        "reject unresolved target or missing symbol binding",
+        "external specialist assumptions may be required"
+      ],
+      "primitive_operations": [
+        "bind_indices_functions_or_domains",
+        "bind_local_symbols_to_typed_values",
+        "bind_requested_unknown"
+      ],
+      "method_family": "specialist_domain_method",
+      "bridge_signature": "matrix_model_partition_function::bind_local_symbols::bind_requested_unknown",
+      "outcome": "specialist_singleton"
+    }
+  ],
+  "method": "primitive-level audit of the 11 scalar equation-binding candidates; no execution, external retrieval, or promotion"
+}

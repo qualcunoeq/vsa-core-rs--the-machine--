@@ -1,0 +1,6604 @@
+{
+  "schema_version": "phase41.hle.global.typed.target.census.v1",
+  "hle_dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "input_report_hashes": {
+    "phase29_method_audit": "426bf65d4daca4430bbb69c717ca4f636ee0d48d9822c8fd001dff6d33fdabd2",
+    "phase30_law_audit": "9fbe52a26b378c16e858bca75ca2835b5339aae5c31602e068b446205956c0ed",
+    "phase40_mechanics_target_audit": "95541bb22ae43dd14e14b8ec715ed256d6208e0346ce7964a250b0102aef88b9"
+  },
+  "requested_pool_counts": {
+    "derivation_after_retrieval": 189,
+    "in_question_equations": 34,
+    "mechanics_target_residuals": 152,
+    "missing_method_cases": 222,
+    "representation_bridges": 29
+  },
+  "unmaterialized_pool_notes": {
+    "derivation_after_retrieval": "Phase 21 preserves only an aggregate count (189); no immutable per-question machine-readable artifact was available, so no synthetic records were created."
+  },
+  "materialized_unique_cases": 393,
+  "duplicate_case_ids_collapsed": 15,
+  "target_output_counts": {
+    "ambiguous": 17,
+    "asymptotic_or_scaling_law": 5,
+    "cardinality_answer": 29,
+    "cardinality_or_count": 8,
+    "choice_or_boolean": 8,
+    "choice_or_boolean_answer": 5,
+    "conceptual_consequence": 2,
+    "dimensionless_parameter": 1,
+    "equation_or_expression": 1,
+    "expression_answer": 18,
+    "integral_or_differential_equation": 4,
+    "named_object_theorem_or_convention": 6,
+    "optimization_or_bound": 2,
+    "physical_phenomenon_or_model": 11,
+    "scalar_or_structured_answer": 170,
+    "scalar_or_structured_value": 17,
+    "specialist_factual_target": 11,
+    "spectrum_eigenvalue_or_mode": 4,
+    "unclassified": 74
+  },
+  "transformation_counts": {
+    "asymptotic_runtime": 4,
+    "calculus_transformation": 12,
+    "differential_equation_solve": 7,
+    "equation_binding": 22,
+    "exponential_operator_determinant": 1,
+    "function_sampling": 4,
+    "generic_specialist": 80,
+    "geometric_construction": 12,
+    "graph_invariant": 10,
+    "group_theory_structure": 1,
+    "inequality_bound": 1,
+    "lie_algebra_matrix": 1,
+    "lorentz_sampling": 1,
+    "matrix_log_gaussian_sampling": 1,
+    "matrix_manifold_constraint": 1,
+    "matrix_manifold_exponential": 1,
+    "matrix_rank_or_determinant": 20,
+    "matrix_spectral_invariant": 8,
+    "named_law_lookup": 12,
+    "number_theory_congruence": 1,
+    "number_theory_prime_density": 1,
+    "poincare_disk_geometry": 1,
+    "probability_distribution": 17,
+    "probability_expectation": 4,
+    "recurrence_evaluation": 12,
+    "riemannian_metric_structure": 1,
+    "scientific_law_application": 19,
+    "target_grounding": 137,
+    "theorem_application": 1
+  },
+  "prerequisite_counts": {
+    "ambiguous": 5,
+    "continuum_mechanics": 5,
+    "dynamical_systems": 4,
+    "field_theory": 1,
+    "knowledge_or_assumptions": 61,
+    "mathematical_physics": 2,
+    "relativity": 3,
+    "representation": 102,
+    "statistical_mechanics": 2,
+    "unclassified": 121,
+    "unknown": 87
+  },
+  "candidate_families": [
+    {
+      "key": "unclassified::target_grounding",
+      "cases": 74,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::generic_specialist",
+      "cases": 63,
+      "source_pools": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "generic_specialist",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "ambiguous::target_grounding",
+      "cases": 17,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::matrix_rank_or_determinant",
+      "cases": 17,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "matrix_rank_or_determinant",
+      "status": "candidate_for_external_validation",
+      "reason": "repeated output and exact transformation signature; external corpus and semantic review still required"
+    },
+    {
+      "key": "cardinality_answer::generic_specialist",
+      "cases": 15,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "transformation_signature": "generic_specialist",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::probability_distribution",
+      "cases": 14,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "probability_distribution",
+      "status": "candidate_for_external_validation",
+      "reason": "repeated output and exact transformation signature; external corpus and semantic review still required"
+    },
+    {
+      "key": "physical_phenomenon_or_model::target_grounding",
+      "cases": 11,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_value::equation_binding",
+      "cases": 11,
+      "source_pools": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "transformation_signature": "equation_binding",
+      "status": "candidate_for_external_validation",
+      "reason": "repeated output and exact transformation signature; external corpus and semantic review still required"
+    },
+    {
+      "key": "specialist_factual_target::target_grounding",
+      "cases": 11,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::calculus_transformation",
+      "cases": 10,
+      "source_pools": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "calculus_transformation",
+      "status": "candidate_for_external_validation",
+      "reason": "repeated output and exact transformation signature; external corpus and semantic review still required"
+    },
+    {
+      "key": "scalar_or_structured_answer::scientific_law_application",
+      "cases": 10,
+      "source_pools": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "scientific_law_application",
+      "status": "candidate_for_external_validation",
+      "reason": "repeated output and exact transformation signature; external corpus and semantic review still required"
+    },
+    {
+      "key": "scalar_or_structured_answer::geometric_construction",
+      "cases": 9,
+      "source_pools": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "geometric_construction",
+      "status": "candidate_for_external_validation",
+      "reason": "repeated output and exact transformation signature; external corpus and semantic review still required"
+    },
+    {
+      "key": "scalar_or_structured_answer::recurrence_evaluation",
+      "cases": 8,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "recurrence_evaluation",
+      "status": "candidate_for_external_validation",
+      "reason": "repeated output and exact transformation signature; external corpus and semantic review still required"
+    },
+    {
+      "key": "scalar_or_structured_answer::graph_invariant",
+      "cases": 7,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "graph_invariant",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "expression_answer::scientific_law_application",
+      "cases": 6,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "transformation_signature": "scientific_law_application",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "named_object_theorem_or_convention::target_grounding",
+      "cases": 6,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "named_object_theorem_or_convention",
+      "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::differential_equation_solve",
+      "cases": 6,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "differential_equation_solve",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::matrix_spectral_invariant",
+      "cases": 6,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "matrix_spectral_invariant",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_value::named_law_lookup",
+      "cases": 6,
+      "source_pools": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "transformation_signature": "named_law_lookup",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "asymptotic_or_scaling_law::target_grounding",
+      "cases": 5,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "asymptotic_or_scaling_law",
+      "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "cardinality_or_count::equation_binding",
+      "cases": 5,
+      "source_pools": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "transformation_signature": "equation_binding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "choice_or_boolean::equation_binding",
+      "cases": 5,
+      "source_pools": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "choice_or_boolean",
+      "transformation_signature": "equation_binding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "integral_or_differential_equation::target_grounding",
+      "cases": 4,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "integral_or_differential_equation",
+      "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "spectrum_eigenvalue_or_mode::target_grounding",
+      "cases": 4,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "spectrum_eigenvalue_or_mode",
+      "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "cardinality_answer::graph_invariant",
+      "cases": 3,
+      "source_pools": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "transformation_signature": "graph_invariant",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "cardinality_answer::recurrence_evaluation",
+      "cases": 3,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "transformation_signature": "recurrence_evaluation",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "cardinality_answer::scientific_law_application",
+      "cases": 3,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "transformation_signature": "scientific_law_application",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "cardinality_or_count::named_law_lookup",
+      "cases": 3,
+      "source_pools": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "transformation_signature": "named_law_lookup",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "choice_or_boolean::named_law_lookup",
+      "cases": 3,
+      "source_pools": [
+        "phase30_in_question_equations",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "choice_or_boolean",
+      "transformation_signature": "named_law_lookup",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::function_sampling",
+      "cases": 3,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "function_sampling",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::probability_expectation",
+      "cases": 3,
+      "source_pools": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "probability_expectation",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "cardinality_answer::matrix_spectral_invariant",
+      "cases": 2,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "transformation_signature": "matrix_spectral_invariant",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "choice_or_boolean_answer::probability_distribution",
+      "cases": 2,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "choice_or_boolean_answer",
+      "transformation_signature": "probability_distribution",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "conceptual_consequence::target_grounding",
+      "cases": 2,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "conceptual_consequence",
+      "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "expression_answer::asymptotic_runtime",
+      "cases": 2,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "transformation_signature": "asymptotic_runtime",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "expression_answer::calculus_transformation",
+      "cases": 2,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "transformation_signature": "calculus_transformation",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "expression_answer::generic_specialist",
+      "cases": 2,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "transformation_signature": "generic_specialist",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "expression_answer::geometric_construction",
+      "cases": 2,
+      "source_pools": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "transformation_signature": "geometric_construction",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "optimization_or_bound::target_grounding",
+      "cases": 2,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "optimization_or_bound",
+      "transformation_signature": "target_grounding",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::asymptotic_runtime",
+      "cases": 2,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "asymptotic_runtime",
+      "status": "insufficient_coherence_evidence",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "cardinality_answer::function_sampling",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "transformation_signature": "function_sampling",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "cardinality_answer::matrix_rank_or_determinant",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "transformation_signature": "matrix_rank_or_determinant",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "cardinality_answer::probability_expectation",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "transformation_signature": "probability_expectation",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "choice_or_boolean_answer::geometric_construction",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "choice_or_boolean_answer",
+      "transformation_signature": "geometric_construction",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "choice_or_boolean_answer::inequality_bound",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "choice_or_boolean_answer",
+      "transformation_signature": "inequality_bound",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "choice_or_boolean_answer::matrix_rank_or_determinant",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "choice_or_boolean_answer",
+      "transformation_signature": "matrix_rank_or_determinant",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "dimensionless_parameter::target_grounding",
+      "cases": 1,
+      "source_pools": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "dimensionless_parameter",
+      "transformation_signature": "target_grounding",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "equation_or_expression::equation_binding",
+      "cases": 1,
+      "source_pools": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "equation_or_expression",
+      "transformation_signature": "equation_binding",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "expression_answer::differential_equation_solve",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "transformation_signature": "differential_equation_solve",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "expression_answer::matrix_rank_or_determinant",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "transformation_signature": "matrix_rank_or_determinant",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "expression_answer::probability_distribution",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "transformation_signature": "probability_distribution",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "expression_answer::recurrence_evaluation",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "transformation_signature": "recurrence_evaluation",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::exponential_operator_determinant",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "exponential_operator_determinant",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::group_theory_structure",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "group_theory_structure",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::lie_algebra_matrix",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "lie_algebra_matrix",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::lorentz_sampling",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "lorentz_sampling",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::matrix_log_gaussian_sampling",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "matrix_log_gaussian_sampling",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::matrix_manifold_constraint",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "matrix_manifold_constraint",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::matrix_manifold_exponential",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "matrix_manifold_exponential",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::number_theory_congruence",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "number_theory_congruence",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::number_theory_prime_density",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "number_theory_prime_density",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::poincare_disk_geometry",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "poincare_disk_geometry",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::riemannian_metric_structure",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "riemannian_metric_structure",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    },
+    {
+      "key": "scalar_or_structured_answer::theorem_application",
+      "cases": 1,
+      "source_pools": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "transformation_signature": "theorem_application",
+      "status": "specialist_singleton",
+      "reason": "no stable repeated typed transformation at this census level"
+    }
+  ],
+  "specialist_singletons": 24,
+  "unresolved_residuals": 74,
+  "records": [
+    {
+      "id": "668828540a642802bdfeadfc",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66b827b9b64deaedfbb997a2",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "ambiguous",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66e4cdec11c64a7e4051b2d9",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66e8784d70625d8c7700315a",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "66e8a3ed3aa94517d4573b14",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "number_theory_prime_density",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66e8b578d0c1f7390bad120c",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "choice_or_boolean_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66e8f69b1440516dd6ab54da",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66e94a88b78e263c565b17ee",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "66e9b2899cf8fcf41599246f",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66e9e6b3c27ad6bc46adbc20",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "66ea1dd348eb93c2aef1c735",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66ea260280667dae8de4a8ec",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66ea355dd1767539f1308fc3",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "66ea542e4509a12ed7db1d7b",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66eaa401c7a3252f0f3fe535",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "summation notation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66eae5c971adc8ff57780329",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66eaed874f8d520f598dbf11",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "conceptual_consequence",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66eaee084f8d520f598dbf14",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "ambiguous",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66eaf1f49c43656de6cf31f6",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "conceptual_consequence",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66eb0883f3acd11c70662aff",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "choice_or_boolean",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "66ec2799da20d530acf3bf1e",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66ec5131c583351821bff661",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66ec5671713826aca26a9dba",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66ec877286c7331c303480f5",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66ed3e7cd841eb51a985ca7f",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "66ed458ed841eb51a985ca8d",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66ed6347e50f3c9aca56e5f4",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "differential_equation_solve",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66ed86e620ed3db95f9901d3",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "differential_equation_solve",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66eddc58fcc3c877643b5f39",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "integral_or_differential_equation",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66eee253ae4c04f9d17d9420",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "66eefc79e487aa1349195d5f",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66ef98088171e6ed71be1454",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66efd054c04acd134cc4bb36",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66efe2bd21f9ff1dde1c4837",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66f0f65fd23ed0ac5f43b260",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66f1bc99f8bb4425f74e42a5",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "optimization_or_bound",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66f28a89f1256af80477e15d",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "probability_expectation",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66f589b926268030174717bd",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "66f5fd3235147083021a66c6",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66f6bffd76e8f5503a11d413",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "66f6c390489d30372dbc1816",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66f760ebf206a49e129c7ed9",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "66f788502fd8c4ffcf2ab3fa",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "66f87ab781a069162c8e7cd2",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66f8bd4e140fefe7ceb34b75",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "equation_or_expression",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "66f9a1ed4f798b651f6d3c8e",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "asymptotic_or_scaling_law",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66f9aac10b5d5283ffc39014",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "named_object_theorem_or_convention",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66f9e9d3e0e271cd8ae533c6",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "66faeb7db8fca5695f011626",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "choice_or_boolean_answer",
+      "input_artifacts": [
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66fb24e7dea0e38a195b0030",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "probability_expectation",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66fbd5aca177ae967e47041b",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66fc23cfa7be4edbe85cf177",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "66fc49ef5067ff35e6302b7f",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66fc633698a7264ef58309c0",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66fc8353c9752085eff2c8c0",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66fc89ce455038a48ed359e4",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "optimization_or_bound",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66fc8c821d39fbf6d8bcdd11",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "66fccb32baca958eff49a086",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "choice_or_boolean",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "66fcfe789608881c6aecde88",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66fd442c654e577c714fb724",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "summation notation"
+      ],
+      "transformation_signature": "matrix_spectral_invariant",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66fd758e29f96fd9d054df43",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66fda7a057cea4445778e88a",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66fdb51b903727942c52222f",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "66fde5a291664bba6e391cb5",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "66fe97540fe93ab7e9405c9b",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "spectrum_eigenvalue_or_mode",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "dynamical_systems",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66fec7825e6051260840e060",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "66ff35926045e9e64bbc5720",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "66ff44de2cfec1499ea021dd",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6700b9b6d9849868aa3fb1f9",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "670130313d571f9c39e1bea1",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6701ca6bb773dec162bde23c",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "choice_or_boolean",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "6701d2675f6691877f264511",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "named_object_theorem_or_convention",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "670426b4d831bdf30d3c03cb",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6704486baf0a436d92c65161",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6704d297f486e216becd613f",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "670698afa89008d75b31f329",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67073a60c033e34a5d675f2e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "670777536ce55102ae56fa2c",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67079b3aeb66f588bd3789ec",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "67086f244c1d38378da9f60a",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6708862963c4d58d76c98746",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6709a557139851f6bbbd7a5a",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "670a2a076973040cfd5994a7",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "670ad3408b8d4b3af783d31a",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "graph_invariant",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "670be48d7038d6936230870a",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "670cfd37787b413636ae1e57",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "670d91a9ac55362ddccabea1",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "matrix_spectral_invariant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "670e050d857d9fb8d0e70fde",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "summation notation"
+      ],
+      "transformation_signature": "matrix_manifold_constraint",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "670e88d674a7c40e93dd1a5c",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "670eeb9c997568ed4298871e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "670f289fb671096a201efee4",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "670f4501dfe615f3d2f7436e",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "670f87f6f1e1079f950014e4",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "probability_expectation",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "670fc6e308c7aaef3bd745e2",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "670fca712395d9134a27030e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "670fce9a2395d9134a270314",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "matrix_spectral_invariant",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "670fd2a6232fc20b4433c4d7",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67115e10528102717339d851",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6711e5e05e64a53ed09449fd",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "probability_expectation",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67120c351f4769bcbeaadd5a",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "number_theory_congruence",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6712208acecd80f50716f99e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6712290fcecd80f50716f9aa",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6712c2616313b64cf8499927",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671323607fc02cf5cce975a5",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6713e7a2ab68083faeb3fc70",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6713f6ebde9d795856a5d0d2",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6714b65c2b2e7f70a38b9f63",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "summation notation"
+      ],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67153bd7f588f3f15b038f5b",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "67155ca2675b57d8bbc9144d",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6715f373a35b028a9e88c09f",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "asymptotic_or_scaling_law",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "continuum_mechanics",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671641166bc44542da778ccf",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "asymptotic_or_scaling_law",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6716a68fbb8539339d5d7239",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6716dc349a0dd17680df31df",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "choice_or_boolean_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "inequality_bound",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6716e28929a01505aba1ddb5",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67171c0c49297038d6740a23",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671728a6382088970288d4c0",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "choice_or_boolean",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "671746ad21eec7fde8de4026",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6717aef5a5c8a6a9392b1b39",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6717b2e1961c5de74922e610",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6717cc3a4d6b1e71cab9bc8c",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "function_sampling",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6717dd20e8666ff79cdd82af",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "named_object_theorem_or_convention",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6717eeddd6c14a5dd1563e7c",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "671802a3e2dff1f07a1b0508",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671805c78b88f01935b58255",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "671808958b88f01935b5825a",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6718487afba38eebcbc8034b",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "6718b6f8f879f9699ffd3fbf",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "asymptotic_or_scaling_law",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6718c479034f8ddb2f67a346",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "summation notation"
+      ],
+      "transformation_signature": "matrix_manifold_exponential",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67192811212f1ac1f7ec4815",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67192b9472c6fd14e759e369",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "asymptotic_runtime",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671963d90f87e9920aff9d11",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "asymptotic_runtime",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671975e857fcd2edef6930fb",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6719a83547f600be2c21b6f7",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "asymptotic_runtime",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6719e946a81614142be02bec",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671ac42e34dde826ba049e63",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "relativity",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671ad72c9fdc33c08a784b3a",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671b16741c8a4560f96a3a66",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "differential_equation_solve",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671b5c079296c3d8d76aaac8",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671ba7b447e34cf4ed747b30",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671bdc0d90d834b821acb8b1",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671be6027aa97b5c9f77d90e",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671d16bf60ad0fe6d2494177",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "671d6502b996cf9936d1afd0",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "671d91bcad7fb0793a0e93bd",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "spectrum_eigenvalue_or_mode",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671d9eb3355c956ce7de5a90",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "671dc1300e30fa8a7d64db58",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "671dea179a50e5f7394157de",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671dfc4d348d6bb4709de947",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "graph_invariant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671e4ade104e72d40d15ae51",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "spectrum_eigenvalue_or_mode",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671eeb53c1a668a6c81e5993",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671f07b1d0f22fd6e50482e7",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "relativity",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671f09d6d0f22fd6e50482eb",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671f0b0c7301fac39660e7a3",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671f0c8fd0f22fd6e50482ef",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671f1f0bb0b665acec70c3aa",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671f3c368a33df76faeb71f3",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "671f584591addf76ff2eb254",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671f5ef82709f18025c61f15",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671f6889490be3e9a159f485",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671f84c91d893bdd9af05be5",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "671f8aa5e8fbfa3cf02ce3b6",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671f941e919b83ce036e80d9",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "graph_invariant",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671faf8171f6aa7bd1e604cd",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "671fb32753f9dd7511fe4d70",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "lie_algebra_matrix",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671fb909298c0d11670fc56b",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "671fc0c2f0bea11129a5ecdd",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "group_theory_structure",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "671fee575a0f70920ad3bd80",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6720449622c03e062e242dd2",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672059fde8e4162530496e8f",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "672065f65681ce2b6f5a08a0",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672068b61177432c7e500289",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67208aa0563d776c82113daa",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6720a7b54f57949fff72b9f3",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6720c0cd083a628a849fcb51",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6720c10ac6e0d9a4953b636f",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6720e184a9e1d1cc990cc8e9",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6720fda3febecf1a8b9b083d",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "named_object_theorem_or_convention",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672102b6febecf1a8b9b0845",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67216b3c8238b402204d3432",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67218f865b0747ce2231d48c",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6721998686e95ac1054387b3",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67219c66a8cd9fb6c1e25d71",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "named operator",
+        "summation notation"
+      ],
+      "transformation_signature": "riemannian_metric_structure",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6722084fdcce66512a82d9f4",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672262d988e407d7eb07744d",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "choice_or_boolean",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "6722728827542064f9b14815",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "dynamical_systems",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672295eda223ce4156c54839",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6722ac9945d2a9b39caeedd7",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6722c3ce8e469fbdb3ba6a6e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_spectral_invariant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6722ed574ef505a6876b2a85",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "672308e609910d09444df92a",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67230d6e736f03c0e4c1adee",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "67239d8e02ee3ca40bc2034a",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6723a06c2ed591ecf750d591",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6723a99824c5cdbe41028a46",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6723ba00339572beba8f91b2",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6723bea21dd204907be142ee",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "mechanics_signal"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6723c5cf75ffe38ab99c4e51",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6723c98b325b18c34f227615",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "6723cc9539491a3045f62fef",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6723cfdeddb9a8e96a06901a",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "6723e2eed45a194cda34796b",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "summation notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6723ede433d757d4f7d6cad3",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "summation notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6723f0166f89b8c177612dd7",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "mechanics_signal"
+      ],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6723f1bf0b72766be93d01ae",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6723f44aabdb1dfc2b496a11",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67241990a1bd6b06dafb7052",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672423111ebc6d08d02c7f2d",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67242bb82a37861b051e617e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "672455ce7a14971607e3d9f0",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6724dae7f70a476bbcaa32ef",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "named operator"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6724e72e2e4151a53d606225",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "graph_invariant",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6724f652efed730d1aaef326",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672528b1fc012fdec7fc63c8",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "6725292085b48a76ea1b5709",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "67252aad70e5e32e5897fa56",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "summation notation"
+      ],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67252b9639b66386e0489e94",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67252e6e825d7a6248383174",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672546cf046774791d0f1a3a",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "differential_equation_solve",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67256b14ac4f9591b137e180",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67256e36e5e6cc87293fc3f0",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6725738b6db8d9379bdf1b69",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67257466e173b172c061372a",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672579985c16db8f9647559c",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "67257fe9be53ed439b973ff9",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6725809d0ce8918bd2e788b8",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6725840f6681c277a5f9e487",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "named operator"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67258bcd9fc853c16713ec17",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67259a64572ac41765175909",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6725adefc6537022833a1e04",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6725b22cf0e7323addabf758",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6725bb338255543498bdcbec",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6725bb348255543498bdcbed",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6725c3719aac82ce9cf99f23",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6725c97d4f347932f9a63e68",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "differential_equation_solve",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6725dc14097c6790b292765e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "transformation_signature": "function_sampling",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6725e382086428ce4e2fa8d6",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6725e3f7603864c505f3a699",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6725ed80de551b21db6a0f29",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6725f64785e54acc9a6323ed",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672600b226992c47ce3a7efe",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67260a2a8f9ce8a272ed4e9a",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672614260019e08d7f82b2d0",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "named operator"
+      ],
+      "transformation_signature": "matrix_spectral_invariant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672635d88217be904f5899ed",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "ambiguous",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6726f1f73958e8253ed79aed",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "672743f6b2c49bf5b7cbb56d",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "choice_or_boolean",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "6728696b7c5ceb52207dc9d8",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "672895e42863e798a320481b",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67289af83c117573234842fc",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "visual or diagram input"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6729035989898f87cb532106",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_spectral_invariant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67298280a5f43bd5a3870e14",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672a460edfaab7cdbc587e08",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "visual or diagram input"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672a4e1a302a8fb5c07434bd",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation",
+        "visual or diagram input"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672a5b4eefd96b7e660d8ea4",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672a79431629c5c3d6933ca7",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672a80a432cd57d8762583e9",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "672aac7a78e0ab15cf86003b",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672bb9be168a1a30f1f92fcc",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "differential_equation_solve",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672c84e4975ce618c77a5c49",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "named operator"
+      ],
+      "transformation_signature": "graph_invariant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672c8e7a86c5d04249bd338e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "672d7ebc9a32864a120253cd",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "choice_or_boolean_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672dde1a9a1f996a161fbd05",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "dynamical_systems",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672de9b9ed6de72b75b8c802",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "672dfdac63f8d9211905d385",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "field_theory",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672e09b50a85795d0ed2d36e",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "asymptotic_or_scaling_law",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "ambiguous",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672e24f117ed86a6ef9def55",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "672e4d316ee63a5d94bf863a",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "672e4fe878953b9f63939501",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "672f7b4d4b45f2f295a386c5",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672f7ddd281b45ba7e99346d",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672f819789e556fe53c8af75",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "graph_invariant",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "672f9b772357e1d1acd486b4",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "672fadd93c2722c42adabef3",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "spectrum_eigenvalue_or_mode",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672fc00e13e5fbd332372f3f",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "672ff3458e51cc48e8cbb7fd",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67308f79c5ea548175bbf9fc",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "graph_invariant",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6730fc7d598fcdc8858811e6",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "67310b7b6e2b21ba84f49060",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "asymptotic_runtime",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67325a61292f97f5175026dd",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67325d2d189b1ffa84c76d55",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "integral_or_differential_equation",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67327427dd4c31644d608f5c",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "67327daab33b7d6a440fecf0",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6732ce52ec2dbeda063b420b",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67339e9c25c864e84bf1a351",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "mechanics_signal"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67344c306c8af1669360d38e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "673497b017a9687889930ac4",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "continuum_mechanics",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6734989917a9687889930ac9",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6734e070d2fa7918dc2795bb",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "choice_or_boolean_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6735bfec24a805ed5fc0d055",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "named_object_theorem_or_convention",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "mathematical_physics",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6735c467e35b9d6fab20c23a",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "673627bc10ec0a5f859365ce",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67363709b1a97400f39cdc71",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "67364d570965d02f400bb6d2",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67366bc5b5eda7e01fa935c6",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "dynamical_systems",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6736b51358f461953a97e879",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "differential_equation_solve",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6736bd0c2f3638e3bc109888",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6736c43123d0fb145461cc78",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6736ccc7b9b2577c622e944c",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6736cec9cad1584306eee714",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6736e17253926b38af8c205e",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "mechanics_signal"
+      ],
+      "transformation_signature": "graph_invariant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6736e54a4c96e49df1036fc6",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6736f7bc980211368f0f94eb",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "673701a01baae2c519a9765a",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67370a26144baed9dcabbe11",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "mechanics_signal"
+      ],
+      "transformation_signature": "graph_invariant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67371006980211368f0f954e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "67371496e04511118435d5a4",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67371c15d09c0e422ae36585",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67372089f362584fff2ae1f9",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6737224020f2fc6d8d08075c",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6737309d1988146a57ffab18",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67373220a4d09488d430f640",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6737328119fe786391fedd8a",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "statistical_mechanics",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673797594656f5343e5d35db",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6737b422d3949406f1ed580b",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "6737c6ff3b2291333fbb48a4",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6737d23a6a364decc45cc7ee",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6737feb4c11efda6b940d219",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67381812e4ea03183132a54e",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "relativity",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673818e39b3842b34824240d",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "choice_or_boolean",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "673819ece4ea03183132a556",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "continuum_mechanics",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67381f0835f9616e390e737a",
+      "sources": [
+        "phase30_in_question_equations",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "choice_or_boolean",
+      "input_artifacts": [
+        "mechanics_signal",
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "named_law_lookup",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation",
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673852c82e5179091a7648e8",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67390213fc9dc4f5102ad835",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673909949318c3bbb1056f54",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67391a30af74773130b63bb2",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "6739674739118cf30f5f1075",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "dimensionless_parameter",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "continuum_mechanics",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67398780bcaf1e028b8576a2",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "statistical_mechanics",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673a31d0efec47c08d597095",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "673a36b569a009bd25ec1a74",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "673a3faaed02a359f6002a78",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "673a6a6c4c465c371379b670",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673a716a177d419c991c9f69",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "named_object_theorem_or_convention",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673a811139a72249939a6b6d",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "integral_or_differential_equation",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673a85e1551b8b9cc471012d",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "673a8ff77acc7cdc8c824b62",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "673a92ad437529d472475406",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673aa3536b5c65098f208d6f",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "673abc341e7de1db582067ae",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "673ae99a3022b9e17f89d1b6",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673b631505be2302d4445ece",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "673ce6500bf8b23a52510a18",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "673cf4fe0a06bbe311425068",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673f22056258608e572cc2a2",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "integral_or_differential_equation",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "ambiguous",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673f8ff088d617494f21e0d2",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "673ff6e9766a23f49ade65df",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6740f12881d5bb0710804155",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6741cd528fdc6e38bd2d343d",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "matrix representation",
+        "summation notation"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67428dcab53462ceeb83c6f6",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "geometric_construction",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6742b72d714118dd43c25d12",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67435ecfa59a37c4a0f5d579",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "674365a2b5d4e34a242899c5",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "cardinality_or_count",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "67440064abafa90f5b9d4da9",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "theorem_application",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6746ee2219da4bb05e9d6b99",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67474e78231099aba5aa677d",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "visual or diagram input"
+      ],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6747da64aa7f6182ef02efae",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6747e0eaaa7f6182ef02efb4",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6747fa2a456927085f863956",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "674818a0d2dbfbb2e99bd257",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "67486cd4501c568127ed52d4",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "knowledge_dependent"
+      ]
+    },
+    {
+      "id": "674c4930f8787d3114abcdd0",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67526499b42d785cf1cb1025",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67527ef6de72021d846a7a75",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "675407879744e5be6fabc0d5",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [
+        "visual or diagram input"
+      ],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6755d8a01c505b5224374708",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "6756844266c3ec0e7088bf9f",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "matrix representation"
+      ],
+      "transformation_signature": "matrix_spectral_invariant",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "675b84caa03d8b4e391dcc88",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "675b894146d55c2ffdebd8f5",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "675bbe800b4a17d6e810b318",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "representation_bridge"
+      ]
+    },
+    {
+      "id": "675d7b901ded33d59eb2c94f",
+      "sources": [
+        "phase29_method_audit",
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "mechanics_signal"
+      ],
+      "transformation_signature": "poincare_disk_geometry",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "mechanics_target_residual",
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "675e0f20488645c4ed8af30b",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "matrix representation"
+      ],
+      "transformation_signature": "recurrence_evaluation",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6761b89b9d9d4287c0969029",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "summation notation"
+      ],
+      "transformation_signature": "function_sampling",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6769bcbdc2358745fedc9086",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "function_sampling",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "676d5438cd83de685f85ed0e",
+      "sources": [
+        "phase30_in_question_equations"
+      ],
+      "output_artifact": "scalar_or_structured_value",
+      "input_artifacts": [
+        "typed_equation_or_law_context"
+      ],
+      "transformation_signature": "equation_binding",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "in_question_equation"
+      ]
+    },
+    {
+      "id": "676d5eab75870eef1bf0f9bf",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "summation notation"
+      ],
+      "transformation_signature": "graph_invariant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "676d64b87016c143f4d10eca",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "676e9656e3e0846ee73dbf9d",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "summation notation"
+      ],
+      "transformation_signature": "lorentz_sampling",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "676eab45ffe565c7842c6bad",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "visual or diagram input"
+      ],
+      "transformation_signature": "scientific_law_application",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "676f30b2c0f9a20a47cd3211",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "ambiguous",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "mathematical_physics",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67709ba48b0ca9dcee5572b8",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6771217e251029ed2eca577a",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "6775acff518cb15c3772295e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [
+        "matrix representation",
+        "named operator"
+      ],
+      "transformation_signature": "matrix_spectral_invariant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "677609438253c248a60436cb",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "summation notation"
+      ],
+      "transformation_signature": "matrix_log_gaussian_sampling",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6776ba046889be9d113ccce1",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "expression_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6776ffa855710e45669a4481",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation"
+      ],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6778491dcbd83450e1018208",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "cardinality_answer",
+      "input_artifacts": [],
+      "transformation_signature": "generic_specialist",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "specialist_singleton"
+      ]
+    },
+    {
+      "id": "677b87f0a0514619221df8c6",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "summation notation"
+      ],
+      "transformation_signature": "exponential_operator_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "677b991a7304702305835cd6",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "named operator"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "representation",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "677bd8f5247a21d7a948db6c",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [
+        "fraction notation",
+        "matrix representation",
+        "summation notation",
+        "visual or diagram input"
+      ],
+      "transformation_signature": "matrix_rank_or_determinant",
+      "prerequisite_class": "knowledge_or_assumptions",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "6782d9482eeb133480ec3268",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "physical_phenomenon_or_model",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "continuum_mechanics",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67833c10f5a1ca415084accd",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "unclassified",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "678fbf931413486f7dc2a7f1",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67a69b0bc85a56ef94b67f1e",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "probability_distribution",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    },
+    {
+      "id": "67aa35520fe6cda9046f7f54",
+      "sources": [
+        "phase40_mechanics_target_audit"
+      ],
+      "output_artifact": "specialist_factual_target",
+      "input_artifacts": [
+        "mechanics_signal"
+      ],
+      "transformation_signature": "target_grounding",
+      "prerequisite_class": "unclassified",
+      "audit_classes": [
+        "mechanics_target_residual"
+      ]
+    },
+    {
+      "id": "67c677ac4b9355ec051c5426",
+      "sources": [
+        "phase29_method_audit"
+      ],
+      "output_artifact": "scalar_or_structured_answer",
+      "input_artifacts": [],
+      "transformation_signature": "calculus_transformation",
+      "prerequisite_class": "unknown",
+      "audit_classes": [
+        "transformation_candidate"
+      ]
+    }
+  ],
+  "method": "diagnostic census of frozen HLE audit artifacts; exact typed output/transformation signatures only; no capability synthesis, execution, or promotion"
+}

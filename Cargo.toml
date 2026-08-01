@@ -136,6 +136,10 @@ name = "hle_mechanics_target_audit"
 path = "src/bin/hle_mechanics_target_audit.rs"
 
 [[bin]]
+name = "hle_global_target_census"
+path = "src/bin/hle_global_target_census.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

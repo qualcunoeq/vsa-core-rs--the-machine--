@@ -1,0 +1,19 @@
+{
+  "schema_version": "phase31.law_bridge.v1",
+  "corpus_cases": 23,
+  "lookup_cases": 14,
+  "binding_cases": 9,
+  "lookup_unique": 6,
+  "lookup_ambiguous": 4,
+  "lookup_unsupported_or_missing": 4,
+  "binding_complete": 4,
+  "binding_rejected": 5,
+  "replay_verified": 23,
+  "false_authorizations": 0,
+  "hle_retrieval_ready_cases": 12,
+  "hle_authorized_answers": 0,
+  "corpus_sha256": "d64a993f9d9c5988785822e156340eb53b70eb386e91d0744ee0c9abf1890c19",
+  "source_hle_audit_sha256": "9fbe52a26b378c16e858bca75ca2835b5339aae5c31602e068b446205956c0ed",
+  "registry_mutated": false,
+  "method": "shadow-only law lookup and equation binding benchmark; HLE holdouts remain non-authorizing"
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": "phase21-recovery-manifest-v1",
+  "producer_commit": "cd62d1eab86f3f052dd2135d55a2afd84bb1a243",
+  "dataset": "data/hle.jsonl",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c",
+  "input_trace": "/tmp/hle_release_candidate_2147e9e.traces.jsonl",
+  "input_trace_sha256": "696ad4e5cc2c3475d5a5c3b5cd4ca691e0317d64adf17b075b9c01f4d2a596c9",
+  "recovered_artifact": "docs/phase21_hle_knowledge_audit_recovered.json",
+  "recovered_artifact_sha256": "42ae4475854a67b239c32bcf473ff787196c39b1ac0f0359b451430c56f63276",
+  "scanned_trace_rows": 2500,
+  "missing_knowledge_rows": 1842,
+  "derivation_after_retrieval_rows": 189,
+  "byte_identical_to_recovered_tmp_artifact": true,
+  "limitations": "The original release-run process metadata was not preserved; this artifact is byte-identical to the recovered /tmp output and is reproducible from the recorded trace hash and producer implementation."
+}

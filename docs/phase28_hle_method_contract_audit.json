@@ -1,0 +1,68 @@
+{
+  "phase27_report_sha256": "435afa3c3360f68bd103818e02acd38a3281b5abd08ce78ea3bdcd7c33b3d805",
+  "phase27_grounding_report_sha256": "abc901692e920c47cf6589769b3974202d09e0f7cad80869ac784d0812a061d3",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "families_considered": 3,
+  "coherent_families": 0,
+  "selected_family": null,
+  "decisions": [
+    {
+      "family": "geometry_inequality",
+      "case_ids": [
+        "66fcf48f6da31bbbe3d17e72",
+        "67ae17cf1509e1d55b4a0eec"
+      ],
+      "signatures": {
+        "quadratic_image_shape": [
+          "66fcf48f6da31bbbe3d17e72"
+        ],
+        "euclidean_circle_ratio": [
+          "67ae17cf1509e1d55b4a0eec"
+        ]
+      },
+      "coherent": false,
+      "decision": "defer; family contains distinct method signatures or unresolved interface evidence",
+      "bridge_contract": null,
+      "method_contract": null
+    },
+    {
+      "family": "number_theory",
+      "case_ids": [
+        "670524fec62c9a55b8503379",
+        "673b7ee0b22ebd24e26d4ece"
+      ],
+      "signatures": {
+        "random_series_expectation": [
+          "670524fec62c9a55b8503379"
+        ],
+        "modular_power_cardinality": [
+          "673b7ee0b22ebd24e26d4ece"
+        ]
+      },
+      "coherent": false,
+      "decision": "defer; family contains distinct method signatures or unresolved interface evidence",
+      "bridge_contract": null,
+      "method_contract": null
+    },
+    {
+      "family": "fractal_dimension",
+      "case_ids": [
+        "66fa67dc29908114d8954b55",
+        "672b2ff4a7b27beaf0e7779a"
+      ],
+      "signatures": {
+        "section_dimension_bound": [
+          "66fa67dc29908114d8954b55"
+        ],
+        "self_similar_component_count": [
+          "672b2ff4a7b27beaf0e7779a"
+        ]
+      },
+      "coherent": false,
+      "decision": "defer; family contains distinct method signatures or unresolved interface evidence",
+      "bridge_contract": null,
+      "method_contract": null
+    }
+  ],
+  "method": "shadow-only method-family coherence gate; no capability or bridge authorization"
+}

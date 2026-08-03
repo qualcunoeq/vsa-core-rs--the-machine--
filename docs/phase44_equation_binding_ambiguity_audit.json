@@ -1,0 +1,126 @@
+{
+  "schema_version": "phase44-equation-binding-ambiguity-audit-v1",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "shadow_report_sha256": "9a9fc261049e4f5c715893cd2c095aacaac4d96a46e18914dae799a6045c6569",
+  "audited_cases": 10,
+  "mechanism_counts": {
+    "domain_dependent_function_or_operator_semantics": 6,
+    "overbroad_parenthesis_function_detection": 4
+  },
+  "repeated_recoverable_mechanisms": [
+    "overbroad_parenthesis_function_detection"
+  ],
+  "binder_changed": false,
+  "cases": [
+    {
+      "id": "66e94a88b78e263c565b17ee",
+      "question_sha256": "78fb03001df4eb0fcb7125540888c0b13513da5ecf7fae79591cb5a73abd8b2f",
+      "mechanism": "overbroad_parenthesis_function_detection",
+      "evidence": [
+        "binder saw callable-looking parentheses in prose or operator notation",
+        "candidate spans: defect (codimension $D=1$)"
+      ],
+      "recoverable_without_new_domain_method": true,
+      "proposed_next_evidence": "require an explicit function declaration or typed callable use before applying the function-domain boundary"
+    },
+    {
+      "id": "67153bd7f588f3f15b038f5b",
+      "question_sha256": "30cdcca045c62fa5fa99cd19c006eeb6d1db7059770316289ca7b502381d31b0",
+      "mechanism": "domain_dependent_function_or_operator_semantics",
+      "evidence": [
+        "function-like notation is materially part of the problem",
+        "candidate spans: c(c-1) | beta(B_0 + \\sum_{j \\in \\partial i}u_{j \\rightarrow i} ) | c(1-m_0^2)"
+      ],
+      "recoverable_without_new_domain_method": false,
+      "proposed_next_evidence": "obtain explicit domain/codomain or operator semantics from local evidence; otherwise preserve ambiguity"
+    },
+    {
+      "id": "6717eeddd6c14a5dd1563e7c",
+      "question_sha256": "26f2d08fb3638ab03918bc31f5c24c56b6025fc52bdc3dfe77e9673364f6e356",
+      "mechanism": "overbroad_parenthesis_function_detection",
+      "evidence": [
+        "binder saw callable-looking parentheses in prose or operator notation",
+        "candidate spans: e(U, V \\setminus U)"
+      ],
+      "recoverable_without_new_domain_method": true,
+      "proposed_next_evidence": "require an explicit function declaration or typed callable use before applying the function-domain boundary"
+    },
+    {
+      "id": "671d16bf60ad0fe6d2494177",
+      "question_sha256": "974e13deb93b906947ea1fa50faaf369a655f4c496f2e9b3b765be22620bd1cd",
+      "mechanism": "domain_dependent_function_or_operator_semantics",
+      "evidence": [
+        "function-like notation is materially part of the problem",
+        "candidate spans: a (f')"
+      ],
+      "recoverable_without_new_domain_method": false,
+      "proposed_next_evidence": "obtain explicit domain/codomain or operator semantics from local evidence; otherwise preserve ambiguity"
+    },
+    {
+      "id": "671faf8171f6aa7bd1e604cd",
+      "question_sha256": "1ed35317a34d9e0bae7618292153d10326d102cb85caaccc33bdaef63f7b82ea",
+      "mechanism": "overbroad_parenthesis_function_detection",
+      "evidence": [
+        "binder saw callable-looking parentheses in prose or operator notation",
+        "candidate spans: core (glass) | cladding (air) | n(\\omega) | mu(\\omega) | varepsilon(\\omega)"
+      ],
+      "recoverable_without_new_domain_method": true,
+      "proposed_next_evidence": "require an explicit function declaration or typed callable use before applying the function-domain boundary"
+    },
+    {
+      "id": "6726f1f73958e8253ed79aed",
+      "question_sha256": "a36b7f97f46aec3dcc3158ee5ef3f98ea232a115a1ad05795168da125296d43a",
+      "mechanism": "domain_dependent_function_or_operator_semantics",
+      "evidence": [
+        "function-like notation is materially part of the problem",
+        "candidate spans: left(u(1-u) | u(0,x) | u_0 (x) | u(t,y) | u(t,x) | u(t,x) | d(t,x) | u(t,x)"
+      ],
+      "recoverable_without_new_domain_method": false,
+      "proposed_next_evidence": "obtain explicit domain/codomain or operator semantics from local evidence; otherwise preserve ambiguity"
+    },
+    {
+      "id": "673a36b569a009bd25ec1a74",
+      "question_sha256": "42b16b202b45c4450d52bc2fb230630f1da886aec7311c4a314c0999273e23d9",
+      "mechanism": "domain_dependent_function_or_operator_semantics",
+      "evidence": [
+        "function-like notation is materially part of the problem",
+        "candidate spans: f(x) | f(x)"
+      ],
+      "recoverable_without_new_domain_method": false,
+      "proposed_next_evidence": "obtain explicit domain/codomain or operator semantics from local evidence; otherwise preserve ambiguity"
+    },
+    {
+      "id": "673a8ff77acc7cdc8c824b62",
+      "question_sha256": "8b1e8119a76262dff8f28c36548e8ba39470386ef453a61bdb633990e692bac6",
+      "mechanism": "overbroad_parenthesis_function_detection",
+      "evidence": [
+        "binder saw callable-looking parentheses in prose or operator notation",
+        "candidate spans: A(X) | A(X) | b(X)"
+      ],
+      "recoverable_without_new_domain_method": true,
+      "proposed_next_evidence": "require an explicit function declaration or typed callable use before applying the function-domain boundary"
+    },
+    {
+      "id": "67527ef6de72021d846a7a75",
+      "question_sha256": "ee0dfbb42f9dd9064177347097fe029a555f4bc7916fb91831658a06e886b6ae",
+      "mechanism": "domain_dependent_function_or_operator_semantics",
+      "evidence": [
+        "function-like notation is materially part of the problem",
+        "candidate spans: predicting (in the least squares sense)"
+      ],
+      "recoverable_without_new_domain_method": false,
+      "proposed_next_evidence": "obtain explicit domain/codomain or operator semantics from local evidence; otherwise preserve ambiguity"
+    },
+    {
+      "id": "676d5438cd83de685f85ed0e",
+      "question_sha256": "68eb30943c4cad2badd8b4e244f66b083bb44cedae17039aa22801ad93ffb8ac",
+      "mechanism": "domain_dependent_function_or_operator_semantics",
+      "evidence": [
+        "function-like notation is materially part of the problem",
+        "candidate spans: lambda({\\bf 1}) | lambda(\\delta_{k,1}) | lambda(\\delta_{k,n}) | lambda({\\bf t}) | lambda(\\delta_{k,n}) | lambda({\\bf 1}) | left( \\text{Tr} \\left( \\Phi_1 \\Phi_2 + \\frac{1}{n} \\Phi_2^n + \\sum_{k=1}^\\infty t_k \\Phi_1^k \\right)"
+      ],
+      "recoverable_without_new_domain_method": false,
+      "proposed_next_evidence": "obtain explicit domain/codomain or operator semantics from local evidence; otherwise preserve ambiguity"
+    }
+  ]
+}

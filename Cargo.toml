@@ -232,6 +232,10 @@ name = "discrete_dynamics_bench"
 path = "src/bin/discrete_dynamics_bench.rs"
 
 [[bin]]
+name = "cross_pack_equivalence_bench"
+path = "src/bin/cross_pack_equivalence_bench.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

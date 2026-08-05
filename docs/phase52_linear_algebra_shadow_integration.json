@@ -1,0 +1,491 @@
+{
+  "schema_version": "phase52-linear-algebra-shadow-integration-v1",
+  "cases": 60,
+  "complete_scalar_artifacts": 40,
+  "bridge_receipts": 40,
+  "verifier_replays": 40,
+  "safe_refusals": 20,
+  "downstream_authorizations": 0,
+  "rows": [
+    {
+      "id": "rank_0",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_1",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_2",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_3",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_4",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_5",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_6",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_7",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_8",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_9",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_10",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_11",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_12",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_13",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_14",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_15",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_16",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_17",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_18",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "rank_19",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_0",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_1",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_2",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_3",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_4",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_5",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_6",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_7",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_8",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_9",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_10",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_11",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_12",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_13",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_14",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_15",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_16",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_17",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_18",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "determinant_19",
+      "pack_status": "complete",
+      "bridge_used": true,
+      "verifier_replay": true,
+      "refused_non_scalar": false,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_0",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_1",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_2",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_3",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_4",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_5",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_6",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_7",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_8",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_9",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_10",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_11",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_12",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_13",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_14",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_15",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_16",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_17",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_18",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "eigen_refusal_19",
+      "pack_status": "unsupported",
+      "bridge_used": false,
+      "verifier_replay": false,
+      "refused_non_scalar": true,
+      "downstream_authorized": false
+    }
+  ]
+}

@@ -200,6 +200,14 @@ name = "curriculum_manifest"
 path = "src/bin/curriculum_manifest.rs"
 
 [[bin]]
+name = "linear_algebra_pack_bench"
+path = "src/bin/linear_algebra_pack_bench.rs"
+
+[[bin]]
+name = "linear_algebra_shadow_integration"
+path = "src/bin/linear_algebra_shadow_integration.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

@@ -218,17 +218,33 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
         ),
     ];
     for (id, title, prerequisites, artifacts, reason) in domains {
+        let (status, validation_gates) = if id == "linear_algebra_spectral" {
+            (
+                CurriculumStatus::ShadowValidated,
+                ValidationGates {
+                    authoritative_sources: true,
+                    independent_development_corpus: true,
+                    boundary_corpus: true,
+                    pressure_corpus: true,
+                    replay_verified: true,
+                    zero_false_authorization: true,
+                    frozen_hle_holdout: true,
+                },
+            )
+        } else {
+            (CurriculumStatus::Planned, planned.clone())
+        };
         packs.push(CurriculumPack {
             id: id.into(),
             title: title.into(),
-            status: CurriculumStatus::Planned,
+            status,
             prerequisites: prerequisites.into_iter().map(String::from).collect(),
             reusable_artifacts: artifacts.into_iter().map(String::from).collect(),
             source_requirements: vec![
                 "independently selected authoritative sources".into(),
                 "explicit assumptions, validity domains, and notation".into(),
             ],
-            validation_gates: planned.clone(),
+            validation_gates,
             hle_policy: "HLE remains a frozen diagnostic holdout; never development data".into(),
             selection_reason: reason.into(),
         });
@@ -258,7 +274,12 @@ mod tests {
     #[test]
     fn incomplete_pack_cannot_be_promotable() {
         let mut manifest = breadth_first_manifest();
-        manifest.packs[1].status = CurriculumStatus::Promotable;
+        manifest
+            .packs
+            .iter_mut()
+            .find(|pack| pack.status == CurriculumStatus::Planned)
+            .expect("planned pack")
+            .status = CurriculumStatus::Promotable;
         assert!(manifest
             .validate()
             .iter()

@@ -30,7 +30,7 @@
       {
         "id": "linear_algebra_spectral",
         "title": "Linear algebra and spectral theory",
-        "status": "planned",
+        "status": "shadow_validated",
         "prerequisites": [],
         "reusable_artifacts": [
           "matrix_artifact",
@@ -42,12 +42,12 @@
           "explicit assumptions, validity domains, and notation"
         ],
         "validation_gates": {
-          "authoritative_sources": false,
-          "independent_development_corpus": false,
-          "boundary_corpus": false,
-          "pressure_corpus": false,
-          "replay_verified": false,
-          "zero_false_authorization": false,
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
           "frozen_hle_holdout": true
         },
         "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
@@ -224,7 +224,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "0871ffc07c962dd8af185a395b3063c8a98d4177f7964b58c867626957034e20",
+  "manifest_replay_hash": "6c795069741b24df8e39c8166578aaf6c1125436ceef65f486d18dc9d1e7e175",
   "validation_errors": [],
   "production_authorizations": 0
 }

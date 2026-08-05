@@ -240,6 +240,10 @@ name = "calculus_pack_bench"
 path = "src/bin/calculus_pack_bench.rs"
 
 [[bin]]
+name = "calculus_composition_bench"
+path = "src/bin/calculus_composition_bench.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

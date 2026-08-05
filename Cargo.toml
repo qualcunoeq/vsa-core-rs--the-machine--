@@ -216,6 +216,10 @@ name = "probability_pack_bench"
 path = "src/bin/probability_pack_bench.rs"
 
 [[bin]]
+name = "probability_linear_algebra_composition"
+path = "src/bin/probability_linear_algebra_composition.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

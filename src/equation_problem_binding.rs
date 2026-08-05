@@ -81,6 +81,27 @@ pub struct FunctionDomainBinding {
     pub unresolved_alternatives: Vec<String>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ParenthesizedForm {
+    FunctionApplication,
+    Grouping,
+    Tuple,
+    Interval,
+    OperatorArgument,
+    Unknown,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ParenthesizedCandidate {
+    pub head: Option<String>,
+    pub body: String,
+    pub form: ParenthesizedForm,
+    pub source_spans: Vec<SourceSpan>,
+    pub evidence: Vec<String>,
+    pub declared: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ConstraintArtifact {
     pub expression: String,
@@ -99,6 +120,7 @@ pub struct EquationProblemBinding {
     pub requested_unknown: RequestedUnknown,
     pub indexed_objects: Vec<IndexedObjectBinding>,
     pub function_domains: Vec<FunctionDomainBinding>,
+    pub parenthesized_candidates: Vec<ParenthesizedCandidate>,
     pub constraints: Vec<ConstraintArtifact>,
     pub assumptions: Vec<String>,
     pub unresolved_alternatives: Vec<String>,
@@ -148,6 +170,7 @@ fn replay_hash(binding: &EquationProblemBinding) -> String {
         requested_unknown: &'a RequestedUnknown,
         indexed_objects: &'a [IndexedObjectBinding],
         function_domains: &'a [FunctionDomainBinding],
+        parenthesized_candidates: &'a [ParenthesizedCandidate],
         constraints: &'a [ConstraintArtifact],
         assumptions: &'a [String],
         unresolved_alternatives: &'a [String],
@@ -162,6 +185,7 @@ fn replay_hash(binding: &EquationProblemBinding) -> String {
         requested_unknown: &binding.requested_unknown,
         indexed_objects: &binding.indexed_objects,
         function_domains: &binding.function_domains,
+        parenthesized_candidates: &binding.parenthesized_candidates,
         constraints: &binding.constraints,
         assumptions: &binding.assumptions,
         unresolved_alternatives: &binding.unresolved_alternatives,
@@ -251,6 +275,77 @@ fn infer_type(expression: &str) -> (Option<String>, Option<String>) {
         None
     };
     (type_name, domain)
+}
+
+fn collect_parenthesized_candidates(
+    input: &str,
+    function_domains: &[FunctionDomainBinding],
+) -> Vec<ParenthesizedCandidate> {
+    let pattern = Regex::new(r"\b([A-Za-z][A-Za-z0-9_]*)\s*\(([^()]*)\)")
+        .expect("parenthesized expression regex");
+    let known_functions: BTreeSet<&str> = [
+        "abs", "arccos", "arcsin", "arctan", "cos", "det", "exp", "log", "max", "min", "sin",
+        "sqrt", "sum", "tan", "tanh", "trace",
+    ]
+    .into_iter()
+    .collect();
+    pattern
+        .captures_iter(input)
+        .map(|capture| {
+            let head = capture.get(1).expect("head").as_str().to_string();
+            let body = capture.get(2).expect("body").as_str().trim().to_string();
+            let whole = capture.get(0).expect("parenthesized span").as_str();
+            let declared = function_domains
+                .iter()
+                .any(|domain| domain.function == head);
+            let explicit_function_language = input.to_ascii_lowercase().contains("function")
+                || input.to_ascii_lowercase().contains("parametric function")
+                || (head
+                    .chars()
+                    .next()
+                    .is_some_and(|character| character.is_ascii_lowercase())
+                    && Regex::new(&format!(r"\b{}\s*\([^)]*\)\s*=", regex::escape(&head)))
+                        .expect("function definition regex")
+                        .is_match(input));
+            let known = known_functions.contains(head.to_ascii_lowercase().as_str());
+            let (form, evidence) = if declared || known || explicit_function_language {
+                let mut evidence = vec!["call-like head has function evidence".into()];
+                if declared {
+                    evidence.push("head has an explicit domain declaration".into());
+                }
+                if known {
+                    evidence.push("head is a bounded named operator".into());
+                }
+                if explicit_function_language {
+                    evidence.push("surrounding text declares function semantics".into());
+                }
+                (ParenthesizedForm::FunctionApplication, evidence)
+            } else if body.contains(',') {
+                (
+                    ParenthesizedForm::Tuple,
+                    vec!["comma-separated body is structurally tuple-like".into()],
+                )
+            } else if head.chars().all(|character| character.is_ascii_uppercase()) {
+                (
+                    ParenthesizedForm::OperatorArgument,
+                    vec!["uppercase head is not assumed to be a function".into()],
+                )
+            } else {
+                (
+                    ParenthesizedForm::Grouping,
+                    vec!["no declaration or bounded function evidence".into()],
+                )
+            };
+            ParenthesizedCandidate {
+                head: Some(head),
+                body,
+                form,
+                source_spans: vec![span(input, whole)],
+                evidence,
+                declared,
+            }
+        })
+        .collect()
 }
 
 /// Bind a problem without invoking a solver. The grammar is intentionally
@@ -408,8 +503,9 @@ pub fn bind_equation_problem(input: &str) -> EquationProblemBinding {
         });
     }
 
-    let function_re = Regex::new(r"\b([A-Za-z][A-Za-z0-9_]*)\s*:\s*([^,.;]+?)\s*[-=]>\s*([^,.;]+)")
-        .expect("function domain regex");
+    let function_re =
+        Regex::new(r"\b([A-Za-z][A-Za-z0-9_]*)\s*:\s*([^,.;]+?)\s*(?:[-=]>|\\\\to)\s*([^,.;]+)")
+            .expect("function domain regex");
     for capture in function_re.captures_iter(&normalized) {
         function_domains.push(FunctionDomainBinding {
             function: capture.get(1).unwrap().as_str().into(),
@@ -420,12 +516,22 @@ pub fn bind_equation_problem(input: &str) -> EquationProblemBinding {
             unresolved_alternatives: Vec::new(),
         });
     }
-    if Regex::new(r"\b[a-zA-Z][A-Za-z0-9_]*\s*\([^)]*\)")
-        .unwrap()
-        .is_match(&normalized)
-        && function_domains.is_empty()
-        && !lower.contains("det(")
-    {
+    let parenthesized_candidates = collect_parenthesized_candidates(&normalized, &function_domains);
+    let known_function_heads: BTreeSet<&str> = [
+        "abs", "arccos", "arcsin", "arctan", "cos", "det", "exp", "log", "max", "min", "sin",
+        "sqrt", "sum", "tan", "tanh", "trace",
+    ]
+    .into_iter()
+    .collect();
+    let has_unsupported_function_application = parenthesized_candidates.iter().any(|candidate| {
+        candidate.form == ParenthesizedForm::FunctionApplication
+            && !candidate.declared
+            && !known_function_heads.contains(candidate.head.as_deref().unwrap_or_default())
+            && !function_domains
+                .iter()
+                .any(|domain| domain.function == candidate.head.as_deref().unwrap_or_default())
+    });
+    if has_unsupported_function_application && function_domains.is_empty() {
         status = BindingStatus::Ambiguous;
         unresolved.push("function domain or codomain is unstated".into());
         reason = "function semantics require an explicit domain and codomain".into();
@@ -550,6 +656,7 @@ pub fn bind_equation_problem(input: &str) -> EquationProblemBinding {
         requested_unknown,
         indexed_objects,
         function_domains,
+        parenthesized_candidates,
         constraints,
         assumptions,
         unresolved_alternatives: unresolved,
@@ -626,5 +733,20 @@ mod tests {
             bind_equation_problem("Solve the PDE on an infinite-dimensional function space");
         assert_eq!(result.status, BindingStatus::Unsupported);
         assert!(result.replay_verified());
+    }
+
+    #[test]
+    fn distinguishes_grouping_from_function_application() {
+        let grouped = bind_equation_problem("Let A(X) = (x, y). Constraint z = A(X). Solve for z.");
+        assert!(grouped
+            .parenthesized_candidates
+            .iter()
+            .any(|candidate| candidate.form == ParenthesizedForm::OperatorArgument));
+        let function = bind_equation_problem("Let f(x) = x^2. Evaluate f(3).");
+        assert!(function
+            .parenthesized_candidates
+            .iter()
+            .any(|candidate| candidate.form == ParenthesizedForm::FunctionApplication));
+        assert_eq!(function.status, BindingStatus::Ambiguous);
     }
 }

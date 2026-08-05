@@ -7,6 +7,7 @@ use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs;
+use the_machine::equation_problem_binding::{bind_equation_problem, ParenthesizedForm};
 
 const DATASET: &str = "data/hle.jsonl";
 const SHADOW_REPORT: &str = "docs/phase44_hle_equation_problem_binding_shadow.json";
@@ -19,6 +20,7 @@ struct AuditCase {
     evidence: Vec<String>,
     recoverable_without_new_domain_method: bool,
     proposed_next_evidence: String,
+    parenthesized_forms: Vec<ParenthesizedForm>,
 }
 
 #[derive(Debug, Serialize)]
@@ -55,20 +57,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .find(|entry| entry["id"].as_str() == Some(id))
             .and_then(|entry| entry["question"].as_str().map(str::to_string))
             .unwrap_or_default();
-        let lower = question.to_ascii_lowercase();
+        let binding = bind_equation_problem(&question);
+        let parenthesized_forms: Vec<ParenthesizedForm> = binding
+            .parenthesized_candidates
+            .iter()
+            .map(|candidate| candidate.form)
+            .collect();
         let hits: Vec<String> = function_like
             .find_iter(&question)
             .map(|m| m.as_str().to_string())
             .take(8)
             .collect();
-        let (mechanism, evidence, recoverable, next) = if !lower.contains("function")
-            && !lower.contains("pde")
-            && !lower.contains("partial")
-            && !lower.contains("schur")
-            && !lower.contains("traffic flow")
-            && !lower.contains("u(t")
-            && !lower.contains("f(x)")
-        {
+        let has_function_candidate =
+            parenthesized_forms.contains(&ParenthesizedForm::FunctionApplication);
+        let (mechanism, evidence, recoverable, next) = if !has_function_candidate {
             (
                 "overbroad_parenthesis_function_detection".to_string(),
                 vec![
@@ -97,6 +99,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             evidence,
             recoverable_without_new_domain_method: recoverable,
             proposed_next_evidence: next,
+            parenthesized_forms,
         });
     }
     cases.sort_by(|a, b| a.id.cmp(&b.id));
@@ -106,7 +109,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|(mechanism, _)| mechanism.clone())
         .collect();
     let report = Report {
-        schema_version: "phase44-equation-binding-ambiguity-audit-v1".into(),
+        schema_version: "phase45-equation-binding-parenthesis-repair-audit-v1".into(),
         dataset_sha256: sha(&dataset_bytes),
         shadow_report_sha256: sha(&shadow_bytes),
         audited_cases: cases.len(),
@@ -117,7 +120,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     println!("{}", serde_json::to_string_pretty(&report)?);
     fs::write(
-        "docs/phase44_equation_binding_ambiguity_audit.json",
+        "docs/phase45_equation_binding_ambiguity_audit.json",
         serde_json::to_vec_pretty(&report)?,
     )?;
     Ok(())

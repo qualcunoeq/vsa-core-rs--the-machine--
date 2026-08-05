@@ -6,7 +6,8 @@
 
 use crate::graph_pack::FiniteGraph;
 use crate::probability_pack::{
-    FiniteDistribution, ProbabilityArtifact, ProbabilityResult, Rational,
+    evaluate_probability, FiniteDistribution, ProbabilityArtifact, ProbabilityOperation,
+    ProbabilityRequest, ProbabilityResult, Rational,
 };
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -40,6 +41,18 @@ pub struct RandomWalkResult {
     pub status: RandomWalkStatus,
     pub artifact: Option<RandomWalkArtifact>,
     pub convention: Option<TransitionConvention>,
+    pub assumptions: Vec<String>,
+    pub reasons: Vec<String>,
+    pub provenance: Vec<String>,
+    pub replay_hash: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct FiniteStepResult {
+    pub status: RandomWalkStatus,
+    pub final_artifact: Option<RandomWalkArtifact>,
+    pub trace: Vec<RandomWalkResult>,
+    pub steps: usize,
     pub assumptions: Vec<String>,
     pub reasons: Vec<String>,
     pub provenance: Vec<String>,
@@ -295,6 +308,172 @@ impl RandomWalkResult {
     }
 }
 
+fn finite_step_payload(result: &FiniteStepResult) -> impl Serialize + '_ {
+    (
+        result.status,
+        result.final_artifact.as_ref(),
+        &result.trace,
+        result.steps,
+        &result.assumptions,
+        &result.reasons,
+        &result.provenance,
+    )
+}
+
+fn finite_step_result(
+    status: RandomWalkStatus,
+    final_artifact: Option<RandomWalkArtifact>,
+    trace: Vec<RandomWalkResult>,
+    steps: usize,
+    assumptions: Vec<String>,
+    reasons: Vec<String>,
+    provenance: Vec<String>,
+) -> FiniteStepResult {
+    let mut result = FiniteStepResult {
+        status,
+        final_artifact,
+        trace,
+        steps,
+        assumptions,
+        reasons,
+        provenance,
+        replay_hash: String::new(),
+    };
+    let replay_hash = digest(&finite_step_payload(&result));
+    result.replay_hash = replay_hash;
+    result
+}
+
+fn distribution_as_probability_result(
+    distribution: &FiniteDistribution,
+    provenance: Vec<String>,
+) -> ProbabilityResult {
+    evaluate_probability(&ProbabilityRequest {
+        operation: ProbabilityOperation::DistributionConstruction,
+        domain: "finite_exact_probability".into(),
+        outcomes: distribution.outcomes.clone(),
+        probabilities: distribution.probabilities.clone(),
+        values: Vec::new(),
+        event_a: None,
+        event_b: None,
+        partition: Vec::new(),
+        conditional_values: Vec::new(),
+        prior_probability: None,
+        likelihood: None,
+        evidence: None,
+        ambiguity: None,
+        provenance,
+    })
+}
+
+/// Execute a fixed number of steps with a complete intermediate trace. The
+/// step budget is deliberately small and exact; no stationary or limiting
+/// inference is performed.
+pub fn execute_bounded_steps(
+    graph: &FiniteGraph,
+    transition: Option<&[Vec<Rational>]>,
+    initial: &ProbabilityResult,
+    vertex_order: &[String],
+    convention: Option<TransitionConvention>,
+    explicit_semantics: bool,
+    steps: usize,
+    provenance: Vec<String>,
+) -> FiniteStepResult {
+    if !(1..=8).contains(&steps) {
+        return finite_step_result(
+            RandomWalkStatus::Unsupported,
+            None,
+            Vec::new(),
+            steps,
+            vec!["bounded one-to-eight step budget".into()],
+            vec![
+                "zero-step, multi-step beyond budget, and limiting-walk semantics are unsupported"
+                    .into(),
+            ],
+            provenance,
+        );
+    }
+    let mut current = initial.clone();
+    let mut trace = Vec::with_capacity(steps);
+    let mut final_artifact = None;
+    for step in 0..steps {
+        let mut step_provenance = provenance.clone();
+        step_provenance.push(format!("step:{step}"));
+        let one = execute_one_step(
+            graph,
+            transition,
+            &current,
+            vertex_order,
+            convention,
+            explicit_semantics,
+            1,
+            step_provenance,
+        );
+        let status = one.status;
+        let artifact = one.artifact.clone();
+        trace.push(one);
+        if status != RandomWalkStatus::Complete {
+            return finite_step_result(
+                status,
+                None,
+                trace,
+                steps,
+                vec!["every intermediate step must be verified".into()],
+                vec!["bounded walk stopped at the first invalid transition".into()],
+                provenance,
+            );
+        }
+        let Some(RandomWalkArtifact::NextDistribution(distribution)) = artifact.as_ref() else {
+            return finite_step_result(
+                RandomWalkStatus::DimensionMismatch,
+                None,
+                trace,
+                steps,
+                vec![],
+                vec!["verified step did not produce a distribution".into()],
+                provenance,
+            );
+        };
+        let distribution = distribution.clone();
+        final_artifact = artifact;
+        current = distribution_as_probability_result(&distribution, provenance.clone());
+        if current.status != crate::probability_pack::ProbabilityStatus::Complete
+            || !current.replay_verified()
+        {
+            return finite_step_result(
+                RandomWalkStatus::InvalidTransition,
+                None,
+                trace,
+                steps,
+                vec![],
+                vec!["intermediate distribution failed finite-probability replay".into()],
+                provenance,
+            );
+        }
+    }
+    finite_step_result(
+        RandomWalkStatus::Complete,
+        final_artifact,
+        trace,
+        steps,
+        vec![
+            "exact rational arithmetic".into(),
+            "fixed graph and vertex order".into(),
+        ],
+        Vec::new(),
+        provenance,
+    )
+}
+
+impl FiniteStepResult {
+    pub fn replay_verified(&self) -> bool {
+        self.replay_hash == digest(&finite_step_payload(self))
+            && !self.provenance.is_empty()
+            && self.trace.iter().all(RandomWalkResult::replay_verified)
+            && (self.status != RandomWalkStatus::Complete || self.final_artifact.is_some())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -367,5 +546,34 @@ mod tests {
             vec!["test".into()],
         );
         assert_eq!(result.status, RandomWalkStatus::Ambiguous);
+    }
+
+    #[test]
+    fn bounded_trace_replays_and_budget_is_enforced() {
+        let matrix = uniform_neighbor_transition(&graph()).unwrap();
+        let result = execute_bounded_steps(
+            &graph(),
+            Some(&matrix),
+            &initial(),
+            &["a".into(), "b".into()],
+            Some(TransitionConvention::RowStochastic),
+            true,
+            3,
+            vec!["test".into()],
+        );
+        assert_eq!(result.status, RandomWalkStatus::Complete);
+        assert_eq!(result.trace.len(), 3);
+        assert!(result.replay_verified());
+        let too_deep = execute_bounded_steps(
+            &graph(),
+            Some(&matrix),
+            &initial(),
+            &["a".into(), "b".into()],
+            Some(TransitionConvention::RowStochastic),
+            true,
+            9,
+            vec!["test".into()],
+        );
+        assert_eq!(too_deep.status, RandomWalkStatus::Unsupported);
     }
 }

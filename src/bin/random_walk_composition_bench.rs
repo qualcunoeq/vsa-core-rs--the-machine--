@@ -1,19 +1,18 @@
-//! Phase 57 shadow three-domain composition benchmark.
+//! Phase 58 shadow bounded three-domain random-walk benchmark.
 
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
 use the_machine::graph_pack::{
-    adjacency_to_linear_algebra, evaluate_graph, FiniteGraph, GraphArtifact, GraphOperation,
-    GraphRequest, GraphStatus,
+    adjacency_to_linear_algebra, evaluate_graph, FiniteGraph, GraphOperation, GraphRequest,
+    GraphStatus,
 };
 use the_machine::linear_algebra_pack::{evaluate_linear_algebra, LinearAlgebraStatus};
 use the_machine::probability_pack::{
-    evaluate_probability, ProbabilityArtifact, ProbabilityOperation, ProbabilityRequest,
-    ProbabilityStatus, Rational,
+    evaluate_probability, ProbabilityOperation, ProbabilityRequest, ProbabilityStatus, Rational,
 };
 use the_machine::random_walk_composition::{
-    execute_one_step, uniform_neighbor_transition, RandomWalkArtifact, RandomWalkStatus,
+    execute_bounded_steps, uniform_neighbor_transition, RandomWalkArtifact, RandomWalkStatus,
     TransitionConvention,
 };
 
@@ -93,14 +92,6 @@ fn cycle_graph(directed: bool) -> FiniteGraph {
     }
 }
 
-fn path_graph() -> FiniteGraph {
-    FiniteGraph {
-        vertices: vec!["a".into(), "b".into(), "c".into(), "d".into()],
-        edges: vec![(0, 1), (1, 2), (2, 3)],
-        directed: false,
-    }
-}
-
 fn graph_request(graph: &FiniteGraph, operation: GraphOperation, domain: &str) -> GraphRequest {
     GraphRequest {
         operation,
@@ -139,10 +130,10 @@ fn initial_request(graph: &FiniteGraph, probabilities: Vec<Rational>) -> Probabi
 fn cases() -> Vec<Case> {
     let mut cases = Vec::new();
     for (family, count) in [
-        ("undirected_uniform_walk", 30),
-        ("directed_row_walk", 30),
-        ("directed_column_walk", 30),
-        ("explicit_probability_walk", 30),
+        ("one_step_walk", 30),
+        ("two_step_walk", 30),
+        ("four_step_walk", 30),
+        ("eight_step_walk", 30),
     ] {
         for index in 0..count {
             cases.push(Case {
@@ -190,7 +181,7 @@ fn cases() -> Vec<Case> {
 
 fn expected_distribution(family: &str) -> Option<RandomWalkArtifact> {
     let probabilities = match family {
-        "undirected_uniform_walk" => {
+        "one_step_walk" => {
             vec![
                 rational(0, 1),
                 rational(1, 2),
@@ -198,19 +189,19 @@ fn expected_distribution(family: &str) -> Option<RandomWalkArtifact> {
                 rational(1, 2),
             ]
         }
-        "directed_row_walk" | "directed_column_walk" => {
+        "two_step_walk" => {
             vec![
+                rational(1, 2),
                 rational(0, 1),
-                rational(1, 1),
-                rational(0, 1),
+                rational(1, 2),
                 rational(0, 1),
             ]
         }
-        "explicit_probability_walk" => {
+        "four_step_walk" | "eight_step_walk" => {
             vec![
-                rational(1, 4),
                 rational(1, 2),
-                rational(1, 4),
+                rational(0, 1),
+                rational(1, 2),
                 rational(0, 1),
             ]
         }
@@ -225,15 +216,8 @@ fn expected_distribution(family: &str) -> Option<RandomWalkArtifact> {
 }
 
 fn evaluate_case(case: &Case) -> Row {
-    let directed = matches!(
-        case.family.as_str(),
-        "directed_row_walk" | "directed_column_walk"
-    );
-    let mut graph = if case.family == "explicit_probability_walk" {
-        path_graph()
-    } else {
-        cycle_graph(directed)
-    };
+    let directed = false;
+    let mut graph = cycle_graph(directed);
     let graph_domain = if case.family == "weighted_graph" {
         "weighted_graph"
     } else {
@@ -261,21 +245,12 @@ fn evaluate_case(case: &Case) -> Row {
         .as_ref()
         .map(|result| result.replay_verified())
         .unwrap_or(false);
-    let probabilities = if case.family == "explicit_probability_walk" {
-        vec![
-            rational(1, 2),
-            rational(1, 2),
-            rational(0, 1),
-            rational(0, 1),
-        ]
-    } else {
-        vec![
-            rational(1, 1),
-            rational(0, 1),
-            rational(0, 1),
-            rational(0, 1),
-        ]
-    };
+    let probabilities = vec![
+        rational(1, 1),
+        rational(0, 1),
+        rational(0, 1),
+        rational(0, 1),
+    ];
     let mut probability_request = initial_request(&graph, probabilities);
     if case.family == "row_column_ambiguity" {
         probability_request.ambiguity = Some("transition convention is unstated".into());
@@ -293,24 +268,7 @@ fn evaluate_case(case: &Case) -> Row {
     let mut steps = 1;
 
     match case.family.as_str() {
-        "undirected_uniform_walk" => {
-            transition = uniform_neighbor_transition(&graph).ok();
-        }
-        "directed_row_walk" => {
-            transition = uniform_neighbor_transition(&graph).ok();
-        }
-        "directed_column_walk" => {
-            let row = uniform_neighbor_transition(&graph).unwrap();
-            let mut column = vec![vec![Rational::zero(); 4]; 4];
-            for from in 0..4 {
-                for to in 0..4 {
-                    column[to][from] = row[from][to].clone();
-                }
-            }
-            transition = Some(column);
-            convention = Some(TransitionConvention::ColumnStochastic);
-        }
-        "explicit_probability_walk" => {
+        "one_step_walk" | "two_step_walk" | "four_step_walk" | "eight_step_walk" => {
             transition = uniform_neighbor_transition(&graph).ok();
         }
         "adjacency_without_semantics" => {
@@ -342,7 +300,7 @@ fn evaluate_case(case: &Case) -> Row {
         }
         "multi_step_walk" => {
             transition = uniform_neighbor_transition(&graph).ok();
-            steps = 2;
+            steps = 9;
         }
         "stationary_or_spectral_claim" => {
             transition = uniform_neighbor_transition(&graph).ok();
@@ -356,7 +314,14 @@ fn evaluate_case(case: &Case) -> Row {
         graph.vertices.clone()
     };
     if walk_status != RandomWalkStatus::ZeroDegree && graph_result.status == GraphStatus::Complete {
-        let walk = execute_one_step(
+        steps = match case.family.as_str() {
+            "one_step_walk" => 1,
+            "two_step_walk" => 2,
+            "four_step_walk" => 4,
+            "eight_step_walk" => 8,
+            _ => steps,
+        };
+        let walk = execute_bounded_steps(
             &graph,
             transition.as_deref(),
             &probability_result,
@@ -367,7 +332,7 @@ fn evaluate_case(case: &Case) -> Row {
             vec!["phase57-random-walk-composition".into()],
         );
         walk_status = walk.status;
-        walk_artifact = walk.artifact.clone();
+        walk_artifact = walk.final_artifact.clone();
         walk_replay = walk.replay_verified();
         three_domain_replay = walk_status == RandomWalkStatus::Complete
             && graph_replay
@@ -455,7 +420,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         rows.push(row);
     }
     let report = Report {
-        schema_version: "phase57-random-walk-composition-v1".into(),
+        schema_version: "phase58-bounded-random-walk-v1".into(),
         corpus_sha256,
         cases: corpus.len(),
         authorized_cases,
@@ -477,7 +442,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     println!("{}", serde_json::to_string_pretty(&report)?);
     std::fs::write(
-        "docs/phase57_random_walk_composition.json",
+        "docs/phase58_bounded_random_walk.json",
         serde_json::to_vec_pretty(&report)?,
     )?;
     Ok(())

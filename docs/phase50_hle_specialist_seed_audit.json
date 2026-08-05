@@ -1,0 +1,151 @@
+{
+  "schema_version": "phase50-hle-specialist-seed-audit-v1",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "lowering_report_sha256": "94867b88f466ba2251de003adfdffcfefc90c4f8f493ef989bd1c01d00350a95",
+  "audited_cases": 4,
+  "complete_lowered_cases": 4,
+  "replay_verified_lowerings": 4,
+  "coherent_families": 0,
+  "singleton_cases": 4,
+  "family_counts": {
+    "2d_free_fermion_symmetry_defect_model|topological_invariant_group_label|tenfold_way_classification_with_codimension|physics_model_to_symmetry_class": 1,
+    "connected_3_regular_graph_with_vertex_count|exact_minimum_cheeger_constant|extremal_edge_boundary_bound|graph_definition_to_edge_boundary_problem": 1,
+    "primitive_dirichlet_character_conductor_counting_set|integer_sum_of_asymptotic_exponents|analytic_number_theory_asymptotic_counting|character_family_to_counting_asymptotic": 1,
+    "sparse_random_graph_ising_model_with_correlations|susceptibility_series_expression|cavity_derivative_propagation_and_series_summation|ising_chain_to_cavity_derivative_constraints": 1
+  },
+  "gap_class_counts": {
+    "specialist_method_and_knowledge": 1,
+    "specialist_theorem_and_knowledge": 2,
+    "specialist_theorem_and_method": 1
+  },
+  "outcome_counts": {
+    "specialist_singleton_no_contract": 4
+  },
+  "external_corpus_candidates": 0,
+  "contracts_proposed": 0,
+  "method_authorizations": 0,
+  "cases": [
+    {
+      "id": "66e94a88b78e263c565b17ee",
+      "question_sha256": "78fb03001df4eb0fcb7125540888c0b13513da5ecf7fae79591cb5a73abd8b2f",
+      "lowered_problem_type": "property_classification",
+      "requested_target": "topological invariant",
+      "transformation": {
+        "input_artifact": "2d_free_fermion_symmetry_defect_model",
+        "output_artifact": "topological_invariant_group_label",
+        "operation": "tenfold_way_classification_with_codimension",
+        "domain_theory": "topological_phases_and_k_theory",
+        "prerequisites": [
+          "symmetry_class_from_T_P_D_squares",
+          "codimension_rule",
+          "tenfold_classification_table"
+        ],
+        "assumptions": [
+          "noninteracting_fermions",
+          "point_defect_model"
+        ],
+        "nearest_capability": "property_classification",
+        "typed_bridge": "physics_model_to_symmetry_class"
+      },
+      "gap_class": "specialist_theorem_and_knowledge",
+      "external_corpus_status": "not_selected_pending_coherence",
+      "coherence_outcome": "specialist_singleton_no_contract",
+      "reasons": [
+        "requires an external tenfold-classification table",
+        "output is a topological group label, not a scalar equation"
+      ]
+    },
+    {
+      "id": "67153bd7f588f3f15b038f5b",
+      "question_sha256": "30cdcca045c62fa5fa99cd19c006eeb6d1db7059770316289ca7b502381d31b0",
+      "lowered_problem_type": "symbolic_expression",
+      "requested_target": "χ",
+      "transformation": {
+        "input_artifact": "sparse_random_graph_ising_model_with_correlations",
+        "output_artifact": "susceptibility_series_expression",
+        "operation": "cavity_derivative_propagation_and_series_summation",
+        "domain_theory": "statistical_mechanics_on_sparse_graphs",
+        "prerequisites": [
+          "connected_correlation_definition",
+          "cavity_message_derivative",
+          "homogeneous_limit"
+        ],
+        "assumptions": [
+          "constant_coupling_J",
+          "homogeneous_field_limit",
+          "small_field_derivative"
+        ],
+        "nearest_capability": "equation_binding_and_symbolic_expression",
+        "typed_bridge": "ising_chain_to_cavity_derivative_constraints"
+      },
+      "gap_class": "specialist_method_and_knowledge",
+      "external_corpus_status": "not_selected_pending_coherence",
+      "coherence_outcome": "specialist_singleton_no_contract",
+      "reasons": [
+        "requires domain-specific cavity-message evolution",
+        "requires an infinite-series transformation beyond current symbolic routes"
+      ]
+    },
+    {
+      "id": "6717eeddd6c14a5dd1563e7c",
+      "question_sha256": "26f2d08fb3638ab03918bc31f5c24c56b6025fc52bdc3dfe77e9673364f6e356",
+      "lowered_problem_type": "scalar_equation",
+      "requested_target": "Cheeger constant",
+      "transformation": {
+        "input_artifact": "connected_3_regular_graph_with_vertex_count",
+        "output_artifact": "exact_minimum_cheeger_constant",
+        "operation": "extremal_edge_boundary_bound",
+        "domain_theory": "expander_graphs_and_isoperimetric_inequalities",
+        "prerequisites": [
+          "3_regular_degree_constraint",
+          "cheeger_constant_normalization",
+          "extremal_cut_argument"
+        ],
+        "assumptions": [
+          "connected_graph",
+          "4n_vertices"
+        ],
+        "nearest_capability": "property_classification_and_minimum_target",
+        "typed_bridge": "graph_definition_to_edge_boundary_problem"
+      },
+      "gap_class": "specialist_theorem_and_method",
+      "external_corpus_status": "not_selected_pending_coherence",
+      "coherence_outcome": "specialist_singleton_no_contract",
+      "reasons": [
+        "requires an extremal graph-theory theorem",
+        "minimum target is a graph cut bound, not a generic scalar minimization"
+      ]
+    },
+    {
+      "id": "673a8ff77acc7cdc8c824b62",
+      "question_sha256": "8b1e8119a76262dff8f28c36548e8ba39470386ef453a61bdb633990e692bac6",
+      "lowered_problem_type": "symbolic_expression",
+      "requested_target": "α + β",
+      "transformation": {
+        "input_artifact": "primitive_dirichlet_character_conductor_counting_set",
+        "output_artifact": "integer_sum_of_asymptotic_exponents",
+        "operation": "analytic_number_theory_asymptotic_counting",
+        "domain_theory": "dirichlet_characters_and_conductor_asymptotics",
+        "prerequisites": [
+          "character_order_constraint",
+          "conductor_counting_asymptotic",
+          "logarithmic_exponent_extraction"
+        ],
+        "assumptions": [
+          "primitive_characters",
+          "X_tends_to_infinity"
+        ],
+        "nearest_capability": "symbolic_expression_and_asymptotic_target",
+        "typed_bridge": "character_family_to_counting_asymptotic"
+      },
+      "gap_class": "specialist_theorem_and_knowledge",
+      "external_corpus_status": "not_selected_pending_coherence",
+      "coherence_outcome": "specialist_singleton_no_contract",
+      "reasons": [
+        "requires analytic-number-theory counting results",
+        "asymptotic exponents are not determined by syntax alone"
+      ]
+    }
+  ],
+  "method": "exact compatibility across input/output artifacts, operations, prerequisites, assumptions, and typed bridges; no partial similarity is promoted to a family"
+}

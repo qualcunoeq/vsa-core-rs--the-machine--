@@ -192,6 +192,10 @@ name = "hle_context_lowering_phase49"
 path = "src/bin/hle_context_lowering_phase49.rs"
 
 [[bin]]
+name = "hle_specialist_seed_audit_phase50"
+path = "src/bin/hle_specialist_seed_audit_phase50.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

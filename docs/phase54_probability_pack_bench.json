@@ -1,0 +1,4530 @@
+{
+  "schema_version": "phase54-probability-pack-v1",
+  "source": "OpenStax Introductory Statistics 2e (shadow citation; no production registration)",
+  "corpus_sha256": "0e106eed551d91a6f2379ed4870474342d2fad6ab361c2abe48ebf48711edc7d",
+  "case_count": 240,
+  "supported_cases": 120,
+  "boundary_cases": 40,
+  "unsupported_cases": 80,
+  "exact_decisions": 240,
+  "exact_supported_artifacts": 120,
+  "replay_verified": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "rewrite_groups": 5,
+  "tamper_rejections": 240,
+  "supported_artifact_mismatch_families": {},
+  "linear_algebra_bridge_successes": 10,
+  "linear_algebra_bridge_refusals": 10,
+  "status_counts": {
+    "Ambiguous": 20,
+    "Complete": 120,
+    "DimensionMismatch": 10,
+    "InvalidProbability": 20,
+    "Missing": 10,
+    "Unsupported": 50,
+    "ZeroConditioning": 10
+  },
+  "rows": [
+    {
+      "id": "distribution_0",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": "distribution_rewrite_0"
+    },
+    {
+      "id": "distribution_1",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": "distribution_rewrite_1"
+    },
+    {
+      "id": "distribution_2",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": "distribution_rewrite_2"
+    },
+    {
+      "id": "distribution_3",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": "distribution_rewrite_3"
+    },
+    {
+      "id": "distribution_4",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": "distribution_rewrite_4"
+    },
+    {
+      "id": "distribution_5",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_6",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_7",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_8",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_9",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_10",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_11",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_12",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_13",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_14",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_15",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_16",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_17",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_18",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "distribution_19",
+      "family": "distribution_construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "actual_artifact": {
+        "Distribution": {
+          "outcomes": [
+            "a",
+            "b"
+          ],
+          "probabilities": [
+            {
+              "numerator": 1,
+              "denominator": 4
+            },
+            {
+              "numerator": 3,
+              "denominator": 4
+            }
+          ]
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_0",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_1",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_2",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_3",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_4",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_5",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_6",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_7",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_8",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_9",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_10",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_11",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_12",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_13",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "complement_14",
+      "family": "complement",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_0",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_1",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_2",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_3",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_4",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_5",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_6",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_7",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_8",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_9",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_10",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_11",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_12",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_13",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "union_14",
+      "family": "union",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "intersection_0",
+      "family": "intersection",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "intersection_1",
+      "family": "intersection",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "intersection_2",
+      "family": "intersection",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "intersection_3",
+      "family": "intersection",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "intersection_4",
+      "family": "intersection",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "intersection_5",
+      "family": "intersection",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "intersection_6",
+      "family": "intersection",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "intersection_7",
+      "family": "intersection",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "intersection_8",
+      "family": "intersection",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "intersection_9",
+      "family": "intersection",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_0",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_1",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_2",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_3",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_4",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_5",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_6",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_7",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_8",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_9",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_10",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_11",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_12",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_13",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "conditional_14",
+      "family": "conditional",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "independence_0",
+      "family": "independence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "independence_1",
+      "family": "independence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "independence_2",
+      "family": "independence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "independence_3",
+      "family": "independence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "independence_4",
+      "family": "independence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "independence_5",
+      "family": "independence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "independence_6",
+      "family": "independence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "independence_7",
+      "family": "independence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "independence_8",
+      "family": "independence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "independence_9",
+      "family": "independence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "total_probability_0",
+      "family": "total_probability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "total_probability_1",
+      "family": "total_probability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "total_probability_2",
+      "family": "total_probability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "total_probability_3",
+      "family": "total_probability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "total_probability_4",
+      "family": "total_probability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "total_probability_5",
+      "family": "total_probability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "total_probability_6",
+      "family": "total_probability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "total_probability_7",
+      "family": "total_probability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "total_probability_8",
+      "family": "total_probability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "total_probability_9",
+      "family": "total_probability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bayes_0",
+      "family": "bayes",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bayes_1",
+      "family": "bayes",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bayes_2",
+      "family": "bayes",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bayes_3",
+      "family": "bayes",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bayes_4",
+      "family": "bayes",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bayes_5",
+      "family": "bayes",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bayes_6",
+      "family": "bayes",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bayes_7",
+      "family": "bayes",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bayes_8",
+      "family": "bayes",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bayes_9",
+      "family": "bayes",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 1,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "expectation_0",
+      "family": "expectation",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "expectation_1",
+      "family": "expectation",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "expectation_2",
+      "family": "expectation",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "expectation_3",
+      "family": "expectation",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "expectation_4",
+      "family": "expectation",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "expectation_5",
+      "family": "expectation",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "expectation_6",
+      "family": "expectation",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "expectation_7",
+      "family": "expectation",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "expectation_8",
+      "family": "expectation",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "expectation_9",
+      "family": "expectation",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "variance_0",
+      "family": "variance",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "variance_1",
+      "family": "variance",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "variance_2",
+      "family": "variance",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "variance_3",
+      "family": "variance",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "variance_4",
+      "family": "variance",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 3,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "missing_space_0",
+      "family": "missing_sample_space",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "missing_space_1",
+      "family": "missing_sample_space",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "missing_space_2",
+      "family": "missing_sample_space",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "missing_space_3",
+      "family": "missing_sample_space",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "missing_space_4",
+      "family": "missing_sample_space",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "missing_space_5",
+      "family": "missing_sample_space",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "missing_space_6",
+      "family": "missing_sample_space",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "missing_space_7",
+      "family": "missing_sample_space",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "missing_space_8",
+      "family": "missing_sample_space",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "missing_space_9",
+      "family": "missing_sample_space",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_independence_0",
+      "family": "ambiguous_independence",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_independence_1",
+      "family": "ambiguous_independence",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_independence_2",
+      "family": "ambiguous_independence",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_independence_3",
+      "family": "ambiguous_independence",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_independence_4",
+      "family": "ambiguous_independence",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_independence_5",
+      "family": "ambiguous_independence",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_independence_6",
+      "family": "ambiguous_independence",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_independence_7",
+      "family": "ambiguous_independence",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_independence_8",
+      "family": "ambiguous_independence",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_independence_9",
+      "family": "ambiguous_independence",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "zero_conditioning_0",
+      "family": "zero_conditioning",
+      "expected_status": "zero_conditioning",
+      "actual_status": "zero_conditioning",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "zero_conditioning_1",
+      "family": "zero_conditioning",
+      "expected_status": "zero_conditioning",
+      "actual_status": "zero_conditioning",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "zero_conditioning_2",
+      "family": "zero_conditioning",
+      "expected_status": "zero_conditioning",
+      "actual_status": "zero_conditioning",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "zero_conditioning_3",
+      "family": "zero_conditioning",
+      "expected_status": "zero_conditioning",
+      "actual_status": "zero_conditioning",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "zero_conditioning_4",
+      "family": "zero_conditioning",
+      "expected_status": "zero_conditioning",
+      "actual_status": "zero_conditioning",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "zero_conditioning_5",
+      "family": "zero_conditioning",
+      "expected_status": "zero_conditioning",
+      "actual_status": "zero_conditioning",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "zero_conditioning_6",
+      "family": "zero_conditioning",
+      "expected_status": "zero_conditioning",
+      "actual_status": "zero_conditioning",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "zero_conditioning_7",
+      "family": "zero_conditioning",
+      "expected_status": "zero_conditioning",
+      "actual_status": "zero_conditioning",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "zero_conditioning_8",
+      "family": "zero_conditioning",
+      "expected_status": "zero_conditioning",
+      "actual_status": "zero_conditioning",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "zero_conditioning_9",
+      "family": "zero_conditioning",
+      "expected_status": "zero_conditioning",
+      "actual_status": "zero_conditioning",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bad_partition_0",
+      "family": "ambiguous_partition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bad_partition_1",
+      "family": "ambiguous_partition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bad_partition_2",
+      "family": "ambiguous_partition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bad_partition_3",
+      "family": "ambiguous_partition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bad_partition_4",
+      "family": "ambiguous_partition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bad_partition_5",
+      "family": "ambiguous_partition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bad_partition_6",
+      "family": "ambiguous_partition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bad_partition_7",
+      "family": "ambiguous_partition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bad_partition_8",
+      "family": "ambiguous_partition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "bad_partition_9",
+      "family": "ambiguous_partition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_0",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_1",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_2",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_3",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_4",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_5",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_6",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_7",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_8",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_9",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_10",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_11",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_12",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_13",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "continuous_14",
+      "family": "continuous_distribution",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_0",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_1",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_2",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_3",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_4",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_5",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_6",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_7",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_8",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_9",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_10",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_11",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_12",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_13",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "stochastic_matrix_14",
+      "family": "stochastic_process",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "negative_weight_0",
+      "family": "negative_probability",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "negative_weight_1",
+      "family": "negative_probability",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "negative_weight_2",
+      "family": "negative_probability",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "negative_weight_3",
+      "family": "negative_probability",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "negative_weight_4",
+      "family": "negative_probability",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "negative_weight_5",
+      "family": "negative_probability",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "negative_weight_6",
+      "family": "negative_probability",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "negative_weight_7",
+      "family": "negative_probability",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "negative_weight_8",
+      "family": "negative_probability",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "negative_weight_9",
+      "family": "negative_probability",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "unnormalized_0",
+      "family": "unnormalized_weights",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "unnormalized_1",
+      "family": "unnormalized_weights",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "unnormalized_2",
+      "family": "unnormalized_weights",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "unnormalized_3",
+      "family": "unnormalized_weights",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "unnormalized_4",
+      "family": "unnormalized_weights",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "unnormalized_5",
+      "family": "unnormalized_weights",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "unnormalized_6",
+      "family": "unnormalized_weights",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "unnormalized_7",
+      "family": "unnormalized_weights",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "unnormalized_8",
+      "family": "unnormalized_weights",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "unnormalized_9",
+      "family": "unnormalized_weights",
+      "expected_status": "invalid_probability",
+      "actual_status": "invalid_probability",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "dimension_error_0",
+      "family": "distribution_dimension",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "dimension_error_1",
+      "family": "distribution_dimension",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "dimension_error_2",
+      "family": "distribution_dimension",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "dimension_error_3",
+      "family": "distribution_dimension",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "dimension_error_4",
+      "family": "distribution_dimension",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "dimension_error_5",
+      "family": "distribution_dimension",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "dimension_error_6",
+      "family": "distribution_dimension",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "dimension_error_7",
+      "family": "distribution_dimension",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "dimension_error_8",
+      "family": "distribution_dimension",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "dimension_error_9",
+      "family": "distribution_dimension",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "measure_theory_0",
+      "family": "measure_theory",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "measure_theory_1",
+      "family": "measure_theory",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "measure_theory_2",
+      "family": "measure_theory",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "measure_theory_3",
+      "family": "measure_theory",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "measure_theory_4",
+      "family": "measure_theory",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "measure_theory_5",
+      "family": "measure_theory",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "measure_theory_6",
+      "family": "measure_theory",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "measure_theory_7",
+      "family": "measure_theory",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "measure_theory_8",
+      "family": "measure_theory",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "measure_theory_9",
+      "family": "measure_theory",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "asymptotic_0",
+      "family": "asymptotic_statistics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "asymptotic_1",
+      "family": "asymptotic_statistics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "asymptotic_2",
+      "family": "asymptotic_statistics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "asymptotic_3",
+      "family": "asymptotic_statistics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "asymptotic_4",
+      "family": "asymptotic_statistics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "asymptotic_5",
+      "family": "asymptotic_statistics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "asymptotic_6",
+      "family": "asymptotic_statistics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "asymptotic_7",
+      "family": "asymptotic_statistics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "asymptotic_8",
+      "family": "asymptotic_statistics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "asymptotic_9",
+      "family": "asymptotic_statistics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "false_authorization": false,
+      "rewrite_group": null
+    }
+  ]
+}

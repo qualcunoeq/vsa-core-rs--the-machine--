@@ -106,6 +106,7 @@ pub mod nlp;
 pub mod pdf_reader;
 pub mod perception;
 pub mod physics;
+pub mod probability_pack;
 pub mod planning;
 pub mod predictive;
 pub mod proportional_model;

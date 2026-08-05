@@ -1,0 +1,132 @@
+{
+  "schema_version": "phase46-hle-target-ambiguity-audit-v1",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "rerun_sha256": "5e3ac220d07672a6ae28e3270303ee04144a60857d715d238b15f9a9e8f03868",
+  "audited_cases": 4,
+  "mechanism_counts": {
+    "natural_language_property_target": 2,
+    "non_ascii_target_symbol_normalization": 2
+  },
+  "repeated_recoverable_mechanisms": [
+    "natural_language_property_target",
+    "non_ascii_target_symbol_normalization"
+  ],
+  "parser_changed": false,
+  "authorization_changed": false,
+  "cases": [
+    {
+      "id": "66e94a88b78e263c565b17ee",
+      "question_sha256": "78fb03001df4eb0fcb7125540888c0b13513da5ecf7fae79591cb5a73abd8b2f",
+      "target_candidates": [],
+      "requested_artifact_type": "classification group",
+      "requested_operation": "classify the topological invariant",
+      "grammatical_evidence": [
+        "what will be the group of ...?"
+      ],
+      "mathematical_dependencies": [
+        "T^2=-1",
+        "P^2=-1",
+        "codimension D=1",
+        "tenfold classification"
+      ],
+      "local_definitions": [
+        "2D free fermion model",
+        "point defect"
+      ],
+      "rejected_interpretations": [
+        "a numeric scalar",
+        "a matrix or equation value"
+      ],
+      "missing_distinction": "whether the target is a classification label/group rather than a bound value",
+      "recoverable_mechanism": "natural_language_property_target",
+      "distinguishing_evidence_required": "an explicit output-type cue or typed target phrase such as classification_group"
+    },
+    {
+      "id": "67153bd7f588f3f15b038f5b",
+      "question_sha256": "30cdcca045c62fa5fa99cd19c006eeb6d1db7059770316289ca7b502381d31b0",
+      "target_candidates": [],
+      "requested_artifact_type": "scalar expression",
+      "requested_operation": "derive magnetic susceptibility chi",
+      "grammatical_evidence": [
+        "find chi",
+        "the susceptibility reads ..."
+      ],
+      "mathematical_dependencies": [
+        "chi",
+        "beta",
+        "C_l",
+        "correlation sum",
+        "homogeneous Ising assumptions"
+      ],
+      "local_definitions": [
+        "displayed susceptibility equation",
+        "definitions of C_l and m_0"
+      ],
+      "rejected_interpretations": [
+        "a generic scalar named chi",
+        "an intermediate correlation term"
+      ],
+      "missing_distinction": "non-ASCII target symbol and the requested derived expression are not normalized into one target",
+      "recoverable_mechanism": "non_ascii_target_symbol_normalization",
+      "distinguishing_evidence_required": "a notation-aware target span binding chi to the requested derived expression"
+    },
+    {
+      "id": "6717eeddd6c14a5dd1563e7c",
+      "question_sha256": "26f2d08fb3638ab03918bc31f5c24c56b6025fc52bdc3dfe77e9673364f6e356",
+      "target_candidates": [],
+      "requested_artifact_type": "scalar extremal value",
+      "requested_operation": "minimize the Cheeger constant",
+      "grammatical_evidence": [
+        "what is the minimal possible value ...?"
+      ],
+      "mathematical_dependencies": [
+        "h",
+        "regular graph degree 3",
+        "4n vertices",
+        "Cheeger normalization"
+      ],
+      "local_definitions": [
+        "definition of h",
+        "connected 3-regular graph",
+        "n > 100"
+      ],
+      "rejected_interpretations": [
+        "the graph itself",
+        "an arbitrary edge-count expression"
+      ],
+      "missing_distinction": "the optimization target is expressed by a natural-language superlative rather than a recognized operation",
+      "recoverable_mechanism": "natural_language_property_target",
+      "distinguishing_evidence_required": "an explicit target-operation binding for minimal_possible_value"
+    },
+    {
+      "id": "673a8ff77acc7cdc8c824b62",
+      "question_sha256": "8b1e8119a76262dff8f28c36548e8ba39470386ef453a61bdb633990e692bac6",
+      "target_candidates": [],
+      "requested_artifact_type": "scalar exponent combination",
+      "requested_operation": "compute alpha plus beta in an asymptotic estimate",
+      "grammatical_evidence": [
+        "find the sum of integers alpha and beta",
+        "as X tends to infinity"
+      ],
+      "mathematical_dependencies": [
+        "A(X)",
+        "conductor",
+        "X^a",
+        "log^b(X)",
+        "alpha",
+        "beta"
+      ],
+      "local_definitions": [
+        "definition of A and A(X)",
+        "asymptotic relation"
+      ],
+      "rejected_interpretations": [
+        "the set A(X)",
+        "the exponents separately without their sum"
+      ],
+      "missing_distinction": "Greek target symbols and a compound requested expression are not normalized into one target",
+      "recoverable_mechanism": "non_ascii_target_symbol_normalization",
+      "distinguishing_evidence_required": "a target expression binding alpha+beta to the requested answer form"
+    }
+  ]
+}

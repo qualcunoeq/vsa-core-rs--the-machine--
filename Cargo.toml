@@ -168,6 +168,14 @@ name = "hle_equation_target_ambiguity_audit"
 path = "src/bin/hle_equation_target_ambiguity_audit.rs"
 
 [[bin]]
+name = "target_grounding_bench"
+path = "src/bin/target_grounding_bench.rs"
+
+[[bin]]
+name = "hle_target_grounding_phase47"
+path = "src/bin/hle_target_grounding_phase47.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

@@ -1,0 +1,1017 @@
+{
+  "schema_version": "phase47-target-grounding-v1",
+  "corpus_sha256": "ca3a8b804bdd1528d846d14da8111d70431d344c8d6062e505322d68301c878e",
+  "case_count": 100,
+  "decision_counts": {
+    "Ambiguous": 20,
+    "Complete": 60,
+    "Unsupported": 20
+  },
+  "exact_decisions": 100,
+  "replay_verified": 100,
+  "false_target_bindings": 0,
+  "rewrite_groups": 20,
+  "downstream_authorizations": 0,
+  "cases": [
+    {
+      "id": "property_classification_0",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 0.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "property_rewrite_0"
+    },
+    {
+      "id": "property_minimum_0",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 0.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "minimum_rewrite_0"
+    },
+    {
+      "id": "property_classification_1",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 1.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "property_rewrite_1"
+    },
+    {
+      "id": "property_minimum_1",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 1.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "minimum_rewrite_1"
+    },
+    {
+      "id": "property_classification_2",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 2.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "property_rewrite_2"
+    },
+    {
+      "id": "property_minimum_2",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 2.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "minimum_rewrite_2"
+    },
+    {
+      "id": "property_classification_3",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 3.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "property_rewrite_3"
+    },
+    {
+      "id": "property_minimum_3",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 3.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "minimum_rewrite_3"
+    },
+    {
+      "id": "property_classification_4",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 4.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "property_rewrite_4"
+    },
+    {
+      "id": "property_minimum_4",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 4.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "minimum_rewrite_4"
+    },
+    {
+      "id": "property_classification_5",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 5.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_minimum_5",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 5.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_classification_6",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 6.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_minimum_6",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 6.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_classification_7",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 7.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_minimum_7",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 7.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_classification_8",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 8.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_minimum_8",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 8.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_classification_9",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 9.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_minimum_9",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 9.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_classification_10",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 10.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_minimum_10",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 10.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_classification_11",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 11.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_minimum_11",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 11.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_classification_12",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 12.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_minimum_12",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 12.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_classification_13",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 13.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_minimum_13",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 13.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_classification_14",
+      "family": "property",
+      "prompt": "What will be the group of its topological invariant? Variant 14.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_minimum_14",
+      "family": "property",
+      "prompt": "What is the minimal possible value for the Cheeger constant? Variant 14.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_ambiguous_0",
+      "family": "property",
+      "prompt": "Is the requested group an algebraic group or an ordinary classification category?",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_unsupported_0",
+      "family": "property",
+      "prompt": "Explain the specialist ontology without a requested property.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_ambiguous_1",
+      "family": "property",
+      "prompt": "Is the requested group an algebraic group or an ordinary classification category?",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_unsupported_1",
+      "family": "property",
+      "prompt": "Explain the specialist ontology without a requested property.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_ambiguous_2",
+      "family": "property",
+      "prompt": "Is the requested group an algebraic group or an ordinary classification category?",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_unsupported_2",
+      "family": "property",
+      "prompt": "Explain the specialist ontology without a requested property.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_ambiguous_3",
+      "family": "property",
+      "prompt": "Is the requested group an algebraic group or an ordinary classification category?",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_unsupported_3",
+      "family": "property",
+      "prompt": "Explain the specialist ontology without a requested property.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_ambiguous_4",
+      "family": "property",
+      "prompt": "Is the requested group an algebraic group or an ordinary classification category?",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_unsupported_4",
+      "family": "property",
+      "prompt": "Explain the specialist ontology without a requested property.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_ambiguous_5",
+      "family": "property",
+      "prompt": "Is the requested group an algebraic group or an ordinary classification category?",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_unsupported_5",
+      "family": "property",
+      "prompt": "Explain the specialist ontology without a requested property.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_ambiguous_6",
+      "family": "property",
+      "prompt": "Is the requested group an algebraic group or an ordinary classification category?",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_unsupported_6",
+      "family": "property",
+      "prompt": "Explain the specialist ontology without a requested property.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_ambiguous_7",
+      "family": "property",
+      "prompt": "Is the requested group an algebraic group or an ordinary classification category?",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_unsupported_7",
+      "family": "property",
+      "prompt": "Explain the specialist ontology without a requested property.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_ambiguous_8",
+      "family": "property",
+      "prompt": "Is the requested group an algebraic group or an ordinary classification category?",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_unsupported_8",
+      "family": "property",
+      "prompt": "Explain the specialist ontology without a requested property.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_ambiguous_9",
+      "family": "property",
+      "prompt": "Is the requested group an algebraic group or an ordinary classification category?",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "property_unsupported_9",
+      "family": "property",
+      "prompt": "Explain the specialist ontology without a requested property.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_chi_0",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 0.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "chi_rewrite_0"
+    },
+    {
+      "id": "symbolic_alpha_beta_0",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 0.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "alpha_beta_rewrite_0"
+    },
+    {
+      "id": "symbolic_chi_1",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 1.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "chi_rewrite_1"
+    },
+    {
+      "id": "symbolic_alpha_beta_1",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 1.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "alpha_beta_rewrite_1"
+    },
+    {
+      "id": "symbolic_chi_2",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 2.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "chi_rewrite_2"
+    },
+    {
+      "id": "symbolic_alpha_beta_2",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 2.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "alpha_beta_rewrite_2"
+    },
+    {
+      "id": "symbolic_chi_3",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 3.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "chi_rewrite_3"
+    },
+    {
+      "id": "symbolic_alpha_beta_3",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 3.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "alpha_beta_rewrite_3"
+    },
+    {
+      "id": "symbolic_chi_4",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 4.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "chi_rewrite_4"
+    },
+    {
+      "id": "symbolic_alpha_beta_4",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 4.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": "alpha_beta_rewrite_4"
+    },
+    {
+      "id": "symbolic_chi_5",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 5.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_alpha_beta_5",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 5.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_chi_6",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 6.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_alpha_beta_6",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 6.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_chi_7",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 7.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_alpha_beta_7",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 7.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_chi_8",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 8.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_alpha_beta_8",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 8.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_chi_9",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 9.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_alpha_beta_9",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 9.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_chi_10",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 10.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_alpha_beta_10",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 10.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_chi_11",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 11.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_alpha_beta_11",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 11.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_chi_12",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 12.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_alpha_beta_12",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 12.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_chi_13",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 13.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_alpha_beta_13",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 13.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_chi_14",
+      "family": "symbolic",
+      "prompt": "Find the susceptibility χ in the model, case 14.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_alpha_beta_14",
+      "family": "symbolic",
+      "prompt": "Find the sum of integers α and β in the asymptotic estimate, case 14.",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_ambiguous_0",
+      "family": "symbolic",
+      "prompt": "Find α or β from the notation.",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_unsupported_0",
+      "family": "symbolic",
+      "prompt": "Determine the visual tensor target from an unsupported diagram.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_ambiguous_1",
+      "family": "symbolic",
+      "prompt": "Find α or β from the notation.",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_unsupported_1",
+      "family": "symbolic",
+      "prompt": "Determine the visual tensor target from an unsupported diagram.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_ambiguous_2",
+      "family": "symbolic",
+      "prompt": "Find α or β from the notation.",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_unsupported_2",
+      "family": "symbolic",
+      "prompt": "Determine the visual tensor target from an unsupported diagram.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_ambiguous_3",
+      "family": "symbolic",
+      "prompt": "Find α or β from the notation.",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_unsupported_3",
+      "family": "symbolic",
+      "prompt": "Determine the visual tensor target from an unsupported diagram.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_ambiguous_4",
+      "family": "symbolic",
+      "prompt": "Find α or β from the notation.",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_unsupported_4",
+      "family": "symbolic",
+      "prompt": "Determine the visual tensor target from an unsupported diagram.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_ambiguous_5",
+      "family": "symbolic",
+      "prompt": "Find α or β from the notation.",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_unsupported_5",
+      "family": "symbolic",
+      "prompt": "Determine the visual tensor target from an unsupported diagram.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_ambiguous_6",
+      "family": "symbolic",
+      "prompt": "Find α or β from the notation.",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_unsupported_6",
+      "family": "symbolic",
+      "prompt": "Determine the visual tensor target from an unsupported diagram.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_ambiguous_7",
+      "family": "symbolic",
+      "prompt": "Find α or β from the notation.",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_unsupported_7",
+      "family": "symbolic",
+      "prompt": "Determine the visual tensor target from an unsupported diagram.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_ambiguous_8",
+      "family": "symbolic",
+      "prompt": "Find α or β from the notation.",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_unsupported_8",
+      "family": "symbolic",
+      "prompt": "Determine the visual tensor target from an unsupported diagram.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_ambiguous_9",
+      "family": "symbolic",
+      "prompt": "Find α or β from the notation.",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    },
+    {
+      "id": "symbolic_unsupported_9",
+      "family": "symbolic",
+      "prompt": "Determine the visual tensor target from an unsupported diagram.",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "false_target_binding": false,
+      "rewrite_group": null
+    }
+  ]
+}

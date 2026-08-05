@@ -1,0 +1,76 @@
+{
+  "schema_version": "phase47-hle-target-grounding-rerun-v1",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "target_audit_sha256": "604ec11fcbac7a927a420600c83b24b5ee3dfbd99ae5d592887156f7a3ebaed8",
+  "case_count": 4,
+  "target_decisions": {
+    "Complete": 4
+  },
+  "terminal_classifications": {
+    "target_complete_binding_context_gap": 4
+  },
+  "target_replays": 4,
+  "binding_replays": 4,
+  "complete_target_bindings": 0,
+  "candidate_answers": 0,
+  "downstream_authorizations": 0,
+  "cases": [
+    {
+      "id": "66e94a88b78e263c565b17ee",
+      "question_sha256": "78fb03001df4eb0fcb7125540888c0b13513da5ecf7fae79591cb5a73abd8b2f",
+      "target_family": "property_target",
+      "target_status": "complete",
+      "target_replay_verified": true,
+      "target_expression_or_entity": "topological invariant",
+      "target_components": [],
+      "binding_status": "ambiguous",
+      "binding_replay_verified": true,
+      "terminal_classification": "target_complete_binding_context_gap",
+      "downstream_authorized": false
+    },
+    {
+      "id": "67153bd7f588f3f15b038f5b",
+      "question_sha256": "30cdcca045c62fa5fa99cd19c006eeb6d1db7059770316289ca7b502381d31b0",
+      "target_family": "symbolic_target",
+      "target_status": "complete",
+      "target_replay_verified": true,
+      "target_expression_or_entity": "χ",
+      "target_components": [
+        "χ"
+      ],
+      "binding_status": "ambiguous",
+      "binding_replay_verified": true,
+      "terminal_classification": "target_complete_binding_context_gap",
+      "downstream_authorized": false
+    },
+    {
+      "id": "6717eeddd6c14a5dd1563e7c",
+      "question_sha256": "26f2d08fb3638ab03918bc31f5c24c56b6025fc52bdc3dfe77e9673364f6e356",
+      "target_family": "property_target",
+      "target_status": "complete",
+      "target_replay_verified": true,
+      "target_expression_or_entity": "Cheeger constant",
+      "target_components": [],
+      "binding_status": "ambiguous",
+      "binding_replay_verified": true,
+      "terminal_classification": "target_complete_binding_context_gap",
+      "downstream_authorized": false
+    },
+    {
+      "id": "673a8ff77acc7cdc8c824b62",
+      "question_sha256": "8b1e8119a76262dff8f28c36548e8ba39470386ef453a61bdb633990e692bac6",
+      "target_family": "symbolic_target",
+      "target_status": "complete",
+      "target_replay_verified": true,
+      "target_expression_or_entity": "α + β",
+      "target_components": [
+        "α",
+        "β"
+      ],
+      "binding_status": "ambiguous",
+      "binding_replay_verified": true,
+      "terminal_classification": "target_complete_binding_context_gap",
+      "downstream_authorized": false
+    }
+  ]
+}

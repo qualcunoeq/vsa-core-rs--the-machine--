@@ -1,0 +1,7041 @@
+{
+  "schema_version": "phase56-graph-pack-v1",
+  "source": "MIT OCW 6.042J Mathematics for Computer Science (shadow citation; no production registration)",
+  "corpus_sha256": "68e4567d58fed418f315d64ae6a183b877befa2ec36e4c612964178d0d196b34",
+  "case_count": 240,
+  "supported_cases": 120,
+  "boundary_cases": 40,
+  "unsupported_cases": 80,
+  "exact_decisions": 240,
+  "exact_supported_artifacts": 120,
+  "replay_verified": 240,
+  "bridge_replays": 15,
+  "safe_refusals": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "route_leakage": 0,
+  "tamper_rejections": 240,
+  "rewrite_groups": 2,
+  "rows": [
+    {
+      "id": "construction_0",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_1",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_2",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_3",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_4",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_5",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_6",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_7",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_8",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_9",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_10",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_11",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_12",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_13",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_14",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_15",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_16",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_17",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_18",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "construction_19",
+      "family": "construction",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "edge_count_0",
+      "family": "edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "edge_count_1",
+      "family": "edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "edge_count_2",
+      "family": "edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "edge_count_3",
+      "family": "edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "edge_count_4",
+      "family": "edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "edge_count_5",
+      "family": "edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "edge_count_6",
+      "family": "edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "edge_count_7",
+      "family": "edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "edge_count_8",
+      "family": "edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "edge_count_9",
+      "family": "edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "degrees_0",
+      "family": "degrees",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "actual_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": "degree_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "degrees_1",
+      "family": "degrees",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "actual_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": "degree_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "degrees_2",
+      "family": "degrees",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "actual_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": "degree_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "degrees_3",
+      "family": "degrees",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "actual_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": "degree_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "degrees_4",
+      "family": "degrees",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "actual_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": "degree_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "degrees_5",
+      "family": "degrees",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "actual_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": "degree_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "degrees_6",
+      "family": "degrees",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "actual_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": "degree_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "degrees_7",
+      "family": "degrees",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "actual_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": "degree_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "degrees_8",
+      "family": "degrees",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "actual_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": "degree_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "degrees_9",
+      "family": "degrees",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "actual_artifact": {
+        "Degrees": [
+          1,
+          2,
+          2,
+          1
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": "degree_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "reachability_0",
+      "family": "reachability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "reachability_1",
+      "family": "reachability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "reachability_2",
+      "family": "reachability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "reachability_3",
+      "family": "reachability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "reachability_4",
+      "family": "reachability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "reachability_5",
+      "family": "reachability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "reachability_6",
+      "family": "reachability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "reachability_7",
+      "family": "reachability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "reachability_8",
+      "family": "reachability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "reachability_9",
+      "family": "reachability",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "components_0",
+      "family": "components",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "components_1",
+      "family": "components",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "components_2",
+      "family": "components",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "components_3",
+      "family": "components",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "components_4",
+      "family": "components",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "components_5",
+      "family": "components",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "components_6",
+      "family": "components",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "components_7",
+      "family": "components",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "components_8",
+      "family": "components",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "components_9",
+      "family": "components",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Components": [
+          [
+            0,
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tree_0",
+      "family": "tree",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tree_1",
+      "family": "tree",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tree_2",
+      "family": "tree",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tree_3",
+      "family": "tree",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tree_4",
+      "family": "tree",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tree_5",
+      "family": "tree",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tree_6",
+      "family": "tree",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tree_7",
+      "family": "tree",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tree_8",
+      "family": "tree",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tree_9",
+      "family": "tree",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_0",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_1",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_2",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_3",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_4",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_5",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_6",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_7",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_8",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_9",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_10",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_11",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_12",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_13",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "adjacency_matrix_14",
+      "family": "adjacency_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": true,
+      "bridge_status": "complete",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_0",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_1",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_2",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_3",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_4",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_5",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_6",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_7",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_8",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_9",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_10",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_11",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_12",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_13",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "incidence_matrix_14",
+      "family": "incidence_matrix",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "actual_artifact": {
+        "Matrix": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_from_adjacency_0",
+      "family": "graph_from_adjacency",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": "missing",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_from_adjacency_1",
+      "family": "graph_from_adjacency",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": "missing",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_from_adjacency_2",
+      "family": "graph_from_adjacency",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": "missing",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_from_adjacency_3",
+      "family": "graph_from_adjacency",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": "missing",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_from_adjacency_4",
+      "family": "graph_from_adjacency",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": "missing",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_from_adjacency_5",
+      "family": "graph_from_adjacency",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": "missing",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_from_adjacency_6",
+      "family": "graph_from_adjacency",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": "missing",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_from_adjacency_7",
+      "family": "graph_from_adjacency",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": "missing",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_from_adjacency_8",
+      "family": "graph_from_adjacency",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": "missing",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_from_adjacency_9",
+      "family": "graph_from_adjacency",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "actual_artifact": {
+        "Graph": {
+          "vertices": [
+            "d",
+            "c",
+            "b",
+            "a"
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "directed": false
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": "missing",
+      "false_authorization": false,
+      "rewrite_group": "adjacency_rewrites",
+      "tamper_rejected": true
+    },
+    {
+      "id": "empty_graph_edge_count_0",
+      "family": "empty_graph_edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 0
+      },
+      "actual_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "empty_graph_edge_count_1",
+      "family": "empty_graph_edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 0
+      },
+      "actual_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "empty_graph_edge_count_2",
+      "family": "empty_graph_edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 0
+      },
+      "actual_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "empty_graph_edge_count_3",
+      "family": "empty_graph_edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 0
+      },
+      "actual_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "empty_graph_edge_count_4",
+      "family": "empty_graph_edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 0
+      },
+      "actual_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "empty_graph_edge_count_5",
+      "family": "empty_graph_edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 0
+      },
+      "actual_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "empty_graph_edge_count_6",
+      "family": "empty_graph_edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 0
+      },
+      "actual_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "empty_graph_edge_count_7",
+      "family": "empty_graph_edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 0
+      },
+      "actual_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "empty_graph_edge_count_8",
+      "family": "empty_graph_edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 0
+      },
+      "actual_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "empty_graph_edge_count_9",
+      "family": "empty_graph_edge_count",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 0
+      },
+      "actual_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "missing_graph_0",
+      "family": "missing_graph",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "missing_graph_1",
+      "family": "missing_graph",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "missing_graph_2",
+      "family": "missing_graph",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "missing_graph_3",
+      "family": "missing_graph",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "missing_graph_4",
+      "family": "missing_graph",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "missing_graph_5",
+      "family": "missing_graph",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "missing_graph_6",
+      "family": "missing_graph",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "missing_graph_7",
+      "family": "missing_graph",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "missing_graph_8",
+      "family": "missing_graph",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "missing_graph_9",
+      "family": "missing_graph",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "duplicate_edge_0",
+      "family": "duplicate_edge",
+      "expected_status": "invalid_graph",
+      "actual_status": "invalid_graph",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "duplicate_edge_1",
+      "family": "duplicate_edge",
+      "expected_status": "invalid_graph",
+      "actual_status": "invalid_graph",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "duplicate_edge_2",
+      "family": "duplicate_edge",
+      "expected_status": "invalid_graph",
+      "actual_status": "invalid_graph",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "duplicate_edge_3",
+      "family": "duplicate_edge",
+      "expected_status": "invalid_graph",
+      "actual_status": "invalid_graph",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "duplicate_edge_4",
+      "family": "duplicate_edge",
+      "expected_status": "invalid_graph",
+      "actual_status": "invalid_graph",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "duplicate_edge_5",
+      "family": "duplicate_edge",
+      "expected_status": "invalid_graph",
+      "actual_status": "invalid_graph",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "duplicate_edge_6",
+      "family": "duplicate_edge",
+      "expected_status": "invalid_graph",
+      "actual_status": "invalid_graph",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "duplicate_edge_7",
+      "family": "duplicate_edge",
+      "expected_status": "invalid_graph",
+      "actual_status": "invalid_graph",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "duplicate_edge_8",
+      "family": "duplicate_edge",
+      "expected_status": "invalid_graph",
+      "actual_status": "invalid_graph",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "duplicate_edge_9",
+      "family": "duplicate_edge",
+      "expected_status": "invalid_graph",
+      "actual_status": "invalid_graph",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "component_semantics_ambiguity_0",
+      "family": "component_semantics_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "component_semantics_ambiguity_1",
+      "family": "component_semantics_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "component_semantics_ambiguity_2",
+      "family": "component_semantics_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "component_semantics_ambiguity_3",
+      "family": "component_semantics_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "component_semantics_ambiguity_4",
+      "family": "component_semantics_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "component_semantics_ambiguity_5",
+      "family": "component_semantics_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "component_semantics_ambiguity_6",
+      "family": "component_semantics_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "component_semantics_ambiguity_7",
+      "family": "component_semantics_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "component_semantics_ambiguity_8",
+      "family": "component_semantics_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "component_semantics_ambiguity_9",
+      "family": "component_semantics_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "vertex_order_ambiguity_0",
+      "family": "vertex_order_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "vertex_order_ambiguity_1",
+      "family": "vertex_order_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "vertex_order_ambiguity_2",
+      "family": "vertex_order_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "vertex_order_ambiguity_3",
+      "family": "vertex_order_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "vertex_order_ambiguity_4",
+      "family": "vertex_order_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "vertex_order_ambiguity_5",
+      "family": "vertex_order_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "vertex_order_ambiguity_6",
+      "family": "vertex_order_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "vertex_order_ambiguity_7",
+      "family": "vertex_order_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "vertex_order_ambiguity_8",
+      "family": "vertex_order_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "vertex_order_ambiguity_9",
+      "family": "vertex_order_ambiguity",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "weighted_graph_0",
+      "family": "weighted_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "weighted_graph_1",
+      "family": "weighted_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "weighted_graph_2",
+      "family": "weighted_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "weighted_graph_3",
+      "family": "weighted_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "weighted_graph_4",
+      "family": "weighted_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "weighted_graph_5",
+      "family": "weighted_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "weighted_graph_6",
+      "family": "weighted_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "weighted_graph_7",
+      "family": "weighted_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "weighted_graph_8",
+      "family": "weighted_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "weighted_graph_9",
+      "family": "weighted_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "multigraph_0",
+      "family": "multigraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "multigraph_1",
+      "family": "multigraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "multigraph_2",
+      "family": "multigraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "multigraph_3",
+      "family": "multigraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "multigraph_4",
+      "family": "multigraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "multigraph_5",
+      "family": "multigraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "multigraph_6",
+      "family": "multigraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "multigraph_7",
+      "family": "multigraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "multigraph_8",
+      "family": "multigraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "multigraph_9",
+      "family": "multigraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "hypergraph_0",
+      "family": "hypergraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "hypergraph_1",
+      "family": "hypergraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "hypergraph_2",
+      "family": "hypergraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "hypergraph_3",
+      "family": "hypergraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "hypergraph_4",
+      "family": "hypergraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "hypergraph_5",
+      "family": "hypergraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "hypergraph_6",
+      "family": "hypergraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "hypergraph_7",
+      "family": "hypergraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "hypergraph_8",
+      "family": "hypergraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "hypergraph_9",
+      "family": "hypergraph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "infinite_graph_0",
+      "family": "infinite_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "infinite_graph_1",
+      "family": "infinite_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "infinite_graph_2",
+      "family": "infinite_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "infinite_graph_3",
+      "family": "infinite_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "infinite_graph_4",
+      "family": "infinite_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "infinite_graph_5",
+      "family": "infinite_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "infinite_graph_6",
+      "family": "infinite_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "infinite_graph_7",
+      "family": "infinite_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "infinite_graph_8",
+      "family": "infinite_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "infinite_graph_9",
+      "family": "infinite_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_limits_0",
+      "family": "graph_limits",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_limits_1",
+      "family": "graph_limits",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_limits_2",
+      "family": "graph_limits",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_limits_3",
+      "family": "graph_limits",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_limits_4",
+      "family": "graph_limits",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_limits_5",
+      "family": "graph_limits",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_limits_6",
+      "family": "graph_limits",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_limits_7",
+      "family": "graph_limits",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_limits_8",
+      "family": "graph_limits",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "graph_limits_9",
+      "family": "graph_limits",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "spectral_graph_0",
+      "family": "spectral_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "spectral_graph_1",
+      "family": "spectral_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "spectral_graph_2",
+      "family": "spectral_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "spectral_graph_3",
+      "family": "spectral_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "spectral_graph_4",
+      "family": "spectral_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "spectral_graph_5",
+      "family": "spectral_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "spectral_graph_6",
+      "family": "spectral_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "spectral_graph_7",
+      "family": "spectral_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "spectral_graph_8",
+      "family": "spectral_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "spectral_graph_9",
+      "family": "spectral_graph",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "random_graph_asymptotics_0",
+      "family": "random_graph_asymptotics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "random_graph_asymptotics_1",
+      "family": "random_graph_asymptotics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "random_graph_asymptotics_2",
+      "family": "random_graph_asymptotics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "random_graph_asymptotics_3",
+      "family": "random_graph_asymptotics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "random_graph_asymptotics_4",
+      "family": "random_graph_asymptotics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "random_graph_asymptotics_5",
+      "family": "random_graph_asymptotics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "random_graph_asymptotics_6",
+      "family": "random_graph_asymptotics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "random_graph_asymptotics_7",
+      "family": "random_graph_asymptotics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "random_graph_asymptotics_8",
+      "family": "random_graph_asymptotics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "random_graph_asymptotics_9",
+      "family": "random_graph_asymptotics",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "cheeger_invariant_0",
+      "family": "cheeger_invariant",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "cheeger_invariant_1",
+      "family": "cheeger_invariant",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "cheeger_invariant_2",
+      "family": "cheeger_invariant",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "cheeger_invariant_3",
+      "family": "cheeger_invariant",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "cheeger_invariant_4",
+      "family": "cheeger_invariant",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "cheeger_invariant_5",
+      "family": "cheeger_invariant",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "cheeger_invariant_6",
+      "family": "cheeger_invariant",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "cheeger_invariant_7",
+      "family": "cheeger_invariant",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "cheeger_invariant_8",
+      "family": "cheeger_invariant",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    },
+    {
+      "id": "cheeger_invariant_9",
+      "family": "cheeger_invariant",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "bridge_replay": false,
+      "bridge_status": null,
+      "false_authorization": false,
+      "rewrite_group": null,
+      "tamper_rejected": true
+    }
+  ]
+}

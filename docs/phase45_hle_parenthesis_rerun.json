@@ -1,0 +1,89 @@
+{
+  "schema_version": "phase45-hle-parenthesis-rerun-v1",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "audit_sha256": "59daafabd53661b925debb843d8b77f32d08665f5921234884dcf27b41874d6f",
+  "repaired_case_count": 4,
+  "terminal_counts": {
+    "target_or_context_ambiguity": 4
+  },
+  "unique_bindings": 0,
+  "typed_artifacts": 0,
+  "candidate_answers": 0,
+  "downstream_authorizations": 0,
+  "specialist_residual_count": 6,
+  "specialist_residuals_unchanged": true,
+  "cases": [
+    {
+      "id": "66e94a88b78e263c565b17ee",
+      "question_sha256": "78fb03001df4eb0fcb7125540888c0b13513da5ecf7fae79591cb5a73abd8b2f",
+      "parenthesis_forms": [
+        "grouping"
+      ],
+      "binding_status": "ambiguous",
+      "unique_binding": false,
+      "typed_downstream_artifact": false,
+      "existing_method_available": false,
+      "candidate_answer": null,
+      "terminal_outcome": "target_or_context_ambiguity",
+      "requested_candidates": [],
+      "reason": "requested target has zero or multiple candidates",
+      "replay_verified": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "67153bd7f588f3f15b038f5b",
+      "question_sha256": "30cdcca045c62fa5fa99cd19c006eeb6d1db7059770316289ca7b502381d31b0",
+      "parenthesis_forms": [
+        "grouping",
+        "grouping",
+        "grouping"
+      ],
+      "binding_status": "ambiguous",
+      "unique_binding": false,
+      "typed_downstream_artifact": false,
+      "existing_method_available": false,
+      "candidate_answer": null,
+      "terminal_outcome": "target_or_context_ambiguity",
+      "requested_candidates": [],
+      "reason": "requested target has zero or multiple candidates",
+      "replay_verified": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "6717eeddd6c14a5dd1563e7c",
+      "question_sha256": "26f2d08fb3638ab03918bc31f5c24c56b6025fc52bdc3dfe77e9673364f6e356",
+      "parenthesis_forms": [
+        "tuple"
+      ],
+      "binding_status": "ambiguous",
+      "unique_binding": false,
+      "typed_downstream_artifact": false,
+      "existing_method_available": false,
+      "candidate_answer": null,
+      "terminal_outcome": "target_or_context_ambiguity",
+      "requested_candidates": [],
+      "reason": "requested target has zero or multiple candidates",
+      "replay_verified": true,
+      "downstream_authorized": false
+    },
+    {
+      "id": "673a8ff77acc7cdc8c824b62",
+      "question_sha256": "8b1e8119a76262dff8f28c36548e8ba39470386ef453a61bdb633990e692bac6",
+      "parenthesis_forms": [
+        "operator_argument",
+        "operator_argument",
+        "grouping"
+      ],
+      "binding_status": "ambiguous",
+      "unique_binding": false,
+      "typed_downstream_artifact": false,
+      "existing_method_available": false,
+      "candidate_answer": null,
+      "terminal_outcome": "target_or_context_ambiguity",
+      "requested_candidates": [],
+      "reason": "requested target has zero or multiple candidates",
+      "replay_verified": true,
+      "downstream_authorized": false
+    }
+  ]
+}

@@ -160,6 +160,10 @@ name = "hle_equation_binding_ambiguity_audit"
 path = "src/bin/hle_equation_binding_ambiguity_audit.rs"
 
 [[bin]]
+name = "hle_equation_binding_phase45_rerun"
+path = "src/bin/hle_equation_binding_phase45_rerun.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

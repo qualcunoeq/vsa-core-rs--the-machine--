@@ -1,0 +1,1428 @@
+{
+  "schema_version": "phase48-target-context-v1",
+  "corpus_sha256": "5b3b1bd7d197daac6e026d32439d405b9229d8b86308dd87e1f04d6f1c83205c",
+  "case_count": 90,
+  "decision_counts": {
+    "Ambiguous": 30,
+    "Complete": 30,
+    "Unsupported": 30
+  },
+  "exact_decisions": 90,
+  "replay_verified": 90,
+  "correct_inclusion_exclusion": 90,
+  "rewrite_groups": 5,
+  "binding_handoff_ready": 30,
+  "downstream_authorizations": 0,
+  "cases": [
+    {
+      "id": "supported_0",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (0)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": "supported_rewrite_0"
+    },
+    {
+      "id": "supported_1",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (1)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": "supported_rewrite_1"
+    },
+    {
+      "id": "supported_2",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (2)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": "supported_rewrite_2"
+    },
+    {
+      "id": "supported_3",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (3)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": "supported_rewrite_3"
+    },
+    {
+      "id": "supported_4",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (4)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": "supported_rewrite_4"
+    },
+    {
+      "id": "supported_5",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (5)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": "supported_rewrite_0"
+    },
+    {
+      "id": "supported_6",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (6)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": "supported_rewrite_1"
+    },
+    {
+      "id": "supported_7",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (7)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": "supported_rewrite_2"
+    },
+    {
+      "id": "supported_8",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (8)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": "supported_rewrite_3"
+    },
+    {
+      "id": "supported_9",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (9)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": "supported_rewrite_4"
+    },
+    {
+      "id": "supported_10",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (10)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_11",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (11)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_12",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (12)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_13",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (13)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_14",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (14)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_15",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (15)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_16",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (16)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_17",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (17)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_18",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (18)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_19",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (19)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_20",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (20)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_21",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (21)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_22",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (22)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_23",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (23)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_24",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (24)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_25",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (25)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_26",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (26)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_27",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (27)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_28",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (28)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "supported_29",
+      "prompt": "Target y with separated definitions, constraints, and assumptions (29)",
+      "expected": "complete",
+      "actual": "complete",
+      "replay_verified": true,
+      "binding_handoff_ready": true,
+      "included_region_ids": [
+        "assumption",
+        "constraint",
+        "definition"
+      ],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_0",
+      "prompt": "Target y with competing scopes (0)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_1",
+      "prompt": "Target y with competing scopes (1)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_2",
+      "prompt": "Target y with competing scopes (2)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_3",
+      "prompt": "Target y with competing scopes (3)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_4",
+      "prompt": "Target y with competing scopes (4)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_5",
+      "prompt": "Target y with competing scopes (5)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_6",
+      "prompt": "Target y with competing scopes (6)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_7",
+      "prompt": "Target y with competing scopes (7)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_8",
+      "prompt": "Target y with competing scopes (8)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_9",
+      "prompt": "Target y with competing scopes (9)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_10",
+      "prompt": "Target y with competing scopes (10)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_11",
+      "prompt": "Target y with competing scopes (11)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_12",
+      "prompt": "Target y with competing scopes (12)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_13",
+      "prompt": "Target y with competing scopes (13)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_14",
+      "prompt": "Target y with competing scopes (14)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_15",
+      "prompt": "Target y with competing scopes (15)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_16",
+      "prompt": "Target y with competing scopes (16)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_17",
+      "prompt": "Target y with competing scopes (17)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_18",
+      "prompt": "Target y with competing scopes (18)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_19",
+      "prompt": "Target y with competing scopes (19)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_20",
+      "prompt": "Target y with competing scopes (20)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_21",
+      "prompt": "Target y with competing scopes (21)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_22",
+      "prompt": "Target y with competing scopes (22)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_23",
+      "prompt": "Target y with competing scopes (23)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_24",
+      "prompt": "Target y with competing scopes (24)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_25",
+      "prompt": "Target y with competing scopes (25)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_26",
+      "prompt": "Target y with competing scopes (26)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_27",
+      "prompt": "Target y with competing scopes (27)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_28",
+      "prompt": "Target y with competing scopes (28)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "ambiguous_29",
+      "prompt": "Target y with competing scopes (29)",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [
+        "constraint",
+        "left",
+        "right"
+      ],
+      "excluded_region_ids": [],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_0",
+      "prompt": "Target y with no asserted context (0)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_1",
+      "prompt": "Target y with no asserted context (1)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_2",
+      "prompt": "Target y with no asserted context (2)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_3",
+      "prompt": "Target y with no asserted context (3)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_4",
+      "prompt": "Target y with no asserted context (4)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_5",
+      "prompt": "Target y with no asserted context (5)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_6",
+      "prompt": "Target y with no asserted context (6)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_7",
+      "prompt": "Target y with no asserted context (7)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_8",
+      "prompt": "Target y with no asserted context (8)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_9",
+      "prompt": "Target y with no asserted context (9)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_10",
+      "prompt": "Target y with no asserted context (10)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_11",
+      "prompt": "Target y with no asserted context (11)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_12",
+      "prompt": "Target y with no asserted context (12)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_13",
+      "prompt": "Target y with no asserted context (13)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_14",
+      "prompt": "Target y with no asserted context (14)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_15",
+      "prompt": "Target y with no asserted context (15)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_16",
+      "prompt": "Target y with no asserted context (16)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_17",
+      "prompt": "Target y with no asserted context (17)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_18",
+      "prompt": "Target y with no asserted context (18)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_19",
+      "prompt": "Target y with no asserted context (19)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_20",
+      "prompt": "Target y with no asserted context (20)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_21",
+      "prompt": "Target y with no asserted context (21)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_22",
+      "prompt": "Target y with no asserted context (22)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_23",
+      "prompt": "Target y with no asserted context (23)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_24",
+      "prompt": "Target y with no asserted context (24)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_25",
+      "prompt": "Target y with no asserted context (25)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_26",
+      "prompt": "Target y with no asserted context (26)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_27",
+      "prompt": "Target y with no asserted context (27)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_28",
+      "prompt": "Target y with no asserted context (28)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    },
+    {
+      "id": "unsupported_29",
+      "prompt": "Target y with no asserted context (29)",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "replay_verified": true,
+      "binding_handoff_ready": false,
+      "included_region_ids": [],
+      "excluded_region_ids": [
+        "incidental",
+        "quote"
+      ],
+      "rewrite_group": null
+    }
+  ]
+}

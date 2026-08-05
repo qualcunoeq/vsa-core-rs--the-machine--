@@ -41,6 +41,8 @@ struct Row {
     linear_algebra_replay: bool,
     walk_replay: bool,
     three_domain_replay: bool,
+    trace_entries: usize,
+    trace_replays: usize,
     safe_refusal: bool,
     false_authorization: bool,
     tamper_rejected: bool,
@@ -60,6 +62,10 @@ struct Report {
     linear_algebra_replays: usize,
     walk_replays: usize,
     three_domain_replays: usize,
+    emitted_trace_entries: usize,
+    emitted_trace_replays: usize,
+    authorized_trace_entries: usize,
+    authorized_trace_replays: usize,
     safe_refusals: usize,
     false_authorizations: usize,
     false_denials: usize,
@@ -261,6 +267,8 @@ fn evaluate_case(case: &Case) -> Row {
     let mut walk_artifact = None;
     let mut walk_replay = false;
     let mut three_domain_replay = false;
+    let mut trace_entries = 0;
+    let mut trace_replays = 0;
     let mut walk_result_for_tamper = None;
     let mut transition = None;
     let mut convention = Some(TransitionConvention::RowStochastic);
@@ -334,6 +342,12 @@ fn evaluate_case(case: &Case) -> Row {
         walk_status = walk.status;
         walk_artifact = walk.final_artifact.clone();
         walk_replay = walk.replay_verified();
+        trace_entries = walk.trace.len();
+        trace_replays = walk
+            .trace
+            .iter()
+            .filter(|step| step.replay_verified())
+            .count();
         three_domain_replay = walk_status == RandomWalkStatus::Complete
             && graph_replay
             && probability_replay
@@ -368,6 +382,8 @@ fn evaluate_case(case: &Case) -> Row {
         linear_algebra_replay,
         walk_replay,
         three_domain_replay,
+        trace_entries,
+        trace_replays,
         safe_refusal: !case.expected_authorized && !authorized && exact,
         false_authorization: authorized && !case.expected_authorized,
         tamper_rejected,
@@ -390,6 +406,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut linear_algebra_replays = 0;
     let mut walk_replays = 0;
     let mut three_domain_replays = 0;
+    let mut emitted_trace_entries = 0;
+    let mut emitted_trace_replays = 0;
+    let mut authorized_trace_entries = 0;
+    let mut authorized_trace_replays = 0;
     let mut safe_refusals = 0;
     let mut false_authorizations = 0;
     let mut false_denials = 0;
@@ -405,6 +425,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         linear_algebra_replays += usize::from(row.linear_algebra_replay);
         walk_replays += usize::from(row.walk_replay);
         three_domain_replays += usize::from(row.three_domain_replay);
+        emitted_trace_entries += row.trace_entries;
+        emitted_trace_replays += row.trace_replays;
+        if case.expected_authorized {
+            authorized_trace_entries += row.trace_entries;
+            authorized_trace_replays += row.trace_replays;
+        }
         safe_refusals += usize::from(row.safe_refusal);
         false_authorizations += usize::from(row.false_authorization);
         false_denials += usize::from(
@@ -432,6 +458,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         linear_algebra_replays,
         walk_replays,
         three_domain_replays,
+        emitted_trace_entries,
+        emitted_trace_replays,
+        authorized_trace_entries,
+        authorized_trace_replays,
         safe_refusals,
         false_authorizations,
         false_denials,

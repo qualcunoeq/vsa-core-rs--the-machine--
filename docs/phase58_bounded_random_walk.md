@@ -30,6 +30,8 @@ Results from `random_walk_composition_bench`:
 * 240/240 graph and probability source replays;
 * 230 linear-algebra replays (all emitted artifacts);
 * 215 bounded-step/refusal receipts (all emitted receipts);
+* 450/450 intermediate trace entries replayed on authorized traces;
+* 525/525 emitted intermediate trace entries replayed across all routes;
 * 240/240 tamper attempts rejected;
 * 120 safe refusals;
 * 0 false authorizations or denials;

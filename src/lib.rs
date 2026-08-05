@@ -67,6 +67,7 @@ pub mod equation_normalization;
 pub mod equation_problem_binding;
 pub mod target_grounding;
 pub mod target_context;
+pub mod context_lowering;
 pub mod equation_classification;
 pub mod solution_verification;
 pub mod experiment;

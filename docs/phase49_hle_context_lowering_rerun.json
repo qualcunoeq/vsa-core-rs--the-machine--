@@ -1,0 +1,94 @@
+{
+  "schema_version": "phase49-hle-context-lowering-rerun-v1",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "context_rerun_sha256": "0b5078fecb0cbf3b67d4132bc1a25ad8055b21136598d85c587859e2c381530b",
+  "case_count": 4,
+  "lowering_decisions": {
+    "Complete": 4
+  },
+  "terminal_classifications": {
+    "complete_lowered_problem_specialist_method_gap": 4
+  },
+  "complete_lowered_problems": 4,
+  "lowering_replays": 4,
+  "candidate_answers": 0,
+  "downstream_authorizations": 0,
+  "cases": [
+    {
+      "id": "66e94a88b78e263c565b17ee",
+      "question_sha256": "78fb03001df4eb0fcb7125540888c0b13513da5ecf7fae79591cb5a73abd8b2f",
+      "lowering_status": "complete",
+      "problem_type": "property_classification",
+      "requested_target": "topological invariant",
+      "included_regions": [
+        "model_definition",
+        "symmetry_constraints"
+      ],
+      "equations": [
+        "T^2=-1; P^2=-1; D=1"
+      ],
+      "assumptions": [],
+      "lowering_replay_verified": true,
+      "terminal_classification": "complete_lowered_problem_specialist_method_gap",
+      "downstream_authorized": false
+    },
+    {
+      "id": "67153bd7f588f3f15b038f5b",
+      "question_sha256": "30cdcca045c62fa5fa99cd19c006eeb6d1db7059770316289ca7b502381d31b0",
+      "lowering_status": "complete",
+      "problem_type": "symbolic_expression",
+      "requested_target": "χ",
+      "included_regions": [
+        "susceptibility_definition",
+        "correlation_constraint",
+        "homogeneous_assumption"
+      ],
+      "equations": [
+        "C_l = connected correlation"
+      ],
+      "assumptions": [
+        "homogeneous couplings and fields"
+      ],
+      "lowering_replay_verified": true,
+      "terminal_classification": "complete_lowered_problem_specialist_method_gap",
+      "downstream_authorized": false
+    },
+    {
+      "id": "6717eeddd6c14a5dd1563e7c",
+      "question_sha256": "26f2d08fb3638ab03918bc31f5c24c56b6025fc52bdc3dfe77e9673364f6e356",
+      "lowering_status": "complete",
+      "problem_type": "scalar_equation",
+      "requested_target": "Cheeger constant",
+      "included_regions": [
+        "graph_definition",
+        "cheeger_constraint",
+        "size_assumption"
+      ],
+      "equations": [
+        "h = min e(U,V\\U)/|U|"
+      ],
+      "assumptions": [
+        "n > 100"
+      ],
+      "lowering_replay_verified": true,
+      "terminal_classification": "complete_lowered_problem_specialist_method_gap",
+      "downstream_authorized": false
+    },
+    {
+      "id": "673a8ff77acc7cdc8c824b62",
+      "question_sha256": "8b1e8119a76262dff8f28c36548e8ba39470386ef453a61bdb633990e692bac6",
+      "lowering_status": "complete",
+      "problem_type": "symbolic_expression",
+      "requested_target": "α + β",
+      "included_regions": [
+        "set_definition",
+        "asymptotic_constraint"
+      ],
+      "equations": [],
+      "assumptions": [],
+      "lowering_replay_verified": true,
+      "terminal_classification": "complete_lowered_problem_specialist_method_gap",
+      "downstream_authorized": false
+    }
+  ]
+}

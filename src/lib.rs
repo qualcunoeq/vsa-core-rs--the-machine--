@@ -43,6 +43,7 @@ pub mod cross_ontology;
 pub mod governed_promotion;
 pub mod graph_pack;
 pub mod release_campaign;
+pub mod random_walk_composition;
 pub mod method_synthesis;
 pub mod concept_composition_benchmark;
 pub mod cross_vertical_benchmark;

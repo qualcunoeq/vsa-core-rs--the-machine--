@@ -1,0 +1,813 @@
+{
+  "schema_version": "phase53-linear-algebra-composition-v1",
+  "corpus_sha256": "cfb8128b9798988257527c469dc5420503baba10227a1b8698133fe76e734df1",
+  "cases": 80,
+  "exact_route_decisions": 80,
+  "intermediate_artifact_replays": 80,
+  "downstream_replays": 40,
+  "safe_refusals": 40,
+  "route_leakage": 0,
+  "false_authorizations": 0,
+  "rows": [
+    {
+      "id": "matrix_to_linear_system_0",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_1",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_2",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_3",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_4",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_5",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_6",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_7",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_8",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_9",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_10",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_11",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_12",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_13",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_14",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_15",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_16",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_17",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_18",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_linear_system_19",
+      "route": "matrix_to_linear_system",
+      "pack_status": "complete",
+      "terminal": "existing_linear_system_replay",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_0",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_1",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_2",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_3",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_4",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_5",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_6",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_7",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_8",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_9",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_10",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_11",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_12",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_13",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_14",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_15",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_16",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_17",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_18",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_recurrence_transition_19",
+      "route": "matrix_to_recurrence_transition",
+      "pack_status": "complete",
+      "terminal": "typed_transition_vector",
+      "intermediate_replay": true,
+      "downstream_replay": true,
+      "route_leakage": false,
+      "authorized": true
+    },
+    {
+      "id": "matrix_to_graph_candidate_0",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_1",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_2",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_3",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_4",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_5",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_6",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_7",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_8",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_9",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_10",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_11",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_12",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_13",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_14",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_15",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_16",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_17",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_18",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_graph_candidate_19",
+      "route": "matrix_to_graph_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_graph_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_covariance_candidate_0",
+      "route": "matrix_to_covariance_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_probability_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_covariance_candidate_1",
+      "route": "matrix_to_covariance_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_probability_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_covariance_candidate_2",
+      "route": "matrix_to_covariance_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_probability_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_covariance_candidate_3",
+      "route": "matrix_to_covariance_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_probability_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_covariance_candidate_4",
+      "route": "matrix_to_covariance_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_probability_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_covariance_candidate_5",
+      "route": "matrix_to_covariance_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_probability_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_covariance_candidate_6",
+      "route": "matrix_to_covariance_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_probability_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_covariance_candidate_7",
+      "route": "matrix_to_covariance_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_probability_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_covariance_candidate_8",
+      "route": "matrix_to_covariance_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_probability_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "matrix_to_covariance_candidate_9",
+      "route": "matrix_to_covariance_candidate",
+      "pack_status": "complete",
+      "terminal": "unsupported_probability_consumer",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "parameterized_matrix_0",
+      "route": "parameterized_matrix",
+      "pack_status": "unsupported",
+      "terminal": "unsupported_parameter_domain",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "parameterized_matrix_1",
+      "route": "parameterized_matrix",
+      "pack_status": "unsupported",
+      "terminal": "unsupported_parameter_domain",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "parameterized_matrix_2",
+      "route": "parameterized_matrix",
+      "pack_status": "unsupported",
+      "terminal": "unsupported_parameter_domain",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "parameterized_matrix_3",
+      "route": "parameterized_matrix",
+      "pack_status": "unsupported",
+      "terminal": "unsupported_parameter_domain",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "parameterized_matrix_4",
+      "route": "parameterized_matrix",
+      "pack_status": "unsupported",
+      "terminal": "unsupported_parameter_domain",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "parameterized_matrix_5",
+      "route": "parameterized_matrix",
+      "pack_status": "unsupported",
+      "terminal": "unsupported_parameter_domain",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "parameterized_matrix_6",
+      "route": "parameterized_matrix",
+      "pack_status": "unsupported",
+      "terminal": "unsupported_parameter_domain",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "parameterized_matrix_7",
+      "route": "parameterized_matrix",
+      "pack_status": "unsupported",
+      "terminal": "unsupported_parameter_domain",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "parameterized_matrix_8",
+      "route": "parameterized_matrix",
+      "pack_status": "unsupported",
+      "terminal": "unsupported_parameter_domain",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    },
+    {
+      "id": "parameterized_matrix_9",
+      "route": "parameterized_matrix",
+      "pack_status": "unsupported",
+      "terminal": "unsupported_parameter_domain",
+      "intermediate_replay": true,
+      "downstream_replay": false,
+      "route_leakage": false,
+      "authorized": false
+    }
+  ]
+}

@@ -61,6 +61,7 @@ pub mod context;
 pub mod defense;
 pub mod development;
 pub mod diagnostic;
+pub mod discrete_dynamics;
 pub mod drift;
 pub mod drives;
 pub mod evidence;

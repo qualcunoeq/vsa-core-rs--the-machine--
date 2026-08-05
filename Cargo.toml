@@ -228,6 +228,10 @@ name = "random_walk_composition_bench"
 path = "src/bin/random_walk_composition_bench.rs"
 
 [[bin]]
+name = "discrete_dynamics_bench"
+path = "src/bin/discrete_dynamics_bench.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

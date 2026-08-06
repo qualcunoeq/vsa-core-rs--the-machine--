@@ -260,6 +260,10 @@ name = "hle_pack_frontend_phase66"
 path = "src/bin/hle_pack_frontend_phase66.rs"
 
 [[bin]]
+name = "abstract_algebra_pack_bench"
+path = "src/bin/abstract_algebra_pack_bench.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

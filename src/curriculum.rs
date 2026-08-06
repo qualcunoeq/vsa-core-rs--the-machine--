@@ -218,22 +218,23 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
         ),
     ];
     for (id, title, prerequisites, artifacts, reason) in domains {
-        let (status, validation_gates) = if id == "linear_algebra_spectral" {
-            (
-                CurriculumStatus::ShadowValidated,
-                ValidationGates {
-                    authoritative_sources: true,
-                    independent_development_corpus: true,
-                    boundary_corpus: true,
-                    pressure_corpus: true,
-                    replay_verified: true,
-                    zero_false_authorization: true,
-                    frozen_hle_holdout: true,
-                },
-            )
-        } else {
-            (CurriculumStatus::Planned, planned.clone())
-        };
+        let (status, validation_gates) =
+            if matches!(id, "linear_algebra_spectral" | "abstract_algebra") {
+                (
+                    CurriculumStatus::ShadowValidated,
+                    ValidationGates {
+                        authoritative_sources: true,
+                        independent_development_corpus: true,
+                        boundary_corpus: true,
+                        pressure_corpus: true,
+                        replay_verified: true,
+                        zero_false_authorization: true,
+                        frozen_hle_holdout: true,
+                    },
+                )
+            } else {
+                (CurriculumStatus::Planned, planned.clone())
+            };
         packs.push(CurriculumPack {
             id: id.into(),
             title: title.into(),

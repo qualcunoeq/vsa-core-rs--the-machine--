@@ -37,9 +37,10 @@ Before promotion, a pack must have:
 * zero false authorization;
 * a frozen HLE holdout that is never used for development.
 
-The manifest currently contains eight packs: one shadow-validated mechanics
-substrate and seven planned foundational domains. No planned pack is promoted,
-and the emitted manifest reports zero production authorizations.
+The manifest currently contains eight packs: three shadow-validated domains
+(mechanics, finite-dimensional linear algebra, and bounded abstract algebra)
+and five planned foundational domains. No pack is promoted to production, and
+the emitted manifest reports zero production authorizations.
 
 Run the deterministic manifest emitter with:
 

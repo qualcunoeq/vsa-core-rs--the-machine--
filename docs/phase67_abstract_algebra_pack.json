@@ -1,0 +1,3599 @@
+{
+  "schema": "phase67-bounded-abstract-algebra-v1",
+  "source": "independently authored finite cyclic/ring corpus",
+  "corpus_sha256": "1d3ee7e84cdc234d876abb3bd65b210b8408c00dc0b983005a8ea7c0a089e4f1",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "unsupported": 80,
+  "exact_decisions": 240,
+  "supported_artifacts": 120,
+  "replay_verified": 240,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "family_counts": {
+    "additive_order": 20,
+    "ambiguous_operation": 20,
+    "cyclic_group": 30,
+    "cyclic_homomorphism": 30,
+    "missing_homomorphism_parameter": 10,
+    "missing_modulus": 10,
+    "modular_ring": 20,
+    "noncanonical_residue": 20,
+    "oversized_modulus": 20,
+    "unit": 20,
+    "unsupported_domain": 20,
+    "unsupported_ring_boundary": 20
+  },
+  "status_counts": {
+    "Ambiguous": 20,
+    "Complete": 120,
+    "Inconsistent": 20,
+    "InvalidDomain": 20,
+    "Missing": 20,
+    "Unsupported": 40
+  },
+  "receipts": [
+    {
+      "id": "cyclic_group_0",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 2
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_1",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 3
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_2",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 4
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_3",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 5
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 5
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_4",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 6
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_5",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 7
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 7
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_6",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 8
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_7",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 9
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 9
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_8",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 10
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 10
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_9",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 11
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 11
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_10",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 12
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 12
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_11",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 13
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 13
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_12",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 14
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 14
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_13",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 15
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 15
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_14",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 16
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 16
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_15",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 17
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 17
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_16",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 18
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 18
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_17",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 19
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 19
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_18",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 20
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 20
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_19",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 21
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 21
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_20",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 22
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 22
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_21",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 23
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 23
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_22",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 24
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 24
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_23",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 25
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 25
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_24",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 26
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 26
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_25",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 27
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 27
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_26",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 28
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 28
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_27",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 29
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 29
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_28",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 30
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 30
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_group_29",
+      "family": "cyclic_group",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicGroup": {
+          "order": 31
+        }
+      },
+      "actual_artifact": {
+        "CyclicGroup": {
+          "order": 31
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_0",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 2
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 2
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_1",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 3
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_2",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 4
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 4
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_3",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 5
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 5
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_4",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 6
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 6
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_5",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 7
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 7
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_6",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 8
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_7",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 9
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 9
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_8",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 10
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 10
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_9",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 11
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 11
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_10",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 12
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 12
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_11",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 13
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 13
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_12",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 14
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 14
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_13",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 15
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 15
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_14",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 16
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 16
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_15",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 17
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 17
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_16",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 18
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 18
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_17",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 19
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 19
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_18",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 20
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 20
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_ring_19",
+      "family": "modular_ring",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "ModularRing": {
+          "modulus": 21
+        }
+      },
+      "actual_artifact": {
+        "ModularRing": {
+          "modulus": 21
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_0",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_1",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_2",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_3",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_4",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_5",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_6",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_7",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_8",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_9",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_10",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_11",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_12",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_13",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_14",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_15",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_16",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_17",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_18",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_19",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_20",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_21",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_22",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_23",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_24",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_25",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_26",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_27",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_28",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "cyclic_homomorphism_29",
+      "family": "cyclic_homomorphism",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_0",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 1
+      },
+      "actual_artifact": {
+        "Scalar": 1
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_1",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_2",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 5
+      },
+      "actual_artifact": {
+        "Scalar": 5
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_3",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 2
+      },
+      "actual_artifact": {
+        "Scalar": 2
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_4",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 7
+      },
+      "actual_artifact": {
+        "Scalar": 7
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_5",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 8
+      },
+      "actual_artifact": {
+        "Scalar": 8
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_6",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_7",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 10
+      },
+      "actual_artifact": {
+        "Scalar": 10
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_8",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 11
+      },
+      "actual_artifact": {
+        "Scalar": 11
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_9",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_10",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 13
+      },
+      "actual_artifact": {
+        "Scalar": 13
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_11",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 14
+      },
+      "actual_artifact": {
+        "Scalar": 14
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_12",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 5
+      },
+      "actual_artifact": {
+        "Scalar": 5
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_13",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 16
+      },
+      "actual_artifact": {
+        "Scalar": 16
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_14",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 17
+      },
+      "actual_artifact": {
+        "Scalar": 17
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_15",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_16",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 19
+      },
+      "actual_artifact": {
+        "Scalar": 19
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_17",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 20
+      },
+      "actual_artifact": {
+        "Scalar": 20
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_18",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 7
+      },
+      "actual_artifact": {
+        "Scalar": 7
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_order_19",
+      "family": "additive_order",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 22
+      },
+      "actual_artifact": {
+        "Scalar": 22
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_0",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_1",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_2",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_3",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_4",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_5",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_6",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_7",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_8",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_9",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_10",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_11",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_12",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_13",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_14",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_15",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_16",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_17",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_18",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unit_19",
+      "family": "unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_0",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_1",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_2",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_3",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_4",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_5",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_6",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_7",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_8",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_9",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_10",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_11",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_12",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_13",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_14",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_15",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_16",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_17",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_18",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_operation_19",
+      "family": "ambiguous_operation",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_modulus_0",
+      "family": "missing_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_modulus_1",
+      "family": "missing_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_modulus_2",
+      "family": "missing_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_modulus_3",
+      "family": "missing_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_modulus_4",
+      "family": "missing_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_modulus_5",
+      "family": "missing_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_modulus_6",
+      "family": "missing_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_modulus_7",
+      "family": "missing_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_modulus_8",
+      "family": "missing_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_modulus_9",
+      "family": "missing_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_homomorphism_parameter_0",
+      "family": "missing_homomorphism_parameter",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_homomorphism_parameter_1",
+      "family": "missing_homomorphism_parameter",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_homomorphism_parameter_2",
+      "family": "missing_homomorphism_parameter",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_homomorphism_parameter_3",
+      "family": "missing_homomorphism_parameter",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_homomorphism_parameter_4",
+      "family": "missing_homomorphism_parameter",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_homomorphism_parameter_5",
+      "family": "missing_homomorphism_parameter",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_homomorphism_parameter_6",
+      "family": "missing_homomorphism_parameter",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_homomorphism_parameter_7",
+      "family": "missing_homomorphism_parameter",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_homomorphism_parameter_8",
+      "family": "missing_homomorphism_parameter",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_homomorphism_parameter_9",
+      "family": "missing_homomorphism_parameter",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_0",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_1",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_2",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_3",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_4",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_5",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_6",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_7",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_8",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_9",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_10",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_11",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_12",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_13",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_14",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_15",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_16",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_17",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_18",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_modulus_19",
+      "family": "oversized_modulus",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_0",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_1",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_2",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_3",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_4",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_5",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_6",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_7",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_8",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_9",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_10",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_11",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_12",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_13",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_14",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_15",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_16",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_17",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_18",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_19",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_0",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_1",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_2",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_3",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_4",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_5",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_6",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_7",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_8",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_9",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_10",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_11",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_12",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_13",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_14",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_15",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_16",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_17",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_18",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncanonical_residue_19",
+      "family": "noncanonical_residue",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_0",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_1",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_2",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_3",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_4",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_5",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_6",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_7",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_8",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_9",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_10",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_11",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_12",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_13",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_14",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_15",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_16",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_17",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_18",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_ring_boundary_19",
+      "family": "unsupported_ring_boundary",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    }
+  ]
+}

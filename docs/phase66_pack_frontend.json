@@ -1,0 +1,1360 @@
+{
+  "schema": "phase66-pack-specific-frontend-v1",
+  "dataset": "data/hle.jsonl",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "frozen_candidate_count": 36,
+  "hle_outcomes": {
+    "unsupported_specialist_semantics": 3,
+    "candidate_not_actually_in_pack_boundary": 33
+  },
+  "hle_complete_frontends": 0,
+  "independent_cases": 120,
+  "independent_exact_decisions": 120,
+  "independent_replay_verified": 120,
+  "independent_tamper_rejections": 120,
+  "independent_false_authorizations": 0,
+  "independent_false_denials": 0,
+  "destinations": {
+    "calculus": 17,
+    "linear_algebra": 7,
+    "probability": 10,
+    "graph_theory": 1,
+    "discrete_dynamics": 1
+  },
+  "hle_records": [
+    {
+      "id": "66b827b9b64deaedfbb997a2",
+      "destination": "linear_algebra",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "c9d14e41ca996b3403cea78c1333b2be5b41880981b97c088a7df6960deb1b57",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "66ea12d21684c1846037a28d",
+      "destination": "linear_algebra",
+      "outcome": "unsupported_specialist_semantics",
+      "question_sha256": "b6a117d0dc42afa0ceaf6306e7251ca9db42ba5b1491db3393dba4df75ce7d5b",
+      "reason": "specialist theorem/operator exceeds validated pack"
+    },
+    {
+      "id": "66f02e237e0e9c9b46db0db3",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "f7cd75601b197dce3a439ade9f93f2bd3866d6d3cfb2345fb0e240dcdc3da288",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "66fb60f0fce3673bfc606f35",
+      "destination": "probability",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "7dafed41ec6471f2f41ed22098fcf0e18168719fb5b70cb0b5ade5d57598b5fd",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "66fd442c654e577c714fb724",
+      "destination": "linear_algebra",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "3db1cbad7a0965bd9e0e440d7e5317f8cf0a9d041b1c93df9bd7098fb202ad48",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "66fec5fbe0072219a732f0e2",
+      "destination": "discrete_dynamics",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "a4ec31eaeb6a9e90969c266d684099c2374b589c18af2f73762ec0d2139ea069",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "67099b940109535a956a14ab",
+      "destination": "probability",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "88afe27915ea942fa4cc487c04d381b5cfbbd0520d0b7379dc527f52ef4bdc2d",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "670e5c2720bb63b6da63b879",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "13df957c79c7736cbac378f695e0926f56ff39b3cde57fbf1826dbaff0791cc9",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6711751e42ab43fd77c2507b",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "3d3c3f7d6273874d3994cb2140687aaa675401b4c4c881aad24ac9fa23b041aa",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "67180e9b814516d5f513eb3c",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "6fbf72af56cf722a0c2aaff97c7d203c59ad1048bbcccb5f1d1a4b86e5b47b7a",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6719a83547f600be2c21b6f7",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "c0c5331018a843e734e0cf2b7d72b46899019bdd34d8beeaa7f70a44097f5b47",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6719ca2ed5ad96a75c350fa9",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "9725f66e6e3dc1d14a67b47a6a25ddb8953411d0ad3c386176ab028998a2da43",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "671aad23ce6e97a55a4d0d47",
+      "destination": "probability",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "83c90273d619a9d6396b1a97663514ad2c214f6cee723a4963662d6a21bc977c",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "671ad72c9fdc33c08a784b3a",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "5c01401c0dcb65c645fd9d95a558a2ef1d70ba38548927be2a29d69a785b5d64",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "671f99152e60076c5693554f",
+      "destination": "probability",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "fbb6178639f085e8ee1e44aef2ee08d99ad6846ba0132f28991775c22ac701b1",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6724134c03192a89cb2296c0",
+      "destination": "probability",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "4d3ac9a0a91f6053db46feb5c2fa94165e8a514b8ee137cda02e9704ee9c34a6",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6724900ad8246a7af6d54ff3",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "94c26384d34c8459cd7c2314a40554fedf15f0d960fa11dbb1358320c2815bd2",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6724fe91ea5926938a631b9c",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "3819fce1fbb980568f864f65771d6f9f0ef4af5ab1d78bf39ef0c6588a01e572",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "67252fe0825d7a624838317d",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "cd69b0d8e27206e0c4986874b3d7e996da529eb9bf9b1f913dcd4555169c9f52",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6726140e196c3daaab906acc",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "c39bea9082123b3ad32e32533d2f1b49f4cddd15dd80667bb24bc52168ae2f3b",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "672c91122372b4061411e111",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "28706c8399c18f05742ba7ab79ddd1daeeb69083436bc0d1d079e22508778e07",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "672e09b50a85795d0ed2d36e",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "0393ac4708e7decac69a96e35906a40839091564060cdc8523cb850155530e9b",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "67320e338f6d9d8c50dca222",
+      "destination": "graph_theory",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "cb38405188cf2da5119140b6c6c912767fa3fac4b8493720996ccdfc4ef0db9e",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6732a2af28fef5271839ac29",
+      "destination": "linear_algebra",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "1e70430a86ab1715dd2b05fcc4e61b5b5409f4021d520a59ed5499a5ca72aecd",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "67350ad443f1d86ec88ce396",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "f8c452ed5f04d0179142291451c36e40de62d689a8fa66c9ca1196bf9b2e3781",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "67359d62d473013adeed83e0",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "d84be4f6f9db7e8f9bc9882d5337e3415b97aa77ee622c03f5fbe9d5cc805ce2",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6736c1646828e4a0cd54d756",
+      "destination": "probability",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "a719c042e6056dcfa756b74d6b0d97884ab845ab96e71b4ce0a7e13a93760fe0",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6737328119fe786391fedd8a",
+      "destination": "probability",
+      "outcome": "unsupported_specialist_semantics",
+      "question_sha256": "8ed79a27750171e16614f2fabe304eb756cf4e3de5e39a6676952bf3cefd668a",
+      "reason": "specialist theorem/operator exceeds validated pack"
+    },
+    {
+      "id": "673b2e9f614800adcd937382",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "30ccfc8d8efe7c5210144e8c965670abffdf3d4ae0616a552712a8cf0adcdfa4",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "673ffbd26fcd58c71515bdee",
+      "destination": "probability",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "e0679339d0f5f9aa0993910d2f80f99401530cc45c04aa3d4f54f81b5f9f3db6",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "674d5d4980a9a6adc4f86bc6",
+      "destination": "linear_algebra",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "948ecddecf26f9eb5ad271f15b2e6ddd449ab1f0579dcfabaf4569c947c9324e",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "676e9656e3e0846ee73dbf9d",
+      "destination": "probability",
+      "outcome": "unsupported_specialist_semantics",
+      "question_sha256": "29d1603a7b42aac6090a87ca7e5bacc02908b83ddf7ff68aa064f4581de98d39",
+      "reason": "specialist theorem/operator exceeds validated pack"
+    },
+    {
+      "id": "677b87f0a0514619221df8c6",
+      "destination": "linear_algebra",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "fd0bdd59ac9e06f5b9b02deab427b8e68b31e676f3a15178458005b2da2034af",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6722c3ce8e469fbdb3ba6a6e",
+      "destination": "linear_algebra",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "b9ee0920a293beb5788dfc45ac4484dc9512d38a60190b5f36ef229adde53137",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "6730a9be58ef965949f1faa4",
+      "destination": "probability",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "9fd70da93f4a03d4b8fb37a0772b444fe560b29175da4bc64a668a84a2ab12c1",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    },
+    {
+      "id": "676edcd5fc03fd7d07467628",
+      "destination": "calculus",
+      "outcome": "candidate_not_actually_in_pack_boundary",
+      "question_sha256": "b163f26d0f0aa16b38c332651b837a478167db9191e18d4a5b978c0e2b2ad14a",
+      "reason": "broad signal does not instantiate a supported typed problem"
+    }
+  ],
+  "fixture_records": [
+    {
+      "id": "calculus_supported_0",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_1",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_2",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_3",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_4",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_5",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_6",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_7",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_8",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_9",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_10",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_11",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_12",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_13",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_14",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_15",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_16",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_17",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_18",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_19",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_20",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_21",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_22",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_23",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_24",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_25",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_26",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_27",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_28",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_29",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_30",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_31",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_32",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_33",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_34",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_35",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_36",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_37",
+      "report": "Find derivative of x^3 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_38",
+      "report": "Find derivative of x^4 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_supported_39",
+      "report": "Find derivative of x^2 with respect to x.",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_40",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_41",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_42",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_43",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_44",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_45",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_46",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_47",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_48",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_49",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_50",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_51",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_52",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_53",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_54",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_55",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_56",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_57",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_58",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_ambiguous_59",
+      "report": "Find derivative of x^2 with two possible target scopes.",
+      "expected": "ambiguous",
+      "actual": "Ambiguous",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_60",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_61",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_62",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_63",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_64",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_65",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_66",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_67",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_68",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_69",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_70",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_71",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_72",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_73",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_74",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_75",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_76",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_77",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_78",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "calculus_unsupported_79",
+      "report": "Find derivative of f(x,y) with respect to both variables.",
+      "expected": "unsupported",
+      "actual": "Unsupported",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_80",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_81",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_82",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_83",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_84",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_85",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_86",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_87",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_88",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_89",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_90",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_91",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_92",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_93",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_94",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_95",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_96",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_97",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_98",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_99",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_100",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_101",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_102",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_103",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_104",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_105",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_106",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_107",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_108",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_supported_109",
+      "report": "Compute determinant of matrix [[1,2],[3,4]].",
+      "expected": "supported",
+      "actual": "Complete",
+      "artifact_present": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_ambiguous_110",
+      "report": "Compute determinant of unspecified matrix.",
+      "expected": "ambiguous",
+      "actual": "Missing",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_ambiguous_111",
+      "report": "Compute determinant of unspecified matrix.",
+      "expected": "ambiguous",
+      "actual": "Missing",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_ambiguous_112",
+      "report": "Compute determinant of unspecified matrix.",
+      "expected": "ambiguous",
+      "actual": "Missing",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_ambiguous_113",
+      "report": "Compute determinant of unspecified matrix.",
+      "expected": "ambiguous",
+      "actual": "Missing",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_ambiguous_114",
+      "report": "Compute determinant of unspecified matrix.",
+      "expected": "ambiguous",
+      "actual": "Missing",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_ambiguous_115",
+      "report": "Compute determinant of unspecified matrix.",
+      "expected": "ambiguous",
+      "actual": "Missing",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_ambiguous_116",
+      "report": "Compute determinant of unspecified matrix.",
+      "expected": "ambiguous",
+      "actual": "Missing",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_ambiguous_117",
+      "report": "Compute determinant of unspecified matrix.",
+      "expected": "ambiguous",
+      "actual": "Missing",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_ambiguous_118",
+      "report": "Compute determinant of unspecified matrix.",
+      "expected": "ambiguous",
+      "actual": "Missing",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "matrix_ambiguous_119",
+      "report": "Compute determinant of unspecified matrix.",
+      "expected": "ambiguous",
+      "actual": "Missing",
+      "artifact_present": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    }
+  ]
+}

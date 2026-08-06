@@ -252,6 +252,10 @@ name = "hle_curriculum_checkpoint"
 path = "src/bin/hle_curriculum_checkpoint.rs"
 
 [[bin]]
+name = "hle_curriculum_frontend_audit"
+path = "src/bin/hle_curriculum_frontend_audit.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

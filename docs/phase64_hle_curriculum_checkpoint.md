@@ -52,6 +52,9 @@ The machine-readable summary is [phase64_hle_curriculum_checkpoint.json](phase64
 | Unsupported target type | 13 |
 | Assumptions not established | 8 |
 
+Replay was `not_applicable` for 2,498 abstentions and `not_recorded` for the
+two baseline authorized answers; no replay failure was observed.
+
 The unchanged baseline remains **2/2,500**. The zero invocation count is
 intentional: current curriculum packs require complete typed formalizers, so
 keyword-level HLE signals are recorded as candidates but never promoted to

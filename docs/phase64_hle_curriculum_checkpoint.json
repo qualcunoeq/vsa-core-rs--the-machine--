@@ -1,6 +1,6 @@
 {
   "checkpoint": "curriculum-shadow-checkpoint-63",
-  "producer_commit": "0adb6a0",
+  "producer_commit": "f0ceee4",
   "dataset": "data/hle.jsonl",
   "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
   "curriculum_manifest_hash": "6c795069741b24df8e39c8166578aaf6c1125436ceef65f486d18dc9d1e7e175",
@@ -33,6 +33,7 @@
   "pack_invocations": 0,
   "replay_verified": 0,
   "replay_not_applicable": 2498,
+  "replay_not_recorded": 2,
   "total_execution_time_ms": 49352.65166199995,
   "max_execution_time_ms": 537.802233
 }

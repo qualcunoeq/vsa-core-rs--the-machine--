@@ -63,6 +63,7 @@ pub mod development;
 pub mod diagnostic;
 pub mod discrete_dynamics;
 pub mod calculus_pack;
+pub mod real_analysis_pack;
 pub mod drift;
 pub mod drives;
 pub mod evidence;

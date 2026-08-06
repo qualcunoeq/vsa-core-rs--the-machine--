@@ -1,0 +1,32 @@
+{
+  "schema": "phase65-hle-curriculum-frontend-audit-v1",
+  "producer_commit": "7e21acd",
+  "dataset": "data/hle.jsonl",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "audited_questions": 705,
+  "signal_occurrences": 848,
+  "primary_signal_counts": {
+    "calculus": 154,
+    "real_analysis": 16,
+    "linear_algebra": 152,
+    "probability": 137,
+    "graph_theory": 242,
+    "discrete_dynamics": 4
+  },
+  "obstruction_counts": {
+    "signal_incidental": 245,
+    "requested_operation_unsupported": 10,
+    "target_artifact_not_identifiable": 16,
+    "symbol_binding_unresolved": 30,
+    "domain_or_dimensions_missing": 229,
+    "assumptions_absent": 106,
+    "theorem_beyond_pack_boundary": 33,
+    "complete_formalization_possible": 36
+  },
+  "complete_formalization_candidates": 36,
+  "compatibility_replays_reconstructed": 2,
+  "compatibility_replay_failures": 0,
+  "pack_invocations": 0,
+  "false_authorizations": 0,
+  "execution_time_ms": 50574.163093999996
+}

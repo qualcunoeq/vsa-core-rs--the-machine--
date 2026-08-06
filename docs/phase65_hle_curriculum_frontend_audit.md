@@ -24,3 +24,27 @@ cargo run --bin hle_curriculum_frontend_audit
 
 The per-question trace and summary are written under `/tmp` by default.
 
+## Frozen result
+
+The machine-readable summary is [phase65_hle_curriculum_frontend_audit.json](phase65_hle_curriculum_frontend_audit.json).
+
+| Metric | Result |
+|---|---:|
+| Audited questions | 705 |
+| Signal occurrences | 848 |
+| Complete formalization candidates | 36 |
+| Signal incidental | 245 |
+| Domain/dimensions missing | 229 |
+| Assumptions absent | 106 |
+| Theorem beyond pack boundary | 33 |
+| Symbol binding unresolved | 30 |
+| Target artifact not identifiable | 16 |
+| Requested operation unsupported | 10 |
+| Compatibility replays reconstructed | 2/2 |
+| Compatibility replay failures | 0 |
+| Pack invocations | 0 |
+| False authorizations | 0 |
+
+The two baseline authorized answers were rerun twice under the compatibility
+procedure and produced stable answers. This closes the denominator gap without
+claiming that the original historical replay receipts were recovered.

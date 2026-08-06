@@ -88,6 +88,7 @@ struct Summary {
     pack_invocations: usize,
     replay_verified: usize,
     replay_not_applicable: usize,
+    replay_not_recorded: usize,
     total_execution_time_ms: f64,
     max_execution_time_ms: f64,
     trace_path: String,
@@ -281,6 +282,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut invocations = 0;
     let mut replay_verified = 0;
     let mut replay_not_applicable = 0;
+    let mut replay_not_recorded = 0;
     let mut total_ms = 0.0;
     let mut max_ms: f64 = 0.0;
     for line in BufReader::new(File::open(DATASET)?).lines() {
@@ -320,6 +322,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             replay_verified += 1;
         } else if replay_result == "not_applicable" {
             replay_not_applicable += 1;
+        } else if replay_result == "not_recorded" {
+            replay_not_recorded += 1;
         }
         if pack_candidate && orchestration.answer.is_none() {
             formalized_unsupported += usize::from(matches!(
@@ -383,6 +387,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         pack_invocations: invocations,
         replay_verified,
         replay_not_applicable,
+        replay_not_recorded,
         total_execution_time_ms: total_ms,
         max_execution_time_ms: max_ms,
         trace_path: trace_path.display().to_string(),

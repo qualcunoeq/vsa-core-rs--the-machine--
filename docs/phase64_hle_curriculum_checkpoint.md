@@ -32,3 +32,29 @@ route funnel, first-failure counts, replay counts, and resource timing. The
 checkpoint is diagnostic only; production routing and authorization remain
 unchanged.
 
+## Frozen result
+
+The machine-readable summary is [phase64_hle_curriculum_checkpoint.json](phase64_hle_curriculum_checkpoint.json).
+
+| Metric | Result |
+|---|---:|
+| Questions | 2,500 |
+| Correct authorized answers | 2 |
+| Incorrect authorized answers | 0 |
+| False authorizations | 0 |
+| Curriculum signals | 705 |
+| Shadow pack invocations | 0 |
+| Visual dependencies | 260 |
+| No curriculum signal | 1,614 |
+| Language normalization failures | 65 |
+| Missing factual prerequisites | 451 |
+| Missing specialist theorems | 87 |
+| Unsupported target type | 13 |
+| Assumptions not established | 8 |
+
+The unchanged baseline remains **2/2,500**. The zero invocation count is
+intentional: current curriculum packs require complete typed formalizers, so
+keyword-level HLE signals are recorded as candidates but never promoted to
+pack execution. The checkpoint therefore identifies semantic grounding and
+typed target construction—not permissive curriculum matching—as the next
+bottleneck.

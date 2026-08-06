@@ -16,6 +16,8 @@ pub enum AbstractAlgebraOperation {
     ConstructCyclicGroup,
     ConstructModularRing,
     CheckCyclicHomomorphism,
+    ComposeCyclicHomomorphisms,
+    KernelImage,
     AdditiveOrder,
     CheckUnit,
 }
@@ -33,8 +35,21 @@ pub enum AbstractAlgebraStatus {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum AbstractAlgebraArtifact {
-    CyclicGroup { order: u32 },
-    ModularRing { modulus: u32 },
+    CyclicGroup {
+        order: u32,
+    },
+    ModularRing {
+        modulus: u32,
+    },
+    CyclicHomomorphism {
+        source_order: u32,
+        target_order: u32,
+        multiplier: u32,
+    },
+    KernelImage {
+        kernel_size: u32,
+        image_size: u32,
+    },
     Boolean(bool),
     Scalar(u32),
 }
@@ -47,6 +62,7 @@ pub struct AbstractAlgebraRequest {
     pub target_modulus: Option<u32>,
     pub element: Option<u32>,
     pub multiplier: Option<u32>,
+    pub second_multiplier: Option<u32>,
     pub domain: String,
     pub assumptions: Vec<String>,
     pub ambiguity: Option<String>,
@@ -219,6 +235,115 @@ pub fn evaluate_abstract_algebra(request: &AbstractAlgebraRequest) -> AbstractAl
                 vec!["f([x]) = [multiplier · x] is well-defined exactly when target modulus divides multiplier · source modulus".into()],
             )
         }
+        AbstractAlgebraOperation::ComposeCyclicHomomorphisms => {
+            let (Some(source), Some(middle), Some(target), Some(first), Some(second)) = (
+                request.source_modulus,
+                request.modulus,
+                request.target_modulus,
+                request.multiplier,
+                request.second_multiplier,
+            ) else {
+                return result(
+                    request,
+                    AbstractAlgebraStatus::Missing,
+                    None,
+                    assumptions,
+                    vec!["source, middle, target moduli and both multipliers are required".into()],
+                );
+            };
+            if !(1..=MAX_MODULUS).contains(&source)
+                || !(1..=MAX_MODULUS).contains(&middle)
+                || !(1..=MAX_MODULUS).contains(&target)
+            {
+                return result(
+                    request,
+                    AbstractAlgebraStatus::Unsupported,
+                    None,
+                    assumptions,
+                    vec!["composition exceeds the bounded cyclic range".into()],
+                );
+            }
+            let first_valid = (u64::from(first) * u64::from(source)) % u64::from(middle) == 0;
+            let second_valid = (u64::from(second) * u64::from(middle)) % u64::from(target) == 0;
+            if !first_valid || !second_valid {
+                return result(
+                    request,
+                    AbstractAlgebraStatus::Inconsistent,
+                    None,
+                    assumptions,
+                    vec!["each component map must be well-defined before composition".into()],
+                );
+            }
+            let composed = (u64::from(first) * u64::from(second) % u64::from(target)) as u32;
+            result(
+                request,
+                AbstractAlgebraStatus::Complete,
+                Some(AbstractAlgebraArtifact::CyclicHomomorphism {
+                    source_order: source,
+                    target_order: target,
+                    multiplier: composed,
+                }),
+                assumptions,
+                vec![
+                    "composition preserves the canonical cyclic homomorphism representation".into(),
+                ],
+            )
+        }
+        AbstractAlgebraOperation::KernelImage => {
+            let (Some(source), Some(target), Some(multiplier)) = (
+                request.source_modulus,
+                request.target_modulus,
+                request.multiplier,
+            ) else {
+                return result(
+                    request,
+                    AbstractAlgebraStatus::Missing,
+                    None,
+                    assumptions,
+                    vec!["source modulus, target modulus, and multiplier are required".into()],
+                );
+            };
+            if !(1..=MAX_MODULUS).contains(&source) || !(1..=MAX_MODULUS).contains(&target) {
+                return result(
+                    request,
+                    AbstractAlgebraStatus::Unsupported,
+                    None,
+                    assumptions,
+                    vec!["kernel/image calculation exceeds the bounded cyclic range".into()],
+                );
+            }
+            if (u64::from(multiplier) * u64::from(source)) % u64::from(target) != 0 {
+                return result(
+                    request,
+                    AbstractAlgebraStatus::Inconsistent,
+                    None,
+                    assumptions,
+                    vec!["kernel and image require a well-defined cyclic homomorphism".into()],
+                );
+            }
+            let common = gcd(multiplier, target);
+            let image_size = target / common;
+            let numerator = u64::from(source) * u64::from(common);
+            if numerator % u64::from(target) != 0 {
+                return result(
+                    request,
+                    AbstractAlgebraStatus::Inconsistent,
+                    None,
+                    assumptions,
+                    vec!["kernel cardinality is not integral under the supplied map".into()],
+                );
+            }
+            result(
+                request,
+                AbstractAlgebraStatus::Complete,
+                Some(AbstractAlgebraArtifact::KernelImage {
+                    kernel_size: (numerator / u64::from(target)) as u32,
+                    image_size,
+                }),
+                assumptions,
+                Vec::new(),
+            )
+        }
         AbstractAlgebraOperation::AdditiveOrder => {
             let (Some(modulus), Some(element)) = (request.modulus, request.element) else {
                 return result(
@@ -316,6 +441,7 @@ mod tests {
             target_modulus: None,
             element: Some(5),
             multiplier: None,
+            second_multiplier: None,
             domain: "finite_exact_abstract_algebra".into(),
             assumptions: Vec::new(),
             ambiguity: None,

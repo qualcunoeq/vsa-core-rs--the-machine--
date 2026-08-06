@@ -64,6 +64,7 @@ fn request(operation: AbstractAlgebraOperation) -> AbstractAlgebraRequest {
         target_modulus: None,
         element: None,
         multiplier: None,
+        second_multiplier: None,
         domain: "finite_exact_abstract_algebra".into(),
         assumptions: vec!["finite exact structure stated".into()],
         ambiguity: None,

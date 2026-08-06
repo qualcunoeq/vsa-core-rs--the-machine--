@@ -1,0 +1,3888 @@
+{
+  "schema": "phase68-abstract-algebra-composition-v1",
+  "source": "independently authored finite cyclic composition corpus",
+  "corpus_sha256": "ddcc052af893071b95e74901742faa8822e09fbfc128a26403a3b70c79ce01c4",
+  "cases": 240,
+  "supported_compositions": 120,
+  "ambiguous_routes": 20,
+  "refused_routes": 100,
+  "exact_route_decisions": 240,
+  "route_replay_verified": 240,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "family_counts": {
+    "additive_multiplicative_confusion": 20,
+    "ambiguous_composition": 20,
+    "field_semantics_refusal": 20,
+    "homomorphism_composition": 40,
+    "invalid_component_composition": 20,
+    "invalid_kernel_map": 20,
+    "kernel_image": 30,
+    "noncyclic_refusal": 20,
+    "representative_to_additive_structure": 30,
+    "ring_to_unit": 20
+  },
+  "receipts": [
+    {
+      "id": "representative_to_additive_order_0",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 1
+      },
+      "actual_artifact": {
+        "Scalar": 1
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_1",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_2",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 5
+      },
+      "actual_artifact": {
+        "Scalar": 5
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_3",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 2
+      },
+      "actual_artifact": {
+        "Scalar": 2
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_4",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 7
+      },
+      "actual_artifact": {
+        "Scalar": 7
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_5",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 8
+      },
+      "actual_artifact": {
+        "Scalar": 8
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_6",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_7",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 10
+      },
+      "actual_artifact": {
+        "Scalar": 10
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_8",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 11
+      },
+      "actual_artifact": {
+        "Scalar": 11
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_9",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_10",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 13
+      },
+      "actual_artifact": {
+        "Scalar": 13
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_11",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 14
+      },
+      "actual_artifact": {
+        "Scalar": 14
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_12",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 5
+      },
+      "actual_artifact": {
+        "Scalar": 5
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_13",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 16
+      },
+      "actual_artifact": {
+        "Scalar": 16
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_14",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 17
+      },
+      "actual_artifact": {
+        "Scalar": 17
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_15",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_16",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 19
+      },
+      "actual_artifact": {
+        "Scalar": 19
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_17",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 20
+      },
+      "actual_artifact": {
+        "Scalar": 20
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_18",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 7
+      },
+      "actual_artifact": {
+        "Scalar": 7
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_19",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 22
+      },
+      "actual_artifact": {
+        "Scalar": 22
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_20",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 3
+      },
+      "actual_artifact": {
+        "Scalar": 3
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_21",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_22",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 5
+      },
+      "actual_artifact": {
+        "Scalar": 5
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_23",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_24",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 7
+      },
+      "actual_artifact": {
+        "Scalar": 7
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_25",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 8
+      },
+      "actual_artifact": {
+        "Scalar": 8
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_26",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 9
+      },
+      "actual_artifact": {
+        "Scalar": 9
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_27",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 10
+      },
+      "actual_artifact": {
+        "Scalar": 10
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_28",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 11
+      },
+      "actual_artifact": {
+        "Scalar": 11
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "representative_to_additive_order_29",
+      "family": "representative_to_additive_structure",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 12
+      },
+      "actual_artifact": {
+        "Scalar": 12
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_0",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 2,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 2,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_1",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 3,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 3,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_2",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 4,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 4,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_3",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 5,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 5,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_4",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 6,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 6,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_5",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 7,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 7,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_6",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 8,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 8,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_7",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 9,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 9,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_8",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 2,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 2,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_9",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 3,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 3,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_10",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 4,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 4,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_11",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 5,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 5,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_12",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 6,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 6,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_13",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 7,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 7,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_14",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 8,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 8,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_15",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 9,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 9,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_16",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 2,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 2,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_17",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 3,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 3,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_18",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 4,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 4,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_19",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 5,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 5,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_20",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 6,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 6,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_21",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 7,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 7,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_22",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 8,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 8,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_23",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 9,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 9,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_24",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 2,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 2,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_25",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 3,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 3,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_26",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 4,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 4,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_27",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 5,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 5,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_28",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 6,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 6,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_29",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 7,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 7,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_30",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 8,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 8,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_31",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 9,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 9,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_32",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 2,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 2,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_33",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 3,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 3,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_34",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 4,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 4,
+          "target_order": 6,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_35",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 5,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 5,
+          "target_order": 7,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_36",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 6,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 6,
+          "target_order": 2,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_37",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 7,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 7,
+          "target_order": 3,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_38",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 8,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 8,
+          "target_order": 4,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "homomorphism_composition_39",
+      "family": "homomorphism_composition",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 9,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "actual_artifact": {
+        "CyclicHomomorphism": {
+          "source_order": 9,
+          "target_order": 5,
+          "multiplier": 0
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_0",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 3,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 3,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_1",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 4,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 4,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_2",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 5,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 5,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_3",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 6,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 6,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_4",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 7,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 7,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_5",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 8,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 8,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_6",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 9,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 9,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_7",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 10,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 10,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_8",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 11,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 11,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_9",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 12,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 12,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_10",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 13,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 13,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_11",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 14,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 14,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_12",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 15,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 15,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_13",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 16,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 16,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_14",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 17,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 17,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_15",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 18,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 18,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_16",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 19,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 19,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_17",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 20,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 20,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_18",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 3,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 3,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_19",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 4,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 4,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_20",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 5,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 5,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_21",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 6,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 6,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_22",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 7,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 7,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_23",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 8,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 8,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_24",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 9,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 9,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_25",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 10,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 10,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_26",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 11,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 11,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_27",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 12,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 12,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_28",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 13,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 13,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "kernel_image_29",
+      "family": "kernel_image",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "KernelImage": {
+          "kernel_size": 14,
+          "image_size": 1
+        }
+      },
+      "actual_artifact": {
+        "KernelImage": {
+          "kernel_size": 14,
+          "image_size": 1
+        }
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_0",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_1",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_2",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_3",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_4",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_5",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_6",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_7",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_8",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_9",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_10",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_11",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_12",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_13",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_14",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_15",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_16",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_17",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_18",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": true
+      },
+      "actual_artifact": {
+        "Boolean": true
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ring_to_unit_19",
+      "family": "ring_to_unit",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Boolean": false
+      },
+      "actual_artifact": {
+        "Boolean": false
+      },
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_0",
+      "family": "ambiguous_composition",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_1",
+      "family": "ambiguous_composition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_2",
+      "family": "ambiguous_composition",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_3",
+      "family": "ambiguous_composition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_4",
+      "family": "ambiguous_composition",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_5",
+      "family": "ambiguous_composition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_6",
+      "family": "ambiguous_composition",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_7",
+      "family": "ambiguous_composition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_8",
+      "family": "ambiguous_composition",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_9",
+      "family": "ambiguous_composition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_10",
+      "family": "ambiguous_composition",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_11",
+      "family": "ambiguous_composition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_12",
+      "family": "ambiguous_composition",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_13",
+      "family": "ambiguous_composition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_14",
+      "family": "ambiguous_composition",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_15",
+      "family": "ambiguous_composition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_16",
+      "family": "ambiguous_composition",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_17",
+      "family": "ambiguous_composition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_18",
+      "family": "ambiguous_composition",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_composition_19",
+      "family": "ambiguous_composition",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_0",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_1",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_2",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_3",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_4",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_5",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_6",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_7",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_8",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_9",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_10",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_11",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_12",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_13",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_14",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_15",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_16",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_17",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_18",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_kernel_map_19",
+      "family": "invalid_kernel_map",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_0",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_1",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_2",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_3",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_4",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_5",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_6",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_7",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_8",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_9",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_10",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_11",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_12",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_13",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_14",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_15",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_16",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_17",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_18",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "field_semantics_refusal_19",
+      "family": "field_semantics_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_0",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_1",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_2",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_3",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_4",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_5",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_6",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_7",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_8",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_9",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_10",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_11",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_12",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_13",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_14",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_15",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_16",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_17",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_18",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noncyclic_refusal_19",
+      "family": "noncyclic_refusal",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_0",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_1",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_2",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_3",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_4",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_5",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_6",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_7",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_8",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_9",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_10",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_11",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_12",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_13",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_14",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_15",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_16",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_17",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_18",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_component_composition_19",
+      "family": "invalid_component_composition",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_0",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_1",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_2",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_3",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_4",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_5",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_6",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_7",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_8",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_9",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_10",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_11",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_12",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_13",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_14",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_15",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_16",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_17",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_18",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "additive_multiplicative_confusion_19",
+      "family": "additive_multiplicative_confusion",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "route_replay_verified": true,
+      "exact": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    }
+  ]
+}

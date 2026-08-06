@@ -264,6 +264,10 @@ name = "abstract_algebra_pack_bench"
 path = "src/bin/abstract_algebra_pack_bench.rs"
 
 [[bin]]
+name = "abstract_algebra_composition_bench"
+path = "src/bin/abstract_algebra_composition_bench.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

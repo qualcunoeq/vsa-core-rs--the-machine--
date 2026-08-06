@@ -1,0 +1,4070 @@
+{
+  "schema": "phase69-bounded-elementary-number-theory-v1",
+  "source": "independently authored exact arithmetic corpus",
+  "corpus_sha256": "f9633988f1bd87493d5f792c04fcd2f62db76b983d54d4ac97f84d2b46bbcee9",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "supported_artifacts": 120,
+  "replay_verified": 240,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "family_counts": {
+    "ambiguous_gcd": 20,
+    "chinese_remainder": 25,
+    "euler_totient": 10,
+    "gcd_bezout": 30,
+    "incompatible_crt": 20,
+    "linear_congruence": 25,
+    "linear_diophantine": 10,
+    "missing_crt_modulus": 10,
+    "missing_inverse": 10,
+    "modular_inverse": 20,
+    "nonunit_inverse": 20,
+    "unbounded_factorization": 20,
+    "unsupported_domain": 20
+  },
+  "status_counts": {
+    "Ambiguous": 20,
+    "Complete": 120,
+    "Inconsistent": 40,
+    "InvalidDomain": 20,
+    "Missing": 20,
+    "Unsupported": 20
+  },
+  "receipts": [
+    {
+      "id": "gcd_bezout_0",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_1",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_2",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_3",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_4",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_5",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_6",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_7",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_8",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_9",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_10",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_11",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_12",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_13",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_14",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_15",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_16",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_17",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_18",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_19",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_20",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_21",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_22",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_23",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_24",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_25",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_26",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_27",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_28",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "gcd_bezout_29",
+      "family": "gcd_bezout",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "actual_artifact": {
+        "GcdBezout": {
+          "gcd": 6,
+          "x": -1,
+          "y": 3
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_0",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_1",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_2",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_3",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_4",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_5",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_6",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_7",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_8",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_9",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_10",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_11",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_12",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_13",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_14",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_15",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_16",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_17",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_18",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "modular_inverse_19",
+      "family": "modular_inverse",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 4
+      },
+      "actual_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_0",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_1",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_2",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_3",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_4",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_5",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_6",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_7",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_8",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_9",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_10",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_11",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_12",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_13",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_14",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_15",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_16",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_17",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_18",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_19",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_20",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_21",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_22",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_23",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_congruence_24",
+      "family": "linear_congruence",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "actual_artifact": {
+        "CongruenceClass": {
+          "modulus": 10,
+          "residue": 2,
+          "solution_count": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_0",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_1",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_2",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_3",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_4",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_5",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_6",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_7",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_8",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_9",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_10",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_11",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_12",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_13",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_14",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_15",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_16",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_17",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_18",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_19",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_20",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_21",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_22",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_23",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "crt_24",
+      "family": "chinese_remainder",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "actual_artifact": {
+        "CrtClass": {
+          "modulus": 15,
+          "residue": 8
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "euler_totient_0",
+      "family": "euler_totient",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "euler_totient_1",
+      "family": "euler_totient",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "euler_totient_2",
+      "family": "euler_totient",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "euler_totient_3",
+      "family": "euler_totient",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "euler_totient_4",
+      "family": "euler_totient",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "euler_totient_5",
+      "family": "euler_totient",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "euler_totient_6",
+      "family": "euler_totient",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "euler_totient_7",
+      "family": "euler_totient",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "euler_totient_8",
+      "family": "euler_totient",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "euler_totient_9",
+      "family": "euler_totient",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Scalar": 6
+      },
+      "actual_artifact": {
+        "Scalar": 6
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_diophantine_0",
+      "family": "linear_diophantine",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "actual_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_diophantine_1",
+      "family": "linear_diophantine",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "actual_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_diophantine_2",
+      "family": "linear_diophantine",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "actual_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_diophantine_3",
+      "family": "linear_diophantine",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "actual_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_diophantine_4",
+      "family": "linear_diophantine",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "actual_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_diophantine_5",
+      "family": "linear_diophantine",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "actual_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_diophantine_6",
+      "family": "linear_diophantine",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "actual_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_diophantine_7",
+      "family": "linear_diophantine",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "actual_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_diophantine_8",
+      "family": "linear_diophantine",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "actual_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "linear_diophantine_9",
+      "family": "linear_diophantine",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "actual_artifact": {
+        "Diophantine": {
+          "gcd": 3,
+          "x": -1,
+          "y": 1
+        }
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_0",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_1",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_2",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_3",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_4",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_5",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_6",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_7",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_8",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_9",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_10",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_11",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_12",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_13",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_14",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_15",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_16",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_17",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_18",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_gcd_19",
+      "family": "ambiguous_gcd",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_inverse_0",
+      "family": "missing_inverse",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_inverse_1",
+      "family": "missing_inverse",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_inverse_2",
+      "family": "missing_inverse",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_inverse_3",
+      "family": "missing_inverse",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_inverse_4",
+      "family": "missing_inverse",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_inverse_5",
+      "family": "missing_inverse",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_inverse_6",
+      "family": "missing_inverse",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_inverse_7",
+      "family": "missing_inverse",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_inverse_8",
+      "family": "missing_inverse",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_inverse_9",
+      "family": "missing_inverse",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_crt_modulus_0",
+      "family": "missing_crt_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_crt_modulus_1",
+      "family": "missing_crt_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_crt_modulus_2",
+      "family": "missing_crt_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_crt_modulus_3",
+      "family": "missing_crt_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_crt_modulus_4",
+      "family": "missing_crt_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_crt_modulus_5",
+      "family": "missing_crt_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_crt_modulus_6",
+      "family": "missing_crt_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_crt_modulus_7",
+      "family": "missing_crt_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_crt_modulus_8",
+      "family": "missing_crt_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_crt_modulus_9",
+      "family": "missing_crt_modulus",
+      "expected_status": "missing",
+      "actual_status": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_0",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_1",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_2",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_3",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_4",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_5",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_6",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_7",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_8",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_9",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_10",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_11",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_12",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_13",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_14",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_15",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_16",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_17",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_18",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unbounded_factorization_19",
+      "family": "unbounded_factorization",
+      "expected_status": "unsupported",
+      "actual_status": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_0",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_1",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_2",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_3",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_4",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_5",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_6",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_7",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_8",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_9",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_10",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_11",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_12",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_13",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_14",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_15",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_16",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_17",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_18",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_domain_19",
+      "family": "unsupported_domain",
+      "expected_status": "invalid_domain",
+      "actual_status": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_0",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_1",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_2",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_3",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_4",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_5",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_6",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_7",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_8",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_9",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_10",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_11",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_12",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_13",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_14",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_15",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_16",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_17",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_18",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonunit_inverse_19",
+      "family": "nonunit_inverse",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_0",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_1",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_2",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_3",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_4",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_5",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_6",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_7",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_8",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_9",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_10",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_11",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_12",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_13",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_14",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_15",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_16",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_17",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_18",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "incompatible_crt_19",
+      "family": "incompatible_crt",
+      "expected_status": "inconsistent",
+      "actual_status": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    }
+  ]
+}

@@ -203,6 +203,13 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "requires typed algebraic structures rather than labels",
         ),
         (
+            "elementary_number_theory",
+            "Elementary number theory",
+            vec!["abstract_algebra"],
+            vec!["gcd_bezout", "congruence_class", "crt_class", "totient"],
+            "reuse finite modular and cyclic artifacts before advanced number theory",
+        ),
+        (
             "topology",
             "Topology and geometric invariants",
             vec!["abstract_algebra"],
@@ -218,23 +225,25 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
         ),
     ];
     for (id, title, prerequisites, artifacts, reason) in domains {
-        let (status, validation_gates) =
-            if matches!(id, "linear_algebra_spectral" | "abstract_algebra") {
-                (
-                    CurriculumStatus::ShadowValidated,
-                    ValidationGates {
-                        authoritative_sources: true,
-                        independent_development_corpus: true,
-                        boundary_corpus: true,
-                        pressure_corpus: true,
-                        replay_verified: true,
-                        zero_false_authorization: true,
-                        frozen_hle_holdout: true,
-                    },
-                )
-            } else {
-                (CurriculumStatus::Planned, planned.clone())
-            };
+        let (status, validation_gates) = if matches!(
+            id,
+            "linear_algebra_spectral" | "abstract_algebra" | "elementary_number_theory"
+        ) {
+            (
+                CurriculumStatus::ShadowValidated,
+                ValidationGates {
+                    authoritative_sources: true,
+                    independent_development_corpus: true,
+                    boundary_corpus: true,
+                    pressure_corpus: true,
+                    replay_verified: true,
+                    zero_false_authorization: true,
+                    frozen_hle_holdout: true,
+                },
+            )
+        } else {
+            (CurriculumStatus::Planned, planned.clone())
+        };
         packs.push(CurriculumPack {
             id: id.into(),
             title: title.into(),

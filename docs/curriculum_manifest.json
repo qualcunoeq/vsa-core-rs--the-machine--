@@ -166,6 +166,35 @@
         "selection_reason": "requires typed algebraic structures rather than labels"
       },
       {
+        "id": "elementary_number_theory",
+        "title": "Elementary number theory",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "abstract_algebra"
+        ],
+        "reusable_artifacts": [
+          "gcd_bezout",
+          "congruence_class",
+          "crt_class",
+          "totient"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "reuse finite modular and cyclic artifacts before advanced number theory"
+      },
+      {
         "id": "topology",
         "title": "Topology and geometric invariants",
         "status": "planned",
@@ -224,7 +253,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "396117c88031fab2ab03ffd2ad68cd2d37fa03ed45286cd624bca206f952d819",
+  "manifest_replay_hash": "0e3550e6bc80c582a478871f0e3403c149bf216c609cd1b074274d29ea103e32",
   "validation_errors": [],
   "production_authorizations": 0
 }

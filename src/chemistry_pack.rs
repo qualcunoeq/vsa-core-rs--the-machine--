@@ -12,6 +12,9 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 
+#[path = "chemistry_frontend.rs"]
+pub mod chemistry_frontend;
+
 const DOMAIN: &str = "source_derived_bounded_chemistry";
 const MAX_TERMS: usize = 8;
 const MAX_COEFFICIENT: u32 = 100;

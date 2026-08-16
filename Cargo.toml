@@ -364,6 +364,10 @@ name = "chemistry_pack_bench"
 path = "src/bin/chemistry_pack_bench.rs"
 
 [[bin]]
+name = "chemistry_frontend_bench"
+path = "src/bin/chemistry_frontend_bench.rs"
+
+[[bin]]
 name = "curriculum_memory_bench"
 path = "src/bin/curriculum_memory_bench.rs"
 

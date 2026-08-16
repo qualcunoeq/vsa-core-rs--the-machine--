@@ -8,6 +8,9 @@ use crate::source_formula_pack::{
     evaluate_formula_records, extract_formula_records, FormulaRecord, FormulaRequest, FormulaResult,
 };
 
+#[path = "source_statistics_frontend.rs"]
+pub mod source_statistics_frontend;
+
 pub const DOMAIN: &str = "source_derived_finite_statistics";
 
 /// Return the immutable source records for the finite statistics catalog.

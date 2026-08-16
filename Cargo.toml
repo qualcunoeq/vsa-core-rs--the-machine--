@@ -264,6 +264,10 @@ name = "stage_x_multimodal_curriculum_1000"
 path = "src/bin/stage_x_multimodal_curriculum_1000.rs"
 
 [[bin]]
+name = "stage_y_hle_gap_education"
+path = "src/bin/stage_y_hle_gap_education.rs"
+
+[[bin]]
 name = "curriculum_campaign_bench"
 path = "src/bin/curriculum_campaign_bench.rs"
 

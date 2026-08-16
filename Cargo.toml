@@ -396,6 +396,10 @@ name = "stage_l_hle_checkpoint_3"
 path = "src/bin/stage_l_hle_checkpoint_3.rs"
 
 [[bin]]
+name = "stage77_spectral_language_frontend"
+path = "src/bin/stage77_spectral_language_frontend.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

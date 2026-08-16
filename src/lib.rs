@@ -155,6 +155,8 @@ pub mod source_complex_pack;
 pub mod source_formula_pack;
 pub mod source_formula_frontend;
 pub mod source_probability_bridge;
+pub mod spectral_linear_algebra_pack;
+pub mod spectral_frontend;
 pub mod source_metric_pack;
 pub mod source_regression_pack;
 pub mod source_retrieval;

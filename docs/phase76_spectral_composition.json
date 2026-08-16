@@ -1,0 +1,2177 @@
+{
+  "schema": "phase76-spectral-cross-domain-composition-v1",
+  "corpus_sha256": "0edfb957649af880b10bad4ff2b8ae59cd22dc81a79a345fbdf2515847e9e991",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "supported_routes": 120,
+  "spectral_replays": 240,
+  "downstream_replays": 180,
+  "downstream_tamper_rejections": 180,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "receipts": [
+    {
+      "id": "charpoly_to_number_0",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_1",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_2",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_3",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_4",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_5",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_6",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_7",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_8",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_9",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_10",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_11",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_12",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_13",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_14",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_15",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_16",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_17",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_18",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_19",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_20",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_21",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_22",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_23",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_24",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_25",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_26",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_27",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_28",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_29",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_30",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_31",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_32",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_33",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_34",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_35",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_36",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_37",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_38",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_39",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_40",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_41",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_42",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_43",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_44",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_45",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_46",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_47",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_48",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_49",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_50",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_51",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_52",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_53",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_54",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_55",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_56",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_57",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_58",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "charpoly_to_number_59",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 2,
+      "downstream_tamper_rejections": 2,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_0",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_1",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_2",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_3",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_4",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_5",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_6",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_7",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_8",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_9",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_10",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_11",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_12",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_13",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_14",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_15",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_16",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_17",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_18",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_19",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_20",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_21",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_22",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_23",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_24",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_25",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_26",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_27",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_28",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "eigen_to_number_29",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_0",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_1",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_2",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_3",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_4",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_5",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_6",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_7",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_8",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_9",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_10",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_11",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_12",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_13",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_14",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_15",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_16",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_17",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_18",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_19",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_20",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_21",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_22",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_23",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_24",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_25",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_26",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_27",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_28",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "power_to_linear_29",
+      "expected": "Complete",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 1,
+      "downstream_tamper_rejections": 1,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_0",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_1",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_2",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_3",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_4",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_5",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_6",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_7",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_8",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_9",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_10",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_11",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_12",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_13",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_14",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_15",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_16",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_17",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_18",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_19",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_20",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_21",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_22",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_23",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_24",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_25",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_26",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_27",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_28",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_29",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_30",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_31",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_32",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_33",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_34",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_35",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_36",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_37",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_38",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_39",
+      "expected": "Ambiguous",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_0",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_1",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_2",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_3",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_4",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_5",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_6",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_7",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_8",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_9",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_10",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_11",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_12",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_13",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_14",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_15",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_16",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_17",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_18",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_19",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_0",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_1",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_2",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_3",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_4",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_5",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_6",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_7",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_8",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_9",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_10",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_11",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_12",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_13",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_14",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_15",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_16",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_17",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_18",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_19",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_20",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_21",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_22",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_23",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_24",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_25",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_26",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_27",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_28",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "irrational_spectrum_29",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_0",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_1",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_2",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_3",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_4",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_5",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_6",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_7",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_8",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_9",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_10",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_11",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_12",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_13",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_14",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_15",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_16",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_17",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_18",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_19",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_20",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_21",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_22",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_23",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_24",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_25",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_26",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_27",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_28",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_29",
+      "expected": "Refused",
+      "exact": true,
+      "spectral_replay": true,
+      "downstream_replays": 0,
+      "downstream_tamper_rejections": 0,
+      "false_authorization": false
+    }
+  ]
+}

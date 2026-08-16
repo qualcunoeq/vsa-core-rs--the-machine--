@@ -232,6 +232,10 @@ name = "curriculum_campaign_bench"
 path = "src/bin/curriculum_campaign_bench.rs"
 
 [[bin]]
+name = "source_statistics_frontend_bench"
+path = "src/bin/source_statistics_frontend_bench.rs"
+
+[[bin]]
 name = "graph_pack_bench"
 path = "src/bin/graph_pack_bench.rs"
 

@@ -103,6 +103,16 @@ impl CurriculumMemory {
         ids.iter().filter_map(|id| self.get(id)).collect()
     }
 
+    /// Retrieve only records matching both semantic dimensions.  Exact
+    /// filtering prevents a broad domain hit from contaminating a typed
+    /// planner with unrelated artifacts.
+    pub fn retrieve_exact(&self, domain: &str, artifact_type: &str) -> Vec<&MemoryRecord> {
+        self.retrieve_domain(domain)
+            .into_iter()
+            .filter(|record| record.artifact_type == artifact_type)
+            .collect()
+    }
+
     pub fn get(&self, record_id: &str) -> Option<&MemoryRecord> {
         self.segments
             .iter()

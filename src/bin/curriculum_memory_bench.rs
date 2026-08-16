@@ -55,6 +55,15 @@ fn main() {
         memory.retrieve_domain("technical_language").len(),
     ];
     assert_eq!(retrieval_counts, [2500, 2500, 2500, 2500]);
+    let exact_retrieval = memory.retrieve_exact("combinatorics", "scalar");
+    assert_eq!(exact_retrieval.len(), 2500);
+    let exact_contamination = exact_retrieval
+        .iter()
+        .filter(|record| record.domain != "combinatorics" || record.artifact_type != "scalar")
+        .count();
+    assert_eq!(exact_contamination, 0);
+    let empty_exact_query = memory.retrieve_exact("combinatorics", "theorem").len();
+    assert_eq!(empty_exact_query, 0);
     let tamper_rejected = (0..10_000)
         .filter(|index| {
             let mut tampered = memory
@@ -70,6 +79,9 @@ fn main() {
         memory.len(),
         memory.segment_count(),
         retrieval_counts,
+        exact_retrieval.len(),
+        exact_contamination,
+        empty_exact_query,
         replay_verified,
         tamper_rejected,
     ));
@@ -81,6 +93,9 @@ fn main() {
         "duplicate_rejections": 1,
         "invalid_rejections": 1,
         "retrieval_counts": retrieval_counts,
+        "exact_retrieval_count": exact_retrieval.len(),
+        "exact_retrieval_contamination": exact_contamination,
+        "empty_exact_query": empty_exact_query,
         "replay_verified": replay_verified,
         "tamper_rejected": tamper_rejected,
         "live_mutation": false,

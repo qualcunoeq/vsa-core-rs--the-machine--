@@ -58,12 +58,12 @@ loosening authorization.
 * Dataset SHA-256:
   `31b26cc8e352af16bedb9a714feb788e562be38898ab92dc54b4665882bf1c6`
 * Curriculum-manifest SHA-256:
-  `e4eab7e9e0bb5abb940b123297166fefee30c9494f1357906bf5d8f3c618ab86`
-* Producer commit: `8d5e026`
+  `c99fea9200db643958fad69e017ed8879f958345f2fc509973e9ecc266c015cd`
+* Producer commit: `e3fb629`
 * Trace SHA-256:
-  `49dc1eb48c0ee065fc70a034d7e61f0e7333f7b7661e035530a8fd04e421df26`
+  `e912f176fb9f37ed885b3471bd3c8fc9a7abfebbe2ccea688deb03e3ede4e69d`
 * Summary SHA-256:
-  `d78e2d52186fcb4acb9b976cfb78b8b55554ccc48f371a81e530702fab8d08e0`
+  `0ecb90a390dbc8b963b55d22a2b4cc45f90c1f89d2fd669b692f3f599a46e546`
 
 The checkpoint is diagnostic only. Its unchanged score is evidence that
 foundational curriculum growth has not yet crossed the HLE technical-language

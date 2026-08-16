@@ -1,10 +1,10 @@
 {
   "schema": "stage-l-hle-checkpoint-2-v1",
   "checkpoint": "stage-l-hle-checkpoint-2",
-  "producer_commit": "341415c",
+  "producer_commit": "e3fb629",
   "dataset": "data/hle.jsonl",
   "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
-  "manifest_sha256": "e4eab7e9e0bb5abb940b123297166fefee30c9494f1357906bf5d8f3c618ab86",
+  "manifest_sha256": "c99fea9200db643958fad69e017ed8879f958345f2fc509973e9ecc266c015cd",
   "registry_version": "shadow-only-no-production-mutation",
   "cases": 2500,
   "correct_authorized_answers": 2,
@@ -18,8 +18,8 @@
   "replay_compatibility_verified": 2,
   "replay_not_applicable": 2498,
   "replay_not_recorded": 0,
-  "total_execution_time_ms": 49669.4076290002,
-  "max_execution_time_ms": 543.121219,
+  "total_execution_time_ms": 49965.81587799998,
+  "max_execution_time_ms": 547.88297,
   "terminal_counts": {
     "correct_authorized_answer": 2,
     "visual_input_required": 260,
@@ -31,6 +31,6 @@
     "ambiguous_or_unresolved": 6
   },
   "trace_path": "/tmp/hle_curriculum_checkpoint_2.jsonl",
-  "trace_sha256": "49dc1eb48c0ee065fc70a034d7e61f0e7333f7b7661e035530a8fd04e421df26",
-  "summary_sha256": "d78e2d52186fcb4acb9b976cfb78b8b55554ccc48f371a81e530702fab8d08e0"
+  "trace_sha256": "e912f176fb9f37ed885b3471bd3c8fc9a7abfebbe2ccea688deb03e3ede4e69d",
+  "summary_sha256": "0ecb90a390dbc8b963b55d22a2b4cc45f90c1f89d2fd669b692f3f599a46e546"
 }

@@ -1,0 +1,2424 @@
+{
+  "schema": "stage-a-combinatorics-composition-v1",
+  "source": "independently authored cross-domain composition corpus",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "supported_routes": 120,
+  "replay_verified": 240,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "route_counts": {
+    "count_to_finite_dynamics": 50,
+    "count_to_graph_linear_algebra": 50,
+    "count_to_modular_inverse": 50,
+    "count_to_number_theory": 20,
+    "count_to_probability": 70
+  },
+  "corpus_sha256": "682c191f021ad60c2a6269dc10c1139e874fe797e47b4a049cb4b6bd8bedfbce",
+  "receipts": [
+    {
+      "id": "count_probability_0",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_1",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_2",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_3",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_4",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_5",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_6",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_7",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_8",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_9",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_10",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_11",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_12",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_13",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_14",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_15",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_16",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_17",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_18",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_19",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_20",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_21",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_22",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_23",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_24",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_25",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_26",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_27",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_28",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_29",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_30",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_31",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_32",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_33",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_34",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_35",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_36",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_37",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_38",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_39",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_40",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_41",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_42",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_43",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_44",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_45",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_46",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_47",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_48",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_49",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_50",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_51",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_52",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_53",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_54",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_55",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_56",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_57",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_58",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_59",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_60",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_61",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_62",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_63",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_64",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_65",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_66",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_67",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_68",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_69",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_70",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_71",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_72",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_73",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_74",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_75",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_76",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_77",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_78",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_79",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_80",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_81",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_82",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_83",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_84",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_85",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_86",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_87",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_88",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_89",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_90",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_91",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_92",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_93",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_94",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_95",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_96",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_97",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_98",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_99",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_100",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_101",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_102",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_103",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_104",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_105",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_106",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_107",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_108",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_109",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_110",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_111",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_112",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_113",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_114",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_115",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_probability_116",
+      "route": "count_to_probability",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_graph_117",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_number_theory_118",
+      "route": "count_to_modular_inverse",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "count_dynamics_119",
+      "route": "count_to_finite_dynamics",
+      "expected": "Complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_0",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_1",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_2",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_3",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_4",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_5",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_6",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_7",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_8",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_9",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_10",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_11",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_12",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_13",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_14",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_15",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_16",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_17",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_18",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_probability_19",
+      "route": "count_to_probability",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_0",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_1",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_2",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_3",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_4",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_5",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_6",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_7",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_8",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_9",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_10",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_11",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_12",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_13",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_14",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_15",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_16",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_17",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_18",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_partition_19",
+      "route": "count_to_number_theory",
+      "expected": "Ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_0",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_1",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_2",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_3",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_4",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_5",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_6",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_7",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_8",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_9",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_10",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_11",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_12",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_13",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_14",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_15",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_16",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_17",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_18",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "oversized_count_19",
+      "route": "count_to_probability",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_0",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_1",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_2",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_3",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_4",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_5",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_6",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_7",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_8",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_9",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_10",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_11",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_12",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_13",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_14",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_15",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_16",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_17",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_18",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "weighted_graph_19",
+      "route": "count_to_graph_linear_algebra",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_0",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_1",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_2",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_3",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_4",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_5",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_6",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_7",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_8",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_9",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_10",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_11",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_12",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_13",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_14",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_15",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_16",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_17",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_18",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "unsupported_number_theory_19",
+      "route": "count_to_modular_inverse",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_0",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_1",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_2",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_3",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_4",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_5",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_6",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_7",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_8",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_9",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_10",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_11",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_12",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_13",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_14",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_15",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_16",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_17",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_18",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "dynamics_budget_19",
+      "route": "count_to_finite_dynamics",
+      "expected": "Refused",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    }
+  ]
+}

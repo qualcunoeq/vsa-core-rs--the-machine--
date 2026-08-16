@@ -257,6 +257,13 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "declarative source records executed by a generic expression interpreter",
         ),
         (
+            "source_derived_science",
+            "Source-derived bounded classical science laws",
+            vec!["classical_mechanics", "ordinary_differential_equations", "bounded_calculus"],
+            vec!["ideal_gas_pressure", "first_law_delta_u", "kinetic_energy", "hooke_force"],
+            "source-cited law records with generic exact rational execution",
+        ),
+        (
             "topology",
             "Topology and geometric invariants",
             vec!["abstract_algebra"],
@@ -284,6 +291,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "ordinary_differential_equations"
                 | "bounded_calculus"
                 | "source_formula_sequences"
+                | "source_derived_science"
         ) {
             (
                 CurriculumStatus::ShadowValidated,

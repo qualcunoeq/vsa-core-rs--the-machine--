@@ -314,6 +314,37 @@
         "selection_reason": "declarative source records executed by a generic expression interpreter"
       },
       {
+        "id": "source_derived_science",
+        "title": "Source-derived bounded classical science laws",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "classical_mechanics",
+          "ordinary_differential_equations",
+          "bounded_calculus"
+        ],
+        "reusable_artifacts": [
+          "ideal_gas_pressure",
+          "first_law_delta_u",
+          "kinetic_energy",
+          "hooke_force"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-cited law records with generic exact rational execution"
+      },
+      {
         "id": "topology",
         "title": "Topology and geometric invariants",
         "status": "planned",
@@ -372,7 +403,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "cbbbc308ef9ca7f46f77e2937635ec488124d7abe97852d8297cfa52e909ed36",
+  "manifest_replay_hash": "9dc355569c5684b2b97d370b6a86b65109eedc44761f64c3a5a926b07f921b5c",
   "validation_errors": [],
   "production_authorizations": 0
 }

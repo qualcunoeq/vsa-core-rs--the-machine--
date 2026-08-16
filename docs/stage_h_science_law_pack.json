@@ -1,0 +1,14 @@
+{
+  "ambiguous": 40,
+  "cases": 240,
+  "exact_decisions": 240,
+  "exact_values": 120,
+  "false_authorizations": 0,
+  "refused": 80,
+  "replay_verified": 240,
+  "report_hash": "0523c440a2b05fa390464ff7be1c65eaeb990f9105abb364bfc68e98c178bd0e",
+  "schema": "stage-h-source-derived-science-v1",
+  "source": "OpenStax University Physics Volume 1",
+  "supported": 120,
+  "tamper_rejected": 240
+}

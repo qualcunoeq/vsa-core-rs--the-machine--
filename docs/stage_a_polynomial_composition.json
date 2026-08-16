@@ -1,0 +1,12 @@
+{
+  "ambiguous": 40,
+  "cases": 240,
+  "exact_decisions": 240,
+  "false_authorizations": 0,
+  "records_hash": "7a9c9d66b09e0ecb5452e16607ace5da6939ccd1f655a0c3f595d72e286c99bd",
+  "refused": 80,
+  "replay_verified": 480,
+  "schema": "stage-a-polynomial-number-theory-composition-v1",
+  "supported": 120,
+  "tamper_rejected": 480
+}

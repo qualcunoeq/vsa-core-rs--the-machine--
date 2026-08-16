@@ -340,6 +340,10 @@ name = "polynomial_pack_bench"
 path = "src/bin/polynomial_pack_bench.rs"
 
 [[bin]]
+name = "polynomial_composition_bench"
+path = "src/bin/polynomial_composition_bench.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

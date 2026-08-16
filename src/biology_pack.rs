@@ -13,6 +13,9 @@ use std::collections::BTreeMap;
 #[path = "biology_frontend.rs"]
 pub mod biology_frontend;
 
+#[path = "biology_probability_bridge.rs"]
+pub mod biology_probability_bridge;
+
 const DOMAIN: &str = "source_derived_bounded_dna";
 const MAX_SEQUENCE: usize = 256;
 

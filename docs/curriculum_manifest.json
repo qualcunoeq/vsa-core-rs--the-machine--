@@ -553,6 +553,35 @@
         "selection_reason": "first source-derived domain acquired from an attributed topology definition; finite-set operations only"
       },
       {
+        "id": "source_derived_finite_metric",
+        "title": "Source-derived bounded finite metric spaces",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_finite_topology"
+        ],
+        "reusable_artifacts": [
+          "finite_metric",
+          "distance",
+          "open_ball",
+          "diameter"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-attributed metric axioms executed over explicit finite distance tables"
+      },
+      {
         "id": "topology",
         "title": "Topology and geometric invariants",
         "status": "planned",
@@ -611,7 +640,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "e4eab7e9e0bb5abb940b123297166fefee30c9494f1357906bf5d8f3c618ab86",
+  "manifest_replay_hash": "2958d7a6ac00502a62bb7e8e2de53efa9ee854e05c7f8d2ea3cd52699f45bf58",
   "validation_errors": [],
   "production_authorizations": 0
 }

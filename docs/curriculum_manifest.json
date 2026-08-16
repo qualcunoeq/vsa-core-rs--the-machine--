@@ -345,6 +345,38 @@
         "selection_reason": "source-cited law records with generic exact rational execution"
       },
       {
+        "id": "polynomial_algebra",
+        "title": "Bounded polynomial algebra over prime fields",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "abstract_algebra",
+          "elementary_number_theory",
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "polynomial_arithmetic",
+          "polynomial_division",
+          "polynomial_gcd",
+          "finite_field_roots",
+          "quadratic_factorization"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "finite-field polynomial artifacts bridge algebra, arithmetic, and linear maps"
+      },
+      {
         "id": "topology",
         "title": "Topology and geometric invariants",
         "status": "planned",
@@ -403,7 +435,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "9dc355569c5684b2b97d370b6a86b65109eedc44761f64c3a5a926b07f921b5c",
+  "manifest_replay_hash": "10f6e22256c4fed1fe203fe54aef547b2556bc05154beb2c9f44ae75b5f29c52",
   "validation_errors": [],
   "production_authorizations": 0
 }

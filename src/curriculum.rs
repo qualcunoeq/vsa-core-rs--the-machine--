@@ -264,6 +264,19 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "source-cited law records with generic exact rational execution",
         ),
         (
+            "polynomial_algebra",
+            "Bounded polynomial algebra over prime fields",
+            vec!["abstract_algebra", "elementary_number_theory", "linear_algebra_spectral"],
+            vec![
+                "polynomial_arithmetic",
+                "polynomial_division",
+                "polynomial_gcd",
+                "finite_field_roots",
+                "quadratic_factorization",
+            ],
+            "finite-field polynomial artifacts bridge algebra, arithmetic, and linear maps",
+        ),
+        (
             "topology",
             "Topology and geometric invariants",
             vec!["abstract_algebra"],
@@ -292,6 +305,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "bounded_calculus"
                 | "source_formula_sequences"
                 | "source_derived_science"
+                | "polynomial_algebra"
         ) {
             (
                 CurriculumStatus::ShadowValidated,
@@ -338,7 +352,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 8);
+        assert_eq!(manifest.packs.len(), 15);
         assert!(manifest
             .packs
             .iter()

@@ -1,7 +1,7 @@
 {
   "schema": "stage-l-hle-checkpoint-2-v1",
   "checkpoint": "stage-l-hle-checkpoint-2",
-  "producer_commit": "8d5e026",
+  "producer_commit": "341415c",
   "dataset": "data/hle.jsonl",
   "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
   "manifest_sha256": "e4eab7e9e0bb5abb940b123297166fefee30c9494f1357906bf5d8f3c618ab86",
@@ -18,8 +18,8 @@
   "replay_compatibility_verified": 2,
   "replay_not_applicable": 2498,
   "replay_not_recorded": 0,
-  "total_execution_time_ms": 49469.17715100006,
-  "max_execution_time_ms": 552.207807,
+  "total_execution_time_ms": 49669.4076290002,
+  "max_execution_time_ms": 543.121219,
   "terminal_counts": {
     "correct_authorized_answer": 2,
     "visual_input_required": 260,
@@ -31,6 +31,6 @@
     "ambiguous_or_unresolved": 6
   },
   "trace_path": "/tmp/hle_curriculum_checkpoint_2.jsonl",
-  "trace_sha256": "ea6d42a2d4dd05120f31960a5962a15531fa842423b3414130bc7102e6933eef",
-  "summary_sha256": "f394921807faafcf3423990e351c8141034384acf452b2bc556fac2ee8d0a41f"
+  "trace_sha256": "49dc1eb48c0ee065fc70a034d7e61f0e7333f7b7661e035530a8fd04e421df26",
+  "summary_sha256": "d78e2d52186fcb4acb9b976cfb78b8b55554ccc48f371a81e530702fab8d08e0"
 }

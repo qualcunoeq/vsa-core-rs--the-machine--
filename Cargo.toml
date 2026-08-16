@@ -372,6 +372,10 @@ name = "stage_af_source_promotion"
 path = "src/bin/stage_af_source_promotion.rs"
 
 [[bin]]
+name = "stage_ag_source_formula_frontend"
+path = "src/bin/stage_ag_source_formula_frontend.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

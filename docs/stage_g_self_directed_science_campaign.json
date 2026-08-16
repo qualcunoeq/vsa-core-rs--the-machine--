@@ -1,0 +1,18 @@
+{
+  "schema": "stage-g-self-directed-science-campaign-v1",
+  "observed_cases": 500,
+  "gap_clusters": 4,
+  "candidate_plans": 4,
+  "selected_module": "source_derived_biology",
+  "selected_coverage": 350,
+  "selected_plan_replay": true,
+  "plan_tamper_rejected": true,
+  "independent_validation_cases": 120,
+  "independent_validation_correct": 120,
+  "shadow_promotable": true,
+  "manifest_unchanged": true,
+  "blocked_shortcuts": 1,
+  "false_authorizations": 0,
+  "production_authorizations": 0,
+  "corpus_sha256": "3617080d0cf329b8030251ef386ef8c65cfdf3d923acc67e1feb10525ce65eca"
+}

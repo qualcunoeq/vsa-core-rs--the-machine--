@@ -1,0 +1,16 @@
+{
+  "schema": "source-provenance-integrity-v1",
+  "source_families": 8,
+  "unique_source_ids": 11,
+  "citation_entries": 240,
+  "valid_citations": 240,
+  "replay_verified": 240,
+  "tamper_rejected": 240,
+  "mutation_cases": 6,
+  "mutation_rejections": 6,
+  "evaluator_receipts": 3,
+  "evaluator_replays": 3,
+  "corpus_sha256": "588e62c37889df47f4e1d9ba3f397b2a4670c325023ee9551835de61b4cbf724",
+  "false_authorizations": 0,
+  "production_registry_mutations": 0
+}

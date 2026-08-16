@@ -6,7 +6,7 @@
 //! benchmark- or question-specific branches and refuses topology claims that
 //! require an unbounded or metric representation.
 
-use crate::source_formula_pack::SourceCitation;
+use crate::source_formula_pack::{validate_source_citation, SourceCitation};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
@@ -242,14 +242,10 @@ pub fn validate_topology_definitions(
                 errors.push(format!("topology {} lacks {required_axiom} axiom", record.topology_id));
             }
         }
-        if record.source.source_id.trim().is_empty()
-            || record.source.title.trim().is_empty()
-            || record.source.section.trim().is_empty()
-            || !record.source.url.starts_with("https://")
-            || record.source.retrieved_utc.trim().is_empty()
-            || record.source.evidence_span.trim().is_empty()
-        {
-            errors.push(format!("topology {} has incomplete source citation", record.topology_id));
+        if let Err(citation_errors) = validate_source_citation(&record.source) {
+            for error in citation_errors {
+                errors.push(format!("topology {}: {error}", record.topology_id));
+            }
         }
     }
     if errors.is_empty() { Ok(()) } else { Err(errors) }

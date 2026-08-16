@@ -387,6 +387,43 @@ pub fn extract_formula_records(document: &str) -> Result<Vec<FormulaRecord>, Vec
     }
 }
 
+/// Validate the provenance fields shared by source-derived curriculum packs.
+///
+/// This is deliberately independent of any formula meaning: a citation must
+/// identify an attributed source, a stable section, a retrievable HTTPS
+/// location, the license, retrieval time, and the exact evidence span used by
+/// the typed record.  Packs with richer domain artifacts can reuse this gate
+/// without importing the formula interpreter.
+pub fn validate_source_citation(source: &SourceCitation) -> Result<(), Vec<String>> {
+    let mut errors = Vec::new();
+    if source.source_id.trim().is_empty() {
+        errors.push("source identifier is empty".into());
+    }
+    if source.title.trim().is_empty() {
+        errors.push("source title is empty".into());
+    }
+    if source.section.trim().is_empty() {
+        errors.push("source section is empty".into());
+    }
+    if !source.url.starts_with("https://") {
+        errors.push("source URL must use HTTPS".into());
+    }
+    if source.license.trim().is_empty() {
+        errors.push("source license is empty".into());
+    }
+    if source.retrieved_utc.trim().is_empty() {
+        errors.push("source retrieval timestamp is empty".into());
+    }
+    if source.evidence_span.trim().is_empty() {
+        errors.push("source evidence span is empty".into());
+    }
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
+}
+
 /// Validate a declarative source catalog before it is eligible for shadow
 /// execution.  The validator is domain-agnostic: it checks identity,
 /// expression inputs, constraints, and citation completeness without knowing
@@ -465,17 +502,10 @@ pub fn validate_formula_records(records: &[FormulaRecord]) -> Result<(), Vec<Str
                 ));
             }
         }
-        if record.source.source_id.trim().is_empty()
-            || record.source.title.trim().is_empty()
-            || record.source.section.trim().is_empty()
-            || !record.source.url.starts_with("https://")
-            || record.source.retrieved_utc.trim().is_empty()
-            || record.source.evidence_span.trim().is_empty()
-        {
-            errors.push(format!(
-                "formula {} has incomplete source citation",
-                record.formula_id
-            ));
+        if let Err(citation_errors) = validate_source_citation(&record.source) {
+            for error in citation_errors {
+                errors.push(format!("formula {}: {error}", record.formula_id));
+            }
         }
     }
     if errors.is_empty() {
@@ -951,5 +981,14 @@ END FORMULA
     fn source_document_extractor_rejects_omitted_evidence() {
         let document = "BEGIN FORMULA bad\nEXPRESSION: x\nINPUTS: x\nASSUMPTIONS: -\nCONSTRAINTS: -\nSOURCE_ID: s\nTITLE: t\nSECTION: s\nURL: https://example.invalid\nLICENSE: test\nRETRIEVED: 2026-08-16\nEND FORMULA\n";
         assert!(extract_formula_records(document).is_err());
+    }
+
+    #[test]
+    fn shared_source_citation_gate_requires_license() {
+        let mut source = source();
+        source.license.clear();
+        assert!(validate_source_citation(&source).is_err());
+        source.license = "CC BY 4.0".into();
+        assert!(validate_source_citation(&source).is_ok());
     }
 }

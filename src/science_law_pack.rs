@@ -152,6 +152,7 @@ pub fn validate_science_law_records(records: &[ScienceLawRecord]) -> Result<(), 
             || source.title.trim().is_empty()
             || source.section.trim().is_empty()
             || !source.url.starts_with("https://")
+            || source.license.trim().is_empty()
             || source.retrieved_utc.trim().is_empty()
             || source.evidence_span.trim().is_empty()
         {

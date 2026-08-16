@@ -5,7 +5,7 @@
 //! distances.  No completeness, compactness, limiting, or infinite-space
 //! semantics are inferred.
 
-use crate::source_formula_pack::SourceCitation;
+use crate::source_formula_pack::{validate_source_citation, SourceCitation};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
@@ -265,17 +265,10 @@ pub fn validate_metric_definitions(records: &[MetricDefinitionRecord]) -> Result
                 errors.push(format!("metric {} lacks {axiom} axiom", record.metric_id));
             }
         }
-        if record.source.source_id.trim().is_empty()
-            || record.source.title.trim().is_empty()
-            || record.source.section.trim().is_empty()
-            || !record.source.url.starts_with("https://")
-            || record.source.retrieved_utc.trim().is_empty()
-            || record.source.evidence_span.trim().is_empty()
-        {
-            errors.push(format!(
-                "metric {} has incomplete source citation",
-                record.metric_id
-            ));
+        if let Err(citation_errors) = validate_source_citation(&record.source) {
+            for error in citation_errors {
+                errors.push(format!("metric {}: {error}", record.metric_id));
+            }
         }
     }
     if errors.is_empty() {

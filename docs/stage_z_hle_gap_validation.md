@@ -15,7 +15,7 @@ Expected result for the five exact-overlap plans:
 | Gate | Result |
 |---|---:|
 | Plans with exact overlap | 5 |
-| Sandbox-validated plans | 3/5 |
+| Sandbox-validated plans | 5/5 |
 | Promotion-allowed plans | 0 |
 | Manifest mutation | false |
 | Production registry mutations | 0 |
@@ -29,6 +29,6 @@ cargo run --quiet --bin stage_z_hle_gap_validation
 
 Machine-readable report: `docs/stage_z_hle_gap_validation.json`.
 
-Two plans remain blocked because their JSON manifests lack structured source
-provenance, even though related Markdown documentation cites sources. The
-validator does not infer provenance across formats.
+The calculus and finite-Markov manifests now carry structured source URLs and
+scope fields, so all five proposals satisfy the source-provenance gate without
+any cross-format inference.

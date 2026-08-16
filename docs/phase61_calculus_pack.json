@@ -1,6 +1,8 @@
 {
   "schema": "phase61-bounded-calculus-v1",
   "benchmark": "bounded exact one-variable calculus",
+  "source": "OpenStax Calculus Volume 1, Chapters 2-5 — https://openstax.org/details/books/calculus-volume-1/",
+  "source_scope": "limits, derivatives, continuity, antiderivatives, and definite integrals",
   "cases": 240,
   "supported": 120,
   "boundary": 40,

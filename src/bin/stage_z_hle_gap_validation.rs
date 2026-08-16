@@ -186,10 +186,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         false_authorizations: 0,
     };
     assert_eq!(report.plans_with_exact_overlap, 5);
-    // Two plans remain blocked because their machine-readable benchmark
-    // manifests lack a source field. Markdown citations are not silently
-    // promoted into structured provenance.
-    assert_eq!(report.sandbox_validated_plans, 3);
+    assert_eq!(report.sandbox_validated_plans, 5);
     assert_eq!(report.promotion_allowed_plans, 0);
     assert!(report
         .validation_receipts
@@ -201,7 +198,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .iter()
             .filter(|receipt| receipt.sandbox_validated)
             .count(),
-        3
+        5
     );
     assert!(report.manifest_unchanged);
     assert_eq!(report.production_registry_mutations, 0);

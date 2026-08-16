@@ -1,5 +1,7 @@
 {
   "schema": "phase71-finite-markov-pack-v1",
+  "source": "MIT OpenCourseWare 6.262 Discrete Stochastic Processes, Lecture 7 — https://ocw.mit.edu/courses/6-262-discrete-stochastic-processes-spring-2011/resources/lecture-7-finite-state-markov-chains-the-matrix-approach/",
+  "source_scope": "finite-state transition matrices and exact bounded evolution",
   "corpus_sha256": "6d1054335b376d96725677485e35015fdfeefee702fd2236a62d6a93c9a3162e",
   "cases": 240,
   "supported": 120,

@@ -57,6 +57,7 @@ pub mod chess_eval;
 pub mod chess_learner;
 pub mod code_bridge;
 pub mod cognition;
+pub mod combinatorics_pack;
 pub mod compression;
 pub mod context;
 pub mod defense;

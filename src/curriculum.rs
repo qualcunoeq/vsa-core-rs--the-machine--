@@ -210,6 +210,23 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "reuse finite modular and cyclic artifacts before advanced number theory",
         ),
         (
+            "combinatorics",
+            "Bounded combinatorics",
+            vec![
+                "probability_stochastic",
+                "graph_theory",
+                "elementary_number_theory",
+            ],
+            vec![
+                "permutation_count",
+                "combination_count",
+                "multinomial_count",
+                "inclusion_exclusion_count",
+                "surjection_count",
+            ],
+            "finite exact counting substrate for probability, graph, and arithmetic composition",
+        ),
+        (
             "topology",
             "Topology and geometric invariants",
             vec!["abstract_algebra"],
@@ -227,7 +244,10 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
     for (id, title, prerequisites, artifacts, reason) in domains {
         let (status, validation_gates) = if matches!(
             id,
-            "linear_algebra_spectral" | "abstract_algebra" | "elementary_number_theory"
+            "linear_algebra_spectral"
+                | "abstract_algebra"
+                | "elementary_number_theory"
+                | "combinatorics"
         ) {
             (
                 CurriculumStatus::ShadowValidated,

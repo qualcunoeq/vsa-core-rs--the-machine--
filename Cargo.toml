@@ -276,6 +276,10 @@ name = "number_theory_composition_bench"
 path = "src/bin/number_theory_composition_bench.rs"
 
 [[bin]]
+name = "combinatorics_pack_bench"
+path = "src/bin/combinatorics_pack_bench.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

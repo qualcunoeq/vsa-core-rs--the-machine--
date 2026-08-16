@@ -240,6 +240,10 @@ name = "stage_u_six_frontend_route_blind"
 path = "src/bin/stage_u_six_frontend_route_blind.rs"
 
 [[bin]]
+name = "stage_v_source_composition_1000"
+path = "src/bin/stage_v_source_composition_1000.rs"
+
+[[bin]]
 name = "curriculum_campaign_bench"
 path = "src/bin/curriculum_campaign_bench.rs"
 

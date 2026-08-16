@@ -348,6 +348,10 @@ name = "number_theory_composition_bench"
 path = "src/bin/number_theory_composition_bench.rs"
 
 [[bin]]
+name = "stage_aa_governed_promotion"
+path = "src/bin/stage_aa_governed_promotion.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

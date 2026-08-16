@@ -1,0 +1,15 @@
+{
+  "schema": "stage-i-source-topology-retrieval-v1",
+  "cases": 240,
+  "supported": 120,
+  "conflicting": 40,
+  "missing": 80,
+  "exact_decisions": 240,
+  "topology_authorizations": 120,
+  "retrieval_replay": 240,
+  "topology_replay": 120,
+  "tamper_rejected": 240,
+  "false_authorizations": 0,
+  "registry_mutated": false,
+  "receipt_hash": "95a98394ac08aa46194894be6f265bd8c4a50ab88dd8293d9393763c6ab5b0ec"
+}

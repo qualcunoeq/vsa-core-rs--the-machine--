@@ -1,0 +1,13 @@
+{
+  "cases": 240,
+  "conflicting": 40,
+  "exact_decisions": 240,
+  "false_authorizations": 0,
+  "missing_or_refused": 80,
+  "registry_mutated": false,
+  "replay_verified": 240,
+  "route_records_hash": "95a98394ac08aa46194894be6f265bd8c4a50ab88dd8293d9393763c6ab5b0ec",
+  "schema": "stage-i-governed-source-retrieval-v1",
+  "supported": 120,
+  "tamper_rejected": 240
+}

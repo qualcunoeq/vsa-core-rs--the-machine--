@@ -83,6 +83,7 @@ pub mod equation_classification;
 pub mod solution_verification;
 pub mod source_formula_pack;
 pub mod science_law_pack;
+pub mod source_retrieval;
 pub mod experiment;
 pub mod forager;
 pub mod formalization;

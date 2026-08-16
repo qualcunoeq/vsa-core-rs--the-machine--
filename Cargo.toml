@@ -324,6 +324,10 @@ name = "science_composition_bench"
 path = "src/bin/science_composition_bench.rs"
 
 [[bin]]
+name = "source_retrieval_bench"
+path = "src/bin/source_retrieval_bench.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

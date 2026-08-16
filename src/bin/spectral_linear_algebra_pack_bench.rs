@@ -3,7 +3,7 @@
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 use the_machine::spectral_linear_algebra_pack::{
-    evaluate_spectral, SpectralOperation, SpectralRequest, SpectralStatus,
+    evaluate_spectral, SpectralArtifact, SpectralOperation, SpectralRequest, SpectralStatus,
 };
 
 #[derive(Clone, Serialize)]
@@ -19,6 +19,7 @@ struct Receipt {
     expected: SpectralStatus,
     actual: SpectralStatus,
     artifact_emitted: bool,
+    artifact_correct: bool,
     exact: bool,
     replay_verified: bool,
     tamper_rejected: bool,
@@ -55,6 +56,49 @@ fn request(operation: SpectralOperation, matrix: Vec<Vec<i64>>) -> SpectralReque
         domain: "bounded_exact_spectral_linear_algebra".into(),
         ambiguity: None,
         provenance: vec!["phase75-independent-spectral-corpus".into()],
+    }
+}
+
+fn artifact_correct(id: &str, artifact: Option<&SpectralArtifact>) -> bool {
+    let Some(artifact) = artifact else {
+        return false;
+    };
+    if id.starts_with("characteristic_") {
+        return *artifact == SpectralArtifact::CharacteristicPolynomial(vec![3, -4, 1]);
+    }
+    if id.starts_with("integer_eigenvalues_") {
+        return *artifact == SpectralArtifact::Eigenvalues(vec![2, 5]);
+    }
+    if id.starts_with("diagonalizability_") {
+        return *artifact == SpectralArtifact::Diagonalizable(true);
+    }
+    if id.starts_with("eigenspace_") {
+        let SpectralArtifact::Eigenspace { eigenvalue, basis } = artifact else {
+            return false;
+        };
+        if *eigenvalue != 3 || basis.len() != 1 || basis[0].len() != 2 {
+            return false;
+        }
+        let vector = &basis[0];
+        vector[0].numerator * vector[1].denominator == vector[1].numerator * vector[0].denominator
+    } else if id.starts_with("decomposition_") {
+        matches!(artifact, SpectralArtifact::Decomposition { eigenvalues, basis } if eigenvalues == &[2, 5] && basis.len() == 2)
+    } else if id.starts_with("matrix_power_") {
+        let power = id
+            .rsplit('_')
+            .next()
+            .and_then(|value| value.parse::<u32>().ok())
+            .map(|index| index % 5)
+            .unwrap_or(0);
+        let expected = (0..power).fold(vec![vec![1i128, 0], vec![0, 1]], |left, _| {
+            vec![
+                vec![left[0][0] * 2 + left[0][1], left[0][0] + left[0][1] * 2],
+                vec![left[1][0] * 2 + left[1][1], left[1][0] + left[1][1] * 2],
+            ]
+        });
+        artifact == &SpectralArtifact::Matrix(expected)
+    } else {
+        false
     }
 }
 
@@ -154,13 +198,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut tampered = result.clone();
         tampered.replay_hash.push('x');
         let artifact_emitted = result.artifact.is_some();
-        let exact = result.status == case.expected
-            && (case.expected == SpectralStatus::Complete) == artifact_emitted;
+        let correct_artifact = if case.expected == SpectralStatus::Complete {
+            artifact_correct(&case.id, result.artifact.as_ref())
+        } else {
+            !artifact_emitted
+        };
+        let exact = result.status == case.expected && correct_artifact;
         receipts.push(Receipt {
             id: case.id,
             expected: case.expected,
             actual: result.status,
             artifact_emitted,
+            artifact_correct: correct_artifact,
             exact,
             replay_verified: result.replay_verified(),
             tamper_rejected: !tampered.replay_verified(),
@@ -180,7 +229,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let exact_decisions = receipts.iter().filter(|r| r.exact).count();
     let supported_artifacts = receipts
         .iter()
-        .filter(|r| r.expected == SpectralStatus::Complete && r.artifact_emitted)
+        .filter(|r| r.expected == SpectralStatus::Complete && r.artifact_correct)
         .count();
     let replay_verified = receipts.iter().filter(|r| r.replay_verified).count();
     let tamper_rejected = receipts.iter().filter(|r| r.tamper_rejected).count();

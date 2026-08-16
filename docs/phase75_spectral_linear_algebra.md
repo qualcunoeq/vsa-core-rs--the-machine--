@@ -3,6 +3,7 @@
 - Cases: 240 (120 supported, 40 ambiguous, 80 refused)
 - Exact decisions: 240/240
 - Supported artifacts: 120/120
+- Supported artifact values and structural invariants: 120/120
 - Replay verified: 240/240
 - Tamper rejected: 240/240
 - False authorizations / denials: 0 / 0

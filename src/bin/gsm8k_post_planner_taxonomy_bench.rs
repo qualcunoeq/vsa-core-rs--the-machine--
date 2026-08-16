@@ -65,6 +65,7 @@ fn main() {
     let mut audited_ambiguous = 0usize;
     let mut ambiguous_expected = 0usize;
     let mut ambiguous_from_unsupported = 0usize;
+    let mut promoted_ambiguous = 0usize;
     let mut residual_unsupported = 0usize;
     let mut oracle_ambiguous_no_route = 0usize;
     let mut preexisting_supported_no_route = 0usize;
@@ -111,8 +112,14 @@ fn main() {
                 *ambiguity_reasons.entry(reason.into()).or_default() += 1;
                 if case.expected_outcome == ExpectedOutcome::Ambiguous {
                     ambiguous_expected += 1;
+                } else if case.expected_outcome == ExpectedOutcome::Unsupported {
+                    if promoted_case.is_some() {
+                        promoted_ambiguous += 1;
+                    } else {
+                        ambiguous_from_unsupported += 1;
+                    }
                 } else {
-                    ambiguous_from_unsupported += 1;
+                    preexisting_supported_no_route += 1;
                 }
             }
             PlannerDecision::NoCandidates => {
@@ -145,5 +152,5 @@ fn main() {
         - ambiguous_from_unsupported;
     assert_eq!(residual_unsupported, expected_residual);
     let stable = true;
-    println!("gsm8k-post-planner-taxonomy: base_hash={} config_sha256={} cases={} planner_ambiguous={} ambiguous_expected={} ambiguous_from_unsupported={} planner_no_route={} residual_unsupported={} oracle_ambiguous_no_route={} preexisting_supported_no_route={} promoted_realized={} migrated_by_family={:?} ambiguity_reasons={:?} residual_clusters={:?} false_auth={} false_denials={} failures={:?} deterministic={}", base.release_hash(), sha256_file(&config_path), base.cases.len(), audited_ambiguous, ambiguous_expected, ambiguous_from_unsupported, residual_unsupported + oracle_ambiguous_no_route + preexisting_supported_no_route, residual_unsupported, oracle_ambiguous_no_route, preexisting_supported_no_route, promoted_realized, migrated_by_route, ambiguity_reasons, residual_clusters, false_authorizations, false_denials, failures, stable);
+    println!("gsm8k-post-planner-taxonomy: base_hash={} config_sha256={} cases={} planner_ambiguous={} ambiguous_expected={} ambiguous_from_unsupported={} promoted_ambiguous={} planner_no_route={} residual_unsupported={} oracle_ambiguous_no_route={} preexisting_supported_no_route={} promoted_realized={} migrated_by_family={:?} ambiguity_reasons={:?} residual_clusters={:?} false_auth={} false_denials={} failures={:?} deterministic={}", base.release_hash(), sha256_file(&config_path), base.cases.len(), audited_ambiguous, ambiguous_expected, ambiguous_from_unsupported, promoted_ambiguous, residual_unsupported + oracle_ambiguous_no_route + preexisting_supported_no_route, residual_unsupported, oracle_ambiguous_no_route, preexisting_supported_no_route, promoted_realized, migrated_by_route, ambiguity_reasons, residual_clusters, false_authorizations, false_denials, failures, stable);
 }

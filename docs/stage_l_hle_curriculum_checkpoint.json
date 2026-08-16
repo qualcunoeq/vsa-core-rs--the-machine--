@@ -1,0 +1,39 @@
+{
+  "checkpoint": "curriculum-shadow-checkpoint-63",
+  "producer_commit": "828f74f",
+  "dataset": "data/hle.jsonl",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "curriculum_manifest_hash": "9dc355569c5684b2b97d370b6a86b65109eedc44761f64c3a5a926b07f921b5c",
+  "registry_version": "shadow-only-no-production-mutation",
+  "ontology_version": "curriculum-63-real-analysis",
+  "cases": 2500,
+  "correct_authorized_answers": 2,
+  "incorrect_authorized_answers": 0,
+  "false_authorizations": 0,
+  "safely_formalized_but_unsupported": 0,
+  "pack_signals": {
+    "calculus": 154,
+    "real_analysis": 20,
+    "linear_algebra": 162,
+    "probability": 174,
+    "graph_theory": 320,
+    "discrete_dynamics": 18
+  },
+  "first_failures": {
+    "authorized_reference_match": 2,
+    "visual_dependency": 260,
+    "no_curriculum_signal": 1614,
+    "language_normalization": 65,
+    "unsupported_target_type": 13,
+    "missing_factual_prerequisite": 451,
+    "missing_specialist_theorem": 87,
+    "assumptions_not_established": 8
+  },
+  "curriculum_candidates": 705,
+  "pack_invocations": 0,
+  "replay_verified": 0,
+  "replay_not_applicable": 2498,
+  "replay_not_recorded": 2,
+  "trace_sha256": "c6886e82d03898e3bca60f0f5e328b7e6a97e697b2187e0fd04971dde6d5d26a",
+  "summary_sha256": "d03fb27f11f863aded0d93fc37cf83ba0699bd3a4b5fabb60170f26990732f2c"
+}

@@ -77,6 +77,7 @@ pub mod target_grounding;
 pub mod target_context;
 pub mod context_lowering;
 pub mod curriculum;
+pub mod curriculum_memory;
 pub mod equation_classification;
 pub mod solution_verification;
 pub mod source_formula_pack;

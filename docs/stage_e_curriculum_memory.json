@@ -1,0 +1,18 @@
+{
+  "duplicate_rejections": 1,
+  "invalid_rejections": 1,
+  "live_mutation": false,
+  "manifest_hash": "511a325375a5c710da02fef40b74e3fdcec16450a5bbc7e58dc09e2d8bf6c64b",
+  "records": 10000,
+  "replay_verified": 10000,
+  "retrieval_counts": [
+    2500,
+    2500,
+    2500,
+    2500
+  ],
+  "schema": "stage-e-curriculum-memory-v1",
+  "segment_capacity": 256,
+  "segments": 40,
+  "tamper_rejected": 10000
+}

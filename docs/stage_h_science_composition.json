@@ -1,0 +1,13 @@
+{
+  "ambiguous": 40,
+  "cases": 240,
+  "equivalent_routes": 120,
+  "exact_decisions": 240,
+  "false_authorizations": 0,
+  "refused": 80,
+  "replay_verified": 480,
+  "route_records_hash": "72adb076c615fe949fbc6ac86fa6f64e08eea2f64394a4cbc3d04c2d2410b4af",
+  "schema": "stage-h-science-composition-v1",
+  "supported": 120,
+  "tamper_rejected": 480
+}

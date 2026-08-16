@@ -7,6 +7,9 @@
 #[path = "chemistry_pack.rs"]
 pub mod chemistry_pack;
 
+#[path = "biology_pack.rs"]
+pub mod biology_pack;
+
 use crate::probability_pack::Rational;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

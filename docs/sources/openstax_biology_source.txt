@@ -1,0 +1,13 @@
+Source: OpenStax Biology 2e
+Sections: 3.5 Nucleic Acids; 14.2 DNA Structure and Sequencing
+URL: https://openstax.org/books/biology-2e/pages/14-2-dna-structure-and-sequencing
+License: CC BY 4.0; OpenStax attribution required
+Retrieved: 2026-08-16
+
+Governed claims used by the bounded pack:
+- DNA sequences use the bases adenine (A), thymine (T), cytosine (C), and guanine (G).
+- Complementary pairing is A-T and G-C.
+- DNA strands have orientation; reverse-complement output is distinct from an aligned complement.
+
+The pack does not infer RNA transcription, codon translation, mutation effects,
+gene identity, or phenotype from these claims.

@@ -372,6 +372,10 @@ name = "chemistry_linear_bridge_bench"
 path = "src/bin/chemistry_linear_bridge_bench.rs"
 
 [[bin]]
+name = "biology_pack_bench"
+path = "src/bin/biology_pack_bench.rs"
+
+[[bin]]
 name = "curriculum_memory_bench"
 path = "src/bin/curriculum_memory_bench.rs"
 

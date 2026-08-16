@@ -283,6 +283,13 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "first source-derived domain with molecular and reaction representations",
         ),
         (
+            "source_derived_biology",
+            "Source-derived bounded molecular biology",
+            vec!["source_derived_chemistry"],
+            vec!["dna_sequence", "complementary_pair", "base_composition"],
+            "first source-derived biology domain with explicit nucleotide representations",
+        ),
+        (
             "source_derived_finite_statistics",
             "Source-derived finite statistics",
             vec!["probability_stochastic", "source_formula_sequences"],
@@ -351,6 +358,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_formula_sequences"
                 | "source_derived_science"
                 | "source_derived_chemistry"
+                | "source_derived_biology"
                 | "source_derived_finite_statistics"
                 | "polynomial_algebra"
                 | "source_derived_complex_arithmetic"
@@ -400,7 +408,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 19);
+        assert_eq!(manifest.packs.len(), 20);
         assert!(manifest
             .packs
             .iter()

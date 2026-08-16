@@ -403,6 +403,34 @@
         "selection_reason": "first source-derived domain with molecular and reaction representations"
       },
       {
+        "id": "source_derived_biology",
+        "title": "Source-derived bounded molecular biology",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_chemistry"
+        ],
+        "reusable_artifacts": [
+          "dna_sequence",
+          "complementary_pair",
+          "base_composition"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first source-derived biology domain with explicit nucleotide representations"
+      },
+      {
         "id": "source_derived_finite_statistics",
         "title": "Source-derived finite statistics",
         "status": "shadow_validated",
@@ -553,7 +581,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "987b6d7493cb1ec1dd0e5cd41fb5f2478674348ec11c2718a9f883b54849d723",
+  "manifest_replay_hash": "419b99f6cb800e56f246130cefabf3f0b604576e76c4ee6c31ca2b0d6a71023c",
   "validation_errors": [],
   "production_authorizations": 0
 }

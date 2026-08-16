@@ -238,6 +238,25 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "bounded continuous-time substrate after exact calculus and theorem contracts",
         ),
         (
+            "bounded_calculus",
+            "Bounded exact one-variable calculus",
+            vec!["real_complex_analysis"],
+            vec!["derivative", "integral", "limit"],
+            "exact symbolic continuous operations under explicit domain contracts",
+        ),
+        (
+            "source_formula_sequences",
+            "Source-derived sequences and series",
+            vec!["combinatorics", "bounded_calculus"],
+            vec![
+                "arithmetic_nth_term",
+                "arithmetic_partial_sum",
+                "geometric_nth_term",
+                "geometric_partial_sum",
+            ],
+            "declarative source records executed by a generic expression interpreter",
+        ),
+        (
             "topology",
             "Topology and geometric invariants",
             vec!["abstract_algebra"],
@@ -263,6 +282,8 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "real_complex_analysis"
                 | "graph_theory"
                 | "ordinary_differential_equations"
+                | "bounded_calculus"
+                | "source_formula_sequences"
         ) {
             (
                 CurriculumStatus::ShadowValidated,

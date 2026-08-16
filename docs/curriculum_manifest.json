@@ -256,6 +256,64 @@
         "selection_reason": "bounded continuous-time substrate after exact calculus and theorem contracts"
       },
       {
+        "id": "bounded_calculus",
+        "title": "Bounded exact one-variable calculus",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "real_complex_analysis"
+        ],
+        "reusable_artifacts": [
+          "derivative",
+          "integral",
+          "limit"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "exact symbolic continuous operations under explicit domain contracts"
+      },
+      {
+        "id": "source_formula_sequences",
+        "title": "Source-derived sequences and series",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "combinatorics",
+          "bounded_calculus"
+        ],
+        "reusable_artifacts": [
+          "arithmetic_nth_term",
+          "arithmetic_partial_sum",
+          "geometric_nth_term",
+          "geometric_partial_sum"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "declarative source records executed by a generic expression interpreter"
+      },
+      {
         "id": "topology",
         "title": "Topology and geometric invariants",
         "status": "planned",
@@ -314,7 +372,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "74f5ad43ed4edc5aa01f908d62f407e66341d07cc6975ed0a1f2d688bdf16c5a",
+  "manifest_replay_hash": "cbbbc308ef9ca7f46f77e2937635ec488124d7abe97852d8297cfa52e909ed36",
   "validation_errors": [],
   "production_authorizations": 0
 }

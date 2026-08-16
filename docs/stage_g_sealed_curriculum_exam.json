@@ -1,0 +1,15 @@
+{
+  "ambiguous_questions": 50,
+  "correct_authorizations": 400,
+  "false_authorizations": 0,
+  "manifest_unchanged": true,
+  "prerequisite_plans": 400,
+  "preserved_ambiguities": 50,
+  "questions": 500,
+  "replay_verified": 500,
+  "safe_refusals": 50,
+  "schema": "stage-g-sealed-curriculum-exam-v1",
+  "sealed_corpus_hash": "eadfe091a626143e300a50502abf84d1e6ce55ecd617e2d6c523d679cab61d49",
+  "supported_questions": 400,
+  "unsupported_questions": 50
+}

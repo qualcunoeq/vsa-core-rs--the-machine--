@@ -1,0 +1,101 @@
+{
+  "schema": "stage-n-curriculum-learning-curve-v1",
+  "corpus_schema": "sealed-independent-curriculum-corpus-v1",
+  "corpus_sha256": "e296e904839d771f2e260450831bbedfb67395b517e509e08ab2e2d8808ef1c7",
+  "corpus_cases": 1000,
+  "development_cases": 600,
+  "validation_cases": 200,
+  "sealed_cases": 200,
+  "source_validation_status": {
+    "source_derived_finite_statistics": "validated",
+    "source_formula_sequences": "validated"
+  },
+  "source_validation_replay_verified": true,
+  "source_validation_tamper_rejected": true,
+  "admitted_modules": [
+    "source_derived_finite_statistics",
+    "source_formula_sequences"
+  ],
+  "stages": [
+    {
+      "stage": "baseline_development_validation",
+      "admitted_modules": [],
+      "campaign_resolved": 0,
+      "campaign_remaining": 800,
+      "campaign_replay_verified": true,
+      "manifest_unchanged": true,
+      "cases": 800,
+      "supported_cases": 480,
+      "ambiguous_cases": 160,
+      "unsupported_cases": 160,
+      "evaluated_cases": 0,
+      "authorized": 0,
+      "correct_authorizations": 0,
+      "unmet_supported_cases": 480,
+      "ambiguity_preserved": 160,
+      "unsupported_refusals": 160,
+      "exact_decisions": 320,
+      "replay_verified": 0,
+      "tamper_rejected": 0,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "route_leakage": 0
+    },
+    {
+      "stage": "statistics_only_development_validation",
+      "admitted_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "campaign_resolved": 240,
+      "campaign_remaining": 560,
+      "campaign_replay_verified": true,
+      "manifest_unchanged": true,
+      "cases": 800,
+      "supported_cases": 480,
+      "ambiguous_cases": 160,
+      "unsupported_cases": 160,
+      "evaluated_cases": 400,
+      "authorized": 240,
+      "correct_authorizations": 240,
+      "unmet_supported_cases": 240,
+      "ambiguity_preserved": 160,
+      "unsupported_refusals": 160,
+      "exact_decisions": 560,
+      "replay_verified": 400,
+      "tamper_rejected": 400,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "route_leakage": 0
+    },
+    {
+      "stage": "final_sealed_holdout",
+      "admitted_modules": [
+        "source_derived_finite_statistics",
+        "source_formula_sequences"
+      ],
+      "campaign_resolved": 120,
+      "campaign_remaining": 80,
+      "campaign_replay_verified": true,
+      "manifest_unchanged": true,
+      "cases": 200,
+      "supported_cases": 120,
+      "ambiguous_cases": 40,
+      "unsupported_cases": 40,
+      "evaluated_cases": 200,
+      "authorized": 120,
+      "correct_authorizations": 120,
+      "unmet_supported_cases": 0,
+      "ambiguity_preserved": 40,
+      "unsupported_refusals": 40,
+      "exact_decisions": 200,
+      "replay_verified": 200,
+      "tamper_rejected": 200,
+      "false_authorizations": 0,
+      "false_denials": 0,
+      "route_leakage": 0
+    }
+  ],
+  "source_gate_false_authorizations": 0,
+  "production_registry_mutations": 0,
+  "hle_questions_read": 0
+}

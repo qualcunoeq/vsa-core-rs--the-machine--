@@ -182,6 +182,13 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "build after typed linear objects and transformations",
         ),
         (
+            "finite_markov",
+            "Bounded finite Markov chains",
+            vec!["probability_stochastic", "linear_algebra_spectral"],
+            vec!["row_stochastic_transition", "finite_horizon_trace", "two_state_stationary"],
+            "extend finite probability with explicit exact transition semantics",
+        ),
+        (
             "real_complex_analysis",
             "Real and complex analysis",
             vec!["linear_algebra_spectral"],
@@ -299,6 +306,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "elementary_number_theory"
                 | "combinatorics"
                 | "probability_stochastic"
+                | "finite_markov"
                 | "real_complex_analysis"
                 | "graph_theory"
                 | "ordinary_differential_equations"
@@ -352,7 +360,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 15);
+        assert_eq!(manifest.packs.len(), 16);
         assert!(manifest
             .packs
             .iter()

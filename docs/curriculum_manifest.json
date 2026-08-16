@@ -82,6 +82,35 @@
         "selection_reason": "build after typed linear objects and transformations"
       },
       {
+        "id": "finite_markov",
+        "title": "Bounded finite Markov chains",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "probability_stochastic",
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "row_stochastic_transition",
+          "finite_horizon_trace",
+          "two_state_stationary"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "extend finite probability with explicit exact transition semantics"
+      },
+      {
         "id": "real_complex_analysis",
         "title": "Real and complex analysis",
         "status": "shadow_validated",
@@ -435,7 +464,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "10f6e22256c4fed1fe203fe54aef547b2556bc05154beb2c9f44ae75b5f29c52",
+  "manifest_replay_hash": "1a200d658e7b3061f3ea4bf5ee54a8e3fabfb6e71941307334feef623a3c97a8",
   "validation_errors": [],
   "production_authorizations": 0
 }

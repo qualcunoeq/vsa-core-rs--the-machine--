@@ -121,6 +121,7 @@ pub mod pdf_reader;
 pub mod perception;
 pub mod physics;
 pub mod probability_pack;
+pub mod finite_markov_pack;
 pub mod polynomial_pack;
 pub mod planning;
 pub mod predictive;

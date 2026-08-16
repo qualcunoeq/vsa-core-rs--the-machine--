@@ -220,6 +220,10 @@ name = "probability_linear_algebra_composition"
 path = "src/bin/probability_linear_algebra_composition.rs"
 
 [[bin]]
+name = "finite_markov_pack_bench"
+path = "src/bin/finite_markov_pack_bench.rs"
+
+[[bin]]
 name = "graph_pack_bench"
 path = "src/bin/graph_pack_bench.rs"
 

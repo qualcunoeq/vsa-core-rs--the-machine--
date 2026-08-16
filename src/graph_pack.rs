@@ -71,9 +71,11 @@ pub struct GraphRequest {
 pub struct GraphSource {
     pub source_id: String,
     pub title: String,
+    pub section: String,
     pub url: String,
     pub license: String,
     pub retrieved_utc: String,
+    pub evidence_span: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -92,10 +94,12 @@ fn source() -> GraphSource {
     GraphSource {
         source_id: "mit-ocw-6-042j:finite-graphs".into(),
         title: "Mathematics for Computer Science".into(),
+        section: "finite graphs and adjacency representations".into(),
         url: "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/"
             .into(),
         license: "CC BY-NC-SA 4.0; MIT attribution required".into(),
         retrieved_utc: "2026-08-05".into(),
+        evidence_span: "finite vertex/edge definitions and adjacency matrix construction".into(),
     }
 }
 

@@ -151,9 +151,11 @@ pub struct ProbabilityRequest {
 pub struct ProbabilitySource {
     pub source_id: String,
     pub title: String,
+    pub section: String,
     pub url: String,
     pub license: String,
     pub retrieved_utc: String,
+    pub evidence_span: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -172,9 +174,12 @@ fn source() -> ProbabilitySource {
     ProbabilitySource {
         source_id: "openstax-introductory-statistics-2e:probability".into(),
         title: "Introductory Statistics 2e".into(),
+        section: "finite probability and discrete random variables".into(),
         url: "https://openstax.org/details/books/introductory-statistics-2e".into(),
         license: "CC BY 4.0; OpenStax attribution required".into(),
         retrieved_utc: "2026-08-05".into(),
+        evidence_span: "finite sample spaces, conditional probability, and exact expectations"
+            .into(),
     }
 }
 

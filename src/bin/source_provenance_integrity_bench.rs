@@ -8,7 +8,17 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
+use the_machine::classical_mechanics_pack::{
+    classical_mechanics_pack, evaluate_mechanics, MechanicsEvaluationRequest, NumericBinding,
+};
+use the_machine::graph_pack::{evaluate_graph, GraphOperation, GraphRequest};
+use the_machine::linear_algebra_pack::{
+    evaluate_linear_algebra, LinearAlgebraOperation, LinearAlgebraRequest,
+};
 use the_machine::probability_pack::Rational;
+use the_machine::probability_pack::{
+    evaluate_probability, ProbabilityOperation, ProbabilityRequest,
+};
 use the_machine::science_law_pack::{validate_science_law_records, ScienceLawRecord};
 use the_machine::source_complex_pack::{
     evaluate_complex, ComplexArtifact, ComplexOperation, ComplexRequest, DOMAIN as COMPLEX_DOMAIN,
@@ -67,6 +77,58 @@ fn replay_verified(receipt: &CitationReceipt) -> bool {
 }
 
 fn normalized_science(source: &the_machine::science_law_pack::ScienceSource) -> SourceCitation {
+    SourceCitation {
+        source_id: source.source_id.clone(),
+        title: source.title.clone(),
+        section: source.section.clone(),
+        url: source.url.clone(),
+        license: source.license.clone(),
+        retrieved_utc: source.retrieved_utc.clone(),
+        evidence_span: source.evidence_span.clone(),
+    }
+}
+
+fn normalized_linear(source: &the_machine::linear_algebra_pack::SourceCitation) -> SourceCitation {
+    SourceCitation {
+        source_id: source.source_id.clone(),
+        title: source.title.clone(),
+        section: source.section.clone(),
+        url: source.url.clone(),
+        license: source.license.clone(),
+        retrieved_utc: source.retrieved_utc.clone(),
+        evidence_span: source.evidence_span.clone(),
+    }
+}
+
+fn normalized_mechanics(
+    source: &the_machine::classical_mechanics_pack::SourceCitation,
+) -> SourceCitation {
+    SourceCitation {
+        source_id: source.source_id.clone(),
+        title: source.title.clone(),
+        section: source.section.clone(),
+        url: source.url.clone(),
+        license: source.license.clone(),
+        retrieved_utc: source.retrieved_utc.clone(),
+        evidence_span: source.evidence_span.clone(),
+    }
+}
+
+fn normalized_probability(
+    source: &the_machine::probability_pack::ProbabilitySource,
+) -> SourceCitation {
+    SourceCitation {
+        source_id: source.source_id.clone(),
+        title: source.title.clone(),
+        section: source.section.clone(),
+        url: source.url.clone(),
+        license: source.license.clone(),
+        retrieved_utc: source.retrieved_utc.clone(),
+        evidence_span: source.evidence_span.clone(),
+    }
+}
+
+fn normalized_graph(source: &the_machine::graph_pack::GraphSource) -> SourceCitation {
     SourceCitation {
         source_id: source.source_id.clone(),
         title: source.title.clone(),
@@ -141,6 +203,68 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ambiguity: None,
         provenance: vec!["source-provenance-audit".into()],
     });
+    let linear = evaluate_linear_algebra(&LinearAlgebraRequest {
+        operation: LinearAlgebraOperation::MatrixConstruction,
+        matrix: Some(vec![vec![1, 2], vec![3, 4]]),
+        vector_a: None,
+        vector_b: None,
+        domain: "finite_exact_integer".into(),
+        requested_output: "matrix".into(),
+        provenance: vec!["source-provenance-audit".into()],
+    });
+    let mechanics = evaluate_mechanics(
+        &MechanicsEvaluationRequest {
+            law_id: "kinetic_energy".into(),
+            bindings: vec![
+                NumericBinding {
+                    symbol: "m".into(),
+                    value: 2.0,
+                    unit: "kg".into(),
+                    provenance: "source-provenance-audit".into(),
+                },
+                NumericBinding {
+                    symbol: "v".into(),
+                    value: 3.0,
+                    unit: "m/s".into(),
+                    provenance: "source-provenance-audit".into(),
+                },
+            ],
+            requested_output: "K".into(),
+        },
+        &classical_mechanics_pack(),
+    );
+    let probability = evaluate_probability(&ProbabilityRequest {
+        operation: ProbabilityOperation::Expectation,
+        domain: "finite_exact_probability".into(),
+        outcomes: vec!["a".into(), "b".into()],
+        probabilities: vec![
+            Rational::new(1, 2).expect("exact rational"),
+            Rational::new(1, 2).expect("exact rational"),
+        ],
+        values: vec![1, 3],
+        event_a: None,
+        event_b: None,
+        partition: Vec::new(),
+        conditional_values: Vec::new(),
+        prior_probability: None,
+        likelihood: None,
+        evidence: None,
+        ambiguity: None,
+        provenance: vec!["source-provenance-audit".into()],
+    });
+    let graph = evaluate_graph(&GraphRequest {
+        operation: GraphOperation::AdjacencyMatrix,
+        domain: "finite_simple_graph".into(),
+        vertices: vec!["a".into(), "b".into()],
+        edges: vec![(0, 1)],
+        directed: false,
+        matrix: None,
+        vertex_order: Vec::new(),
+        start: None,
+        target: None,
+        ambiguity: None,
+        provenance: vec!["source-provenance-audit".into()],
+    });
     assert!(chemistry.replay_verified() && chemistry.source.is_some());
     assert!(biology.replay_verified() && biology.source.is_some());
     assert!(complex.replay_verified() && complex.sources.len() == 2);
@@ -148,6 +272,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         complex.artifact,
         Some(ComplexArtifact::Pair { .. })
     ));
+    assert!(linear.replay_verified());
+    assert!(the_machine::classical_mechanics_pack::replay_mechanics(
+        &mechanics
+    ));
+    assert!(probability.replay_verified());
+    assert!(graph.replay_verified());
 
     let mut citations = Vec::new();
     for record in statistics.iter().chain(regression.iter()) {
@@ -177,6 +307,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .cloned()
             .map(|source| ("complex_evaluator", source)),
     );
+    citations.push((
+        "linear_algebra_evaluator",
+        normalized_linear(&linear.source),
+    ));
+    citations.push((
+        "classical_mechanics_evaluator",
+        normalized_mechanics(mechanics.source.as_ref().expect("mechanics source")),
+    ));
+    citations.push((
+        "probability_evaluator",
+        normalized_probability(&probability.source),
+    ));
+    citations.push(("graph_evaluator", normalized_graph(&graph.source)));
 
     let source_families = citations
         .iter()
@@ -227,6 +370,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     science_mutation[0].source.license.clear();
     let mut direct_mutation = citations[0].1.clone();
     direct_mutation.license.clear();
+    let mut linear_tamper = linear.clone();
+    linear_tamper.source.license.clear();
+    let mut probability_tamper = probability.clone();
+    probability_tamper.source.license.clear();
+    let mut graph_tamper = graph.clone();
+    graph_tamper.source.license.clear();
+    let mut mechanics_tamper = mechanics.clone();
+    mechanics_tamper
+        .source
+        .as_mut()
+        .expect("mechanics source")
+        .license
+        .clear();
     let mutation_rejections = [
         usize::from(
             the_machine::source_formula_pack::validate_formula_records(&formula_mutation).is_err(),
@@ -236,37 +392,49 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         usize::from(validate_relation_records(&relation_mutation).is_err()),
         usize::from(validate_science_law_records(&science_mutation).is_err()),
         usize::from(validate_source_citation(&direct_mutation).is_err()),
+        usize::from(!linear_tamper.replay_verified()),
+        usize::from(!the_machine::classical_mechanics_pack::replay_mechanics(
+            &mechanics_tamper,
+        )),
+        usize::from(!probability_tamper.replay_verified()),
+        usize::from(!graph_tamper.replay_verified()),
     ]
     .into_iter()
     .sum();
 
     let evaluator_replays = usize::from(chemistry.replay_verified())
         + usize::from(biology.replay_verified())
-        + usize::from(complex.replay_verified());
+        + usize::from(complex.replay_verified())
+        + usize::from(linear.replay_verified())
+        + usize::from(the_machine::classical_mechanics_pack::replay_mechanics(
+            &mechanics,
+        ))
+        + usize::from(probability.replay_verified())
+        + usize::from(graph.replay_verified());
     let corpus_sha256 = digest(&receipts);
     let report = Report {
-        schema: "source-provenance-integrity-v1",
+        schema: "source-provenance-integrity-v2",
         source_families,
         unique_source_ids,
         citation_entries: receipts.len(),
         valid_citations,
         replay_verified: replay_verified_count,
         tamper_rejected,
-        mutation_cases: 6,
+        mutation_cases: 10,
         mutation_rejections,
-        evaluator_receipts: 3,
+        evaluator_receipts: 7,
         evaluator_replays,
         corpus_sha256,
         false_authorizations: 0,
         production_registry_mutations: 0,
     };
 
-    assert_eq!(source_families, 8);
+    assert_eq!(source_families, 12);
     assert_eq!(valid_citations, 240);
     assert_eq!(replay_verified_count, 240);
     assert_eq!(tamper_rejected, 240);
-    assert_eq!(mutation_rejections, 6);
-    assert_eq!(evaluator_replays, 3);
+    assert_eq!(mutation_rejections, 10);
+    assert_eq!(evaluator_replays, 7);
     assert_eq!(report.false_authorizations, 0);
     assert_eq!(report.production_registry_mutations, 0);
 

@@ -16,6 +16,7 @@ pub struct SourceCitation {
     pub url: String,
     pub license: String,
     pub retrieved_utc: String,
+    pub evidence_span: String,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -160,6 +161,7 @@ fn source(section: &str) -> SourceCitation {
         url: "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/".into(),
         license: "CC BY-NC-SA 4.0; MIT attribution required".into(),
         retrieved_utc: "2026-08-05".into(),
+        evidence_span: format!("{section}: definitions and worked constraints"),
     }
 }
 

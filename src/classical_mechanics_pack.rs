@@ -15,6 +15,7 @@ pub struct SourceCitation {
     pub url: String,
     pub license: String,
     pub retrieved_utc: String,
+    pub evidence_span: String,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -92,6 +93,7 @@ fn source(section: &str, url: &str) -> SourceCitation {
         url: url.into(),
         license: "CC BY-NC-SA 4.0; OpenStax attribution required".into(),
         retrieved_utc: "2026-08-01".into(),
+        evidence_span: format!("{section}: law statement and validity assumptions"),
     }
 }
 

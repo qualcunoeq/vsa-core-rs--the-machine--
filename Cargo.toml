@@ -244,6 +244,10 @@ name = "stage_v_source_composition_1000"
 path = "src/bin/stage_v_source_composition_1000.rs"
 
 [[bin]]
+name = "stage_w_self_directed_regression_acquisition"
+path = "src/bin/stage_w_self_directed_regression_acquisition.rs"
+
+[[bin]]
 name = "curriculum_campaign_bench"
 path = "src/bin/curriculum_campaign_bench.rs"
 

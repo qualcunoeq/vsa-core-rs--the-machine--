@@ -1,4 +1,4 @@
-# Phase 70 — Algebra/number-theory composition audit
+# Phase 70 — Algebra/number-theory composition audit (hardened)
 
 Phase 70 verifies that elementary number-theory operations consume algebraic
 prerequisites without erasing arithmetic conditions. Supported routes include
@@ -13,9 +13,13 @@ The independent corpus contains 240 routes:
   Diophantine requests, cryptographic claims, and missing coprimality evidence.
 
 The receipt records 240/240 exact route decisions, 120/120 supported invariant
-checks, 240/240 route replays, 240/240 tamper rejection, and zero false
-authorizations or denials. HLE remains untouched and the routes remain
-shadow-only.
+checks, and **120/120 typed handoffs**.  Each supported second stage is checked
+against the prior artifact and shared operands: a Bézout certificate must prove
+the inverse prerequisite, CRT compatibility is tied to the preceding gcd, and
+the kernel-to-congruence route checks the source/target lift rather than
+equating unrelated solution counts.  All 240 routes replay and reject tampered
+receipts, with zero false authorizations or denials. HLE remains untouched and
+the routes remain shadow-only.
 
 Run:
 

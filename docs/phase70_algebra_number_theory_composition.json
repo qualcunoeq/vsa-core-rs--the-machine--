@@ -1,13 +1,14 @@
 {
-  "schema": "phase70-algebra-number-theory-composition-v1",
+  "schema": "phase70-algebra-number-theory-composition-v2",
   "source": "independently authored algebra/number-theory route corpus",
-  "corpus_sha256": "fb265ad67e950d069448f06680ba35955da8cdb41969e30103c4cfb096c01a7d",
+  "corpus_sha256": "b88ffca488a4d72232d8b4360e48ab213e51702a2dfe12272f0e7634a4fab1c1",
   "cases": 240,
   "supported_routes": 120,
   "ambiguous_routes": 40,
   "refused_routes": 80,
   "exact_route_decisions": 240,
   "invariant_preserved": 120,
+  "handoff_verifications": 120,
   "route_replay_verified": 240,
   "tamper_rejections": 240,
   "false_authorizations": 0,
@@ -39,6 +40,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -56,6 +59,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -73,6 +78,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -90,6 +97,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -107,6 +116,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -124,6 +135,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -141,6 +154,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -158,6 +173,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -175,6 +192,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -192,6 +211,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -209,6 +230,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -226,6 +249,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -243,6 +268,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -260,6 +287,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -277,6 +306,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -294,6 +325,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -311,6 +344,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -328,6 +363,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -345,6 +382,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -362,6 +401,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -387,6 +428,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -412,6 +455,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -437,6 +482,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -462,6 +509,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -487,6 +536,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -512,6 +563,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -537,6 +590,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -562,6 +617,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -587,6 +644,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -612,6 +671,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -637,6 +698,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -662,6 +725,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -687,6 +752,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -712,6 +779,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -737,6 +806,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -762,6 +833,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -787,6 +860,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -812,6 +887,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -837,6 +914,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -862,6 +941,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -887,6 +968,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -912,6 +995,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -937,6 +1022,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -962,6 +1049,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -987,6 +1076,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1012,6 +1103,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1037,6 +1130,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1062,6 +1157,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1087,6 +1184,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1112,6 +1211,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1135,6 +1236,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1158,6 +1261,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1181,6 +1286,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1204,6 +1311,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1227,6 +1336,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1250,6 +1361,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1273,6 +1386,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1296,6 +1411,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1319,6 +1436,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1342,6 +1461,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1365,6 +1486,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1388,6 +1511,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1411,6 +1536,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1434,6 +1561,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1457,6 +1586,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1480,6 +1611,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1503,6 +1636,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1526,6 +1661,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1549,6 +1686,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1572,6 +1711,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1595,6 +1736,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1618,6 +1761,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1641,6 +1786,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1664,6 +1811,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1687,6 +1836,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1710,6 +1861,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1733,6 +1886,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1756,6 +1911,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1779,6 +1936,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1802,6 +1961,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1819,6 +1980,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1836,6 +1999,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1853,6 +2018,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1870,6 +2037,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1887,6 +2056,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1904,6 +2075,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1921,6 +2094,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1938,6 +2113,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1955,6 +2132,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1972,6 +2151,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -1989,6 +2170,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2006,6 +2189,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2023,6 +2208,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2040,6 +2227,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2057,6 +2246,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2074,6 +2265,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2091,6 +2284,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2108,6 +2303,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2125,6 +2322,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2142,6 +2341,8 @@
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2153,20 +2354,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2178,20 +2381,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2203,20 +2408,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2228,20 +2435,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2253,20 +2462,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2278,20 +2489,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2303,20 +2516,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2328,20 +2543,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2353,20 +2570,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2378,20 +2597,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2403,20 +2624,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2428,20 +2651,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2453,20 +2678,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2478,20 +2705,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2503,20 +2732,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2528,20 +2759,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2553,20 +2786,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2578,20 +2813,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2603,20 +2840,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2628,20 +2867,22 @@
       "actual_status": "complete",
       "expected_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "actual_artifact": {
         "CongruenceClass": {
-          "modulus": 8,
-          "residue": 2,
+          "modulus": 4,
+          "residue": 0,
           "solution_count": 2
         }
       },
       "route_replay_verified": true,
       "invariant_preserved": true,
+      "handoff_evaluated": true,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2655,6 +2896,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2668,6 +2911,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2681,6 +2926,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2694,6 +2941,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2707,6 +2956,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2720,6 +2971,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2733,6 +2986,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2746,6 +3001,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2759,6 +3016,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2772,6 +3031,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2785,6 +3046,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2798,6 +3061,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2811,6 +3076,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2824,6 +3091,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2837,6 +3106,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2850,6 +3121,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2863,6 +3136,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2876,6 +3151,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2889,6 +3166,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2902,6 +3181,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2915,6 +3196,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2928,6 +3211,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2941,6 +3226,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2954,6 +3241,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2967,6 +3256,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2980,6 +3271,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -2993,6 +3286,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3006,6 +3301,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3019,6 +3316,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3032,6 +3331,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3045,6 +3346,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3058,6 +3361,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3071,6 +3376,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3084,6 +3391,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3097,6 +3406,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3110,6 +3421,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3123,6 +3436,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3136,6 +3451,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3149,6 +3466,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3162,6 +3481,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3175,6 +3496,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3188,6 +3511,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3201,6 +3526,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3214,6 +3541,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3227,6 +3556,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3240,6 +3571,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3253,6 +3586,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3266,6 +3601,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3279,6 +3616,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3292,6 +3631,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3305,6 +3646,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3318,6 +3661,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3331,6 +3676,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3344,6 +3691,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3357,6 +3706,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3370,6 +3721,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3383,6 +3736,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3396,6 +3751,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3409,6 +3766,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3422,6 +3781,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3435,6 +3796,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3448,6 +3811,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3461,6 +3826,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3474,6 +3841,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3487,6 +3856,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3500,6 +3871,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3513,6 +3886,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3526,6 +3901,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3539,6 +3916,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3552,6 +3931,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3565,6 +3946,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3578,6 +3961,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3591,6 +3976,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3604,6 +3991,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3617,6 +4006,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3630,6 +4021,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3643,6 +4036,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3656,6 +4051,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3669,6 +4066,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3682,6 +4081,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3695,6 +4096,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3708,6 +4111,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3721,6 +4126,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3734,6 +4141,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3747,6 +4156,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3760,6 +4171,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3773,6 +4186,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3786,6 +4201,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3799,6 +4216,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3812,6 +4231,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3825,6 +4246,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3838,6 +4261,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3851,6 +4276,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3864,6 +4291,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3877,6 +4306,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3890,6 +4321,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3903,6 +4336,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3916,6 +4351,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3929,6 +4366,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3942,6 +4381,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3955,6 +4396,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3968,6 +4411,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3981,6 +4426,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -3994,6 +4441,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4007,6 +4456,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4020,6 +4471,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4033,6 +4486,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4046,6 +4501,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4059,6 +4516,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4072,6 +4531,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4085,6 +4546,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4098,6 +4561,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4111,6 +4576,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4124,6 +4591,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4137,6 +4606,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4150,6 +4621,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4163,6 +4636,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4176,6 +4651,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4189,6 +4666,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false
@@ -4202,6 +4681,8 @@
       "actual_artifact": null,
       "route_replay_verified": true,
       "invariant_preserved": false,
+      "handoff_evaluated": false,
+      "handoff_verified": true,
       "exact": true,
       "tamper_rejected": true,
       "false_authorization": false

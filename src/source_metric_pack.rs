@@ -10,6 +10,9 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 
+#[path = "source_metric_frontend.rs"]
+pub mod source_metric_frontend;
+
 const MAX_POINTS: usize = 8;
 pub const DOMAIN: &str = "source_derived_finite_metric";
 

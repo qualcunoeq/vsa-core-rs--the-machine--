@@ -296,6 +296,10 @@ name = "cross_domain_synthesis_bench"
 path = "src/bin/cross_domain_synthesis_bench.rs"
 
 [[bin]]
+name = "technical_language_bench"
+path = "src/bin/technical_language_bench.rs"
+
+[[bin]]
 name = "strategic_route_bench"
 path = "src/bin/strategic_route_bench.rs"
 

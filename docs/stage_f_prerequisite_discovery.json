@@ -1,0 +1,10 @@
+{
+  "cases": 300,
+  "complete_plans": 240,
+  "cycle_rejections": 30,
+  "exact_decisions": 300,
+  "manifest_hash": "468d8031dd1b646774d72aec2d199cfd2d834cd30d5b361f27f2f84df68d1cae",
+  "manifest_immutable": true,
+  "schema": "stage-f-prerequisite-discovery-v1",
+  "unknown_artifacts": 30
+}

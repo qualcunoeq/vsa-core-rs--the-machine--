@@ -9,6 +9,9 @@ use crate::vision::{parse_tesseract_tsv, OcrWord};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
+#[path = "visual_probability_bridge.rs"]
+pub mod visual_probability_bridge;
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum TableStatus {

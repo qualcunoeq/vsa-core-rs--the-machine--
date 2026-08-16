@@ -352,6 +352,10 @@ name = "visual_table_frontend_bench"
 path = "src/bin/visual_table_frontend_bench.rs"
 
 [[bin]]
+name = "visual_probability_bridge_bench"
+path = "src/bin/visual_probability_bridge_bench.rs"
+
+[[bin]]
 name = "curriculum_memory_bench"
 path = "src/bin/curriculum_memory_bench.rs"
 

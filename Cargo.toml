@@ -256,6 +256,10 @@ name = "visual_graph_frontend_bench"
 path = "src/bin/visual_graph_frontend_bench.rs"
 
 [[bin]]
+name = "stage_j_multimodal_route_blind"
+path = "src/bin/stage_j_multimodal_route_blind.rs"
+
+[[bin]]
 name = "curriculum_campaign_bench"
 path = "src/bin/curriculum_campaign_bench.rs"
 

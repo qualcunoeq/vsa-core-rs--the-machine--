@@ -1,0 +1,24 @@
+{
+  "schema": "stage-c-source-derived-topology-frontend-v1",
+  "corpus_sha256": "6d04fdc3ceb30bf3c220a122da27b8e6b8b4807f0bd50f2639c03d7818287282",
+  "source_records": 1,
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "unsupported": 80,
+  "exact_decisions": 240,
+  "complete_frontends": 120,
+  "downstream_authorizations": 120,
+  "frontend_replay_verified": 240,
+  "downstream_replay_verified": 120,
+  "frontend_tamper_rejected": 240,
+  "downstream_tamper_rejected": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "status_counts": {
+    "Ambiguous": 40,
+    "Complete": 120,
+    "Unsupported": 80
+  },
+  "receipt_hash": "6d04fdc3ceb30bf3c220a122da27b8e6b8b4807f0bd50f2639c03d7818287282"
+}

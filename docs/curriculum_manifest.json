@@ -374,6 +374,37 @@
         "selection_reason": "source-cited law records with generic exact rational execution"
       },
       {
+        "id": "source_derived_finite_statistics",
+        "title": "Source-derived finite statistics",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "probability_stochastic",
+          "source_formula_sequences"
+        ],
+        "reusable_artifacts": [
+          "arithmetic_mean",
+          "weighted_mean",
+          "bernoulli_variance",
+          "binomial_expected_value",
+          "binomial_variance"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first new source-derived domain executed by the generic formula catalog runtime"
+      },
+      {
         "id": "polynomial_algebra",
         "title": "Bounded polynomial algebra over prime fields",
         "status": "shadow_validated",
@@ -464,7 +495,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "1a200d658e7b3061f3ea4bf5ee54a8e3fabfb6e71941307334feef623a3c97a8",
+  "manifest_replay_hash": "3b22c9001017bdf8e32a9af5aa027aa2e8a411e3548a3737391eeb34e5df93c7",
   "validation_errors": [],
   "production_authorizations": 0
 }

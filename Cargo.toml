@@ -224,6 +224,14 @@ name = "finite_markov_pack_bench"
 path = "src/bin/finite_markov_pack_bench.rs"
 
 [[bin]]
+name = "source_statistics_pack_bench"
+path = "src/bin/source_statistics_pack_bench.rs"
+
+[[bin]]
+name = "curriculum_campaign_bench"
+path = "src/bin/curriculum_campaign_bench.rs"
+
+[[bin]]
 name = "graph_pack_bench"
 path = "src/bin/graph_pack_bench.rs"
 

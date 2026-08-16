@@ -33,12 +33,22 @@ pub enum Expr {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum InputConstraint {
+    Positive(String),
+    PositiveInteger(String),
+    NonnegativeInteger(String),
+    Probability(String),
+    NotEqualInteger(String, i128),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct FormulaRecord {
     pub formula_id: String,
     pub aliases: Vec<String>,
     pub expression: Expr,
     pub required_inputs: Vec<String>,
     pub assumptions: Vec<String>,
+    pub constraints: Vec<InputConstraint>,
     pub source: SourceCitation,
 }
 
@@ -101,6 +111,7 @@ fn formulas() -> Vec<FormulaRecord> {
             ),
             required_inputs: vec!["a1".into(), "n".into(), "d".into()],
             assumptions: vec!["n is a positive integer".into()],
+            constraints: vec![InputConstraint::PositiveInteger("n".into())],
             source: cited.clone(),
         },
         FormulaRecord {
@@ -124,6 +135,7 @@ fn formulas() -> Vec<FormulaRecord> {
             ),
             required_inputs: vec!["a1".into(), "n".into(), "d".into()],
             assumptions: vec!["n is a positive integer".into()],
+            constraints: vec![InputConstraint::PositiveInteger("n".into())],
             source: cited.clone(),
         },
         FormulaRecord {
@@ -135,6 +147,7 @@ fn formulas() -> Vec<FormulaRecord> {
             ),
             required_inputs: vec!["a1".into(), "n".into(), "r".into()],
             assumptions: vec!["n is a positive integer; exponent is n-1".into()],
+            constraints: vec![InputConstraint::PositiveInteger("n".into())],
             source: cited.clone(),
         },
         FormulaRecord {
@@ -152,6 +165,10 @@ fn formulas() -> Vec<FormulaRecord> {
             ),
             required_inputs: vec!["a1".into(), "n".into(), "r".into()],
             assumptions: vec!["n is a positive integer; r is not 1".into()],
+            constraints: vec![
+                InputConstraint::PositiveInteger("n".into()),
+                InputConstraint::NotEqualInteger("r".into(), 1),
+            ],
             source: cited,
         },
     ]
@@ -202,6 +219,24 @@ fn eval(expr: &Expr, inputs: &BTreeMap<String, Rational>) -> Option<Rational> {
             Some(value)
         }
     }
+}
+
+fn constraints_satisfied(record: &FormulaRecord, inputs: &BTreeMap<String, Rational>) -> bool {
+    record.constraints.iter().all(|constraint| match constraint {
+        InputConstraint::Positive(name) => inputs.get(name).is_some_and(Rational::positive),
+        InputConstraint::PositiveInteger(name) => inputs
+            .get(name)
+            .is_some_and(|value| value.denominator == 1 && value.numerator > 0),
+        InputConstraint::NonnegativeInteger(name) => inputs
+            .get(name)
+            .is_some_and(|value| value.denominator == 1 && value.numerator >= 0),
+        InputConstraint::Probability(name) => inputs
+            .get(name)
+            .is_some_and(Rational::in_unit_interval),
+        InputConstraint::NotEqualInteger(name, forbidden) => inputs
+            .get(name)
+            .is_some_and(|value| value.denominator != 1 || value.numerator != *forbidden),
+    })
 }
 
 fn payload(result: &FormulaResult) -> impl Serialize + '_ {
@@ -268,20 +303,87 @@ pub fn evaluate_formula(request: &FormulaRequest) -> FormulaResult {
                 output
                     .reasons
                     .push("required source-formula input is absent".into());
-            } else if request
-                .inputs
-                .get("n")
-                .is_some_and(|value| value.denominator != 1 || value.numerator < 1)
+            } else if !constraints_satisfied(record, &request.inputs)
             {
                 output.status = FormulaStatus::Inconsistent;
-                output.reasons.push("n must be a positive integer".into());
-            } else if request.formula.contains("geometric_partial_sum")
-                && request.inputs.get("r") == Some(&Rational::one())
+                output.reasons.push("source-record input constraints are not satisfied".into());
+            } else {
+                output.value = eval(&record.expression, &request.inputs);
+                output.status = if output.value.is_some() {
+                    FormulaStatus::Complete
+                } else {
+                    FormulaStatus::Unsupported
+                };
+            }
+        }
+    }
+    let replay_hash = digest(&payload(&output));
+    output.replay_hash = replay_hash;
+    output
+}
+
+/// Evaluate an independently supplied declarative catalog through the same
+/// generic expression runtime. The catalog is data: no formula identifier is
+/// interpreted by a capability-specific execution branch.
+pub fn evaluate_formula_records(
+    request: &FormulaRequest,
+    expected_domain: &str,
+    records: &[FormulaRecord],
+) -> FormulaResult {
+    let mut output = FormulaResult {
+        status: FormulaStatus::Missing,
+        formula_id: None,
+        value: None,
+        assumptions: Vec::new(),
+        source: None,
+        reasons: Vec::new(),
+        provenance: request.provenance.clone(),
+        replay_hash: String::new(),
+    };
+    if request.domain != expected_domain {
+        output.status = FormulaStatus::InvalidDomain;
+        output
+            .reasons
+            .push("domain is outside the supplied source catalog".into());
+    } else if let Some(ambiguity) = &request.ambiguity {
+        output.status = FormulaStatus::Ambiguous;
+        output.reasons.push(ambiguity.clone());
+    } else {
+        let matches: Vec<&FormulaRecord> = records
+            .iter()
+            .filter(|record| {
+                record.formula_id == request.formula
+                    || record.aliases.iter().any(|alias| alias == &request.formula)
+            })
+            .collect();
+        if matches.len() != 1 {
+            output.status = if matches.is_empty() {
+                FormulaStatus::Missing
+            } else {
+                FormulaStatus::Ambiguous
+            };
+            output
+                .reasons
+                .push("catalog identifier does not select one source record".into());
+        } else {
+            let record = matches[0];
+            output.formula_id = Some(record.formula_id.clone());
+            output.assumptions = record.assumptions.clone();
+            output.source = Some(record.source.clone());
+            if record
+                .required_inputs
+                .iter()
+                .any(|name| !request.inputs.contains_key(name))
             {
+                output.status = FormulaStatus::Missing;
+                output
+                    .reasons
+                    .push("required catalog input is absent".into());
+            } else if !constraints_satisfied(record, &request.inputs) {
                 output.status = FormulaStatus::Inconsistent;
                 output
                     .reasons
-                    .push("geometric sum requires ratio r != 1".into());
+                    .push("source-record input constraints are not satisfied".into());
             } else {
                 output.value = eval(&record.expression, &request.inputs);
                 output.status = if output.value.is_some() {

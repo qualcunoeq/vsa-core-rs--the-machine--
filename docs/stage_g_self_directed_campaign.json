@@ -1,0 +1,17 @@
+{
+  "schema": "stage-g-self-directed-curriculum-campaign-v1",
+  "observed_cases": 500,
+  "gap_clusters": 7,
+  "candidate_plans": 3,
+  "selected_module": "source_derived_finite_statistics",
+  "selected_coverage": 320,
+  "selected_plan_replay": true,
+  "plan_tamper_rejected": true,
+  "independent_validation_cases": 120,
+  "independent_validation_correct": 120,
+  "shadow_promotable": true,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "production_authorizations": 0,
+  "corpus_sha256": "ed7cbfb032c00e676ef34ce089bb21b160bb259254338a9c24248c7ed096ea99"
+}

@@ -1,0 +1,4591 @@
+{
+  "schema": "stage-ai-generic-source-catalog-route-blind-v1",
+  "source_sha256": {
+    "complex_arithmetic": "77ce1e069369dfbf344d5042847881cdb5d1058739c2c332f1638293a003fbdf",
+    "economics": "ea3784eb2a722ccdef75d6a0d4b986bc9005f9cb823345f8f86b198aa2711427",
+    "regression": "637fd70a015f02a5c5f8539785cac7ab88a52a6667795464873d1bf4682afbf0",
+    "statistics": "210952b9a31b51f212264f854a38e4f039aef4f282c8a60cce7fe8dbd1a1e79c"
+  },
+  "catalog_record_counts": {
+    "complex_arithmetic": 11,
+    "economics": 5,
+    "regression": 5,
+    "statistics": 5
+  },
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_route_decisions": 240,
+  "frontend_replays": 240,
+  "frontend_tamper_rejections": 240,
+  "downstream_artifacts": 120,
+  "downstream_exact": 120,
+  "downstream_replays": 120,
+  "downstream_tamper_rejections": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_mutations": 0,
+  "receipts": [
+    {
+      "id": "supported-0-0",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-1",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-2",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-3",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-4",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-5",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-6",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-7",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-8",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-9",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-10",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-11",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-12",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-13",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-14",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-15",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-16",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-17",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-18",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-19",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-20",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-21",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-22",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-23",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-24",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-25",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-26",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-27",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-28",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-0-29",
+      "expected": "Supported",
+      "selected_catalog": "economics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "complete",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-0",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-1",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-2",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-3",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-4",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-5",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-6",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-7",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-8",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-9",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-10",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-11",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-12",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-13",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-14",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-15",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-16",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-17",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-18",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-19",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-20",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-21",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-22",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-23",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-24",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-25",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-26",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-27",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-28",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-1-29",
+      "expected": "Supported",
+      "selected_catalog": "statistics",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "complete"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-0",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-1",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-2",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-3",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-4",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-5",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-6",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-7",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-8",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-9",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-10",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-11",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-12",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-13",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-14",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-15",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-16",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-17",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-18",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-19",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-20",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-21",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-22",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-23",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-24",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-25",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-26",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-27",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-28",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-2-29",
+      "expected": "Supported",
+      "selected_catalog": "regression",
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "complete",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-0",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-1",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-2",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-3",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-4",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-5",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-6",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-7",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-8",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-9",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-10",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-11",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-12",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-13",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-14",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-15",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-16",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-17",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-18",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-19",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-20",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-21",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-22",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-23",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-24",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-25",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-26",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-27",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-28",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported-3-29",
+      "expected": "Supported",
+      "selected_catalog": "complex_arithmetic",
+      "frontend_statuses": {
+        "complex_arithmetic": "complete",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": "Complete",
+      "downstream_replay": true,
+      "downstream_tamper_rejected": true,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-0",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "ambiguous",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-1",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "ambiguous"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-2",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "ambiguous",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-3",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "ambiguous",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-4",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "ambiguous",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-5",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "ambiguous"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-6",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "ambiguous",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-7",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "ambiguous",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-8",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "ambiguous",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-9",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "ambiguous"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-10",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "ambiguous",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-11",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "ambiguous",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-12",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "ambiguous",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-13",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "ambiguous"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-14",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "ambiguous",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-15",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "ambiguous",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-16",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "ambiguous",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-17",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "ambiguous"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-18",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "ambiguous",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-19",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "ambiguous",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-20",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "ambiguous",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-21",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "ambiguous"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-22",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "ambiguous",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-23",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "ambiguous",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-24",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "ambiguous",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-25",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "ambiguous"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-26",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "ambiguous",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-27",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "ambiguous",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-28",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "ambiguous",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-29",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "ambiguous"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-30",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "ambiguous",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-31",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "ambiguous",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-32",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "ambiguous",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-33",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "ambiguous"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-34",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "ambiguous",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-35",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "ambiguous",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-36",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "ambiguous",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-37",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "ambiguous"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-38",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "ambiguous",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous-39",
+      "expected": "Ambiguous",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "ambiguous",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-0",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-1",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-2",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-3",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-4",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-5",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-6",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-7",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-8",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-9",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-10",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-11",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-12",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-13",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-14",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-15",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-16",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-17",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-18",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-19",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-20",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-21",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-22",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-23",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-24",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-25",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-26",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-27",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-28",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-29",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-30",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-31",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-32",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-33",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-34",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-35",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-36",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-37",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-38",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-39",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-40",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-41",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-42",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-43",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-44",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-45",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-46",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-47",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-48",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-49",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-50",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-51",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-52",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-53",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-54",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-55",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-56",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-57",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-58",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-59",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-60",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-61",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-62",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-63",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-64",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-65",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-66",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-67",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-68",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-69",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-70",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-71",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-72",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-73",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-74",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-75",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-76",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-77",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-78",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "missing",
+        "economics": "missing",
+        "regression": "missing",
+        "statistics": "missing"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    },
+    {
+      "id": "refused-79",
+      "expected": "Refused",
+      "selected_catalog": null,
+      "frontend_statuses": {
+        "complex_arithmetic": "unsupported",
+        "economics": "unsupported",
+        "regression": "unsupported",
+        "statistics": "unsupported"
+      },
+      "frontend_exact": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "downstream_status": null,
+      "downstream_replay": false,
+      "downstream_tamper_rejected": false,
+      "exact": true,
+      "false_authorization": false
+    }
+  ]
+}

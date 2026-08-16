@@ -380,6 +380,10 @@ name = "stage_ah_source_probability_composition"
 path = "src/bin/stage_ah_source_probability_composition.rs"
 
 [[bin]]
+name = "stage_ai_generic_source_catalog_route_blind"
+path = "src/bin/stage_ai_generic_source_catalog_route_blind.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

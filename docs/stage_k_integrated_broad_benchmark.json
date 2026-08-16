@@ -1,0 +1,13 @@
+{
+  "ambiguous": 1000,
+  "cases": 5000,
+  "exact_decisions": 5000,
+  "failure_localized": 5000,
+  "false_authorizations": 0,
+  "receipt_hash": "ddbd21a71114bc4771152277a50cbab6f336dd6ef05cbc118ab3fa92ae6f65fc",
+  "refused": 1000,
+  "replay_verified": 5000,
+  "schema": "stage-k-integrated-broad-benchmark-v1",
+  "supported": 3000,
+  "tamper_rejected": 5000
+}

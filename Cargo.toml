@@ -364,6 +364,10 @@ name = "stage_ad_promotion_environment"
 path = "src/bin/stage_ad_promotion_environment.rs"
 
 [[bin]]
+name = "stage_ae_source_capability_acquisition"
+path = "src/bin/stage_ae_source_capability_acquisition.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

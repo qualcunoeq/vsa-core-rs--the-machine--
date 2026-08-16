@@ -1,0 +1,78 @@
+# Source transcription: bounded introductory economics identities.
+# Records are deliberately declarative; the runtime does not contain an
+# economics-specific evaluator.
+
+BEGIN FORMULA total_revenue
+ALIASES: total revenue | sales revenue
+EXPRESSION: price * quantity
+INPUTS: price, quantity
+ASSUMPTIONS: price and quantity are positive; units are compatible
+CONSTRAINTS: positive:price; positive:quantity
+SOURCE_ID: openstax-principles-economics-3e:revenue
+TITLE: Principles of Economics 3e
+SECTION: Production, Costs, and the Perfectly Competitive Firm
+URL: https://openstax.org/details/books/principles-economics-3e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section review: total revenue equals price multiplied by quantity
+END FORMULA
+
+BEGIN FORMULA average_fixed_cost
+ALIASES: average fixed cost | fixed cost per unit
+EXPRESSION: fixed_cost / quantity
+INPUTS: fixed_cost, quantity
+ASSUMPTIONS: quantity is positive; fixed cost and quantity use compatible units
+CONSTRAINTS: positive:fixed_cost; positive:quantity
+SOURCE_ID: openstax-principles-economics-3e:average-cost
+TITLE: Principles of Economics 3e
+SECTION: Production, Costs, and the Perfectly Competitive Firm
+URL: https://openstax.org/details/books/principles-economics-3e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section review: average fixed cost is fixed cost divided by quantity
+END FORMULA
+
+BEGIN FORMULA average_variable_cost
+ALIASES: average variable cost | variable cost per unit
+EXPRESSION: variable_cost / quantity
+INPUTS: variable_cost, quantity
+ASSUMPTIONS: quantity is positive; variable cost and quantity use compatible units
+CONSTRAINTS: positive:variable_cost; positive:quantity
+SOURCE_ID: openstax-principles-economics-3e:average-cost
+TITLE: Principles of Economics 3e
+SECTION: Production, Costs, and the Perfectly Competitive Firm
+URL: https://openstax.org/details/books/principles-economics-3e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section review: average variable cost is variable cost divided by quantity
+END FORMULA
+
+BEGIN FORMULA total_cost
+ALIASES: total cost | cost function
+EXPRESSION: fixed_cost + variable_cost * quantity
+INPUTS: fixed_cost, variable_cost, quantity
+ASSUMPTIONS: cost inputs and quantity are positive and use compatible units
+CONSTRAINTS: positive:fixed_cost; positive:variable_cost; positive:quantity
+SOURCE_ID: openstax-principles-economics-3e:total-cost
+TITLE: Principles of Economics 3e
+SECTION: Production, Costs, and the Perfectly Competitive Firm
+URL: https://openstax.org/details/books/principles-economics-3e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section review: total cost combines fixed cost and variable cost
+END FORMULA
+
+BEGIN FORMULA profit
+ALIASES: economic profit | firm profit
+EXPRESSION: price * quantity - fixed_cost - variable_cost * quantity
+INPUTS: price, quantity, fixed_cost, variable_cost
+ASSUMPTIONS: price, quantity, fixed cost, and variable cost are positive and compatible
+CONSTRAINTS: positive:price; positive:quantity; positive:fixed_cost; positive:variable_cost
+SOURCE_ID: openstax-principles-economics-3e:profit
+TITLE: Principles of Economics 3e
+SECTION: Production, Costs, and the Perfectly Competitive Firm
+URL: https://openstax.org/details/books/principles-economics-3e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section review: profit is total revenue minus total cost
+END FORMULA

@@ -1,0 +1,23 @@
+{
+  "schema": "stage-d-g-self-directed-source-acquisition-v1",
+  "observed_cases": 500,
+  "gap_clusters": 3,
+  "candidate_plans": 4,
+  "selected_module": "source_relation_dna_complement",
+  "selected_coverage": 300,
+  "selected_plan_replay": true,
+  "plan_tamper_rejected": true,
+  "source_document_sha256": "9a34afa1464ee6290fc5026d3210457d50ba56fb0e70ca97bcbfb634b527bbc6",
+  "extracted_records": 1,
+  "source_mutations": 6,
+  "source_mutations_rejected": 6,
+  "independent_validation_cases": 120,
+  "independent_validation_correct": 120,
+  "biology_agreements": 120,
+  "shadow_promotable": true,
+  "manifest_unchanged": true,
+  "blocked_shortcuts": 1,
+  "false_authorizations": 0,
+  "production_authorizations": 0,
+  "corpus_sha256": "0dd28be20ff0c638a0ed300f4e2de9403dd19cb0b0b64636700014fba288c13b"
+}

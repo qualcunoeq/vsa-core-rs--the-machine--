@@ -17,6 +17,9 @@ use std::collections::BTreeMap;
 
 pub const DOMAIN: &str = "source_derived_complex_arithmetic";
 
+#[path = "source_complex_frontend.rs"]
+pub mod source_complex_frontend;
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum ComplexOperation {

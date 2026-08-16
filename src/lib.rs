@@ -101,6 +101,7 @@ pub mod math_ingest;
 pub mod notation_normalization;
 pub mod notation_grounding;
 pub mod number_theory_pack;
+pub mod ode_pack;
 pub mod math_method_mining;
 pub mod math_methods;
 pub mod model_planning_benchmark;

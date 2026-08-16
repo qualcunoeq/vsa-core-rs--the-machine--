@@ -1,0 +1,2417 @@
+{
+  "schema": "stage-a-bounded-ode-v1",
+  "source": "independently authored exact scalar ODE corpus",
+  "corpus_sha256": "6948c7f08a9c197d6a3d8d483eca26f53076ce9eeebfbefc1899464e18743350",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "supported_artifacts": 120,
+  "replay_verified": 240,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "receipts": [
+    {
+      "id": "constant_derivative_0",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_1",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_2",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_3",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_4",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_5",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_6",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_7",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_8",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_9",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_10",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_11",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_12",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_13",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_14",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_15",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_16",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_17",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_18",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_19",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_20",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_21",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_22",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_23",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_24",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_25",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_26",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_27",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_28",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_29",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_30",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_31",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_32",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_33",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_34",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_35",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_36",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_37",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_38",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_39",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_40",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_41",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_42",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_43",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_44",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_45",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_46",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_47",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_48",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_49",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_50",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_51",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_52",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_53",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_54",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_55",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_56",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_57",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_58",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "constant_derivative_59",
+      "family": "constant_derivative",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_0",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_1",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_2",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_3",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_4",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_5",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_6",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_7",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_8",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_9",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_10",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_11",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_12",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_13",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_14",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_15",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_16",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_17",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_18",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_19",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_20",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_21",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_22",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_23",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_24",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_25",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_26",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_27",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_28",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_29",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_30",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_31",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_32",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_33",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_34",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_35",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_36",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_37",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_38",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_39",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_40",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_41",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_42",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_43",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_44",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_45",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_46",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_47",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_48",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_49",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_50",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_51",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_52",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_53",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_54",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_55",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_56",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_57",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_58",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "affine_linear_59",
+      "family": "affine_linear",
+      "expected": "Complete",
+      "actual": "complete",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_0",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_1",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_2",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_3",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_4",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_5",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_6",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_7",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_8",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_9",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_10",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_11",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_12",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_13",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_14",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_15",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_16",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_17",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_18",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_time_19",
+      "family": "ambiguous_time",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_0",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_1",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_2",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_3",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_4",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_5",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_6",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_7",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_8",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_9",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_10",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_11",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_12",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_13",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_14",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_15",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_16",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_17",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_18",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_initial_19",
+      "family": "missing_initial",
+      "expected": "Ambiguous",
+      "actual": "ambiguous",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_0",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_1",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_2",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_3",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_4",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_5",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_6",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_7",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_8",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_9",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_10",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_11",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_12",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_13",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_14",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_15",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_16",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_17",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_18",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "nonlinear_19",
+      "family": "nonlinear",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_0",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_1",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_2",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_3",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_4",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_5",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_6",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_7",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_8",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_9",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_10",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_11",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_12",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_13",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_14",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_15",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_16",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_17",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_18",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "coupled_19",
+      "family": "coupled_system",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_0",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_1",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_2",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_3",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_4",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_5",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_6",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_7",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_8",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_9",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_10",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_11",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_12",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_13",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_14",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_15",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_16",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_17",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_18",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "long_horizon_19",
+      "family": "long_horizon",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_0",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_1",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_2",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_3",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_4",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_5",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_6",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_7",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_8",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_9",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_10",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_11",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_12",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_13",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_14",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_15",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_16",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_17",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_18",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "numerical_19",
+      "family": "numerical_approximation",
+      "expected": "Refused",
+      "actual": "unsupported",
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    }
+  ]
+}

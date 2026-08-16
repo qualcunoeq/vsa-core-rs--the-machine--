@@ -56,7 +56,7 @@
       {
         "id": "probability_stochastic",
         "title": "Probability and stochastic processes",
-        "status": "planned",
+        "status": "shadow_validated",
         "prerequisites": [
           "linear_algebra_spectral"
         ],
@@ -70,12 +70,12 @@
           "explicit assumptions, validity domains, and notation"
         ],
         "validation_gates": {
-          "authoritative_sources": false,
-          "independent_development_corpus": false,
-          "boundary_corpus": false,
-          "pressure_corpus": false,
-          "replay_verified": false,
-          "zero_false_authorization": false,
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
           "frozen_hle_holdout": true
         },
         "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
@@ -84,7 +84,7 @@
       {
         "id": "real_complex_analysis",
         "title": "Real and complex analysis",
-        "status": "planned",
+        "status": "shadow_validated",
         "prerequisites": [
           "linear_algebra_spectral"
         ],
@@ -98,12 +98,12 @@
           "explicit assumptions, validity domains, and notation"
         ],
         "validation_gates": {
-          "authoritative_sources": false,
-          "independent_development_corpus": false,
-          "boundary_corpus": false,
-          "pressure_corpus": false,
-          "replay_verified": false,
-          "zero_false_authorization": false,
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
           "frozen_hle_holdout": true
         },
         "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
@@ -112,7 +112,7 @@
       {
         "id": "graph_theory",
         "title": "Graph theory and spectral inequalities",
-        "status": "planned",
+        "status": "shadow_validated",
         "prerequisites": [
           "linear_algebra_spectral"
         ],
@@ -126,12 +126,12 @@
           "explicit assumptions, validity domains, and notation"
         ],
         "validation_gates": {
-          "authoritative_sources": false,
-          "independent_development_corpus": false,
-          "boundary_corpus": false,
-          "pressure_corpus": false,
-          "replay_verified": false,
-          "zero_false_authorization": false,
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
           "frozen_hle_holdout": true
         },
         "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
@@ -227,6 +227,35 @@
         "selection_reason": "finite exact counting substrate for probability, graph, and arithmetic composition"
       },
       {
+        "id": "ordinary_differential_equations",
+        "title": "Bounded ordinary differential equations",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "linear_algebra_spectral",
+          "real_complex_analysis"
+        ],
+        "reusable_artifacts": [
+          "exact_constant_derivative",
+          "affine_linear_solution",
+          "ode_trace"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "bounded continuous-time substrate after exact calculus and theorem contracts"
+      },
+      {
         "id": "topology",
         "title": "Topology and geometric invariants",
         "status": "planned",
@@ -285,7 +314,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "3623ecd5d0aa9f63291d37bc5be1ee97b498fb5580cf62823a87ee72344acfa5",
+  "manifest_replay_hash": "74f5ad43ed4edc5aa01f908d62f407e66341d07cc6975ed0a1f2d688bdf16c5a",
   "validation_errors": [],
   "production_authorizations": 0
 }

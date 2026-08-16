@@ -227,6 +227,17 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "finite exact counting substrate for probability, graph, and arithmetic composition",
         ),
         (
+            "ordinary_differential_equations",
+            "Bounded ordinary differential equations",
+            vec!["linear_algebra_spectral", "real_complex_analysis"],
+            vec![
+                "exact_constant_derivative",
+                "affine_linear_solution",
+                "ode_trace",
+            ],
+            "bounded continuous-time substrate after exact calculus and theorem contracts",
+        ),
+        (
             "topology",
             "Topology and geometric invariants",
             vec!["abstract_algebra"],
@@ -248,6 +259,10 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "abstract_algebra"
                 | "elementary_number_theory"
                 | "combinatorics"
+                | "probability_stochastic"
+                | "real_complex_analysis"
+                | "graph_theory"
+                | "ordinary_differential_equations"
         ) {
             (
                 CurriculumStatus::ShadowValidated,

@@ -26,6 +26,7 @@ struct Report {
     generated_exercises: usize,
     generated_exercises_complete: usize,
     generated_exercise_replays: usize,
+    evidence_spans_preserved: usize,
     replay_stable: bool,
     false_acceptances: usize,
 }
@@ -91,6 +92,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .filter(|candidate| validate_formula_records(candidate).is_err())
         .count();
     let generated_exercises = catalog.len();
+    let evidence_spans_preserved = catalog
+        .iter()
+        .filter(|record| !record.source.evidence_span.is_empty())
+        .count();
     let mut generated_exercises_complete = 0;
     let mut generated_exercise_replays = 0;
     for record in &catalog {
@@ -117,6 +122,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(mutation_rejections, 5);
     assert_eq!(generated_exercises_complete, generated_exercises);
     assert_eq!(generated_exercise_replays, generated_exercises);
+    assert_eq!(evidence_spans_preserved, catalog.len());
     assert!(replay_stable);
     assert_eq!(false_acceptances, 0);
 
@@ -131,6 +137,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         generated_exercises,
         generated_exercises_complete,
         generated_exercise_replays,
+        evidence_spans_preserved,
         replay_stable,
         false_acceptances,
     };

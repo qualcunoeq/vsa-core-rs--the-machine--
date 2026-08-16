@@ -14,10 +14,11 @@ formula or contain statistics-specific branches.
 | mutated catalogs rejected | 5/5 |
 | generic constraint-generated exercises | 5 |
 | generated exercises complete and replayed | 5/5 |
+| evidence spans preserved | 5/5 |
 | deterministic catalog replay | true |
 | false acceptances | 0 |
 
-Catalog hash: `970987600d185d310e52862dc36a8551c35cb53cfe0b8f550e591a5abe2f0be0`.
+Catalog hash: `93029c4f73f97410b1d340810e03a0fe1dae609749f095dfa11c066674308b9a`.
 
 The execution pack remains shadow-only. A valid catalog is not sufficient for
 promotion or live routing; independent exercises, boundary tests, replay, and

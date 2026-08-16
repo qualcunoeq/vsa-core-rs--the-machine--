@@ -1,7 +1,7 @@
 {
   "schema": "stage-d-source-catalog-ingestion-v1",
   "source": "OpenStax finite-statistics catalog artifact",
-  "catalog_sha256": "970987600d185d310e52862dc36a8551c35cb53cfe0b8f550e591a5abe2f0be0",
+  "catalog_sha256": "93029c4f73f97410b1d340810e03a0fe1dae609749f095dfa11c066674308b9a",
   "record_count": 5,
   "valid_catalogs": 1,
   "mutation_cases": 5,
@@ -9,6 +9,7 @@
   "generated_exercises": 5,
   "generated_exercises_complete": 5,
   "generated_exercise_replays": 5,
+  "evidence_spans_preserved": 5,
   "replay_stable": true,
   "false_acceptances": 0
 }

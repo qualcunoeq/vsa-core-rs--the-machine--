@@ -2,20 +2,23 @@
   "duplicate_rejections": 1,
   "empty_exact_query": 0,
   "exact_retrieval_contamination": 0,
-  "exact_retrieval_count": 2500,
+  "exact_retrieval_count": 25000,
+  "exact_v1_retrieval_count": 8333,
+  "explicit_stale_v0_count": 8334,
   "invalid_rejections": 1,
   "live_mutation": false,
-  "manifest_hash": "c418df4e5e3007520b9ed0bd6c3b69653d78bc3ad610bdeabbd57c3244734beb",
-  "records": 10000,
-  "replay_verified": 10000,
+  "manifest_hash": "c7cd135d8db57f84aa029ec94783ec66a326bc5762fcd2a1a165835fe089244b",
+  "records": 100000,
+  "replay_verified": 100000,
   "retrieval_counts": [
-    2500,
-    2500,
-    2500,
-    2500
+    25000,
+    25000,
+    25000,
+    25000
   ],
   "schema": "stage-e-curriculum-memory-v1",
   "segment_capacity": 256,
-  "segments": 40,
-  "tamper_rejected": 10000
+  "segments": 391,
+  "tamper_rejected": 100000,
+  "version_contamination": 0
 }

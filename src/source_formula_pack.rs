@@ -17,6 +17,7 @@ pub struct SourceCitation {
     pub url: String,
     pub license: String,
     pub retrieved_utc: String,
+    pub evidence_span: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -135,6 +136,7 @@ pub fn validate_formula_records(records: &[FormulaRecord]) -> Result<(), Vec<Str
             || record.source.section.trim().is_empty()
             || !record.source.url.starts_with("https://")
             || record.source.retrieved_utc.trim().is_empty()
+            || record.source.evidence_span.trim().is_empty()
         {
             errors.push(format!(
                 "formula {} has incomplete source citation",
@@ -189,6 +191,8 @@ fn source() -> SourceCitation {
         url: "https://openstax.org/details/books/precalculus-2e".into(),
         license: "CC BY 4.0; OpenStax attribution required".into(),
         retrieved_utc: "2026-08-16".into(),
+        evidence_span: "chapter formula review: arithmetic and geometric sequence identities"
+            .into(),
     }
 }
 
@@ -521,6 +525,7 @@ mod tests {
             url: "https://example.invalid/source".into(),
             license: "test".into(),
             retrieved_utc: "2026-08-16".into(),
+            evidence_span: "test span".into(),
         }
     }
 

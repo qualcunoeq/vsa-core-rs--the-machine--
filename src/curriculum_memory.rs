@@ -15,6 +15,7 @@ pub struct MemoryRecord {
     pub record_id: String,
     pub domain: String,
     pub artifact_type: String,
+    pub version: String,
     pub payload: String,
     pub provenance: Vec<String>,
     pub content_hash: String,
@@ -32,6 +33,7 @@ pub struct CurriculumMemory {
     segments: Vec<Vec<MemoryRecord>>,
     ids: BTreeSet<String>,
     domain_index: BTreeMap<String, Vec<String>>,
+    record_index: BTreeMap<String, (usize, usize)>,
 }
 
 fn payload(record: &MemoryRecord) -> impl Serialize + '_ {
@@ -39,6 +41,7 @@ fn payload(record: &MemoryRecord) -> impl Serialize + '_ {
         &record.record_id,
         &record.domain,
         &record.artifact_type,
+        &record.version,
         &record.payload,
         &record.provenance,
     )
@@ -60,6 +63,7 @@ impl CurriculumMemory {
         if record.record_id.is_empty()
             || record.domain.is_empty()
             || record.artifact_type.is_empty()
+            || record.version.is_empty()
             || record.provenance.is_empty()
         {
             return AppendStatus::Invalid;
@@ -84,7 +88,13 @@ impl CurriculumMemory {
             .entry(record.domain.clone())
             .or_default()
             .push(record.record_id.clone());
-        self.segments.last_mut().unwrap().push(record);
+        let segment_index = self.segments.len() - 1;
+        let entry_index = self.segments[segment_index].len();
+        self.segments[segment_index].push(record);
+        self.record_index.insert(
+            self.segments[segment_index][entry_index].record_id.clone(),
+            (segment_index, entry_index),
+        );
         AppendStatus::Appended
     }
 
@@ -113,11 +123,24 @@ impl CurriculumMemory {
             .collect()
     }
 
+    /// Retrieve an exact typed artifact at an explicit immutable version.
+    pub fn retrieve_exact_version(
+        &self,
+        domain: &str,
+        artifact_type: &str,
+        version: &str,
+    ) -> Vec<&MemoryRecord> {
+        self.retrieve_exact(domain, artifact_type)
+            .into_iter()
+            .filter(|record| record.version == version)
+            .collect()
+    }
+
     pub fn get(&self, record_id: &str) -> Option<&MemoryRecord> {
+        let (segment_index, entry_index) = self.record_index.get(record_id).copied()?;
         self.segments
-            .iter()
-            .flat_map(|segment| segment.iter())
-            .find(|record| record.record_id == record_id)
+            .get(segment_index)
+            .and_then(|segment| segment.get(entry_index))
     }
 
     pub fn replay_verified(&self, record: &MemoryRecord) -> bool {
@@ -139,6 +162,7 @@ mod tests {
             record_id: id.into(),
             domain: "test".into(),
             artifact_type: "scalar".into(),
+            version: "v1".into(),
             payload: "42".into(),
             provenance: vec!["test-source".into()],
             content_hash: String::new(),

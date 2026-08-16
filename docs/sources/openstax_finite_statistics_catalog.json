@@ -12,7 +12,8 @@
       "section": "Measures of Central Tendency and Variability",
       "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data",
       "license": "CC BY 4.0; OpenStax attribution required",
-      "retrieved_utc": "2026-08-16"
+      "retrieved_utc": "2026-08-16",
+      "evidence_span": "section 2.5: definition of the arithmetic mean from sum and count"
     }
   },
   {
@@ -28,7 +29,8 @@
       "section": "Measures of Central Tendency and Variability",
       "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data",
       "license": "CC BY 4.0; OpenStax attribution required",
-      "retrieved_utc": "2026-08-16"
+      "retrieved_utc": "2026-08-16",
+      "evidence_span": "section 2.5: frequency-weighted calculation of the mean"
     }
   },
   {
@@ -44,7 +46,8 @@
       "section": "Measures of Central Tendency and Variability",
       "url": "https://openstax.org/books/introductory-statistics-2e/pages/4-3-binomial-distribution",
       "license": "CC BY 4.0; OpenStax attribution required",
-      "retrieved_utc": "2026-08-16"
+      "retrieved_utc": "2026-08-16",
+      "evidence_span": "section 4.3: Bernoulli/binomial variance relation"
     }
   },
   {
@@ -60,7 +63,8 @@
       "section": "Measures of Central Tendency and Variability",
       "url": "https://openstax.org/books/introductory-statistics-2e/pages/4-3-binomial-distribution",
       "license": "CC BY 4.0; OpenStax attribution required",
-      "retrieved_utc": "2026-08-16"
+      "retrieved_utc": "2026-08-16",
+      "evidence_span": "section 4.3: binomial mean formula μ = np"
     }
   },
   {
@@ -76,7 +80,8 @@
       "section": "Measures of Central Tendency and Variability",
       "url": "https://openstax.org/books/introductory-statistics-2e/pages/4-3-binomial-distribution",
       "license": "CC BY 4.0; OpenStax attribution required",
-      "retrieved_utc": "2026-08-16"
+      "retrieved_utc": "2026-08-16",
+      "evidence_span": "section 4.3: binomial variance formula σ² = npq"
     }
   }
 ]

@@ -271,6 +271,17 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "source-cited law records with generic exact rational execution",
         ),
         (
+            "source_derived_chemistry",
+            "Source-derived bounded chemistry",
+            vec!["source_derived_science"],
+            vec![
+                "molecular_formula",
+                "balanced_reaction",
+                "stoichiometric_ratio",
+            ],
+            "first source-derived domain with molecular and reaction representations",
+        ),
+        (
             "source_derived_finite_statistics",
             "Source-derived finite statistics",
             vec!["probability_stochastic", "source_formula_sequences"],
@@ -338,6 +349,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "bounded_calculus"
                 | "source_formula_sequences"
                 | "source_derived_science"
+                | "source_derived_chemistry"
                 | "source_derived_finite_statistics"
                 | "polynomial_algebra"
                 | "source_derived_complex_arithmetic"
@@ -387,7 +399,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 18);
+        assert_eq!(manifest.packs.len(), 19);
         assert!(manifest
             .packs
             .iter()

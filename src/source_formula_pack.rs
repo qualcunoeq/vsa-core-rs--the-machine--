@@ -4,6 +4,9 @@
 //! rational expression interpreter executes every record; there are no
 //! formula-specific evaluator branches. The pack is shadow-only.
 
+#[path = "chemistry_pack.rs"]
+pub mod chemistry_pack;
+
 use crate::probability_pack::Rational;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

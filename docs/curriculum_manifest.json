@@ -374,6 +374,34 @@
         "selection_reason": "source-cited law records with generic exact rational execution"
       },
       {
+        "id": "source_derived_chemistry",
+        "title": "Source-derived bounded chemistry",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_science"
+        ],
+        "reusable_artifacts": [
+          "molecular_formula",
+          "balanced_reaction",
+          "stoichiometric_ratio"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first source-derived domain with molecular and reaction representations"
+      },
+      {
         "id": "source_derived_finite_statistics",
         "title": "Source-derived finite statistics",
         "status": "shadow_validated",
@@ -524,7 +552,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "c8f8ebd474541ccdee1e8f675343d4ccd7b127bd357508d43d5d5eb02bb144bb",
+  "manifest_replay_hash": "9354970765a9aa525dcdca0a277a29c20659d59340ecf15c3e604637e8f0530d",
   "validation_errors": [],
   "production_authorizations": 0
 }

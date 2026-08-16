@@ -360,6 +360,10 @@ name = "combinatorics_number_theory_composition_bench"
 path = "src/bin/combinatorics_number_theory_composition_bench.rs"
 
 [[bin]]
+name = "chemistry_pack_bench"
+path = "src/bin/chemistry_pack_bench.rs"
+
+[[bin]]
 name = "curriculum_memory_bench"
 path = "src/bin/curriculum_memory_bench.rs"
 

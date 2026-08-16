@@ -1,0 +1,21 @@
+# Source evidence: OpenStax Chemistry 2e
+
+SOURCE_ID: openstax-chemistry-2e:formulas-stoichiometry
+TITLE: Chemistry 2e
+SECTIONS: 2.4 Chemical Formulas; 4.1 Writing and Balancing Chemical Equations; 4.3 Reaction Stoichiometry
+URL: https://openstax.org/books/chemistry-2e/pages/4-3-reaction-stoichiometry
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+
+GOVERNED CLAIMS:
+
+1. A molecular formula uses element symbols and subscripts to represent the
+   types and counts of atoms in a molecule.
+2. A balanced chemical equation has equal atom counts for every element on
+   both sides of the reaction arrow.
+3. Integer coefficients in a balanced equation encode relative amounts and
+   can be used as stoichiometric factors.
+
+The implementation stores these claims as source metadata and validates only
+the bounded transformations justified by them. It does not infer unlisted
+chemical properties.

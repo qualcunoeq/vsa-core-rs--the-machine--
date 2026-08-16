@@ -356,6 +356,10 @@ name = "stage_ab_retrieval_investigation"
 path = "src/bin/stage_ab_retrieval_investigation.rs"
 
 [[bin]]
+name = "stage_ac_independent_environment"
+path = "src/bin/stage_ac_independent_environment.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

@@ -228,6 +228,18 @@ name = "source_statistics_pack_bench"
 path = "src/bin/source_statistics_pack_bench.rs"
 
 [[bin]]
+name = "source_regression_pack_bench"
+path = "src/bin/source_regression_pack_bench.rs"
+
+[[bin]]
+name = "source_regression_frontend_bench"
+path = "src/bin/source_regression_frontend_bench.rs"
+
+[[bin]]
+name = "stage_u_six_frontend_route_blind"
+path = "src/bin/stage_u_six_frontend_route_blind.rs"
+
+[[bin]]
 name = "curriculum_campaign_bench"
 path = "src/bin/curriculum_campaign_bench.rs"
 

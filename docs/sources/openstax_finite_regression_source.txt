@@ -1,0 +1,78 @@
+# Bounded source transcription for finite linear-regression diagnostics.
+# Every operation is an explicit rational relation; the generic formula
+# catalog supplies execution and refuses missing or invalid assumptions.
+
+BEGIN FORMULA regression_slope
+ALIASES: least-squares slope | slope from centered sums
+EXPRESSION: covariance_sum / x_variance_sum
+INPUTS: covariance_sum, x_variance_sum
+ASSUMPTIONS: centered cross-product and centered x sum of squares are declared; x variation is nonzero
+CONSTRAINTS: not_equal_integer:x_variance_sum=0
+SOURCE_ID: openstax-introductory-statistics-2e:linear-regression
+TITLE: Introductory Statistics 2e
+SECTION: The Regression Equation
+URL: https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section 12.3: slope as centered cross-product divided by centered x sum of squares
+END FORMULA
+
+BEGIN FORMULA regression_intercept
+ALIASES: least-squares intercept | y intercept
+EXPRESSION: y_mean - slope * x_mean
+INPUTS: y_mean, slope, x_mean
+ASSUMPTIONS: the means and fitted slope refer to the same declared sample
+CONSTRAINTS: -
+SOURCE_ID: openstax-introductory-statistics-2e:linear-regression
+TITLE: Introductory Statistics 2e
+SECTION: The Regression Equation
+URL: https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section 12.3: intercept from means and fitted slope
+END FORMULA
+
+BEGIN FORMULA regression_fitted_value
+ALIASES: predicted response | fitted y value
+EXPRESSION: intercept + slope * x
+INPUTS: intercept, slope, x
+ASSUMPTIONS: x lies in the declared prediction domain; coefficients come from the same fitted line
+CONSTRAINTS: -
+SOURCE_ID: openstax-introductory-statistics-2e:linear-regression
+TITLE: Introductory Statistics 2e
+SECTION: The Regression Equation
+URL: https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section 12.3: prediction from the fitted linear equation
+END FORMULA
+
+BEGIN FORMULA regression_residual
+ALIASES: prediction error | observed minus fitted response
+EXPRESSION: observed - fitted
+INPUTS: observed, fitted
+ASSUMPTIONS: observed and fitted responses use the same response scale
+CONSTRAINTS: -
+SOURCE_ID: openstax-introductory-statistics-2e:linear-regression
+TITLE: Introductory Statistics 2e
+SECTION: The Regression Equation
+URL: https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section 12.3: residual as observed response minus fitted response
+END FORMULA
+
+BEGIN FORMULA regression_r_squared
+ALIASES: coefficient of determination | explained fraction
+EXPRESSION: explained_sum / total_sum
+INPUTS: explained_sum, total_sum
+ASSUMPTIONS: sums of squares are declared on one response scale; total variation is nonzero
+CONSTRAINTS: not_equal_integer:total_sum=0
+SOURCE_ID: openstax-introductory-statistics-2e:linear-regression
+TITLE: Introductory Statistics 2e
+SECTION: The Regression Equation
+URL: https://openstax.org/books/introductory-statistics-2e/pages/12-3-the-regression-equation
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section 12.3: coefficient of determination as explained variation over total variation
+END FORMULA

@@ -462,6 +462,36 @@
         "selection_reason": "first new source-derived domain executed by the generic formula catalog runtime"
       },
       {
+        "id": "source_derived_finite_regression",
+        "title": "Source-derived finite regression diagnostics",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_finite_statistics"
+        ],
+        "reusable_artifacts": [
+          "regression_slope",
+          "regression_intercept",
+          "regression_fitted_value",
+          "regression_residual",
+          "regression_r_squared"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-derived regression relations executed by the generic formula catalog runtime"
+      },
+      {
         "id": "polynomial_algebra",
         "title": "Bounded polynomial algebra over prime fields",
         "status": "shadow_validated",
@@ -640,7 +670,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "2958d7a6ac00502a62bb7e8e2de53efa9ee854e05c7f8d2ea3cd52699f45bf58",
+  "manifest_replay_hash": "c99fea9200db643958fad69e017ed8879f958345f2fc509973e9ecc266c015cd",
   "validation_errors": [],
   "production_authorizations": 0
 }

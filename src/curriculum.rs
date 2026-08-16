@@ -303,6 +303,19 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "first new source-derived domain executed by the generic formula catalog runtime",
         ),
         (
+            "source_derived_finite_regression",
+            "Source-derived finite regression diagnostics",
+            vec!["source_derived_finite_statistics"],
+            vec![
+                "regression_slope",
+                "regression_intercept",
+                "regression_fitted_value",
+                "regression_residual",
+                "regression_r_squared",
+            ],
+            "source-derived regression relations executed by the generic formula catalog runtime",
+        ),
+        (
             "polynomial_algebra",
             "Bounded polynomial algebra over prime fields",
             vec!["abstract_algebra", "elementary_number_theory", "linear_algebra_spectral"],
@@ -380,6 +393,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_chemistry"
                 | "source_derived_biology"
                 | "source_derived_finite_statistics"
+                | "source_derived_finite_regression"
                 | "polynomial_algebra"
                 | "source_derived_complex_arithmetic"
                 | "source_derived_finite_topology"
@@ -430,7 +444,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 22);
+        assert_eq!(manifest.packs.len(), 23);
         assert!(manifest
             .packs
             .iter()

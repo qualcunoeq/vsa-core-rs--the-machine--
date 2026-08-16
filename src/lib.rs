@@ -168,6 +168,7 @@ pub mod sleep;
 pub mod substitution;
 pub mod socket;
 pub mod source_complex_pack;
+pub mod source_regression_pack;
 pub mod system_encoder;
 pub mod tactics;
 pub mod temporal;

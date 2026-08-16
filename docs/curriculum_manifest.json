@@ -437,6 +437,35 @@
         "selection_reason": "finite-field polynomial artifacts bridge algebra, arithmetic, and linear maps"
       },
       {
+        "id": "source_derived_complex_arithmetic",
+        "title": "Source-derived bounded complex arithmetic",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "abstract_algebra"
+        ],
+        "reusable_artifacts": [
+          "complex_pair",
+          "complex_conjugate",
+          "complex_norm_squared",
+          "complex_division"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first externally sourced domain acquired after the hand-built foundations; generic paired formula execution"
+      },
+      {
         "id": "topology",
         "title": "Topology and geometric invariants",
         "status": "planned",
@@ -495,7 +524,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "3b22c9001017bdf8e32a9af5aa027aa2e8a411e3548a3737391eeb34e5df93c7",
+  "manifest_replay_hash": "c8f8ebd474541ccdee1e8f675343d4ccd7b127bd357508d43d5d5eb02bb144bb",
   "validation_errors": [],
   "production_authorizations": 0
 }

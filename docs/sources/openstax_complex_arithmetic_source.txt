@@ -1,0 +1,175 @@
+# Source transcription: OpenStax Precalculus 2e, section 3.1.
+# The extracted scope is rectangular complex arithmetic with exact rational
+# components. Polar conversion and analytic/branch semantics are deliberately
+# outside this catalog and remain explicit negative boundaries.
+# SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+# TITLE: Precalculus 2e
+# SECTION: 3.1 Complex Numbers
+# URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+# LICENSE: CC BY 4.0; OpenStax attribution required
+# RETRIEVED: 2026-08-16
+
+BEGIN FORMULA complex_add_real
+ALIASES: real part of complex addition
+EXPRESSION: a + c
+INPUTS: a, b, c, d
+ASSUMPTIONS: (a+bi)+(c+di) combines real parts
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: Complex Numbers: Addition and Subtraction; combine real parts
+END FORMULA
+
+BEGIN FORMULA complex_add_imag
+ALIASES: imaginary part of complex addition
+EXPRESSION: b + d
+INPUTS: a, b, c, d
+ASSUMPTIONS: (a+bi)+(c+di) combines imaginary parts
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: Complex Numbers: Addition and Subtraction; combine imaginary parts
+END FORMULA
+
+BEGIN FORMULA complex_subtract_real
+ALIASES: real part of complex subtraction
+EXPRESSION: a - c
+INPUTS: a, b, c, d
+ASSUMPTIONS: (a+bi)-(c+di) combines real parts by subtraction
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: Complex Numbers: Addition and Subtraction; subtract real parts
+END FORMULA
+
+BEGIN FORMULA complex_subtract_imag
+ALIASES: imaginary part of complex subtraction
+EXPRESSION: b - d
+INPUTS: a, b, c, d
+ASSUMPTIONS: (a+bi)-(c+di) combines imaginary parts by subtraction
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: Complex Numbers: Addition and Subtraction; subtract imaginary parts
+END FORMULA
+
+BEGIN FORMULA complex_multiply_real
+ALIASES: real part of complex multiplication
+EXPRESSION: a * c - b * d
+INPUTS: a, b, c, d
+ASSUMPTIONS: distribute and use i^2=-1
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: multiplication of complex numbers by distribution and i^2=-1
+END FORMULA
+
+BEGIN FORMULA complex_multiply_imag
+ALIASES: imaginary part of complex multiplication
+EXPRESSION: a * d + b * c
+INPUTS: a, b, c, d
+ASSUMPTIONS: distribute and collect the coefficient of i
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: multiplication of complex numbers; imaginary coefficient
+END FORMULA
+
+BEGIN FORMULA complex_divide_real
+ALIASES: real part of complex division
+EXPRESSION: (a * c + b * d) / (c ^ 2 + d ^ 2)
+INPUTS: a, b, c, d
+ASSUMPTIONS: multiply by the conjugate; divisor is nonzero
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: division of two complex numbers by the complex conjugate
+END FORMULA
+
+BEGIN FORMULA complex_divide_imag
+ALIASES: imaginary part of complex division
+EXPRESSION: (b * c - a * d) / (c ^ 2 + d ^ 2)
+INPUTS: a, b, c, d
+ASSUMPTIONS: multiply by the conjugate; divisor is nonzero
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: division of two complex numbers by the complex conjugate
+END FORMULA
+
+BEGIN FORMULA complex_conjugate_real
+ALIASES: real part of complex conjugate
+EXPRESSION: a
+INPUTS: a, b
+ASSUMPTIONS: conjugation changes the sign of the imaginary part
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: complex conjugate used for division
+END FORMULA
+
+BEGIN FORMULA complex_conjugate_imag
+ALIASES: imaginary part of complex conjugate
+EXPRESSION: 0 - b
+INPUTS: a, b
+ASSUMPTIONS: conjugation changes the sign of the imaginary part
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: complex conjugate changes the sign of the imaginary component
+END FORMULA
+
+BEGIN FORMULA complex_norm_squared
+ALIASES: squared magnitude of complex number|complex modulus squared
+EXPRESSION: a ^ 2 + b ^ 2
+INPUTS: a, b
+ASSUMPTIONS: squared magnitude is a^2+b^2
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:complex-numbers-3-1
+TITLE: Precalculus 2e
+SECTION: 3.1 Complex Numbers
+URL: https://openstax.org/books/precalculus-2e/pages/3-1-complex-numbers
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: complex magnitude is determined from the two components
+END FORMULA

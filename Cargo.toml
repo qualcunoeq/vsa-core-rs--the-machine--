@@ -332,6 +332,10 @@ name = "source_formula_pack_bench"
 path = "src/bin/source_formula_pack_bench.rs"
 
 [[bin]]
+name = "source_complex_pack_bench"
+path = "src/bin/source_complex_pack_bench.rs"
+
+[[bin]]
 name = "curriculum_memory_bench"
 path = "src/bin/curriculum_memory_bench.rs"
 

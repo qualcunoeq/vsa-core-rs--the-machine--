@@ -297,6 +297,18 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "finite-field polynomial artifacts bridge algebra, arithmetic, and linear maps",
         ),
         (
+            "source_derived_complex_arithmetic",
+            "Source-derived bounded complex arithmetic",
+            vec!["abstract_algebra"],
+            vec![
+                "complex_pair",
+                "complex_conjugate",
+                "complex_norm_squared",
+                "complex_division",
+            ],
+            "first externally sourced domain acquired after the hand-built foundations; generic paired formula execution",
+        ),
+        (
             "topology",
             "Topology and geometric invariants",
             vec!["abstract_algebra"],
@@ -328,6 +340,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_science"
                 | "source_derived_finite_statistics"
                 | "polynomial_algebra"
+                | "source_derived_complex_arithmetic"
         ) {
             (
                 CurriculumStatus::ShadowValidated,
@@ -374,7 +387,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 17);
+        assert_eq!(manifest.packs.len(), 18);
         assert!(manifest
             .packs
             .iter()

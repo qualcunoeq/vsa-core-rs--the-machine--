@@ -1,0 +1,5791 @@
+{
+  "schema": "stage-d-source-derived-complex-arithmetic-v1",
+  "source": "OpenStax Precalculus 2e, section 3.1 Complex Numbers",
+  "source_document_sha256": "77ce1e069369dfbf344d5042847881cdb5d1058739c2c332f1638293a003fbdf",
+  "corpus_sha256": "d414b40227d5c25694677d810535073490ab1000715d94b9a5615f9592bc3448",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "supported_artifacts": 120,
+  "values_correct": 240,
+  "source_preserved": 120,
+  "replay_verified": 240,
+  "tamper_rejections": 240,
+  "mutated_documents": 6,
+  "mutated_documents_rejected": 6,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "operation_counts": {
+    "Add": 47,
+    "Conjugate": 26,
+    "Divide": 47,
+    "Multiply": 47,
+    "NormSquared": 26,
+    "PolarConversion": 20,
+    "Subtract": 27
+  },
+  "receipts": [
+    {
+      "id": "supported_000",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_001",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -7,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -7,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_002",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 17,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 6
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 17,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 6
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_003",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 10,
+            "denominator": 13
+          },
+          "imag": {
+            "numerator": -42,
+            "denominator": 65
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 10,
+            "denominator": 13
+          },
+          "imag": {
+            "numerator": -42,
+            "denominator": 65
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_004",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 0,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 0,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_005",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 160,
+          "denominator": 9
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 160,
+          "denominator": 9
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_006",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 13,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 13,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_007",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -2,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -2,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_008",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_009",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 135,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -150,
+            "denominator": 181
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 135,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -150,
+            "denominator": 181
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_010",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_011",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 53,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 53,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_012",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_013",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -5,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -5,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_014",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 3,
+            "denominator": 2
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 3,
+            "denominator": 2
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_015",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 13
+          },
+          "imag": {
+            "numerator": -48,
+            "denominator": 65
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 13
+          },
+          "imag": {
+            "numerator": -48,
+            "denominator": 65
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_016",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_017",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 85,
+          "denominator": 9
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 85,
+          "denominator": 9
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_018",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 11,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 11,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_019",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_020",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 35,
+            "denominator": 6
+          },
+          "imag": {
+            "numerator": 19,
+            "denominator": 6
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 35,
+            "denominator": 6
+          },
+          "imag": {
+            "numerator": 19,
+            "denominator": 6
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_021",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 21,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -144,
+            "denominator": 181
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 21,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -144,
+            "denominator": 181
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_022",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_023",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 229,
+          "denominator": 36
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 229,
+          "denominator": 36
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_024",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_025",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -8,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -8,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_026",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_027",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 73,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -66,
+            "denominator": 65
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 73,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -66,
+            "denominator": 65
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_028",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_029",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 4,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 4,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_030",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_031",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -7,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -7,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_032",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 25,
+            "denominator": 6
+          },
+          "imag": {
+            "numerator": 17,
+            "denominator": 6
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 25,
+            "denominator": 6
+          },
+          "imag": {
+            "numerator": 17,
+            "denominator": 6
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_033",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 196,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -258,
+            "denominator": 181
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 196,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -258,
+            "denominator": 181
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_034",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 0,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 0,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_035",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 145,
+          "denominator": 36
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 145,
+          "denominator": 36
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_036",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_037",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -2,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -2,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_038",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 19,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 19,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_039",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 63,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -42,
+            "denominator": 65
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 63,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -42,
+            "denominator": 65
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_040",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_041",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 85,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 85,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_042",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_043",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -1,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -5,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -1,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -5,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_044",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 2
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 2
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_045",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 82,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -252,
+            "denominator": 181
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 82,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -252,
+            "denominator": 181
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_046",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_047",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 148,
+          "denominator": 9
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 148,
+          "denominator": 9
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_048",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 11,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 11,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_049",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_050",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 16,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": -2,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 16,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": -2,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_051",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 33,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -48,
+            "denominator": 65
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 33,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -48,
+            "denominator": 65
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_052",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_053",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 445,
+          "denominator": 36
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 445,
+          "denominator": 36
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_054",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 6,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 6,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_055",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -8,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -8,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_056",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 2
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 2
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_057",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 68,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -156,
+            "denominator": 181
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 68,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -156,
+            "denominator": 181
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_058",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_059",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 9,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 9,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_060",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_061",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -7,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -7,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_062",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 29,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 19,
+            "denominator": 6
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 29,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 19,
+            "denominator": 6
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_063",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 23,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -24,
+            "denominator": 65
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 23,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -24,
+            "denominator": 65
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_064",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 0,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 0,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_065",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 289,
+          "denominator": 36
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 289,
+          "denominator": 36
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_066",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_067",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -2,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -2,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_068",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 13,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 11,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 13,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 11,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_069",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 243,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -270,
+            "denominator": 181
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 243,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -270,
+            "denominator": 181
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_070",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_071",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 5,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_072",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_073",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -5,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -5,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_074",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 2
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 2
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_075",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 56,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -72,
+            "denominator": 65
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 56,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -72,
+            "denominator": 65
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_076",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_077",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 97,
+          "denominator": 36
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 97,
+          "denominator": 36
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_078",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_079",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_080",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 13,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 13,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_081",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 129,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -264,
+            "denominator": 181
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 129,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -264,
+            "denominator": 181
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_082",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_083",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 733,
+          "denominator": 36
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 733,
+          "denominator": 36
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_084",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_085",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -8,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -8,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_086",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 6,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 2
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 6,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 2
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_087",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 46,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -48,
+            "denominator": 65
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 46,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -48,
+            "denominator": 65
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_088",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 7,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_089",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 16,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 16,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_090",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 13,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 13,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_091",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -7,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -7,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_092",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 8,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 8,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_093",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 115,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -168,
+            "denominator": 181
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 115,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -168,
+            "denominator": 181
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_094",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 0,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 0,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_095",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 505,
+          "denominator": 36
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 505,
+          "denominator": 36
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_096",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_097",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -2,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -2,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_098",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 10,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 6
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 10,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 6
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_099",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 36,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -24,
+            "denominator": 65
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 36,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -24,
+            "denominator": 65
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_100",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_101",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 10,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 10,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_102",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 11,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 11,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_103",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -5,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -5,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_104",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 9,
+            "denominator": 2
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 9,
+            "denominator": 2
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_105",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -162,
+            "denominator": 181
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -162,
+            "denominator": 181
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_106",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_107",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 241,
+          "denominator": 36
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 241,
+          "denominator": 36
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_108",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 4,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_109",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 2,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_110",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 28,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 28,
+            "denominator": 3
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_111",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 69,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -72,
+            "denominator": 65
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 69,
+            "denominator": 65
+          },
+          "imag": {
+            "numerator": -72,
+            "denominator": 65
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_112",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 2,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_113",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 37,
+          "denominator": 9
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 37,
+          "denominator": 9
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_114",
+      "operation": "add",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_115",
+      "operation": "subtract",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -8,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": -8,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_116",
+      "operation": "multiply",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 2
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 5,
+            "denominator": 2
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_117",
+      "operation": "divide",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 176,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -276,
+            "denominator": 181
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 176,
+            "denominator": 181
+          },
+          "imag": {
+            "numerator": -276,
+            "denominator": 181
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_118",
+      "operation": "conjugate",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 9,
+            "denominator": 2
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 3
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_119",
+      "operation": "norm_squared",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 9,
+          "denominator": 4
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 9,
+          "denominator": 4
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_000",
+      "operation": "add",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_001",
+      "operation": "subtract",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_002",
+      "operation": "multiply",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_003",
+      "operation": "divide",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_004",
+      "operation": "conjugate",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_005",
+      "operation": "norm_squared",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_006",
+      "operation": "add",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_007",
+      "operation": "subtract",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_008",
+      "operation": "multiply",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_009",
+      "operation": "divide",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_010",
+      "operation": "conjugate",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_011",
+      "operation": "norm_squared",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_012",
+      "operation": "add",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_013",
+      "operation": "subtract",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_014",
+      "operation": "multiply",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_015",
+      "operation": "divide",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_016",
+      "operation": "conjugate",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_017",
+      "operation": "norm_squared",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_018",
+      "operation": "add",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_019",
+      "operation": "subtract",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_020",
+      "operation": "multiply",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_021",
+      "operation": "divide",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_022",
+      "operation": "conjugate",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_023",
+      "operation": "norm_squared",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_024",
+      "operation": "add",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_025",
+      "operation": "subtract",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_026",
+      "operation": "multiply",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_027",
+      "operation": "divide",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_028",
+      "operation": "conjugate",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_029",
+      "operation": "norm_squared",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_030",
+      "operation": "add",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_031",
+      "operation": "subtract",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_032",
+      "operation": "multiply",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_033",
+      "operation": "divide",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_034",
+      "operation": "conjugate",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_035",
+      "operation": "norm_squared",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_036",
+      "operation": "add",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_037",
+      "operation": "subtract",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_038",
+      "operation": "multiply",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_039",
+      "operation": "divide",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_000",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_001",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_002",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_003",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_004",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_005",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_006",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_007",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_008",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_009",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_010",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_011",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_012",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_013",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_014",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_015",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_016",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_017",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_018",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_019",
+      "operation": "add",
+      "expected": "refused",
+      "actual": "invalid_domain",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_000",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_001",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_002",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_003",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_004",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_005",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_006",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_007",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_008",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_009",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_010",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_011",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_012",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_013",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_014",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_015",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_016",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_017",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_018",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_component_019",
+      "operation": "multiply",
+      "expected": "refused",
+      "actual": "missing",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_000",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_001",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_002",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_003",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_004",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_005",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_006",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_007",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_008",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_009",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_010",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_011",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_012",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_013",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_014",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_015",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_016",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_017",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_018",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "zero_divisor_019",
+      "operation": "divide",
+      "expected": "refused",
+      "actual": "inconsistent",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_000",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_001",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_002",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_003",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_004",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_005",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_006",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_007",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_008",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_009",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_010",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_011",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_012",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_013",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_014",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_015",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_016",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_017",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_018",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "polar_unsupported_019",
+      "operation": "polar_conversion",
+      "expected": "refused",
+      "actual": "unsupported",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "source_preserved": false,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    }
+  ]
+}

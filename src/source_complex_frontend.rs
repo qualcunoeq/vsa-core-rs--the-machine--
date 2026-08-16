@@ -219,11 +219,16 @@ pub fn formalize_complex_text(text: &str) -> ComplexFrontendResult {
         _ => 2,
     };
     if parsed.len() != required || spans.len() != required {
+        let provenance_spans = if spans.is_empty() {
+            vec![text.into()]
+        } else {
+            spans.clone()
+        };
         return result(
             FrontendStatus::Missing,
             Some(operation),
             None,
-            spans,
+            provenance_spans,
             Vec::new(),
             vec![format!(
                 "expected {required} explicit parenthesized complex literal(s)"

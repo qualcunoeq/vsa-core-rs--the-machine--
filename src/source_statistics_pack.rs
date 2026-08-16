@@ -5,20 +5,17 @@
 //! contains no formula-specific evaluator branch.
 
 use crate::source_formula_pack::{
-    evaluate_formula_records, validate_formula_records, FormulaRecord, FormulaRequest,
-    FormulaResult,
+    evaluate_formula_records, extract_formula_records, FormulaRecord, FormulaRequest, FormulaResult,
 };
 
 pub const DOMAIN: &str = "source_derived_finite_statistics";
 
 /// Return the immutable source records for the finite statistics catalog.
 pub fn records() -> Vec<FormulaRecord> {
-    let records: Vec<FormulaRecord> = serde_json::from_str(include_str!(
-        "../docs/sources/openstax_finite_statistics_catalog.json"
+    extract_formula_records(include_str!(
+        "../docs/sources/openstax_finite_statistics_source.txt"
     ))
-    .expect("source-derived statistics catalog is valid JSON");
-    validate_formula_records(&records).expect("source-derived statistics catalog validates");
-    records
+    .expect("source-derived statistics source document extracts and validates")
 }
 
 /// Execute a source-derived finite-statistics request through the generic

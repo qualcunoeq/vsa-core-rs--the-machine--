@@ -53,6 +53,331 @@ pub struct FormulaRecord {
     pub source: SourceCitation,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum SourceExprToken {
+    Identifier(String),
+    Integer(i128),
+    Plus,
+    Minus,
+    Star,
+    Slash,
+    Caret,
+    LeftParen,
+    RightParen,
+}
+
+fn tokenize_source_expression(expression: &str) -> Result<Vec<SourceExprToken>, String> {
+    let chars: Vec<char> = expression.chars().collect();
+    let mut tokens = Vec::new();
+    let mut index = 0;
+    while index < chars.len() {
+        let character = chars[index];
+        if character.is_whitespace() {
+            index += 1;
+        } else if character.is_ascii_alphabetic() || character == '_' {
+            let start = index;
+            index += 1;
+            while index < chars.len()
+                && (chars[index].is_ascii_alphanumeric() || chars[index] == '_')
+            {
+                index += 1;
+            }
+            tokens.push(SourceExprToken::Identifier(
+                chars[start..index].iter().collect(),
+            ));
+        } else if character.is_ascii_digit() {
+            let start = index;
+            index += 1;
+            while index < chars.len() && chars[index].is_ascii_digit() {
+                index += 1;
+            }
+            let value: String = chars[start..index].iter().collect();
+            let value = value
+                .parse::<i128>()
+                .map_err(|_| format!("invalid integer literal {value}"))?;
+            tokens.push(SourceExprToken::Integer(value));
+        } else {
+            let token = match character {
+                '+' => SourceExprToken::Plus,
+                '-' => SourceExprToken::Minus,
+                '*' => SourceExprToken::Star,
+                '/' => SourceExprToken::Slash,
+                '^' => SourceExprToken::Caret,
+                '(' => SourceExprToken::LeftParen,
+                ')' => SourceExprToken::RightParen,
+                _ => return Err(format!("unsupported expression character {character}")),
+            };
+            tokens.push(token);
+            index += 1;
+        }
+    }
+    Ok(tokens)
+}
+
+struct SourceExpressionParser {
+    tokens: Vec<SourceExprToken>,
+    position: usize,
+}
+
+impl SourceExpressionParser {
+    fn new(tokens: Vec<SourceExprToken>) -> Self {
+        Self {
+            tokens,
+            position: 0,
+        }
+    }
+
+    fn peek(&self) -> Option<&SourceExprToken> {
+        self.tokens.get(self.position)
+    }
+
+    fn consume(&mut self) -> Option<SourceExprToken> {
+        let token = self.tokens.get(self.position).cloned();
+        self.position += usize::from(token.is_some());
+        token
+    }
+
+    fn parse(mut self) -> Result<Expr, String> {
+        let expression = self.parse_add_sub()?;
+        if self.peek().is_some() {
+            return Err("unexpected tokens after expression".into());
+        }
+        Ok(expression)
+    }
+
+    fn parse_add_sub(&mut self) -> Result<Expr, String> {
+        let mut expression = self.parse_mul_div()?;
+        loop {
+            match self.peek() {
+                Some(SourceExprToken::Plus) => {
+                    self.consume();
+                    expression = Expr::Add(Box::new(expression), Box::new(self.parse_mul_div()?));
+                }
+                Some(SourceExprToken::Minus) => {
+                    self.consume();
+                    expression = Expr::Sub(Box::new(expression), Box::new(self.parse_mul_div()?));
+                }
+                _ => break,
+            }
+        }
+        Ok(expression)
+    }
+
+    fn parse_mul_div(&mut self) -> Result<Expr, String> {
+        let mut expression = self.parse_unary()?;
+        loop {
+            match self.peek() {
+                Some(SourceExprToken::Star) => {
+                    self.consume();
+                    expression = Expr::Mul(Box::new(expression), Box::new(self.parse_unary()?));
+                }
+                Some(SourceExprToken::Slash) => {
+                    self.consume();
+                    expression = Expr::Div(Box::new(expression), Box::new(self.parse_unary()?));
+                }
+                _ => break,
+            }
+        }
+        Ok(expression)
+    }
+
+    fn parse_power(&mut self) -> Result<Expr, String> {
+        let mut expression = self.parse_primary()?;
+        if matches!(self.peek(), Some(SourceExprToken::Caret)) {
+            self.consume();
+            let exponent = match self.consume() {
+                Some(SourceExprToken::Integer(value)) if value >= 0 => value as u32,
+                _ => return Err("only a nonnegative integer exponent is supported".into()),
+            };
+            expression = Expr::PowNatural(Box::new(expression), exponent);
+        }
+        Ok(expression)
+    }
+
+    fn parse_unary(&mut self) -> Result<Expr, String> {
+        if matches!(self.peek(), Some(SourceExprToken::Minus)) {
+            self.consume();
+            return Ok(Expr::Sub(
+                Box::new(Expr::Constant(0)),
+                Box::new(self.parse_unary()?),
+            ));
+        }
+        self.parse_power()
+    }
+
+    fn parse_primary(&mut self) -> Result<Expr, String> {
+        match self.consume() {
+            Some(SourceExprToken::Identifier(name)) => Ok(Expr::Input(name)),
+            Some(SourceExprToken::Integer(value)) => Ok(Expr::Constant(value)),
+            Some(SourceExprToken::LeftParen) => {
+                let expression = self.parse_add_sub()?;
+                if !matches!(self.consume(), Some(SourceExprToken::RightParen)) {
+                    return Err("missing closing parenthesis".into());
+                }
+                Ok(expression)
+            }
+            _ => Err("expected an identifier, integer, or parenthesized expression".into()),
+        }
+    }
+}
+
+fn parse_source_expression(expression: &str) -> Result<Expr, String> {
+    let tokens = tokenize_source_expression(expression)?;
+    if tokens.is_empty() {
+        return Err("expression is empty".into());
+    }
+    SourceExpressionParser::new(tokens).parse()
+}
+
+fn split_source_list(value: &str, separator: char) -> Vec<String> {
+    value
+        .split(separator)
+        .map(str::trim)
+        .filter(|item| !item.is_empty() && *item != "-")
+        .map(str::to_owned)
+        .collect()
+}
+
+fn parse_source_constraint(value: &str) -> Result<InputConstraint, String> {
+    let (kind, name) = value
+        .split_once(':')
+        .ok_or_else(|| format!("constraint must use kind:name syntax: {value}"))?;
+    let kind = kind.trim();
+    let name = name.trim();
+    if name.is_empty() {
+        return Err("constraint input is empty".into());
+    }
+    match kind {
+        "positive" => Ok(InputConstraint::Positive(name.into())),
+        "positive_integer" => Ok(InputConstraint::PositiveInteger(name.into())),
+        "nonnegative_integer" => Ok(InputConstraint::NonnegativeInteger(name.into())),
+        "probability" => Ok(InputConstraint::Probability(name.into())),
+        "not_equal_integer" => {
+            let (name, forbidden) = name
+                .split_once('=')
+                .ok_or_else(|| "not_equal_integer requires name=value".to_string())?;
+            let forbidden = forbidden
+                .trim()
+                .parse::<i128>()
+                .map_err(|_| "not_equal_integer value is not an integer".to_string())?;
+            Ok(InputConstraint::NotEqualInteger(
+                name.trim().into(),
+                forbidden,
+            ))
+        }
+        _ => Err(format!("unsupported source constraint kind: {kind}")),
+    }
+}
+
+/// Extract formula candidates from a bounded, provenance-bearing source
+/// document.  The source format is intentionally explicit: it preserves the
+/// evidence span and does not guess missing fields or specialist semantics.
+/// Each block has the form `BEGIN FORMULA ...` / `END FORMULA`, with one
+/// `KEY: value` field per line.
+pub fn extract_formula_records(document: &str) -> Result<Vec<FormulaRecord>, Vec<String>> {
+    let mut errors = Vec::new();
+    let mut blocks: Vec<(usize, BTreeMap<String, String>)> = Vec::new();
+    let mut current: Option<(usize, BTreeMap<String, String>)> = None;
+    for (line_index, raw_line) in document.lines().enumerate() {
+        let line_number = line_index + 1;
+        let line = raw_line.trim();
+        if line.is_empty() || line.starts_with('#') {
+            continue;
+        }
+        if let Some(identifier) = line.strip_prefix("BEGIN FORMULA ") {
+            if current.is_some() {
+                errors.push(format!("nested formula block at line {line_number}"));
+            } else {
+                let mut fields = BTreeMap::new();
+                fields.insert("FORMULA_ID".into(), identifier.trim().into());
+                current = Some((line_number, fields));
+            }
+            continue;
+        }
+        if line == "END FORMULA" {
+            if let Some(block) = current.take() {
+                blocks.push(block);
+            } else {
+                errors.push(format!("orphan END FORMULA at line {line_number}"));
+            }
+            continue;
+        }
+        let Some((start_line, fields)) = current.as_mut() else {
+            errors.push(format!("field outside formula block at line {line_number}"));
+            continue;
+        };
+        let Some((key, value)) = line.split_once(':') else {
+            errors.push(format!("malformed field at line {line_number}"));
+            continue;
+        };
+        let key = key.trim().to_ascii_uppercase();
+        let value = value.trim().to_owned();
+        if key.is_empty() || value.is_empty() || fields.insert(key.clone(), value).is_some() {
+            errors.push(format!(
+                "invalid or duplicate field {key} at line {line_number}"
+            ));
+        }
+        let _ = start_line;
+    }
+    if let Some((start_line, _)) = current {
+        errors.push(format!(
+            "formula block beginning at line {start_line} is unterminated"
+        ));
+    }
+
+    let mut records = Vec::new();
+    for (start_line, fields) in blocks {
+        let required = |key: &str| {
+            fields
+                .get(key)
+                .cloned()
+                .ok_or_else(|| format!("formula block at line {start_line} lacks {key}"))
+        };
+        let record = (|| -> Result<FormulaRecord, String> {
+            let formula_id = required("FORMULA_ID")?;
+            let aliases = split_source_list(&required("ALIASES")?, '|');
+            let expression = parse_source_expression(&required("EXPRESSION")?)
+                .map_err(|error| format!("{formula_id} expression: {error}"))?;
+            let required_inputs = split_source_list(&required("INPUTS")?, ',');
+            let assumptions = split_source_list(&required("ASSUMPTIONS")?, ';');
+            let constraints = split_source_list(&required("CONSTRAINTS")?, ';')
+                .into_iter()
+                .map(|constraint| parse_source_constraint(&constraint))
+                .collect::<Result<Vec<_>, _>>()?;
+            let source = SourceCitation {
+                source_id: required("SOURCE_ID")?,
+                title: required("TITLE")?,
+                section: required("SECTION")?,
+                url: required("URL")?,
+                license: required("LICENSE")?,
+                retrieved_utc: required("RETRIEVED")?,
+                evidence_span: required("EVIDENCE")?,
+            };
+            Ok(FormulaRecord {
+                formula_id,
+                aliases,
+                expression,
+                required_inputs,
+                assumptions,
+                constraints,
+                source,
+            })
+        })();
+        match record {
+            Ok(record) => records.push(record),
+            Err(error) => errors.push(format!("line {start_line}: {error}")),
+        }
+    }
+    if let Err(validation_errors) = validate_formula_records(&records) {
+        errors.extend(validation_errors);
+    }
+    if errors.is_empty() {
+        Ok(records)
+    } else {
+        Err(errors)
+    }
+}
+
 /// Validate a declarative source catalog before it is eligible for shadow
 /// execution.  The validator is domain-agnostic: it checks identity,
 /// expression inputs, constraints, and citation completeness without knowing
@@ -561,5 +886,61 @@ mod tests {
         assert!(errors
             .iter()
             .any(|error| error.contains("undeclared input")));
+    }
+
+    #[test]
+    fn source_document_extractor_parses_precedence_and_constraints() {
+        let document = r#"
+BEGIN FORMULA bounded_ratio
+ALIASES: ratio
+EXPRESSION: (a + 2) * b
+INPUTS: a, b
+ASSUMPTIONS: b is positive
+CONSTRAINTS: positive:b
+SOURCE_ID: test-source
+TITLE: Test source
+SECTION: Test section
+URL: https://example.invalid/source
+LICENSE: test
+RETRIEVED: 2026-08-16
+EVIDENCE: line 1
+END FORMULA
+"#;
+        let records = extract_formula_records(document).unwrap();
+        assert_eq!(records.len(), 1);
+        assert_eq!(records[0].required_inputs, vec!["a", "b"]);
+        assert_eq!(
+            records[0].constraints,
+            vec![InputConstraint::Positive("b".into())]
+        );
+        assert_eq!(
+            parse_source_expression("-a^2").unwrap(),
+            Expr::Sub(
+                Box::new(Expr::Constant(0)),
+                Box::new(Expr::PowNatural(Box::new(Expr::Input("a".into())), 2)),
+            )
+        );
+        let result = evaluate_formula_records(
+            &FormulaRequest {
+                formula: "ratio".into(),
+                inputs: BTreeMap::from([
+                    ("a".into(), Rational::new(1, 1).unwrap()),
+                    ("b".into(), Rational::new(3, 1).unwrap()),
+                ]),
+                domain: "test".into(),
+                ambiguity: None,
+                provenance: vec!["test".into()],
+            },
+            "test",
+            &records,
+        );
+        assert_eq!(result.value, Some(Rational::new(9, 1).unwrap()));
+        assert!(result.replay_verified());
+    }
+
+    #[test]
+    fn source_document_extractor_rejects_omitted_evidence() {
+        let document = "BEGIN FORMULA bad\nEXPRESSION: x\nINPUTS: x\nASSUMPTIONS: -\nCONSTRAINTS: -\nSOURCE_ID: s\nTITLE: t\nSECTION: s\nURL: https://example.invalid\nLICENSE: test\nRETRIEVED: 2026-08-16\nEND FORMULA\n";
+        assert!(extract_formula_records(document).is_err());
     }
 }

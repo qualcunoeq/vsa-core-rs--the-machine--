@@ -1,0 +1,16 @@
+{
+  "evidence_spans": 5,
+  "exact_decisions": 120,
+  "exercises_complete": 120,
+  "false_authorizations": 0,
+  "independent_exercises": 120,
+  "json_structure_equivalent": true,
+  "mutated_documents": 6,
+  "mutated_documents_rejected": 6,
+  "record_count": 5,
+  "records_hash": "6175b20734fd73ac24279e0b827dc50ca80bf8d7a9fdb1e66e32f3d5869e45cd",
+  "replay_verified": 120,
+  "schema": "stage-d-source-document-extraction-v1",
+  "source_document_hash": "210952b9a31b51f212264f854a38e4f039aef4f282c8a60cce7fe8dbd1a1e79c",
+  "tamper_rejected": 120
+}

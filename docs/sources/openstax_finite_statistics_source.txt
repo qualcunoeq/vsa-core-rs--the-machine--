@@ -1,0 +1,77 @@
+# Bounded source transcription for the finite-statistics catalog.
+# The extractor accepts only explicit blocks and never fills omitted fields.
+
+BEGIN FORMULA arithmetic_mean
+ALIASES: sample mean | mean from sum and count
+EXPRESSION: sum / count
+INPUTS: sum, count
+ASSUMPTIONS: count is positive; values share one scale
+CONSTRAINTS: positive:count
+SOURCE_ID: openstax-introductory-statistics-2e:descriptive-statistics
+TITLE: Introductory Statistics 2e
+SECTION: Measures of Central Tendency and Variability
+URL: https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section 2.5: definition of the arithmetic mean from sum and count
+END FORMULA
+
+BEGIN FORMULA weighted_mean
+ALIASES: weighted average
+EXPRESSION: weighted_sum / total_weight
+INPUTS: weighted_sum, total_weight
+ASSUMPTIONS: total weight is positive; weights are declared
+CONSTRAINTS: positive:total_weight
+SOURCE_ID: openstax-introductory-statistics-2e:descriptive-statistics
+TITLE: Introductory Statistics 2e
+SECTION: Measures of Central Tendency and Variability
+URL: https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section 2.5: frequency-weighted calculation of the mean
+END FORMULA
+
+BEGIN FORMULA bernoulli_variance
+ALIASES: binary-outcome variance
+EXPRESSION: p * (1 - p)
+INPUTS: p
+ASSUMPTIONS: p is a probability in [0,1]
+CONSTRAINTS: probability:p
+SOURCE_ID: openstax-introductory-statistics-2e:descriptive-statistics
+TITLE: Introductory Statistics 2e
+SECTION: Binomial Distribution
+URL: https://openstax.org/books/introductory-statistics-2e/pages/4-3-binomial-distribution
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section 4.3: Bernoulli/binomial variance relation
+END FORMULA
+
+BEGIN FORMULA binomial_expected_value
+ALIASES: binomial mean
+EXPRESSION: n * p
+INPUTS: n, p
+ASSUMPTIONS: n is a nonnegative integer; p is a probability
+CONSTRAINTS: nonnegative_integer:n; probability:p
+SOURCE_ID: openstax-introductory-statistics-2e:descriptive-statistics
+TITLE: Introductory Statistics 2e
+SECTION: Binomial Distribution
+URL: https://openstax.org/books/introductory-statistics-2e/pages/4-3-binomial-distribution
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section 4.3: binomial mean formula μ = np
+END FORMULA
+
+BEGIN FORMULA binomial_variance
+ALIASES: binomial variance
+EXPRESSION: n * p * (1 - p)
+INPUTS: n, p
+ASSUMPTIONS: n is a nonnegative integer; p is a probability
+CONSTRAINTS: nonnegative_integer:n; probability:p
+SOURCE_ID: openstax-introductory-statistics-2e:descriptive-statistics
+TITLE: Introductory Statistics 2e
+SECTION: Binomial Distribution
+URL: https://openstax.org/books/introductory-statistics-2e/pages/4-3-binomial-distribution
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: section 4.3: binomial variance formula σ² = npq
+END FORMULA

@@ -18,7 +18,7 @@ formula or contain statistics-specific branches.
 | deterministic catalog replay | true |
 | false acceptances | 0 |
 
-Catalog hash: `93029c4f73f97410b1d340810e03a0fe1dae609749f095dfa11c066674308b9a`.
+Catalog hash: `999bdd756c7b71435e7b6ffaa4a178608f352b49ee34cae7a9dbcfbb4c989c45`.
 
 The execution pack remains shadow-only. A valid catalog is not sufficient for
 promotion or live routing; independent exercises, boundary tests, replay, and

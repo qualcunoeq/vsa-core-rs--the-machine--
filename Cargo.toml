@@ -376,6 +376,10 @@ name = "stage_ag_source_formula_frontend"
 path = "src/bin/stage_ag_source_formula_frontend.rs"
 
 [[bin]]
+name = "stage_ah_source_probability_composition"
+path = "src/bin/stage_ah_source_probability_composition.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

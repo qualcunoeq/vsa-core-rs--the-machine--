@@ -154,6 +154,7 @@ pub mod solution_verification;
 pub mod source_complex_pack;
 pub mod source_formula_pack;
 pub mod source_formula_frontend;
+pub mod source_probability_bridge;
 pub mod source_metric_pack;
 pub mod source_regression_pack;
 pub mod source_retrieval;

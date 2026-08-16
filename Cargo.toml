@@ -384,6 +384,10 @@ name = "stage_ai_generic_source_catalog_route_blind"
 path = "src/bin/stage_ai_generic_source_catalog_route_blind.rs"
 
 [[bin]]
+name = "spectral_linear_algebra_pack_bench"
+path = "src/bin/spectral_linear_algebra_pack_bench.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

@@ -1,0 +1,2416 @@
+{
+  "schema": "phase75-bounded-spectral-linear-algebra-v1",
+  "corpus_sha256": "cd0486f5d89357b873f5991475fc96ce382ae0491404c0c788742590e5354cab",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "supported_artifacts": 120,
+  "replay_verified": 240,
+  "tamper_rejected": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "receipts": [
+    {
+      "id": "characteristic_0",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_0",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_0",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_0",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_0",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_0",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_1",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_1",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_1",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_1",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_1",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_1",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_2",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_2",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_2",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_2",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_2",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_2",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_3",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_3",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_3",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_3",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_3",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_3",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_4",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_4",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_4",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_4",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_4",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_4",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_5",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_5",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_5",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_5",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_5",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_5",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_6",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_6",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_6",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_6",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_6",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_6",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_7",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_7",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_7",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_7",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_7",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_7",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_8",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_8",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_8",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_8",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_8",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_8",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_9",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_9",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_9",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_9",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_9",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_9",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_10",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_10",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_10",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_10",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_10",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_10",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_11",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_11",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_11",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_11",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_11",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_11",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_12",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_12",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_12",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_12",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_12",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_12",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_13",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_13",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_13",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_13",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_13",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_13",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_14",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_14",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_14",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_14",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_14",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_14",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_15",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_15",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_15",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_15",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_15",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_15",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_16",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_16",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_16",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_16",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_16",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_16",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_17",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_17",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_17",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_17",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_17",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_17",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_18",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_18",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_18",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_18",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_18",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_18",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "characteristic_19",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "integer_eigenvalues_19",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "eigenspace_19",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "diagonalizability_19",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "matrix_power_19",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "decomposition_19",
+      "expected": "complete",
+      "actual": "complete",
+      "artifact_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_0",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_1",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_2",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_3",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_4",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_5",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_6",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_7",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_8",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_9",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_10",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_11",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_12",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_13",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_14",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_15",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_16",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_17",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_18",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_19",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_20",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_21",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_22",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_23",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_24",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_25",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_26",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_27",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_28",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_29",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_30",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_31",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_32",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_33",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_34",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_35",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_36",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_37",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_38",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_39",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_0",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_1",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_2",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_3",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_4",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_5",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_6",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_7",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_8",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_9",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_10",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_11",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_12",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_13",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_14",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_15",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_16",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_17",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_18",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_19",
+      "expected": "invalid_domain",
+      "actual": "invalid_domain",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_0",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_1",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_2",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_3",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_4",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_5",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_6",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_7",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_8",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_9",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_10",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_11",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_12",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_13",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_14",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_15",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_16",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_17",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_18",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "oversized_19",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_0",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_1",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_2",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_3",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_4",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_5",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_6",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_7",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_8",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_9",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_10",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_11",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_12",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_13",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_14",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_15",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_16",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_17",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_18",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "noninteger_spectrum_19",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_0",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_1",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_2",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_3",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_4",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_5",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_6",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_7",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_8",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_9",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_10",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_11",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_12",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_13",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_14",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_15",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_16",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_17",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_18",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "over_budget_19",
+      "expected": "unsupported",
+      "actual": "unsupported",
+      "artifact_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "ambiguous": 40,
+  "cases": 240,
+  "exact_decisions": 240,
+  "exact_values": 120,
+  "false_authorizations": 0,
+  "records_hash": "ad9d46d59fe2eab66211105459ca669464d703398352d9d1ba460040620cfd03",
+  "refused": 80,
+  "replay_verified": 360,
+  "retrieved_and_executed": 120,
+  "schema": "stage-i-source-science-bridge-v1",
+  "supported": 120,
+  "tamper_rejected": 360
+}

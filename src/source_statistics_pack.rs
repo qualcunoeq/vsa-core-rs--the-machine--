@@ -98,3 +98,42 @@ pub fn records() -> Vec<FormulaRecord> {
 pub fn evaluate_statistics(request: &FormulaRequest) -> FormulaResult {
     evaluate_formula_records(request, DOMAIN, &records())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::BTreeMap;
+    use crate::probability_pack::Rational;
+
+    fn q(numerator: i128, denominator: i128) -> Rational {
+        Rational::new(numerator, denominator).unwrap()
+    }
+
+    fn request(formula: &str) -> FormulaRequest {
+        FormulaRequest {
+            formula: formula.into(),
+            inputs: BTreeMap::from([
+                ("sum".into(), q(30, 1)),
+                ("count".into(), q(5, 1)),
+                ("p".into(), q(1, 4)),
+                ("n".into(), q(8, 1)),
+            ]),
+            domain: DOMAIN.into(),
+            ambiguity: None,
+            provenance: vec!["unit-test".into()],
+        }
+    }
+
+    #[test]
+    fn source_constraints_are_enforced_and_replayable() {
+        let valid = evaluate_statistics(&request("arithmetic_mean"));
+        assert_eq!(valid.status, crate::source_formula_pack::FormulaStatus::Complete);
+        assert_eq!(valid.value, Some(q(6, 1)));
+        assert!(valid.replay_verified());
+        let mut invalid = request("bernoulli_variance");
+        invalid.inputs.insert("p".into(), q(5, 4));
+        let invalid = evaluate_statistics(&invalid);
+        assert_eq!(invalid.status, crate::source_formula_pack::FormulaStatus::Inconsistent);
+        assert!(invalid.replay_verified());
+    }
+}

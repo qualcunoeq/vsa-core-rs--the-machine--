@@ -52,6 +52,103 @@ pub struct FormulaRecord {
     pub source: SourceCitation,
 }
 
+/// Validate a declarative source catalog before it is eligible for shadow
+/// execution.  The validator is domain-agnostic: it checks identity,
+/// expression inputs, constraints, and citation completeness without knowing
+/// what any formula means.
+pub fn validate_formula_records(records: &[FormulaRecord]) -> Result<(), Vec<String>> {
+    fn collect_inputs(expression: &Expr, names: &mut Vec<String>) {
+        match expression {
+            Expr::Input(name) => names.push(name.clone()),
+            Expr::Constant(_) => {}
+            Expr::Add(left, right)
+            | Expr::Sub(left, right)
+            | Expr::Mul(left, right)
+            | Expr::Div(left, right) => {
+                collect_inputs(left, names);
+                collect_inputs(right, names);
+            }
+            Expr::PowNatural(base, _)
+            | Expr::PowInput(base, _)
+            | Expr::PowInputMinusOne(base, _) => collect_inputs(base, names),
+        }
+    }
+
+    let mut errors = Vec::new();
+    let mut formula_ids = std::collections::BTreeSet::new();
+    let mut aliases = std::collections::BTreeSet::new();
+    for record in records {
+        if record.formula_id.trim().is_empty() {
+            errors.push("formula identifier is empty".into());
+        }
+        if !formula_ids.insert(record.formula_id.clone()) {
+            errors.push(format!(
+                "duplicate formula identifier: {}",
+                record.formula_id
+            ));
+        }
+        if record.required_inputs.is_empty() {
+            errors.push(format!(
+                "formula {} declares no required inputs",
+                record.formula_id
+            ));
+        }
+        let required: std::collections::BTreeSet<_> = record.required_inputs.iter().collect();
+        if required.len() != record.required_inputs.len() {
+            errors.push(format!(
+                "formula {} repeats a required input",
+                record.formula_id
+            ));
+        }
+        let mut expression_inputs = Vec::new();
+        collect_inputs(&record.expression, &mut expression_inputs);
+        for input in expression_inputs {
+            if !required.contains(&input) {
+                errors.push(format!(
+                    "formula {} uses undeclared input {}",
+                    record.formula_id, input
+                ));
+            }
+        }
+        for alias in &record.aliases {
+            if alias.trim().is_empty() || !aliases.insert(alias.clone()) {
+                errors.push(format!("duplicate or empty alias in {}", record.formula_id));
+            }
+        }
+        for constraint in &record.constraints {
+            let name = match constraint {
+                InputConstraint::Positive(name)
+                | InputConstraint::PositiveInteger(name)
+                | InputConstraint::NonnegativeInteger(name)
+                | InputConstraint::Probability(name)
+                | InputConstraint::NotEqualInteger(name, _) => name,
+            };
+            if !required.contains(name) {
+                errors.push(format!(
+                    "formula {} constrains undeclared input {}",
+                    record.formula_id, name
+                ));
+            }
+        }
+        if record.source.source_id.trim().is_empty()
+            || record.source.title.trim().is_empty()
+            || record.source.section.trim().is_empty()
+            || !record.source.url.starts_with("https://")
+            || record.source.retrieved_utc.trim().is_empty()
+        {
+            errors.push(format!(
+                "formula {} has incomplete source citation",
+                record.formula_id
+            ));
+        }
+    }
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
+}
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum FormulaStatus {
@@ -222,21 +319,24 @@ fn eval(expr: &Expr, inputs: &BTreeMap<String, Rational>) -> Option<Rational> {
 }
 
 fn constraints_satisfied(record: &FormulaRecord, inputs: &BTreeMap<String, Rational>) -> bool {
-    record.constraints.iter().all(|constraint| match constraint {
-        InputConstraint::Positive(name) => inputs.get(name).is_some_and(Rational::positive),
-        InputConstraint::PositiveInteger(name) => inputs
-            .get(name)
-            .is_some_and(|value| value.denominator == 1 && value.numerator > 0),
-        InputConstraint::NonnegativeInteger(name) => inputs
-            .get(name)
-            .is_some_and(|value| value.denominator == 1 && value.numerator >= 0),
-        InputConstraint::Probability(name) => inputs
-            .get(name)
-            .is_some_and(Rational::in_unit_interval),
-        InputConstraint::NotEqualInteger(name, forbidden) => inputs
-            .get(name)
-            .is_some_and(|value| value.denominator != 1 || value.numerator != *forbidden),
-    })
+    record
+        .constraints
+        .iter()
+        .all(|constraint| match constraint {
+            InputConstraint::Positive(name) => inputs.get(name).is_some_and(Rational::positive),
+            InputConstraint::PositiveInteger(name) => inputs
+                .get(name)
+                .is_some_and(|value| value.denominator == 1 && value.numerator > 0),
+            InputConstraint::NonnegativeInteger(name) => inputs
+                .get(name)
+                .is_some_and(|value| value.denominator == 1 && value.numerator >= 0),
+            InputConstraint::Probability(name) => {
+                inputs.get(name).is_some_and(Rational::in_unit_interval)
+            }
+            InputConstraint::NotEqualInteger(name, forbidden) => inputs
+                .get(name)
+                .is_some_and(|value| value.denominator != 1 || value.numerator != *forbidden),
+        })
 }
 
 fn payload(result: &FormulaResult) -> impl Serialize + '_ {
@@ -303,10 +403,11 @@ pub fn evaluate_formula(request: &FormulaRequest) -> FormulaResult {
                 output
                     .reasons
                     .push("required source-formula input is absent".into());
-            } else if !constraints_satisfied(record, &request.inputs)
-            {
+            } else if !constraints_satisfied(record, &request.inputs) {
                 output.status = FormulaStatus::Inconsistent;
-                output.reasons.push("source-record input constraints are not satisfied".into());
+                output
+                    .reasons
+                    .push("source-record input constraints are not satisfied".into());
             } else {
                 output.value = eval(&record.expression, &request.inputs);
                 output.status = if output.value.is_some() {
@@ -405,5 +506,55 @@ impl FormulaResult {
             && !self.provenance.is_empty()
             && (self.status != FormulaStatus::Complete
                 || (self.value.is_some() && self.source.is_some()))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn citation() -> SourceCitation {
+        SourceCitation {
+            source_id: "test-source".into(),
+            title: "Test source".into(),
+            section: "Test section".into(),
+            url: "https://example.invalid/source".into(),
+            license: "test".into(),
+            retrieved_utc: "2026-08-16".into(),
+        }
+    }
+
+    #[test]
+    fn catalog_validator_accepts_well_formed_records() {
+        let records = vec![FormulaRecord {
+            formula_id: "ratio".into(),
+            aliases: vec!["quotient".into()],
+            expression: Expr::Div(
+                Box::new(Expr::Input("a".into())),
+                Box::new(Expr::Input("b".into())),
+            ),
+            required_inputs: vec!["a".into(), "b".into()],
+            assumptions: vec!["b is nonzero".into()],
+            constraints: vec![InputConstraint::NotEqualInteger("b".into(), 0)],
+            source: citation(),
+        }];
+        assert!(validate_formula_records(&records).is_ok());
+    }
+
+    #[test]
+    fn catalog_validator_rejects_undeclared_expression_inputs() {
+        let records = vec![FormulaRecord {
+            formula_id: "bad".into(),
+            aliases: Vec::new(),
+            expression: Expr::Input("missing".into()),
+            required_inputs: vec!["declared".into()],
+            assumptions: Vec::new(),
+            constraints: Vec::new(),
+            source: citation(),
+        }];
+        let errors = validate_formula_records(&records).unwrap_err();
+        assert!(errors
+            .iter()
+            .any(|error| error.contains("undeclared input")));
     }
 }

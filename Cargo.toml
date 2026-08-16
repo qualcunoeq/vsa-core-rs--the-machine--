@@ -244,6 +244,10 @@ name = "current_curriculum_synthesis_bench"
 path = "src/bin/current_curriculum_synthesis_bench.rs"
 
 [[bin]]
+name = "source_catalog_ingestion_bench"
+path = "src/bin/source_catalog_ingestion_bench.rs"
+
+[[bin]]
 name = "graph_pack_bench"
 path = "src/bin/graph_pack_bench.rs"
 

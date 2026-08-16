@@ -11,6 +11,9 @@ use crate::{Hypervector, HD_DIMENSION};
 use image::{DynamicImage, GenericImageView};
 use std::path::Path;
 
+#[path = "visual_table.rs"]
+pub mod visual_table;
+
 const COLOR_BINS: usize = 4;
 const GRID: usize = 4;
 const DESCRIPTOR_DIM: usize = COLOR_BINS * COLOR_BINS * COLOR_BINS + GRID * GRID + 4;

@@ -348,6 +348,10 @@ name = "complex_linear_bridge_bench"
 path = "src/bin/complex_linear_bridge_bench.rs"
 
 [[bin]]
+name = "visual_table_frontend_bench"
+path = "src/bin/visual_table_frontend_bench.rs"
+
+[[bin]]
 name = "curriculum_memory_bench"
 path = "src/bin/curriculum_memory_bench.rs"
 

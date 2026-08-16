@@ -1,0 +1,19 @@
+# Source transcription for the bounded finite-metric pack.
+# A metric is a nonnegative distance with identity of indiscernibles,
+# symmetry, and the triangle inequality.  This campaign restricts execution
+# to explicit finite carriers and exact integer distances; it makes no claim
+# about completeness, compactness, limits, or infinite metric spaces.
+BEGIN METRIC
+METRIC_ID: finite_metric_axioms
+ALIASES: finite metric|distance function
+DOMAIN: source_derived_finite_metric
+MAX_POINTS: 8
+AXIOMS: nonnegative;identity;symmetry;triangle
+SOURCE_ID: topology-without-tears:metric-definition
+TITLE: Topology Without Tears
+SECTION: Metric spaces and distance functions
+URL: https://www.topologywithouttears.net/
+LICENSE: author-attributed educational transcription
+RETRIEVED: 2026-08-16
+EVIDENCE: A metric is nonnegative, separates identical points, is symmetric, and satisfies the triangle inequality
+END METRIC

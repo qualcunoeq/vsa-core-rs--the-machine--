@@ -89,6 +89,7 @@ pub mod source_topology_frontend;
 pub mod source_topology_graph_bridge;
 pub mod science_law_pack;
 pub mod source_statistics_pack;
+pub mod source_metric_pack;
 pub mod source_statistics_frontend;
 pub mod source_retrieval;
 pub mod experiment;

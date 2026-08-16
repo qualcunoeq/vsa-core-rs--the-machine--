@@ -30,7 +30,10 @@ pub struct StatisticsFrontendResult {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("frontend serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("frontend serializes"))
+    )
 }
 
 fn payload(result: &StatisticsFrontendResult) -> impl Serialize + '_ {
@@ -58,15 +61,39 @@ fn labeled_value(text: &str, labels: &[&str]) -> Option<(String, Rational)> {
     let tokens: Vec<&str> = text.split_whitespace().collect();
     for (index, token) in tokens.iter().enumerate() {
         let normalized = token.trim_matches(|character: char| {
-            !character.is_ascii_alphanumeric() && character != '_' && character != '=' && character != '-'
+            !character.is_ascii_alphanumeric()
+                && character != '_'
+                && character != '='
+                && character != '-'
         });
         for label in labels {
             if normalized == *label {
-                if let Some(next) = tokens.get(index + 1).and_then(|value| rational_token(value)) {
-                    return (format!("{label} {}", tokens[index + 1]), next).into();
+                // Accept an explicit separator as its own token, but never
+                // infer a value from unlabeled prose.  This covers
+                // `sum = 30` and `sum : 30` while retaining the same
+                // fail-closed label boundary as `sum=30`.
+                let mut value_index = index + 1;
+                while matches!(tokens.get(value_index), Some(&"=" | &":")) {
+                    value_index += 1;
+                }
+                if let Some(next) = tokens
+                    .get(value_index)
+                    .and_then(|value| rational_token(value))
+                {
+                    return (
+                        format!("{label} {}", tokens[index + 1..=value_index].join(" ")),
+                        next,
+                    )
+                        .into();
                 }
             }
             let prefix = format!("{label}=");
+            if let Some(value) = normalized.strip_prefix(&prefix) {
+                if let Some(parsed) = rational_token(value) {
+                    return (normalized.to_string(), parsed).into();
+                }
+            }
+            let prefix = format!("{label}:");
             if let Some(value) = normalized.strip_prefix(&prefix) {
                 if let Some(parsed) = rational_token(value) {
                     return (normalized.to_string(), parsed).into();
@@ -99,7 +126,11 @@ fn result(
     output
 }
 
-fn with_request(formula: &str, inputs: BTreeMap<String, Rational>, spans: Vec<String>) -> StatisticsFrontendResult {
+fn with_request(
+    formula: &str,
+    inputs: BTreeMap<String, Rational>,
+    spans: Vec<String>,
+) -> StatisticsFrontendResult {
     result(
         FrontendStatus::Complete,
         Some(formula.into()),
@@ -121,10 +152,18 @@ fn with_request(formula: &str, inputs: BTreeMap<String, Rational>, spans: Vec<St
 pub fn formalize_statistics_text(text: &str) -> StatisticsFrontendResult {
     let lower = text.to_ascii_lowercase();
     let unsupported_marker = [
-        "continuous", "sample standard deviation", "confidence interval", "hypothesis test",
-        "regression", "normal distribution", "density",
+        "continuous",
+        "sample standard deviation",
+        "confidence interval",
+        "hypothesis test",
+        "regression",
+        "normal distribution",
+        "density",
     ];
-    if unsupported_marker.iter().any(|marker| lower.contains(marker)) {
+    if unsupported_marker
+        .iter()
+        .any(|marker| lower.contains(marker))
+    {
         return result(
             FrontendStatus::Unsupported,
             None,
@@ -144,7 +183,10 @@ pub fn formalize_statistics_text(text: &str) -> StatisticsFrontendResult {
         if let (Some((sum_span, sum)), Some((weight_span, weight))) = (weighted_sum, total_weight) {
             return with_request(
                 "weighted_mean",
-                BTreeMap::from([("weighted_sum".into(), sum), ("total_weight".into(), weight)]),
+                BTreeMap::from([
+                    ("weighted_sum".into(), sum),
+                    ("total_weight".into(), weight),
+                ]),
                 vec![sum_span, weight_span],
             );
         }
@@ -230,6 +272,10 @@ mod tests {
         assert_eq!(complete.status, FrontendStatus::Complete);
         assert_eq!(complete.formula.as_deref(), Some("arithmetic_mean"));
         assert!(complete.replay_verified());
+        let shifted = formalize_statistics_text("Using count : 5, compute the mean from sum = 30.");
+        assert_eq!(shifted.status, FrontendStatus::Complete);
+        assert_eq!(shifted.formula.as_deref(), Some("arithmetic_mean"));
+        assert!(shifted.replay_verified());
         let ambiguous = formalize_statistics_text("Find the average from total=30 and count=5.");
         assert_eq!(ambiguous.status, FrontendStatus::Ambiguous);
         assert!(ambiguous.replay_verified());

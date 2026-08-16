@@ -236,6 +236,10 @@ name = "source_statistics_frontend_bench"
 path = "src/bin/source_statistics_frontend_bench.rs"
 
 [[bin]]
+name = "source_statistics_shifted_bench"
+path = "src/bin/source_statistics_shifted_bench.rs"
+
+[[bin]]
 name = "graph_pack_bench"
 path = "src/bin/graph_pack_bench.rs"
 

@@ -252,6 +252,10 @@ name = "source_provenance_integrity_bench"
 path = "src/bin/source_provenance_integrity_bench.rs"
 
 [[bin]]
+name = "visual_graph_frontend_bench"
+path = "src/bin/visual_graph_frontend_bench.rs"
+
+[[bin]]
 name = "curriculum_campaign_bench"
 path = "src/bin/curriculum_campaign_bench.rs"
 

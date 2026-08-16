@@ -17,6 +17,7 @@ pub struct ScienceSource {
     pub url: String,
     pub license: String,
     pub retrieved_utc: String,
+    pub evidence_span: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -37,7 +38,13 @@ pub struct ScienceLawRecord {
     pub expression: LawExpr,
     pub required_inputs: Vec<String>,
     pub assumptions: Vec<String>,
+    pub constraints: Vec<ScienceConstraint>,
     pub source: ScienceSource,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum ScienceConstraint {
+    NotEqualInteger(String, i128),
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -73,69 +80,89 @@ pub struct ScienceResult {
     pub replay_hash: String,
 }
 
-fn source() -> ScienceSource {
-    ScienceSource {
-        source_id: "openstax-university-physics:classical-science-laws".into(),
-        title: "University Physics Volume 1".into(),
-        section: "Thermodynamics and Classical Mechanics".into(),
-        url: "https://openstax.org/details/books/university-physics-volume-1".into(),
-        license: "CC BY 4.0; OpenStax attribution required".into(),
-        retrieved_utc: "2026-08-16".into(),
-    }
+fn laws() -> Vec<ScienceLawRecord> {
+    let records: Vec<ScienceLawRecord> = serde_json::from_str(include_str!(
+        "../docs/sources/openstax_classical_science_catalog.json"
+    ))
+    .expect("source science catalog must be valid JSON");
+    validate_science_law_records(&records).expect("source science catalog must validate");
+    records
 }
 
-fn laws() -> Vec<ScienceLawRecord> {
-    let cited = source();
-    let input = |name: &str| LawExpr::Input(name.into());
-    vec![
-        ScienceLawRecord {
-            law_id: "ideal_gas_pressure".into(),
-            aliases: vec!["ideal gas law pressure".into()],
-            expression: LawExpr::Div(
-                Box::new(LawExpr::Mul(
-                    Box::new(LawExpr::Mul(Box::new(input("n")), Box::new(input("R")))),
-                    Box::new(input("T")),
-                )),
-                Box::new(input("V")),
-            ),
-            required_inputs: vec!["n".into(), "R".into(), "T".into(), "V".into()],
-            assumptions: vec!["ideal gas approximation".into(), "V is nonzero".into()],
-            source: cited.clone(),
-        },
-        ScienceLawRecord {
-            law_id: "first_law_delta_u".into(),
-            aliases: vec!["first law internal energy change".into()],
-            expression: LawExpr::Sub(Box::new(input("Q")), Box::new(input("W"))),
-            required_inputs: vec!["Q".into(), "W".into()],
-            assumptions: vec!["sign convention Q into system and W by system".into()],
-            source: cited.clone(),
-        },
-        ScienceLawRecord {
-            law_id: "kinetic_energy".into(),
-            aliases: vec!["classical kinetic energy".into()],
-            expression: LawExpr::Div(
-                Box::new(LawExpr::Mul(
-                    Box::new(input("m")),
-                    Box::new(LawExpr::Mul(Box::new(input("v")), Box::new(input("v")))),
-                )),
-                Box::new(LawExpr::Constant(2)),
-            ),
-            required_inputs: vec!["m".into(), "v".into()],
-            assumptions: vec!["classical nonrelativistic speed".into()],
-            source: cited.clone(),
-        },
-        ScienceLawRecord {
-            law_id: "hooke_force".into(),
-            aliases: vec!["linear spring force".into()],
-            expression: LawExpr::Neg(Box::new(LawExpr::Mul(
-                Box::new(input("k")),
-                Box::new(input("x")),
-            ))),
-            required_inputs: vec!["k".into(), "x".into()],
-            assumptions: vec!["linear spring regime".into()],
-            source: cited,
-        },
-    ]
+/// Validate a source-derived science catalog without interpreting the meaning
+/// of any particular law.  Execution remains a generic expression walk.
+pub fn validate_science_law_records(records: &[ScienceLawRecord]) -> Result<(), Vec<String>> {
+    fn collect_inputs(expression: &LawExpr, names: &mut Vec<String>) {
+        match expression {
+            LawExpr::Input(name) => names.push(name.clone()),
+            LawExpr::Constant(_) => {}
+            LawExpr::Add(left, right)
+            | LawExpr::Sub(left, right)
+            | LawExpr::Mul(left, right)
+            | LawExpr::Div(left, right) => {
+                collect_inputs(left, names);
+                collect_inputs(right, names);
+            }
+            LawExpr::Neg(value) => collect_inputs(value, names),
+        }
+    }
+
+    let mut errors = Vec::new();
+    let mut ids = std::collections::BTreeSet::new();
+    let mut aliases = std::collections::BTreeSet::new();
+    for record in records {
+        if record.law_id.trim().is_empty() || !ids.insert(record.law_id.clone()) {
+            errors.push(format!(
+                "duplicate or empty law identifier: {}",
+                record.law_id
+            ));
+        }
+        let required: std::collections::BTreeSet<_> = record.required_inputs.iter().collect();
+        if required.len() != record.required_inputs.len() || required.is_empty() {
+            errors.push(format!(
+                "invalid required-input declaration: {}",
+                record.law_id
+            ));
+        }
+        for alias in &record.aliases {
+            if alias.trim().is_empty() || !aliases.insert(alias.clone()) {
+                errors.push(format!("duplicate or empty alias in {}", record.law_id));
+            }
+        }
+        let mut expression_inputs = Vec::new();
+        collect_inputs(&record.expression, &mut expression_inputs);
+        for input in expression_inputs {
+            if !required.contains(&input) {
+                errors.push(format!("{} uses undeclared input {}", record.law_id, input));
+            }
+        }
+        for constraint in &record.constraints {
+            let name = match constraint {
+                ScienceConstraint::NotEqualInteger(name, _) => name,
+            };
+            if !required.contains(name) {
+                errors.push(format!(
+                    "{} constrains undeclared input {}",
+                    record.law_id, name
+                ));
+            }
+        }
+        let source = &record.source;
+        if source.source_id.trim().is_empty()
+            || source.title.trim().is_empty()
+            || source.section.trim().is_empty()
+            || !source.url.starts_with("https://")
+            || source.retrieved_utc.trim().is_empty()
+            || source.evidence_span.trim().is_empty()
+        {
+            errors.push(format!("{} has incomplete source evidence", record.law_id));
+        }
+    }
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
@@ -219,11 +246,16 @@ pub fn evaluate_science(request: &ScienceRequest) -> ScienceResult {
             {
                 output.status = ScienceStatus::Missing;
                 output.reasons.push("required law input is absent".into());
-            } else if law.law_id == "ideal_gas_pressure"
-                && request.inputs.get("V") == Some(&Rational::zero())
-            {
+            } else if law.constraints.iter().any(|constraint| match constraint {
+                ScienceConstraint::NotEqualInteger(name, forbidden) => request
+                    .inputs
+                    .get(name)
+                    .is_some_and(|value| value.denominator == 1 && value.numerator == *forbidden),
+            }) {
                 output.status = ScienceStatus::Inconsistent;
-                output.reasons.push("volume must be nonzero".into());
+                output
+                    .reasons
+                    .push("a declared input constraint is violated".into());
             } else {
                 output.value = eval(&law.expression, &request.inputs);
                 output.status = if output.value.is_some() {
@@ -245,5 +277,42 @@ impl ScienceResult {
             && !self.provenance.is_empty()
             && (self.status != ScienceStatus::Complete
                 || (self.value.is_some() && self.source.is_some()))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn source_catalog_validates_and_preserves_evidence() {
+        let records: Vec<ScienceLawRecord> = serde_json::from_str(include_str!(
+            "../docs/sources/openstax_classical_science_catalog.json"
+        ))
+        .unwrap();
+        assert_eq!(records.len(), 4);
+        assert!(validate_science_law_records(&records).is_ok());
+        assert!(records.iter().all(|record| {
+            !record.source.evidence_span.is_empty() && !record.source.url.is_empty()
+        }));
+    }
+
+    #[test]
+    fn catalog_constraint_rejects_zero_volume() {
+        let result = evaluate_science(&ScienceRequest {
+            law: "ideal_gas_pressure".into(),
+            inputs: BTreeMap::from([
+                ("n".into(), Rational::new(1, 1).unwrap()),
+                ("R".into(), Rational::new(8, 1).unwrap()),
+                ("T".into(), Rational::new(300, 1).unwrap()),
+                ("V".into(), Rational::zero()),
+            ]),
+            domain: "source_derived_classical_science".into(),
+            unit_scope: "si_consistent_exact".into(),
+            ambiguity: None,
+            provenance: vec!["science-catalog-test".into()],
+        });
+        assert_eq!(result.status, ScienceStatus::Inconsistent);
+        assert!(result.replay_verified());
     }
 }

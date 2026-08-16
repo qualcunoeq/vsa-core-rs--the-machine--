@@ -1,0 +1,70 @@
+[
+  {
+    "law_id": "ideal_gas_pressure",
+    "aliases": ["ideal gas law pressure"],
+    "expression": {"Div": [{"Mul": [{"Mul": [{"Input": "n"}, {"Input": "R"}]}, {"Input": "T"}]}, {"Input": "V"}]},
+    "required_inputs": ["n", "R", "T", "V"],
+    "assumptions": ["ideal gas approximation", "V is nonzero"],
+    "constraints": [{"NotEqualInteger": ["V", 0]}],
+    "source": {
+      "source_id": "openstax-university-physics-1:ideal-gas-law",
+      "title": "University Physics Volume 1",
+      "section": "The Ideal Gas Law",
+      "url": "https://openstax.org/details/books/university-physics-volume-1",
+      "license": "CC BY 4.0; OpenStax attribution required",
+      "retrieved_utc": "2026-08-16",
+      "evidence_span": "section 13.3: ideal-gas pressure relation pV = nRT"
+    }
+  },
+  {
+    "law_id": "first_law_delta_u",
+    "aliases": ["first law internal energy change"],
+    "expression": {"Sub": [{"Input": "Q"}, {"Input": "W"}]},
+    "required_inputs": ["Q", "W"],
+    "assumptions": ["sign convention Q into system and W by system"],
+    "constraints": [],
+    "source": {
+      "source_id": "openstax-university-physics-2:thermodynamics-first-law",
+      "title": "University Physics Volume 2",
+      "section": "The First Law of Thermodynamics",
+      "url": "https://openstax.org/details/books/university-physics-volume-2",
+      "license": "CC BY 4.0; OpenStax attribution required",
+      "retrieved_utc": "2026-08-16",
+      "evidence_span": "section 4.3: change in internal energy equals heat added minus work done by the system"
+    }
+  },
+  {
+    "law_id": "kinetic_energy",
+    "aliases": ["classical kinetic energy"],
+    "expression": {"Div": [{"Mul": [{"Input": "m"}, {"Mul": [{"Input": "v"}, {"Input": "v"}]}]}, {"Constant": 2}]},
+    "required_inputs": ["m", "v"],
+    "assumptions": ["classical nonrelativistic speed"],
+    "constraints": [],
+    "source": {
+      "source_id": "openstax-university-physics-1:kinetic-energy",
+      "title": "University Physics Volume 1",
+      "section": "Kinetic Energy and the Work-Energy Theorem",
+      "url": "https://openstax.org/details/books/university-physics-volume-1",
+      "license": "CC BY 4.0; OpenStax attribution required",
+      "retrieved_utc": "2026-08-16",
+      "evidence_span": "section 7.2: classical kinetic energy K = mv^2/2"
+    }
+  },
+  {
+    "law_id": "hooke_force",
+    "aliases": ["linear spring force"],
+    "expression": {"Neg": {"Mul": [{"Input": "k"}, {"Input": "x"}]}},
+    "required_inputs": ["k", "x"],
+    "assumptions": ["linear spring regime"],
+    "constraints": [],
+    "source": {
+      "source_id": "openstax-university-physics-1:hookes-law",
+      "title": "University Physics Volume 1",
+      "section": "Hooke's Law",
+      "url": "https://openstax.org/details/books/university-physics-volume-1",
+      "license": "CC BY 4.0; OpenStax attribution required",
+      "retrieved_utc": "2026-08-16",
+      "evidence_span": "section 16.2: restoring spring force is proportional to displacement with a negative sign"
+    }
+  }
+]

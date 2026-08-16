@@ -1,0 +1,13 @@
+{
+  "catalog_hash": "b8e52806f70a361955741fa86bd4ef4dea5913ebb7bc92ed97b15397f7864138",
+  "deterministic_reparse": true,
+  "evidence_spans": 4,
+  "execution_unchanged": true,
+  "false_acceptances": 0,
+  "mutated_catalogs": 5,
+  "mutated_catalogs_rejected": 5,
+  "record_count": 4,
+  "schema": "stage-h-source-science-catalog-ingestion-v1",
+  "source": "OpenStax University Physics Volume 1 and Volume 2",
+  "valid_catalogs": 1
+}

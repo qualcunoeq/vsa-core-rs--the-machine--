@@ -376,6 +376,10 @@ name = "biology_pack_bench"
 path = "src/bin/biology_pack_bench.rs"
 
 [[bin]]
+name = "biology_frontend_bench"
+path = "src/bin/biology_frontend_bench.rs"
+
+[[bin]]
 name = "curriculum_memory_bench"
 path = "src/bin/curriculum_memory_bench.rs"
 

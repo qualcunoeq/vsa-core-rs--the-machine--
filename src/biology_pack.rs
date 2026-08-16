@@ -10,6 +10,9 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 
+#[path = "biology_frontend.rs"]
+pub mod biology_frontend;
+
 const DOMAIN: &str = "source_derived_bounded_dna";
 const MAX_SEQUENCE: usize = 256;
 

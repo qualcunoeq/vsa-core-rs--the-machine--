@@ -360,6 +360,10 @@ name = "stage_ac_independent_environment"
 path = "src/bin/stage_ac_independent_environment.rs"
 
 [[bin]]
+name = "stage_ad_promotion_environment"
+path = "src/bin/stage_ad_promotion_environment.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

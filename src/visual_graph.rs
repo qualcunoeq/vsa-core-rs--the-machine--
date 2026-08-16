@@ -6,7 +6,9 @@
 //! provenance must all be explicit before a typed graph artifact is emitted.
 //! The resulting artifact can then be handed to the bounded finite-graph pack.
 
-use crate::graph_pack::{GraphOperation, GraphRequest};
+use crate::graph_pack::{FiniteGraph, GraphOperation, GraphRequest};
+use crate::probability_pack::{ProbabilityResult, Rational};
+use crate::random_walk_composition::{execute_one_step, RandomWalkResult, TransitionConvention};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
@@ -285,16 +287,14 @@ pub fn formalize_visual_graph(input: &VisualGraphObservation) -> VisualGraphResu
 
 /// Lower only a complete visual artifact into the finite graph pack.
 pub fn to_graph_request(result: &VisualGraphResult) -> Option<GraphRequest> {
+    let graph = to_finite_graph(result)?;
     let artifact = result.artifact.as_ref()?;
-    if result.status != VisualGraphStatus::Complete {
-        return None;
-    }
     Some(GraphRequest {
         operation: GraphOperation::Construction,
         domain: "finite_simple_graph".into(),
-        vertices: artifact.vertex_order.clone(),
-        edges: artifact.edges.clone(),
-        directed: artifact.directed,
+        vertices: graph.vertices,
+        edges: graph.edges,
+        directed: graph.directed,
         matrix: None,
         vertex_order: artifact.vertex_order.clone(),
         start: None,
@@ -302,6 +302,42 @@ pub fn to_graph_request(result: &VisualGraphResult) -> Option<GraphRequest> {
         ambiguity: None,
         provenance: artifact.provenance.clone(),
     })
+}
+
+/// Convert only a complete visual artifact into graph identity.  This helper
+/// is intentionally separate from stochastic semantics.
+pub fn to_finite_graph(result: &VisualGraphResult) -> Option<FiniteGraph> {
+    let artifact = result.artifact.as_ref()?;
+    (result.status == VisualGraphStatus::Complete).then(|| FiniteGraph {
+        vertices: artifact.vertex_order.clone(),
+        edges: artifact.edges.clone(),
+        directed: artifact.directed,
+    })
+}
+
+/// Compose a complete visual graph with an independently validated finite
+/// probability distribution and an explicitly declared transition matrix.
+/// Shape alone never establishes a random walk; the caller must supply exact
+/// row/column semantics and `explicit_semantics = true` at the trusted bridge.
+pub fn execute_one_step_random_walk(
+    visual: &VisualGraphResult,
+    transition: Option<&[Vec<Rational>]>,
+    initial: &ProbabilityResult,
+    convention: Option<TransitionConvention>,
+    provenance: Vec<String>,
+) -> Option<RandomWalkResult> {
+    let graph = to_finite_graph(visual)?;
+    let artifact = visual.artifact.as_ref()?;
+    Some(execute_one_step(
+        &graph,
+        transition,
+        initial,
+        &artifact.vertex_order,
+        convention,
+        true,
+        1,
+        provenance,
+    ))
 }
 
 impl VisualGraphResult {

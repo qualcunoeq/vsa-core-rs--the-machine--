@@ -1,6 +1,6 @@
 {
-  "schema": "stage-j-visual-graph-frontend-v1",
-  "corpus_sha256": "5419ec08e9e47720e5c58e6c0ae3b1cf9e863a68e1a509a2d00668afcc3e5896",
+  "schema": "stage-j-visual-graph-composition-v2",
+  "corpus_sha256": "a5fbf5021c025f5070059da842083eaa28a4e9f75eaa5394f34cc18634479330",
   "cases": 240,
   "supported": 120,
   "ambiguous": 40,
@@ -12,6 +12,9 @@
   "bridge_emitted": 120,
   "graph_replay_verified": 120,
   "graph_tamper_rejections": 120,
+  "walk_emitted": 120,
+  "walk_replay_verified": 120,
+  "walk_tamper_rejections": 120,
   "false_authorizations": 0,
   "false_denials": 0,
   "receipts": [
@@ -26,6 +29,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -40,6 +46,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -54,6 +63,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -68,6 +80,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -82,6 +97,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -96,6 +114,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -110,6 +131,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -124,6 +148,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -138,6 +165,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -152,6 +182,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -166,6 +199,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -180,6 +216,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -194,6 +233,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -208,6 +250,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -222,6 +267,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -236,6 +284,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -250,6 +301,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -264,6 +318,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -278,6 +335,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -292,6 +352,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -306,6 +369,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -320,6 +386,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -334,6 +403,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -348,6 +420,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -362,6 +437,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -376,6 +454,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -390,6 +471,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -404,6 +488,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -418,6 +505,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -432,6 +522,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -446,6 +539,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -460,6 +556,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -474,6 +573,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -488,6 +590,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -502,6 +607,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -516,6 +624,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -530,6 +641,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -544,6 +658,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -558,6 +675,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -572,6 +692,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -586,6 +709,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -600,6 +726,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -614,6 +743,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -628,6 +760,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -642,6 +777,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -656,6 +794,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -670,6 +811,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -684,6 +828,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -698,6 +845,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -712,6 +862,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -726,6 +879,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -740,6 +896,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -754,6 +913,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -768,6 +930,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -782,6 +947,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -796,6 +964,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -810,6 +981,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -824,6 +998,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -838,6 +1015,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -852,6 +1032,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -866,6 +1049,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -880,6 +1066,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -894,6 +1083,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -908,6 +1100,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -922,6 +1117,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -936,6 +1134,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -950,6 +1151,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -964,6 +1168,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -978,6 +1185,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -992,6 +1202,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1006,6 +1219,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1020,6 +1236,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1034,6 +1253,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1048,6 +1270,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1062,6 +1287,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1076,6 +1304,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1090,6 +1321,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1104,6 +1338,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1118,6 +1355,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1132,6 +1372,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1146,6 +1389,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1160,6 +1406,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1174,6 +1423,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1188,6 +1440,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1202,6 +1457,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1216,6 +1474,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1230,6 +1491,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1244,6 +1508,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1258,6 +1525,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1272,6 +1542,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1286,6 +1559,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1300,6 +1576,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1314,6 +1593,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1328,6 +1610,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1342,6 +1627,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1356,6 +1644,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1370,6 +1661,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1384,6 +1678,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1398,6 +1695,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1412,6 +1712,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1426,6 +1729,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1440,6 +1746,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1454,6 +1763,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1468,6 +1780,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1482,6 +1797,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1496,6 +1814,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1510,6 +1831,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1524,6 +1848,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1538,6 +1865,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1552,6 +1882,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1566,6 +1899,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1580,6 +1916,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1594,6 +1933,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1608,6 +1950,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1622,6 +1967,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1636,6 +1984,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1650,6 +2001,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1664,6 +2018,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1678,6 +2035,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1692,6 +2052,9 @@
       "bridge_emitted": true,
       "graph_replay_verified": true,
       "graph_tamper_rejected": true,
+      "walk_emitted": true,
+      "walk_replay_verified": true,
+      "walk_tamper_rejected": true,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1706,6 +2069,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1720,6 +2086,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1734,6 +2103,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1748,6 +2120,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1762,6 +2137,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1776,6 +2154,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1790,6 +2171,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1804,6 +2188,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1818,6 +2205,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1832,6 +2222,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1846,6 +2239,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1860,6 +2256,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1874,6 +2273,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1888,6 +2290,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1902,6 +2307,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1916,6 +2324,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1930,6 +2341,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1944,6 +2358,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1958,6 +2375,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1972,6 +2392,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -1986,6 +2409,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2000,6 +2426,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2014,6 +2443,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2028,6 +2460,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2042,6 +2477,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2056,6 +2494,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2070,6 +2511,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2084,6 +2528,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2098,6 +2545,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2112,6 +2562,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2126,6 +2579,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2140,6 +2596,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2154,6 +2613,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2168,6 +2630,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2182,6 +2647,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2196,6 +2664,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2210,6 +2681,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2224,6 +2698,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2238,6 +2715,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2252,6 +2732,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2266,6 +2749,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2280,6 +2766,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2294,6 +2783,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2308,6 +2800,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2322,6 +2817,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2336,6 +2834,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2350,6 +2851,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2364,6 +2868,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2378,6 +2885,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2392,6 +2902,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2406,6 +2919,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2420,6 +2936,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2434,6 +2953,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2448,6 +2970,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2462,6 +2987,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2476,6 +3004,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2490,6 +3021,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2504,6 +3038,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2518,6 +3055,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2532,6 +3072,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2546,6 +3089,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2560,6 +3106,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2574,6 +3123,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2588,6 +3140,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2602,6 +3157,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2616,6 +3174,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2630,6 +3191,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2644,6 +3208,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2658,6 +3225,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2672,6 +3242,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2686,6 +3259,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2700,6 +3276,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2714,6 +3293,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2728,6 +3310,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2742,6 +3327,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2756,6 +3344,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2770,6 +3361,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2784,6 +3378,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2798,6 +3395,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2812,6 +3412,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2826,6 +3429,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2840,6 +3446,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2854,6 +3463,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2868,6 +3480,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2882,6 +3497,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2896,6 +3514,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2910,6 +3531,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2924,6 +3548,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2938,6 +3565,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2952,6 +3582,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2966,6 +3599,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2980,6 +3616,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -2994,6 +3633,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3008,6 +3650,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3022,6 +3667,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3036,6 +3684,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3050,6 +3701,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3064,6 +3718,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3078,6 +3735,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3092,6 +3752,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3106,6 +3769,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3120,6 +3786,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3134,6 +3803,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3148,6 +3820,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3162,6 +3837,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3176,6 +3854,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3190,6 +3871,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3204,6 +3888,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3218,6 +3905,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3232,6 +3922,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3246,6 +3939,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3260,6 +3956,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3274,6 +3973,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3288,6 +3990,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3302,6 +4007,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3316,6 +4024,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3330,6 +4041,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3344,6 +4058,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3358,6 +4075,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     },
@@ -3372,6 +4092,9 @@
       "bridge_emitted": false,
       "graph_replay_verified": false,
       "graph_tamper_rejected": false,
+      "walk_emitted": false,
+      "walk_replay_verified": false,
+      "walk_tamper_rejected": false,
       "false_authorization": false,
       "false_denial": false
     }

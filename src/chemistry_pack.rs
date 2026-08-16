@@ -15,6 +15,9 @@ use std::collections::BTreeMap;
 #[path = "chemistry_frontend.rs"]
 pub mod chemistry_frontend;
 
+#[path = "chemistry_linear_bridge.rs"]
+pub mod chemistry_linear_bridge;
+
 const DOMAIN: &str = "source_derived_bounded_chemistry";
 const MAX_TERMS: usize = 8;
 const MAX_COEFFICIENT: u32 = 100;

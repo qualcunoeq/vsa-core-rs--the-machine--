@@ -278,6 +278,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 "molecular_formula",
                 "balanced_reaction",
                 "stoichiometric_ratio",
+                "element_count_vector",
             ],
             "first source-derived domain with molecular and reaction representations",
         ),

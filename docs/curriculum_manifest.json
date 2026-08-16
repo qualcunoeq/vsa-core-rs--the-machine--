@@ -383,7 +383,8 @@
         "reusable_artifacts": [
           "molecular_formula",
           "balanced_reaction",
-          "stoichiometric_ratio"
+          "stoichiometric_ratio",
+          "element_count_vector"
         ],
         "source_requirements": [
           "independently selected authoritative sources",
@@ -552,7 +553,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "9354970765a9aa525dcdca0a277a29c20659d59340ecf15c3e604637e8f0530d",
+  "manifest_replay_hash": "987b6d7493cb1ec1dd0e5cd41fb5f2478674348ec11c2718a9f883b54849d723",
   "validation_errors": [],
   "production_authorizations": 0
 }

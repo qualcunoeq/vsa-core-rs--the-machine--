@@ -16,6 +16,10 @@
   "validation_replay_verified": true,
   "validation_tamper_rejected": true,
   "mutated_validation_rejected": true,
+  "admitted_candidates": 1,
+  "validated_campaign_resolved": 1,
+  "validated_campaign_replay": true,
+  "validated_campaign_manifest_unchanged": true,
   "manifest_unchanged": true,
   "false_authorizations": 0,
   "corpus_sha256": "9c48ce7357c2aaee3da864a2c43a0250b60ae4f731d372e9344c8985e09aa5ce"

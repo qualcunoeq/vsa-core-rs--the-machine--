@@ -26,6 +26,10 @@ cargo run --quiet --bin stage_m_source_validation
 | Validation receipt replay | true |
 | Validation tamper rejection | true |
 | Mutated validation rejected | true |
+| Candidates admitted after validation | 1 |
+| Validated campaign cases resolved | 1 |
+| Validated campaign replay | true |
+| Validated campaign manifest unchanged | true |
 | Curriculum manifest unchanged | true |
 | False authorizations | 0 |
 

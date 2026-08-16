@@ -263,6 +263,24 @@ pub fn validate_source_evidence(
     receipt
 }
 
+/// Admit only candidates whose source/exercise receipt passed every gate.
+/// This clones proposal data and never mutates a curriculum manifest.
+pub fn admit_validated_candidates(
+    candidates: &[EducationCandidate],
+    receipts: &[SourceValidationReceipt],
+) -> Vec<EducationCandidate> {
+    candidates
+        .iter()
+        .filter(|candidate| {
+            receipts.iter().any(|receipt| {
+                receipt.module_id == candidate.source_module.module_id
+                    && receipt.eligible_for_shadow_use()
+            })
+        })
+        .cloned()
+        .collect()
+}
+
 /// Score a candidate after exact gap coverage and source gates have been
 /// established. Coverage dominates exercise evidence, then cost breaks ties.
 /// This keeps a cheap but narrow lexical match from beating a broader typed
@@ -535,5 +553,28 @@ mod tests {
             .reasons
             .iter()
             .any(|reason| reason.contains("boundary")));
+    }
+
+    #[test]
+    fn only_validated_receipts_admit_candidates() {
+        let candidate = candidate("stats", &["mean"], true);
+        let evidence = SourceValidationEvidence {
+            module_id: "stats".into(),
+            source_document_hash: "document-hash".into(),
+            source_ids: vec!["source-1".into()],
+            exercise_cases: 40,
+            supported_cases: 40,
+            replay_verified_cases: 40,
+            tamper_rejected_cases: 40,
+            provenance_preserved_cases: 40,
+            boundary_cases: 10,
+            boundary_refusals: 10,
+            false_authorizations: 0,
+        };
+        let receipt = validate_source_evidence(&candidate, &evidence);
+        assert_eq!(
+            admit_validated_candidates(&[candidate], &[receipt]).len(),
+            1
+        );
     }
 }

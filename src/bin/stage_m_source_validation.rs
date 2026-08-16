@@ -9,10 +9,11 @@ use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs;
 use the_machine::continuous_education::{
-    validate_source_evidence, EducationCandidate, SourceValidationEvidence, SourceValidationStatus,
+    admit_validated_candidates, run_campaign, validate_source_evidence, EducationCandidate,
+    SourceValidationEvidence, SourceValidationStatus,
 };
 use the_machine::curriculum::breadth_first_manifest;
-use the_machine::curriculum_campaign::SourceModuleCandidate;
+use the_machine::curriculum_campaign::{observe_gap, GapKind, SourceModuleCandidate};
 use the_machine::probability_pack::Rational;
 use the_machine::source_formula_pack::{
     evaluate_formula_records, extract_formula_records, validate_formula_records, FormulaRequest,
@@ -41,6 +42,10 @@ struct Report {
     validation_replay_verified: bool,
     validation_tamper_rejected: bool,
     mutated_validation_rejected: bool,
+    admitted_candidates: usize,
+    validated_campaign_resolved: usize,
+    validated_campaign_replay: bool,
+    validated_campaign_manifest_unchanged: bool,
     manifest_unchanged: bool,
     false_authorizations: usize,
     corpus_sha256: String,
@@ -200,6 +205,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let manifest = breadth_first_manifest();
     let manifest_hash = manifest.replay_hash();
     let manifest_unchanged = manifest_hash == breadth_first_manifest().replay_hash();
+    let admitted = admit_validated_candidates(&[candidate.clone()], &[validation.clone()]);
+    let validated_campaign = run_campaign(
+        &manifest,
+        &[observe_gap(
+            "validated-source-gap",
+            "arithmetic_mean",
+            GapKind::MissingCapability,
+            "source module selected for sandbox validation",
+        )],
+        &admitted,
+        2,
+    );
+    let validated_campaign_replay = validated_campaign.replay_verified();
+    let validated_campaign_manifest_unchanged = validated_campaign.manifest_unchanged();
     let false_authorizations = usize::from(
         validation.status == SourceValidationStatus::Validated
             && evidence.false_authorizations != 0,
@@ -216,6 +235,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert!(validation_tamper_rejected);
     assert!(mutated_validation_rejected);
     assert!(manifest_unchanged);
+    assert_eq!(admitted.len(), 1);
+    assert_eq!(validated_campaign.resolved_case_count, 1);
+    assert!(validated_campaign_replay);
+    assert!(validated_campaign_manifest_unchanged);
     assert_eq!(false_authorizations, 0);
 
     let report = Report {
@@ -236,6 +259,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         validation_replay_verified,
         validation_tamper_rejected,
         mutated_validation_rejected,
+        admitted_candidates: admitted.len(),
+        validated_campaign_resolved: validated_campaign.resolved_case_count,
+        validated_campaign_replay,
+        validated_campaign_manifest_unchanged,
         manifest_unchanged,
         false_authorizations,
         corpus_sha256: digest(&(document, records, evidence)),

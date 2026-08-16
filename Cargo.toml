@@ -400,6 +400,10 @@ name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 
 [[bin]]
+name = "stage78_curriculum_frontend_route_blind"
+path = "src/bin/stage78_curriculum_frontend_route_blind.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

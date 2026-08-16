@@ -1,0 +1,22 @@
+{
+  "schema": "stage-m-source-validation-v1",
+  "source_document_hash": "10baa036b588946a010d37ec4f27f366dc10f7f431a6abbb27774ee92a8b90f6",
+  "source_records": 2,
+  "catalog_valid": true,
+  "exercise_cases": 40,
+  "exercise_complete": 40,
+  "exercise_replay_verified": 40,
+  "exercise_tamper_rejected": 40,
+  "boundary_cases": 10,
+  "boundary_refusals": 10,
+  "boundary_replay_verified": 10,
+  "boundary_tamper_rejected": 10,
+  "source_provenance_preserved": true,
+  "validation_status": "validated",
+  "validation_replay_verified": true,
+  "validation_tamper_rejected": true,
+  "mutated_validation_rejected": true,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "corpus_sha256": "9c48ce7357c2aaee3da864a2c43a0250b60ae4f731d372e9344c8985e09aa5ce"
+}

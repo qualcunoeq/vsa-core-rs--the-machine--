@@ -63,6 +63,43 @@ pub struct EducationCampaign {
     pub replay_hash: String,
 }
 
+/// Evidence returned by a sandbox source/exercise validator.  The continuous
+/// planner consumes this record rather than embedding a domain-specific
+/// executor or treating source text as executable fact.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct SourceValidationEvidence {
+    pub module_id: String,
+    pub source_document_hash: String,
+    pub source_ids: Vec<String>,
+    pub exercise_cases: usize,
+    pub supported_cases: usize,
+    pub replay_verified_cases: usize,
+    pub tamper_rejected_cases: usize,
+    pub provenance_preserved_cases: usize,
+    pub boundary_cases: usize,
+    pub boundary_refusals: usize,
+    pub false_authorizations: usize,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceValidationStatus {
+    Validated,
+    Rejected,
+}
+
+/// Immutable gate receipt for a source-derived module evaluated in a sandbox.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct SourceValidationReceipt {
+    pub module_id: String,
+    pub status: SourceValidationStatus,
+    pub source_document_hash: String,
+    pub exercise_cases: usize,
+    pub boundary_cases: usize,
+    pub reasons: Vec<String>,
+    pub replay_hash: String,
+}
+
 fn digest<T: Serialize>(value: &T) -> String {
     format!(
         "{:x}",
@@ -138,6 +175,92 @@ impl EducationCampaign {
     pub fn manifest_unchanged(&self) -> bool {
         self.manifest_before == self.manifest_after
     }
+}
+
+fn source_validation_hash(receipt: &SourceValidationReceipt) -> String {
+    digest(&(
+        &receipt.module_id,
+        receipt.status,
+        &receipt.source_document_hash,
+        receipt.exercise_cases,
+        receipt.boundary_cases,
+        &receipt.reasons,
+    ))
+}
+
+impl SourceValidationReceipt {
+    pub fn replay_verified(&self) -> bool {
+        self.replay_hash == source_validation_hash(self)
+    }
+
+    pub fn eligible_for_shadow_use(&self) -> bool {
+        self.status == SourceValidationStatus::Validated && self.replay_verified()
+    }
+}
+
+/// Apply generic source/exercise gates to evidence produced by a sandbox
+/// evaluator.  This function knows nothing about the subject represented by
+/// the source document.
+pub fn validate_source_evidence(
+    candidate: &EducationCandidate,
+    evidence: &SourceValidationEvidence,
+) -> SourceValidationReceipt {
+    let mut reasons = Vec::new();
+    if candidate.source_module.module_id != evidence.module_id {
+        reasons.push("validation evidence module does not match candidate".into());
+    }
+    if evidence.source_document_hash.is_empty() {
+        reasons.push("source document hash is missing".into());
+    }
+    if candidate.source_module.source_ids.is_empty()
+        || !candidate
+            .source_module
+            .source_ids
+            .iter()
+            .all(|source| evidence.source_ids.contains(source))
+    {
+        reasons.push("candidate source provenance is incomplete or mismatched".into());
+    }
+    if !candidate.authoritative_source_verified {
+        reasons.push("authoritative source gate is not verified".into());
+    }
+    if evidence.exercise_cases < candidate.minimum_independent_exercises {
+        reasons.push("independent exercise count is below policy threshold".into());
+    }
+    if evidence.supported_cases != evidence.exercise_cases {
+        reasons.push("not every independent exercise was supported".into());
+    }
+    if evidence.replay_verified_cases != evidence.exercise_cases {
+        reasons.push("not every exercise replayed".into());
+    }
+    if evidence.tamper_rejected_cases != evidence.exercise_cases {
+        reasons.push("not every exercise rejected tampering".into());
+    }
+    if evidence.provenance_preserved_cases != evidence.exercise_cases {
+        reasons.push("not every exercise preserved provenance".into());
+    }
+    if evidence.boundary_cases == 0 || evidence.boundary_refusals != evidence.boundary_cases {
+        reasons.push("boundary corpus was absent or not fully refused".into());
+    }
+    if evidence.false_authorizations != 0 {
+        reasons.push("sandbox evidence contains false authorization".into());
+    }
+    let status = if reasons.is_empty() {
+        SourceValidationStatus::Validated
+    } else {
+        SourceValidationStatus::Rejected
+    };
+    let mut receipt = SourceValidationReceipt {
+        module_id: evidence.module_id.clone(),
+        status,
+        source_document_hash: evidence.source_document_hash.clone(),
+        exercise_cases: evidence.exercise_cases,
+        boundary_cases: evidence.boundary_cases,
+        reasons,
+        replay_hash: String::new(),
+    };
+    receipt.replay_hash = source_validation_hash(&receipt);
+    receipt
 }
 
 /// Score a candidate after exact gap coverage and source gates have been
@@ -381,5 +504,36 @@ mod tests {
             EducationDecision::NoExactCoverage
         );
         assert!(campaign.replay_verified());
+    }
+
+    #[test]
+    fn source_evidence_requires_all_independent_gates() {
+        let candidate = candidate("stats", &["mean"], true);
+        let evidence = SourceValidationEvidence {
+            module_id: "stats".into(),
+            source_document_hash: "document-hash".into(),
+            source_ids: vec!["source-1".into()],
+            exercise_cases: 40,
+            supported_cases: 40,
+            replay_verified_cases: 40,
+            tamper_rejected_cases: 40,
+            provenance_preserved_cases: 40,
+            boundary_cases: 10,
+            boundary_refusals: 10,
+            false_authorizations: 0,
+        };
+        let receipt = validate_source_evidence(&candidate, &evidence);
+        assert_eq!(receipt.status, SourceValidationStatus::Validated);
+        assert!(receipt.eligible_for_shadow_use());
+
+        let mut tampered = evidence;
+        tampered.boundary_refusals = 9;
+        let rejected = validate_source_evidence(&candidate, &tampered);
+        assert_eq!(rejected.status, SourceValidationStatus::Rejected);
+        assert!(!rejected.eligible_for_shadow_use());
+        assert!(rejected
+            .reasons
+            .iter()
+            .any(|reason| reason.contains("boundary")));
     }
 }

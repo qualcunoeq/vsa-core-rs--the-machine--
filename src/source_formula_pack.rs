@@ -28,6 +28,7 @@ pub enum Expr {
     Mul(Box<Expr>, Box<Expr>),
     Div(Box<Expr>, Box<Expr>),
     PowNatural(Box<Expr>, u32),
+    PowInput(Box<Expr>, String),
     PowInputMinusOne(Box<Expr>, String),
 }
 
@@ -143,7 +144,7 @@ fn formulas() -> Vec<FormulaRecord> {
                 Box::new(Expr::Mul(
                     Box::new(input("a1")),
                     Box::new(Expr::Sub(
-                        Box::new(Expr::PowInputMinusOne(Box::new(input("r")), "n".into())),
+                        Box::new(Expr::PowInput(Box::new(input("r")), "n".into())),
                         Box::new(Expr::Constant(1)),
                     )),
                 )),
@@ -172,6 +173,18 @@ fn eval(expr: &Expr, inputs: &BTreeMap<String, Rational>) -> Option<Rational> {
             let mut value = Rational::one();
             let base = eval(base, inputs)?;
             for _ in 0..*exponent {
+                value = value.mul(&base)?;
+            }
+            Some(value)
+        }
+        Expr::PowInput(base, input) => {
+            let exponent = inputs.get(input)?;
+            if exponent.denominator != 1 || exponent.numerator < 0 {
+                return None;
+            }
+            let mut value = Rational::one();
+            let base = eval(base, inputs)?;
+            for _ in 0..exponent.numerator as u32 {
                 value = value.mul(&base)?;
             }
             Some(value)

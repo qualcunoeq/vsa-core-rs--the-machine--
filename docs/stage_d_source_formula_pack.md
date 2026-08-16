@@ -8,7 +8,7 @@ evaluation branch or production registry mutation is used.
 Source: OpenStax *Precalculus 2e*, “Sequences, Series, and the Binomial
 Theorem.” The frozen independent corpus is recorded in
 `docs/stage_d_source_formula_pack.json` with SHA-256
-`c814a8266cab27abeb982cabf8dfd14ac966a505482bf005a4542b5b78d3c91a`.
+`a700457863ab3ccf7d4e78ecfba4d8f988f77e7ffead7fad5d05a623df7176d6`.
 
 | outcome | cases |
 | --- | ---: |
@@ -20,6 +20,7 @@ Theorem.” The frozen independent corpus is recorded in
 | replay verified | 240/240 |
 | tamper rejected | 240/240 |
 | source provenance preserved | 120/120 |
+| exact expected values | 240/240 |
 | false authorizations | 0 |
 | false denials | 0 |
 

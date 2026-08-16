@@ -24,6 +24,7 @@ struct Receipt {
     tamper_rejected: bool,
     false_authorization: bool,
     source_preserved: bool,
+    value_correct: bool,
 }
 
 #[derive(Debug, Serialize)]
@@ -40,6 +41,7 @@ struct Report {
     replay_verified: usize,
     tamper_rejections: usize,
     source_preserved: usize,
+    value_correct: usize,
     false_authorizations: usize,
     false_denials: usize,
     status_counts: BTreeMap<String, usize>,
@@ -80,6 +82,17 @@ fn run(id: String, formula: &str, expected: Expected, request: FormulaRequest) -
     let replay_verified = result.replay_verified();
     let mut tampered = result.clone();
     tampered.replay_hash.push('x');
+    let expected_value = match formula {
+        "arithmetic_nth_term" => Some(rational(14, 1)),
+        "arithmetic_partial_sum" => Some(rational(40, 1)),
+        "geometric_nth_term" => Some(rational(32, 1)),
+        "geometric_partial_sum" => Some(rational(62, 1)),
+        _ => None,
+    };
+    let value_correct = expected != Expected::Complete
+        || expected_value
+            .as_ref()
+            .map_or(true, |value| result.value.as_ref() == Some(value));
     Receipt {
         id,
         formula: formula.into(),
@@ -90,6 +103,7 @@ fn run(id: String, formula: &str, expected: Expected, request: FormulaRequest) -
         tamper_rejected: !tampered.replay_verified(),
         false_authorization: expected != Expected::Complete && actual == FormulaStatus::Complete,
         source_preserved: expected == Expected::Complete && result.source.is_some(),
+        value_correct,
     }
 }
 
@@ -182,6 +196,7 @@ fn main() {
     let replay_verified = receipts.iter().filter(|r| r.replay_verified).count();
     let tamper_rejections = receipts.iter().filter(|r| r.tamper_rejected).count();
     let source_preserved = receipts.iter().filter(|r| r.source_preserved).count();
+    let value_correct = receipts.iter().filter(|r| r.value_correct).count();
     let false_authorizations = receipts.iter().filter(|r| r.false_authorization).count();
     let false_denials = receipts
         .iter()
@@ -193,6 +208,7 @@ fn main() {
     assert_eq!(replay_verified, cases);
     assert_eq!(tamper_rejections, cases);
     assert_eq!(source_preserved, supported);
+    assert_eq!(value_correct, cases);
     assert_eq!(false_authorizations, 0);
     assert_eq!(false_denials, 0);
     let mut status_counts = BTreeMap::new();
@@ -214,6 +230,7 @@ fn main() {
         replay_verified,
         tamper_rejections,
         source_preserved,
+        value_correct,
         false_authorizations,
         false_denials,
         status_counts,

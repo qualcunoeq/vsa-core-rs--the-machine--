@@ -1,0 +1,17 @@
+# Explicit source transcription for generic relation extraction.
+# Source claim: OpenStax Biology 2e, section 14.2, complementary DNA pairing.
+
+BEGIN RELATION
+RELATION_ID: dna_complementary_base
+ALIASES: DNA complementary base pairing|complementary DNA base
+DOMAIN: molecular_biology.dna
+PAIRS: A=T|T=A|C=G|G=C
+ASSUMPTIONS: DNA alphabet is A/T/C/G; pairing is explicitly complementary; source orientation is preserved
+SOURCE_ID: openstax-biology-2e:dna-complementary-pairing
+TITLE: Biology 2e
+SECTION: 14.2 DNA Structure and Sequencing
+URL: https://openstax.org/books/biology-2e/pages/14-2-dna-structure-and-sequencing
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: A pairs with T and G pairs with C in complementary DNA strands
+END RELATION

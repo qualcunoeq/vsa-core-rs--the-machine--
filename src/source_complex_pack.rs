@@ -17,6 +17,8 @@ use std::collections::BTreeMap;
 
 pub const DOMAIN: &str = "source_derived_complex_arithmetic";
 
+#[path = "complex_linear_bridge.rs"]
+pub mod complex_linear_bridge;
 #[path = "source_complex_frontend.rs"]
 pub mod source_complex_frontend;
 

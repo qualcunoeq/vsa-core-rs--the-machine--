@@ -340,6 +340,14 @@ name = "source_complex_frontend_bench"
 path = "src/bin/source_complex_frontend_bench.rs"
 
 [[bin]]
+name = "source_complex_shifted_frontend_bench"
+path = "src/bin/source_complex_shifted_frontend_bench.rs"
+
+[[bin]]
+name = "complex_linear_bridge_bench"
+path = "src/bin/complex_linear_bridge_bench.rs"
+
+[[bin]]
 name = "curriculum_memory_bench"
 path = "src/bin/curriculum_memory_bench.rs"
 

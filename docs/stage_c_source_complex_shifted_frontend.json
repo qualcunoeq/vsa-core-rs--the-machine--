@@ -1,0 +1,6748 @@
+{
+  "schema": "stage-c-source-derived-complex-shifted-frontend-v1",
+  "source_pack": "source_derived_complex_arithmetic",
+  "corpus_sha256": "8f8f72b79c0f5d679b65a9c80799293f72f62c590d18a85fbeef96f2ddce158f",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "unsupported": 80,
+  "exact_decisions": 240,
+  "complete_frontends": 120,
+  "downstream_emitted": 120,
+  "downstream_values_correct": 120,
+  "provenance_preserved": 240,
+  "frontend_replay_verified": 240,
+  "downstream_replay_verified": 120,
+  "frontend_tamper_rejections": 240,
+  "downstream_tamper_rejections": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "status_counts": {
+    "Ambiguous": 40,
+    "Complete": 120,
+    "Missing": 33,
+    "Unsupported": 47
+  },
+  "receipts": [
+    {
+      "id": "supported_000",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_001",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_002",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_003",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_004",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_005",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_006",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_007",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_008",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_009",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_010",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_011",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_012",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_013",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_014",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_015",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_016",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_017",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_018",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_019",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_020",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_021",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_022",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_023",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_024",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_025",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_026",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_027",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_028",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_029",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_030",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_031",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_032",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_033",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_034",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_035",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_036",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_037",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_038",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_039",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_040",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_041",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_042",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_043",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_044",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_045",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_046",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_047",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_048",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_049",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_050",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_051",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_052",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_053",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_054",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_055",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_056",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_057",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_058",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_059",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_060",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_061",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_062",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_063",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_064",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_065",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_066",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_067",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_068",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_069",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_070",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_071",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_072",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_073",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_074",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_075",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_076",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_077",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_078",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_079",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_080",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_081",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_082",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_083",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_084",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_085",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_086",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_087",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_088",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_089",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_090",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_091",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_092",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_093",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_094",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_095",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_096",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_097",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_098",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_099",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_100",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_101",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_102",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_103",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_104",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_105",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_106",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_107",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_108",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_109",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_110",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_111",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_112",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_113",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_114",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "add",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 5,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_115",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "subtract",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 1,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": -9,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_116",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "multiply",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 26,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_117",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "divide",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": -14,
+            "denominator": 29
+          },
+          "imag": {
+            "numerator": -23,
+            "denominator": 29
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_118",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "conjugate",
+      "expected_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "actual_artifact": {
+        "Pair": {
+          "real": {
+            "numerator": 3,
+            "denominator": 1
+          },
+          "imag": {
+            "numerator": 4,
+            "denominator": 1
+          }
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_119",
+      "expected": "supported",
+      "frontend_status": "complete",
+      "downstream_status": "complete",
+      "operation": "norm_squared",
+      "expected_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "actual_artifact": {
+        "Scalar": {
+          "numerator": 25,
+          "denominator": 1
+        }
+      },
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "wording-and-notation-shift",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_000",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_001",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_002",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_003",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_004",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_005",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_006",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_007",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_008",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_009",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_010",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_011",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_012",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_013",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_014",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_015",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_016",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_017",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_018",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_019",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_020",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_021",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_022",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_023",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_024",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_025",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_026",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_027",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_028",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_029",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_030",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_031",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_032",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_033",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_034",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_035",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_036",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_037",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_038",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_039",
+      "expected": "ambiguous",
+      "frontend_status": "ambiguous",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "competing-operation-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_000",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_001",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_002",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_003",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_004",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_005",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_006",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_007",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_008",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_009",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_010",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_011",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_012",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_013",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_014",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_015",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_016",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_017",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_018",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_019",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_020",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_021",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_022",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_023",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_024",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_025",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_026",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_027",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_028",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_029",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_030",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_031",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_032",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_033",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_034",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_035",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_036",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_037",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_038",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_039",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_040",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_041",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_042",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_043",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_044",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_045",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_046",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_047",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_048",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_049",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_050",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_051",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_052",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_053",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_054",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_055",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_056",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_057",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_058",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_059",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_060",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_061",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_062",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_063",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_064",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_065",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_066",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_067",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_068",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_069",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_070",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_071",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_072",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_073",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_074",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_075",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_076",
+      "expected": "unsupported",
+      "frontend_status": "missing",
+      "downstream_status": null,
+      "operation": "multiply",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_077",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_078",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": "polar_conversion",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "unsupported_079",
+      "expected": "unsupported",
+      "frontend_status": "unsupported",
+      "downstream_status": null,
+      "operation": null,
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "value_correct": true,
+      "shifted_surface": "unsupported-or-incomplete-technical-language",
+      "provenance_preserved": true,
+      "frontend_replay_verified": true,
+      "downstream_replay_verified": true,
+      "frontend_tamper_rejected": true,
+      "downstream_tamper_rejected": true,
+      "false_authorization": false
+    }
+  ]
+}

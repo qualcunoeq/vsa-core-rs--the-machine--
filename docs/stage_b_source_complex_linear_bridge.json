@@ -1,0 +1,7468 @@
+{
+  "schema": "stage-b-source-complex-linear-bridge-v1",
+  "source": "source-derived complex arithmetic + finite exact integer linear algebra",
+  "corpus_sha256": "c40c09a1432d7b6899af01a43ea6f23852385935b9a811b4fbfe31decc4868e0",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "supported_handoffs": 120,
+  "invariant_preservation": 120,
+  "upstream_replay_verified": 120,
+  "bridge_replay_verified": 240,
+  "linear_algebra_replay_verified": 120,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "status_counts": {
+    "Ambiguous": 40,
+    "Complete": 120,
+    "InvalidDomain": 20,
+    "Missing": 20,
+    "NonIntegral": 20,
+    "Unsupported": 20
+  },
+  "receipts": [
+    {
+      "id": "supported_000",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          -6
+        ],
+        [
+          6,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          -6
+        ],
+        [
+          6,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 61,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 61,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 61
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_001",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          -5
+        ],
+        [
+          5,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          -5
+        ],
+        [
+          5,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 41
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_002",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          -4
+        ],
+        [
+          4,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          -4
+        ],
+        [
+          4,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 25
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_003",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          -3
+        ],
+        [
+          3,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          -3
+        ],
+        [
+          3,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 13
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_004",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          -2
+        ],
+        [
+          2,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          -2
+        ],
+        [
+          2,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 5,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 5,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 5
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_005",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 1
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_006",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 1
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_007",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          1
+        ],
+        [
+          -1,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          1
+        ],
+        [
+          -1,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 5,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 5,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 5
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_008",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          2
+        ],
+        [
+          -2,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          2
+        ],
+        [
+          -2,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 13
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_009",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          3
+        ],
+        [
+          -3,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          3
+        ],
+        [
+          -3,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 25
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_010",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          5,
+          4
+        ],
+        [
+          -4,
+          5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          5,
+          4
+        ],
+        [
+          -4,
+          5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 41
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_011",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          5
+        ],
+        [
+          -5,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          5
+        ],
+        [
+          -5,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 50,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 50,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 50
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_012",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          6
+        ],
+        [
+          -6,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          6
+        ],
+        [
+          -6,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 52,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 52,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 52
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_013",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          -6
+        ],
+        [
+          6,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          -6
+        ],
+        [
+          6,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 45,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 45,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 45
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_014",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          -5
+        ],
+        [
+          5,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          -5
+        ],
+        [
+          5,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 29
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_015",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          -4
+        ],
+        [
+          4,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          -4
+        ],
+        [
+          4,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 17
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_016",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          -3
+        ],
+        [
+          3,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          -3
+        ],
+        [
+          3,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 9,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 9,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 9
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_017",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          -2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          -2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 5,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 5,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 5
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_018",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          -1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          -1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 5,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 5,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 5
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_019",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 9,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 9,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 9
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_020",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          1
+        ],
+        [
+          -1,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          1
+        ],
+        [
+          -1,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 17
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_021",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          5,
+          2
+        ],
+        [
+          -2,
+          5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          5,
+          2
+        ],
+        [
+          -2,
+          5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 29
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_022",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          3
+        ],
+        [
+          -3,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          3
+        ],
+        [
+          -3,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 34
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_023",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          4
+        ],
+        [
+          -4,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          4
+        ],
+        [
+          -4,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 32,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 32,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 32
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_024",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          5
+        ],
+        [
+          -5,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          5
+        ],
+        [
+          -5,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 34
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_025",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          6
+        ],
+        [
+          -6,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          6
+        ],
+        [
+          -6,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 40,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 40,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 40
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_026",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          -6
+        ],
+        [
+          6,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          -6
+        ],
+        [
+          6,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 37,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 37,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 37
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_027",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          -5
+        ],
+        [
+          5,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          -5
+        ],
+        [
+          5,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 25
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_028",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          -4
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          -4
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 17
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_029",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          -3
+        ],
+        [
+          3,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          -3
+        ],
+        [
+          3,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 13
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_030",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          -2
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          -2
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 13
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_031",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          -1
+        ],
+        [
+          1,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          -1
+        ],
+        [
+          1,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 17
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_032",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          5,
+          0
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          5,
+          0
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 25
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_033",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          1
+        ],
+        [
+          -1,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          1
+        ],
+        [
+          -1,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 26
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_034",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          2
+        ],
+        [
+          -2,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          2
+        ],
+        [
+          -2,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 20
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_035",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          3
+        ],
+        [
+          -3,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          3
+        ],
+        [
+          -3,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 18,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 18,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 18
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_036",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          4
+        ],
+        [
+          -4,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          4
+        ],
+        [
+          -4,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 20
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_037",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          5
+        ],
+        [
+          -5,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          5
+        ],
+        [
+          -5,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 26
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_038",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          6
+        ],
+        [
+          -6,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          6
+        ],
+        [
+          -6,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 36,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 36,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 36
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_039",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          -6
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          -6
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 37,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 37,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 37
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_040",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          -5
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          -5
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 29
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_041",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          -4
+        ],
+        [
+          4,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          -4
+        ],
+        [
+          4,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 25
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_042",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          -3
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          -3
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 25
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_043",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          5,
+          -2
+        ],
+        [
+          2,
+          5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          5,
+          -2
+        ],
+        [
+          2,
+          5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 29
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_044",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          -1
+        ],
+        [
+          1,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          -1
+        ],
+        [
+          1,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 26
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_045",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          0
+        ],
+        [
+          0,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          0
+        ],
+        [
+          0,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 16,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 16,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 16
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_046",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          1
+        ],
+        [
+          -1,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          1
+        ],
+        [
+          -1,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 10
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_047",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          2
+        ],
+        [
+          -2,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          2
+        ],
+        [
+          -2,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 8,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 8,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 8
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_048",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          3
+        ],
+        [
+          -3,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          3
+        ],
+        [
+          -3,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 10
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_049",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          4
+        ],
+        [
+          -4,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          4
+        ],
+        [
+          -4,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 16,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 16,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 16
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_050",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          5
+        ],
+        [
+          -5,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          5
+        ],
+        [
+          -5,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 26
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_051",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          6
+        ],
+        [
+          -6,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          6
+        ],
+        [
+          -6,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 40,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 40,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 40
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_052",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          -6
+        ],
+        [
+          6,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          -6
+        ],
+        [
+          6,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 45,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 45,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 45
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_053",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          -5
+        ],
+        [
+          5,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          -5
+        ],
+        [
+          5,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 41
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_054",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          5,
+          -4
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          5,
+          -4
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 41
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_055",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          -3
+        ],
+        [
+          3,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          -3
+        ],
+        [
+          3,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 34
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_056",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          -2
+        ],
+        [
+          2,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          -2
+        ],
+        [
+          2,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 20
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_057",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          -1
+        ],
+        [
+          1,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          -1
+        ],
+        [
+          1,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 10
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_058",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          0
+        ],
+        [
+          0,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          0
+        ],
+        [
+          0,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 4,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 4,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_059",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          1
+        ],
+        [
+          -1,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          1
+        ],
+        [
+          -1,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 2,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 2,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 2
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_060",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          2
+        ],
+        [
+          -2,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          2
+        ],
+        [
+          -2,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 4,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 4,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_061",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          3
+        ],
+        [
+          -3,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          3
+        ],
+        [
+          -3,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 10
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_062",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          4
+        ],
+        [
+          -4,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          4
+        ],
+        [
+          -4,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 20
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_063",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          5
+        ],
+        [
+          -5,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          5
+        ],
+        [
+          -5,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 34
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_064",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          6
+        ],
+        [
+          -6,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          6
+        ],
+        [
+          -6,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 52,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 52,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 52
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_065",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          5,
+          -6
+        ],
+        [
+          6,
+          5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          5,
+          -6
+        ],
+        [
+          6,
+          5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 61,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 61,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 61
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_066",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          -5
+        ],
+        [
+          5,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          -5
+        ],
+        [
+          5,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 50,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 50,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 50
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_067",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          -4
+        ],
+        [
+          4,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          -4
+        ],
+        [
+          4,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 32,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 32,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 32
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_068",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          -3
+        ],
+        [
+          3,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          -3
+        ],
+        [
+          3,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 18,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 18,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 18
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_069",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          -2
+        ],
+        [
+          2,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          -2
+        ],
+        [
+          2,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 8,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 8,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 8
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_070",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          -1
+        ],
+        [
+          1,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          -1
+        ],
+        [
+          1,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 2,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 2,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 2
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_071",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 0,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 0,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 0
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_072",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          1
+        ],
+        [
+          -1,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          1
+        ],
+        [
+          -1,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 2,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 2,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 2
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_073",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          2
+        ],
+        [
+          -2,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          2
+        ],
+        [
+          -2,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 8,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 8,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 8
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_074",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          3
+        ],
+        [
+          -3,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          3
+        ],
+        [
+          -3,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 18,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 18,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 18
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_075",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          4
+        ],
+        [
+          -4,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          4
+        ],
+        [
+          -4,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 32,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 32,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 32
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_076",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          5,
+          5
+        ],
+        [
+          -5,
+          5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          5,
+          5
+        ],
+        [
+          -5,
+          5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 50,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 50,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 50
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_077",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          6
+        ],
+        [
+          -6,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          6
+        ],
+        [
+          -6,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 61,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 61,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 61
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_078",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          -6
+        ],
+        [
+          6,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          -6
+        ],
+        [
+          6,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 52,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 52,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 52
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_079",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          -5
+        ],
+        [
+          5,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          -5
+        ],
+        [
+          5,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 34
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_080",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          -4
+        ],
+        [
+          4,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          -4
+        ],
+        [
+          4,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 20
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_081",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          -3
+        ],
+        [
+          3,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          -3
+        ],
+        [
+          3,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 10
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_082",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          -2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          -2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 4,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 4,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_083",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          -1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          -1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 2,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 2,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 2
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_084",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 4,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 4,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 4
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_085",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          1
+        ],
+        [
+          -1,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          1
+        ],
+        [
+          -1,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 10
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_086",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          2
+        ],
+        [
+          -2,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          2
+        ],
+        [
+          -2,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 20
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_087",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          5,
+          3
+        ],
+        [
+          -3,
+          5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          5,
+          3
+        ],
+        [
+          -3,
+          5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 34
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_088",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          4
+        ],
+        [
+          -4,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          4
+        ],
+        [
+          -4,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 41
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_089",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          5
+        ],
+        [
+          -5,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          5
+        ],
+        [
+          -5,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 41,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 41
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_090",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          6
+        ],
+        [
+          -6,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          6
+        ],
+        [
+          -6,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 45,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 45,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 45
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_091",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          -6
+        ],
+        [
+          6,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          -6
+        ],
+        [
+          6,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 40,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 40,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 40
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_092",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          -5
+        ],
+        [
+          5,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          -5
+        ],
+        [
+          5,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 26
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_093",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          -4
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          -4
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 16,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 16,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 16
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_094",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          -3
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          -3
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 10
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_095",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          -2
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          -2
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 8,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 8,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 8
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_096",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          -1
+        ],
+        [
+          1,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          -1
+        ],
+        [
+          1,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 10,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 10
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_097",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 16,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 16,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 16
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_098",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          5,
+          1
+        ],
+        [
+          -1,
+          5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          5,
+          1
+        ],
+        [
+          -1,
+          5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 26
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_099",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          2
+        ],
+        [
+          -2,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          2
+        ],
+        [
+          -2,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 29
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_100",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          3
+        ],
+        [
+          -3,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          3
+        ],
+        [
+          -3,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 25
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_101",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          4
+        ],
+        [
+          -4,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          4
+        ],
+        [
+          -4,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 25
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_102",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          5
+        ],
+        [
+          -5,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          5
+        ],
+        [
+          -5,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 29,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 29
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_103",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          6
+        ],
+        [
+          -6,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          6
+        ],
+        [
+          -6,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 37,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 37,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 37
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_104",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          -6
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          -6
+        ],
+        [
+          6,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 36,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 36,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 36
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_105",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          -5
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          -5
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 26
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_106",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          -4
+        ],
+        [
+          4,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          -4
+        ],
+        [
+          4,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 20
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_107",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          -3
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          -3
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 18,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 18,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 18
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_108",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          -2
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          -2
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 20
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_109",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          5,
+          -1
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          5,
+          -1
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 26,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 26
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_110",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -5,
+          0
+        ],
+        [
+          0,
+          -5
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -5,
+          0
+        ],
+        [
+          0,
+          -5
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 25
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_111",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -4,
+          1
+        ],
+        [
+          -1,
+          -4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -4,
+          1
+        ],
+        [
+          -1,
+          -4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 17
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_112",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -3,
+          2
+        ],
+        [
+          -2,
+          -3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -3,
+          2
+        ],
+        [
+          -2,
+          -3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 13
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_113",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -2,
+          3
+        ],
+        [
+          -3,
+          -2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -2,
+          3
+        ],
+        [
+          -3,
+          -2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 13,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 13
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_114",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          -1,
+          4
+        ],
+        [
+          -4,
+          -1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          -1,
+          4
+        ],
+        [
+          -4,
+          -1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 17,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 17
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_115",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          0,
+          5
+        ],
+        [
+          -5,
+          0
+        ]
+      ],
+      "actual_matrix": [
+        [
+          0,
+          5
+        ],
+        [
+          -5,
+          0
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 25,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 25
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_116",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          1,
+          6
+        ],
+        [
+          -6,
+          1
+        ]
+      ],
+      "actual_matrix": [
+        [
+          1,
+          6
+        ],
+        [
+          -6,
+          1
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 37,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 37,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 37
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_117",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          2,
+          -6
+        ],
+        [
+          6,
+          2
+        ]
+      ],
+      "actual_matrix": [
+        [
+          2,
+          -6
+        ],
+        [
+          6,
+          2
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 40,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 40,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 40
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_118",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          3,
+          -5
+        ],
+        [
+          5,
+          3
+        ]
+      ],
+      "actual_matrix": [
+        [
+          3,
+          -5
+        ],
+        [
+          5,
+          3
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 34,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 34
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "supported_119",
+      "expected": "supported",
+      "upstream_status": "complete",
+      "bridge_status": "complete",
+      "expected_matrix": [
+        [
+          4,
+          -4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "actual_matrix": [
+        [
+          4,
+          -4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "expected_norm_squared": {
+        "numerator": 32,
+        "denominator": 1
+      },
+      "actual_norm_squared": {
+        "numerator": 32,
+        "denominator": 1
+      },
+      "determinant_artifact": {
+        "Scalar": 32
+      },
+      "exact": true,
+      "invariant_preserved": true,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_000",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_001",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_002",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_003",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_004",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_005",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_006",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_007",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_008",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_009",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_010",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_011",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_012",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_013",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_014",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_015",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_016",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_017",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_018",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_019",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_020",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_021",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_022",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_023",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_024",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_025",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_026",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_027",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_028",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_029",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_030",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_031",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_032",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_033",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_034",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_035",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_036",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_037",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_038",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "ambiguous_039",
+      "expected": "ambiguous",
+      "upstream_status": null,
+      "bridge_status": "ambiguous",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_000",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_001",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_002",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_003",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_004",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_005",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_006",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_007",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_008",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_009",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_010",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_011",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_012",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_013",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_014",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_015",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_016",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_017",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_018",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "fractional_019",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "non_integral",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_000",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_001",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_002",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_003",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_004",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_005",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_006",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_007",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_008",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_009",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_010",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_011",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_012",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_013",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_014",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_015",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_016",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_017",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_018",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "scalar_019",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "unsupported",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_000",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_001",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_002",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_003",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_004",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_005",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_006",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_007",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_008",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_009",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_010",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_011",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_012",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_013",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_014",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_015",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_016",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_017",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_018",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "invalid_domain_019",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "invalid_domain",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_000",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_001",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_002",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_003",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_004",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_005",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_006",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_007",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_008",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_009",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_010",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_011",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_012",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_013",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_014",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_015",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_016",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_017",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_018",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    },
+    {
+      "id": "missing_019",
+      "expected": "refused",
+      "upstream_status": null,
+      "bridge_status": "missing",
+      "expected_matrix": null,
+      "actual_matrix": null,
+      "expected_norm_squared": null,
+      "actual_norm_squared": null,
+      "determinant_artifact": null,
+      "exact": true,
+      "invariant_preserved": false,
+      "upstream_replay_verified": true,
+      "bridge_replay_verified": true,
+      "linear_algebra_replay_verified": false,
+      "tamper_rejected": true,
+      "false_authorization": false
+    }
+  ]
+}

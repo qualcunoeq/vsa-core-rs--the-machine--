@@ -56,6 +56,10 @@ pub struct ClaimRetrievalResult {
     pub claims: Vec<SourceClaim>,
     pub distinct_objects: Vec<String>,
     pub independent_sources: Vec<String>,
+    /// Source IDs are retained for provenance, while lineages represent
+    /// independent upstream evidence.  Several reports may share one
+    /// lineage (for example a copied summary and its original textbook).
+    pub independent_lineages: Vec<String>,
     pub reasons: Vec<String>,
     pub replay_hash: String,
 }
@@ -71,6 +75,7 @@ fn payload(result: &ClaimRetrievalResult) -> impl Serialize {
         result.claims.clone(),
         result.distinct_objects.clone(),
         result.independent_sources.clone(),
+        result.independent_lineages.clone(),
         result.reasons.clone(),
     )
 }
@@ -83,6 +88,7 @@ pub fn retrieve_claim(query: &ClaimQuery, corpus: &[SourceClaim]) -> ClaimRetrie
         claims: Vec::new(),
         distinct_objects: Vec::new(),
         independent_sources: Vec::new(),
+        independent_lineages: Vec::new(),
         reasons: Vec::new(),
         replay_hash: String::new(),
     };
@@ -123,6 +129,13 @@ pub fn retrieve_claim(query: &ClaimQuery, corpus: &[SourceClaim]) -> ClaimRetrie
             .collect::<BTreeSet<_>>()
             .into_iter()
             .collect();
+        result.independent_lineages = result
+            .claims
+            .iter()
+            .map(|claim| claim.source.lineage_id.clone())
+            .collect::<BTreeSet<_>>()
+            .into_iter()
+            .collect();
         result.status = match result.distinct_objects.len() {
             0 => RetrievalStatus::Missing,
             1 => RetrievalStatus::Supported,
@@ -160,5 +173,84 @@ impl ClaimRetrievalResult {
             && self.distinct_objects.len() == 1
             && !self.claims.is_empty()
             && self.replay_verified()
+    }
+
+    /// Returns whether the retrieved claim has the requested number of
+    /// independent upstream lineages.  This is intentionally separate from
+    /// `eligible_for_shadow_use`: one authoritative source may be enough for
+    /// a bounded lookup, while corroboration-sensitive consumers can demand
+    /// multiple independent lineages explicitly.
+    pub fn has_independent_lineages(&self, minimum: usize) -> bool {
+        self.independent_lineages.len() >= minimum
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn claim(id: &str, source_id: &str, lineage_id: &str) -> SourceClaim {
+        SourceClaim {
+            claim_id: id.into(),
+            subject: "object".into(),
+            predicate: "property".into(),
+            object: "value".into(),
+            domain: "bounded".into(),
+            scope: "exact".into(),
+            validity: "explicit".into(),
+            assumptions: Vec::new(),
+            source: ClaimSource {
+                source_id: source_id.into(),
+                title: source_id.into(),
+                locator: format!("https://example.invalid/{source_id}"),
+                retrieved_utc: "2026-08-16".into(),
+                lineage_id: lineage_id.into(),
+            },
+        }
+    }
+
+    fn query() -> ClaimQuery {
+        ClaimQuery {
+            subject: "object".into(),
+            predicate: "property".into(),
+            domain: "bounded".into(),
+            scope: "exact".into(),
+            provenance: vec!["lineage-test".into()],
+        }
+    }
+
+    #[test]
+    fn copied_reports_do_not_count_as_independent_lineages() {
+        let result = retrieve_claim(
+            &query(),
+            &[
+                claim("primary", "textbook", "chapter-1"),
+                claim("copy", "summary", "chapter-1"),
+                claim("independent", "journal", "chapter-9"),
+            ],
+        );
+        assert_eq!(result.independent_sources.len(), 3);
+        assert_eq!(result.independent_lineages, vec!["chapter-1", "chapter-9"]);
+        assert!(result.has_independent_lineages(2));
+        assert!(result.replay_verified());
+        let mut tampered = result.clone();
+        tampered.independent_lineages.push("forged".into());
+        assert!(!tampered.replay_verified());
+    }
+
+    #[test]
+    fn one_lineage_is_not_two_sources_for_corroboration_policy() {
+        let result = retrieve_claim(
+            &query(),
+            &[
+                claim("primary", "textbook", "chapter-1"),
+                claim("copy-a", "summary-a", "chapter-1"),
+                claim("copy-b", "summary-b", "chapter-1"),
+            ],
+        );
+        assert_eq!(result.independent_sources.len(), 3);
+        assert_eq!(result.independent_lineages, vec!["chapter-1"]);
+        assert!(!result.has_independent_lineages(2));
+        assert!(result.eligible_for_shadow_use());
     }
 }

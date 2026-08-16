@@ -3,6 +3,7 @@
   "conflicting": 40,
   "exact_decisions": 240,
   "false_authorizations": 0,
+  "lineage_deduplication_verified": 120,
   "missing_or_refused": 80,
   "registry_mutated": false,
   "replay_verified": 240,

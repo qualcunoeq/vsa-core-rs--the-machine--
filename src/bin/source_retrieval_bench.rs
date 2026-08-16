@@ -52,6 +52,7 @@ fn main() {
     let mut replay = 0usize;
     let mut tamper = 0usize;
     let mut false_authorizations = 0usize;
+    let mut lineage_deduplication_verified = 0usize;
     let mut route_records = Vec::new();
 
     for index in 0..120 {
@@ -64,9 +65,16 @@ fn main() {
         let ok = result.status == RetrievalStatus::Supported
             && result.distinct_objects == vec!["12".to_string()]
             && result.independent_sources.len() == 3
+            && result.independent_lineages.len() == 2
+            && result.has_independent_lineages(2)
             && result.eligible_for_shadow_use();
         exact += usize::from(ok);
         supported += usize::from(ok);
+        lineage_deduplication_verified += usize::from(
+            result.independent_sources.len() == 3
+                && result.independent_lineages.len() == 2
+                && result.has_independent_lineages(2),
+        );
         replay += usize::from(result.replay_verified());
         let mut altered = result.clone();
         altered.replay_hash.push('x');
@@ -121,6 +129,7 @@ fn main() {
     assert_eq!(refused, 80);
     assert_eq!(replay, 240);
     assert_eq!(tamper, 240);
+    assert_eq!(lineage_deduplication_verified, 120);
     assert_eq!(false_authorizations, 0);
     let report = serde_json::json!({
         "schema": "stage-i-governed-source-retrieval-v1",
@@ -131,6 +140,7 @@ fn main() {
         "exact_decisions": exact,
         "replay_verified": replay,
         "tamper_rejected": tamper,
+        "lineage_deduplication_verified": lineage_deduplication_verified,
         "false_authorizations": false_authorizations,
         "registry_mutated": false,
         "route_records_hash": digest(&route_records),

@@ -1,0 +1,23 @@
+{
+  "schema": "stage-g-self-directed-topology-acquisition-v1",
+  "observed_cases": 500,
+  "gap_clusters": 3,
+  "candidate_plans": 3,
+  "selected_module": "source_derived_finite_topology_candidate",
+  "selected_coverage": 420,
+  "plan_replay": true,
+  "plan_tamper_rejected": true,
+  "source_records": 1,
+  "source_mutations": 6,
+  "source_mutations_rejected": 6,
+  "independent_cases": 120,
+  "independent_correct": 120,
+  "independent_replay": 120,
+  "independent_tamper": 120,
+  "shadow_promotable": true,
+  "blocked_shortcuts": 1,
+  "false_authorizations": 0,
+  "production_authorizations": 0,
+  "manifest_unchanged": true,
+  "corpus_sha256": "2ef2c19456b5b7c72bea688bc7c7dc0eb6415b9ee91b95ce593e261ecdf1add7"
+}

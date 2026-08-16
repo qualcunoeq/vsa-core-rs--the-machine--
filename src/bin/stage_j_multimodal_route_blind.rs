@@ -63,6 +63,7 @@ struct Receipt {
     table_tamper_rejected: bool,
     graph_replay_verified: bool,
     graph_tamper_rejected: bool,
+    downstream_emitted: bool,
     downstream_replay_verified: bool,
     downstream_tamper_rejected: bool,
     false_authorization: bool,
@@ -85,8 +86,10 @@ struct Report {
     route_counts: BTreeMap<String, usize>,
     table_replay_verified: usize,
     graph_replay_verified: usize,
+    downstream_emitted: usize,
     downstream_replay_verified: usize,
-    tamper_rejected: usize,
+    frontend_tamper_rejected: usize,
+    downstream_tamper_rejected: usize,
     false_authorizations: usize,
     false_denials: usize,
     hle_questions_read: usize,
@@ -318,26 +321,27 @@ fn run(case: &Case) -> Receipt {
     table_tampered.replay_hash.push('x');
     let mut graph_tampered = graph.clone();
     graph_tampered.replay_hash.push('x');
-    let (downstream_replay_verified, downstream_tamper_rejected) = if graph_authorized {
-        let index = case
-            .id
-            .strip_prefix("graph_supported_")
-            .and_then(|s| s.parse().ok())
-            .unwrap_or(0);
-        let walk = execute_one_step_random_walk(
-            &graph,
-            Some(&transition(index)),
-            &initial_probability(),
-            Some(TransitionConvention::RowStochastic),
-            vec![case.id.clone(), "explicit-transition".into()],
-        )
-        .expect("complete graph route emits walk");
-        let mut tampered = walk.clone();
-        tampered.replay_hash.push('x');
-        (walk.replay_verified(), !tampered.replay_verified())
-    } else {
-        (true, true)
-    };
+    let (downstream_emitted, downstream_replay_verified, downstream_tamper_rejected) =
+        if graph_authorized {
+            let index = case
+                .id
+                .strip_prefix("graph_supported_")
+                .and_then(|s| s.parse().ok())
+                .unwrap_or(0);
+            let walk = execute_one_step_random_walk(
+                &graph,
+                Some(&transition(index)),
+                &initial_probability(),
+                Some(TransitionConvention::RowStochastic),
+                vec![case.id.clone(), "explicit-transition".into()],
+            )
+            .expect("complete graph route emits walk");
+            let mut tampered = walk.clone();
+            tampered.replay_hash.push('x');
+            (true, walk.replay_verified(), !tampered.replay_verified())
+        } else {
+            (false, false, false)
+        };
     let selected_route = match (table_authorized, graph_authorized) {
         (true, false) => Some(Route::Table),
         (false, true) => Some(Route::Graph),
@@ -370,6 +374,7 @@ fn run(case: &Case) -> Receipt {
         table_tamper_rejected: !table_tampered.replay_verified(),
         graph_replay_verified: graph.replay_verified(),
         graph_tamper_rejected: !graph_tampered.replay_verified(),
+        downstream_emitted,
         downstream_replay_verified,
         downstream_tamper_rejected,
         false_authorization: case.expected != Expected::Supported && authorized,
@@ -415,15 +420,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         route_counts,
         table_replay_verified: receipts.iter().filter(|r| r.table_replay_verified).count(),
         graph_replay_verified: receipts.iter().filter(|r| r.graph_replay_verified).count(),
+        downstream_emitted: receipts.iter().filter(|r| r.downstream_emitted).count(),
         downstream_replay_verified: receipts
             .iter()
             .filter(|r| r.downstream_replay_verified)
             .count(),
-        tamper_rejected: receipts
+        frontend_tamper_rejected: receipts
             .iter()
-            .filter(|r| {
-                r.table_tamper_rejected && r.graph_tamper_rejected && r.downstream_tamper_rejected
-            })
+            .filter(|r| r.table_tamper_rejected && r.graph_tamper_rejected)
+            .count(),
+        downstream_tamper_rejected: receipts
+            .iter()
+            .filter(|r| r.downstream_tamper_rejected)
             .count(),
         false_authorizations: receipts.iter().filter(|r| r.false_authorization).count(),
         false_denials: receipts.iter().filter(|r| r.false_denial).count(),
@@ -453,12 +461,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         (
             report.frontend_invocations,
             report.table_replay_verified,
-            report.graph_replay_verified,
-            report.downstream_replay_verified
+            report.graph_replay_verified
         ),
-        (480, 240, 240, 240)
+        (480, 240, 240)
     );
-    assert_eq!(report.tamper_rejected, 240);
+    assert_eq!(
+        (
+            report.downstream_emitted,
+            report.downstream_replay_verified,
+            report.frontend_tamper_rejected,
+            report.downstream_tamper_rejected
+        ),
+        (60, 60, 240, 60)
+    );
     assert_eq!(
         (
             report.false_authorizations,

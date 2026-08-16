@@ -15,8 +15,10 @@ complete route and replayable downstream artifacts.
 | Unsupported refusals | 80/80 |
 | Table replay | 240/240 |
 | Graph replay | 240/240 |
-| Downstream random-walk replay | 240/240 |
-| Complete tamper receipts | 240/240 |
+| Downstream random-walk artifacts emitted | 60 |
+| Downstream random-walk replay (emitted) | 60/60 |
+| Visual frontend tamper receipts | 240/240 |
+| Downstream tamper rejection (emitted) | 60/60 |
 | False authorizations / denials | 0 / 0 |
 | HLE questions read | 0 |
 | Production registry mutations | 0 |

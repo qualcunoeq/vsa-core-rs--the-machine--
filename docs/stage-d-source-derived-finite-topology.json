@@ -1,0 +1,33 @@
+{
+  "schema": "stage-d-source-derived-finite-topology-v1",
+  "source_document_sha256": "3c28370b14fb587d98f9e54ab6cf36e0f3385f505ea1823f68ad17d1d85a4f46",
+  "corpus_sha256": "375721c8c8cf2c9c4b912461a81ef767884dd23408e203dd76c51b1b05fbe2b3",
+  "extracted_records": 1,
+  "source_mutations": 6,
+  "source_mutations_rejected": 6,
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "unsupported": 80,
+  "exact_decisions": 240,
+  "supported_artifacts": 120,
+  "replay_verified": 240,
+  "tamper_rejected": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "manifest_unchanged": true,
+  "production_authorizations": 0,
+  "family_counts": {
+    "ambiguous_target": 40,
+    "closure": 24,
+    "interior": 24,
+    "invalid_open_set_family": 20,
+    "is_closed": 24,
+    "is_open": 24,
+    "missing_target": 20,
+    "oversized_carrier": 20,
+    "unsupported_domain": 20,
+    "validate_topology": 24
+  },
+  "receipts_hash": "d0c77135d73b4d444bf9fdaa96045057edba1b7be678179035c28dda10eeac48"
+}

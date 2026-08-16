@@ -523,6 +523,36 @@
         "selection_reason": "first externally sourced domain acquired after the hand-built foundations; generic paired formula execution"
       },
       {
+        "id": "source_derived_finite_topology",
+        "title": "Source-derived bounded finite topology",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "abstract_algebra"
+        ],
+        "reusable_artifacts": [
+          "finite_topology",
+          "open_set",
+          "closed_set",
+          "interior",
+          "closure"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first source-derived domain acquired from an attributed topology definition; finite-set operations only"
+      },
+      {
         "id": "topology",
         "title": "Topology and geometric invariants",
         "status": "planned",
@@ -581,7 +611,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "419b99f6cb800e56f246130cefabf3f0b604576e76c4ee6c31ca2b0d6a71023c",
+  "manifest_replay_hash": "e4eab7e9e0bb5abb940b123297166fefee30c9494f1357906bf5d8f3c618ab86",
   "validation_errors": [],
   "production_authorizations": 0
 }

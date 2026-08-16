@@ -1,0 +1,20 @@
+# Source transcription for the source-derived finite-topology pack.
+# The source defines a topology as a collection containing the empty set and
+# the whole carrier, closed under arbitrary unions and finite intersections.
+# This campaign restricts execution to explicitly finite carriers of at most
+# eight named points; no metric or infinite-space claims are inferred.
+
+BEGIN TOPOLOGY
+TOPOLOGY_ID: finite_topology_axioms
+ALIASES: finite topology|topological space
+DOMAIN: source_derived_finite_topology
+MAX_POINTS: 8
+AXIOMS: empty;whole;unions;finite_intersections
+SOURCE_ID: topology-without-tears:definition-1.3.1
+TITLE: Topology Without Tears
+SECTION: Definition 1.3.1, topological space
+URL: https://www.topologywithouttears.net/topbook.pdf
+LICENSE: author-provided freely available educational text
+RETRIEVED: 2026-08-16
+EVIDENCE: Definition 1.3.1 states that the empty set and carrier are open, arbitrary unions of open sets are open, and finite intersections of open sets are open.
+END TOPOLOGY

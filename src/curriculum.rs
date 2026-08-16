@@ -328,6 +328,19 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "first externally sourced domain acquired after the hand-built foundations; generic paired formula execution",
         ),
         (
+            "source_derived_finite_topology",
+            "Source-derived bounded finite topology",
+            vec!["abstract_algebra"],
+            vec![
+                "finite_topology",
+                "open_set",
+                "closed_set",
+                "interior",
+                "closure",
+            ],
+            "first source-derived domain acquired from an attributed topology definition; finite-set operations only",
+        ),
+        (
             "topology",
             "Topology and geometric invariants",
             vec!["abstract_algebra"],
@@ -362,6 +375,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_finite_statistics"
                 | "polynomial_algebra"
                 | "source_derived_complex_arithmetic"
+                | "source_derived_finite_topology"
         ) {
             (
                 CurriculumStatus::ShadowValidated,

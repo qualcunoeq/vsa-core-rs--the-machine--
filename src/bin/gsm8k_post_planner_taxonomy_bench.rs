@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::{
     collections::{BTreeMap, BTreeSet},
     env, fs,
@@ -24,6 +24,30 @@ struct PromotedCase {
     route: String,
     family: String,
     expected_result: String,
+}
+
+#[derive(Debug, Serialize)]
+struct Report {
+    schema: &'static str,
+    base_hash: String,
+    config_sha256: String,
+    cases: usize,
+    planner_ambiguous: usize,
+    ambiguous_expected: usize,
+    ambiguous_from_unsupported: usize,
+    promoted_ambiguous: usize,
+    planner_no_route: usize,
+    residual_unsupported: usize,
+    oracle_ambiguous_no_route: usize,
+    preexisting_supported_no_route: usize,
+    promoted_realized: usize,
+    migrated_by_family: BTreeMap<String, usize>,
+    ambiguity_reasons: BTreeMap<String, usize>,
+    residual_clusters: BTreeMap<String, usize>,
+    false_authorizations: usize,
+    false_denials: usize,
+    failures: BTreeMap<String, usize>,
+    deterministic: bool,
 }
 
 fn sha256_file(path: &str) -> String {
@@ -152,5 +176,51 @@ fn main() {
         - ambiguous_from_unsupported;
     assert_eq!(residual_unsupported, expected_residual);
     let stable = true;
-    println!("gsm8k-post-planner-taxonomy: base_hash={} config_sha256={} cases={} planner_ambiguous={} ambiguous_expected={} ambiguous_from_unsupported={} promoted_ambiguous={} planner_no_route={} residual_unsupported={} oracle_ambiguous_no_route={} preexisting_supported_no_route={} promoted_realized={} migrated_by_family={:?} ambiguity_reasons={:?} residual_clusters={:?} false_auth={} false_denials={} failures={:?} deterministic={}", base.release_hash(), sha256_file(&config_path), base.cases.len(), audited_ambiguous, ambiguous_expected, ambiguous_from_unsupported, promoted_ambiguous, residual_unsupported + oracle_ambiguous_no_route + preexisting_supported_no_route, residual_unsupported, oracle_ambiguous_no_route, preexisting_supported_no_route, promoted_realized, migrated_by_route, ambiguity_reasons, residual_clusters, false_authorizations, false_denials, failures, stable);
+    let report = Report {
+        schema: "stage80-external-gsm8k-taxonomy-v1",
+        base_hash: base.release_hash(),
+        config_sha256: sha256_file(&config_path),
+        cases: base.cases.len(),
+        planner_ambiguous: audited_ambiguous,
+        ambiguous_expected,
+        ambiguous_from_unsupported,
+        promoted_ambiguous,
+        planner_no_route: residual_unsupported
+            + oracle_ambiguous_no_route
+            + preexisting_supported_no_route,
+        residual_unsupported,
+        oracle_ambiguous_no_route,
+        preexisting_supported_no_route,
+        promoted_realized,
+        migrated_by_family: migrated_by_route,
+        ambiguity_reasons,
+        residual_clusters,
+        false_authorizations,
+        false_denials,
+        failures,
+        deterministic: stable,
+    };
+    let serialized = serde_json::to_string_pretty(&report).expect("report serializes");
+    fs::write(
+        "docs/stage80_external_gsm8k_taxonomy.json",
+        format!("{serialized}\n"),
+    )
+    .expect("write report");
+    fs::write(
+        "docs/stage80_external_gsm8k_taxonomy.md",
+        format!(
+            "# Stage 80 — external GSM8K planner taxonomy\n\n- Cases: {}\n- Promoted routes realized: {}\n- Planner ambiguities: {} ({} unsupported, {} expected)\n- Residual unsupported: {}\n- False authorizations / denials: {} / {}\n- Deterministic: {}\n\nThe partition distinguishes promoted cases, unsupported ambiguity, residual no-route cases, and pre-existing supported cases. The frozen base and planner configuration hashes are recorded in the JSON report.\n",
+            report.cases,
+            report.promoted_realized,
+            report.planner_ambiguous,
+            report.ambiguous_from_unsupported,
+            report.ambiguous_expected,
+            report.residual_unsupported,
+            report.false_authorizations,
+            report.false_denials,
+            report.deterministic,
+        ),
+    )
+    .expect("write report markdown");
+    println!("{serialized}");
 }

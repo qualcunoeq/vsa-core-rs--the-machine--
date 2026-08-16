@@ -1,0 +1,40 @@
+{
+  "schema": "stage80-external-gsm8k-taxonomy-v1",
+  "base_hash": "c3d288f3ecf5f4bf1bbc6e8160e0edb1cf469e2df0db21f3476caddd330b1374",
+  "config_sha256": "ea4fd6891be8dc785593237eb474f09a8c02ba41c3bc1d112b296b9a7ab9f0c9",
+  "cases": 100,
+  "planner_ambiguous": 30,
+  "ambiguous_expected": 0,
+  "ambiguous_from_unsupported": 29,
+  "promoted_ambiguous": 0,
+  "planner_no_route": 59,
+  "residual_unsupported": 53,
+  "oracle_ambiguous_no_route": 2,
+  "preexisting_supported_no_route": 4,
+  "promoted_realized": 12,
+  "migrated_by_family": {
+    "conversion": 1,
+    "multi_step_quantity": 4,
+    "sum_difference": 2,
+    "unit_conversion": 1,
+    "unit_rate": 4
+  },
+  "ambiguity_reasons": {
+    "comparative_multiplier_scope": 1,
+    "fractional_scope_or_anchor": 15,
+    "temporal_reference_scope": 4,
+    "unresolved_quantity_reference": 10
+  },
+  "residual_clusters": {
+    "fractional_quantity": 3,
+    "multi_step_quantity_arithmetic": 16,
+    "percentage_discount_finance": 2,
+    "ratio_rate_proportion": 16,
+    "temporal_or_sequential_reasoning": 6,
+    "unit_measurement_conversion": 10
+  },
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "failures": {},
+  "deterministic": true
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "stage-b-source-topology-graph-bridge-v1",
+  "corpus_sha256": "6591f9b0fff04b7177275426ec3c6a691d503e361e1e81a0d627ba34e7601260",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "authorized_compositions": 120,
+  "replay_verified": 240,
+  "graph_replays": 240,
+  "tamper_rejected": 240,
+  "false_authorizations": 0,
+  "route_leakage": 0,
+  "family_counts": {
+    "ambiguous_policy": 40,
+    "ambiguous_topology": 40,
+    "invalid_topology": 40,
+    "strict_specialization_graph": 120
+  },
+  "receipt_hash": "c9800fe6a5c6d8275af0163d4fd0971624aad66f6c45b5f4e44e242130c2e719"
+}

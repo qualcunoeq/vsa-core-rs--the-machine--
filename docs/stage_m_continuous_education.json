@@ -1,0 +1,6022 @@
+{
+  "schema": "stage-m-continuous-education-v1",
+  "episodes": 300,
+  "exact_decisions": 300,
+  "campaign_replays": 300,
+  "deterministic_reruns": 300,
+  "tamper_rejections": 300,
+  "manifest_unchanged": 300,
+  "resolved_case_total": 1110,
+  "remaining_case_total": 150,
+  "selected_steps": 480,
+  "blocked_steps": 30,
+  "no_coverage_steps": 60,
+  "complete_steps": 210,
+  "source_gated_selections": 300,
+  "forbidden_selections": 0,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "3ba160d66ce2cc169ca8083c7c206027febf38db6aba509a66564deace6e61aa",
+  "receipts": [
+    {
+      "id": "education-episode-000",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-001",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-002",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-003",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-004",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-005",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-006",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-007",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-008",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-009",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-010",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-011",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-012",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-013",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-014",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-015",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-016",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-017",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-018",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-019",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-020",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-021",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-022",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-023",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-024",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-025",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-026",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-027",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-028",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-029",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-030",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-031",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-032",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-033",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-034",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-035",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-036",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-037",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-038",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-039",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-040",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-041",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-042",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-043",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-044",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-045",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-046",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-047",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-048",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-049",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-050",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-051",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-052",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-053",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-054",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-055",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-056",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-057",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-058",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-059",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-060",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-061",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-062",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-063",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-064",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-065",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-066",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-067",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-068",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-069",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-070",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-071",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-072",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-073",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-074",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-075",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-076",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-077",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-078",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-079",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-080",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-081",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-082",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-083",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-084",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-085",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-086",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-087",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-088",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-089",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-090",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-091",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-092",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-093",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-094",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-095",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-096",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-097",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-098",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-099",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-100",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-101",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-102",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-103",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-104",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-105",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-106",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-107",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-108",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-109",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-110",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-111",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-112",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-113",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-114",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-115",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-116",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-117",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-118",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-119",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-120",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-121",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-122",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-123",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-124",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-125",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-126",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-127",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-128",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-129",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-130",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-131",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-132",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-133",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-134",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-135",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-136",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-137",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-138",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-139",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-140",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-141",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-142",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-143",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-144",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-145",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-146",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-147",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-148",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-149",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-150",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-151",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-152",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-153",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-154",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-155",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-156",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-157",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-158",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-159",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-160",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-161",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-162",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-163",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-164",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-165",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-166",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-167",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-168",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-169",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-170",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-171",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-172",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-173",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-174",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-175",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-176",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-177",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-178",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-179",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-180",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-181",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-182",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-183",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-184",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-185",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-186",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-187",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-188",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-189",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-190",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-191",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-192",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-193",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-194",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-195",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-196",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-197",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-198",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-199",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-200",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-201",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-202",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-203",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-204",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-205",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-206",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-207",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-208",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-209",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-210",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-211",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-212",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-213",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-214",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-215",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-216",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-217",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-218",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-219",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-220",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-221",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-222",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-223",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-224",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-225",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-226",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-227",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-228",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-229",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-230",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-231",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-232",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-233",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-234",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-235",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-236",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-237",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-238",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-239",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-240",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-241",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-242",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-243",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-244",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-245",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-246",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-247",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-248",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-249",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-250",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-251",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-252",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-253",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-254",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-255",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-256",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-257",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-258",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-259",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-260",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-261",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-262",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-263",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-264",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-265",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-266",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-267",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-268",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-269",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-270",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-271",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-272",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-273",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-274",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-275",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-276",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-277",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-278",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-279",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-280",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-281",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-282",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-283",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-284",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-285",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-286",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-287",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-288",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-289",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-290",
+      "initial_cases": 3,
+      "expected_resolved_cases": 3,
+      "resolved_cases": 3,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-291",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-292",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_topology",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-293",
+      "initial_cases": 1,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 1,
+      "selected_modules": [],
+      "decisions": [
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-294",
+      "initial_cases": 9,
+      "expected_resolved_cases": 8,
+      "resolved_cases": 8,
+      "remaining_cases": 1,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "no_exact_coverage"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-295",
+      "initial_cases": 2,
+      "expected_resolved_cases": 2,
+      "resolved_cases": 2,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "decisions": [
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-296",
+      "initial_cases": 5,
+      "expected_resolved_cases": 5,
+      "resolved_cases": 5,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "combinatorics",
+        "elementary_number_theory"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-297",
+      "initial_cases": 4,
+      "expected_resolved_cases": 4,
+      "resolved_cases": 4,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "elementary_number_theory",
+        "source_derived_finite_topology"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-298",
+      "initial_cases": 3,
+      "expected_resolved_cases": 0,
+      "resolved_cases": 0,
+      "remaining_cases": 3,
+      "selected_modules": [],
+      "decisions": [
+        "blocked"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    },
+    {
+      "id": "education-episode-299",
+      "initial_cases": 6,
+      "expected_resolved_cases": 6,
+      "resolved_cases": 6,
+      "remaining_cases": 0,
+      "selected_modules": [
+        "source_derived_finite_statistics",
+        "elementary_number_theory",
+        "combinatorics"
+      ],
+      "decisions": [
+        "selected",
+        "selected",
+        "selected",
+        "complete"
+      ],
+      "replay_verified": true,
+      "deterministic_rerun": true,
+      "tamper_rejected": true,
+      "manifest_unchanged": true,
+      "forbidden_selection": false
+    }
+  ]
+}

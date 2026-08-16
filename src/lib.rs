@@ -47,6 +47,7 @@ pub mod release_campaign;
 pub mod random_walk_composition;
 pub mod method_synthesis;
 pub mod concept_composition_benchmark;
+pub mod continuous_education;
 pub mod cross_vertical_benchmark;
 pub mod compositional_planner_benchmark;
 pub mod raw_decomposition_benchmark;

@@ -1,0 +1,23 @@
+{
+  "schema": "stage-l-hle-checkpoint-3-v1",
+  "checkpoint": "post-spectral-curriculum",
+  "producer_commit": "1166e2c",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "manifest_sha256": "c99fea9200db643958fad69e017ed8879f958345f2fc509973e9ecc266c015cd",
+  "cases": 2500,
+  "correct_authorized": 2,
+  "incorrect_authorized": 0,
+  "false_authorizations": 0,
+  "curriculum_signals": 496,
+  "pack_invocations": 0,
+  "replay_compatibility_verified": 2,
+  "replay_not_applicable": 2498,
+  "replay_not_recorded": 0,
+  "terminal_counts": {
+    "correct_authorized": 2,
+    "visual_required": 260,
+    "no_curriculum_signal": 1783,
+    "unresolved": 455
+  },
+  "registry_mutated": false
+}

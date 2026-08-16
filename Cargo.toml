@@ -392,6 +392,10 @@ name = "spectral_composition_bench"
 path = "src/bin/spectral_composition_bench.rs"
 
 [[bin]]
+name = "stage_l_hle_checkpoint_3"
+path = "src/bin/stage_l_hle_checkpoint_3.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

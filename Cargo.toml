@@ -356,6 +356,10 @@ name = "visual_probability_bridge_bench"
 path = "src/bin/visual_probability_bridge_bench.rs"
 
 [[bin]]
+name = "combinatorics_number_theory_composition_bench"
+path = "src/bin/combinatorics_number_theory_composition_bench.rs"
+
+[[bin]]
 name = "curriculum_memory_bench"
 path = "src/bin/curriculum_memory_bench.rs"
 

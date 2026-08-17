@@ -644,6 +644,10 @@ name = "stage153_visual_source_promotion"
 path = "src/bin/stage153_visual_source_promotion.rs"
 
 [[bin]]
+name = "stage154_visual_source_curriculum_admission"
+path = "src/bin/stage154_visual_source_curriculum_admission.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

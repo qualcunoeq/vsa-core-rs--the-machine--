@@ -1,0 +1,30 @@
+{
+  "schema": "stage207-current-integrated-checkpoint-v1",
+  "parent_file_sha256": {
+    "docs/stage200_algebra_number_theory_composition.json": "d9bad65432cb50876b8853b7353d2c6e81ae46c801abeabfac86c120cd6b78dd",
+    "docs/stage201_current_cross_domain_synthesis.json": "f4fee8379db3a91910a2150d8461a17d140cf00e85e16053d4664257a2c9a85e",
+    "docs/stage202_mobius_source_pack_bench.json": "a549dcb6a766bbb817536bc3a0e3ff19adf131bb4574be772bfeddefeb50e565",
+    "docs/stage203_mobius_cross_domain_composition.json": "f53811584af6898c0ed6b791e308416a3f57f4dd6e5900c66cc395c596a818be",
+    "docs/stage204_mobius_defect_repair.json": "901c850fbed6e47ec6495df94808fb23c42d4deebc90a079090b12feeb740c81",
+    "docs/stage205_curriculum_memory_after_mobius.json": "017e393239fb732d8397cc191514e296f47716ad603e15d5c619caebf177ed49",
+    "docs/stage206_mobius_prerequisite_education.json": "238df7fb7c0fd6d53ffc6a36166a8197b8fec30d2695062fa9fd4cef3269d8f2"
+  },
+  "manifest_sha256": "138e6a901d465b30795bac500c307820d93e6a223ada8f8b2d90334e961ec118",
+  "manifest_packs": 34,
+  "manifest_validated_packs": 33,
+  "synthesis_cases": 1720,
+  "exact_decisions": 2020,
+  "replay_verified": 102100,
+  "tamper_rejected": 2860,
+  "source_provenance_records": 480,
+  "defect_counterexamples": 140,
+  "sandbox_repairs": 140,
+  "prerequisite_proposals": 240,
+  "unknown_gates_refused": 60,
+  "memory_records": 100000,
+  "memory_replay": 100000,
+  "memory_tamper": 1000,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_mutations": 0
+}

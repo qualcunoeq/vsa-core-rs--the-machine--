@@ -436,6 +436,10 @@ name = "stage95_expanded_curriculum_checkpoint"
 path = "src/bin/stage95_expanded_curriculum_checkpoint.rs"
 
 [[bin]]
+name = "stage96_source_language_extension"
+path = "src/bin/stage96_source_language_extension.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

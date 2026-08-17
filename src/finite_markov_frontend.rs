@@ -194,7 +194,11 @@ pub fn formalize(text: &str, case_id: &str) -> MarkovFrontendResult {
             provenance,
         );
     }
-    let stationary = lower.contains("stationary");
+    // “Invariant distribution” is a bounded alias only when the requested
+    // object is explicitly a distribution; bare invariant language remains
+    // unresolved rather than being routed by vocabulary alone.
+    let stationary = lower.contains("stationary")
+        || (lower.contains("invariant") && lower.contains("distribution"));
     let hitting = (lower.contains("hitting") || lower.contains("reach")) && lower.contains("avoid");
     if stationary && hitting {
         return result(
@@ -301,6 +305,20 @@ mod tests {
             "hitting",
         );
         assert_eq!(result.status, MarkovFrontendStatus::Missing);
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn accepts_explicit_invariant_distribution_alias() {
+        let result = formalize(
+            "Compute the invariant distribution of a row-stochastic transition=[[3/4,1/4],[1/2,1/2]].",
+            "invariant",
+        );
+        assert_eq!(result.status, MarkovFrontendStatus::Complete);
+        assert!(matches!(
+            result.request,
+            Some(MarkovFrontendRequest::Stationary(_))
+        ));
         assert!(replay_verified(&result));
     }
 }

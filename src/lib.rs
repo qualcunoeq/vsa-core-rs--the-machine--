@@ -105,6 +105,7 @@ pub mod nlp;
 pub mod notation_grounding;
 pub mod notation_normalization;
 pub mod number_theory_pack;
+pub mod number_theory_frontend;
 pub mod ode_pack;
 pub mod ontology_extension;
 pub mod ontology_realization;

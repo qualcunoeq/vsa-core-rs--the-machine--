@@ -516,6 +516,10 @@ name = "stage116_post_retrieval_composition_checkpoint"
 path = "src/bin/stage116_post_retrieval_composition_checkpoint.rs"
 
 [[bin]]
+name = "stage117_number_theory_language_transfer"
+path = "src/bin/stage117_number_theory_language_transfer.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

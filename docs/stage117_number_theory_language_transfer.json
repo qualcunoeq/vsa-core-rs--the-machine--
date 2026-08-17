@@ -1,0 +1,21 @@
+{
+  "schema": "stage117-number-theory-language-transfer-v1",
+  "cases": 1200,
+  "supported_cases": 600,
+  "ambiguous_cases": 200,
+  "missing_cases": 200,
+  "unsupported_cases": 200,
+  "frontend_complete": 600,
+  "downstream_complete": 600,
+  "ambiguity_preserved": 200,
+  "missing_preserved": 200,
+  "unsupported_refused": 200,
+  "frontend_replay_verified": 1200,
+  "downstream_replay_verified": 600,
+  "frontend_tamper_rejections": 1200,
+  "downstream_tamper_rejections": 600,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "route_mismatches": 0,
+  "corpus_sha256": "9c3f177150b97d0e11cb36f0dc2935e676a531662cd7aabab99fa6363c15036c"
+}

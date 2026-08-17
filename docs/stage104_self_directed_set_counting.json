@@ -1,0 +1,22 @@
+{
+  "schema": "stage104-self-directed-set-counting-v1",
+  "gap_cases": 280,
+  "actionable_gap_cases": 240,
+  "residual_cases": 40,
+  "validated_candidates": 2,
+  "admitted_candidates": 2,
+  "selected_modules": [
+    "source_derived_finite_set_operations",
+    "source_derived_bounded_counting"
+  ],
+  "resolved_case_count": 240,
+  "remaining_case_count": 40,
+  "campaign_replay_verified": true,
+  "campaign_tamper_rejected": true,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "source_report_hashes": [
+    "2c1fb4679a0c8a11a5d3d30ee03b9dd656c0313d1066219f92ff5fd9c1e490e8",
+    "37986819a035e738cff45992ce3e9cd3d44a6600c945ef398852106d9c8bc4b4"
+  ]
+}

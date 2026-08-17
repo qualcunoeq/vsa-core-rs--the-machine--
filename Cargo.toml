@@ -512,6 +512,10 @@ name = "stage115_self_directed_memory_retrieval"
 path = "src/bin/stage115_self_directed_memory_retrieval.rs"
 
 [[bin]]
+name = "stage116_post_retrieval_composition_checkpoint"
+path = "src/bin/stage116_post_retrieval_composition_checkpoint.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

@@ -1,0 +1,21 @@
+{
+  "schema": "stage116-post-retrieval-composition-checkpoint-v1",
+  "composition_cases": 480,
+  "supported_routes": 240,
+  "ambiguous_or_refused": 240,
+  "route_replays": 480,
+  "tamper_rejections": 480,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "self_directed_complete_plans": 600,
+  "retrieval_provenance_mismatches": 0,
+  "frozen_hle_cases": 2500,
+  "frozen_hle_correct_authorized": 2,
+  "frozen_hle_false_authorizations": 0,
+  "parent_report_sha256": [
+    "b6408d1ee3a3b83ed3a801d7c8ea476c1b69dabbacbcae2b59cb3e1aba4f5741",
+    "1b99cbae4c6c35df7220ee4e511e8b9c4de28795a768209231dabe33101ef37f",
+    "d8e6f053e1dc5b3031d5d57efba8b72571eea449014bd18dcc28d99921b414f7",
+    "175094886a184a24fe56af7ba2f95dc08ea1b3c7cdbe9bc20807ac8eddd68aed"
+  ]
+}

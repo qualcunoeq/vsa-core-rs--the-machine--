@@ -152,6 +152,8 @@ pub mod simulator;
 pub mod sleep;
 pub mod socket;
 pub mod solution_verification;
+pub mod simplicial_homology_pack;
+pub mod simplicial_homology_bridge;
 pub mod source_complex_pack;
 pub mod source_catalog_ingestion;
 pub mod source_counting_frontend;

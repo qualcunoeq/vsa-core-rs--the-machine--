@@ -544,6 +544,14 @@ name = "stage123_hle_resource_bounded_checkpoint"
 path = "src/bin/stage123_hle_resource_bounded_checkpoint.rs"
 
 [[bin]]
+name = "stage124_simplicial_homology_pack"
+path = "src/bin/stage124_simplicial_homology_pack.rs"
+
+[[bin]]
+name = "stage125_simplicial_graph_composition"
+path = "src/bin/stage125_simplicial_graph_composition.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

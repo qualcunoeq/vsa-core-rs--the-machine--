@@ -1,0 +1,20 @@
+{
+  "schema": "stage125-simplicial-graph-composition-v1",
+  "corpus_sha256": "e77451c7ebee5549721df4a1b49774fae4d3469dab61b3a1244c52e7c5588a1e",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "authorized_routes": 120,
+  "replay_verified": 240,
+  "tamper_rejected": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "statuses": {
+    "ambiguous": 40,
+    "complete": 120,
+    "invalid": 40,
+    "unsupported": 40
+  }
+}

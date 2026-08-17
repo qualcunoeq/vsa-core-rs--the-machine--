@@ -1,0 +1,12 @@
+# Source transcription: bounded simplicial-complex and homology definitions.
+# This artifact records the source boundary used by Stage 124.  The runtime
+# intentionally supports only finite complexes and coefficients in F_2.
+
+SOURCE_ID: topology-without-tears:finite-simplicial-homology
+TITLE: Topology Without Tears
+SECTION: finite simplicial complexes, boundary maps, and Euler characteristic
+URL: https://www.topologywithouttears.net/
+LICENSE: CC BY-NC-SA 4.0; attribution required
+RETRIEVED_UTC: 2026-08-17
+EVIDENCE: finite complexes, boundary maps, Betti numbers, Euler characteristic
+SCOPE: non-empty simplices; unreduced homology; coefficients F_2; dimension at most 3

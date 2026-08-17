@@ -153,6 +153,14 @@ pub fn propose_capability_gap(
             "alternative typed requests with provenance",
             "finite_markov",
         ),
+        "mobius_source_boundary" => (
+            "finite divisor-convolution sequence to exact Möbius inversion",
+            "explicit f(1)..f(n) indexing and a finite divisor relation",
+            "source_derived_mobius",
+            "Möbius inversion and divisor-convolution definitions from the cited source",
+            "indexed exact integer sequence with divisor dependencies",
+            "source_derived_mobius",
+        ),
         _ => return None,
     };
     let mut gap = CapabilityGap {
@@ -318,5 +326,13 @@ mod tests {
         .expect("Markov boundary has a bounded proposal");
         assert!(markov.desired_transformation.contains("hitting"));
         assert!(capability_gap_replay_verified(&markov));
+        let mobius = propose_capability_gap(
+            "mobius_source_boundary",
+            CapabilityGapStatus::MissingPrerequisite,
+            vec!["case-mobius".into()],
+        )
+        .expect("Möbius source boundary has a bounded proposal");
+        assert_eq!(mobius.suggested_dependency, "source_derived_mobius");
+        assert!(capability_gap_replay_verified(&mobius));
     }
 }

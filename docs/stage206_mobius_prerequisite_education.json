@@ -1,0 +1,16 @@
+{
+  "schema": "stage206-mobius-prerequisite-education-v1",
+  "manifest_sha256": "138e6a901d465b30795bac500c307820d93e6a223ada8f8b2d90334e961ec118",
+  "cases": 300,
+  "known_cases": 240,
+  "unknown_cases": 60,
+  "known_proposals": 240,
+  "proposal_replay_verified": 240,
+  "closure_complete": 240,
+  "acyclic_edges": 240,
+  "unknown_refused": 60,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "6495739e157fc1340c98aefc5fe6e935c990f8a72165d8e3bb527f49a8ec1f94"
+}

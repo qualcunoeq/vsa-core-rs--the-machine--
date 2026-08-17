@@ -428,6 +428,10 @@ name = "stage93_source_bayes_bench"
 path = "src/bin/stage93_source_bayes_bench.rs"
 
 [[bin]]
+name = "stage94_source_domain_router"
+path = "src/bin/stage94_source_domain_router.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

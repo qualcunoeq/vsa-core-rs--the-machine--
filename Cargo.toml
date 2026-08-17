@@ -524,6 +524,10 @@ name = "stage118_source_domain_manifest_admission"
 path = "src/bin/stage118_source_domain_manifest_admission.rs"
 
 [[bin]]
+name = "stage119_source_memory_ingestion"
+path = "src/bin/stage119_source_memory_ingestion.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

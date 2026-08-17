@@ -1,0 +1,78 @@
+# Source transcription: bounded introductory geometry identities.
+# These declarative records are interpreted by the generic source-formula
+# runtime; no geometry-specific execution branch is permitted.
+
+BEGIN FORMULA rectangle_area
+ALIASES: rectangle area | area of a rectangle
+EXPRESSION: length * width
+INPUTS: length, width
+ASSUMPTIONS: length and width are positive; units are compatible
+CONSTRAINTS: positive:length; positive:width
+SOURCE_ID: openstax-precalculus-2e:rectangle-area
+TITLE: Precalculus 2e
+SECTION: Geometry review
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: geometry review: rectangle area is length multiplied by width
+END FORMULA
+
+BEGIN FORMULA triangle_area
+ALIASES: triangle area | area of a triangle
+EXPRESSION: base * height / 2
+INPUTS: base, height
+ASSUMPTIONS: base and height are positive perpendicular measures; units are compatible
+CONSTRAINTS: positive:base; positive:height
+SOURCE_ID: openstax-precalculus-2e:triangle-area
+TITLE: Precalculus 2e
+SECTION: Geometry review
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: geometry review: triangle area is one half base times perpendicular height
+END FORMULA
+
+BEGIN FORMULA rectangle_perimeter
+ALIASES: rectangle perimeter | perimeter of a rectangle
+EXPRESSION: 2 * length + 2 * width
+INPUTS: length, width
+ASSUMPTIONS: length and width are positive; units are compatible
+CONSTRAINTS: positive:length; positive:width
+SOURCE_ID: openstax-precalculus-2e:rectangle-perimeter
+TITLE: Precalculus 2e
+SECTION: Geometry review
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: geometry review: rectangle perimeter is twice length plus twice width
+END FORMULA
+
+BEGIN FORMULA box_volume
+ALIASES: rectangular prism volume | box volume
+EXPRESSION: length * width * height
+INPUTS: length, width, height
+ASSUMPTIONS: all dimensions are positive; units are compatible
+CONSTRAINTS: positive:length; positive:width; positive:height
+SOURCE_ID: openstax-precalculus-2e:box-volume
+TITLE: Precalculus 2e
+SECTION: Geometry review
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: geometry review: rectangular prism volume is the product of dimensions
+END FORMULA
+
+BEGIN FORMULA density
+ALIASES: mass density | density from mass and volume
+EXPRESSION: mass / volume
+INPUTS: mass, volume
+ASSUMPTIONS: mass and volume are positive; units are compatible
+CONSTRAINTS: positive:mass; positive:volume
+SOURCE_ID: openstax-precalculus-2e:density-ratio
+TITLE: Precalculus 2e
+SECTION: Geometry and measurement review
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: measurement review: density is mass divided by volume
+END FORMULA

@@ -891,6 +891,10 @@ path = "src/bin/stage161_self_directed_curriculum_scale.rs"
 name = "stage162_integrated_autonomous_scientist_checkpoint"
 path = "src/bin/stage162_integrated_autonomous_scientist_checkpoint.rs"
 
+[[bin]]
+name = "stage163_source_geometry_acquisition"
+path = "src/bin/stage163_source_geometry_acquisition.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

@@ -616,6 +616,10 @@ name = "stage145_frontend_gap_education"
 path = "src/bin/stage145_frontend_gap_education.rs"
 
 [[bin]]
+name = "stage147_visual_source_statistics"
+path = "src/bin/stage147_visual_source_statistics.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

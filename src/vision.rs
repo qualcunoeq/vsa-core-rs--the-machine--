@@ -17,6 +17,9 @@ pub mod visual_table;
 #[path = "visual_graph.rs"]
 pub mod visual_graph;
 
+#[path = "visual_source_statistics_bridge.rs"]
+pub mod visual_source_statistics_bridge;
+
 const COLOR_BINS: usize = 4;
 const GRID: usize = 4;
 const DESCRIPTOR_DIM: usize = COLOR_BINS * COLOR_BINS * COLOR_BINS + GRID * GRID + 4;

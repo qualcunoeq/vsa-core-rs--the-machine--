@@ -1,0 +1,22 @@
+{
+  "schema": "stage103-curriculum-checkpoint-v1",
+  "parent_report_sha256": [
+    "6aa9ed3a27eb1b2f827083c66e4511bda178782d210acd48ef733b44777d1251",
+    "2c1fb4679a0c8a11a5d3d30ee03b9dd656c0313d1066219f92ff5fd9c1e490e8",
+    "b42395663e83307c71d2e3a893fdfeb91dce77ca13ec4940284aa6c313facd8b",
+    "37986819a035e738cff45992ce3e9cd3d44a6600c945ef398852106d9c8bc4b4",
+    "c41b00a198665d27469c7e6f79f295dfe4a24c9c92384ba8e1f67aa72b920929"
+  ],
+  "current_manifest_sha256": "ab3f9c293eca6dc0b09f5c35f3b39748c451a3f9e11e6ea87b2943ace3b79e55",
+  "cases": 6920,
+  "exact_or_route_decisions": 6920,
+  "authorized": 4116,
+  "safe_refusals_or_ambiguities": 2804,
+  "replay_verified": 6920,
+  "tamper_rejections": 6920,
+  "provenance_preserved": 6920,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "production_registry_mutations": 0,
+  "sealed_parent_cases": 1096
+}

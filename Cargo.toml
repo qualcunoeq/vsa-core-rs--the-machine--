@@ -464,6 +464,10 @@ name = "stage102_set_counting_probability"
 path = "src/bin/stage102_set_counting_probability.rs"
 
 [[bin]]
+name = "stage103_curriculum_checkpoint"
+path = "src/bin/stage103_curriculum_checkpoint.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

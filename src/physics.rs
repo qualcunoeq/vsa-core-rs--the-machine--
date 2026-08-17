@@ -1219,6 +1219,16 @@ pub struct PhysicsKnowledge {
     variable_rhs_cache: std::collections::HashMap<String, (String, String, f64)>,
 }
 
+/// Bound cache ingestion for resource-constrained evaluation campaigns. The
+/// default remains unlimited, preserving normal runtime behavior; a campaign
+/// may set `MACHINE_FORMULA_CACHE_LIMIT` and record the chosen limit.
+fn configured_formula_cache_limit() -> usize {
+    std::env::var("MACHINE_FORMULA_CACHE_LIMIT")
+        .ok()
+        .and_then(|value| value.parse::<usize>().ok())
+        .unwrap_or(usize::MAX)
+}
+
 impl PhysicsKnowledge {
     pub fn new() -> Self {
         PhysicsKnowledge {
@@ -1341,7 +1351,8 @@ impl PhysicsKnowledge {
         let total = entries.len();
         let mut kept = 0usize;
         let mut parse_failed = 0usize;
-        for law in entries {
+        let cache_limit = configured_formula_cache_limit();
+        for law in entries.into_iter().take(cache_limit) {
             // Skip formulas with LaTeX commands that would choke the parser
             if law.formula.contains('\\') || law.formula.contains('{') || law.formula.contains('}')
             {
@@ -1413,7 +1424,8 @@ impl PhysicsKnowledge {
 
         let total = entries.len();
         let mut kept = 0usize;
-        for mut law in entries {
+        let cache_limit = configured_formula_cache_limit();
+        for mut law in entries.into_iter().take(cache_limit) {
             // Clean formula text before trying to parse
             let mut cleaned = law
                 .formula

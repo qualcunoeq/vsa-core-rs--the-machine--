@@ -540,6 +540,10 @@ name = "stage122_self_directed_source_growth_checkpoint"
 path = "src/bin/stage122_self_directed_source_growth_checkpoint.rs"
 
 [[bin]]
+name = "stage123_hle_resource_bounded_checkpoint"
+path = "src/bin/stage123_hle_resource_bounded_checkpoint.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

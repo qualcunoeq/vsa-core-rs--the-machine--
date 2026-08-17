@@ -883,6 +883,10 @@ path = "src/bin/stage159_source_reasoning_scale.rs"
 name = "stage160_source_epistemic_integration"
 path = "src/bin/stage160_source_epistemic_integration.rs"
 
+[[bin]]
+name = "stage161_self_directed_curriculum_scale"
+path = "src/bin/stage161_self_directed_curriculum_scale.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

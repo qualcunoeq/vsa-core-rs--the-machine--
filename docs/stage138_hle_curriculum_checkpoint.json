@@ -1,0 +1,27 @@
+{
+  "schema": "stage138-hle-curriculum-checkpoint-v1",
+  "checkpoint": "post-arithmetic-functions-route-blind-curriculum",
+  "producer_commit": "121cb68",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "manifest_sha256": "e252a0d7e1632815efde3dd5d6044e4e4aa3b9d697485b215e4269450943cb31",
+  "trace_sha256": "efc57a256c44be3c836ebc65005d2e79f10f3340a6fbf4193ec763baac6e2e4f",
+  "cases": 2500,
+  "correct_authorized": 2,
+  "incorrect_authorized": 0,
+  "false_authorizations": 0,
+  "curriculum_signals": 643,
+  "pack_invocations": 0,
+  "replay_compatibility_verified": 2,
+  "replay_not_applicable": 2498,
+  "replay_not_recorded": 0,
+  "terminal_counts": {
+    "correct_authorized": 2,
+    "visual_required": 260,
+    "no_curriculum_signal": 1668,
+    "unresolved": 570
+  },
+  "total_execution_time_us": 49833151,
+  "max_execution_time_us": 540626,
+  "registry_mutated": false,
+  "trace_path": "docs/stage138_hle_curriculum_checkpoint.trace.jsonl"
+}

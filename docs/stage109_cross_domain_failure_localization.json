@@ -1,0 +1,14 @@
+{
+  "schema": "stage109-cross-domain-failure-localization-v1",
+  "input_report_sha256": "b24839941264c9433b2ec41877f3e395cf13cc38c84789c504f518b696236741",
+  "negative_cases": 400,
+  "localized_cases": 400,
+  "localization_rate_ppm": 1000000,
+  "first_failure_gates": {
+    "ambiguous_bridge": 200,
+    "unsupported_semantics": 200
+  },
+  "false_authorizations": 0,
+  "uncategorized": 0,
+  "replay_verified": 1000
+}

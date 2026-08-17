@@ -484,6 +484,10 @@ name = "stage108_cross_domain_synthesis"
 path = "src/bin/stage108_cross_domain_synthesis.rs"
 
 [[bin]]
+name = "stage109_cross_domain_failure_localization"
+path = "src/bin/stage109_cross_domain_failure_localization.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

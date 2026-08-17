@@ -1,0 +1,41 @@
+{
+  "schema": "stage111-source-catalog-ingestion-v1",
+  "catalogs": 3,
+  "valid_catalogs": 3,
+  "operations_declared": 13,
+  "replay_verified": 3,
+  "tamper_rejections": 3,
+  "provenance_preserved": 3,
+  "invalid_mutations_rejected": 8,
+  "source_hashes": [
+    "57f6d1ac3e3b0d6e9d687e3a11830f7c08fb99523c74190f6e8b3422840dc8c9",
+    "b4e255f017722540045d9d62d3f9eb0f2cb3c86a179a7b7d11ee331252363792",
+    "c2523254cd63b526d35f0dc0f59f616081fa52d5efc55a81158bc0858e2b639f"
+  ],
+  "receipts": [
+    {
+      "source_id": "openstax-contemporary-mathematics:finite-set-operations",
+      "operations": 5,
+      "expected_operations": 5,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "provenance_preserved": true
+    },
+    {
+      "source_id": "openstax-contemporary-mathematics:counting-principles",
+      "operations": 4,
+      "expected_operations": 4,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "provenance_preserved": true
+    },
+    {
+      "source_id": "openstax-contemporary-mathematics:truth-tables",
+      "operations": 4,
+      "expected_operations": 4,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "provenance_preserved": true
+    }
+  ]
+}

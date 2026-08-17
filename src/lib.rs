@@ -152,6 +152,7 @@ pub mod sleep;
 pub mod socket;
 pub mod solution_verification;
 pub mod source_complex_pack;
+pub mod source_catalog_ingestion;
 pub mod source_counting_frontend;
 pub mod source_counting_pack;
 pub mod source_formula_pack;

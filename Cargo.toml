@@ -580,6 +580,10 @@ name = "stage134_bounded_arithmetic_functions"
 path = "src/bin/stage134_bounded_arithmetic_functions.rs"
 
 [[bin]]
+name = "stage135_arithmetic_functions_language_frontend"
+path = "src/bin/stage135_arithmetic_functions_language_frontend.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

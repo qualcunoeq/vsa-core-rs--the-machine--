@@ -17,6 +17,7 @@ pub mod analogy;
 pub mod autonomy;
 pub mod battery_realization;
 pub mod bounded_arithmetic_functions_pack;
+pub mod bounded_arithmetic_functions_frontend;
 pub mod bond_feeder;
 pub mod bridge;
 pub mod broker;

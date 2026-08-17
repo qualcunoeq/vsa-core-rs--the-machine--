@@ -1,0 +1,20 @@
+{
+  "schema": "stage127-topology-curriculum-checkpoint-v1",
+  "previous_manifest_sha256": "c8944e68c7c670b6f3ed7394ca124862c09a96aef651c9e0549adc2d51b41cfc",
+  "current_manifest_sha256": "91b53e24c925bfd9ba6c5a087f19ab21a575029536b24d70527e0872c80a8194",
+  "topology_status": "shadow_validated",
+  "topology_prerequisites": [
+    "source_derived_finite_topology",
+    "linear_algebra_spectral"
+  ],
+  "homology_pack_cases": 240,
+  "homology_composition_cases": 240,
+  "language_frontend_cases": 240,
+  "all_exact_decisions": true,
+  "all_replays_verified": true,
+  "all_tamper_tests_rejected": true,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "production_registry_mutations": 0,
+  "hle_routing_mutated": false
+}

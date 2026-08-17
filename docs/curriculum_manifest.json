@@ -761,31 +761,33 @@
       },
       {
         "id": "topology",
-        "title": "Topology and geometric invariants",
-        "status": "planned",
+        "title": "Bounded simplicial topology and homology",
+        "status": "shadow_validated",
         "prerequisites": [
-          "abstract_algebra"
+          "source_derived_finite_topology",
+          "linear_algebra_spectral"
         ],
         "reusable_artifacts": [
-          "topological_space",
-          "invariant",
-          "homology"
+          "finite_simplicial_complex",
+          "boundary_matrix_f2",
+          "betti_numbers",
+          "euler_characteristic"
         ],
         "source_requirements": [
           "independently selected authoritative sources",
           "explicit assumptions, validity domains, and notation"
         ],
         "validation_gates": {
-          "authoritative_sources": false,
-          "independent_development_corpus": false,
-          "boundary_corpus": false,
-          "pressure_corpus": false,
-          "replay_verified": false,
-          "zero_false_authorization": false,
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
           "frozen_hle_holdout": true
         },
         "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
-        "selection_reason": "defer until algebraic structure and theorem provenance exist"
+        "selection_reason": "validated finite simplicial extension with explicit F_2 and dimension bounds"
       },
       {
         "id": "number_theory",
@@ -818,7 +820,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "c8944e68c7c670b6f3ed7394ca124862c09a96aef651c9e0549adc2d51b41cfc",
+  "manifest_replay_hash": "91b53e24c925bfd9ba6c5a087f19ab21a575029536b24d70527e0872c80a8194",
   "validation_errors": [],
   "production_authorizations": 0
 }

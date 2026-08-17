@@ -432,10 +432,15 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
         ),
         (
             "topology",
-            "Topology and geometric invariants",
-            vec!["abstract_algebra"],
-            vec!["topological_space", "invariant", "homology"],
-            "defer until algebraic structure and theorem provenance exist",
+            "Bounded simplicial topology and homology",
+            vec!["source_derived_finite_topology", "linear_algebra_spectral"],
+            vec![
+                "finite_simplicial_complex",
+                "boundary_matrix_f2",
+                "betti_numbers",
+                "euler_characteristic",
+            ],
+            "validated finite simplicial extension with explicit F_2 and dimension bounds",
         ),
         (
             "number_theory",
@@ -473,6 +478,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_complex_arithmetic"
                 | "source_derived_finite_topology"
                 | "source_derived_finite_metric"
+                | "topology"
         ) {
             (
                 CurriculumStatus::ShadowValidated,

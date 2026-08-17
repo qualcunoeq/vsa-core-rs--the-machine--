@@ -560,6 +560,10 @@ name = "stage128_dirichlet_character_pack"
 path = "src/bin/stage128_dirichlet_character_pack.rs"
 
 [[bin]]
+name = "stage130_expanded_cross_domain_synthesis"
+path = "src/bin/stage130_expanded_cross_domain_synthesis.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

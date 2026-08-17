@@ -1,0 +1,16 @@
+{
+  "schema": "stage115-self-directed-memory-retrieval-v1",
+  "gaps": 1200,
+  "complete": 600,
+  "stale_version_refused": 200,
+  "unknown_artifact_refused": 200,
+  "unavailable_source_refused": 200,
+  "plan_replays": 1200,
+  "plan_tamper_rejections": 1200,
+  "source_catalogs": 3,
+  "provenance_mismatches": 0,
+  "prerequisite_failures": 0,
+  "manifest_unchanged": true,
+  "live_route_mutations": 0,
+  "manifest_hash": "c8944e68c7c670b6f3ed7394ca124862c09a96aef651c9e0549adc2d51b41cfc"
+}

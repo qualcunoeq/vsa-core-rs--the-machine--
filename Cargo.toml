@@ -508,6 +508,10 @@ name = "stage114_post_memory_curriculum_checkpoint"
 path = "src/bin/stage114_post_memory_curriculum_checkpoint.rs"
 
 [[bin]]
+name = "stage115_self_directed_memory_retrieval"
+path = "src/bin/stage115_self_directed_memory_retrieval.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

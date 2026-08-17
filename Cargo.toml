@@ -480,6 +480,10 @@ name = "stage107_source_logic_bench"
 path = "src/bin/stage107_source_logic_bench.rs"
 
 [[bin]]
+name = "stage108_cross_domain_synthesis"
+path = "src/bin/stage108_cross_domain_synthesis.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

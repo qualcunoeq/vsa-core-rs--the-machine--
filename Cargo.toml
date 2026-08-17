@@ -412,6 +412,10 @@ name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 
 [[bin]]
+name = "stage82_execute_external_education"
+path = "src/bin/stage82_execute_external_education.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

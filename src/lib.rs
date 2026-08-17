@@ -111,6 +111,7 @@ pub mod mixed_ood_benchmark;
 pub mod model_planning_benchmark;
 pub mod monitor;
 pub mod mobius_inversion_pack;
+pub mod mobius_frontend;
 pub mod multi_step_quantity;
 pub mod narrative;
 pub mod natural_ingest;

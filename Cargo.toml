@@ -436,6 +436,10 @@ name = "stage87_hle_source_education_checkpoint"
 path = "src/bin/stage87_hle_source_education_checkpoint.rs"
 
 [[bin]]
+name = "stage88_unit_rational_pressure"
+path = "src/bin/stage88_unit_rational_pressure.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

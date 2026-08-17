@@ -1,0 +1,17 @@
+{
+  "schema": "stage87-hle-source-education-checkpoint-v1",
+  "hle_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "cases": 2500,
+  "sequence_frontend_complete": 0,
+  "sequence_pack_complete": 0,
+  "unit_frontend_complete": 0,
+  "unit_pack_complete": 0,
+  "both_frontends_complete": 0,
+  "frontend_ambiguities": 411,
+  "unsupported_or_missing": 2089,
+  "frontend_replays": 2500,
+  "frontend_tamper_rejections": 2500,
+  "potential_single_routes_not_authorized": 0,
+  "false_authorizations": 0,
+  "production_mutations": 0
+}

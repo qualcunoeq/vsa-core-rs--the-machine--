@@ -432,6 +432,10 @@ name = "stage86_source_education_composition"
 path = "src/bin/stage86_source_education_composition.rs"
 
 [[bin]]
+name = "stage87_hle_source_education_checkpoint"
+path = "src/bin/stage87_hle_source_education_checkpoint.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

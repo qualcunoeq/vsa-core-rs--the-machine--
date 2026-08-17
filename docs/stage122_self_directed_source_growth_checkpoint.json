@@ -1,0 +1,25 @@
+{
+  "schema": "stage122-self-directed-source-growth-checkpoint-v1",
+  "source_candidates_validated": 5,
+  "rejected_source_candidates": 1,
+  "development_before_admission": 1200,
+  "development_resolved_after_admission": 800,
+  "development_remaining_after_admission": 400,
+  "sealed_cases": 300,
+  "sealed_correct_authorizations": 200,
+  "sealed_replay_verified": 300,
+  "sealed_tamper_rejected": 300,
+  "source_transfer_cases": 1200,
+  "source_transfer_false_authorizations": 0,
+  "new_source_domain_records": 5,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "hle_questions_read": 0,
+  "production_mutations": 0,
+  "parent_report_sha256": [
+    "e39826b6dad2a503fa83b4485ff575f599bb59503f767b86c3b566b2e39ab29f",
+    "612ed6d1f973f27032e85017b1f83851a396bb3eb40c497360e709109fee2217",
+    "7b3d076aafd257d8cc4a10a44097d262d70289fa3b6a9136bdbfe0acbf2854ea",
+    "179252126137e297bdf6b9089010194174292c2797f259978318c1027747bd1a"
+  ]
+}

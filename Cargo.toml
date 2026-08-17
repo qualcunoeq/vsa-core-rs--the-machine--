@@ -536,6 +536,10 @@ name = "stage121_source_transfer_sealed_exam_checkpoint"
 path = "src/bin/stage121_source_transfer_sealed_exam_checkpoint.rs"
 
 [[bin]]
+name = "stage122_self_directed_source_growth_checkpoint"
+path = "src/bin/stage122_self_directed_source_growth_checkpoint.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

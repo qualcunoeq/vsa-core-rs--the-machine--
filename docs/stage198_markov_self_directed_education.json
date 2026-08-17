@@ -1,0 +1,22 @@
+{
+  "schema": "stage198-markov-self-directed-education-v1",
+  "corpus_sha256": "695b11e68e743743c5210a08033b24376e2a7392d588f65a52a0d746f3ba8c34",
+  "observations": 1000,
+  "observation_replay_verified": 1000,
+  "validated_candidates": 3,
+  "rejected_candidates": 1,
+  "admitted_candidates": 3,
+  "resolved_cases": 800,
+  "remaining_cases": 200,
+  "selected_rounds": 4,
+  "campaign_replay_verified": true,
+  "campaign_tamper_rejected": true,
+  "manifest_unchanged": true,
+  "production_registry_mutations": 0,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "decisions": {
+    "NoExactCoverage": 1,
+    "Selected": 3
+  }
+}

@@ -19,6 +19,7 @@ pub mod battery_realization;
 pub mod bounded_arithmetic_functions_pack;
 pub mod bounded_arithmetic_functions_frontend;
 pub mod bond_feeder;
+pub mod bounded_complex_analysis_pack;
 pub mod bridge;
 pub mod broker;
 pub mod calculus_pack;

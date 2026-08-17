@@ -1,0 +1,9 @@
+source_id: openstax-precalculus-2e:complex-analysis-boundary
+title: OpenStax Precalculus 2e and attributed complex-analysis theorem notes
+section: rectangular complex arithmetic, complex polynomials, and Cauchy-Riemann boundary
+url: https://openstax.org/details/books/precalculus-2e
+license: CC BY 4.0; OpenStax attribution required
+retrieved_utc: 2026-08-17
+evidence_span: A polynomial in z is evaluated and differentiated componentwise; an affine map u(x,y)+iv(x,y) is complex differentiable only when the Cauchy-Riemann equations u_x=v_y and u_y=-v_x hold.
+scope: exact rational coefficients, degree at most four, rectangular coordinates only
+unsupported: polar branches, contour integrals, infinite series, limits requiring approximation, and general holomorphic-function classification

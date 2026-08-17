@@ -411,6 +411,18 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "first externally sourced domain acquired after the hand-built foundations; generic paired formula execution",
         ),
         (
+            "bounded_complex_analysis",
+            "Bounded exact complex-analysis theorem contracts",
+            vec!["source_derived_complex_arithmetic", "bounded_calculus"],
+            vec![
+                "complex_polynomial_value",
+                "complex_polynomial_derivative",
+                "cauchy_riemann_certificate",
+                "affine_holomorphic_derivative",
+            ],
+            "source-attributed rectangular theorem boundary; polar, contour, and infinite semantics remain separate",
+        ),
+        (
             "source_derived_finite_topology",
             "Source-derived bounded finite topology",
             vec!["abstract_algebra"],
@@ -499,6 +511,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_bounded_truth_tables"
                 | "polynomial_algebra"
                 | "source_derived_complex_arithmetic"
+                | "bounded_complex_analysis"
                 | "source_derived_finite_topology"
                 | "source_derived_finite_metric"
                 | "topology"
@@ -550,7 +563,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 30);
+        assert_eq!(manifest.packs.len(), 31);
         assert!(manifest
             .packs
             .iter()

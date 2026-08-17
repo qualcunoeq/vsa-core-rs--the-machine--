@@ -1,0 +1,4818 @@
+{
+  "schema": "stage107-source-logic-v1",
+  "cases": 480,
+  "supported": 288,
+  "ambiguous": 96,
+  "unsupported": 96,
+  "authorized": 288,
+  "ambiguity_preserved": 96,
+  "unsupported_refused": 96,
+  "replay_verified": 480,
+  "tamper_rejections": 480,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "source_mutations_rejected": 7,
+  "corpus_sha256": "588be51438a6b5987e22dcffc0347c9ead2ab0b69c1c63e3503ff0d90383f57b",
+  "receipts": [
+    {
+      "id": "logic-000",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-001",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-002",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-003",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-004",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-005",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-006",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-007",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-008",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-009",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-010",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-011",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-012",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-013",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-014",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-015",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-016",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-017",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-018",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-019",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-020",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-021",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-022",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-023",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-024",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-025",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-026",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-027",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-028",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-029",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-030",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-031",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-032",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-033",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-034",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-035",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-036",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-037",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-038",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-039",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-040",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-041",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-042",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-043",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-044",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-045",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-046",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-047",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-048",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-049",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-050",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-051",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-052",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-053",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-054",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-055",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-056",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-057",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-058",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-059",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-060",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-061",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-062",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-063",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-064",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-065",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-066",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-067",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-068",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-069",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-070",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-071",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-072",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-073",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-074",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-075",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-076",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-077",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-078",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-079",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-080",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-081",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-082",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-083",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-084",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-085",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-086",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-087",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-088",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-089",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-090",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-091",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-092",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-093",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-094",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-095",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-096",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-097",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-098",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-099",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-100",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-101",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-102",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-103",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-104",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-105",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-106",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-107",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-108",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-109",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-110",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-111",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-112",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-113",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-114",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-115",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-116",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-117",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-118",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-119",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-120",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-121",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-122",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-123",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-124",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-125",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-126",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-127",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-128",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-129",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-130",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-131",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-132",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-133",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-134",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-135",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-136",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-137",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-138",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-139",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-140",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-141",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-142",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-143",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-144",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-145",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-146",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-147",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-148",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-149",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-150",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-151",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-152",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-153",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-154",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-155",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-156",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-157",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-158",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-159",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-160",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-161",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-162",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-163",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-164",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-165",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-166",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-167",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-168",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-169",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-170",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-171",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-172",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-173",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-174",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-175",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-176",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-177",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-178",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-179",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-180",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-181",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-182",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-183",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-184",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-185",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-186",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-187",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-188",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-189",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-190",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-191",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-192",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-193",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-194",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-195",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-196",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-197",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-198",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-199",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-200",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-201",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-202",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-203",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-204",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-205",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-206",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-207",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-208",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-209",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-210",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-211",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-212",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-213",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-214",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-215",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-216",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-217",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-218",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-219",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-220",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-221",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-222",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-223",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-224",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-225",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-226",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-227",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-228",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-229",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-230",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-231",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-232",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-233",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-234",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-235",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-236",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-237",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-238",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-239",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-240",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-241",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-242",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-243",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-244",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-245",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-246",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-247",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-248",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-249",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-250",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-251",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-252",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-253",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-254",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-255",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-256",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-257",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-258",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-259",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-260",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-261",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-262",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-263",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-264",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-265",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-266",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-267",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-268",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-269",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-270",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-271",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-272",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-273",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-274",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-275",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-276",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-277",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-278",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-279",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-280",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-281",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-282",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-283",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-284",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-285",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-286",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-287",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-288",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-289",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-290",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-291",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-292",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-293",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-294",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-295",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-296",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-297",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-298",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-299",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-300",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-301",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-302",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-303",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-304",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-305",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-306",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-307",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-308",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-309",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-310",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-311",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-312",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-313",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-314",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-315",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-316",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-317",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-318",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-319",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-320",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-321",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-322",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-323",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-324",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-325",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-326",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-327",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-328",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-329",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-330",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-331",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-332",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-333",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-334",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-335",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-336",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-337",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-338",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-339",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-340",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-341",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-342",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-343",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-344",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-345",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-346",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-347",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-348",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-349",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-350",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-351",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-352",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-353",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-354",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-355",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-356",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-357",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-358",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-359",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-360",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-361",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-362",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-363",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-364",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-365",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-366",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-367",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-368",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-369",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-370",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-371",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-372",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-373",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-374",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-375",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-376",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-377",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-378",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-379",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-380",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-381",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-382",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-383",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-384",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-385",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-386",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-387",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-388",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-389",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-390",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-391",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-392",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-393",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-394",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-395",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-396",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-397",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-398",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-399",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-400",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-401",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-402",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-403",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-404",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-405",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-406",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-407",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-408",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-409",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-410",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-411",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-412",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-413",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-414",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-415",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-416",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-417",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-418",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-419",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-420",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-421",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-422",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-423",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-424",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-425",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-426",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-427",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-428",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-429",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-430",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-431",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-432",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-433",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-434",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-435",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-436",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-437",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-438",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-439",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-440",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-441",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-442",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-443",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-444",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-445",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-446",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-447",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-448",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-449",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-450",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-451",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-452",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-453",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-454",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-455",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-456",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-457",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-458",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-459",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-460",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-461",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-462",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-463",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-464",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-465",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-466",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-467",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-468",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-469",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-470",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-471",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-472",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-473",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-474",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-475",
+      "hidden": "Supported",
+      "status": "supported",
+      "authorized": true,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-476",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-477",
+      "hidden": "Ambiguous",
+      "status": "ambiguous",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-478",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    },
+    {
+      "id": "logic-479",
+      "hidden": "Unsupported",
+      "status": "unsupported",
+      "authorized": false,
+      "replay": true,
+      "tamper": true,
+      "false_auth": false,
+      "false_denial": false
+    }
+  ]
+}

@@ -369,6 +369,19 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "OpenStax-derived distinction between ordered and unordered finite selection",
         ),
         (
+            "source_derived_bounded_truth_tables",
+            "Source-derived bounded propositional truth tables",
+            vec!["source_derived_bounded_counting"],
+            vec![
+                "boolean_expression",
+                "truth_table",
+                "tautology",
+                "contradiction",
+                "logical_equivalence",
+            ],
+            "OpenStax-derived finite Boolean evaluation and exhaustive validity checks",
+        ),
+        (
             "polynomial_algebra",
             "Bounded polynomial algebra over prime fields",
             vec![
@@ -455,6 +468,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_bayes_rule"
                 | "source_derived_finite_set_operations"
                 | "source_derived_bounded_counting"
+                | "source_derived_bounded_truth_tables"
                 | "polynomial_algebra"
                 | "source_derived_complex_arithmetic"
                 | "source_derived_finite_topology"
@@ -505,7 +519,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 27);
+        assert_eq!(manifest.packs.len(), 28);
         assert!(manifest
             .packs
             .iter()

@@ -476,6 +476,10 @@ name = "stage105_source_language_set_counting"
 path = "src/bin/stage105_source_language_set_counting.rs"
 
 [[bin]]
+name = "stage107_source_logic_bench"
+path = "src/bin/stage107_source_logic_bench.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

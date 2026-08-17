@@ -1,0 +1,8 @@
+SOURCE_ID: openstax-contemporary-mathematics:truth-tables
+TITLE: Contemporary Mathematics
+SECTION: 2.3 Constructing Truth Tables; 2.4 Truth Tables for the Conditional and Biconditional
+URL: https://openstax.org/books/contemporary-mathematics/pages/2-3-constructing-truth-tables
+LICENSE: CC BY-NC-SA 4.0; OpenStax attribution required
+RETRIEVED_UTC: 2026-08-17
+EVIDENCE: The source defines truth values for negation, conjunction, disjunction, conditional, and biconditional statements and uses exhaustive truth tables to determine validity.
+OPERATIONS: evaluate, tautology, contradiction, equivalence

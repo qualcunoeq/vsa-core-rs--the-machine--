@@ -610,6 +610,36 @@
         "selection_reason": "OpenStax-derived distinction between ordered and unordered finite selection"
       },
       {
+        "id": "source_derived_bounded_truth_tables",
+        "title": "Source-derived bounded propositional truth tables",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_bounded_counting"
+        ],
+        "reusable_artifacts": [
+          "boolean_expression",
+          "truth_table",
+          "tautology",
+          "contradiction",
+          "logical_equivalence"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "OpenStax-derived finite Boolean evaluation and exhaustive validity checks"
+      },
+      {
         "id": "polynomial_algebra",
         "title": "Bounded polynomial algebra over prime fields",
         "status": "shadow_validated",
@@ -788,7 +818,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "9cba3dff3bb8d120b1f66ae68736c616a357fe3800f4b797a3e94f6c4f430713",
+  "manifest_replay_hash": "c8944e68c7c670b6f3ed7394ca124862c09a96aef651c9e0549adc2d51b41cfc",
   "validation_errors": [],
   "production_authorizations": 0
 }

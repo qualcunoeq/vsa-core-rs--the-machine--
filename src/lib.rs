@@ -156,6 +156,8 @@ pub mod source_counting_frontend;
 pub mod source_counting_pack;
 pub mod source_formula_pack;
 pub mod source_interpolation_frontend;
+pub mod source_logic_frontend;
+pub mod source_logic_pack;
 pub mod source_bayes_frontend;
 pub mod source_bayes_pack;
 pub mod source_sequence_frontend;

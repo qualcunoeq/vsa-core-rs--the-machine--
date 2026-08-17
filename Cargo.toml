@@ -408,6 +408,10 @@ name = "stage79_post_spectral_synthesis"
 path = "src/bin/stage79_post_spectral_synthesis.rs"
 
 [[bin]]
+name = "stage89_full_curriculum_synthesis"
+path = "src/bin/stage89_full_curriculum_synthesis.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

@@ -1,0 +1,15 @@
+{
+  "schema": "stage112-curriculum-memory-source-extension-v1",
+  "records": 100000,
+  "segments": 391,
+  "domain_counts": [12500, 12500, 12500, 12500, 12500, 12500, 12500, 12500],
+  "replay_verified": 100000,
+  "exact_retrieval": 4166,
+  "exact_contamination": 0,
+  "version_contamination": 0,
+  "duplicate_rejections": 1,
+  "invalid_rejections": 1,
+  "tamper_rejected": 100000,
+  "live_mutation": false,
+  "manifest_hash": "5c91d5e44cea91305a41216b7a569a8045ca3e4f0b2254a9b25bbeabda03c028"
+}

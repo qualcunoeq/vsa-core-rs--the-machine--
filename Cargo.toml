@@ -496,6 +496,10 @@ name = "stage111_source_catalog_ingestion"
 path = "src/bin/stage111_source_catalog_ingestion.rs"
 
 [[bin]]
+name = "stage112_curriculum_memory_source_extension"
+path = "src/bin/stage112_curriculum_memory_source_extension.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

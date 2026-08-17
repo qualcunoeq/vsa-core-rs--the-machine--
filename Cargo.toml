@@ -424,6 +424,10 @@ name = "stage84_sequence_frontend_bench"
 path = "src/bin/stage84_sequence_frontend_bench.rs"
 
 [[bin]]
+name = "stage85_unit_conversion_frontend_bench"
+path = "src/bin/stage85_unit_conversion_frontend_bench.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

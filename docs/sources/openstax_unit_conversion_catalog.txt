@@ -1,0 +1,62 @@
+# Source-derived bounded unit-conversion catalog.
+# Source basis: OpenStax Precalculus 2e, unit analysis and dimensional conversion.
+
+BEGIN FORMULA meters_to_centimeters
+ALIASES: meters to centimeters|meter to centimeter
+EXPRESSION: amount * 100
+INPUTS: amount
+ASSUMPTIONS: amount is a nonnegative measured quantity
+CONSTRAINTS: nonnegative_integer:amount
+SOURCE_ID: openstax-precalculus-2e:unit-analysis
+TITLE: Precalculus 2e
+SECTION: Units and dimensional analysis
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: stated metric conversion relation
+END FORMULA
+
+BEGIN FORMULA hours_to_minutes
+ALIASES: hours to minutes|hour to minute
+EXPRESSION: amount * 60
+INPUTS: amount
+ASSUMPTIONS: amount is a nonnegative measured quantity
+CONSTRAINTS: nonnegative_integer:amount
+SOURCE_ID: openstax-precalculus-2e:unit-analysis
+TITLE: Precalculus 2e
+SECTION: Units and dimensional analysis
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: stated time conversion relation
+END FORMULA
+
+BEGIN FORMULA pounds_to_ounces
+ALIASES: pounds to ounces|pound to ounce
+EXPRESSION: amount * 16
+INPUTS: amount
+ASSUMPTIONS: amount is a nonnegative measured quantity
+CONSTRAINTS: nonnegative_integer:amount
+SOURCE_ID: openstax-precalculus-2e:unit-analysis
+TITLE: Precalculus 2e
+SECTION: Units and dimensional analysis
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: stated mass conversion relation
+END FORMULA
+
+BEGIN FORMULA liters_to_milliliters
+ALIASES: liters to milliliters|liter to milliliter
+EXPRESSION: amount * 1000
+INPUTS: amount
+ASSUMPTIONS: amount is a nonnegative measured quantity
+CONSTRAINTS: nonnegative_integer:amount
+SOURCE_ID: openstax-precalculus-2e:unit-analysis
+TITLE: Precalculus 2e
+SECTION: Units and dimensional analysis
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: stated volume conversion relation
+END FORMULA

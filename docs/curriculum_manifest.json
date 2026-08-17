@@ -548,6 +548,38 @@
         "selection_reason": "second independent source-derived domain with an exact finite-probability bridge"
       },
       {
+        "id": "source_derived_finite_set_operations",
+        "title": "Source-derived bounded finite-set operations",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "combinatorics",
+          "probability_stochastic"
+        ],
+        "reusable_artifacts": [
+          "finite_set",
+          "set_union",
+          "set_intersection",
+          "set_difference",
+          "set_complement",
+          "set_cardinality"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "OpenStax-derived finite set semantics with explicit universe and deterministic operations"
+      },
+      {
         "id": "polynomial_algebra",
         "title": "Bounded polynomial algebra over prime fields",
         "status": "shadow_validated",
@@ -726,7 +758,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "fea4b52d2425a1cdd5d06f3719c9a817b2fb1bb9162d2ce5dd9e4f93a10dd6f6",
+  "manifest_replay_hash": "c10731ced82c7a7639b2599c1dee54a2fca74ae47e3ad4f16655b50fc364c85f",
   "validation_errors": [],
   "production_authorizations": 0
 }

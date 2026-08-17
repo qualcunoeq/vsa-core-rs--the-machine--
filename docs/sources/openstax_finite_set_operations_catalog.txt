@@ -1,0 +1,8 @@
+SOURCE_ID: openstax-contemporary-mathematics:finite-set-operations
+TITLE: Contemporary Mathematics
+SECTION: 1.4 Set Operations with Two Sets; 1.5 Set Operations with Three Sets
+URL: https://openstax.org/books/contemporary-mathematics/pages/1-4-set-operations-with-two-sets
+LICENSE: CC BY-NC-SA 4.0; OpenStax attribution required
+RETRIEVED_UTC: 2026-08-17
+EVIDENCE: The source defines finite-set union, intersection, difference, complement relative to a universal set, and the use of parentheses to specify operation order.
+OPERATIONS: union, intersection, difference, complement, cardinality

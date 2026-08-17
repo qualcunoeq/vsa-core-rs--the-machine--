@@ -448,6 +448,10 @@ name = "stage98_hle_curriculum_checkpoint"
 path = "src/bin/stage98_hle_curriculum_checkpoint.rs"
 
 [[bin]]
+name = "stage99_source_set_bench"
+path = "src/bin/stage99_source_set_bench.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

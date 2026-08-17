@@ -343,6 +343,20 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "second independent source-derived domain with an exact finite-probability bridge",
         ),
         (
+            "source_derived_finite_set_operations",
+            "Source-derived bounded finite-set operations",
+            vec!["combinatorics", "probability_stochastic"],
+            vec![
+                "finite_set",
+                "set_union",
+                "set_intersection",
+                "set_difference",
+                "set_complement",
+                "set_cardinality",
+            ],
+            "OpenStax-derived finite set semantics with explicit universe and deterministic operations",
+        ),
+        (
             "polynomial_algebra",
             "Bounded polynomial algebra over prime fields",
             vec![
@@ -427,6 +441,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_finite_regression"
                 | "source_derived_linear_interpolation"
                 | "source_derived_bayes_rule"
+                | "source_derived_finite_set_operations"
                 | "polynomial_algebra"
                 | "source_derived_complex_arithmetic"
                 | "source_derived_finite_topology"
@@ -477,7 +492,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 25);
+        assert_eq!(manifest.packs.len(), 26);
         assert!(manifest
             .packs
             .iter()

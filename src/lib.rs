@@ -165,6 +165,8 @@ pub mod spectral_frontend;
 pub mod source_metric_pack;
 pub mod source_regression_pack;
 pub mod source_retrieval;
+pub mod source_set_frontend;
+pub mod source_set_pack;
 pub mod source_statistics_frontend;
 pub mod source_statistics_pack;
 pub mod source_topology_frontend;
